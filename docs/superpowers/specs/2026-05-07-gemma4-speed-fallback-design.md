@@ -76,6 +76,21 @@ Gemma 4 stream starts
 
 **Flash fallback:** Uses the existing `streamWithGeminiModel` code path with `GEMINI_FLASH_MODEL` — no duplication.
 
+### 3b. Ollama Safety Net Pre-warming (LLMHelper.ts)
+
+`llama3.1:8b` is cold on first use — loading model weights can take 20–30s, defeating the purpose of a fast fallback. A dedicated `warmUpSafetyNet()` private method eliminates this:
+
+1. Calls `checkOllamaAvailable()` to confirm Ollama is running
+2. Fetches the model list and confirms `llama3.1:8b` is present
+3. Sends a short silent prompt (`"hi"`) via `callOllama` targeted specifically at `llama3.1:8b` — this forces weights into memory
+4. Runs fully fire-and-forget: no `await` at call site, no error surfaced to user (console log only on failure)
+
+Called in two places:
+- **App startup** (`constructor` / `setApiKey`) — if `currentModelId` is already a Gemma 4 model at init time
+- **`setModel()`** — whenever the user switches to any `gemma-4+` model
+
+By the time the first interview question is asked, `llama3.1:8b` is warm and ready to respond in ~1–2s if Gemma stalls.
+
 ### 4. Model Attribution (ipcHandlers.ts + GlobalChatOverlay.tsx)
 
 **Backend:** The winning model name is known at the point tokens start flowing. Fire a new IPC event `gemini-stream-source` immediately before the first token, carrying a human-readable label:
@@ -104,7 +119,7 @@ Label is hidden during streaming (appears only on `isStreaming: false`) so it do
 
 | File | What changes |
 |---|---|
-| `electron/LLMHelper.ts` | `thinkingBudget: 0` + `maxOutputTokens: 2048` for Gemma; thinking token filter in stream loop; `streamWithTTFTWatchdog`; three-tier fallback chain replacing direct Gemma call |
+| `electron/LLMHelper.ts` | `thinkingBudget: 0` + `maxOutputTokens: 2048` for Gemma; thinking token filter in stream loop; `streamWithTTFTWatchdog`; three-tier fallback chain replacing direct Gemma call; `warmUpSafetyNet()` called on startup and model switch |
 | `electron/ipcHandlers.ts` | Emit `gemini-stream-source` IPC event before first token |
 | `src/components/GlobalChatOverlay.tsx` | `model?` on `Message`; listen for `gemini-stream-source`; render attribution label in `AssistantMessage` |
 
@@ -119,3 +134,4 @@ Label is hidden during streaming (appears only on `isStreaming: false`) so it do
 
 - Gemma 4 with `thinkingBudget: 0` is slightly less nuanced on multi-step reasoning (e.g. complex algorithm derivation). For standard interview Q&A this is acceptable — a fast, clear answer is more valuable than a slow, perfectly reasoned one.
 - Ollama must be running locally for the final fallback to work. If it is not, the error is surfaced to the user clearly.
+- `warmUpSafetyNet()` only warms the model if Ollama is already running — it does not start Ollama. If Ollama is not running at startup, the warm-up silently no-ops and the fallback surfaces an error only if actually triggered.
