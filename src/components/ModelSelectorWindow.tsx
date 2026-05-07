@@ -89,6 +89,23 @@ const ModelSelectorWindow = () => {
                     }
                 }
 
+                // Dynamically fetch Gemma models from the real Gemini API
+                if (creds?.hasGeminiKey) {
+                    try {
+                        const result = await window.electronAPI?.fetchProviderModels?.('gemini');
+                        if (result?.success && result.models) {
+                            const gemmaModels = result.models.filter(m => m.id.startsWith('gemma-'));
+                            gemmaModels.forEach(m => {
+                                if (!models.some(existing => existing.id === m.id)) {
+                                    models.push({ id: m.id, name: m.label, type: 'cloud', provider: 'gemini' });
+                                }
+                            });
+                        }
+                    } catch (e) {
+                        console.warn('Failed to fetch Gemma models dynamically:', e);
+                    }
+                }
+
                 // Custom Providers
                 customProviders.forEach((p: any) => {
                     models.push({ id: p.id, name: p.name, type: 'custom' });
