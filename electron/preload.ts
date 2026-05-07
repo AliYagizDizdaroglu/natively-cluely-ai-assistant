@@ -588,6 +588,7 @@ interface ElectronAPI {
   onGeminiStreamToken: (callback: (token: string, meta?: { streamId?: number }) => void) => () => void;
   onGeminiStreamDone: (callback: (data?: { finalText?: string; streamId?: number }) => void) => () => void;
   onGeminiStreamError: (callback: (error: string) => void) => () => void;
+  onGeminiStreamSource: (callback: (model: string) => void) => () => void;
 
   onUndetectableChanged: (callback: (state: boolean) => void) => () => void;
   onGroqFastTextChanged: (callback: (enabled: boolean) => void) => () => void;
@@ -1858,6 +1859,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => {
       ipcRenderer.removeListener('gemini-stream-error', subscription);
     };
+  },
+
+  onGeminiStreamSource: (callback: (model: string) => void) => {
+    const subscription = (_: any, model: string) => callback(model)
+    ipcRenderer.on("gemini-stream-source", subscription)
+    return () => ipcRenderer.removeListener("gemini-stream-source", subscription)
   },
 
   // Model Management

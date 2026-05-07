@@ -370,6 +370,7 @@ export interface ElectronAPI {
   onGeminiStreamDone: (callback: (data?: { finalText?: string; streamId?: number }) => void) => () => void
   onGeminiStreamError: (callback: (error: string) => void) => () => void;
   cancelChatStream: () => void;
+  onGeminiStreamSource: (callback: (model: string) => void) => () => void;
 
   // Model Management
   getDefaultModel: () => Promise<{ model: string }>;
