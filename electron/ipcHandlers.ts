@@ -1718,7 +1718,7 @@ export function initializeIpcHandlers(appState: AppState): void {
             ws.close();
             console.error('[IPC] Deepgram test failed: Connection timed out');
             resolve({ success: false, error: 'Connection timed out' });
-          }, 15000);
+          }, 30000);
 
           ws.on('open', () => {
             clearTimeout(timeout);
@@ -1859,7 +1859,7 @@ export function initializeIpcHandlers(appState: AppState): void {
           testWav,
           {
             headers: { 'Ocp-Apim-Subscription-Key': apiKey, 'Content-Type': 'audio/wav' },
-            timeout: 15000,
+            timeout: 30000,
           }
         );
       } else if (provider === 'ibmwatson') {
@@ -1873,7 +1873,7 @@ export function initializeIpcHandlers(appState: AppState): void {
               Authorization: `Basic ${Buffer.from(`apikey:${apiKey}`).toString('base64')}`,
               'Content-Type': 'audio/wav',
             },
-            timeout: 15000,
+            timeout: 30000,
           }
         );
       } else {
@@ -1904,7 +1904,7 @@ export function initializeIpcHandlers(appState: AppState): void {
             Authorization: `Bearer ${apiKey}`,
             ...form.getHeaders(),
           },
-          timeout: 15000,
+          timeout: 30000,
         });
       }
 
@@ -1943,7 +1943,7 @@ export function initializeIpcHandlers(appState: AppState): void {
           contents: [{ parts: [{ text: "Hello" }] }]
         }, {
           headers: { 'x-goog-api-key': apiKey },
-          timeout: 15000
+          timeout: 30000
         });
       } else if (provider === 'groq') {
         response = await axios.post('https://api.groq.com/openai/v1/chat/completions', {
@@ -1972,7 +1972,7 @@ export function initializeIpcHandlers(appState: AppState): void {
             'anthropic-version': '2023-06-01',
             'content-type': 'application/json'
           },
-          timeout: 15000
+          timeout: 30000
         });
       }
 
