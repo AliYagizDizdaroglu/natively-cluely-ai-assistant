@@ -43,6 +43,7 @@ export class LLMHelper {
   private groqClient: Groq | null = null
   private openaiClient: OpenAI | null = null
   private claudeClient: Anthropic | null = null
+  private clientV1Beta: GoogleGenAI | null = null
   private apiKey: string | null = null
   private groqApiKey: string | null = null
   private openaiApiKey: string | null = null
@@ -111,6 +112,10 @@ export class LLMHelper {
         apiKey: apiKey,
         httpOptions: { apiVersion: "v1alpha" }
       })
+      this.clientV1Beta = new GoogleGenAI({
+        apiKey: apiKey,
+        httpOptions: { apiVersion: "v1beta" }
+      })
       // console.log(`[LLMHelper] Using Google Gemini 3 with model: ${this.geminiModel} (v1alpha API)`)
     } else {
       console.warn("[LLMHelper] No API key provided. Client will be uninitialized until key is set.")
@@ -122,6 +127,10 @@ export class LLMHelper {
     this.client = new GoogleGenAI({
       apiKey: apiKey,
       httpOptions: { apiVersion: "v1alpha" }
+    })
+    this.clientV1Beta = new GoogleGenAI({
+      apiKey: apiKey,
+      httpOptions: { apiVersion: "v1beta" }
     })
     console.log("[LLMHelper] Gemini API Key updated.");
   }
@@ -227,11 +236,13 @@ export class LLMHelper {
   }
 
   private isGroqModel(modelId: string): boolean {
+    // gemma-4+ is served by the Gemini API, not Groq
+    if (/^gemma-[4-9]/.test(modelId)) return false;
     return modelId.startsWith("llama-") || modelId.startsWith("mixtral-") || modelId.startsWith("gemma-") || modelId.startsWith("meta-llama/") || modelId.startsWith("qwen/") || modelId.startsWith("qwen-");
   }
 
   private isGeminiModel(modelId: string): boolean {
-    return modelId.startsWith("gemini-") || modelId.startsWith("models/");
+    return modelId.startsWith("gemini-") || modelId.startsWith("gemma-") || modelId.startsWith("models/");
   }
   // ---------------------------
 
@@ -2705,6 +2716,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
   private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[]): AsyncGenerator<string, void, unknown> {
     if (!this.client) throw new Error("Gemini client not initialized");
 
+    // Gemma models require v1beta; Gemini models use v1alpha
+    const activeClient = model.startsWith("gemma-") ? (this.clientV1Beta ?? this.client) : this.client;
+
     const contents: any[] = [{ text: fullMessage }];
     if (imagePaths?.length) {
       for (const p of imagePaths) {
@@ -2720,7 +2734,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       }
     }
 
-    const streamResult = await this.client.models.generateContentStream({
+    const streamResult = await activeClient.models.generateContentStream({
       model: model,
       contents: contents,
       config: {
