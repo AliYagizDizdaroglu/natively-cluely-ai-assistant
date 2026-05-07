@@ -2734,12 +2734,14 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       }
     }
 
+    const isGemma = model.startsWith("gemma-");
     const streamResult = await activeClient.models.generateContentStream({
       model: model,
       contents: contents,
       config: {
-        maxOutputTokens: MAX_OUTPUT_TOKENS,
+        maxOutputTokens: isGemma ? 2048 : MAX_OUTPUT_TOKENS,
         temperature: 0.4,
+        ...(isGemma ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
       }
     });
 
