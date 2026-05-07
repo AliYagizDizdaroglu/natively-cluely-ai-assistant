@@ -112,6 +112,9 @@ export class LLMHelper {
         httpOptions: { apiVersion: "v1alpha" }
       })
       // console.log(`[LLMHelper] Using Google Gemini 3 with model: ${this.geminiModel} (v1alpha API)`)
+      if (this.currentModelId?.startsWith('gemma-')) {
+        this.warmUpSafetyNet();
+      }
     } else {
       console.warn("[LLMHelper] No API key provided. Client will be uninitialized until key is set.")
     }
@@ -124,6 +127,9 @@ export class LLMHelper {
       httpOptions: { apiVersion: "v1alpha" }
     })
     console.log("[LLMHelper] Gemini API Key updated.");
+    if (this.currentModelId?.startsWith('gemma-')) {
+      this.warmUpSafetyNet();
+    }
   }
 
   public setGroqApiKey(apiKey: string) {
@@ -273,6 +279,9 @@ export class LLMHelper {
     if (targetModelId === GEMINI_FLASH_MODEL) this.geminiModel = GEMINI_FLASH_MODEL;
 
     console.log(`[LLMHelper] Switched to Cloud Model: ${targetModelId}`);
+    if (targetModelId.startsWith('gemma-')) {
+      this.warmUpSafetyNet();
+    }
   }
 
   public switchToCurl(provider: CurlProvider) {
@@ -339,6 +348,28 @@ export class LLMHelper {
     } catch {
       return false
     }
+  }
+
+  private warmUpSafetyNet(): void {
+    (async () => {
+      try {
+        const available = await this.checkOllamaAvailable();
+        if (!available) return;
+        const models = await this.getOllamaModels();
+        if (!models.includes('llama3.1:8b')) {
+          console.warn('[LLMHelper] llama3.1:8b not found in Ollama — safety net unavailable');
+          return;
+        }
+        await fetch(`${this.ollamaUrl}/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: 'llama3.1:8b', prompt: 'hi', stream: false }),
+        });
+        console.log('[LLMHelper] ✅ Safety net (llama3.1:8b) warmed up');
+      } catch (e: any) {
+        console.warn('[LLMHelper] Safety net warm-up skipped:', e.message);
+      }
+    })();
   }
 
   private async initializeOllamaModel(): Promise<void> {
