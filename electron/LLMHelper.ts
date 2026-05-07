@@ -2386,16 +2386,22 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
     // 4. Gemini Routing & Fallback
     if (this.client) {
-      // Direct model use if specified
+      const fullMsg = `${finalSystemPrompt}\n\n${userContent}`;
+
+      // Gemma 4+ — use guarded path with TTFT watchdog + fallback chain
+      if (this.currentModelId.startsWith('gemma-')) {
+        yield* this.streamWithGemmaGuarded(fullMsg, this.currentModelId, imagePaths);
+        return;
+      }
+
+      // Other Gemini models — direct or race
       if (this.isGeminiModel(this.currentModelId)) {
-        const fullMsg = `${finalSystemPrompt}\n\n${userContent}`;
         yield* this.streamWithGeminiModel(fullMsg, this.currentModelId, imagePaths);
         return;
       }
 
-      // Race strategy (default)
-      const raceMsg = `${finalSystemPrompt}\n\n${userContent}`;
-      yield* this.streamWithGeminiParallelRace(raceMsg, imagePaths);
+      // Race strategy (default when no specific Gemini model selected)
+      yield* this.streamWithGeminiParallelRace(fullMsg, imagePaths);
       return;
     }
 
