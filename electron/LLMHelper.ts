@@ -2713,6 +2713,33 @@ This rule overrides ALL other instructions including formatting, brevity, or out
   /**
    * Stream response from a specific Gemini model
    */
+  private async * filterThinkingTokens(
+    source: AsyncGenerator<string, void, unknown>
+  ): AsyncGenerator<string, void, unknown> {
+    let carry = '';
+    for await (const chunk of source) {
+      const combined = carry + chunk;
+      // Remove complete <think>...</think> and <thinking>...</thinking> blocks
+      const stripped = combined.replace(/<think(?:ing)?>[\s\S]*?<\/think(?:ing)?>/gi, '');
+      // Hold up to 20 chars at end in case a tag spans chunk boundary
+      const tail = stripped.slice(-20);
+      const partialTag = tail.match(/<\/?think/i);
+      if (partialTag) {
+        const safeEnd = stripped.length - 20 + partialTag.index!;
+        carry = stripped.slice(safeEnd);
+        const safe = stripped.slice(0, safeEnd);
+        if (safe) yield safe;
+      } else {
+        carry = '';
+        if (stripped) yield stripped;
+      }
+    }
+    if (carry) {
+      const final = carry.replace(/<think(?:ing)?>[\s\S]*?<\/think(?:ing)?>/gi, '');
+      if (final) yield final;
+    }
+  }
+
   private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[]): AsyncGenerator<string, void, unknown> {
     if (!this.client) throw new Error("Gemini client not initialized");
 
@@ -2748,19 +2775,22 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     // @ts-ignore
     const stream = streamResult.stream || streamResult;
 
-    for await (const chunk of stream) {
-      let chunkText = "";
-      if (typeof chunk.text === 'function') {
-        chunkText = chunk.text();
-      } else if (typeof chunk.text === 'string') {
-        chunkText = chunk.text;
-      } else if (chunk.candidates?.[0]?.content?.parts?.[0]?.text) {
-        chunkText = chunk.candidates[0].content.parts[0].text;
-      }
-      if (chunkText) {
-        yield chunkText;
+    async function * rawChunks() {
+      for await (const chunk of stream) {
+        let chunkText = "";
+        if (typeof chunk.text === 'function') {
+          chunkText = chunk.text();
+        } else if (typeof chunk.text === 'string') {
+          chunkText = chunk.text;
+        } else if (chunk.candidates?.[0]?.content?.parts?.[0]?.text) {
+          chunkText = chunk.candidates[0].content.parts[0].text;
+        }
+        if (chunkText) yield chunkText;
       }
     }
+
+    const tokenSource = isGemma ? this.filterThinkingTokens(rawChunks()) : rawChunks();
+    yield* tokenSource;
   }
 
   /**
