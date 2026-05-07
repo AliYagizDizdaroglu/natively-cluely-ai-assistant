@@ -2740,6 +2740,56 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     }
   }
 
+  private async * streamWithGemmaGuarded(
+    fullMsg: string,
+    gemmaModelId: string,
+    imagePaths?: string[],
+    ttftTimeoutMs = 8000
+  ): AsyncGenerator<string, void, unknown> {
+    // --- Tier 1: Gemma 4 with TTFT watchdog ---
+    const gemmaGen = this.streamWithGeminiModel(fullMsg, gemmaModelId, imagePaths);
+
+    let firstResult: IteratorResult<string, void> | undefined;
+    const timedOut = await Promise.race<boolean>([
+      gemmaGen.next().then(r => { firstResult = r; return false; }),
+      new Promise<boolean>(resolve => setTimeout(() => resolve(true), ttftTimeoutMs)),
+    ]);
+
+    if (!timedOut && firstResult) {
+      yield `__model_source:Gemma 4__`;
+      if (firstResult.value) yield firstResult.value;
+      if (!firstResult.done) yield* gemmaGen;
+      return;
+    }
+
+    // --- Tier 2: Gemini Flash ---
+    console.warn(`[LLMHelper] ⏱ Gemma TTFT timeout after ${ttftTimeoutMs}ms, falling back to Gemini Flash`);
+    try {
+      let flashFirst = true;
+      for await (const token of this.streamWithGeminiModel(fullMsg, GEMINI_FLASH_MODEL, imagePaths)) {
+        if (flashFirst) { yield `__model_source:Gemini Flash__`; flashFirst = false; }
+        yield token;
+      }
+      return;
+    } catch (flashErr: any) {
+      console.warn('[LLMHelper] Flash fallback failed:', flashErr.message);
+    }
+
+    // --- Tier 3: Ollama llama3.1:8b (local safety net) ---
+    console.warn('[LLMHelper] Falling back to Ollama llama3.1:8b');
+    const savedModel = this.ollamaModel;
+    this.ollamaModel = 'llama3.1:8b';
+    try {
+      let ollamaFirst = true;
+      for await (const token of this.streamWithOllama(fullMsg)) {
+        if (ollamaFirst) { yield `__model_source:Ollama llama3.1:8b__`; ollamaFirst = false; }
+        yield token;
+      }
+    } finally {
+      this.ollamaModel = savedModel;
+    }
+  }
+
   private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[]): AsyncGenerator<string, void, unknown> {
     if (!this.client) throw new Error("Gemini client not initialized");
 
