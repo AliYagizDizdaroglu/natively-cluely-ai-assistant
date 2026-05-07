@@ -13,6 +13,7 @@ interface Message {
     role: 'user' | 'assistant';
     content: string;
     isStreaming?: boolean;
+    model?: string;
 }
 
 interface GlobalChatOverlayProps {
@@ -62,7 +63,7 @@ const UserMessage: React.FC<{ content: string }> = ({ content }) => (
     </motion.div>
 );
 
-const AssistantMessage: React.FC<{ content: string; isStreaming?: boolean }> = ({ content, isStreaming }) => {
+const AssistantMessage: React.FC<{ content: string; isStreaming?: boolean; model?: string }> = ({ content, isStreaming, model }) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = async () => {
@@ -93,13 +94,20 @@ const AssistantMessage: React.FC<{ content: string; isStreaming?: boolean }> = (
                 )}
             </div>
             {!isStreaming && content && (
-                <button
-                    onClick={handleCopy}
-                    className="flex items-center gap-2 mt-3 text-[13px] text-text-tertiary hover:text-text-secondary transition-colors"
-                >
-                    {copied ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
-                    {copied ? 'Copied' : 'Copy message'}
-                </button>
+                <div className="flex items-center gap-4 mt-3">
+                    <button
+                        onClick={handleCopy}
+                        className="flex items-center gap-2 text-[13px] text-text-tertiary hover:text-text-secondary transition-colors"
+                    >
+                        {copied ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                        {copied ? 'Copied' : 'Copy message'}
+                    </button>
+                    {model && (
+                        <span className="text-[11px] text-text-tertiary opacity-50">
+                            answered by {model}
+                        </span>
+                    )}
+                </div>
             )}
         </motion.div>
     );
@@ -250,6 +258,12 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
 
                 // Setup fallback listeners (Standard Gemini)
                 streamBuffer.reset();
+                const assistantMsgId = assistantMessageId;
+                const oldSourceCleanup = window.electronAPI?.onGeminiStreamSource((modelLabel: string) => {
+                    setMessages(prev => prev.map(msg =>
+                        msg.id === assistantMsgId ? { ...msg, model: modelLabel } : msg
+                    ));
+                });
                 const oldTokenCleanup = window.electronAPI?.onGeminiStreamToken((token: string) => {
                     setChatState('streaming_response');
                     streamBuffer.appendToken(token, (content) => {
@@ -270,6 +284,7 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
                     ));
                     setChatState('idle');
                     streamBuffer.reset();
+                    oldSourceCleanup?.();
                     oldTokenCleanup?.();
                     oldDoneCleanup?.();
                     oldErrorCleanup?.();
@@ -281,6 +296,7 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
                     setErrorMessage("Couldn't get a response. Please check your settings.");
                     setChatState('error');
                     streamBuffer.reset();
+                    oldSourceCleanup?.();
                     oldTokenCleanup?.();
                     oldDoneCleanup?.();
                     oldErrorCleanup?.();
@@ -355,7 +371,7 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
                             {messages.map((msg) => (
                                 msg.role === 'user'
                                     ? <UserMessage key={msg.id} content={msg.content} />
-                                    : <AssistantMessage key={msg.id} content={msg.content} isStreaming={msg.isStreaming} />
+                                    : <AssistantMessage key={msg.id} content={msg.content} isStreaming={msg.isStreaming} model={msg.model} />
                             ))}
 
                             {chatState === 'waiting_for_llm' && <TypingIndicator />}
