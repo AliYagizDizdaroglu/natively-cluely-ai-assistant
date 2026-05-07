@@ -215,6 +215,7 @@ export interface ElectronAPI {
   onGeminiStreamToken: (callback: (token: string) => void) => () => void
   onGeminiStreamDone: (callback: () => void) => () => void
   onGeminiStreamError: (callback: (error: string) => void) => () => void;
+  onGeminiStreamSource: (callback: (model: string) => void) => () => void;
 
   // Model Management
   getDefaultModel: () => Promise<{ model: string }>;

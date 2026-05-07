@@ -491,10 +491,16 @@ export function initializeIpcHandlers(appState: AppState): void {
         const stream = llmHelper.streamChat(message, imagePaths, context, options?.skipSystemPrompt ? "" : undefined, options?.ignoreKnowledgeMode);
 
         for await (const token of stream) {
-          // Bail if a newer stream has taken over (user triggered a new request)
+          // Bail if a newer stream has taken over
           if (_chatStreamId !== myStreamId) {
             console.log(`[IPC] gemini-chat-stream ${myStreamId} superseded by ${_chatStreamId}, stopping.`);
             return null;
+          }
+          // Intercept model source sentinel — emit attribution event, don't pass to UI
+          if (token.startsWith('__model_source:') && token.endsWith('__')) {
+            const label = token.slice('__model_source:'.length, -2);
+            event.sender.send("gemini-stream-source", label);
+            continue;
           }
           event.sender.send("gemini-stream-token", token);
           try { PhoneMirrorService.getInstance().publishToken(String(myStreamId), token); } catch (_) { /* noop */ }
