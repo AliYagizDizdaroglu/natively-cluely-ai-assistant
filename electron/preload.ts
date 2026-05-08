@@ -217,6 +217,7 @@ interface ElectronAPI {
   // Ollama
   onOllamaPullProgress: (callback: (data: { status: string; percent: number }) => void) => () => void
   onOllamaPullComplete: (callback: () => void) => () => void
+  onOllamaWarmUpStatus: (callback: (data: { model: string; status: 'loading' | 'ready' | 'error' }) => void) => () => void
 
   // Theme API
   getThemeMode: () => Promise<{ mode: 'system' | 'light' | 'dark', resolved: 'light' | 'dark' }>
@@ -993,6 +994,14 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on('ollama:pull-complete', subscription)
     return () => {
       ipcRenderer.removeListener('ollama:pull-complete', subscription)
+    }
+  },
+
+  onOllamaWarmUpStatus: (callback: (data: { model: string; status: 'loading' | 'ready' | 'error' }) => void) => {
+    const subscription = (_: any, data: any) => callback(data)
+    ipcRenderer.on('ollama-warm-up-status', subscription)
+    return () => {
+      ipcRenderer.removeListener('ollama-warm-up-status', subscription)
     }
   },
 

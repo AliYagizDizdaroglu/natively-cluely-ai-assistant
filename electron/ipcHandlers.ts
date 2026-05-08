@@ -2025,7 +2025,7 @@ export function initializeIpcHandlers(appState: AppState): void {
     }
   });
 
-  safeHandle("set-model", async (_, modelId: string) => {
+  safeHandle("set-model", async (event, modelId: string) => {
     try {
       const llmHelper = appState.processingHelper.getLLMHelper();
       const { CredentialsManager } = require('./services/CredentialsManager');
@@ -2047,6 +2047,25 @@ export function initializeIpcHandlers(appState: AppState): void {
           win.webContents.send('model-changed', modelId);
         }
       });
+
+      // Warm up Ollama model immediately so it's GPU-resident before first question
+      if (modelId.startsWith('ollama-')) {
+        const ollamaModelName = modelId.replace('ollama-', '');
+        BrowserWindow.getAllWindows().forEach(win => {
+          if (!win.isDestroyed()) win.webContents.send('ollama-warm-up-status', { model: ollamaModelName, status: 'loading' });
+        });
+        llmHelper.warmUpOllamaModel(ollamaModelName)
+          .then(() => {
+            BrowserWindow.getAllWindows().forEach(win => {
+              if (!win.isDestroyed()) win.webContents.send('ollama-warm-up-status', { model: ollamaModelName, status: 'ready' });
+            });
+          })
+          .catch(() => {
+            BrowserWindow.getAllWindows().forEach(win => {
+              if (!win.isDestroyed()) win.webContents.send('ollama-warm-up-status', { model: ollamaModelName, status: 'error' });
+            });
+          });
+      }
 
       return { success: true };
     } catch (error: any) {

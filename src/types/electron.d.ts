@@ -260,6 +260,7 @@ export interface ElectronAPI {
 
   onOllamaPullProgress: (callback: (data: { status: string; percent: number }) => void) => () => void;
   onOllamaPullComplete: (callback: () => void) => () => void;
+  onOllamaWarmUpStatus: (callback: (data: { model: string; status: 'loading' | 'ready' | 'error' }) => void) => () => void;
 
   onMeetingsUpdated: (callback: () => void) => () => void
 

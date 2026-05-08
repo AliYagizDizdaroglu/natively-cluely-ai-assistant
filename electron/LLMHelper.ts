@@ -307,6 +307,18 @@ export class LLMHelper {
     console.log(`[LLMHelper] Unloaded Ollama model from GPU: ${modelName}`);
   }
 
+  public async warmUpOllamaModel(modelName: string): Promise<void> {
+    const response = await fetch(`${this.ollamaUrl}/api/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: modelName, prompt: '', stream: false, keep_alive: 300 }),
+    });
+    if (!response.ok) {
+      throw new Error(`Ollama warm-up failed with status ${response.status}`);
+    }
+    console.log(`[LLMHelper] ✅ Ollama model warmed up and ready: ${modelName}`);
+  }
+
   public switchToCurl(provider: CurlProvider) {
     this.useOllama = false;
     this.customProvider = null;
