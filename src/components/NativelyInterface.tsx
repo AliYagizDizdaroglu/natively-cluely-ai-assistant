@@ -191,6 +191,7 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
 
     // Model Selection State
     const [currentModel, setCurrentModel] = useState<string>('gemini-3-flash-preview');
+    const [ollamaWarmUpStatus, setOllamaWarmUpStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
 
     // Dynamic Action Button Mode (Recap vs Brainstorm)
     const [actionButtonMode, setActionButtonMode] = useState<'recap' | 'brainstorm'>('recap');
@@ -281,8 +282,12 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
         if (!window.electronAPI?.onModelChanged) return;
         const unsubscribe = window.electronAPI.onModelChanged((modelId: string) => {
             setCurrentModel(prev => prev === modelId ? prev : modelId);
+            if (!modelId.startsWith('ollama-')) setOllamaWarmUpStatus('idle');
         });
-        return () => unsubscribe();
+        const unsubscribeWarmUp = window.electronAPI?.onOllamaWarmUpStatus?.((data) => {
+            setOllamaWarmUpStatus(data.status);
+        });
+        return () => { unsubscribe(); unsubscribeWarmUp?.(); };
     }, []);
 
     // Global State Sync
@@ -2812,6 +2817,15 @@ Provide only the answer, nothing else.`;
                                                     return m;
                                                 })()}
                                             </span>
+                                            {currentModel.startsWith('ollama-') && ollamaWarmUpStatus === 'loading' && (
+                                                <span className="w-1.5 h-1.5 shrink-0 rounded-full bg-amber-400 animate-pulse" title="Loading model into GPU..." />
+                                            )}
+                                            {currentModel.startsWith('ollama-') && ollamaWarmUpStatus === 'ready' && (
+                                                <span className="w-1.5 h-1.5 shrink-0 rounded-full bg-emerald-400" title="Model ready" />
+                                            )}
+                                            {currentModel.startsWith('ollama-') && ollamaWarmUpStatus === 'error' && (
+                                                <span className="w-1.5 h-1.5 shrink-0 rounded-full bg-red-400" title="Failed to load model" />
+                                            )}
                                             <ChevronDown size={14} className="shrink-0 transition-transform" />
                                         </button>
 

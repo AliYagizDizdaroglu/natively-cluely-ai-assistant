@@ -49,7 +49,7 @@ export class LLMHelper {
   private openaiApiKey: string | null = null
   private claudeApiKey: string | null = null
   private useOllama: boolean = false
-  private ollamaModel: string = "llama3.2"
+  private ollamaModel: string = "gemma4:e4b"
   private ollamaUrl: string = "http://localhost:11434"
   private ollamaStartedByApp: boolean = false;
   private geminiModel: string = GEMINI_FLASH_MODEL
