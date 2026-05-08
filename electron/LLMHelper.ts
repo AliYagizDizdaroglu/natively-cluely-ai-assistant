@@ -2881,12 +2881,13 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     // Gemma models require v1beta; Gemini models use v1alpha
     const activeClient = model.startsWith("gemma-") ? (this.clientV1Beta ?? this.client) : this.client;
 
-    const contents: any[] = [{ text: fullMessage }];
+    // All parts must live inside a single Content object — flat top-level arrays drop images
+    const parts: any[] = [{ text: fullMessage }];
     if (imagePaths?.length) {
       for (const p of imagePaths) {
         if (fs.existsSync(p)) {
           const imageData = await fs.promises.readFile(p);
-          contents.push({
+          parts.push({
             inlineData: {
               mimeType: "image/png",
               data: imageData.toString("base64")
@@ -2895,6 +2896,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         }
       }
     }
+    const contents = [{ role: 'user', parts }];
 
     const isGemma = model.startsWith("gemma-");
     const streamResult = await activeClient.models.generateContentStream({
@@ -3003,30 +3005,45 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     }
 
     try {
-      const response = await fetch(`${this.ollamaUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: this.ollamaModel,
-          prompt: fullPrompt,
-          stream: true,
-          ...(images ? { images } : {}),
-          options: { temperature: 0.7 }
-        })
-      });
+      // Use /api/chat for vision (newer models require message-based format for images)
+      // Fall back to /api/generate for text-only
+      let response: Response;
+      if (images) {
+        response = await fetch(`${this.ollamaUrl}/api/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: this.ollamaModel,
+            messages: [{ role: 'user', content: fullPrompt, images }],
+            stream: true,
+            options: { temperature: 0.7 }
+          })
+        });
+      } else {
+        response = await fetch(`${this.ollamaUrl}/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: this.ollamaModel,
+            prompt: fullPrompt,
+            stream: true,
+            options: { temperature: 0.7 }
+          })
+        });
+      }
 
       if (!response.body) throw new Error("No response body from Ollama");
 
-      // iterate over the readable stream
       // @ts-ignore
       for await (const chunk of response.body) {
         const text = new TextDecoder().decode(chunk);
-        // Ollama sends JSON objects per line
         const lines = text.split('\n').filter(l => l.trim());
         for (const line of lines) {
           try {
             const json = JSON.parse(line);
-            if (json.response) yield json.response;
+            // /api/chat uses json.message.content; /api/generate uses json.response
+            const token = json.message?.content ?? json.response;
+            if (token) yield token;
             if (json.done) return;
           } catch (e) {
             // ignore partial json
