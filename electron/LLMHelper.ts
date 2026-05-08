@@ -2852,7 +2852,6 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       config: {
         maxOutputTokens: isGemma ? 2048 : MAX_OUTPUT_TOKENS,
         temperature: 0.4,
-        ...(isGemma ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
       }
     });
 
