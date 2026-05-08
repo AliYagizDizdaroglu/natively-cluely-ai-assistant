@@ -7,7 +7,7 @@ import sharp from "sharp"
 import { ModelVersionManager, ModelFamily, TextModelFamily } from './services/ModelVersionManager'
 import {
   HARD_SYSTEM_PROMPT, GROQ_SYSTEM_PROMPT, OPENAI_SYSTEM_PROMPT, CLAUDE_SYSTEM_PROMPT,
-  UNIVERSAL_SYSTEM_PROMPT, UNIVERSAL_ANSWER_PROMPT, UNIVERSAL_WHAT_TO_ANSWER_PROMPT,
+  UNIVERSAL_SYSTEM_PROMPT, OLLAMA_VISION_SYSTEM_PROMPT, UNIVERSAL_ANSWER_PROMPT, UNIVERSAL_WHAT_TO_ANSWER_PROMPT,
   UNIVERSAL_RECAP_PROMPT, UNIVERSAL_FOLLOWUP_PROMPT, UNIVERSAL_FOLLOW_UP_QUESTIONS_PROMPT, UNIVERSAL_ASSIST_PROMPT,
   CUSTOM_SYSTEM_PROMPT, CUSTOM_ANSWER_PROMPT, CUSTOM_WHAT_TO_ANSWER_PROMPT,
   CUSTOM_RECAP_PROMPT, CUSTOM_FOLLOWUP_PROMPT, CUSTOM_FOLLOW_UP_QUESTIONS_PROMPT, CUSTOM_ASSIST_PROMPT
@@ -2989,36 +2989,69 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       ? `SYSTEM: ${systemPrompt}\nCONTEXT: ${context}\nUSER: ${message}`
       : `SYSTEM: ${systemPrompt}\nUSER: ${message}`;
 
-    // Build optional images array — Ollama multimodal API accepts raw base64 strings (no data-URL prefix)
+    // Build optional images array — resize + lossless PNG so text stays crisp for the vision model
     let images: string[] | undefined;
     if (imagePaths?.length) {
       const encoded: string[] = [];
       for (const p of imagePaths) {
         try {
-          const data = await fs.promises.readFile(p);
-          encoded.push(data.toString("base64"));
+          const compressed = await sharp(p)
+            .resize(1920, 1920, { fit: 'inside', withoutEnlargement: true })
+            .png({ compressionLevel: 9 })
+            .toBuffer();
+          encoded.push(compressed.toString("base64"));
         } catch (e) {
-          console.warn("[LLMHelper] streamWithOllama: failed to read image, skipping:", p, e);
+          console.warn("[LLMHelper] streamWithOllama: compression failed, falling back to raw:", p, e);
+          try {
+            const data = await fs.promises.readFile(p);
+            encoded.push(data.toString("base64"));
+          } catch (e2) {
+            console.warn("[LLMHelper] streamWithOllama: failed to read image, skipping:", p, e2);
+          }
         }
       }
       if (encoded.length) images = encoded;
     }
 
     try {
-      // Use /api/chat for vision (newer models require message-based format for images)
-      // Fall back to /api/generate for text-only
       let response: Response;
-      response = await fetch(`${this.ollamaUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: this.ollamaModel,
-          prompt: fullPrompt,
-          stream: true,
-          ...(images ? { images } : {}),
-          options: { temperature: 0.7 }
-        })
-      });
+
+      if (images?.length) {
+        // Empirically: gemma4:e4b only sees images via /api/chat (NOT /api/generate, despite docs).
+        // But splitting system/user into separate role messages causes the small quantized model
+        // to lose focus during vision. Fix: use /api/chat for visibility, single user message
+        // with everything folded in — avoids role-based attention splitting.
+        const visionSystemPrompt = (systemPrompt === UNIVERSAL_SYSTEM_PROMPT)
+          ? OLLAMA_VISION_SYSTEM_PROMPT
+          : systemPrompt;
+
+        const unifiedContent = `${visionSystemPrompt}\n\n---\n\nUser request: ${message}${context ? `\n\nCONTEXT:\n${context}` : ''}\n\nTask: Read the screenshot carefully — including any comments, TODOs, or partial code. If a comment like "# implement and lru cache" or any task hint is visible, that IS the problem to solve. Write the complete working solution now. Do not ask for clarification. Do not describe the UI.`;
+
+        response = await fetch(`${this.ollamaUrl}/api/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: this.ollamaModel,
+            messages: [
+              { role: 'user', content: unifiedContent, images }
+            ],
+            stream: true,
+            options: { temperature: 0.2 }
+          })
+        });
+      } else {
+        // Text-only: use /api/generate (faster, works for all models)
+        response = await fetch(`${this.ollamaUrl}/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: this.ollamaModel,
+            prompt: fullPrompt,
+            stream: true,
+            options: { temperature: 0.7 }
+          })
+        });
+      }
 
       if (!response.body) throw new Error("No response body from Ollama");
 
@@ -3029,7 +3062,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         for (const line of lines) {
           try {
             const json = JSON.parse(line);
-            const token = json.response;
+            // /api/generate returns json.response; /api/chat returns json.message?.content
+            const token = json.response ?? json.message?.content;
             if (token) yield token;
             if (json.done) return;
           } catch (e) {
