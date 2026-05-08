@@ -2784,10 +2784,17 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     const gemmaGen = this.streamWithGeminiModel(fullMsg, gemmaModelId, imagePaths);
 
     let firstResult: IteratorResult<string, void> | undefined;
+    let gemmaErr: Error | undefined;
     const timedOut = await Promise.race<boolean>([
-      gemmaGen.next().then(r => { firstResult = r; return false; }),
+      gemmaGen.next()
+        .then(r => { firstResult = r; return false; })
+        .catch(err => { gemmaErr = err; return true; }),
       new Promise<boolean>(resolve => setTimeout(() => resolve(true), ttftTimeoutMs)),
     ]);
+
+    if (gemmaErr) {
+      console.warn('[LLMHelper] Gemma API error, falling back:', gemmaErr.message);
+    }
 
     if (!timedOut && firstResult) {
       yield `__model_source:Gemma 4__`;
