@@ -260,8 +260,12 @@ export class LLMHelper {
     if (modelId === 'llama') targetModelId = GROQ_MODEL;
 
     if (targetModelId.startsWith('ollama-')) {
+      const newModel = targetModelId.replace('ollama-', '');
+      if (this.useOllama && this.ollamaModel && this.ollamaModel !== newModel) {
+        this.unloadOllamaModel(this.ollamaModel);
+      }
       this.useOllama = true;
-      this.ollamaModel = targetModelId.replace('ollama-', '');
+      this.ollamaModel = newModel;
       this.customProvider = null;
       this.activeCurlProvider = null;
       console.log(`[LLMHelper] Switched to Ollama: ${this.ollamaModel}`);
@@ -270,6 +274,7 @@ export class LLMHelper {
 
     const custom = customProviders.find(p => p.id === targetModelId);
     if (custom) {
+      if (this.useOllama && this.ollamaModel) this.unloadOllamaModel(this.ollamaModel);
       this.useOllama = false;
       this.customProvider = custom;
       this.activeCurlProvider = null;
@@ -278,6 +283,7 @@ export class LLMHelper {
     }
 
     // Standard Cloud Models
+    if (this.useOllama && this.ollamaModel) this.unloadOllamaModel(this.ollamaModel);
     this.useOllama = false;
     this.customProvider = null;
     this.currentModelId = targetModelId;
@@ -290,6 +296,15 @@ export class LLMHelper {
     if (targetModelId.startsWith('gemma-')) {
       this.warmUpSafetyNet();
     }
+  }
+
+  private unloadOllamaModel(modelName: string): void {
+    fetch(`${this.ollamaUrl}/api/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: modelName, keep_alive: 0 }),
+    }).catch(() => {}); // fire-and-forget; ignore errors
+    console.log(`[LLMHelper] Unloaded Ollama model from GPU: ${modelName}`);
   }
 
   public switchToCurl(provider: CurlProvider) {
