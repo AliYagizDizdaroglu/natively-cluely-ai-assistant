@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { Check, Loader2 } from 'lucide-react';
+import { Check, Loader2, Wifi, WifiOff } from 'lucide-react';
 import { STANDARD_CLOUD_MODELS, prettifyModelId } from '../utils/modelUtils';
 import { useResolvedTheme } from '../hooks/useResolvedTheme';
 
@@ -23,6 +23,8 @@ const ModelSelectorWindow = () => {
         } catch { return []; }
     });
     const [isLoading, setIsLoading] = useState<boolean>(() => availableModels.length === 0);
+    const [warmUpStatus, setWarmUpStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
+    const [warmUpModel, setWarmUpModel] = useState<string | null>(null);
 
 
 
@@ -89,6 +91,23 @@ const ModelSelectorWindow = () => {
                     }
                 }
 
+                // Dynamically fetch Gemma models from the real Gemini API
+                if (creds?.hasGeminiKey) {
+                    try {
+                        const result = await window.electronAPI?.fetchProviderModels?.('gemini');
+                        if (result?.success && result.models) {
+                            const gemmaModels = result.models.filter(m => m.id.startsWith('gemma-'));
+                            gemmaModels.forEach(m => {
+                                if (!models.some(existing => existing.id === m.id)) {
+                                    models.push({ id: m.id, name: m.label, type: 'cloud', provider: 'gemini' });
+                                }
+                            });
+                        }
+                    } catch (e) {
+                        console.warn('Failed to fetch Gemma models dynamically:', e);
+                    }
+                }
+
                 // Custom Providers
                 customProviders.forEach((p: any) => {
                     models.push({ id: p.id, name: p.name, type: 'custom' });
@@ -119,12 +138,24 @@ const ModelSelectorWindow = () => {
         loadModels();
         window.addEventListener('focus', loadModels);
 
-        // Listen for changes
+        // Listen for model changes
         const unsubscribe = window.electronAPI?.onModelChanged?.((modelId: string) => {
             setCurrentModel(modelId);
+            if (!modelId.startsWith('ollama-')) {
+                setWarmUpStatus('idle');
+                setWarmUpModel(null);
+            }
         });
+
+        // Listen for Ollama warm-up status
+        const unsubscribeWarmUp = window.electronAPI?.onOllamaWarmUpStatus?.((data) => {
+            setWarmUpModel(data.model);
+            setWarmUpStatus(data.status);
+        });
+
         return () => {
             unsubscribe?.();
+            unsubscribeWarmUp?.();
             window.removeEventListener('focus', loadModels);
         };
     }, []);
@@ -132,7 +163,15 @@ const ModelSelectorWindow = () => {
     const handleSelectFn = (modelId: string) => {
         setCurrentModel(modelId);
         localStorage.setItem('cached-current-model', modelId);
-        
+
+        if (modelId.startsWith('ollama-')) {
+            setWarmUpStatus('loading');
+            setWarmUpModel(modelId.replace('ollama-', ''));
+        } else {
+            setWarmUpStatus('idle');
+            setWarmUpModel(null);
+        }
+
         window.electronAPI?.setModel(modelId)
             .catch((err: any) => console.error("Failed to set model:", err));
     };
@@ -172,7 +211,16 @@ const ModelSelectorWindow = () => {
                                         `}
                                     >
                                         <span className="text-[12px] font-medium truncate flex-1 min-w-0">{model.name}</span>
-                                        {isSelected && <Check className={`w-3.5 h-3.5 shrink-0 ml-2 ${isLight ? 'text-emerald-600' : 'text-emerald-400'}`} />}
+                                        {isSelected && model.type === 'ollama' && warmUpModel === model.id.replace('ollama-', '') && (
+                                            warmUpStatus === 'loading'
+                                                ? <Loader2 className="w-3 h-3 shrink-0 ml-1.5 animate-spin text-amber-400" />
+                                                : warmUpStatus === 'ready'
+                                                    ? <span className="w-2 h-2 shrink-0 ml-1.5 rounded-full bg-emerald-400" title="Model loaded and ready" />
+                                                    : warmUpStatus === 'error'
+                                                        ? <span className="w-2 h-2 shrink-0 ml-1.5 rounded-full bg-red-400" title="Failed to load model" />
+                                                        : null
+                                        )}
+                                        {isSelected && <Check className={`w-3.5 h-3.5 shrink-0 ml-1 ${isLight ? 'text-emerald-600' : 'text-emerald-400'}`} />}
                                     </button>
                                 );
                             })

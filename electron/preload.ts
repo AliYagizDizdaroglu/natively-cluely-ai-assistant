@@ -56,6 +56,7 @@ interface ElectronAPI {
   switchToOllama: (model?: string, url?: string) => Promise<{ success: boolean; error?: string }>
   switchToGemini: (apiKey?: string, modelId?: string) => Promise<{ success: boolean; error?: string }>
   testLlmConnection: (provider: 'gemini' | 'groq' | 'openai' | 'claude', apiKey?: string) => Promise<{ success: boolean; error?: string }>
+  fetchProviderModels: (provider: 'gemini' | 'groq' | 'openai' | 'claude', apiKey?: string) => Promise<{ success: boolean; models?: { id: string; label: string }[]; error?: string }>
   selectServiceAccount: () => Promise<{ success: boolean; path?: string; cancelled?: boolean; error?: string }>
 
   // API Key Management
@@ -206,6 +207,7 @@ interface ElectronAPI {
   onGeminiStreamToken: (callback: (token: string) => void) => () => void
   onGeminiStreamDone: (callback: () => void) => () => void
   onGeminiStreamError: (callback: (error: string) => void) => () => void
+  onGeminiStreamSource: (callback: (model: string) => void) => () => void
 
 
   onUndetectableChanged: (callback: (state: boolean) => void) => () => void
@@ -215,6 +217,7 @@ interface ElectronAPI {
   // Ollama
   onOllamaPullProgress: (callback: (data: { status: string; percent: number }) => void) => () => void
   onOllamaPullComplete: (callback: () => void) => () => void
+  onOllamaWarmUpStatus: (callback: (data: { model: string; status: 'loading' | 'ready' | 'error' }) => void) => () => void
 
   // Theme API
   getThemeMode: () => Promise<{ mode: 'system' | 'light' | 'dark', resolved: 'light' | 'dark' }>
@@ -564,6 +567,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   switchToOllama: (model?: string, url?: string) => ipcRenderer.invoke("switch-to-ollama", model, url),
   switchToGemini: (apiKey?: string, modelId?: string) => ipcRenderer.invoke("switch-to-gemini", apiKey, modelId),
   testLlmConnection: (provider: 'gemini' | 'groq' | 'openai' | 'claude', apiKey: string) => ipcRenderer.invoke("test-llm-connection", provider, apiKey),
+  fetchProviderModels: (provider: 'gemini' | 'groq' | 'openai' | 'claude', apiKey?: string) => ipcRenderer.invoke("fetch-provider-models", provider, apiKey),
   selectServiceAccount: () => ipcRenderer.invoke("select-service-account"),
 
   // API Key Management
@@ -895,6 +899,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
     }
   },
 
+  onGeminiStreamSource: (callback: (model: string) => void) => {
+    const subscription = (_: any, model: string) => callback(model)
+    ipcRenderer.on("gemini-stream-source", subscription)
+    return () => ipcRenderer.removeListener("gemini-stream-source", subscription)
+  },
+
   // Model Management
   getDefaultModel: () => ipcRenderer.invoke('get-default-model'),
   setModel: (modelId: string) => ipcRenderer.invoke('set-model', modelId),
@@ -984,6 +994,14 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on('ollama:pull-complete', subscription)
     return () => {
       ipcRenderer.removeListener('ollama:pull-complete', subscription)
+    }
+  },
+
+  onOllamaWarmUpStatus: (callback: (data: { model: string; status: 'loading' | 'ready' | 'error' }) => void) => {
+    const subscription = (_: any, data: any) => callback(data)
+    ipcRenderer.on('ollama-warm-up-status', subscription)
+    return () => {
+      ipcRenderer.removeListener('ollama-warm-up-status', subscription)
     }
   },
 

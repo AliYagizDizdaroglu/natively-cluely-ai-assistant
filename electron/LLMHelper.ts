@@ -7,7 +7,7 @@ import sharp from "sharp"
 import { ModelVersionManager, ModelFamily, TextModelFamily } from './services/ModelVersionManager'
 import {
   HARD_SYSTEM_PROMPT, GROQ_SYSTEM_PROMPT, OPENAI_SYSTEM_PROMPT, CLAUDE_SYSTEM_PROMPT,
-  UNIVERSAL_SYSTEM_PROMPT, UNIVERSAL_ANSWER_PROMPT, UNIVERSAL_WHAT_TO_ANSWER_PROMPT,
+  UNIVERSAL_SYSTEM_PROMPT, OLLAMA_VISION_SYSTEM_PROMPT, UNIVERSAL_ANSWER_PROMPT, UNIVERSAL_WHAT_TO_ANSWER_PROMPT,
   UNIVERSAL_RECAP_PROMPT, UNIVERSAL_FOLLOWUP_PROMPT, UNIVERSAL_FOLLOW_UP_QUESTIONS_PROMPT, UNIVERSAL_ASSIST_PROMPT,
   CUSTOM_SYSTEM_PROMPT, CUSTOM_ANSWER_PROMPT, CUSTOM_WHAT_TO_ANSWER_PROMPT,
   CUSTOM_RECAP_PROMPT, CUSTOM_FOLLOWUP_PROMPT, CUSTOM_FOLLOW_UP_QUESTIONS_PROMPT, CUSTOM_ASSIST_PROMPT
@@ -43,12 +43,13 @@ export class LLMHelper {
   private groqClient: Groq | null = null
   private openaiClient: OpenAI | null = null
   private claudeClient: Anthropic | null = null
+  private clientV1Beta: GoogleGenAI | null = null
   private apiKey: string | null = null
   private groqApiKey: string | null = null
   private openaiApiKey: string | null = null
   private claudeApiKey: string | null = null
   private useOllama: boolean = false
-  private ollamaModel: string = "llama3.2"
+  private ollamaModel: string = "gemma4:e4b"
   private ollamaUrl: string = "http://localhost:11434"
   private ollamaStartedByApp: boolean = false;
   private geminiModel: string = GEMINI_FLASH_MODEL
@@ -111,6 +112,10 @@ export class LLMHelper {
         apiKey: apiKey,
         httpOptions: { apiVersion: "v1alpha" }
       })
+      this.clientV1Beta = new GoogleGenAI({
+        apiKey: apiKey,
+        httpOptions: { apiVersion: "v1beta" }
+      })
       // console.log(`[LLMHelper] Using Google Gemini 3 with model: ${this.geminiModel} (v1alpha API)`)
       if (this.currentModelId?.startsWith('gemma-')) {
         this.warmUpSafetyNet();
@@ -125,6 +130,10 @@ export class LLMHelper {
     this.client = new GoogleGenAI({
       apiKey: apiKey,
       httpOptions: { apiVersion: "v1alpha" }
+    })
+    this.clientV1Beta = new GoogleGenAI({
+      apiKey: apiKey,
+      httpOptions: { apiVersion: "v1beta" }
     })
     console.log("[LLMHelper] Gemini API Key updated.");
     if (this.currentModelId?.startsWith('gemma-')) {
@@ -233,11 +242,13 @@ export class LLMHelper {
   }
 
   private isGroqModel(modelId: string): boolean {
+    // gemma-4+ is served by the Gemini API, not Groq
+    if (/^gemma-[4-9]/.test(modelId)) return false;
     return modelId.startsWith("llama-") || modelId.startsWith("mixtral-") || modelId.startsWith("gemma-") || modelId.startsWith("meta-llama/") || modelId.startsWith("qwen/") || modelId.startsWith("qwen-");
   }
 
   private isGeminiModel(modelId: string): boolean {
-    return modelId.startsWith("gemini-") || modelId.startsWith("models/");
+    return modelId.startsWith("gemini-") || modelId.startsWith("gemma-") || modelId.startsWith("models/");
   }
   // ---------------------------
 
@@ -252,8 +263,12 @@ export class LLMHelper {
     if (modelId === 'llama') targetModelId = GROQ_MODEL;
 
     if (targetModelId.startsWith('ollama-')) {
+      const newModel = targetModelId.replace('ollama-', '');
+      if (this.useOllama && this.ollamaModel && this.ollamaModel !== newModel) {
+        this.unloadOllamaModel(this.ollamaModel);
+      }
       this.useOllama = true;
-      this.ollamaModel = targetModelId.replace('ollama-', '');
+      this.ollamaModel = newModel;
       this.customProvider = null;
       this.activeCurlProvider = null;
       console.log(`[LLMHelper] Switched to Ollama: ${this.ollamaModel}`);
@@ -262,6 +277,7 @@ export class LLMHelper {
 
     const custom = customProviders.find(p => p.id === targetModelId);
     if (custom) {
+      if (this.useOllama && this.ollamaModel) this.unloadOllamaModel(this.ollamaModel);
       this.useOllama = false;
       this.customProvider = custom;
       this.activeCurlProvider = null;
@@ -270,6 +286,7 @@ export class LLMHelper {
     }
 
     // Standard Cloud Models
+    if (this.useOllama && this.ollamaModel) this.unloadOllamaModel(this.ollamaModel);
     this.useOllama = false;
     this.customProvider = null;
     this.currentModelId = targetModelId;
@@ -282,6 +299,44 @@ export class LLMHelper {
     if (targetModelId.startsWith('gemma-')) {
       this.warmUpSafetyNet();
     }
+  }
+
+  private unloadOllamaModel(modelName: string): void {
+    fetch(`${this.ollamaUrl}/api/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: modelName, keep_alive: 0 }),
+    }).catch(() => {}); // fire-and-forget; ignore errors
+    console.log(`[LLMHelper] Unloaded Ollama model from GPU: ${modelName}`);
+  }
+
+  public async warmUpOllamaModel(modelName: string): Promise<void> {
+    // Kick off the load — fire-and-forget, Ollama's HTTP response arrives late
+    fetch(`${this.ollamaUrl}/api/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: modelName, keep_alive: 300 }),
+    }).catch(() => {});
+
+    // Poll /api/ps until the model appears — this matches what `ollama ps` shows
+    const deadline = Date.now() + 120_000;
+    while (Date.now() < deadline) {
+      await new Promise(resolve => setTimeout(resolve, 600));
+      try {
+        const resp = await fetch(`${this.ollamaUrl}/api/ps`);
+        if (resp.ok) {
+          const data = await resp.json();
+          const loaded = (data.models ?? []).some(
+            (m: any) => m.name === modelName || m.model === modelName || (m.name ?? '').startsWith(modelName)
+          );
+          if (loaded) {
+            console.log(`[LLMHelper] ✅ Ollama model GPU-resident: ${modelName}`);
+            return;
+          }
+        }
+      } catch {}
+    }
+    throw new Error(`Ollama model ${modelName} did not load within 120s`);
   }
 
   public switchToCurl(provider: CurlProvider) {
@@ -2406,16 +2461,22 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
     // 4. Gemini Routing & Fallback
     if (this.client) {
-      // Direct model use if specified
+      const fullMsg = `${finalSystemPrompt}\n\n${userContent}`;
+
+      // Gemma 4+ — use guarded path with TTFT watchdog + fallback chain
+      if (this.currentModelId.startsWith('gemma-')) {
+        yield* this.streamWithGemmaGuarded(fullMsg, this.currentModelId, imagePaths);
+        return;
+      }
+
+      // Other Gemini models — direct or race
       if (this.isGeminiModel(this.currentModelId)) {
-        const fullMsg = `${finalSystemPrompt}\n\n${userContent}`;
         yield* this.streamWithGeminiModel(fullMsg, this.currentModelId, imagePaths);
         return;
       }
 
-      // Race strategy (default)
-      const raceMsg = `${finalSystemPrompt}\n\n${userContent}`;
-      yield* this.streamWithGeminiParallelRace(raceMsg, imagePaths);
+      // Race strategy (default when no specific Gemini model selected)
+      yield* this.streamWithGeminiParallelRace(fullMsg, imagePaths);
       return;
     }
 
@@ -2733,15 +2794,103 @@ This rule overrides ALL other instructions including formatting, brevity, or out
   /**
    * Stream response from a specific Gemini model
    */
+  private async * filterThinkingTokens(
+    source: AsyncGenerator<string, void, unknown>
+  ): AsyncGenerator<string, void, unknown> {
+    let carry = '';
+    for await (const chunk of source) {
+      const combined = carry + chunk;
+      // Remove complete <think>...</think> and <thinking>...</thinking> blocks
+      const stripped = combined.replace(/<think(?:ing)?>[\s\S]*?<\/think(?:ing)?>/gi, '');
+      // Hold up to 20 chars at end in case a tag spans chunk boundary
+      const tail = stripped.slice(-20);
+      const partialTag = tail.match(/<\/?think/i);
+      if (partialTag) {
+        const safeEnd = stripped.length - 20 + partialTag.index!;
+        carry = stripped.slice(safeEnd);
+        const safe = stripped.slice(0, safeEnd);
+        if (safe) yield safe;
+      } else {
+        carry = '';
+        if (stripped) yield stripped;
+      }
+    }
+    if (carry) {
+      const final = carry.replace(/<think(?:ing)?>[\s\S]*?<\/think(?:ing)?>/gi, '');
+      if (final) yield final;
+    }
+  }
+
+  private async * streamWithGemmaGuarded(
+    fullMsg: string,
+    gemmaModelId: string,
+    imagePaths?: string[],
+    ttftTimeoutMs = 8000
+  ): AsyncGenerator<string, void, unknown> {
+    // --- Tier 1: Gemma 4 with TTFT watchdog ---
+    const gemmaGen = this.streamWithGeminiModel(fullMsg, gemmaModelId, imagePaths);
+
+    let firstResult: IteratorResult<string, void> | undefined;
+    let gemmaErr: Error | undefined;
+    const timedOut = await Promise.race<boolean>([
+      gemmaGen.next()
+        .then(r => { firstResult = r; return false; })
+        .catch(err => { gemmaErr = err; return true; }),
+      new Promise<boolean>(resolve => setTimeout(() => resolve(true), ttftTimeoutMs)),
+    ]);
+
+    if (gemmaErr) {
+      console.warn('[LLMHelper] Gemma API error, falling back:', gemmaErr.message);
+    }
+
+    if (!timedOut && firstResult) {
+      yield `__model_source:Gemma 4__`;
+      if (firstResult.value) yield firstResult.value;
+      if (!firstResult.done) yield* gemmaGen;
+      return;
+    }
+
+    // --- Tier 2: Gemini Flash ---
+    console.warn(`[LLMHelper] ⏱ Gemma TTFT timeout after ${ttftTimeoutMs}ms, falling back to Gemini Flash`);
+    try {
+      let flashFirst = true;
+      for await (const token of this.streamWithGeminiModel(fullMsg, GEMINI_FLASH_MODEL, imagePaths)) {
+        if (flashFirst) { yield `__model_source:Gemini Flash__`; flashFirst = false; }
+        yield token;
+      }
+      return;
+    } catch (flashErr: any) {
+      console.warn('[LLMHelper] Flash fallback failed:', flashErr.message);
+    }
+
+    // --- Tier 3: Ollama llama3.1:8b (local safety net) ---
+    console.warn('[LLMHelper] Falling back to Ollama llama3.1:8b');
+    const savedModel = this.ollamaModel;
+    this.ollamaModel = 'llama3.1:8b';
+    try {
+      let ollamaFirst = true;
+      for await (const token of this.streamWithOllama(fullMsg)) {
+        if (ollamaFirst) { yield `__model_source:Ollama llama3.1:8b__`; ollamaFirst = false; }
+        yield token;
+      }
+    } finally {
+      this.ollamaModel = savedModel;
+    }
+  }
+
   private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[]): AsyncGenerator<string, void, unknown> {
     if (!this.client) throw new Error("Gemini client not initialized");
 
-    const contents: any[] = [{ text: fullMessage }];
+    // Gemma models require v1beta; Gemini models use v1alpha
+    const activeClient = model.startsWith("gemma-") ? (this.clientV1Beta ?? this.client) : this.client;
+
+    // All parts must live inside a single Content object — flat top-level arrays drop images
+    const parts: any[] = [{ text: fullMessage }];
     if (imagePaths?.length) {
       for (const p of imagePaths) {
         if (fs.existsSync(p)) {
           const imageData = await fs.promises.readFile(p);
-          contents.push({
+          parts.push({
             inlineData: {
               mimeType: "image/png",
               data: imageData.toString("base64")
@@ -2750,12 +2899,14 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         }
       }
     }
+    const contents = [{ role: 'user', parts }];
 
-    const streamResult = await this.client.models.generateContentStream({
+    const isGemma = model.startsWith("gemma-");
+    const streamResult = await activeClient.models.generateContentStream({
       model: model,
       contents: contents,
       config: {
-        maxOutputTokens: MAX_OUTPUT_TOKENS,
+        maxOutputTokens: isGemma ? 2048 : MAX_OUTPUT_TOKENS,
         temperature: 0.4,
       }
     });
@@ -2763,19 +2914,22 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     // @ts-ignore
     const stream = streamResult.stream || streamResult;
 
-    for await (const chunk of stream) {
-      let chunkText = "";
-      if (typeof chunk.text === 'function') {
-        chunkText = chunk.text();
-      } else if (typeof chunk.text === 'string') {
-        chunkText = chunk.text;
-      } else if (chunk.candidates?.[0]?.content?.parts?.[0]?.text) {
-        chunkText = chunk.candidates[0].content.parts[0].text;
-      }
-      if (chunkText) {
-        yield chunkText;
+    async function * rawChunks() {
+      for await (const chunk of stream) {
+        let chunkText = "";
+        if (typeof chunk.text === 'function') {
+          chunkText = chunk.text();
+        } else if (typeof chunk.text === 'string') {
+          chunkText = chunk.text;
+        } else if (chunk.candidates?.[0]?.content?.parts?.[0]?.text) {
+          chunkText = chunk.candidates[0].content.parts[0].text;
+        }
+        if (chunkText) yield chunkText;
       }
     }
+
+    const tokenSource = isGemma ? this.filterThinkingTokens(rawChunks()) : rawChunks();
+    yield* tokenSource;
   }
 
   /**
@@ -2838,46 +2992,82 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       ? `SYSTEM: ${systemPrompt}\nCONTEXT: ${context}\nUSER: ${message}`
       : `SYSTEM: ${systemPrompt}\nUSER: ${message}`;
 
-    // Build optional images array — Ollama multimodal API accepts raw base64 strings (no data-URL prefix)
+    // Build optional images array — resize + lossless PNG so text stays crisp for the vision model
     let images: string[] | undefined;
     if (imagePaths?.length) {
       const encoded: string[] = [];
       for (const p of imagePaths) {
         try {
-          const data = await fs.promises.readFile(p);
-          encoded.push(data.toString("base64"));
+          const compressed = await sharp(p)
+            .resize(1920, 1920, { fit: 'inside', withoutEnlargement: true })
+            .png({ compressionLevel: 9 })
+            .toBuffer();
+          encoded.push(compressed.toString("base64"));
         } catch (e) {
-          console.warn("[LLMHelper] streamWithOllama: failed to read image, skipping:", p, e);
+          console.warn("[LLMHelper] streamWithOllama: compression failed, falling back to raw:", p, e);
+          try {
+            const data = await fs.promises.readFile(p);
+            encoded.push(data.toString("base64"));
+          } catch (e2) {
+            console.warn("[LLMHelper] streamWithOllama: failed to read image, skipping:", p, e2);
+          }
         }
       }
       if (encoded.length) images = encoded;
     }
 
     try {
-      const response = await fetch(`${this.ollamaUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: this.ollamaModel,
-          prompt: fullPrompt,
-          stream: true,
-          ...(images ? { images } : {}),
-          options: { temperature: 0.7 }
-        })
-      });
+      let response: Response;
+
+      if (images?.length) {
+        // Empirically: gemma4:e4b only sees images via /api/chat (NOT /api/generate, despite docs).
+        // But splitting system/user into separate role messages causes the small quantized model
+        // to lose focus during vision. Fix: use /api/chat for visibility, single user message
+        // with everything folded in — avoids role-based attention splitting.
+        const visionSystemPrompt = (systemPrompt === UNIVERSAL_SYSTEM_PROMPT)
+          ? OLLAMA_VISION_SYSTEM_PROMPT
+          : systemPrompt;
+
+        const unifiedContent = `${visionSystemPrompt}\n\n---\n\nUser request: ${message}${context ? `\n\nCONTEXT:\n${context}` : ''}\n\nTask: Read the screenshot carefully — including any comments, TODOs, or partial code. If a comment like "# implement and lru cache" or any task hint is visible, that IS the problem to solve. Write the complete working solution now. Do not ask for clarification. Do not describe the UI.`;
+
+        response = await fetch(`${this.ollamaUrl}/api/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: this.ollamaModel,
+            messages: [
+              { role: 'user', content: unifiedContent, images }
+            ],
+            stream: true,
+            options: { temperature: 0.2 }
+          })
+        });
+      } else {
+        // Text-only: use /api/generate (faster, works for all models)
+        response = await fetch(`${this.ollamaUrl}/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: this.ollamaModel,
+            prompt: fullPrompt,
+            stream: true,
+            options: { temperature: 0.7 }
+          })
+        });
+      }
 
       if (!response.body) throw new Error("No response body from Ollama");
 
-      // iterate over the readable stream
       // @ts-ignore
       for await (const chunk of response.body) {
         const text = new TextDecoder().decode(chunk);
-        // Ollama sends JSON objects per line
         const lines = text.split('\n').filter(l => l.trim());
         for (const line of lines) {
           try {
             const json = JSON.parse(line);
-            if (json.response) yield json.response;
+            // /api/generate returns json.response; /api/chat returns json.message?.content
+            const token = json.response ?? json.message?.content;
+            if (token) yield token;
             if (json.done) return;
           } catch (e) {
             // ignore partial json

@@ -491,10 +491,16 @@ export function initializeIpcHandlers(appState: AppState): void {
         const stream = llmHelper.streamChat(message, imagePaths, context, options?.skipSystemPrompt ? "" : undefined, options?.ignoreKnowledgeMode);
 
         for await (const token of stream) {
-          // Bail if a newer stream has taken over (user triggered a new request)
+          // Bail if a newer stream has taken over
           if (_chatStreamId !== myStreamId) {
             console.log(`[IPC] gemini-chat-stream ${myStreamId} superseded by ${_chatStreamId}, stopping.`);
             return null;
+          }
+          // Intercept model source sentinel — emit attribution event, don't pass to UI
+          if (token.startsWith('__model_source:') && token.endsWith('__')) {
+            const label = token.slice('__model_source:'.length, -2);
+            event.sender.send("gemini-stream-source", label);
+            continue;
           }
           event.sender.send("gemini-stream-token", token);
           try { PhoneMirrorService.getInstance().publishToken(String(myStreamId), token); } catch (_) { /* noop */ }
@@ -1718,7 +1724,7 @@ export function initializeIpcHandlers(appState: AppState): void {
             ws.close();
             console.error('[IPC] Deepgram test failed: Connection timed out');
             resolve({ success: false, error: 'Connection timed out' });
-          }, 15000);
+          }, 30000);
 
           ws.on('open', () => {
             clearTimeout(timeout);
@@ -1859,7 +1865,7 @@ export function initializeIpcHandlers(appState: AppState): void {
           testWav,
           {
             headers: { 'Ocp-Apim-Subscription-Key': apiKey, 'Content-Type': 'audio/wav' },
-            timeout: 15000,
+            timeout: 30000,
           }
         );
       } else if (provider === 'ibmwatson') {
@@ -1873,7 +1879,7 @@ export function initializeIpcHandlers(appState: AppState): void {
               Authorization: `Basic ${Buffer.from(`apikey:${apiKey}`).toString('base64')}`,
               'Content-Type': 'audio/wav',
             },
-            timeout: 15000,
+            timeout: 30000,
           }
         );
       } else {
@@ -1904,7 +1910,7 @@ export function initializeIpcHandlers(appState: AppState): void {
             Authorization: `Bearer ${apiKey}`,
             ...form.getHeaders(),
           },
-          timeout: 15000,
+          timeout: 30000,
         });
       }
 
@@ -1943,7 +1949,7 @@ export function initializeIpcHandlers(appState: AppState): void {
           contents: [{ parts: [{ text: "Hello" }] }]
         }, {
           headers: { 'x-goog-api-key': apiKey },
-          timeout: 15000
+          timeout: 30000
         });
       } else if (provider === 'groq') {
         response = await axios.post('https://api.groq.com/openai/v1/chat/completions', {
@@ -1972,7 +1978,7 @@ export function initializeIpcHandlers(appState: AppState): void {
             'anthropic-version': '2023-06-01',
             'content-type': 'application/json'
           },
-          timeout: 15000
+          timeout: 30000
         });
       }
 
@@ -2019,7 +2025,7 @@ export function initializeIpcHandlers(appState: AppState): void {
     }
   });
 
-  safeHandle("set-model", async (_, modelId: string) => {
+  safeHandle("set-model", async (event, modelId: string) => {
     try {
       const llmHelper = appState.processingHelper.getLLMHelper();
       const { CredentialsManager } = require('./services/CredentialsManager');
@@ -2032,15 +2038,37 @@ export function initializeIpcHandlers(appState: AppState): void {
 
       llmHelper.setModel(modelId, allProviders);
 
+      // Persist so the selection survives restarts
+      cm.setDefaultModel(modelId);
+
       // Close the selector window if open
       appState.modelSelectorWindowHelper.hideWindow();
 
-      // Broadcast to all windows so NativelyInterface can update its selector (session-only update)
+      // Broadcast to all windows so NativelyInterface can update its selector
       BrowserWindow.getAllWindows().forEach(win => {
         if (!win.isDestroyed()) {
           win.webContents.send('model-changed', modelId);
         }
       });
+
+      // Warm up Ollama model immediately so it's GPU-resident before first question
+      if (modelId.startsWith('ollama-')) {
+        const ollamaModelName = modelId.replace('ollama-', '');
+        BrowserWindow.getAllWindows().forEach(win => {
+          if (!win.isDestroyed()) win.webContents.send('ollama-warm-up-status', { model: ollamaModelName, status: 'loading' });
+        });
+        llmHelper.warmUpOllamaModel(ollamaModelName)
+          .then(() => {
+            BrowserWindow.getAllWindows().forEach(win => {
+              if (!win.isDestroyed()) win.webContents.send('ollama-warm-up-status', { model: ollamaModelName, status: 'ready' });
+            });
+          })
+          .catch(() => {
+            BrowserWindow.getAllWindows().forEach(win => {
+              if (!win.isDestroyed()) win.webContents.send('ollama-warm-up-status', { model: ollamaModelName, status: 'error' });
+            });
+          });
+      }
 
       return { success: true };
     } catch (error: any) {

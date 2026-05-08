@@ -913,12 +913,46 @@ const SettingsOverlay: React.FC<SettingsOverlayProps> = ({ isOpen, onClose, init
     const handleSttKeySubmit = async (provider: 'groq' | 'openai' | 'deepgram' | 'elevenlabs' | 'azure' | 'ibmwatson' | 'soniox', key: string) => {
         if (!key.trim()) return;
 
-        // Auto-test before saving
         setSttSaving(true);
         setSttTestStatus('testing');
         setSttTestError('');
 
         try {
+            // Save the key first so it's always persisted regardless of test outcome
+            if (provider === 'groq') {
+                // @ts-ignore
+                await window.electronAPI?.setGroqSttApiKey?.(key.trim());
+                setHasStoredSttGroqKey(true);
+            } else if (provider === 'openai') {
+                // @ts-ignore
+                await window.electronAPI?.setOpenAiSttApiKey?.(key.trim());
+                setHasStoredSttOpenaiKey(true);
+            } else if (provider === 'elevenlabs') {
+                // @ts-ignore
+                await window.electronAPI?.setElevenLabsApiKey?.(key.trim());
+                setHasStoredElevenLabsKey(true);
+            } else if (provider === 'azure') {
+                // @ts-ignore
+                await window.electronAPI?.setAzureApiKey?.(key.trim());
+                setHasStoredAzureKey(true);
+            } else if (provider === 'ibmwatson') {
+                // @ts-ignore
+                await window.electronAPI?.setIbmWatsonApiKey?.(key.trim());
+                setHasStoredIbmWatsonKey(true);
+            } else if (provider === 'soniox') {
+                // @ts-ignore
+                await window.electronAPI?.setSonioxApiKey?.(key.trim());
+                setHasStoredSonioxKey(true);
+            } else {
+                // @ts-ignore
+                await window.electronAPI?.setDeepgramApiKey?.(key.trim());
+                setHasStoredDeepgramKey(true);
+            }
+
+            setSttSaved(true);
+            setTimeout(() => setSttSaved(false), 2000);
+
+            // Test connection after saving — result is informational only
             // @ts-ignore
             const testResult = await window.electronAPI?.testSttConnection?.(
                 provider,
@@ -926,53 +960,17 @@ const SettingsOverlay: React.FC<SettingsOverlayProps> = ({ isOpen, onClose, init
                 provider === 'azure' ? sttAzureRegion : undefined
             );
 
-            if (!testResult?.success) {
-                setSttTestStatus('error');
-                setSttTestError(testResult?.error || 'Validation failed. Key not saved.');
-                setSttSaving(false);
-                return; // Stop save
-            }
-
-            // If success, proceed to save
-            setSttTestStatus('success');
-            setTimeout(() => setSttTestStatus('idle'), 3000);
-
-            if (provider === 'groq') {
-                // @ts-ignore
-                await window.electronAPI?.setGroqSttApiKey?.(key.trim());
-            } else if (provider === 'openai') {
-                // @ts-ignore
-                await window.electronAPI?.setOpenAiSttApiKey?.(key.trim());
-            } else if (provider === 'elevenlabs') {
-                // @ts-ignore
-                await window.electronAPI?.setElevenLabsApiKey?.(key.trim());
-            } else if (provider === 'azure') {
-                // @ts-ignore
-                await window.electronAPI?.setAzureApiKey?.(key.trim());
-            } else if (provider === 'ibmwatson') {
-                // @ts-ignore
-                await window.electronAPI?.setIbmWatsonApiKey?.(key.trim());
-            } else if (provider === 'soniox') {
-                // @ts-ignore
-                await window.electronAPI?.setSonioxApiKey?.(key.trim());
+            if (testResult?.success) {
+                setSttTestStatus('success');
+                setTimeout(() => setSttTestStatus('idle'), 3000);
             } else {
-                // @ts-ignore
-                await window.electronAPI?.setDeepgramApiKey?.(key.trim());
+                setSttTestStatus('error');
+                setSttTestError(testResult?.error || 'Connection test failed, but key was saved.');
             }
-            if (provider === 'groq') setHasStoredSttGroqKey(true);
-            else if (provider === 'openai') setHasStoredSttOpenaiKey(true);
-            else if (provider === 'elevenlabs') setHasStoredElevenLabsKey(true);
-            else if (provider === 'azure') setHasStoredAzureKey(true);
-            else if (provider === 'ibmwatson') setHasStoredIbmWatsonKey(true);
-            else if (provider === 'soniox') setHasStoredSonioxKey(true);
-            else setHasStoredDeepgramKey(true);
-
-            setSttSaved(true);
-            setTimeout(() => setSttSaved(false), 2000);
         } catch (e: any) {
             console.error(`Failed to save ${provider} STT key:`, e);
             setSttTestStatus('error');
-            setSttTestError(e.message || 'Validation failed');
+            setSttTestError(e.message || 'Save failed');
         } finally {
             setSttSaving(false);
         }

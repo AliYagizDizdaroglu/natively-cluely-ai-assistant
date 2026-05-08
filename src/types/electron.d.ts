@@ -77,6 +77,7 @@ export interface ElectronAPI {
   switchToOllama: (model?: string, url?: string) => Promise<{ success: boolean; error?: string }>
   switchToGemini: (apiKey?: string, modelId?: string) => Promise<{ success: boolean; error?: string }>
   testLlmConnection: (provider: 'gemini' | 'groq' | 'openai' | 'claude', apiKey?: string) => Promise<{ success: boolean; error?: string }>
+  fetchProviderModels: (provider: 'gemini' | 'groq' | 'openai' | 'claude', apiKey?: string) => Promise<{ success: boolean; models?: { id: string; label: string }[]; error?: string }>
   selectServiceAccount: () => Promise<{ success: boolean; path?: string; cancelled?: boolean; error?: string }>
 
   // API Key Management
@@ -215,6 +216,7 @@ export interface ElectronAPI {
   onGeminiStreamToken: (callback: (token: string) => void) => () => void
   onGeminiStreamDone: (callback: () => void) => () => void
   onGeminiStreamError: (callback: (error: string) => void) => () => void;
+  onGeminiStreamSource: (callback: (model: string) => void) => () => void;
 
   // Model Management
   getDefaultModel: () => Promise<{ model: string }>;
@@ -258,6 +260,7 @@ export interface ElectronAPI {
 
   onOllamaPullProgress: (callback: (data: { status: string; percent: number }) => void) => () => void;
   onOllamaPullComplete: (callback: () => void) => () => void;
+  onOllamaWarmUpStatus: (callback: (data: { model: string; status: 'loading' | 'ready' | 'error' }) => void) => () => void;
 
   onMeetingsUpdated: (callback: () => void) => () => void
 

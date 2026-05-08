@@ -39,7 +39,7 @@ export async function fetchProviderModels(
 async function fetchOpenAIModels(apiKey: string): Promise<ProviderModel[]> {
     const response = await axios.get('https://api.openai.com/v1/models', {
         headers: { Authorization: `Bearer ${apiKey}` },
-        timeout: 15000,
+        timeout: 30000,
     });
 
     const models: any[] = response.data?.data || [];
@@ -66,7 +66,7 @@ async function fetchOpenAIModels(apiKey: string): Promise<ProviderModel[]> {
 async function fetchGroqModels(apiKey: string): Promise<ProviderModel[]> {
     const response = await axios.get('https://api.groq.com/openai/v1/models', {
         headers: { Authorization: `Bearer ${apiKey}` },
-        timeout: 15000,
+        timeout: 30000,
     });
 
     const models: any[] = response.data?.data || [];
@@ -95,7 +95,7 @@ async function fetchAnthropicModels(apiKey: string): Promise<ProviderModel[]> {
             'x-api-key': apiKey,
             'anthropic-version': '2023-06-01',
         },
-        timeout: 15000,
+        timeout: 30000,
     });
 
     const models: any[] = response.data?.data || [];
@@ -129,7 +129,7 @@ async function fetchGeminiModels(apiKey: string): Promise<ProviderModel[]> {
     const response = await axios.get(
         `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`,
         {
-            timeout: 15000,
+            timeout: 30000,
         }
     );
 
@@ -151,8 +151,8 @@ async function fetchGeminiModels(apiKey: string): Promise<ProviderModel[]> {
         // Must NOT match any exclude patterns
         if (excludePatterns.some(p => combined.includes(p))) return false;
 
-        // Match gemini-2.5, gemini-3, gemini-4, etc. (version 2.5 and above)
-        return /gemini-([3-9]|2\.5)/.test(combined);
+        // Match gemini-2.5+, gemini-3+, etc., and gemma-4+
+        return /gemini-([3-9]|2\.5)/.test(combined) || /gemma-[4-9]/.test(combined);
     });
 
     return filtered
