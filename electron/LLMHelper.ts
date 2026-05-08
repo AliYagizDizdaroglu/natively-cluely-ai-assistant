@@ -3009,12 +3009,17 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       // Fall back to /api/generate for text-only
       let response: Response;
       if (images) {
+        const userContent = context ? `${context}\n\n${message}` : message;
+        const chatMessages: any[] = [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userContent, images },
+        ];
         response = await fetch(`${this.ollamaUrl}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: this.ollamaModel,
-            messages: [{ role: 'user', content: fullPrompt, images }],
+            messages: chatMessages,
             stream: true,
             options: { temperature: 0.7 }
           })
