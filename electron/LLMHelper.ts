@@ -3008,36 +3008,17 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       // Use /api/chat for vision (newer models require message-based format for images)
       // Fall back to /api/generate for text-only
       let response: Response;
-      if (images) {
-        const baseContent = context ? `${context}\n\n${message}` : message;
-        // Small local models need an explicit task instruction alongside the image
-        const userContent = `You are an interview copilot. The user has shared a screenshot from their coding interview or coding session. Analyze the screenshot and help the user directly as the candidate — provide the code solution, explain the approach, or answer the question shown. Be concise and immediately useful.\n\n${baseContent}`;
-        const chatMessages: any[] = [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userContent, images },
-        ];
-        response = await fetch(`${this.ollamaUrl}/api/chat`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: this.ollamaModel,
-            messages: chatMessages,
-            stream: true,
-            options: { temperature: 0.7 }
-          })
-        });
-      } else {
-        response = await fetch(`${this.ollamaUrl}/api/generate`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: this.ollamaModel,
-            prompt: fullPrompt,
-            stream: true,
-            options: { temperature: 0.7 }
-          })
-        });
-      }
+      response = await fetch(`${this.ollamaUrl}/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: this.ollamaModel,
+          prompt: fullPrompt,
+          stream: true,
+          ...(images ? { images } : {}),
+          options: { temperature: 0.7 }
+        })
+      });
 
       if (!response.body) throw new Error("No response body from Ollama");
 
@@ -3048,8 +3029,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         for (const line of lines) {
           try {
             const json = JSON.parse(line);
-            // /api/chat uses json.message.content; /api/generate uses json.response
-            const token = json.message?.content ?? json.response;
+            const token = json.response;
             if (token) yield token;
             if (json.done) return;
           } catch (e) {
