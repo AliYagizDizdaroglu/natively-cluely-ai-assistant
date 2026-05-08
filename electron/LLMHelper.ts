@@ -308,10 +308,11 @@ export class LLMHelper {
   }
 
   public async warmUpOllamaModel(modelName: string): Promise<void> {
+    // Send model + keep_alive only — no prompt means Ollama loads into VRAM without running inference
     const response = await fetch(`${this.ollamaUrl}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: modelName, prompt: '', stream: false, keep_alive: 300 }),
+      body: JSON.stringify({ model: modelName, keep_alive: 300 }),
     });
     if (!response.ok) {
       throw new Error(`Ollama warm-up failed with status ${response.status}`);

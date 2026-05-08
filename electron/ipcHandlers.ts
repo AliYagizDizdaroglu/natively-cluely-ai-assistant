@@ -2038,10 +2038,13 @@ export function initializeIpcHandlers(appState: AppState): void {
 
       llmHelper.setModel(modelId, allProviders);
 
+      // Persist so the selection survives restarts
+      cm.setDefaultModel(modelId);
+
       // Close the selector window if open
       appState.modelSelectorWindowHelper.hideWindow();
 
-      // Broadcast to all windows so NativelyInterface can update its selector (session-only update)
+      // Broadcast to all windows so NativelyInterface can update its selector
       BrowserWindow.getAllWindows().forEach(win => {
         if (!win.isDestroyed()) {
           win.webContents.send('model-changed', modelId);
