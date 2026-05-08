@@ -3009,7 +3009,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       // Fall back to /api/generate for text-only
       let response: Response;
       if (images) {
-        const userContent = context ? `${context}\n\n${message}` : message;
+        const baseContent = context ? `${context}\n\n${message}` : message;
+        // Small local models need an explicit task instruction alongside the image
+        const userContent = `You are an interview copilot. The user has shared a screenshot from their coding interview or coding session. Analyze the screenshot and help the user directly as the candidate — provide the code solution, explain the approach, or answer the question shown. Be concise and immediately useful.\n\n${baseContent}`;
         const chatMessages: any[] = [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userContent, images },
