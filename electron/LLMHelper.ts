@@ -308,16 +308,32 @@ export class LLMHelper {
   }
 
   public async warmUpOllamaModel(modelName: string): Promise<void> {
-    // Send model + keep_alive only — no prompt means Ollama loads into VRAM without running inference
-    const response = await fetch(`${this.ollamaUrl}/api/generate`, {
+    // Kick off the load — fire-and-forget, Ollama's HTTP response arrives late
+    fetch(`${this.ollamaUrl}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: modelName, keep_alive: 300 }),
-    });
-    if (!response.ok) {
-      throw new Error(`Ollama warm-up failed with status ${response.status}`);
+    }).catch(() => {});
+
+    // Poll /api/ps until the model appears — this matches what `ollama ps` shows
+    const deadline = Date.now() + 120_000;
+    while (Date.now() < deadline) {
+      await new Promise(resolve => setTimeout(resolve, 600));
+      try {
+        const resp = await fetch(`${this.ollamaUrl}/api/ps`);
+        if (resp.ok) {
+          const data = await resp.json();
+          const loaded = (data.models ?? []).some(
+            (m: any) => m.name === modelName || m.model === modelName || (m.name ?? '').startsWith(modelName)
+          );
+          if (loaded) {
+            console.log(`[LLMHelper] ✅ Ollama model GPU-resident: ${modelName}`);
+            return;
+          }
+        }
+      } catch {}
     }
-    console.log(`[LLMHelper] ✅ Ollama model warmed up and ready: ${modelName}`);
+    throw new Error(`Ollama model ${modelName} did not load within 120s`);
   }
 
   public switchToCurl(provider: CurlProvider) {
