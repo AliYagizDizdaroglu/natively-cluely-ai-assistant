@@ -190,6 +190,36 @@ export class RAGManager {
     }
 
     /**
+     * Retrieve relevant context string for the current live meeting.
+     * Pure retrieval — no LLM call. Returns formatted chunk text or null.
+     *
+     * Returns null when:
+     *  - embedding pipeline not ready
+     *  - live indexer has no chunks yet (first 30s of meeting)
+     *  - no chunks are relevant to the query
+     */
+    async retrieveContextString(query: string): Promise<string | null> {
+        if (!this.embeddingPipeline.isReady()) return null;
+        if (!this.liveIndexer.hasIndexedChunks()) return null;
+
+        try {
+            const result = await this.retriever.retrieve(query, {
+                meetingId: 'live-meeting-current',
+            });
+            if (result.chunks.length === 0) return null;
+            return result.formattedContext;
+        } catch (err: any) {
+            const msg = err?.message ?? '';
+            if (msg.includes('NO_MEETING_EMBEDDINGS') || msg.includes('NO_RELEVANT_CONTEXT')) {
+                return null;
+            }
+            // Unexpected error — log and return null so caller is not disrupted
+            console.warn('[RAGManager] retrieveContextString failed:', msg);
+            return null;
+        }
+    }
+
+    /**
      * Query across all meetings (global search)
      */
     async *queryGlobal(
