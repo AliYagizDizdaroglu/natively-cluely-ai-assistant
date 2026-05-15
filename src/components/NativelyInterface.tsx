@@ -1454,106 +1454,6 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
             });
         }));
 
-        // JIT RAG Stream listeners (for live meeting RAG responses)
-        if (window.electronAPI.onRAGStreamChunk) {
-            cleanups.push(window.electronAPI.onRAGStreamChunk((data: { chunk: string }) => {
-                // Same guard as onGeminiStreamToken: suppress raw JSON if this chunk is
-                // the negotiation coaching sentinel. The onRAGStreamComplete handler will
-                // convert it to the proper card UI.
-                try {
-                    const parsed = JSON.parse(data.chunk);
-                    if (parsed?.__negotiationCoaching) {
-                        setMessages(prev => {
-                            const lastMsg = prev[prev.length - 1];
-                            if (lastMsg && lastMsg.isStreaming && lastMsg.role === 'system') {
-                                const updated = [...prev];
-                                updated[prev.length - 1] = { ...lastMsg, text: data.chunk };
-                                return updated;
-                            }
-                            return prev;
-                        });
-                        return; // Skip normal append
-                    }
-                } catch {
-                    // Normal text chunk — fall through.
-                }
-
-                sm.markFirstToken(data.chunk);
-                setMessages(prev => {
-                    const lastMsg = prev[prev.length - 1];
-                    if (lastMsg && lastMsg.isStreaming && lastMsg.role === 'system') {
-                        const newText = lastMsg.text + data.chunk;
-                        smAccumRef.current = newText;
-                        const updated = [...prev];
-                        updated[prev.length - 1] = {
-                            ...lastMsg,
-                            text: newText,
-                            isCode: newText.includes('```')
-                        };
-                        return updated;
-                    }
-                    return prev;
-                });
-            }));
-        }
-
-        if (window.electronAPI.onRAGStreamComplete) {
-            cleanups.push(window.electronAPI.onRAGStreamComplete(() => {
-                setIsProcessing(false);
-                requestStartTimeRef.current = null;
-                sm.markDone(smAccumRef.current);
-                streamingMsgIdRef.current = null;
-                smAccumRef.current = '';
-                setMessages(prev => {
-                    const lastMsg = prev[prev.length - 1];
-                    if (lastMsg && lastMsg.isStreaming && lastMsg.role === 'system') {
-                        // Detect negotiation coaching response
-                        try {
-                            const parsed = JSON.parse(lastMsg.text);
-                            if (parsed?.__negotiationCoaching) {
-                                const coaching = parsed.__negotiationCoaching;
-                                return [...prev.slice(0, -1), {
-                                    ...lastMsg,
-                                    isStreaming: false,
-                                    isNegotiationCoaching: true,
-                                    negotiationCoachingData: coaching,
-                                    text: '',
-                                }];
-                            }
-                        } catch { }
-                        // Normal completion
-                        return [...prev.slice(0, -1), { ...lastMsg, isStreaming: false }];
-                    }
-                    if (lastMsg && lastMsg.isStreaming) {
-                        const updated = [...prev];
-                        updated[prev.length - 1] = { ...lastMsg, isStreaming: false };
-                        return updated;
-                    }
-                    return prev;
-                });
-            }));
-        }
-
-        if (window.electronAPI.onRAGStreamError) {
-            cleanups.push(window.electronAPI.onRAGStreamError((data: { error: string }) => {
-                setIsProcessing(false);
-                requestStartTimeRef.current = null;
-                setMessages(prev => {
-                    const lastMsg = prev[prev.length - 1];
-                    if (lastMsg && lastMsg.isStreaming) {
-                        const updated = [...prev];
-                        updated[prev.length - 1] = {
-                            ...lastMsg,
-                            isStreaming: false,
-                            text: lastMsg.text + `\n\n[RAG Error: ${data.error}]`
-                        };
-                        return updated;
-                    }
-                    return prev;
-                });
-            }));
-        }
-
         return () => cleanups.forEach(fn => fn());
     }, [currentModel]); // Ensure tracking captures correct model
 
@@ -1743,19 +1643,6 @@ Provide only the answer, nothing else.`;
         setIsProcessing(true);
 
         try {
-            // JIT RAG pre-flight: only attempt when there's no active conversation.
-            // If conversationContext is non-empty the user is following up on a prior
-            // AI response (e.g. "solve it without OrderedDict") — RAG would search
-            // meeting transcripts and lose the coding thread. Send to LLM directly
-            // so conversationContext carries the prior code solution as context.
-            if (currentAttachments.length === 0 && !conversationContext.trim()) {
-                const ragResult = await window.electronAPI.ragQueryLive?.(userText || '');
-                if (ragResult?.success) {
-                    // JIT RAG handled it — response streamed via rag:stream-chunk events
-                    return;
-                }
-            }
-
             // Pass imagePath if attached, AND conversation context.
             // When a screenshot is sent with no text, default to a solve prompt
             // rather than "Analyze this screenshot" so the interview prompt has
