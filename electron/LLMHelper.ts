@@ -2322,9 +2322,13 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     const baseSystemPrompt = systemPromptOverride || HARD_SYSTEM_PROMPT;
     const finalSystemPrompt = this.injectLanguageInstruction(baseSystemPrompt);
 
-    // Helper to build combined user message
+    // Helper to build combined user message.
+    // When context was pre-structured by the IPC RAG enrichment (starts with
+    // "MEETING CONTEXT"), preserve its labels as-is. Otherwise wrap with CONTEXT:.
     const userContent = context
-      ? `CONTEXT:\n${context}\n\nUSER QUESTION:\n${message}`
+      ? context.trimStart().startsWith('MEETING CONTEXT')
+        ? `${context}\n\nUSER QUESTION:\n${message}`
+        : `CONTEXT:\n${context}\n\nUSER QUESTION:\n${message}`
       : message;
 
     // GROQ FAST TEXT OVERRIDE (Text-Only)
