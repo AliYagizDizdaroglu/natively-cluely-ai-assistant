@@ -10,7 +10,8 @@ import {
   UNIVERSAL_SYSTEM_PROMPT, OLLAMA_VISION_SYSTEM_PROMPT, UNIVERSAL_ANSWER_PROMPT, UNIVERSAL_WHAT_TO_ANSWER_PROMPT,
   UNIVERSAL_RECAP_PROMPT, UNIVERSAL_FOLLOWUP_PROMPT, UNIVERSAL_FOLLOW_UP_QUESTIONS_PROMPT, UNIVERSAL_ASSIST_PROMPT,
   CUSTOM_SYSTEM_PROMPT, CUSTOM_ANSWER_PROMPT, CUSTOM_WHAT_TO_ANSWER_PROMPT,
-  CUSTOM_RECAP_PROMPT, CUSTOM_FOLLOWUP_PROMPT, CUSTOM_FOLLOW_UP_QUESTIONS_PROMPT, CUSTOM_ASSIST_PROMPT
+  CUSTOM_RECAP_PROMPT, CUSTOM_FOLLOWUP_PROMPT, CUSTOM_FOLLOW_UP_QUESTIONS_PROMPT, CUSTOM_ASSIST_PROMPT,
+  INTERVIEW_COPILOT_PROMPT
 } from "./llm/prompts"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
 import curl2Json from "@bany/curl-to-json";
@@ -769,6 +770,27 @@ CRITICAL RULES:
         mimeType: "image/png",
         data: data.toString("base64")
       };
+    }
+  }
+
+  /**
+   * Lower-budget variant for the live streaming interview path.
+   * Tighter dimension (1280px) trims base64 payload + image-token prefill,
+   * shaving hundreds of ms off TTFT for screenshot turns. JPEG quality stays
+   * at 80% — enough to keep monospace code legible at typical capture density.
+   */
+  private async processImageForVision(path: string): Promise<{ mimeType: string, data: string }> {
+    try {
+      const imageBuffer = await fs.promises.readFile(path);
+      const processedBuffer = await sharp(imageBuffer)
+        .resize({ width: 1280, height: 1280, fit: 'inside', withoutEnlargement: true })
+        .jpeg({ quality: 80 })
+        .toBuffer();
+      return { mimeType: "image/jpeg", data: processedBuffer.toString("base64") };
+    } catch (error) {
+      console.error("[LLMHelper] processImageForVision failed, falling back to raw PNG:", error);
+      const data = await fs.promises.readFile(path);
+      return { mimeType: "image/png", data: data.toString("base64") };
     }
   }
 
@@ -2460,9 +2482,13 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     if (this.client) {
       const fullMsg = `${finalSystemPrompt}\n\n${userContent}`;
 
-      // Gemma 4+ — use guarded path with TTFT watchdog + fallback chain
+      // Gemma 4+ — use guarded path with TTFT watchdog + fallback chain.
+      // Send the minimal interview prompt as systemInstruction (cacheable, doesn't
+      // teach the model the forbidden-label vocabulary) and pass only the user
+      // content as the user message. Massive TTFT + quality win on Gemma 4.
       if (this.currentModelId.startsWith('gemma-')) {
-        yield* this.streamWithGemmaGuarded(fullMsg, this.currentModelId, imagePaths);
+        const interviewSystem = this.injectLanguageInstruction(INTERVIEW_COPILOT_PROMPT);
+        yield* this.streamWithGemmaGuarded(userContent, this.currentModelId, imagePaths, undefined, interviewSystem);
         return;
       }
 
@@ -2791,6 +2817,29 @@ This rule overrides ALL other instructions including formatting, brevity, or out
   /**
    * Stream response from a specific Gemini model
    */
+  /**
+   * Belt-and-braces filter for plain-text CoT leaks (no <think> tags).
+   * If a streamed line *starts* with a known meta-narration phrase, drop the
+   * whole line. Operates buffered-by-line so partial chunks don't false-flag.
+   * Gemma path only.
+   */
+  private async * filterPlainTextLeaks(
+    source: AsyncGenerator<string, void, unknown>
+  ): AsyncGenerator<string, void, unknown> {
+    const LEAK_PREFIXES = /^(Self-Correction|Wait, the instructions|Final Polish|Final Structure|Output Shape:|Constraint Checklist:|Self-Correction during drafting|Approach:|Draft:|Thinking:)/i;
+    let buf = '';
+    for await (const chunk of source) {
+      buf += chunk;
+      const lines = buf.split('\n');
+      buf = lines.pop() ?? ''; // last (possibly partial) line stays in buffer
+      for (const line of lines) {
+        if (LEAK_PREFIXES.test(line.trimStart())) continue; // drop
+        yield line + '\n';
+      }
+    }
+    if (buf && !LEAK_PREFIXES.test(buf.trimStart())) yield buf;
+  }
+
   private async * filterThinkingTokens(
     source: AsyncGenerator<string, void, unknown>
   ): AsyncGenerator<string, void, unknown> {
@@ -2822,10 +2871,11 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     fullMsg: string,
     gemmaModelId: string,
     imagePaths?: string[],
-    ttftTimeoutMs = 8000
+    ttftTimeoutMs = 3500,
+    systemInstruction?: string,
   ): AsyncGenerator<string, void, unknown> {
     // --- Tier 1: Gemma 4 with TTFT watchdog ---
-    const gemmaGen = this.streamWithGeminiModel(fullMsg, gemmaModelId, imagePaths);
+    const gemmaGen = this.streamWithGeminiModel(fullMsg, gemmaModelId, imagePaths, systemInstruction);
 
     let firstResult: IteratorResult<string, void> | undefined;
     let gemmaErr: Error | undefined;
@@ -2851,7 +2901,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     console.warn(`[LLMHelper] ⏱ Gemma TTFT timeout after ${ttftTimeoutMs}ms, falling back to Gemini Flash`);
     try {
       let flashFirst = true;
-      for await (const token of this.streamWithGeminiModel(fullMsg, GEMINI_FLASH_MODEL, imagePaths)) {
+      // Pass systemInstruction so Flash also uses the interview prompt when Gemma times out
+      for await (const token of this.streamWithGeminiModel(fullMsg, GEMINI_FLASH_MODEL, imagePaths, systemInstruction)) {
         if (flashFirst) { yield `__model_source:Gemini Flash__`; flashFirst = false; }
         yield token;
       }
@@ -2875,7 +2926,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     }
   }
 
-  private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[]): AsyncGenerator<string, void, unknown> {
+  private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[], systemInstruction?: string): AsyncGenerator<string, void, unknown> {
     if (!this.client) throw new Error("Gemini client not initialized");
 
     // Gemma models require v1beta; Gemini models use v1alpha
@@ -2886,26 +2937,29 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     if (imagePaths?.length) {
       for (const p of imagePaths) {
         if (fs.existsSync(p)) {
-          const imageData = await fs.promises.readFile(p);
-          parts.push({
-            inlineData: {
-              mimeType: "image/png",
-              data: imageData.toString("base64")
-            }
-          });
+          const { mimeType, data } = await this.processImageForVision(p);
+          parts.push({ inlineData: { mimeType, data } });
         }
       }
     }
     const contents = [{ role: 'user', parts }];
 
     const isGemma = model.startsWith("gemma-");
+    const gemmaConfig: Record<string, unknown> = isGemma ? {
+      maxOutputTokens: 2048,
+      temperature: 0.2,
+      topP: 0.9,
+      topK: 40,
+      thinkingConfig: { thinkingLevel: "MINIMAL" },
+    } : {
+      maxOutputTokens: MAX_OUTPUT_TOKENS,
+      temperature: 0.4,
+    };
+    if (systemInstruction) gemmaConfig.systemInstruction = systemInstruction;
     const streamResult = await activeClient.models.generateContentStream({
       model: model,
       contents: contents,
-      config: {
-        maxOutputTokens: isGemma ? 2048 : MAX_OUTPUT_TOKENS,
-        temperature: 0.4,
-      }
+      config: gemmaConfig as any,
     });
 
     // @ts-ignore
@@ -2925,7 +2979,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       }
     }
 
-    const tokenSource = isGemma ? this.filterThinkingTokens(rawChunks()) : rawChunks();
+    const tokenSource = isGemma
+      ? this.filterPlainTextLeaks(this.filterThinkingTokens(rawChunks()))
+      : rawChunks();
     yield* tokenSource;
   }
 

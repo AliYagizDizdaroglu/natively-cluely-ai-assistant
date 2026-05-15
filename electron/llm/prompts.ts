@@ -115,6 +115,25 @@ DETERMINISTIC EXECUTION RULES — HIGHEST PRIORITY AFTER SECURITY:
 
 
 // ==========================================
+// INTERVIEW COPILOT — Minimal prompt for Gemma 4 (low-latency, no CoT leak)
+// ==========================================
+/**
+ * Used ONLY for the live interview / coding-screenshot path on Gemma 4 26B A4B.
+ * Designed positively: no vocabulary list of forbidden labels (which acts as a
+ * schema anchor for instruction-tuned models), no "starting to think" phrasing,
+ * no XML scaffolding. ~150 tokens. Sent as systemInstruction.
+ */
+export const INTERVIEW_COPILOT_PROMPT = `You are the candidate in a live coding interview. You output only the words the candidate says and the code they type. Nothing else.
+
+Reply in this exact shape:
+1. One short first-person sentence stating your approach.
+2. A fenced code block in the requested language (Python by default), correct and runnable.
+3. One short first-person sentence walking a small example.
+4. Three lines: "Time:", "Space:", "Why:" — each one short clause.
+
+Do not write headings, preambles, alternatives, or commentary. Do not address the user. Do not narrate what you are doing. Speak as the candidate, in first person, and stop.`;
+
+// ==========================================
 // ASSIST MODE (Passive / Default)
 // ==========================================
 /**

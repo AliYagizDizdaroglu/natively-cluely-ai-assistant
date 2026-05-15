@@ -45,12 +45,15 @@ import { analytics, detectProviderType } from '../lib/analytics/analytics.servic
 import { useShortcuts } from '../hooks/useShortcuts';
 import { useResolvedTheme } from '../hooks/useResolvedTheme';
 import { getOverlayAppearance, OVERLAY_OPACITY_DEFAULT } from '../lib/overlayAppearance';
+import { useStreamMetrics, type StreamMetrics } from '../hooks/useStreamMetrics';
+import { MessageMetricsBar } from './MessageMetricsBar';
 
 interface Message {
     id: string;
     role: 'user' | 'system' | 'interviewer';
     text: string;
     isStreaming?: boolean;
+    metrics?: StreamMetrics;
     hasScreenshot?: boolean;
     screenshotPreview?: string;
     isCode?: boolean;
@@ -104,6 +107,11 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
     // Analytics State
     const requestStartTimeRef = useRef<number | null>(null);
 
+    // Streaming metrics
+    const sm = useStreamMetrics();
+    const streamingMsgIdRef = useRef<string | null>(null);
+    const smAccumRef = useRef<string>('');
+
     // Sync transcript setting
     useEffect(() => {
         const handleStorage = () => {
@@ -133,6 +141,15 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
         if (messages.length === 0) return;
         messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
     }, [messages, autoScroll]);
+
+    // Mirror live streaming metrics onto the in-flight system message
+    useEffect(() => {
+        const id = streamingMsgIdRef.current;
+        if (!id) return;
+        setMessages(prev => prev.map(msg =>
+            msg.id === id ? { ...msg, metrics: sm.metrics } : msg
+        ));
+    }, [sm.metrics]);
 
     const [rollingTranscript, setRollingTranscript] = useState('');  // For interviewer rolling text bar
     const [isInterviewerSpeaking, setIsInterviewerSpeaking] = useState(false);  // Track if actively speaking
@@ -1313,6 +1330,13 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
     useEffect(() => {
         const cleanups: (() => void)[] = [];
 
+        // Stream Source (model label for metrics)
+        if (window.electronAPI.onGeminiStreamSource) {
+            cleanups.push(window.electronAPI.onGeminiStreamSource((label: string) => {
+                sm.setSource(label);
+            }));
+        }
+
         // Stream Token
         cleanups.push(window.electronAPI.onGeminiStreamToken((token) => {
             // Guard: if this token is the negotiation coaching JSON sentinel, accumulate it
@@ -1339,15 +1363,18 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                 // Not JSON — normal text token, fall through to the standard append.
             }
 
+            sm.markFirstToken(token);
             setMessages(prev => {
                 const lastMsg = prev[prev.length - 1];
                 if (lastMsg && lastMsg.isStreaming && lastMsg.role === 'system') {
+                    const newText = lastMsg.text + token;
+                    smAccumRef.current = newText;
                     const updated = [...prev];
                     updated[prev.length - 1] = {
                         ...lastMsg,
-                        text: lastMsg.text + token,
+                        text: newText,
                         // re-check code status on every token? Expensive but needed for progressive highlighting
-                        isCode: (lastMsg.text + token).includes('```') || (lastMsg.text + token).includes('def ') || (lastMsg.text + token).includes('function ')
+                        isCode: newText.includes('```') || newText.includes('def ') || newText.includes('function ')
                     };
                     return updated;
                 }
@@ -1358,6 +1385,9 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
         // Stream Done
         cleanups.push(window.electronAPI.onGeminiStreamDone(() => {
             setIsProcessing(false);
+            sm.markDone(smAccumRef.current);
+            streamingMsgIdRef.current = null;
+            smAccumRef.current = '';
 
             // Calculate latency if we have a start time
             let latency = 0;
@@ -1448,14 +1478,17 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                     // Normal text chunk — fall through.
                 }
 
+                sm.markFirstToken(data.chunk);
                 setMessages(prev => {
                     const lastMsg = prev[prev.length - 1];
                     if (lastMsg && lastMsg.isStreaming && lastMsg.role === 'system') {
+                        const newText = lastMsg.text + data.chunk;
+                        smAccumRef.current = newText;
                         const updated = [...prev];
                         updated[prev.length - 1] = {
                             ...lastMsg,
-                            text: lastMsg.text + data.chunk,
-                            isCode: (lastMsg.text + data.chunk).includes('```')
+                            text: newText,
+                            isCode: newText.includes('```')
                         };
                         return updated;
                     }
@@ -1468,6 +1501,9 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
             cleanups.push(window.electronAPI.onRAGStreamComplete(() => {
                 setIsProcessing(false);
                 requestStartTimeRef.current = null;
+                sm.markDone(smAccumRef.current);
+                streamingMsgIdRef.current = null;
+                smAccumRef.current = '';
                 setMessages(prev => {
                     const lastMsg = prev[prev.length - 1];
                     if (lastMsg && lastMsg.isStreaming && lastMsg.role === 'system') {
@@ -1580,8 +1616,12 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
             }, 50);
 
             // Add placeholder for streaming response
+            const recordMsgId = Date.now().toString();
+            streamingMsgIdRef.current = recordMsgId;
+            smAccumRef.current = '';
+            sm.start();
             setMessages(prev => [...prev, {
-                id: Date.now().toString(),
+                id: recordMsgId,
                 role: 'system',
                 text: '',
                 isStreaming: true
@@ -1688,8 +1728,12 @@ Provide only the answer, nothing else.`;
         }, 50);
 
         // Add placeholder for streaming response
+        const manualMsgId = Date.now().toString();
+        streamingMsgIdRef.current = manualMsgId;
+        smAccumRef.current = '';
+        sm.start();
         setMessages(prev => [...prev, {
-            id: Date.now().toString(),
+            id: manualMsgId,
             role: 'system',
             text: '',
             isStreaming: true
@@ -1699,8 +1743,12 @@ Provide only the answer, nothing else.`;
         setIsProcessing(true);
 
         try {
-            // JIT RAG pre-flight: try to use indexed meeting context first
-            if (currentAttachments.length === 0) {
+            // JIT RAG pre-flight: only attempt when there's no active conversation.
+            // If conversationContext is non-empty the user is following up on a prior
+            // AI response (e.g. "solve it without OrderedDict") — RAG would search
+            // meeting transcripts and lose the coding thread. Send to LLM directly
+            // so conversationContext carries the prior code solution as context.
+            if (currentAttachments.length === 0 && !conversationContext.trim()) {
                 const ragResult = await window.electronAPI.ragQueryLive?.(userText || '');
                 if (ragResult?.success) {
                     // JIT RAG handled it — response streamed via rag:stream-chunk events
@@ -1708,10 +1756,14 @@ Provide only the answer, nothing else.`;
                 }
             }
 
-            // Pass imagePath if attached, AND conversation context
+            // Pass imagePath if attached, AND conversation context.
+            // When a screenshot is sent with no text, default to a solve prompt
+            // rather than "Analyze this screenshot" so the interview prompt has
+            // a concrete task to work from.
+            const effectiveQuestion = userText || (currentAttachments.length > 0 ? 'Solve the coding problem shown.' : '');
             requestStartTimeRef.current = Date.now();
             await window.electronAPI.streamGeminiChat(
-                userText || 'Analyze this screenshot',
+                effectiveQuestion,
                 currentAttachments.length > 0 ? currentAttachments.map(s => s.path) : undefined,
                 conversationContext // Pass context so "answer this" works
             );
@@ -2630,6 +2682,9 @@ Provide only the answer, nothing else.`;
                                                     </button>
                                                 )}
                                                 {renderMessageText(msg)}
+                                                {msg.role === 'system' && msg.metrics && (
+                                                    <MessageMetricsBar metrics={msg.metrics} className="mt-2" />
+                                                )}
                                             </div>
                                         </div>
                                         </div>
