@@ -1602,14 +1602,6 @@ Instructions:
 2. Provide a direct, helpful answer.
 3. Be concise.`;
                 } else {
-                    // JIT RAG pre-flight: try to use indexed meeting context first
-                    const ragResult = await window.electronAPI.ragQueryLive?.(question);
-                    if (ragResult?.success) {
-                        // JIT RAG handled it — response streamed via rag:stream-chunk events
-                        return;
-                    }
-
-                    // Voice Only (Smart Extract) — fallback
                     prompt = `You are a real-time interview assistant. The user just repeated or paraphrased a question from their interviewer.
 Instructions:
 1. Extract the core question being asked
