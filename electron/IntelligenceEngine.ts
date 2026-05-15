@@ -287,7 +287,14 @@ export class IntelligenceEngine extends EventEmitter {
                 180
             );
 
-            const lastInterviewerTurn = this.session.getLastInterviewerTurn();
+            const lastInterviewerTurn = (() => {
+                for (let i = contextItems.length - 1; i >= 0; i--) {
+                    if (contextItems[i].role === 'interviewer') {
+                        return contextItems[i].text;
+                    }
+                }
+                return null;
+            })();
             const intentResult = await classifyIntent(
                 lastInterviewerTurn,
                 preparedTranscript,
