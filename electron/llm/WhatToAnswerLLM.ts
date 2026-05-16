@@ -1,5 +1,5 @@
 import { LLMHelper } from "../LLMHelper";
-import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
+import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
 
@@ -8,6 +8,47 @@ export class WhatToAnswerLLM {
 
     constructor(llmHelper: LLMHelper) {
         this.llmHelper = llmHelper;
+    }
+
+    private async *filterCodeFences(
+        source: AsyncGenerator<string>
+    ): AsyncGenerator<string> {
+        const CARRY_LEN = 3; // ``` is 3 chars — minimum fence marker
+        let carry = '';
+        let suppressing = false;
+
+        for await (const chunk of source) {
+            const combined = carry + chunk;
+            let output = '';
+            let i = 0;
+
+            while (i < combined.length - CARRY_LEN) {
+                if (!suppressing && combined.startsWith('```', i)) {
+                    suppressing = true;
+                    i += 3;
+                    // Skip optional language tag on the same line
+                    while (i < combined.length && combined[i] !== '\n') i++;
+                    continue;
+                }
+                if (suppressing && combined.startsWith('```', i)) {
+                    suppressing = false;
+                    i += 3;
+                    console.warn('[WhatToAnswerLLM] filterCodeFences: code fence suppressed on verbal path — check intent classifier');
+                    output += "I can walk through the implementation if you'd like.";
+                    continue;
+                }
+                if (!suppressing) output += combined[i];
+                i++;
+            }
+
+            carry = combined.slice(combined.length - CARRY_LEN);
+            if (output) yield output;
+        }
+
+        // Flush carry buffer
+        if (carry && !suppressing) yield carry;
+        // Unclosed fence at stream end — emit fallback rather than silence
+        if (suppressing) yield "I can walk through the implementation if you'd like.";
     }
 
     // Deprecated non-streaming method (redirect to streaming or implement if needed)
@@ -55,7 +96,32 @@ ANSWER SHAPE: ${intentResult.answerShape}
             // Note: WhatToAnswer has a very specific prompt. 
             // We should use UNIVERSAL_WHAT_TO_ANSWER_PROMPT as override
 
-            yield* this.llmHelper.streamChat(fullMessage, imagePaths, undefined, UNIVERSAL_WHAT_TO_ANSWER_PROMPT);
+            // ── Hard binary router ───────────────────────────────────────────────────
+            // Decision in TypeScript using already-computed intentResult — 0ms overhead.
+            // intentResult is computed before generateStream() is called by IntelligenceEngine.
+            const isCoding = intentResult?.intent === 'coding';
+
+            if (isCoding) {
+                // Coding path: full prompt with SHARED_CODING_RULES, images passed through.
+                yield* this.llmHelper.streamChat(
+                    fullMessage,
+                    imagePaths,
+                    undefined,
+                    UNIVERSAL_WHAT_TO_ANSWER_PROMPT
+                );
+            } else {
+                // Verbal path: speech-only prompt, no images (reduces prefill latency),
+                // wrapped with fence filter as safety net for classifier misses.
+                // imagePaths stripped intentionally — visual context is less critical for verbal answers.
+                const rawStream = this.llmHelper.streamChat(
+                    fullMessage,
+                    undefined,
+                    undefined,
+                    VERBAL_WHAT_TO_ANSWER_PROMPT
+                );
+                yield* this.filterCodeFences(rawStream);
+            }
+            // ────────────────────────────────────────────────────────────────────────
 
         } catch (error) {
             console.error("[WhatToAnswerLLM] Stream failed:", error);
