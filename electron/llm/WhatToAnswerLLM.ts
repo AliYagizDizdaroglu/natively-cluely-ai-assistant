@@ -69,7 +69,6 @@ export class WhatToAnswerLLM {
                     suppressing = false;
                     i += 3;
                     console.warn('[WhatToAnswerLLM] filterCodeFences: code fence suppressed on verbal path — check intent classifier');
-                    output += "I can walk through the implementation if you'd like.";
                     continue;
                 }
                 if (!suppressing) output += combined[i];
@@ -83,7 +82,7 @@ export class WhatToAnswerLLM {
         // Flush carry buffer
         if (carry && !suppressing) yield carry;
         // Unclosed fence at stream end — emit fallback rather than silence
-        if (suppressing) yield "I can walk through the implementation if you'd like.";
+        // Unclosed fence: suppress silently — verbal path should not emit implementation text
     }
 
     // Deprecated non-streaming method (redirect to streaming or implement if needed)
