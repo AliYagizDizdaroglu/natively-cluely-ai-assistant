@@ -789,6 +789,10 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
 
 
         cleanups.push(window.electronAPI.onIntelligenceSuggestedAnswerToken((data) => {
+            // First-token marker for TTFT — fires on the first arriving token of this stream.
+            // markFirstToken is idempotent (early-returns if firstTokenTs is already set).
+            sm.markFirstToken(data.token);
+
             // Progressive update for 'what_to_answer' mode
             // Mirrors the guard in onGeminiStreamToken: if this token is the negotiation
             // coaching JSON sentinel, accumulate the raw JSON silently so the Done handler
@@ -844,6 +848,10 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
 
         cleanups.push(window.electronAPI.onIntelligenceSuggestedAnswer((data) => {
             setIsProcessing(false);
+            // Finalize stream metrics — TTFT was captured on first token, this gives totalMs/tok/s.
+            // markDone returns the computed snapshot synchronously so we can attach to the message
+            // without waiting for React state to settle.
+            const finalMetrics = sm.markDone(data.answer);
 
             // If the final answer is a negotiation coaching JSON sentinel, route it
             // to the proper card UI instead of dumping raw JSON into the message bubble.
@@ -872,11 +880,13 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                             isNegotiationCoaching: true,
                             negotiationCoachingData: coachingData,
                             text: '',
+                            metrics: finalMetrics,
                         }
                         : {
                             ...lastMsg,
                             text: data.answer, // Ensure final consistency
-                            isStreaming: false
+                            isStreaming: false,
+                            metrics: finalMetrics,
                         };
                     return updated;
                 }
@@ -890,13 +900,15 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                         intent: 'what_to_answer',
                         isNegotiationCoaching: true,
                         negotiationCoachingData: coachingData,
+                        metrics: finalMetrics,
                     }];
                 }
                 return [...prev, {
                     id: Date.now().toString(),
                     role: 'system',
                     text: data.answer,  // Plain text, no markdown - ready to speak
-                    intent: 'what_to_answer'
+                    intent: 'what_to_answer',
+                    metrics: finalMetrics,
                 }];
             });
         }));
@@ -1170,6 +1182,13 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
         }
 
         try {
+            // Start stream metrics for the What-to-Answer flow.
+            // Source label is best-effort — verbal answers route to Gemini Flash 3.1
+            // via WhatToAnswerLLM, coding answers stay on Gemma 4 via the default streamChat.
+            // Until we wire suggested_answer_source through IPC, default to Flash since
+            // that's the dominant verbal path.
+            sm.start();
+            sm.setSource('Gemini Flash 3.1');
             // Pass imagePath if attached
             await window.electronAPI.generateWhatToSay(undefined, currentAttachments.length > 0 ? currentAttachments.map(s => s.path) : undefined);
         } catch (err) {

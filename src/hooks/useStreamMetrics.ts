@@ -57,20 +57,24 @@ export function useStreamMetrics() {
         setMetrics(prev => ({ ...prev, modelSource: label }));
     }, []);
 
-    const markDone = useCallback((content: string) => {
-        if (sendTsRef.current === null) return;
+    const markDone = useCallback((content: string): StreamMetrics => {
+        if (sendTsRef.current === null) return EMPTY;
         const now = performance.now();
         const totalMs = now - sendTsRef.current;
         const tokens = Math.max(1, Math.round(content.length / 4));
         const genWindowMs = firstTokenTsRef.current !== null ? now - firstTokenTsRef.current : null;
         const tokensPerSec = genWindowMs && genWindowMs > 0 ? (tokens / (genWindowMs / 1000)) : null;
-        setMetrics(prev => ({
-            ...prev,
+        const ttftMs = firstTokenTsRef.current !== null ? firstTokenTsRef.current - sendTsRef.current : null;
+        const finalSnapshot: StreamMetrics = {
+            ttftMs,
             totalMs,
             tokens,
             tokensPerSec,
+            modelSource: sourceRef.current,
             streaming: false,
-        }));
+        };
+        setMetrics(finalSnapshot);
+        return finalSnapshot;
     }, []);
 
     const reset = useCallback(() => {
