@@ -34,6 +34,12 @@ export class WhatToAnswerLLM {
             "I'll start by", "I will start by", "Let me start",
             "I'll cover", "I will cover", "Let me cover",
             "I'll outline", "I will outline", "Let me outline",
+            // Clarifying-back openers — never appropriate in interview responses
+            "Are you looking for", "Are you asking about", "Are you more interested in",
+            "Would you like me", "Would you prefer", "Would you rather",
+            "Do you want me to", "Do you want a", "Do you want me",
+            "Should I focus on", "Should I go", "Should I start",
+            "Which would you", "Which one would",
         ];
         let lineBuffer = '';
 
@@ -139,9 +145,15 @@ ANSWER SHAPE: ${intentResult.answerShape}
             }
 
             const extraContext = contextParts.join('\n\n');
+            // Coding path uses generic "CONVERSATION" framing; verbal path frames the
+            // transcript explicitly as interviewer speech so the model treats it as a
+            // question to answer rather than a user request to clarify.
+            const isCodingForFraming = intentResult?.intent === 'coding';
+            const transcriptLabel = isCodingForFraming ? 'CONVERSATION' : 'INTERVIEWER JUST SAID';
+            const trailer = isCodingForFraming ? '' : '\n\nYOUR RESPONSE AS THE CANDIDATE (spoken aloud, first person, no clarifying questions back):';
             const fullMessage = extraContext
-                ? `${extraContext}\n\nCONVERSATION:\n${cleanedTranscript}`
-                : cleanedTranscript;
+                ? `${extraContext}\n\n${transcriptLabel}:\n${cleanedTranscript}${trailer}`
+                : `${transcriptLabel}:\n${cleanedTranscript}${trailer}`;
 
             // Use Universal Prompt
             // Note: WhatToAnswer has a very specific prompt. 
