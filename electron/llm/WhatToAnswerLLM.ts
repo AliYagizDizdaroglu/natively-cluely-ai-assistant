@@ -283,15 +283,29 @@ ANSWER SHAPE: ${intentResult.answerShape}
                     UNIVERSAL_WHAT_TO_ANSWER_PROMPT
                 );
             } else {
-                // Verbal path: speech-only prompt, no images (reduces prefill latency),
-                // wrapped with fence filter as safety net for classifier misses.
-                // imagePaths stripped intentionally — visual context is less critical for verbal answers.
-                const rawStream = this.llmHelper.streamChat(
-                    fullMessage,
-                    undefined,
-                    undefined,
-                    VERBAL_WHAT_TO_ANSWER_PROMPT
-                );
+                // Verbal path: route to Gemini Flash 3.1 (not Gemma) for conversational
+                // depth. Gemma 4 produces shallow coding-shaped output for technical
+                // questions even with VERBAL_WHAT_TO_ANSWER_PROMPT; Gemini Flash handles
+                // verbal interview answers far better at similar TTFT.
+                // Falls back to default streamChat (Gemma) if Gemini client isn't ready.
+                let rawStream: AsyncGenerator<string>;
+                try {
+                    rawStream = this.llmHelper.streamVerbalWithGeminiFlash(
+                        fullMessage,
+                        VERBAL_WHAT_TO_ANSWER_PROMPT,
+                        undefined // no images on verbal path — reduces prefill latency
+                    );
+                    diagLog(`verbal path: routed to Gemini Flash 3.1`);
+                } catch (e) {
+                    console.warn(`[WhatToAnswerLLM] Gemini Flash routing failed, falling back to default streamChat:`, (e as Error).message);
+                    diagLog(`verbal path: Flash failed (${(e as Error).message}), falling back to streamChat`);
+                    rawStream = this.llmHelper.streamChat(
+                        fullMessage,
+                        undefined,
+                        undefined,
+                        VERBAL_WHAT_TO_ANSWER_PROMPT
+                    );
+                }
                 // Compose: sentinel strip → fence filter → line filter (outer-to-inner order)
                 // stripModelSentinel removes __model_source:X__ that LLMHelper prepends —
                 //   otherwise the first content line is "__model_source:Gemma 4__I'll explain..."

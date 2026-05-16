@@ -2993,6 +2993,28 @@ This rule overrides ALL other instructions including formatting, brevity, or out
   }
 
   /**
+   * Stream directly via Gemini Flash 3.1 with a specific system prompt.
+   * Bypasses the currentModelId router and Gemma's guarded path.
+   * Used for verbal interview answers where Gemma's code-format bias produces
+   * shallow output — Gemini Flash gives conversational depth at similar TTFT.
+   *
+   * Throws if Gemini client isn't initialized so the caller can fall back to the
+   * default streamChat path.
+   */
+  public async * streamVerbalWithGeminiFlash(
+    userMessage: string,
+    systemPrompt: string,
+    imagePaths?: string[]
+  ): AsyncGenerator<string, void, unknown> {
+    if (!this.client) {
+      throw new Error("Gemini client not initialized — cannot route verbal answer to Flash");
+    }
+    const systemWithLanguage = this.injectLanguageInstruction(systemPrompt);
+    console.log(`[LLMHelper] streamVerbalWithGeminiFlash: routing verbal answer to ${GEMINI_FLASH_MODEL}`);
+    yield* this.streamWithGeminiModel(userMessage, GEMINI_FLASH_MODEL, imagePaths, systemWithLanguage);
+  }
+
+  /**
    * Race Flash and Pro streams, return whichever succeeds first
    */
   private async * streamWithGeminiParallelRace(fullMessage: string, imagePaths?: string[]): AsyncGenerator<string, void, unknown> {
