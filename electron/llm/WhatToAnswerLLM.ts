@@ -21,35 +21,18 @@ export class WhatToAnswerLLM {
     }
 
     /**
-     * Drop lines that are coding-format artifacts leaking through on the verbal path.
-     * Operates on complete lines only — accumulates until newline, then decides.
-     * Patterns: Time:/Space:/Why: complexity bullets, bare language tags (```python etc).
+     * Two-mode filter for the verbal path:
+     *   HARD_DROP — pure coding artifacts with no substantive content (Time:/Space:/Why:
+     *               complexity bullets, clarifying-back questions).
+     *   REWRITE   — meta-preamble openers that DO carry substance after the verb phrase
+     *               (e.g. "I will explain the Transformer as X" → "The Transformer as X").
+     *               Strip the preamble, keep the substance, capitalize result.
      */
     private async *filterVerbalLines(
         source: AsyncGenerator<string>
     ): AsyncGenerator<string> {
-        const DROP_PREFIXES = [
+        const HARD_DROP = [
             'Time:', 'Space:', 'Why:', 'Time complexity', 'Space complexity',
-            // Implementation-framing openers that must not appear in verbal answers
-            "I'll implement", "I will implement", "Let me implement",
-            "I'll show", "I will show", "Let me show",
-            "I'll demonstrate", "I will demonstrate", "Let me demonstrate",
-            "I'll code", "I will code",
-            // Meta-preamble openers — describe the upcoming answer instead of giving it
-            "I'll explain", "I will explain", "Let me explain",
-            "I'll walk", "I will walk", "Let me walk",
-            "I'll break", "I will break", "Let me break",
-            "I'll describe", "I will describe", "Let me describe",
-            "I'll go through", "I will go through", "Let me go through",
-            "I'll start by", "I will start by", "Let me start",
-            "I'll cover", "I will cover", "Let me cover",
-            "I'll outline", "I will outline", "Let me outline",
-            // Present-continuous variants — model uses these especially after a code block
-            // is suppressed ("I'm demonstrating ...", "I'm showing how ...")
-            "I'm demonstrating", "I'm showing", "I'm explaining",
-            "I'm walking", "I'm breaking", "I'm describing",
-            "I'm covering", "I'm outlining", "I'm implementing",
-            "I'm using a", "I'm using the",
             // Clarifying-back openers — never appropriate in interview responses
             "Are you looking for", "Are you asking about", "Are you more interested in",
             "Would you like me", "Would you prefer", "Would you rather",
@@ -57,11 +40,37 @@ export class WhatToAnswerLLM {
             "Should I focus on", "Should I go", "Should I start",
             "Which would you", "Which one would",
         ];
+
+        // Each pattern strips its match, keeping what follows.
+        // Order matters — longer/more-specific patterns first.
+        const REWRITE_PATTERNS: RegExp[] = [
+            /^(I'll|I will|I am|I'm|Let me|Let's|I am going to|I'm going to)\s+(explain|show|demonstrate|walk|break|describe|cover|outline|implement|illustrate|present|discuss|talk about|go through|go over|start by|run through)(\s+(you|us))?(\s+(through|how|that|this|the|a|an|why|what|by|down))*\s+/i,
+            // Present-continuous variants like "I'm explaining the..."
+            /^(I'm|I am)\s+(explaining|showing|demonstrating|walking|breaking|describing|covering|outlining|implementing|illustrating|presenting|discussing|using|going through)(\s+(you|us))?(\s+(through|how|that|this|the|a|an|why|what|by|down))*\s+/i,
+        ];
+
         let lineBuffer = '';
 
-        const shouldDrop = (line: string) => {
+        const shouldHardDrop = (line: string) => {
             const trimmed = line.trimStart();
-            return DROP_PREFIXES.some(p => trimmed.startsWith(p));
+            return HARD_DROP.some(p => trimmed.startsWith(p));
+        };
+
+        // Returns rewritten line if a preamble matched, otherwise null.
+        const rewritePreamble = (line: string): string | null => {
+            const trimmed = line.trimStart();
+            const leading = line.slice(0, line.length - trimmed.length);
+            for (const pattern of REWRITE_PATTERNS) {
+                if (pattern.test(trimmed)) {
+                    const stripped = trimmed.replace(pattern, '');
+                    if (stripped.trim().length < 8) return ''; // substance too small — effectively drop
+                    // Capitalize first char
+                    const capitalized = stripped[0].toUpperCase() + stripped.slice(1);
+                    diagLog(`rewrite: ${JSON.stringify(trimmed.slice(0, 60))} → ${JSON.stringify(capitalized.slice(0, 60))}`);
+                    return leading + capitalized;
+                }
+            }
+            return null;
         };
 
         diagLog(`>>> filterVerbalLines started`);
@@ -75,20 +84,35 @@ export class WhatToAnswerLLM {
             lineBuffer = lines.pop()!;
 
             for (let i = 0; i < lines.length; i++) {
-                const drop = shouldDrop(lines[i]);
-                diagLog(`    line decided: drop=${drop} text=${JSON.stringify(lines[i])}`);
-                if (!drop) {
-                    yield lines[i] + (i < lines.length - 1 || lineBuffer !== '' ? '\n' : '');
-                } else {
-                    // dropped silently
+                if (shouldHardDrop(lines[i])) {
+                    diagLog(`    HARD_DROP: ${JSON.stringify(lines[i].slice(0, 80))}`);
+                    continue;
                 }
+                const rewritten = rewritePreamble(lines[i]);
+                if (rewritten !== null) {
+                    if (rewritten === '') continue; // substance too small after strip
+                    yield rewritten + (i < lines.length - 1 || lineBuffer !== '' ? '\n' : '');
+                    continue;
+                }
+                yield lines[i] + (i < lines.length - 1 || lineBuffer !== '' ? '\n' : '');
             }
         }
 
         // Flush remaining buffer
-        const finalDrop = shouldDrop(lineBuffer);
-        diagLog(`<<< filterVerbalLines flush: lineBuffer=${JSON.stringify(lineBuffer.slice(0, 120))} drop=${finalDrop}`);
-        if (lineBuffer && !finalDrop) yield lineBuffer;
+        if (lineBuffer) {
+            if (shouldHardDrop(lineBuffer)) {
+                diagLog(`<<< flush HARD_DROP: ${JSON.stringify(lineBuffer.slice(0, 80))}`);
+            } else {
+                const rewritten = rewritePreamble(lineBuffer);
+                if (rewritten !== null) {
+                    if (rewritten !== '') yield rewritten;
+                    diagLog(`<<< flush rewritten: ${JSON.stringify(rewritten.slice(0, 80))}`);
+                } else {
+                    yield lineBuffer;
+                    diagLog(`<<< flush yielded: ${JSON.stringify(lineBuffer.slice(0, 80))}`);
+                }
+            }
+        }
     }
 
     /**
