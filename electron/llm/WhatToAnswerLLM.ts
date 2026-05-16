@@ -41,13 +41,19 @@ export class WhatToAnswerLLM {
             "Which would you", "Which one would",
         ];
 
-        // Each pattern strips its match, keeping what follows.
-        // Order matters — longer/more-specific patterns first.
+        // Strip the verb phrase ONLY. Preserve articles (the/a/an) and connectors so
+        // the remaining text stays grammatical. If stripping leaves a dangling
+        // syntactic word (as/by/with/to/how/etc.), abort the rewrite — those break
+        // grammar without their preceding verb.
         const REWRITE_PATTERNS: RegExp[] = [
-            /^(I'll|I will|I am|I'm|Let me|Let's|I am going to|I'm going to)\s+(explain|show|demonstrate|walk|break|describe|cover|outline|implement|illustrate|present|discuss|talk about|go through|go over|start by|run through)(\s+(you|us))?(\s+(through|how|that|this|the|a|an|why|what|by|down))*\s+/i,
-            // Present-continuous variants like "I'm explaining the..."
-            /^(I'm|I am)\s+(explaining|showing|demonstrating|walking|breaking|describing|covering|outlining|implementing|illustrating|presenting|discussing|using|going through)(\s+(you|us))?(\s+(through|how|that|this|the|a|an|why|what|by|down))*\s+/i,
+            /^(I'll|I will|I am|I'm|Let me|Let's|I am going to|I'm going to)\s+(explain|show|demonstrate|describe|cover|outline|implement|illustrate|present|discuss|walk\s+(?:you\s+)?through|break\s+down|talk\s+about|go\s+through|go\s+over|run\s+through)\s+/i,
+            /^(I'm|I am)\s+(explaining|showing|demonstrating|describing|covering|outlining|implementing|illustrating|presenting|discussing|walking\s+(?:you\s+)?through|breaking\s+down|going\s+through|using\s+a|using\s+the)\s+/i,
         ];
+
+        // Syntactic danglers — if a rewritten line starts with these, the original
+        // sentence structure was "verb X [dangler] Y" and stripping the verb leaves
+        // a fragment. Let the original through unchanged instead of producing junk.
+        const DANGLER_RE = /^(as|by|with|how|why|what|that|to|in|on|for|about|using|through|where|when|while|so)\b/i;
 
         let lineBuffer = '';
 
@@ -56,15 +62,22 @@ export class WhatToAnswerLLM {
             return HARD_DROP.some(p => trimmed.startsWith(p));
         };
 
-        // Returns rewritten line if a preamble matched, otherwise null.
+        // Returns rewritten line, OR the original (if rewriting would break grammar),
+        // OR null if no preamble matched at all.
         const rewritePreamble = (line: string): string | null => {
             const trimmed = line.trimStart();
             const leading = line.slice(0, line.length - trimmed.length);
             for (const pattern of REWRITE_PATTERNS) {
                 if (pattern.test(trimmed)) {
                     const stripped = trimmed.replace(pattern, '');
-                    if (stripped.trim().length < 8) return ''; // substance too small — effectively drop
-                    // Capitalize first char
+                    if (stripped.trim().length < 8) return ''; // substance too small — drop
+                    // Grammar safety: if stripped starts with a dangler (as/by/with/etc.),
+                    // the original sentence depended on the verb. Better to keep the
+                    // preamble than emit a fragment.
+                    if (DANGLER_RE.test(stripped)) {
+                        diagLog(`rewrite: SKIP (dangler) — keeping original: ${JSON.stringify(trimmed.slice(0, 60))}`);
+                        return line; // return original unchanged
+                    }
                     const capitalized = stripped[0].toUpperCase() + stripped.slice(1);
                     diagLog(`rewrite: ${JSON.stringify(trimmed.slice(0, 60))} → ${JSON.stringify(capitalized.slice(0, 60))}`);
                     return leading + capitalized;
