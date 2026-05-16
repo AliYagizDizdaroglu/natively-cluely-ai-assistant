@@ -287,7 +287,14 @@ export class IntelligenceEngine extends EventEmitter {
                 180
             );
 
-            const lastInterviewerTurn = this.session.getLastInterviewerTurn();
+            const lastInterviewerTurn = (() => {
+                for (let i = contextItems.length - 1; i >= 0; i--) {
+                    if (contextItems[i].role === 'interviewer') {
+                        return contextItems[i].text;
+                    }
+                }
+                return null;
+            })();
             const intentResult = await classifyIntent(
                 lastInterviewerTurn,
                 preparedTranscript,
@@ -311,6 +318,17 @@ export class IntelligenceEngine extends EventEmitter {
                     await stream.return(undefined);
                     streamAborted = true;
                     break;
+                }
+                // Intercept model source sentinel — may be merged with content by filter chain
+                // so use regex replace rather than exact startsWith/endsWith check.
+                if (token.includes('__model_source:')) {
+                    const match = token.match(/__model_source:([^_]+)__/);
+                    if (match) this.emit('suggested_answer_source', match[1]);
+                    const stripped = token.replace(/__model_source:[^_]*__/, '').trimStart();
+                    if (!stripped) continue;
+                    this.emit('suggested_answer_token', stripped, question || 'inferred', confidence);
+                    fullAnswer += stripped;
+                    continue;
                 }
                 this.emit('suggested_answer_token', token, question || 'inferred', confidence);
                 fullAnswer += token;

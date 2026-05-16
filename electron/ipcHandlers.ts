@@ -486,6 +486,28 @@ export function initializeIpcHandlers(appState: AppState): void {
         }
       }
 
+      // RAG enrichment: for text-only turns, retrieve live meeting context and
+      // prepend it so the model has both what the interviewer said AND the
+      // conversation thread. Images skip this — model focuses on the visual.
+      if (!imagePaths?.length) {
+        try {
+          const ragMgr = appState.getRAGManager();
+          if (ragMgr) {
+            const ragChunks = await ragMgr.retrieveContextString(message);
+            if (ragChunks) {
+              const meetingBlock = `MEETING CONTEXT (interviewer):\n${ragChunks}`;
+              context = context?.trim()
+                ? `${meetingBlock}\n\nCONVERSATION HISTORY:\n${context}`
+                : meetingBlock;
+              console.log(`[IPC] RAG enrichment: ${ragChunks.length} chars of meeting context injected`);
+            }
+          }
+        } catch (ragErr: any) {
+          // Non-fatal — proceed without meeting context
+          console.warn('[IPC] RAG enrichment failed (non-fatal):', ragErr?.message);
+        }
+      }
+
       try {
         // USE streamChat which handles routing
         const stream = llmHelper.streamChat(message, imagePaths, context, options?.skipSystemPrompt ? "" : undefined, options?.ignoreKnowledgeMode);

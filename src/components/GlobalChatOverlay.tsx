@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useStreamBuffer } from '../hooks/useStreamBuffer';
+import { useStreamMetrics, type StreamMetrics } from '../hooks/useStreamMetrics';
+import { MessageMetricsBar } from './MessageMetricsBar';
 import { X, Copy, Check, Globe, ArrowUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import nativelyIcon from './icon.png';
@@ -14,6 +16,7 @@ interface Message {
     content: string;
     isStreaming?: boolean;
     model?: string;
+    metrics?: StreamMetrics;
 }
 
 interface GlobalChatOverlayProps {
@@ -63,7 +66,7 @@ const UserMessage: React.FC<{ content: string }> = ({ content }) => (
     </motion.div>
 );
 
-const AssistantMessage: React.FC<{ content: string; isStreaming?: boolean; model?: string }> = ({ content, isStreaming, model }) => {
+const AssistantMessage: React.FC<{ content: string; isStreaming?: boolean; model?: string; metrics?: StreamMetrics }> = ({ content, isStreaming, model, metrics }) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = async () => {
@@ -93,6 +96,9 @@ const AssistantMessage: React.FC<{ content: string; isStreaming?: boolean; model
                     />
                 )}
             </div>
+            {metrics && (
+                <MessageMetricsBar metrics={metrics} className="mt-1.5" />
+            )}
             {!isStreaming && content && (
                 <div className="flex items-center gap-4 mt-3">
                     <button
@@ -129,9 +135,21 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [query, setQuery] = useState('');
     const streamBuffer = useStreamBuffer();
+    const sm = useStreamMetrics();
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const chatWindowRef = useRef<HTMLDivElement>(null);
+    const streamingMessageIdRef = useRef<string | null>(null);
+
+    // Mirror live streaming metrics onto the in-flight assistant message so
+    // the indicator updates (TTFT, then tok/s + total on done) without prop drilling.
+    useEffect(() => {
+        const targetId = streamingMessageIdRef.current;
+        if (!targetId) return;
+        setMessages(prev => prev.map(msg =>
+            msg.id === targetId ? { ...msg, metrics: sm.metrics } : msg
+        ));
+    }, [sm.metrics]);
 
     // Submit initial query when overlay opens
     useEffect(() => {
@@ -210,9 +228,13 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
 
             // Set up RAG streaming listeners (RAF-batched)
             streamBuffer.reset();
+            streamingMessageIdRef.current = assistantMessageId;
+            sm.start();
+            sm.setSource('RAG');
             const tokenCleanup = window.electronAPI?.onRAGStreamChunk((data: { chunk: string }) => {
                 setChatState('streaming_response');
                 streamBuffer.appendToken(data.chunk, (content) => {
+                    sm.markFirstToken(content);
                     setMessages(prev => prev.map(msg =>
                         msg.id === assistantMessageId
                             ? { ...msg, content }
@@ -223,6 +245,7 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
 
             const doneCleanup = window.electronAPI?.onRAGStreamComplete(() => {
                 const finalContent = streamBuffer.getBufferedContent();
+                sm.markDone(finalContent);
                 setMessages(prev => prev.map(msg =>
                     msg.id === assistantMessageId
                         ? { ...msg, content: finalContent, isStreaming: false }
@@ -230,6 +253,7 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
                 ));
                 setChatState('idle');
                 streamBuffer.reset();
+                streamingMessageIdRef.current = null;
                 tokenCleanup?.();
                 doneCleanup?.();
                 errorCleanup?.();
@@ -258,8 +282,11 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
 
                 // Setup fallback listeners (Standard Gemini)
                 streamBuffer.reset();
+                streamingMessageIdRef.current = assistantMessageId;
+                sm.start();
                 const assistantMsgId = assistantMessageId;
                 const oldSourceCleanup = window.electronAPI?.onGeminiStreamSource((modelLabel: string) => {
+                    sm.setSource(modelLabel);
                     setMessages(prev => prev.map(msg =>
                         msg.id === assistantMsgId ? { ...msg, model: modelLabel } : msg
                     ));
@@ -267,6 +294,7 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
                 const oldTokenCleanup = window.electronAPI?.onGeminiStreamToken((token: string) => {
                     setChatState('streaming_response');
                     streamBuffer.appendToken(token, (content) => {
+                        sm.markFirstToken(content);
                         setMessages(prev => prev.map(msg =>
                             msg.id === assistantMessageId
                                 ? { ...msg, content }
@@ -277,6 +305,7 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
 
                 const oldDoneCleanup = window.electronAPI?.onGeminiStreamDone(() => {
                     const finalContent = streamBuffer.getBufferedContent();
+                    sm.markDone(finalContent);
                     setMessages(prev => prev.map(msg =>
                         msg.id === assistantMessageId
                             ? { ...msg, content: finalContent, isStreaming: false }
@@ -284,6 +313,7 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
                     ));
                     setChatState('idle');
                     streamBuffer.reset();
+                    streamingMessageIdRef.current = null;
                     oldSourceCleanup?.();
                     oldTokenCleanup?.();
                     oldDoneCleanup?.();
@@ -371,7 +401,7 @@ const GlobalChatOverlay: React.FC<GlobalChatOverlayProps> = ({
                             {messages.map((msg) => (
                                 msg.role === 'user'
                                     ? <UserMessage key={msg.id} content={msg.content} />
-                                    : <AssistantMessage key={msg.id} content={msg.content} isStreaming={msg.isStreaming} model={msg.model} />
+                                    : <AssistantMessage key={msg.id} content={msg.content} isStreaming={msg.isStreaming} model={msg.model} metrics={msg.metrics} />
                             ))}
 
                             {chatState === 'waiting_for_llm' && <TypingIndicator />}

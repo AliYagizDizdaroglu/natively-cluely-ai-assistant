@@ -32,7 +32,7 @@ export interface IntentResult {
 const INTENT_ANSWER_SHAPES: Record<ConversationIntent, string> = {
     clarification: 'Give a direct, focused 1-2 sentence clarification. No setup, no context-setting.',
     follow_up: 'Continue the narrative naturally. 1-2 sentences. No recap of what was already said.',
-    deep_dive: 'Provide a structured but concise explanation. Use concrete specifics, not abstract concepts.',
+    deep_dive: 'Give a substantive spoken explanation in 3-5 sentences. Use real-world analogies and specific examples in plain language — no code, no formulas. Be proactive: cover the key points even if the question is vague or implicit.',
     behavioral: 'Lead with a specific example or story. Use the STAR pattern implicitly. Focus on actions and outcomes.',
     example_request: 'Provide ONE concrete, detailed example. Make it realistic and specific.',
     summary_probe: 'Confirm the summary briefly and add one clarifying point if needed.',
@@ -217,7 +217,7 @@ function detectIntentByPattern(lastInterviewerTurn: string): IntentResult | null
     }
 
     // Coding patterns (Broad detection for programming/implementation)
-    if (/(write code|program|implement|function for|algorithm|how to code|setup a .* project|using .* library|debug this|snippet|boilerplate|example of .* in .*|optimize|refactor|best practice for .* code|utility method|component for|logic for)/i.test(text)) {
+    if (/(write code|implement (this|it|a |the |that )|function for|algorithm for|how to code|setup a .* project|using .* library|debug this|snippet|boilerplate|example of .* in .*|optimize (this|the )|refactor|best practice for .* code|utility method|component for|logic for)/i.test(text)) {
         return { intent: 'coding', confidence: 0.9, answerShape: INTENT_ANSWER_SHAPES.coding };
     }
 
@@ -270,12 +270,18 @@ export async function classifyIntent(
     recentTranscript: string,
     assistantMessageCount: number
 ): Promise<IntentResult> {
+    // Debug: surface what the classifier actually sees so we can diagnose
+    // why explicit questions sometimes fall through to 'general'.
+    console.log(`[IntentClassifier] lastInterviewerTurn: ${JSON.stringify(lastInterviewerTurn?.slice(0, 200) ?? null)}`);
+
     // Tier 1: Try regex-based first (high confidence, instant)
     if (lastInterviewerTurn) {
         const patternResult = detectIntentByPattern(lastInterviewerTurn);
         if (patternResult) {
+            console.log(`[IntentClassifier] Tier 1 (regex) matched: intent=${patternResult.intent} confidence=${patternResult.confidence}`);
             return patternResult;
         }
+        console.log(`[IntentClassifier] Tier 1 (regex) no match — falling to SLM`);
 
         // Tier 2: Try zero-shot SLM (if regex didn't match)
         if (lastInterviewerTurn.trim().length > 5) {
@@ -287,7 +293,9 @@ export async function classifyIntent(
     }
 
     // Tier 3: Fall back to context-based heuristic
-    return detectIntentByContext(recentTranscript, assistantMessageCount);
+    const heuristic = detectIntentByContext(recentTranscript, assistantMessageCount);
+    console.log(`[IntentClassifier] Tier 3 (heuristic) result: intent=${heuristic.intent} confidence=${heuristic.confidence}`);
+    return heuristic;
 }
 
 /**
