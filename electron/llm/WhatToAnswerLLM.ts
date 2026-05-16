@@ -2,6 +2,16 @@ import { LLMHelper } from "../LLMHelper";
 import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
+import * as fs from "fs";
+import * as path from "path";
+
+// Diagnostic file logger — writes to project root so we can read it from outside electron
+const DIAG_LOG = path.join(process.cwd(), "verbal-diag.log");
+function diagLog(msg: string) {
+    try {
+        fs.appendFileSync(DIAG_LOG, `[${new Date().toISOString()}] ${msg}\n`);
+    } catch { /* swallow — never break the stream on log failure */ }
+}
 
 export class WhatToAnswerLLM {
     private llmHelper: LLMHelper;
@@ -34,6 +44,12 @@ export class WhatToAnswerLLM {
             "I'll start by", "I will start by", "Let me start",
             "I'll cover", "I will cover", "Let me cover",
             "I'll outline", "I will outline", "Let me outline",
+            // Present-continuous variants — model uses these especially after a code block
+            // is suppressed ("I'm demonstrating ...", "I'm showing how ...")
+            "I'm demonstrating", "I'm showing", "I'm explaining",
+            "I'm walking", "I'm breaking", "I'm describing",
+            "I'm covering", "I'm outlining", "I'm implementing",
+            "I'm using a", "I'm using the",
             // Clarifying-back openers — never appropriate in interview responses
             "Are you looking for", "Are you asking about", "Are you more interested in",
             "Would you like me", "Would you prefer", "Would you rather",
@@ -48,12 +64,11 @@ export class WhatToAnswerLLM {
             return DROP_PREFIXES.some(p => trimmed.startsWith(p));
         };
 
+        diagLog(`>>> filterVerbalLines started`);
         let chunkCount = 0;
         for await (const chunk of source) {
             chunkCount++;
-            if (chunkCount <= 5 || chunkCount % 20 === 0) {
-                console.log(`[filterVerbalLines] chunk #${chunkCount}: ${JSON.stringify(chunk.slice(0, 80))} (lineBuffer pre: ${JSON.stringify(lineBuffer.slice(0, 80))})`);
-            }
+            diagLog(`  chunk #${chunkCount}: ${JSON.stringify(chunk)} (lineBuffer pre: ${JSON.stringify(lineBuffer.slice(0, 120))})`);
             const combined = lineBuffer + chunk;
             const lines = combined.split('\n');
             // Last element may be an incomplete line — hold in buffer
@@ -61,19 +76,60 @@ export class WhatToAnswerLLM {
 
             for (let i = 0; i < lines.length; i++) {
                 const drop = shouldDrop(lines[i]);
-                console.log(`[filterVerbalLines] line: drop=${drop} → ${JSON.stringify(lines[i].slice(0, 80))}`);
+                diagLog(`    line decided: drop=${drop} text=${JSON.stringify(lines[i])}`);
                 if (!drop) {
                     yield lines[i] + (i < lines.length - 1 || lineBuffer !== '' ? '\n' : '');
                 } else {
-                    console.warn(`[WhatToAnswerLLM] filterVerbalLines: dropped coding line: "${lines[i].trimStart().slice(0, 40)}"`);
+                    // dropped silently
                 }
             }
         }
 
         // Flush remaining buffer
         const finalDrop = shouldDrop(lineBuffer);
-        console.log(`[filterVerbalLines] flush: lineBuffer=${JSON.stringify(lineBuffer.slice(0, 80))} drop=${finalDrop}`);
+        diagLog(`<<< filterVerbalLines flush: lineBuffer=${JSON.stringify(lineBuffer.slice(0, 120))} drop=${finalDrop}`);
         if (lineBuffer && !finalDrop) yield lineBuffer;
+    }
+
+    /**
+     * Strip the __model_source:X__ sentinel that LLMHelper emits as the first token.
+     * Must run BEFORE filterVerbalLines because the sentinel concatenates with the
+     * first content token and prevents DROP_PREFIXES from matching the actual opener.
+     * Uses a small buffer to handle the sentinel being split across chunk boundaries.
+     */
+    private async *stripModelSentinel(
+        source: AsyncGenerator<string>
+    ): AsyncGenerator<string> {
+        let buffer = '';
+        let stripped = false;
+
+        for await (const chunk of source) {
+            if (stripped) {
+                yield chunk;
+                continue;
+            }
+            buffer += chunk;
+            // Wait until we have enough to detect either the sentinel or non-sentinel start
+            if (!buffer.startsWith('__model_source:') && !'__model_source:'.startsWith(buffer)) {
+                // Definitely not a sentinel — flush and pass through
+                stripped = true;
+                yield buffer;
+                buffer = '';
+                continue;
+            }
+            // We might have a sentinel — look for the closing __
+            const match = buffer.match(/^__model_source:[^_]*__/);
+            if (match) {
+                stripped = true;
+                const rest = buffer.slice(match[0].length);
+                diagLog(`stripModelSentinel: stripped ${JSON.stringify(match[0])}, yielding rest ${JSON.stringify(rest.slice(0, 80))}`);
+                if (rest) yield rest;
+                buffer = '';
+            }
+            // else: keep buffering, sentinel not yet complete
+        }
+        // Flush whatever is left if we never found the sentinel
+        if (!stripped && buffer) yield buffer;
     }
 
     private async *filterCodeFences(
@@ -176,6 +232,11 @@ ANSWER SHAPE: ${intentResult.answerShape}
             // intentResult is computed before generateStream() is called by IntelligenceEngine.
             const isCoding = intentResult?.intent === 'coding';
 
+            diagLog(`=== generateStream invoked ===`);
+            diagLog(`intentResult: ${JSON.stringify(intentResult)}`);
+            diagLog(`isCoding: ${isCoding} → path: ${isCoding ? 'CODING (no filter)' : 'VERBAL (filter applied)'}`);
+            diagLog(`transcript preview: ${JSON.stringify(cleanedTranscript.slice(0, 200))}`);
+
             if (isCoding) {
                 // Coding path: full prompt with SHARED_CODING_RULES, images passed through.
                 yield* this.llmHelper.streamChat(
@@ -194,10 +255,13 @@ ANSWER SHAPE: ${intentResult.answerShape}
                     undefined,
                     VERBAL_WHAT_TO_ANSWER_PROMPT
                 );
-                // Compose: fence filter → line filter (outer-to-inner order)
-                // filterVerbalLines drops coding-format prose (Time:/Space:/Why: bullets)
-                // filterCodeFences suppresses any ``` blocks that slip through
-                yield* this.filterVerbalLines(this.filterCodeFences(rawStream));
+                // Compose: sentinel strip → fence filter → line filter (outer-to-inner order)
+                // stripModelSentinel removes __model_source:X__ that LLMHelper prepends —
+                //   otherwise the first content line is "__model_source:Gemma 4__I'll explain..."
+                //   and DROP_PREFIXES can't match against the sentinel-prefixed line.
+                // filterCodeFences suppresses any ``` blocks that slip through.
+                // filterVerbalLines drops coding-format prose (Time:/Space:/Why: bullets, preambles).
+                yield* this.filterVerbalLines(this.filterCodeFences(this.stripModelSentinel(rawStream)));
             }
             // ────────────────────────────────────────────────────────────────────────
 
