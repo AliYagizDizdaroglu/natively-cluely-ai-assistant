@@ -12,6 +12,8 @@ import { PhoneMirrorService } from "./services/PhoneMirrorService";
 
 
 import { RECOGNITION_LANGUAGES, AI_RESPONSE_LANGUAGES } from "./config/languages"
+import { classifyIntent } from "./llm/IntentClassifier"
+import { VERBAL_WHAT_TO_ANSWER_PROMPT } from "./llm/prompts"
 
 export function initializeIpcHandlers(appState: AppState): void {
   const safeHandle = (channel: string, listener: (event: any, ...args: any[]) => Promise<any> | any) => {
@@ -509,10 +511,38 @@ export function initializeIpcHandlers(appState: AppState): void {
       }
 
       try {
-        // USE streamChat which handles routing
-        const stream = llmHelper.streamChat(message, imagePaths, context, options?.skipSystemPrompt ? "" : undefined, options?.ignoreKnowledgeMode);
+        // Intent-aware routing: for non-coding follow-up questions, route to Gemini
+        // Flash 3.1 with the verbal prompt for conversational depth. Gemma 4 reliably
+        // dumps Python code blocks even on verbal follow-ups like "explain each step".
+        // Skip when images are attached (vision routes through Gemma's multimodal path)
+        // or when skipSystemPrompt is set (caller wants the default chain).
+        let stream: AsyncGenerator<string, void, unknown>;
+        let routedToFlashVerbal = false;
+        if (!imagePaths?.length && !options?.skipSystemPrompt) {
+          try {
+            const intent = await classifyIntent(message, message, 0);
+            console.log(`[IPC] gemini-chat-stream intent: ${intent.intent} (${intent.confidence.toFixed(2)})`);
+            if (intent.intent !== 'coding') {
+              // Build userContent with the same MEETING/CONTEXT framing streamChat uses
+              const userContent = context
+                ? context.trimStart().startsWith('MEETING CONTEXT')
+                  ? `${context}\n\nUSER QUESTION:\n${message}`
+                  : `CONTEXT:\n${context}\n\nUSER QUESTION:\n${message}`
+                : message;
+              stream = llmHelper.streamVerbalWithGeminiFlash(userContent, VERBAL_WHAT_TO_ANSWER_PROMPT, undefined);
+              routedToFlashVerbal = true;
+              event.sender.send("gemini-stream-source", "Gemini Flash 3.1");
+            }
+          } catch (intentErr: any) {
+            console.warn('[IPC] Intent classification failed, falling back to streamChat:', intentErr?.message);
+          }
+        }
+        if (!routedToFlashVerbal) {
+          // Default path: streamChat handles full routing (Gemma for coding, etc.)
+          stream = llmHelper.streamChat(message, imagePaths, context, options?.skipSystemPrompt ? "" : undefined, options?.ignoreKnowledgeMode);
+        }
 
-        for await (const token of stream) {
+        for await (const token of stream!) {
           // Bail if a newer stream has taken over
           if (_chatStreamId !== myStreamId) {
             console.log(`[IPC] gemini-chat-stream ${myStreamId} superseded by ${_chatStreamId}, stopping.`);
