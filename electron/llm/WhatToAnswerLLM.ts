@@ -48,14 +48,21 @@ export class WhatToAnswerLLM {
             return DROP_PREFIXES.some(p => trimmed.startsWith(p));
         };
 
+        let chunkCount = 0;
         for await (const chunk of source) {
+            chunkCount++;
+            if (chunkCount <= 5 || chunkCount % 20 === 0) {
+                console.log(`[filterVerbalLines] chunk #${chunkCount}: ${JSON.stringify(chunk.slice(0, 80))} (lineBuffer pre: ${JSON.stringify(lineBuffer.slice(0, 80))})`);
+            }
             const combined = lineBuffer + chunk;
             const lines = combined.split('\n');
             // Last element may be an incomplete line — hold in buffer
             lineBuffer = lines.pop()!;
 
             for (let i = 0; i < lines.length; i++) {
-                if (!shouldDrop(lines[i])) {
+                const drop = shouldDrop(lines[i]);
+                console.log(`[filterVerbalLines] line: drop=${drop} → ${JSON.stringify(lines[i].slice(0, 80))}`);
+                if (!drop) {
                     yield lines[i] + (i < lines.length - 1 || lineBuffer !== '' ? '\n' : '');
                 } else {
                     console.warn(`[WhatToAnswerLLM] filterVerbalLines: dropped coding line: "${lines[i].trimStart().slice(0, 40)}"`);
@@ -64,7 +71,9 @@ export class WhatToAnswerLLM {
         }
 
         // Flush remaining buffer
-        if (lineBuffer && !shouldDrop(lineBuffer)) yield lineBuffer;
+        const finalDrop = shouldDrop(lineBuffer);
+        console.log(`[filterVerbalLines] flush: lineBuffer=${JSON.stringify(lineBuffer.slice(0, 80))} drop=${finalDrop}`);
+        if (lineBuffer && !finalDrop) yield lineBuffer;
     }
 
     private async *filterCodeFences(
@@ -93,7 +102,10 @@ export class WhatToAnswerLLM {
                     console.warn('[WhatToAnswerLLM] filterCodeFences: code fence suppressed on verbal path — check intent classifier');
                     continue;
                 }
-                if (!suppressing) output += combined[i];
+                // Strip any stray backticks even when not suppressing — verbal answers
+                // never legitimately contain backticks, and the 3-char carry buffer
+                // can leak 1-2 backticks across chunk boundaries after a fence transition.
+                if (!suppressing && combined[i] !== '`') output += combined[i];
                 i++;
             }
 
