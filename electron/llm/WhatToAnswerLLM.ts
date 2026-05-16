@@ -10,6 +10,41 @@ export class WhatToAnswerLLM {
         this.llmHelper = llmHelper;
     }
 
+    /**
+     * Drop lines that are coding-format artifacts leaking through on the verbal path.
+     * Operates on complete lines only — accumulates until newline, then decides.
+     * Patterns: Time:/Space:/Why: complexity bullets, bare language tags (```python etc).
+     */
+    private async *filterVerbalLines(
+        source: AsyncGenerator<string>
+    ): AsyncGenerator<string> {
+        const DROP_PREFIXES = ['Time:', 'Space:', 'Why:', 'Time complexity', 'Space complexity'];
+        let lineBuffer = '';
+
+        const shouldDrop = (line: string) => {
+            const trimmed = line.trimStart();
+            return DROP_PREFIXES.some(p => trimmed.startsWith(p));
+        };
+
+        for await (const chunk of source) {
+            const combined = lineBuffer + chunk;
+            const lines = combined.split('\n');
+            // Last element may be an incomplete line — hold in buffer
+            lineBuffer = lines.pop()!;
+
+            for (let i = 0; i < lines.length; i++) {
+                if (!shouldDrop(lines[i])) {
+                    yield lines[i] + (i < lines.length - 1 || lineBuffer !== '' ? '\n' : '');
+                } else {
+                    console.warn(`[WhatToAnswerLLM] filterVerbalLines: dropped coding line: "${lines[i].trimStart().slice(0, 40)}"`);
+                }
+            }
+        }
+
+        // Flush remaining buffer
+        if (lineBuffer && !shouldDrop(lineBuffer)) yield lineBuffer;
+    }
+
     private async *filterCodeFences(
         source: AsyncGenerator<string>
     ): AsyncGenerator<string> {
@@ -119,7 +154,10 @@ ANSWER SHAPE: ${intentResult.answerShape}
                     undefined,
                     VERBAL_WHAT_TO_ANSWER_PROMPT
                 );
-                yield* this.filterCodeFences(rawStream);
+                // Compose: fence filter → line filter (outer-to-inner order)
+                // filterVerbalLines drops coding-format prose (Time:/Space:/Why: bullets)
+                // filterCodeFences suppresses any ``` blocks that slip through
+                yield* this.filterVerbalLines(this.filterCodeFences(rawStream));
             }
             // ────────────────────────────────────────────────────────────────────────
 
