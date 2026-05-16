@@ -270,12 +270,18 @@ export async function classifyIntent(
     recentTranscript: string,
     assistantMessageCount: number
 ): Promise<IntentResult> {
+    // Debug: surface what the classifier actually sees so we can diagnose
+    // why explicit questions sometimes fall through to 'general'.
+    console.log(`[IntentClassifier] lastInterviewerTurn: ${JSON.stringify(lastInterviewerTurn?.slice(0, 200) ?? null)}`);
+
     // Tier 1: Try regex-based first (high confidence, instant)
     if (lastInterviewerTurn) {
         const patternResult = detectIntentByPattern(lastInterviewerTurn);
         if (patternResult) {
+            console.log(`[IntentClassifier] Tier 1 (regex) matched: intent=${patternResult.intent} confidence=${patternResult.confidence}`);
             return patternResult;
         }
+        console.log(`[IntentClassifier] Tier 1 (regex) no match — falling to SLM`);
 
         // Tier 2: Try zero-shot SLM (if regex didn't match)
         if (lastInterviewerTurn.trim().length > 5) {
@@ -287,7 +293,9 @@ export async function classifyIntent(
     }
 
     // Tier 3: Fall back to context-based heuristic
-    return detectIntentByContext(recentTranscript, assistantMessageCount);
+    const heuristic = detectIntentByContext(recentTranscript, assistantMessageCount);
+    console.log(`[IntentClassifier] Tier 3 (heuristic) result: intent=${heuristic.intent} confidence=${heuristic.confidence}`);
+    return heuristic;
 }
 
 /**

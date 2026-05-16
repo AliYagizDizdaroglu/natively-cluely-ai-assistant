@@ -25,6 +25,15 @@ export class WhatToAnswerLLM {
             "I'll show", "I will show", "Let me show",
             "I'll demonstrate", "I will demonstrate", "Let me demonstrate",
             "I'll code", "I will code",
+            // Meta-preamble openers — describe the upcoming answer instead of giving it
+            "I'll explain", "I will explain", "Let me explain",
+            "I'll walk", "I will walk", "Let me walk",
+            "I'll break", "I will break", "Let me break",
+            "I'll describe", "I will describe", "Let me describe",
+            "I'll go through", "I will go through", "Let me go through",
+            "I'll start by", "I will start by", "Let me start",
+            "I'll cover", "I will cover", "Let me cover",
+            "I'll outline", "I will outline", "Let me outline",
         ];
         let lineBuffer = '';
 
@@ -86,8 +95,11 @@ export class WhatToAnswerLLM {
             if (output) yield output;
         }
 
-        // Flush carry buffer — skip pure-backtick carry (fence detection artifact)
-        if (carry && !suppressing && !/^`+$/.test(carry)) yield carry;
+        // Flush carry buffer — strip any backticks (fence detection artifact)
+        if (carry && !suppressing) {
+            const cleaned = carry.replace(/`/g, '');
+            if (cleaned) yield cleaned;
+        }
     }
 
     // Deprecated non-streaming method (redirect to streaming or implement if needed)
