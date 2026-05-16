@@ -18,7 +18,14 @@ export class WhatToAnswerLLM {
     private async *filterVerbalLines(
         source: AsyncGenerator<string>
     ): AsyncGenerator<string> {
-        const DROP_PREFIXES = ['Time:', 'Space:', 'Why:', 'Time complexity', 'Space complexity'];
+        const DROP_PREFIXES = [
+            'Time:', 'Space:', 'Why:', 'Time complexity', 'Space complexity',
+            // Implementation-framing openers that must not appear in verbal answers
+            "I'll implement", "I will implement", "Let me implement",
+            "I'll show", "I will show", "Let me show",
+            "I'll demonstrate", "I will demonstrate", "Let me demonstrate",
+            "I'll code", "I will code",
+        ];
         let lineBuffer = '';
 
         const shouldDrop = (line: string) => {
@@ -79,10 +86,8 @@ export class WhatToAnswerLLM {
             if (output) yield output;
         }
 
-        // Flush carry buffer
-        if (carry && !suppressing) yield carry;
-        // Unclosed fence at stream end — emit fallback rather than silence
-        // Unclosed fence: suppress silently — verbal path should not emit implementation text
+        // Flush carry buffer — skip pure-backtick carry (fence detection artifact)
+        if (carry && !suppressing && !/^`+$/.test(carry)) yield carry;
     }
 
     // Deprecated non-streaming method (redirect to streaming or implement if needed)

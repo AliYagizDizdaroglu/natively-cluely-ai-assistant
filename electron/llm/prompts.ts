@@ -2103,6 +2103,7 @@ RULES:
 3. Explain concepts using analogies and real-world terms — never describe implementation steps
 4. Never hedge or offer to explain later — give the complete answer now
 5. Simple/social questions: 1-3 sentences max
+6. NEVER open with: "I'll implement", "I will implement", "Let me implement", "I'll show", "I'll demonstrate", "I'll code", "Here's the code", "Let me write"
 
 Output ONLY the spoken answer. Nothing else.`;
 
