@@ -319,6 +319,12 @@ export class IntelligenceEngine extends EventEmitter {
                     streamAborted = true;
                     break;
                 }
+                // Intercept model source sentinel — emit attribution, don't include in answer text
+                if (token.startsWith('__model_source:') && token.endsWith('__')) {
+                    const label = token.slice('__model_source:'.length, -2);
+                    this.emit('suggested_answer_source', label);
+                    continue;
+                }
                 this.emit('suggested_answer_token', token, question || 'inferred', confidence);
                 fullAnswer += token;
             }
