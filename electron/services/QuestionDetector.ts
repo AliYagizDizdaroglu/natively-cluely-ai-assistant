@@ -153,6 +153,16 @@ export class QuestionDetector {
         if (!result || !result.detected) return;
         if (result.confidence < this.opts.confidenceThreshold) return;
         if (result.question.trim().length === 0) return;
+        // Reject fragments that aren't substantive enough to be standalone questions.
+        // STT often chunks interviewer speech into pieces; llama can mark a 1-2 word
+        // fragment as "detected: true" even though it's just the tail of a real question.
+        // Real interview questions are at least ~3 words ("explain transformers please",
+        // "what is the time complexity", "tell me about a time you debugged").
+        const wordCount = result.question.trim().split(/\s+/).length;
+        if (wordCount < 3) {
+            console.log(`[QuestionDetector] dropping fragment (${wordCount} words): ${JSON.stringify(result.question)}`);
+            return;
+        }
 
         // Dedup check
         const match = this.findSimilarChip(result.question);
@@ -189,7 +199,16 @@ export class QuestionDetector {
     }
 
     private findSimilarChip(text: string): { id: string; text: string } | null {
+        const normNew = text.toLowerCase().trim();
         for (const entry of this.dedupCache) {
+            const normExisting = entry.text.toLowerCase().trim();
+            // Substring / containment check — catches the common STT fragmentation case:
+            // chip A: "architecture." and chip B: "Can you explain Transformers? architecture."
+            // are clearly the same turn split by STT chunking, but Jaccard sees them as
+            // 0.2 similar. Containment is the stronger signal here.
+            if (normNew.length >= 3 && (normExisting.includes(normNew) || normNew.includes(normExisting))) {
+                return entry;
+            }
             if (jaccardSimilarity(text, entry.text) >= this.opts.similarityThreshold) {
                 return entry;
             }

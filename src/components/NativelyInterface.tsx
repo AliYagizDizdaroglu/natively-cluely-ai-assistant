@@ -2514,8 +2514,16 @@ Provide only the answer, nothing else.`;
                             ) : null}
 
                             {/* Detected Questions chips — mounted unconditionally so chips can appear
-                                even when chat is empty. Panel returns null when no chips exist. */}
-                            <DetectedQuestionsPanel />
+                                even when chat is empty. Panel returns null when no chips exist.
+                                onChipClickStart kicks off stream metrics so the answer bubble gets a
+                                TTFT/model attribution line (same as the manual "What to answer?" flow). */}
+                            <DetectedQuestionsPanel
+                                onChipClickStart={(intent) => {
+                                    sm.start();
+                                    sm.setSource(intent === 'coding' ? 'Gemma 4 26B' : 'Gemini Flash 3.1');
+                                    setIsProcessing(true);
+                                }}
+                            />
 
                             {/* Chat History - Only show if there are messages OR active states */}
                             {(messages.length > 0 || isManualRecording || isProcessing) && (
