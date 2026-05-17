@@ -2513,10 +2513,13 @@ Provide only the answer, nothing else.`;
                                 />
                             ) : null}
 
+                            {/* Detected Questions chips — mounted unconditionally so chips can appear
+                                even when chat is empty. Panel returns null when no chips exist. */}
+                            <DetectedQuestionsPanel />
+
                             {/* Chat History - Only show if there are messages OR active states */}
                             {(messages.length > 0 || isManualRecording || isProcessing) && (
                                 <motion.div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-3 no-drag" style={{ scrollbarWidth: 'none', maxHeight: scrollMaxH }}>
-                                    <DetectedQuestionsPanel />
                                     {messages.map((msg) => {
                                         // Every row spans the full inner width of the scroll
                                         // container, which itself rides the shell's animated
