@@ -2328,6 +2328,34 @@ export function initializeIpcHandlers(appState: AppState): void {
     }
   });
 
+  safeHandle("answer-detected-question", async (event, payload: {
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    contextSnapshot: string;
+  }) => {
+    try {
+      console.log(`[IPC] answer-detected-question: intent=${payload.intent}, question="${payload.question.slice(0, 60)}..."`);
+      const intelligenceManager = appState.getIntelligenceManager();
+      // Use the engine's runWhatShouldISay with overrides — emits the same
+      // suggested_answer_token + suggested_answer events the manual "What to
+      // answer?" flow does, so the renderer needs no new event subscriptions.
+      const engine = (intelligenceManager as any).engine;
+      await engine.runWhatShouldISay(
+        payload.question,
+        1.0,  // confidence
+        undefined,  // no images on detected-question path
+        {
+          intentOverride: payload.intent,
+          contextOverride: payload.contextSnapshot,
+        }
+      );
+      return { ok: true };
+    } catch (e: any) {
+      console.error('[IPC] answer-detected-question failed:', e);
+      throw e;
+    }
+  });
+
   safeHandle("generate-clarify", async () => {
     try {
       const intelligenceManager = appState.getIntelligenceManager();
