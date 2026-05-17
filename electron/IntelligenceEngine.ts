@@ -11,7 +11,7 @@ import {
     prepareTranscriptForWhatToAnswer, buildTemporalContext,
     AssistantResponse as LLMAssistantResponse, classifyIntent
 } from './llm';
-import { getAnswerShapeGuidance } from './llm/IntentClassifier';
+import { getAnswerShapeGuidance, IntentResult } from './llm/IntentClassifier';
 
 // Mode types
 export type IntelligenceMode = 'idle' | 'assist' | 'what_to_say' | 'follow_up' | 'recap' | 'clarify' | 'manual' | 'follow_up_questions' | 'code_hint' | 'brainstorm';
@@ -321,20 +321,30 @@ export class IntelligenceEngine extends EventEmitter {
                 })();
             }
 
-            // temporalContext intentionally uses live state (historical responses/tones)
-            // even when contextOverride is set — it's orthogonal to the snapshot transcript.
+            // temporalContext uses live state — this is a deliberate, accepted tradeoff
+            // even when contextOverride is set (chip-click flow). Rationale:
+            //   - Historical assistant responses (avoid-repetition signal) SHOULD reflect
+            //     what we've already said in this meeting, including responses generated
+            //     after the chip was detected. Repeating yourself is bad regardless of
+            //     when the question was originally asked.
+            //   - Tone signals from interviewer turns AFTER the snapshot will leak into
+            //     this answer's tone analysis. Minor drift; acceptable because the
+            //     answer-shaping signal (intentResult) already comes from the chip's
+            //     pre-classified intent, which is the dominant influence on output.
+            // If this drift causes problems later, add a third option `temporalContextOverride`
+            // and snapshot it at detection time too. Not needed for v1.
             const temporalContext = buildTemporalContext(
                 contextItems,
                 this.session.getAssistantResponseHistory(),
                 180
             );
-            let intentResult;
+            let intentResult: IntentResult;
             if (options.intentOverride) {
                 const mapped = options.intentOverride === 'verbal' ? 'general'
                             : options.intentOverride === 'behavioral' ? 'behavioral'
                             : 'coding';
                 intentResult = {
-                    intent: mapped as any,
+                    intent: mapped,
                     confidence: 1.0,
                     answerShape: getAnswerShapeGuidance(mapped),
                 };
