@@ -44,8 +44,13 @@ export class IntelligenceManager extends EventEmitter {
         // Forward all engine events through the facade
         this.forwardEngineEvents();
 
-        // Initialize passive question detector
-        const detectionClient = new OllamaDetectionClient({ model: 'llama3.1:8b' });
+        // Initialize passive question detector.
+        // Timeout=10s (not 3s default): llama 8b cold-start inference can take
+        // 5-10s — model load + prefill + JSON generation. Once warmed up, calls
+        // return in 200-500ms so the bigger budget is only paid on cold paths.
+        // The safety-net warmup competing with detection used to cause 3-4 back-to-back
+        // 3s timeouts before a chip would surface; 10s eliminates that.
+        const detectionClient = new OllamaDetectionClient({ model: 'llama3.1:8b', timeoutMs: 10000 });
         this.questionDetector = new QuestionDetector({
             client: detectionClient,
             snapshotProvider: {
