@@ -43,6 +43,10 @@ export class OllamaDetectionClient {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), this.timeoutMs);
 
+        // Latency breakdown: t0 = issued, t1 = headers back, t2 = body parsed.
+        // Lets us tell cold-load (long t0→t1) from JSON-mode slow generation
+        // (also long t0→t1) from body/parse overhead (long t1→t2).
+        const t0 = Date.now();
         try {
             const response = await fetch(`${this.ollamaUrl}/api/chat`, {
                 method: 'POST',
@@ -61,8 +65,9 @@ export class OllamaDetectionClient {
                 signal: controller.signal,
             });
 
+            const t1 = Date.now();
             if (!response.ok) {
-                console.warn(`[OllamaDetectionClient] HTTP ${response.status}`);
+                console.warn(`[OllamaDetectionClient] HTTP ${response.status} after ${t1 - t0}ms`);
                 return null;
             }
 
@@ -76,6 +81,8 @@ export class OllamaDetectionClient {
                 this.recordParseFailure('http-body-parse', e?.message);
                 return null;
             }
+            const t2 = Date.now();
+            console.log(`[OllamaDetectionClient] detect ok: gen=${t1 - t0}ms body=${t2 - t1}ms total=${t2 - t0}ms`);
 
             const content = data?.message?.content;
             if (typeof content !== 'string') {

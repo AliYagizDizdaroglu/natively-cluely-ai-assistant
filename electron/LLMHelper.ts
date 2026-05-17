@@ -408,6 +408,16 @@ export class LLMHelper {
 
   private safetyNetWarmupPromise: Promise<void> | null = null;
 
+  /**
+   * Public entry point so non-Gemma callers (e.g. QuestionDetector) can
+   * trigger the same idempotent llama3.1:8b warmup. Returns the in-flight
+   * promise so the caller can await it before its first detection if desired.
+   */
+  public warmUpSafetyNetPublic(): Promise<void> {
+    this.warmUpSafetyNet();
+    return this.safetyNetWarmupPromise ?? Promise.resolve();
+  }
+
   private warmUpSafetyNet(): void {
     // Idempotent: collapse repeated calls (constructor, setApiKey, every Gemma
     // switch) into a single in-flight warmup. Previously each call enqueued
