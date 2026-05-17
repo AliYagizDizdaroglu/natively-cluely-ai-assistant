@@ -95,17 +95,43 @@ describe('OllamaDetectionClient', () => {
         expect(result).toBeNull();
     });
 
-    it('returns null on timeout (>3s)', async () => {
-        fetchMock.mockImplementationOnce(
-            () => new Promise(resolve => setTimeout(() => resolve({ ok: true, json: async () => ({}) }), 5000))
-        );
+    it('returns null on timeout (>3s) via AbortError path', async () => {
+        // Mock fetch that honors AbortSignal — resolves slowly OR rejects with AbortError on abort.
+        // This ensures we exercise the catch (e.name === 'AbortError') branch, not the
+        // content-undefined fallthrough.
+        fetchMock.mockImplementationOnce((_url: string, opts: RequestInit) => {
+            return new Promise((resolve, reject) => {
+                const slowTimer = setTimeout(() => resolve({ ok: true, json: async () => ({}) }), 5000);
+                const signal = opts.signal as AbortSignal | undefined;
+                if (signal) {
+                    if (signal.aborted) {
+                        clearTimeout(slowTimer);
+                        const err: any = new Error('aborted');
+                        err.name = 'AbortError';
+                        reject(err);
+                        return;
+                    }
+                    signal.addEventListener('abort', () => {
+                        clearTimeout(slowTimer);
+                        const err: any = new Error('aborted');
+                        err.name = 'AbortError';
+                        reject(err);
+                    }, { once: true });
+                }
+            });
+        });
 
-        const client = new OllamaDetectionClient({ model: 'llama3.1:8b', timeoutMs: 100 });
+        const client = new OllamaDetectionClient({ model: 'llama3.1:8b', timeoutMs: 50 });
+        const start = Date.now();
         const result = await client.detect({
             recentInterviewerTranscript: 'x',
             fullConversationContext: 'y',
         });
+        const elapsed = Date.now() - start;
+
         expect(result).toBeNull();
+        // Should resolve well under 1s (50ms timeout + abort propagation), not wait 5s
+        expect(elapsed).toBeLessThan(500);
     });
 
     it('posts to /api/chat with correct payload', async () => {
