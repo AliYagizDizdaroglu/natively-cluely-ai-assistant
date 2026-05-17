@@ -234,4 +234,37 @@ describe('QuestionDetector', () => {
         await vi.runAllTimersAsync();
         expect(client.detect).not.toHaveBeenCalled();
     });
+
+    it('clear() during in-flight detection drops the result (no chip emitted)', async () => {
+        let resolveDetect: (v: DetectionResponse) => void = () => {};
+        const inflight = new Promise<DetectionResponse>(r => { resolveDetect = r; });
+        const client = {
+            detect: vi.fn(() => inflight),
+        } as any;
+        const chips: DetectedQuestionChip[] = [];
+        const updates: DetectedQuestionChip[] = [];
+        const det = new QuestionDetector({
+            client,
+            snapshotProvider: stubSnapshotProvider('i', 'c'),
+            onChip: c => chips.push(c),
+            onChipUpdate: c => updates.push(c),
+        });
+
+        // Trigger detection (in-flight starts)
+        det.onSpeakerChange('interviewer', 'user');
+        await Promise.resolve();  // let runDetection enter the await
+        expect(client.detect).toHaveBeenCalledTimes(1);
+
+        // Clear during in-flight (session ended)
+        det.clear();
+
+        // Now detect resolves — should be dropped by generation guard
+        resolveDetect({ detected: true, question: 'Q from old session', intent: 'verbal', confidence: 0.9 });
+        await vi.runAllTimersAsync();
+        await Promise.resolve();
+        await Promise.resolve();
+
+        expect(chips).toHaveLength(0);
+        expect(updates).toHaveLength(0);
+    });
 });
