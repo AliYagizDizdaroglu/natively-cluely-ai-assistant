@@ -296,28 +296,38 @@ export class IntelligenceEngine extends EventEmitter {
                 }
             }
 
-            const transcriptTurns = contextItems.map(item => ({
-                role: item.role,
-                text: item.text,
-                timestamp: item.timestamp
-            }));
+            let preparedTranscript: string;
+            let lastInterviewerTurn: string | null;
+            if (options.contextOverride) {
+                preparedTranscript = options.contextOverride;
+                lastInterviewerTurn = question ?? null;
+                console.log('[IntelligenceEngine] runWhatShouldISay: using contextOverride snapshot');
+            } else {
+                const transcriptTurns = contextItems.map(item => ({
+                    role: item.role,
+                    text: item.text,
+                    timestamp: item.timestamp
+                }));
 
-            const preparedTranscript = prepareTranscriptForWhatToAnswer(transcriptTurns, 12);
+                preparedTranscript = prepareTranscriptForWhatToAnswer(transcriptTurns, 12);
 
+                lastInterviewerTurn = (() => {
+                    for (let i = contextItems.length - 1; i >= 0; i--) {
+                        if (contextItems[i].role === 'interviewer') {
+                            return contextItems[i].text;
+                        }
+                    }
+                    return null;
+                })();
+            }
+
+            // temporalContext intentionally uses live state (historical responses/tones)
+            // even when contextOverride is set — it's orthogonal to the snapshot transcript.
             const temporalContext = buildTemporalContext(
                 contextItems,
                 this.session.getAssistantResponseHistory(),
                 180
             );
-
-            const lastInterviewerTurn = (() => {
-                for (let i = contextItems.length - 1; i >= 0; i--) {
-                    if (contextItems[i].role === 'interviewer') {
-                        return contextItems[i].text;
-                    }
-                }
-                return null;
-            })();
             let intentResult;
             if (options.intentOverride) {
                 const mapped = options.intentOverride === 'verbal' ? 'general'
