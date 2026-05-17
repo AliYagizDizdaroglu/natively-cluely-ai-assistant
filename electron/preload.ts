@@ -779,6 +779,39 @@ contextBridge.exposeInMainWorld("electronAPI", {
       ipcRenderer.removeListener("intelligence-suggested-answer", subscription)
     }
   },
+  onDetectedQuestion: (callback: (chip: {
+    id: string;
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    confidence: number;
+    contextSnapshot: string;
+    detectedAt: number;
+  }) => void) => {
+    const subscription = (_: any, data: any) => callback(data)
+    ipcRenderer.on("detected-question", subscription)
+    return () => {
+      ipcRenderer.removeListener("detected-question", subscription)
+    }
+  },
+  onDetectedQuestionUpdate: (callback: (chip: {
+    id: string;
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    confidence: number;
+    contextSnapshot: string;
+    detectedAt: number;
+  }) => void) => {
+    const subscription = (_: any, data: any) => callback(data)
+    ipcRenderer.on("detected-question-update", subscription)
+    return () => {
+      ipcRenderer.removeListener("detected-question-update", subscription)
+    }
+  },
+  answerDetectedQuestion: (payload: {
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    contextSnapshot: string;
+  }) => ipcRenderer.invoke("answer-detected-question", payload),
   onIntelligenceRefinedAnswerToken: (callback: (data: { token: string; intent: string }) => void) => {
     const subscription = (_: any, data: any) => callback(data)
     ipcRenderer.on("intelligence-refined-answer-token", subscription)
