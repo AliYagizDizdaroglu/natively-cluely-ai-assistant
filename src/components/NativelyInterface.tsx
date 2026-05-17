@@ -47,6 +47,7 @@ import { useResolvedTheme } from '../hooks/useResolvedTheme';
 import { getOverlayAppearance, OVERLAY_OPACITY_DEFAULT } from '../lib/overlayAppearance';
 import { useStreamMetrics, type StreamMetrics } from '../hooks/useStreamMetrics';
 import { MessageMetricsBar } from './MessageMetricsBar';
+import { DetectedQuestionsPanel } from './DetectedQuestionsPanel';
 
 interface Message {
     id: string;
@@ -2515,6 +2516,7 @@ Provide only the answer, nothing else.`;
                             {/* Chat History - Only show if there are messages OR active states */}
                             {(messages.length > 0 || isManualRecording || isProcessing) && (
                                 <motion.div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-3 no-drag" style={{ scrollbarWidth: 'none', maxHeight: scrollMaxH }}>
+                                    <DetectedQuestionsPanel />
                                     {messages.map((msg) => {
                                         // Every row spans the full inner width of the scroll
                                         // container, which itself rides the shell's animated
