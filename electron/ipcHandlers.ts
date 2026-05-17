@@ -2334,15 +2334,17 @@ export function initializeIpcHandlers(appState: AppState): void {
     contextSnapshot: string;
   }) => {
     try {
+      if (!payload?.question || !payload?.intent) {
+          throw new Error('answer-detected-question: missing question or intent');
+      }
       console.log(`[IPC] answer-detected-question: intent=${payload.intent}, question="${payload.question.slice(0, 60)}..."`);
       const intelligenceManager = appState.getIntelligenceManager();
       // Use the engine's runWhatShouldISay with overrides — emits the same
       // suggested_answer_token + suggested_answer events the manual "What to
       // answer?" flow does, so the renderer needs no new event subscriptions.
-      const engine = (intelligenceManager as any).engine;
-      await engine.runWhatShouldISay(
+      await intelligenceManager.runWhatShouldISay(
         payload.question,
-        1.0,  // confidence
+        1.0,  // chip = user-confirmed, high confidence
         undefined,  // no images on detected-question path
         {
           intentOverride: payload.intent,
