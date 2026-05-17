@@ -54,6 +54,8 @@ export interface IntelligenceModeEvents {
     'manual_answer_result': (answer: string, question: string) => void;
     'mode_changed': (mode: IntelligenceMode) => void;
     'error': (error: Error, mode: IntelligenceMode) => void;
+    'transcript-segment-final': (segment: TranscriptSegment) => void;
+    'speaker-change': (prevSpeaker: string, newSpeaker: string) => void;
 }
 
 export class IntelligenceEngine extends EventEmitter {
@@ -85,6 +87,9 @@ export class IntelligenceEngine extends EventEmitter {
     private lastTranscriptTime: number = 0;
     private lastTriggerTime: number = 0;
     private readonly triggerCooldown: number = 3000; // 3 seconds
+
+    // Speaker tracking for detector events
+    private lastSpeaker: string | null = null;
 
     constructor(llmHelper: LLMHelper, session: SessionTracker) {
         super();
@@ -147,6 +152,15 @@ export class IntelligenceEngine extends EventEmitter {
                 this.runFollowUp(intent, segment.text.trim());
             }
         }
+
+        // Emit detector events
+        if (segment.final) {
+            this.emit('transcript-segment-final', segment);
+        }
+        if (this.lastSpeaker !== null && this.lastSpeaker !== segment.speaker) {
+            this.emit('speaker-change', this.lastSpeaker, segment.speaker);
+        }
+        this.lastSpeaker = segment.speaker;
     }
 
     /**
@@ -845,5 +859,6 @@ export class IntelligenceEngine extends EventEmitter {
             this.assistCancellationToken.abort();
             this.assistCancellationToken = null;
         }
+        this.lastSpeaker = null;
     }
 }
