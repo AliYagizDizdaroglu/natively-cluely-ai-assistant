@@ -12,6 +12,8 @@ import { LLMHelper } from './LLMHelper';
 import { SessionTracker } from './SessionTracker';
 import { IntelligenceEngine } from './IntelligenceEngine';
 import { MeetingPersistence } from './MeetingPersistence';
+import { QuestionDetector, DetectedQuestionChip } from './services/QuestionDetector';
+import { OllamaDetectionClient } from './services/OllamaDetectionClient';
 
 // Re-export types for backward compatibility
 export type { TranscriptSegment, SuggestionTrigger, ContextItem } from './SessionTracker';
@@ -31,6 +33,7 @@ export class IntelligenceManager extends EventEmitter {
     private session: SessionTracker;
     private engine: IntelligenceEngine;
     private persistence: MeetingPersistence;
+    private questionDetector: QuestionDetector;
 
     constructor(llmHelper: LLMHelper) {
         super();
@@ -40,6 +43,31 @@ export class IntelligenceManager extends EventEmitter {
 
         // Forward all engine events through the facade
         this.forwardEngineEvents();
+
+        // Initialize passive question detector
+        const detectionClient = new OllamaDetectionClient({ model: 'llama3.1:8b' });
+        this.questionDetector = new QuestionDetector({
+            client: detectionClient,
+            snapshotProvider: {
+                getRecentInterviewerTranscript: () => this.getFormattedContext(30),
+                getContextSnapshot: () => this.getFormattedContext(60),
+            },
+            onChip: chip => this.emit('question-detected', chip),
+            onChipUpdate: chip => this.emit('question-detected-update', chip),
+        });
+
+        // Wire engine events to detector
+        this.engine.on('transcript-segment-final', segment => {
+            this.questionDetector.onTranscriptFinal(segment);
+        });
+        this.engine.on('speaker-change', (prev, next) => {
+            this.questionDetector.onSpeakerChange(prev, next);
+        });
+    }
+
+    /** Clear detector state — call on meeting boundary. */
+    clearDetectedQuestions(): void {
+        this.questionDetector.clear();
     }
 
     /**
@@ -202,6 +230,7 @@ export class IntelligenceManager extends EventEmitter {
     // ============================================
 
     async stopMeeting(): Promise<string | null> {
+        this.clearDetectedQuestions();
         return this.persistence.stopMeeting();
     }
 

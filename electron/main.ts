@@ -1993,6 +1993,20 @@ export class AppState {
         win.webContents.send('intelligence-error', { error: error.message, mode })
       }
     })
+
+    this.intelligenceManager.on('question-detected', (chip: any) => {
+      const win = mainWindow()
+      if (win) {
+        win.webContents.send('detected-question', chip)
+      }
+    })
+
+    this.intelligenceManager.on('question-detected-update', (chip: any) => {
+      const win = mainWindow()
+      if (win) {
+        win.webContents.send('detected-question-update', chip)
+      }
+    })
   }
 
 
