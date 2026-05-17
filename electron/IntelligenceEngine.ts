@@ -11,6 +11,7 @@ import {
     prepareTranscriptForWhatToAnswer, buildTemporalContext,
     AssistantResponse as LLMAssistantResponse, classifyIntent
 } from './llm';
+import { getAnswerShapeGuidance, IntentResult } from './llm/IntentClassifier';
 
 // Mode types
 export type IntelligenceMode = 'idle' | 'assist' | 'what_to_say' | 'follow_up' | 'recap' | 'clarify' | 'manual' | 'follow_up_questions' | 'code_hint' | 'brainstorm';
@@ -54,6 +55,8 @@ export interface IntelligenceModeEvents {
     'manual_answer_result': (answer: string, question: string) => void;
     'mode_changed': (mode: IntelligenceMode) => void;
     'error': (error: Error, mode: IntelligenceMode) => void;
+    'transcript-segment-final': (segment: TranscriptSegment) => void;
+    'speaker-change': (prevSpeaker: string, newSpeaker: string) => void;
 }
 
 export class IntelligenceEngine extends EventEmitter {
@@ -85,6 +88,9 @@ export class IntelligenceEngine extends EventEmitter {
     private lastTranscriptTime: number = 0;
     private lastTriggerTime: number = 0;
     private readonly triggerCooldown: number = 3000; // 3 seconds
+
+    // Speaker tracking for detector events
+    private lastSpeaker: string | null = null;
 
     constructor(llmHelper: LLMHelper, session: SessionTracker) {
         super();
@@ -147,6 +153,15 @@ export class IntelligenceEngine extends EventEmitter {
                 this.runFollowUp(intent, segment.text.trim());
             }
         }
+
+        // Emit detector events
+        if (segment.final) {
+            this.emit('transcript-segment-final', segment);
+        }
+        if (this.lastSpeaker !== null && this.lastSpeaker !== segment.speaker) {
+            this.emit('speaker-change', this.lastSpeaker, segment.speaker);
+        }
+        this.lastSpeaker = segment.speaker;
     }
 
     /**
@@ -219,7 +234,15 @@ export class IntelligenceEngine extends EventEmitter {
      * Manual trigger - uses clean transcript pipeline for question inference
      * NEVER returns null - always provides a usable response
      */
-    async runWhatShouldISay(question?: string, confidence: number = 0.8, imagePaths?: string[]): Promise<string | null> {
+    async runWhatShouldISay(
+        question?: string,
+        confidence: number = 0.8,
+        imagePaths?: string[],
+        options: {
+            intentOverride?: 'verbal' | 'coding' | 'behavioral';
+            contextOverride?: string;
+        } = {}
+    ): Promise<string | null> {
         const now = Date.now();
 
         // Bypass cooldown when the user explicitly attached images (capture-and-process intent).
@@ -243,7 +266,7 @@ export class IntelligenceEngine extends EventEmitter {
                     this.setMode('idle');
                     return "Please configure your API Keys in Settings to use this feature.";
                 }
-                const context = this.session.getFormattedContext(180);
+                const context = options.contextOverride ?? this.session.getFormattedContext(180);
                 const answer = await this.answerLLM.generate(question || '', context);
                 if (answer) {
                     this.session.addAssistantMessage(answer);
@@ -273,33 +296,66 @@ export class IntelligenceEngine extends EventEmitter {
                 }
             }
 
-            const transcriptTurns = contextItems.map(item => ({
-                role: item.role,
-                text: item.text,
-                timestamp: item.timestamp
-            }));
+            let preparedTranscript: string;
+            let lastInterviewerTurn: string | null;
+            if (options.contextOverride) {
+                preparedTranscript = options.contextOverride;
+                lastInterviewerTurn = question ?? null;
+                console.log('[IntelligenceEngine] runWhatShouldISay: using contextOverride snapshot');
+            } else {
+                const transcriptTurns = contextItems.map(item => ({
+                    role: item.role,
+                    text: item.text,
+                    timestamp: item.timestamp
+                }));
 
-            const preparedTranscript = prepareTranscriptForWhatToAnswer(transcriptTurns, 12);
+                preparedTranscript = prepareTranscriptForWhatToAnswer(transcriptTurns, 12);
 
+                lastInterviewerTurn = (() => {
+                    for (let i = contextItems.length - 1; i >= 0; i--) {
+                        if (contextItems[i].role === 'interviewer') {
+                            return contextItems[i].text;
+                        }
+                    }
+                    return null;
+                })();
+            }
+
+            // temporalContext uses live state — this is a deliberate, accepted tradeoff
+            // even when contextOverride is set (chip-click flow). Rationale:
+            //   - Historical assistant responses (avoid-repetition signal) SHOULD reflect
+            //     what we've already said in this meeting, including responses generated
+            //     after the chip was detected. Repeating yourself is bad regardless of
+            //     when the question was originally asked.
+            //   - Tone signals from interviewer turns AFTER the snapshot will leak into
+            //     this answer's tone analysis. Minor drift; acceptable because the
+            //     answer-shaping signal (intentResult) already comes from the chip's
+            //     pre-classified intent, which is the dominant influence on output.
+            // If this drift causes problems later, add a third option `temporalContextOverride`
+            // and snapshot it at detection time too. Not needed for v1.
             const temporalContext = buildTemporalContext(
                 contextItems,
                 this.session.getAssistantResponseHistory(),
                 180
             );
-
-            const lastInterviewerTurn = (() => {
-                for (let i = contextItems.length - 1; i >= 0; i--) {
-                    if (contextItems[i].role === 'interviewer') {
-                        return contextItems[i].text;
-                    }
-                }
-                return null;
-            })();
-            const intentResult = await classifyIntent(
-                lastInterviewerTurn,
-                preparedTranscript,
-                this.session.getAssistantResponseHistory().length
-            );
+            let intentResult: IntentResult;
+            if (options.intentOverride) {
+                const mapped = options.intentOverride === 'verbal' ? 'general'
+                            : options.intentOverride === 'behavioral' ? 'behavioral'
+                            : 'coding';
+                intentResult = {
+                    intent: mapped,
+                    confidence: 1.0,
+                    answerShape: getAnswerShapeGuidance(mapped),
+                };
+                console.log(`[IntelligenceEngine] runWhatShouldISay: intent override → ${mapped}`);
+            } else {
+                intentResult = await classifyIntent(
+                    lastInterviewerTurn,
+                    preparedTranscript,
+                    this.session.getAssistantResponseHistory().length
+                );
+            }
 
             console.log(`[IntelligenceEngine] Temporal RAG: ${temporalContext.previousResponses.length} responses, tone: ${temporalContext.toneSignals[0]?.type || 'neutral'}, intent: ${intentResult.intent}${imagePaths?.length ? `, with ${imagePaths.length} image(s)` : ''}`);
 
@@ -845,5 +901,6 @@ export class IntelligenceEngine extends EventEmitter {
             this.assistCancellationToken.abort();
             this.assistCancellationToken = null;
         }
+        this.lastSpeaker = null;
     }
 }

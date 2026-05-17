@@ -47,6 +47,7 @@ import { useResolvedTheme } from '../hooks/useResolvedTheme';
 import { getOverlayAppearance, OVERLAY_OPACITY_DEFAULT } from '../lib/overlayAppearance';
 import { useStreamMetrics, type StreamMetrics } from '../hooks/useStreamMetrics';
 import { MessageMetricsBar } from './MessageMetricsBar';
+import { DetectedQuestionsPanel } from './DetectedQuestionsPanel';
 
 interface Message {
     id: string;
@@ -2511,6 +2512,10 @@ Provide only the answer, nothing else.`;
                                     onCopyDiagnostics={copyDiagnostics}
                                 />
                             ) : null}
+
+                            {/* Detected Questions chips — mounted unconditionally so chips can appear
+                                even when chat is empty. Panel returns null when no chips exist. */}
+                            <DetectedQuestionsPanel />
 
                             {/* Chat History - Only show if there are messages OR active states */}
                             {(messages.length > 0 || isManualRecording || isProcessing) && (

@@ -196,6 +196,27 @@ export interface ElectronAPI {
   onIntelligenceAssistUpdate: (callback: (data: { insight: string }) => void) => () => void
   onIntelligenceSuggestedAnswerToken: (callback: (data: { token: string; question: string; confidence: number }) => void) => () => void
   onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number }) => void) => () => void
+  onDetectedQuestion: (callback: (chip: {
+    id: string;
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    confidence: number;
+    contextSnapshot: string;
+    detectedAt: number;
+  }) => void) => () => void
+  onDetectedQuestionUpdate: (callback: (chip: {
+    id: string;
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    confidence: number;
+    contextSnapshot: string;
+    detectedAt: number;
+  }) => void) => () => void
+  answerDetectedQuestion: (payload: {
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    contextSnapshot: string;
+  }) => Promise<{ ok: boolean }>
   onIntelligenceRefinedAnswerToken: (callback: (data: { token: string; intent: string }) => void) => () => void
   onIntelligenceRefinedAnswer: (callback: (data: { answer: string; intent: string }) => void) => () => void
   onIntelligenceFollowUpQuestionsUpdate: (callback: (data: { questions: string }) => void) => () => void
