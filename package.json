@@ -24,6 +24,8 @@
     "dist:signed": "npm run app:build:signed",
     "build:native": "node scripts/build-native.js",
     "test": "npm run build:electron && node --test 'electron/services/__tests__/**/*.test.mjs' 'electron/llm/__tests__/**/*.test.mjs' 'electron/llm/codeVerification/__tests__/**/*.test.mjs' 'electron/audio/__tests__/**/*.test.mjs' 'electron/update/**/*.test.mjs'",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
     "test:intelligence": "npm run build:electron && node --test 'electron/intelligence/__tests__/**/*.test.mjs'",
     "test:ci": "npm run typecheck:electron && npm run build && npm test && npm run test:intelligence",
     "test:modes": "npm run build:electron && node --test electron/services/__tests__/Mode*.test.mjs electron/services/__tests__/ProfileIntelligenceGate.test.mjs electron/services/__tests__/NativelyApiE2E.test.mjs",
@@ -235,6 +237,7 @@
     "vite": "^5.4.11",
     "vite-plugin-electron": "^0.28.8",
     "vite-plugin-electron-renderer": "^0.14.6",
+    "vitest": "^2.1.9",
     "wait-on": "^8.0.1"
   },
   "dependencies": {
