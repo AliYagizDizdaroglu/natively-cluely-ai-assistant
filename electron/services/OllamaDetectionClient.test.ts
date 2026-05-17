@@ -1,0 +1,139 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { OllamaDetectionClient } from './OllamaDetectionClient';
+
+describe('OllamaDetectionClient', () => {
+    let fetchMock: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+        fetchMock = vi.fn();
+        // @ts-ignore — assign global fetch mock
+        globalThis.fetch = fetchMock;
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    it('returns parsed response on valid JSON', async () => {
+        fetchMock.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({
+                message: {
+                    content: JSON.stringify({
+                        detected: true,
+                        question: 'What is your favorite language?',
+                        intent: 'verbal',
+                        confidence: 0.92,
+                    }),
+                },
+            }),
+        });
+
+        const client = new OllamaDetectionClient({ model: 'llama3.1:8b' });
+        const result = await client.detect({
+            recentInterviewerTranscript: '[interviewer]: What is your favorite language?',
+            fullConversationContext: '...',
+        });
+
+        expect(result).toEqual({
+            detected: true,
+            question: 'What is your favorite language?',
+            intent: 'verbal',
+            confidence: 0.92,
+        });
+    });
+
+    it('returns null on invalid JSON', async () => {
+        fetchMock.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({ message: { content: 'not valid json {' } }),
+        });
+
+        const client = new OllamaDetectionClient({ model: 'llama3.1:8b' });
+        const result = await client.detect({
+            recentInterviewerTranscript: 'x',
+            fullConversationContext: 'y',
+        });
+        expect(result).toBeNull();
+    });
+
+    it('returns null on schema mismatch', async () => {
+        fetchMock.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({
+                message: { content: JSON.stringify({ foo: 'bar' }) },
+            }),
+        });
+
+        const client = new OllamaDetectionClient({ model: 'llama3.1:8b' });
+        const result = await client.detect({
+            recentInterviewerTranscript: 'x',
+            fullConversationContext: 'y',
+        });
+        expect(result).toBeNull();
+    });
+
+    it('returns null on HTTP error', async () => {
+        fetchMock.mockResolvedValueOnce({ ok: false, status: 500 });
+
+        const client = new OllamaDetectionClient({ model: 'llama3.1:8b' });
+        const result = await client.detect({
+            recentInterviewerTranscript: 'x',
+            fullConversationContext: 'y',
+        });
+        expect(result).toBeNull();
+    });
+
+    it('returns null on network error', async () => {
+        fetchMock.mockRejectedValueOnce(new Error('ECONNREFUSED'));
+
+        const client = new OllamaDetectionClient({ model: 'llama3.1:8b' });
+        const result = await client.detect({
+            recentInterviewerTranscript: 'x',
+            fullConversationContext: 'y',
+        });
+        expect(result).toBeNull();
+    });
+
+    it('returns null on timeout (>3s)', async () => {
+        fetchMock.mockImplementationOnce(
+            () => new Promise(resolve => setTimeout(() => resolve({ ok: true, json: async () => ({}) }), 5000))
+        );
+
+        const client = new OllamaDetectionClient({ model: 'llama3.1:8b', timeoutMs: 100 });
+        const result = await client.detect({
+            recentInterviewerTranscript: 'x',
+            fullConversationContext: 'y',
+        });
+        expect(result).toBeNull();
+    });
+
+    it('posts to /api/chat with correct payload', async () => {
+        fetchMock.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({
+                message: { content: JSON.stringify({ detected: false, question: '', intent: 'verbal', confidence: 0.1 }) },
+            }),
+        });
+
+        const client = new OllamaDetectionClient({ model: 'llama3.1:8b' });
+        await client.detect({
+            recentInterviewerTranscript: 'recent',
+            fullConversationContext: 'full',
+        });
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        const [url, opts] = fetchMock.mock.calls[0];
+        expect(url).toBe('http://127.0.0.1:11434/api/chat');
+        expect(opts.method).toBe('POST');
+        const body = JSON.parse(opts.body);
+        expect(body.model).toBe('llama3.1:8b');
+        expect(body.format).toBe('json');
+        expect(body.stream).toBe(false);
+        expect(body.messages).toHaveLength(2);
+        expect(body.messages[0].role).toBe('system');
+        expect(body.messages[1].role).toBe('user');
+        expect(body.messages[1].content).toContain('recent');
+        expect(body.messages[1].content).toContain('full');
+    });
+});
