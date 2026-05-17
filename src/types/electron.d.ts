@@ -326,6 +326,29 @@ export interface ElectronAPI {
   onIntelligenceNegotiationCoaching: (callback: (data: { payload: any }) => void) => () => void
   // Sprint 9: time-batched IPC token channel.
   onIntelligenceTokenBatch: (callback: (data: { kind: 'suggested_answer' | 'refined_answer' | 'recap' | 'clarify' | 'follow_up_questions'; items: any[] }) => void) => () => void
+  // Passive question detector — emits detected chips and accepts answer requests.
+  onDetectedQuestion: (callback: (chip: {
+    id: string;
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    confidence: number;
+    contextSnapshot: string;
+    detectedAt: number;
+  }) => void) => () => void
+  onDetectedQuestionUpdate: (callback: (chip: {
+    id: string;
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    confidence: number;
+    contextSnapshot: string;
+    detectedAt: number;
+  }) => void) => () => void
+  answerDetectedQuestion: (payload: {
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    contextSnapshot: string;
+  }) => Promise<{ ok: boolean }>
+
   onIntelligenceRefinedAnswerToken: (callback: (data: { token: string; intent: string }) => void) => () => void
   onIntelligenceRefinedAnswer: (callback: (data: { answer: string; intent: string }) => void) => () => void
   onIntelligenceFollowUpQuestionsUpdate: (callback: (data: { questions: string }) => void) => () => void
