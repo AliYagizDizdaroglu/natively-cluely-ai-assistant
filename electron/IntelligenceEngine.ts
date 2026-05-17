@@ -11,6 +11,7 @@ import {
     prepareTranscriptForWhatToAnswer, buildTemporalContext,
     AssistantResponse as LLMAssistantResponse, classifyIntent
 } from './llm';
+import { getAnswerShapeGuidance } from './llm/IntentClassifier';
 
 // Mode types
 export type IntelligenceMode = 'idle' | 'assist' | 'what_to_say' | 'follow_up' | 'recap' | 'clarify' | 'manual' | 'follow_up_questions' | 'code_hint' | 'brainstorm';
@@ -233,7 +234,15 @@ export class IntelligenceEngine extends EventEmitter {
      * Manual trigger - uses clean transcript pipeline for question inference
      * NEVER returns null - always provides a usable response
      */
-    async runWhatShouldISay(question?: string, confidence: number = 0.8, imagePaths?: string[]): Promise<string | null> {
+    async runWhatShouldISay(
+        question?: string,
+        confidence: number = 0.8,
+        imagePaths?: string[],
+        options: {
+            intentOverride?: 'verbal' | 'coding' | 'behavioral';
+            contextOverride?: string;
+        } = {}
+    ): Promise<string | null> {
         const now = Date.now();
 
         // Bypass cooldown when the user explicitly attached images (capture-and-process intent).
@@ -257,7 +266,7 @@ export class IntelligenceEngine extends EventEmitter {
                     this.setMode('idle');
                     return "Please configure your API Keys in Settings to use this feature.";
                 }
-                const context = this.session.getFormattedContext(180);
+                const context = options.contextOverride ?? this.session.getFormattedContext(180);
                 const answer = await this.answerLLM.generate(question || '', context);
                 if (answer) {
                     this.session.addAssistantMessage(answer);
@@ -309,11 +318,24 @@ export class IntelligenceEngine extends EventEmitter {
                 }
                 return null;
             })();
-            const intentResult = await classifyIntent(
-                lastInterviewerTurn,
-                preparedTranscript,
-                this.session.getAssistantResponseHistory().length
-            );
+            let intentResult;
+            if (options.intentOverride) {
+                const mapped = options.intentOverride === 'verbal' ? 'general'
+                            : options.intentOverride === 'behavioral' ? 'behavioral'
+                            : 'coding';
+                intentResult = {
+                    intent: mapped as any,
+                    confidence: 1.0,
+                    answerShape: getAnswerShapeGuidance(mapped),
+                };
+                console.log(`[IntelligenceEngine] runWhatShouldISay: intent override → ${mapped}`);
+            } else {
+                intentResult = await classifyIntent(
+                    lastInterviewerTurn,
+                    preparedTranscript,
+                    this.session.getAssistantResponseHistory().length
+                );
+            }
 
             console.log(`[IntelligenceEngine] Temporal RAG: ${temporalContext.previousResponses.length} responses, tone: ${temporalContext.toneSignals[0]?.type || 'neutral'}, intent: ${intentResult.intent}${imagePaths?.length ? `, with ${imagePaths.length} image(s)` : ''}`);
 
