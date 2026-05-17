@@ -162,4 +162,49 @@ describe('OllamaDetectionClient', () => {
         expect(body.messages[1].content).toContain('recent');
         expect(body.messages[1].content).toContain('full');
     });
+
+    it('logs warning after 5+ consecutive parse/schema failures, resets on success', async () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+        // Helper to mock one failing response (schema mismatch — wrong shape but valid JSON)
+        const mockSchemaFail = () => fetchMock.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({ message: { content: JSON.stringify({ foo: 'bar' }) } }),
+        });
+        // Helper to mock one successful response
+        const mockSuccess = () => fetchMock.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({
+                message: { content: JSON.stringify({ detected: true, question: 'Q', intent: 'verbal', confidence: 0.9 }) },
+            }),
+        });
+
+        const client = new OllamaDetectionClient({ model: 'llama3.1:8b' });
+
+        // 4 failures: no threshold log yet
+        for (let i = 0; i < 4; i++) {
+            mockSchemaFail();
+            const r = await client.detect({ recentInterviewerTranscript: 'x', fullConversationContext: 'y' });
+            expect(r).toBeNull();
+        }
+        expect(warnSpy.mock.calls.some(call => String(call[0]).includes('5+ consecutive'))).toBe(false);
+
+        // 5th failure: threshold log fires
+        mockSchemaFail();
+        await client.detect({ recentInterviewerTranscript: 'x', fullConversationContext: 'y' });
+        expect(warnSpy.mock.calls.some(call => String(call[0]).includes('5+ consecutive'))).toBe(true);
+
+        // Success resets streak
+        warnSpy.mockClear();
+        mockSuccess();
+        const ok = await client.detect({ recentInterviewerTranscript: 'x', fullConversationContext: 'y' });
+        expect(ok).not.toBeNull();
+
+        // One more failure after success: streak is 1, no threshold log
+        mockSchemaFail();
+        await client.detect({ recentInterviewerTranscript: 'x', fullConversationContext: 'y' });
+        expect(warnSpy.mock.calls.some(call => String(call[0]).includes('5+ consecutive'))).toBe(false);
+
+        warnSpy.mockRestore();
+    });
 });
