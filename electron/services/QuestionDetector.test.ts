@@ -55,7 +55,7 @@ describe('QuestionDetector', () => {
 
     it('resets silence timer on each new interviewer segment', async () => {
         const client = makeClientWith([
-            { detected: true, question: 'Q', intent: 'verbal', confidence: 0.9 },
+            { detected: true, question: 'Tell me about Q', intent: 'verbal', confidence: 0.9 },
         ]);
         const chips: DetectedQuestionChip[] = [];
         const det = new QuestionDetector({
@@ -78,7 +78,7 @@ describe('QuestionDetector', () => {
 
     it('fires immediately on speaker change (interviewer -> user)', async () => {
         const client = makeClientWith([
-            { detected: true, question: 'Q', intent: 'verbal', confidence: 0.9 },
+            { detected: true, question: 'Tell me about Q', intent: 'verbal', confidence: 0.9 },
         ]);
         const chips: DetectedQuestionChip[] = [];
         const det = new QuestionDetector({
@@ -97,7 +97,7 @@ describe('QuestionDetector', () => {
 
     it('drops detections below confidence threshold (default 0.6)', async () => {
         const client = makeClientWith([
-            { detected: true, question: 'Q', intent: 'verbal', confidence: 0.4 },
+            { detected: true, question: 'Tell me about Q', intent: 'verbal', confidence: 0.4 },
         ]);
         const chips: DetectedQuestionChip[] = [];
         const det = new QuestionDetector({
@@ -163,8 +163,8 @@ describe('QuestionDetector', () => {
         const client = {
             detect: vi.fn()
                 .mockImplementationOnce(() => inflight)
-                .mockResolvedValueOnce({ detected: true, question: 'second', intent: 'verbal', confidence: 0.9 })
-                .mockResolvedValueOnce({ detected: true, question: 'third', intent: 'verbal', confidence: 0.9 }),
+                .mockResolvedValueOnce({ detected: true, question: 'Tell me about second', intent: 'verbal', confidence: 0.9 })
+                .mockResolvedValueOnce({ detected: true, question: 'Tell me about third', intent: 'verbal', confidence: 0.9 }),
         } as any;
         const chips: DetectedQuestionChip[] = [];
         const det = new QuestionDetector({
@@ -183,7 +183,7 @@ describe('QuestionDetector', () => {
         expect(client.detect).toHaveBeenCalledTimes(1);
 
         // resolve first — second should now run, third dropped
-        resolve1({ detected: true, question: 'first', intent: 'verbal', confidence: 0.9 });
+        resolve1({ detected: true, question: 'Tell me about first', intent: 'verbal', confidence: 0.9 });
         await vi.runAllTimersAsync();
         // give microtask queue time
         await Promise.resolve();
@@ -220,7 +220,7 @@ describe('QuestionDetector', () => {
 
     it('does not detect on user segments', async () => {
         const client = makeClientWith([
-            { detected: true, question: 'Q', intent: 'verbal', confidence: 0.9 },
+            { detected: true, question: 'Tell me about Q', intent: 'verbal', confidence: 0.9 },
         ]);
         const chips: DetectedQuestionChip[] = [];
         const det = new QuestionDetector({

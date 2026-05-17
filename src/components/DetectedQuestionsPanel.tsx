@@ -4,13 +4,23 @@ import { useDetectedQuestions } from '../hooks/useDetectedQuestions';
 
 const AUTO_COLLAPSE_MS = 10_000;
 
+interface DetectedQuestionsPanelProps {
+    /**
+     * Called before the chip-click IPC fires. Use this to kick off stream-metrics
+     * tracking in the parent (sm.start + sm.setSource), so the resulting answer
+     * gets a TTFT/model attribution in its message bubble — same as the manual
+     * "What to answer?" flow.
+     */
+    onChipClickStart?: (intent: 'verbal' | 'coding' | 'behavioral') => void;
+}
+
 /**
  * Collapsible panel above chat that shows up to 5 detected interviewer questions.
  * - Hidden entirely when chip queue is empty (zero height).
  * - Auto-collapses 10s after last user interaction (hover/click).
  * - Manual collapse toggle in header.
  */
-export const DetectedQuestionsPanel: React.FC = () => {
+export const DetectedQuestionsPanel: React.FC<DetectedQuestionsPanelProps> = ({ onChipClickStart }) => {
     const { chips, clickChip } = useDetectedQuestions();
     const [collapsed, setCollapsed] = useState(false);
     const interactionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -63,6 +73,7 @@ export const DetectedQuestionsPanel: React.FC = () => {
                             intent={chip.intent}
                             onClick={(id) => {
                                 resetCollapseTimer();
+                                onChipClickStart?.(chip.intent);
                                 clickChip(id);
                             }}
                         />
