@@ -52,8 +52,14 @@ export class IntelligenceManager extends EventEmitter {
                 getRecentInterviewerTranscript: () => this.getFormattedContext(30),
                 getContextSnapshot: () => this.getFormattedContext(60),
             },
-            onChip: chip => this.emit('question-detected', chip),
-            onChipUpdate: chip => this.emit('question-detected-update', chip),
+            onChip: chip => {
+                console.log(`[QuestionDetector] chip emitted: intent=${chip.intent} confidence=${chip.confidence.toFixed(2)} q="${chip.question.slice(0, 60)}"`);
+                this.emit('question-detected', chip);
+            },
+            onChipUpdate: chip => {
+                console.log(`[QuestionDetector] chip updated: id=${chip.id.slice(0, 8)} q="${chip.question.slice(0, 60)}"`);
+                this.emit('question-detected-update', chip);
+            },
         });
 
         // Wire engine events to detector
@@ -63,6 +69,8 @@ export class IntelligenceManager extends EventEmitter {
         this.engine.on('speaker-change', (prev, next) => {
             this.questionDetector.onSpeakerChange(prev, next);
         });
+
+        console.log('[IntelligenceManager] QuestionDetector wired (model=llama3.1:8b, debounce=1.5s, dedup=0.7, conf≥0.6, max=5)');
     }
 
     /** Clear detector state — call on meeting boundary. */
