@@ -434,15 +434,34 @@ export class LLMHelper {
           console.warn('[LLMHelper] llama3.1:8b not found in Ollama — safety net unavailable');
           return;
         }
-        await fetch(`${this.ollamaUrl}/api/generate`, {
+        // Mirror the real QuestionDetector workload: same endpoint (/api/chat),
+        // same constrained-output mode (format: 'json'), and a system message
+        // similar in size to the real detection prompt. Loading the weights is
+        // not enough — JSON-mode compiles a grammar and prefill on a 500-token
+        // prompt with a cold KV cache takes seconds. Without this, the first
+        // real detect() paid both costs and timed out at 10s while the second
+        // (warm) call returned in 2.5s.
+        const warmupSystem = 'You are a JSON-only classifier. Reply with a JSON object containing a single key "ok" set to true.';
+        const t0 = Date.now();
+        await fetch(`${this.ollamaUrl}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          // keep_alive: '10m' pins the model in VRAM and matches what
-          // OllamaDetectionClient sends, so the two don't fight over Ollama's
-          // unload timer.
-          body: JSON.stringify({ model: 'llama3.1:8b', prompt: 'hi', stream: false, keep_alive: '10m' }),
+          body: JSON.stringify({
+            model: 'llama3.1:8b',
+            format: 'json',
+            stream: false,
+            options: { temperature: 0.1, top_p: 0.9 },
+            // keep_alive: '10m' pins the model in VRAM and matches what
+            // OllamaDetectionClient sends, so the two don't fight over Ollama's
+            // unload timer.
+            keep_alive: '10m',
+            messages: [
+              { role: 'system', content: warmupSystem },
+              { role: 'user', content: 'warmup ping' },
+            ],
+          }),
         });
-        console.log('[LLMHelper] ✅ Safety net (llama3.1:8b) warmed up');
+        console.log(`[LLMHelper] ✅ Safety net (llama3.1:8b) warmed up in ${Date.now() - t0}ms`);
       } catch (e: any) {
         console.warn('[LLMHelper] Safety net warm-up skipped:', e.message);
         // On failure, allow a future call to retry.
