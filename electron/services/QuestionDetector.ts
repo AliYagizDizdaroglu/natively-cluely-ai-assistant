@@ -61,12 +61,20 @@ export class QuestionDetector {
     private inflightDetection: Promise<void> | null = null;
     private queuedTrigger = false;
     private dedupCache: { id: string; text: string }[] = [];
+    /**
+     * Bumped on every clear() call. Captured at the start of each runDetection
+     * and re-checked after the await; if changed, the result belongs to a
+     * cancelled session and is dropped silently.
+     */
+    private generation = 0;
 
     constructor(opts: QuestionDetectorOptions) {
         this.opts = {
             ...DEFAULTS,
-            onChipUpdate: opts.onChip,  // default: treat update as new
             ...opts,
+            // Default onChipUpdate to onChip. Compute AFTER spread so an explicit
+            // `onChipUpdate: undefined` from the caller still falls back to onChip.
+            onChipUpdate: opts.onChipUpdate ?? opts.onChip,
         } as Required<QuestionDetectorOptions>;
     }
 
@@ -94,6 +102,7 @@ export class QuestionDetector {
         }
         this.queuedTrigger = false;
         this.dedupCache = [];
+        this.generation++;
     }
 
     private resetSilenceTimer(): void {
@@ -120,6 +129,7 @@ export class QuestionDetector {
     }
 
     private async runDetection(): Promise<void> {
+        const myGeneration = this.generation;
         const recentInterviewerTranscript = this.opts.snapshotProvider.getRecentInterviewerTranscript();
         const fullContext = this.opts.snapshotProvider.getContextSnapshot();
         const detectedAt = Date.now();
@@ -135,6 +145,10 @@ export class QuestionDetector {
             console.warn('[QuestionDetector] detect() threw unexpectedly', e);
             return;
         }
+
+        // Generation guard: clear() was called while we were awaiting detect().
+        // Drop the result — it belongs to a previous session.
+        if (myGeneration !== this.generation) return;
 
         if (!result || !result.detected) return;
         if (result.confidence < this.opts.confidenceThreshold) return;
