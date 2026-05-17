@@ -49,28 +49,22 @@ export function validateDetectionResponse(raw: unknown): DetectionResponse | nul
 
     if (typeof r.detected !== 'boolean') return null;
     if (typeof r.question !== 'string') return null;
-    if (typeof r.confidence !== 'number' || r.confidence < 0 || r.confidence > 1) return null;
+    if (typeof r.confidence !== 'number' || !Number.isFinite(r.confidence) || r.confidence < 0 || r.confidence > 1) return null;
 
+    // Normalize intent: invalid value → default to 'verbal'
     const validIntents = ['verbal', 'coding', 'behavioral'] as const;
-    if (typeof r.intent !== 'string' || !validIntents.includes(r.intent as any)) {
-        // Spec section 9: invalid intent → default to 'verbal'
-        return {
-            detected: r.detected,
-            question: r.question,
-            intent: 'verbal',
-            confidence: r.confidence,
-        };
-    }
+    const intent: DetectionResponse['intent'] = (typeof r.intent === 'string' && (validIntents as readonly string[]).includes(r.intent))
+        ? r.intent as DetectionResponse['intent']
+        : 'verbal';
 
-    // Empty question with detected=true is treated as detected=false per spec
-    if (r.detected && r.question.trim().length === 0) {
-        return { detected: false, question: '', intent: 'verbal', confidence: r.confidence };
-    }
+    // Normalize detection: empty question + detected=true → forced to detected=false (drop)
+    const hasQuestionText = r.question.trim().length > 0;
+    const detected = r.detected && hasQuestionText;
 
     return {
-        detected: r.detected,
-        question: r.question,
-        intent: r.intent as 'verbal' | 'coding' | 'behavioral',
+        detected,
+        question: detected ? r.question : '',
+        intent,
         confidence: r.confidence,
     };
 }
