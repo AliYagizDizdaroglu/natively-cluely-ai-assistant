@@ -406,8 +406,16 @@ export class LLMHelper {
     }
   }
 
+  private safetyNetWarmupPromise: Promise<void> | null = null;
+
   private warmUpSafetyNet(): void {
-    (async () => {
+    // Idempotent: collapse repeated calls (constructor, setApiKey, every Gemma
+    // switch) into a single in-flight warmup. Previously each call enqueued
+    // another /api/generate to llama3.1:8b — and because Ollama serializes
+    // per-model requests, the QuestionDetector's detect() calls would queue
+    // behind those redundant warmups and time out before getting a slot.
+    if (this.safetyNetWarmupPromise) return;
+    this.safetyNetWarmupPromise = (async () => {
       try {
         const available = await this.checkOllamaAvailable();
         if (!available) return;
@@ -419,11 +427,16 @@ export class LLMHelper {
         await fetch(`${this.ollamaUrl}/api/generate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: 'llama3.1:8b', prompt: 'hi', stream: false }),
+          // keep_alive: '10m' pins the model in VRAM and matches what
+          // OllamaDetectionClient sends, so the two don't fight over Ollama's
+          // unload timer.
+          body: JSON.stringify({ model: 'llama3.1:8b', prompt: 'hi', stream: false, keep_alive: '10m' }),
         });
         console.log('[LLMHelper] ✅ Safety net (llama3.1:8b) warmed up');
       } catch (e: any) {
         console.warn('[LLMHelper] Safety net warm-up skipped:', e.message);
+        // On failure, allow a future call to retry.
+        this.safetyNetWarmupPromise = null;
       }
     })();
   }
