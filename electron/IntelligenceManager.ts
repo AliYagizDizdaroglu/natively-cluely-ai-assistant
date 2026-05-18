@@ -45,14 +45,13 @@ export class IntelligenceManager extends EventEmitter {
         this.forwardEngineEvents();
 
         // Initialize passive question detector.
-        // Kick off an unconditional llama3.1:8b warmup at construction so the
-        // first real detection isn't paying the ~10s Ollama cold-load itself.
-        // Previously warmup only fired for Gemma users; non-Gemma sessions hit
-        // the cold load on the first transcript. Idempotent — safe to call.
+        // Kick off an unconditional llama3.1:8b warmup (shape-matched: same
+        // /api/chat + format:'json' as real detection) so the first detect()
+        // doesn't pay model-load + JSON-grammar-compile + cold-prefill cost.
+        // Idempotent — safe to call repeatedly.
         llmHelper.warmUpSafetyNetPublic();
-        // Timeout=10s (not 3s default): llama 8b cold-start inference can take
-        // 5-10s — model load + prefill + JSON generation. Once warmed up, calls
-        // return in 200-500ms so the bigger budget is only paid on cold paths.
+        // Timeout=10s: warm detect() takes ~2.5s, cold detect() before warmup
+        // completes can take 8-10s. 10s gives headroom without false aborts.
         const detectionClient = new OllamaDetectionClient({ model: 'llama3.1:8b', timeoutMs: 10000 });
         this.questionDetector = new QuestionDetector({
             client: detectionClient,

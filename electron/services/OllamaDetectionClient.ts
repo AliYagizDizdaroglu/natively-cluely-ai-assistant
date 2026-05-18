@@ -13,7 +13,13 @@ interface DetectionInput {
 interface OllamaDetectionClientOptions {
     model: string;
     ollamaUrl?: string;       // default 'http://127.0.0.1:11434'
-    timeoutMs?: number;       // default 3000
+    /**
+     * Per-request abort timeout. Default 8000ms reflects observed real-world
+     * latency: warm llama3.1:8b detect() ≈ 2.5s; first call after warmup ping
+     * but before warmup completes can take 6-8s. IntelligenceManager overrides
+     * to 10s for an extra cold-start margin.
+     */
+    timeoutMs?: number;
 }
 
 /**
@@ -36,7 +42,7 @@ export class OllamaDetectionClient {
         // keep_alive: '10m' below keeps llama loaded in Ollama for 10 minutes after
         // the last call, avoiding cold-start latency for the polling loop in
         // QuestionDetector (Task 5).
-        this.timeoutMs = opts.timeoutMs ?? 3000;
+        this.timeoutMs = opts.timeoutMs ?? 8000;
     }
 
     async detect(input: DetectionInput): Promise<DetectionResponse | null> {
