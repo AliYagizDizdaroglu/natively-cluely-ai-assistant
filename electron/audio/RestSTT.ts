@@ -275,6 +275,13 @@ export class RestSTT extends EventEmitter {
             return;
         }
 
+        // Phase 1 latency instrumentation: per-utterance short id so logs in
+        // QuestionDetector / OllamaDetectionClient / EmbeddingPipeline can be
+        // joined back to the originating STT flush.
+        const utteranceId = Date.now().toString(36).slice(-4);
+        const flushStartedAt = Date.now();
+        console.log(`[RestSTT-timing] flush start id=${utteranceId}`);
+
         // Reset safety-net timer to prevent double-flush
         if (this.safetyNetTimer) {
             clearInterval(this.safetyNetTimer);
@@ -314,10 +321,14 @@ export class RestSTT extends EventEmitter {
         this.isUploading = true;
 
         try {
+            const uploadStartedAt = Date.now();
+            console.log(`[RestSTT-timing] upload start id=${utteranceId} prep=${uploadStartedAt - flushStartedAt}ms bytes=${wavBuffer.length}`);
             const transcript = await this.uploadAudio(wavBuffer);
+            const uploadDoneAt = Date.now();
+            console.log(`[RestSTT-timing] upload done id=${utteranceId} +${uploadDoneAt - uploadStartedAt}ms`);
 
             if (transcript && transcript.trim().length > 0) {
-                console.log(`[RestSTT] Transcript: "${transcript.substring(0, 60)}..."`);
+                console.log(`[RestSTT] Transcript: "${transcript.substring(0, 60)}..." id=${utteranceId}`);
                 this.emit('transcript', {
                     text: transcript.trim(),
                     isFinal: true,
@@ -325,7 +336,7 @@ export class RestSTT extends EventEmitter {
                 });
             }
         } catch (err) {
-            console.error(`[RestSTT] Upload error:`, err);
+            console.error(`[RestSTT] Upload error (id=${utteranceId}):`, err);
             this.emit('error', err instanceof Error ? err : new Error(String(err)));
         } finally {
             this.isUploading = false;

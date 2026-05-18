@@ -53,6 +53,10 @@ export class OllamaDetectionClient {
         // Lets us tell cold-load (long t0→t1) from JSON-mode slow generation
         // (also long t0→t1) from body/parse overhead (long t1→t2).
         const t0 = Date.now();
+        // Phase 1 latency instrumentation: wall-clock at the moment the fetch
+        // is issued lets us correlate against parallel [OllamaEmbed-timing]
+        // lines to prove (or refute) Ollama-daemon contention.
+        console.log(`[OllamaDetectionClient] detect issued at wall=${t0}`);
         try {
             const response = await fetch(`${this.ollamaUrl}/api/chat`, {
                 method: 'POST',

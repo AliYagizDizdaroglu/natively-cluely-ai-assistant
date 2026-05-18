@@ -156,6 +156,10 @@ export class IntelligenceEngine extends EventEmitter {
 
         // Emit detector events
         if (segment.final) {
+            // Phase 1 latency instrumentation: every final segment resets the
+            // QuestionDetector silence-debounce timer. Counting these per
+            // utterance pins debounce-stacking as a latency contributor.
+            console.log(`[Engine-timing] segment-final speaker=${segment.speaker} textLen=${segment.text.length}`);
             this.emit('transcript-segment-final', segment);
         }
         if (this.lastSpeaker !== null && this.lastSpeaker !== segment.speaker) {

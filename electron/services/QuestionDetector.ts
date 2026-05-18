@@ -61,6 +61,11 @@ export class QuestionDetector {
     private inflightDetection: Promise<void> | null = null;
     private queuedTrigger = false;
     private dedupCache: { id: string; text: string }[] = [];
+    // Phase 1 latency instrumentation only — wall-clock of last resetSilenceTimer()
+    // so each `[QD-timing] reset` log can report how long the *previous* debounce
+    // window was actually allowed to run before being interrupted by a fresh
+    // transcript-final segment.
+    private lastResetAtMs: number | null = null;
     /**
      * Bumped on every clear() call. Captured at the start of each runDetection
      * and re-checked after the await; if changed, the result belongs to a
@@ -106,9 +111,17 @@ export class QuestionDetector {
     }
 
     private resetSilenceTimer(): void {
+        const now = Date.now();
+        const sincePrev = this.lastResetAtMs === null ? null : now - this.lastResetAtMs;
+        const interrupted = this.silenceTimer !== null;
+        console.log(`[QD-timing] reset sincePrev=${sincePrev === null ? 'first' : `${sincePrev}ms`} interruptedTimer=${interrupted}`);
+        this.lastResetAtMs = now;
         if (this.silenceTimer) clearTimeout(this.silenceTimer);
+        const scheduledAt = now;
         this.silenceTimer = setTimeout(() => {
             this.silenceTimer = null;
+            const elapsed = Date.now() - scheduledAt;
+            console.log(`[QD-timing] debounce elapsed=${elapsed}ms → triggering detect`);
             this.triggerDetection();
         }, this.opts.silenceDebounceMs);
     }
@@ -116,6 +129,7 @@ export class QuestionDetector {
     private triggerDetection(): void {
         if (this.inflightDetection) {
             // Already running — queue at most 1
+            console.log(`[QD-timing] coalesced (one in-flight; setting queuedTrigger=true)`);
             this.queuedTrigger = true;
             return;
         }
@@ -135,6 +149,8 @@ export class QuestionDetector {
         const detectedAt = Date.now();
 
         let result: DetectionResponse | null;
+        const detectIssuedAt = Date.now();
+        console.log(`[QD-timing] detect issued`);
         try {
             result = await this.opts.client.detect({
                 recentInterviewerTranscript,
@@ -145,6 +161,11 @@ export class QuestionDetector {
             console.warn('[QuestionDetector] detect() threw unexpectedly', e);
             return;
         }
+        const detectElapsed = Date.now() - detectIssuedAt;
+        const resultShape = result === null
+            ? 'null'
+            : `detected=${result.detected} conf=${result.confidence.toFixed(2)} q.len=${result.question?.length ?? 0}`;
+        console.log(`[QD-timing] detect returned +${detectElapsed}ms result=${resultShape}`);
 
         // Generation guard: clear() was called while we were awaiting detect().
         // Drop the result — it belongs to a previous session.

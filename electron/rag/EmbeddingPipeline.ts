@@ -401,6 +401,10 @@ export class EmbeddingPipeline {
         if (!this.provider) {
             throw new Error('Embedding provider not initialized');
         }
+        // Phase 1 latency instrumentation: reason tag pairs with the
+        // [OllamaEmbed-timing] line emitted inside the provider so we can tell
+        // *why* an embedding hit Ollama during a live meeting.
+        console.log(`[EmbedPipe-timing] embed call reason=getEmbedding textLen=${text.length}`);
         return this.provider.embed(text);
     }
 
@@ -411,6 +415,7 @@ export class EmbeddingPipeline {
         if (!this.provider) {
             throw new Error('Embedding provider not initialized');
         }
+        console.log(`[EmbedPipe-timing] embed call reason=query textLen=${text.length}`);
         return this.provider.embedQuery(text);
     }
 
@@ -428,6 +433,7 @@ export class EmbeddingPipeline {
             return;
         }
 
+        console.log(`[EmbedPipe-timing] embed call reason=index-chunk chunkId=${chunkId} textLen=${row.cleaned_text.length}`);
         const embedding = await p.embed(row.cleaned_text);
         this.vectorStore.storeEmbedding(chunkId, embedding);
 
@@ -460,6 +466,7 @@ export class EmbeddingPipeline {
             return;
         }
 
+        console.log(`[EmbedPipe-timing] embed call reason=index-summary meetingId=${meetingId} textLen=${row.summary_text.length}`);
         const embedding = await p.embed(row.summary_text);
         this.vectorStore.storeSummaryEmbedding(meetingId, embedding);
 
