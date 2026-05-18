@@ -2886,11 +2886,7 @@ async function initializeApp() {
   // Apply the full disguise payload (names, dock icon, AUMID) early
   appState.applyInitialDisguise();
 
-  // Start the Ollama lifecycle manager. Re-warm the detection model once Ollama
-  // is confirmed reachable so the first detect() never pays cold-load cost.
-  OllamaManager.getInstance().setOnReady(() => {
-    appState.processingHelper.getLLMHelper().warmUpSafetyNetPublic();
-  });
+  // Start the Ollama lifecycle manager (used for embeddings / RAG).
   OllamaManager.getInstance().init().catch(console.error);
 
   // NOTE: CredentialsManager.init() and loadStoredCredentials() are already called

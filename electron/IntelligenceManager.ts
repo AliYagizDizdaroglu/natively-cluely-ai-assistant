@@ -13,7 +13,8 @@ import { SessionTracker } from './SessionTracker';
 import { IntelligenceEngine } from './IntelligenceEngine';
 import { MeetingPersistence } from './MeetingPersistence';
 import { QuestionDetector, DetectedQuestionChip } from './services/QuestionDetector';
-import { OllamaDetectionClient } from './services/OllamaDetectionClient';
+import { GroqDetectionClient } from './services/GroqDetectionClient';
+import { CredentialsManager } from './services/CredentialsManager';
 
 // Re-export types for backward compatibility
 export type { TranscriptSegment, SuggestionTrigger, ContextItem } from './SessionTracker';
@@ -45,14 +46,10 @@ export class IntelligenceManager extends EventEmitter {
         this.forwardEngineEvents();
 
         // Initialize passive question detector.
-        // Kick off an unconditional llama3.1:8b warmup (shape-matched: same
-        // /api/chat + format:'json' as real detection) so the first detect()
-        // doesn't pay model-load + JSON-grammar-compile + cold-prefill cost.
-        // Idempotent — safe to call repeatedly.
-        llmHelper.warmUpSafetyNetPublic();
-        // Timeout=10s: warm detect() takes ~2.5s, cold detect() before warmup
-        // completes can take 8-10s. 10s gives headroom without false aborts.
-        const detectionClient = new OllamaDetectionClient({ model: 'llama3.1:8b', timeoutMs: 10000 });
+        // Uses Groq cloud (llama-3.1-8b-instant) — zero cold-start, ~300ms latency.
+        const detectionClient = new GroqDetectionClient({
+            getApiKey: () => CredentialsManager.getInstance().getGroqSttApiKey(),
+        });
         this.questionDetector = new QuestionDetector({
             client: detectionClient,
             snapshotProvider: {
@@ -77,7 +74,7 @@ export class IntelligenceManager extends EventEmitter {
             this.questionDetector.onSpeakerChange(prev, next);
         });
 
-        console.log('[IntelligenceManager] QuestionDetector wired (model=llama3.1:8b, debounce=0.8s, dedup=0.7, conf≥0.6, max=5)');
+        console.log('[IntelligenceManager] QuestionDetector wired (model=groq/llama-3.1-8b-instant, debounce=0.8s, dedup=0.7, conf≥0.6, max=5)');
     }
 
     /** Clear detector state — call on meeting boundary. */
