@@ -13,6 +13,7 @@ export class OllamaManager {
     private static readonly SLOW_INTERVAL_MS = 5000;
     private static readonly MAX_ATTEMPTS = OllamaManager.FAST_TICKS + 23;
     private attempts = 0;
+    private onReadyCallback: (() => void) | null = null;
 
     private constructor() {}
 
@@ -21,6 +22,11 @@ export class OllamaManager {
             OllamaManager.instance = new OllamaManager();
         }
         return OllamaManager.instance;
+    }
+
+    /** Register a callback to fire once Ollama is confirmed reachable. */
+    public setOnReady(cb: () => void): void {
+        this.onReadyCallback = cb;
     }
 
     /**
@@ -33,6 +39,7 @@ export class OllamaManager {
         if (isRunning) {
             console.log('[OllamaManager] Ollama is already running. App will not manage its lifecycle.');
             this.isAppManaged = false;
+            this.onReadyCallback?.();
             return;
         }
 
@@ -110,6 +117,7 @@ export class OllamaManager {
                 const slow = Math.max(0, this.attempts - OllamaManager.FAST_TICKS);
                 const elapsedMs = fast * OllamaManager.FAST_INTERVAL_MS + slow * OllamaManager.SLOW_INTERVAL_MS;
                 console.log(`[OllamaManager] Successfully connected to Ollama after ~${(elapsedMs / 1000).toFixed(1)}s (${this.attempts} polls)!`);
+                this.onReadyCallback?.();
                 return;
             }
 

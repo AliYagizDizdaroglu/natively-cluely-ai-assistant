@@ -43,7 +43,7 @@ export interface QuestionDetectorOptions {
 
 const DEFAULTS = {
     confidenceThreshold: 0.6,
-    silenceDebounceMs: 1500,
+    silenceDebounceMs: 800,
     similarityThreshold: 0.7,
     dedupCacheSize: 10,
 };
