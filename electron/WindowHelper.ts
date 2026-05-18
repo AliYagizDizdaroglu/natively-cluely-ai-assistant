@@ -665,6 +665,13 @@ export class WindowHelper {
   }
 
   public switchToLauncher(inactive?: boolean): void {
+    // Short-circuit when we're already in launcher mode AND the window is visible.
+    // showMainWindow()/centerAndShowWindow()/renderer ready-callbacks all funnel
+    // here on startup, so without this guard we re-run the show/focus/keybind
+    // dance 3x per cold boot (visible in logs and ~50–100ms of wasted work each).
+    if (this.currentWindowMode === 'launcher' && this.isWindowVisible) {
+      return;
+    }
     console.log(`[WindowHelper] Switching to LAUNCHER (inactive: ${!!inactive})`);
     this.currentWindowMode = 'launcher';
     KeybindManager.getInstance().setMode('launcher'); // Adapted from public PR #123 — verify premium interaction

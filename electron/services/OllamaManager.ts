@@ -6,8 +6,12 @@ export class OllamaManager {
     private static instance: OllamaManager;
     private ollamaProcess: ChildProcess | null = null;
     private isAppManaged: boolean = false;
-    private pollInterval: NodeJS.Timeout | null = null;
-    private maxRetries = 24; // 24 attempts * 5 seconds = 120 seconds (2 minutes)
+    private pollTimer: NodeJS.Timeout | null = null;
+    // Fast phase: 20 ticks @ 250ms = first 5s. Slow phase: 23 ticks @ 5s = up to ~120s total.
+    private static readonly FAST_TICKS = 20;
+    private static readonly FAST_INTERVAL_MS = 250;
+    private static readonly SLOW_INTERVAL_MS = 5000;
+    private static readonly MAX_ATTEMPTS = OllamaManager.FAST_TICKS + 23;
     private attempts = 0;
 
     private constructor() {}
@@ -75,7 +79,7 @@ export class OllamaManager {
                 console.error('[OllamaManager] Failed to start Ollama. Is it installed?', err.message);
                 this.isAppManaged = false;
                 this.ollamaProcess = null;
-                if (this.pollInterval) clearInterval(this.pollInterval);
+                this.clearPollTimer();
             });
 
             this.ollamaProcess.on('close', (code) => {
@@ -90,28 +94,51 @@ export class OllamaManager {
     }
 
     /**
-     * Polls every 5 seconds for up to 2 minutes.
+     * Polls aggressively for the first ~5s (250ms ticks), then backs off to 5s
+     * ticks. `ollama serve` typically binds 11434 in well under a second on a
+     * warm box, but the previous fixed 5s cadence meant we wouldn't notice
+     * until the next tick — adding ~5s of dead time to cold startup.
      */
     private pollUntilReady(): void {
         this.attempts = 0;
 
-        this.pollInterval = setInterval(async () => {
+        const tick = async () => {
+            this.pollTimer = null;
             this.attempts++;
-            const isRunning = await this.checkIsRunning();
-
-            if (isRunning) {
-                console.log(`[OllamaManager] Successfully connected to Ollama after ${this.attempts * 5} seconds!`);
-                if (this.pollInterval) clearInterval(this.pollInterval);
+            if (await this.checkIsRunning()) {
+                const fast = Math.min(this.attempts, OllamaManager.FAST_TICKS);
+                const slow = Math.max(0, this.attempts - OllamaManager.FAST_TICKS);
+                const elapsedMs = fast * OllamaManager.FAST_INTERVAL_MS + slow * OllamaManager.SLOW_INTERVAL_MS;
+                console.log(`[OllamaManager] Successfully connected to Ollama after ~${(elapsedMs / 1000).toFixed(1)}s (${this.attempts} polls)!`);
                 return;
             }
 
-            if (this.attempts >= this.maxRetries) {
+            if (this.attempts >= OllamaManager.MAX_ATTEMPTS) {
                 console.log('[OllamaManager] Timeout: Failed to connect to Ollama after 2 minutes. Please check if it is installed properly.');
-                if (this.pollInterval) clearInterval(this.pollInterval);
-            } else {
-                console.log(`[OllamaManager] Waiting for Ollama... (Attempt ${this.attempts}/${this.maxRetries})`);
+                return;
             }
-        }, 5000);
+
+            // Only log on slow-phase ticks — fast-phase ticks would spam 20 lines in 5s.
+            if (this.attempts >= OllamaManager.FAST_TICKS) {
+                const slowAttempt = this.attempts - OllamaManager.FAST_TICKS + 1;
+                const slowTotal = OllamaManager.MAX_ATTEMPTS - OllamaManager.FAST_TICKS;
+                console.log(`[OllamaManager] Waiting for Ollama... (Attempt ${slowAttempt}/${slowTotal})`);
+            }
+
+            const nextInterval = this.attempts < OllamaManager.FAST_TICKS
+                ? OllamaManager.FAST_INTERVAL_MS
+                : OllamaManager.SLOW_INTERVAL_MS;
+            this.pollTimer = setTimeout(tick, nextInterval);
+        };
+
+        this.pollTimer = setTimeout(tick, OllamaManager.FAST_INTERVAL_MS);
+    }
+
+    private clearPollTimer(): void {
+        if (this.pollTimer) {
+            clearTimeout(this.pollTimer);
+            this.pollTimer = null;
+        }
     }
 
     /**
@@ -119,9 +146,7 @@ export class OllamaManager {
      * Called when Electron is quitting.
      */
     public stop(): void {
-        if (this.pollInterval) {
-            clearInterval(this.pollInterval);
-        }
+        this.clearPollTimer();
 
         if (this.isAppManaged && this.ollamaProcess && this.ollamaProcess.pid) {
             console.log('[OllamaManager] App is quitting. Terminating managed Ollama process tree...');

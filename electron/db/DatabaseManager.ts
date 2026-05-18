@@ -890,6 +890,11 @@ export class DatabaseManager {
 
     /** Cache: dimensions for which vec0 tables have already been verified/created this session. */
     private ensuredDims = new Set<number>();
+    // Process-lifetime guard: renderer fires `seed-demo` IPC on every mount, and
+    // there's at least one duplicate mount during cold boot. The existence query
+    // is cheap but the log line shows up twice; this flag short-circuits the
+    // second+ calls entirely once we've confirmed the row exists.
+    private demoSeedChecked = false;
 
     /**
      * Lazily create a per-dimension vec0 table pair if not already present.
@@ -1286,11 +1291,13 @@ export class DatabaseManager {
 
     public seedDemoMeeting() {
         if (!this.db) return;
+        if (this.demoSeedChecked) return;
 
         // Check if demo meeting already exists
         const existing = this.db.prepare('SELECT id FROM meetings WHERE id = ?').get('demo-meeting');
         if (existing) {
             console.log('[DatabaseManager] Demo meeting already exists, skipping seed.');
+            this.demoSeedChecked = true;
             return;
         }
 
@@ -1465,6 +1472,7 @@ natively.contact@gmail.com`;
         };
 
         this.saveMeeting(demoMeeting, today.getTime(), durationMs);
+        this.demoSeedChecked = true;
         console.log('[DatabaseManager] Seeded demo meeting.');
     }
 }
