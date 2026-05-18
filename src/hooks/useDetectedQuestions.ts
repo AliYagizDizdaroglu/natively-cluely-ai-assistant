@@ -58,20 +58,22 @@ export function useDetectedQuestions() {
     }, []);
 
     const clickChip = useCallback((id: string) => {
-        setChips(prev => {
-            const chip = prev.find(c => c.id === id);
-            if (chip) {
-                window.electronAPI.answerDetectedQuestion({
-                    question: chip.question,
-                    intent: chip.intent,
-                    contextSnapshot: chip.contextSnapshot,
-                }).catch((e: any) => {
-                    console.error('[useDetectedQuestions] answerDetectedQuestion failed:', e);
-                });
-            }
-            return prev.filter(c => c.id !== id);
-        });
-    }, []);
+        // Side effect MUST live outside the setChips updater. React StrictMode
+        // invokes updater functions twice in dev as a sanity check — putting the
+        // IPC call inside `setChips(prev => …)` was firing answerDetectedQuestion
+        // twice per click in dev, producing two duplicate "SAY THIS" cards.
+        const chip = chips.find(c => c.id === id);
+        setChips(prev => prev.filter(c => c.id !== id));
+        if (chip) {
+            window.electronAPI.answerDetectedQuestion({
+                question: chip.question,
+                intent: chip.intent,
+                contextSnapshot: chip.contextSnapshot,
+            }).catch((e: any) => {
+                console.error('[useDetectedQuestions] answerDetectedQuestion failed:', e);
+            });
+        }
+    }, [chips]);
 
     return { chips, dismissChip, clickChip };
 }
