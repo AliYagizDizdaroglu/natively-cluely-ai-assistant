@@ -113,18 +113,32 @@ const PROVIDER_CONFIGS: Record<RestSttProvider, ProviderConfigFactory> = {
     },
 };
 
-// Minimum buffer size before sending (avoid sending tiny fragments)
-// 16kHz * 2 bytes/sample * 1 channel * 0.125 seconds = 4000 bytes
-// Lowered from 16000 to allow short command utterances ("Yes", "Stop") to flush instantly.
-const MIN_BUFFER_BYTES = 4000;
+// Minimum buffer size before sending (avoid sending tiny fragments).
+// 16kHz * 2 bytes/sample * 1 channel * 0.5 seconds = 16000 bytes.
+// Filters out sub-half-second noise bursts that Whisper hallucinates on.
+const MIN_BUFFER_BYTES = 16000;
 
 // Safety-net upload interval (ms). Primary flush is triggered by speech_ended events.
-// This fires as a backstop if someone talks continuously for >10s without any pause,
-// preventing unbounded buffer growth and Whisper API timeouts.
-const SAFETY_NET_INTERVAL_MS = 10000;
+// 6s keeps dual-channel usage safely under the 20 RPM Groq free-tier ceiling
+// even during continuous speech (2 channels × 10 calls/min = 20 RPM max).
+const SAFETY_NET_INTERVAL_MS = 6000;
 
 // Silence threshold - if RMS is below this, skip the upload
 const SILENCE_RMS_THRESHOLD = 50;
+
+// Known Whisper hallucinations on near-silence audio. Exact lowercase matches only.
+// Whisper v3 reliably produces these strings when fed quiet or non-speech audio.
+const WHISPER_HALLUCINATIONS = new Set([
+    'thank you.', 'thanks for watching.', 'thanks for watching!',
+    'please subscribe.', 'bye.', 'bye bye.', 'goodbye.',
+    'see you next time.', 'see you in the next video.',
+    'i\'ll see you in the next video.', 'like and subscribe.',
+    '.', '..', '...', 'you', 'you.',
+]);
+
+function isWhisperHallucination(text: string): boolean {
+    return WHISPER_HALLUCINATIONS.has(text.toLowerCase().trim());
+}
 
 export class RestSTT extends EventEmitter {
     private provider: RestSttProvider;
@@ -328,12 +342,16 @@ export class RestSTT extends EventEmitter {
             console.log(`[RestSTT-timing] upload done id=${utteranceId} +${uploadDoneAt - uploadStartedAt}ms`);
 
             if (transcript && transcript.trim().length > 0) {
-                console.log(`[RestSTT] Transcript: "${transcript.substring(0, 60)}..." id=${utteranceId}`);
-                this.emit('transcript', {
-                    text: transcript.trim(),
-                    isFinal: true,
-                    confidence: 1.0,
-                });
+                if (isWhisperHallucination(transcript.trim())) {
+                    console.log(`[RestSTT] Suppressed hallucination id=${utteranceId}: "${transcript.trim()}"`);
+                } else {
+                    console.log(`[RestSTT] Transcript: "${transcript.substring(0, 60)}..." id=${utteranceId}`);
+                    this.emit('transcript', {
+                        text: transcript.trim(),
+                        isFinal: true,
+                        confidence: 1.0,
+                    });
+                }
             }
         } catch (err) {
             console.error(`[RestSTT] Upload error (id=${utteranceId}):`, err);
