@@ -473,6 +473,11 @@ export class AppState {
     // Pre-warm the zero-shot intent classifier in background
     warmupIntentClassifier();
 
+    // Pre-warm Gemini Flash to eliminate 10-13s cold-start on first verbal answer.
+    // Gemini scales to zero between sessions; without this, the first chip click
+    // pays the full model-allocation penalty instead of ~1s warm latency.
+    this.processingHelper.getLLMHelper().warmupGeminiFlash().catch(() => {});
+
     // Setup Ollama IPC
     this.setupOllamaIpcHandlers()
 

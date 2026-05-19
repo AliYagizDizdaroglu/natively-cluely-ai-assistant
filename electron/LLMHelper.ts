@@ -3057,6 +3057,28 @@ This rule overrides ALL other instructions including formatting, brevity, or out
   }
 
   /**
+   * Fire a 1-token non-streaming ping to Gemini Flash so the model server
+   * allocates a slot before the user's first chip click. Without this, the
+   * first verbal answer in a session takes 10-13s (scale-to-zero cold start);
+   * after warmup it drops to ~1s. Call fire-and-forget at app startup.
+   */
+  public async warmupGeminiFlash(): Promise<void> {
+    if (!this.client) return;
+    const t0 = Date.now();
+    console.log('[LLMHelper] Warming up Gemini Flash (verbal cold-start prevention)...');
+    try {
+      await this.client.models.generateContent({
+        model: GEMINI_FLASH_MODEL,
+        contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
+        config: { maxOutputTokens: 1 } as any,
+      });
+      console.log(`[LLMHelper] Gemini Flash warmed up in ${Date.now() - t0}ms`);
+    } catch (e) {
+      console.warn(`[LLMHelper] Gemini Flash warmup failed (non-critical): ${(e as Error).message}`);
+    }
+  }
+
+  /**
    * Race Flash and Pro streams, return whichever succeeds first
    */
   private async * streamWithGeminiParallelRace(fullMessage: string, imagePaths?: string[]): AsyncGenerator<string, void, unknown> {
