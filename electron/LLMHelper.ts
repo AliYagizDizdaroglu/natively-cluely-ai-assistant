@@ -3052,8 +3052,39 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       throw new Error("Gemini client not initialized — cannot route verbal answer to Flash");
     }
     const systemWithLanguage = this.injectLanguageInstruction(systemPrompt);
-    console.log(`[LLMHelper] streamVerbalWithGeminiFlash: routing verbal answer to ${GEMINI_FLASH_MODEL}`);
-    yield* this.streamWithGeminiModel(userMessage, GEMINI_FLASH_MODEL, imagePaths, systemWithLanguage);
+    const FALLBACK_MODEL = 'gemini-2.5-flash-lite';
+    const FIRST_TOKEN_TIMEOUT_MS = 4000;
+
+    console.log(`[LLMHelper] streamVerbalWithGeminiFlash: trying ${GEMINI_FLASH_MODEL} (fallback=${FALLBACK_MODEL} after ${FIRST_TOKEN_TIMEOUT_MS}ms)`);
+
+    const primaryStream = this.streamWithGeminiModel(userMessage, GEMINI_FLASH_MODEL, imagePaths, systemWithLanguage);
+
+    // Race first token against timeout — if primary stalls, fall back to 2.5-flash-lite
+    let timeoutHandle!: NodeJS.Timeout;
+    const timeoutPromise = new Promise<'timeout'>(resolve => {
+      timeoutHandle = setTimeout(() => resolve('timeout'), FIRST_TOKEN_TIMEOUT_MS);
+    });
+
+    const firstResult = await Promise.race([
+      primaryStream.next().then(r => ({ kind: 'token' as const, result: r })),
+      timeoutPromise.then(() => ({ kind: 'timeout' as const })),
+    ]);
+    clearTimeout(timeoutHandle);
+
+    if (firstResult.kind === 'timeout') {
+      console.warn(`[LLMHelper] ${GEMINI_FLASH_MODEL} stalled after ${FIRST_TOKEN_TIMEOUT_MS}ms — falling back to ${FALLBACK_MODEL}`);
+      await primaryStream.return(undefined);
+      yield* this.streamWithGeminiModel(userMessage, FALLBACK_MODEL, imagePaths, systemWithLanguage);
+      return;
+    }
+
+    // Primary responded — emit first token then stream the rest
+    if (!firstResult.result.done && firstResult.result.value) {
+      yield firstResult.result.value;
+    }
+    if (!firstResult.result.done) {
+      yield* primaryStream;
+    }
   }
 
   /**

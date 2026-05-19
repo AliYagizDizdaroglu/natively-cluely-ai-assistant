@@ -74,7 +74,7 @@ export class IntelligenceManager extends EventEmitter {
             this.questionDetector.onSpeakerChange(prev, next);
         });
 
-        console.log('[IntelligenceManager] QuestionDetector wired (model=groq/llama-3.1-8b-instant, debounce=0.8s, dedup=0.7, conf≥0.6, max=5)');
+        console.log('[IntelligenceManager] QuestionDetector wired (model=groq/llama-3.1-8b-instant, debounce=1.5s, dedup=0.7, conf≥0.6, max=5)');
     }
 
     /** Clear detector state — call on meeting boundary. */
