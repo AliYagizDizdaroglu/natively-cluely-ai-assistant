@@ -1119,23 +1119,14 @@ export class AppState {
 
       if (!this.microphoneCapture) {
         this.microphoneCapture = new MicrophoneCapture();
-        this.microphoneCapture.on('data', (chunk: Buffer) => {
-          if (!this._micSttRateApplied && this.googleSTT_User && this.microphoneCapture) {
-            const rate = this.microphoneCapture.getSampleRate();
-            this.googleSTT_User.setSampleRate(rate);
-            this.googleSTT_User.setAudioChannelCount?.(1);
-            this._micSttRateApplied = true;
-            console.log(`[Main] User STT rate locked from first mic chunk: ${rate}Hz`);
-          }
-          this.googleSTT_User?.write(chunk);
+        this.microphoneCapture.on('data', (_chunk: Buffer) => {
+          // Mic audio not routed to STT — interviewer channel only
         });
         this.microphoneCapture.on('sample_rate_changed', (rate: number) => {
           console.log(`[Main] MicrophoneCapture rate updated dynamically to ${rate}Hz`);
-          // Forward to ALL active STT providers — STTProvider union includes setSampleRate
-          this.googleSTT_User?.setSampleRate(rate);
         });
         this.microphoneCapture.on('speech_ended', () => {
-          this.googleSTT_User?.notifySpeechEnded?.();
+          // no-op: mic STT disabled
         });
         // Recovery handler also subscribes to 'error'; gives us auto-restart
         // when the cpal err_fn fires (USB unplug, format change, etc.).
@@ -1150,12 +1141,8 @@ export class AppState {
         this.googleSTT = this.createSTTProvider('interviewer');
       }
 
-      if (!this.googleSTT_User) {
-        const { CredentialsManager } = require('./services/CredentialsManager');
-        const sttProv = CredentialsManager.getInstance().getSttProvider();
-        console.log(`[Main] Creating user STT provider: ${sttProv}`);
-        this.googleSTT_User = this.createSTTProvider('user');
-      }
+      // Mic STT intentionally disabled — question detection only needs interviewer
+      // (system audio) channel. Removing user-channel uploads halves Groq STT rate.
 
       // STT sample rate is now applied lazily on the first chunk arrival
       // (see the 'data' handlers above). Pre-configuring here was racy because
@@ -1307,22 +1294,14 @@ export class AppState {
       this.microphoneCapture = new MicrophoneCapture(inputDeviceId || undefined);
       this._micSttRateApplied = false;
 
-      this.microphoneCapture.on('data', (chunk: Buffer) => {
-        if (!this._micSttRateApplied && this.googleSTT_User && this.microphoneCapture) {
-          const r = this.microphoneCapture.getSampleRate();
-          this.googleSTT_User.setSampleRate(r);
-          this.googleSTT_User.setAudioChannelCount?.(1);
-          this._micSttRateApplied = true;
-          console.log(`[Main] (Reconfigured) User STT rate locked from first mic chunk: ${r}Hz`);
-        }
-        this.googleSTT_User?.write(chunk);
+      this.microphoneCapture.on('data', (_chunk: Buffer) => {
+        // Mic audio not routed to STT — interviewer channel only
       });
       this.microphoneCapture.on('sample_rate_changed', (rate: number) => {
         console.log(`[Main] (Reconfigured) MicrophoneCapture rate updated dynamically to ${rate}Hz`);
-        this.googleSTT_User?.setSampleRate(rate);
       });
       this.microphoneCapture.on('speech_ended', () => {
-        this.googleSTT_User?.notifySpeechEnded?.();
+        // no-op: mic STT disabled
       });
       // Recovery handler attaches its own 'error' listener; do not add a
       // duplicate logger here or the same error will be reported twice.
@@ -1340,22 +1319,14 @@ export class AppState {
         this.microphoneCapture = new MicrophoneCapture(); // Default
         this._micSttRateApplied = false;
 
-        this.microphoneCapture.on('data', (chunk: Buffer) => {
-          if (!this._micSttRateApplied && this.googleSTT_User && this.microphoneCapture) {
-            const r = this.microphoneCapture.getSampleRate();
-            this.googleSTT_User.setSampleRate(r);
-            this.googleSTT_User.setAudioChannelCount?.(1);
-            this._micSttRateApplied = true;
-            console.log(`[Main] (Default) User STT rate locked from first mic chunk: ${r}Hz`);
-          }
-          this.googleSTT_User?.write(chunk);
+        this.microphoneCapture.on('data', (_chunk: Buffer) => {
+          // Mic audio not routed to STT — interviewer channel only
         });
         this.microphoneCapture.on('sample_rate_changed', (rate: number) => {
           console.log(`[Main] (Reconfigured Default) MicrophoneCapture rate updated dynamically to ${rate}Hz`);
-          this.googleSTT_User?.setSampleRate(rate);
         });
         this.microphoneCapture.on('speech_ended', () => {
-          this.googleSTT_User?.notifySpeechEnded?.();
+          // no-op: mic STT disabled
         });
         this.setupMicRecoveryHandler();
         this.broadcastDeviceSelection({
@@ -1539,21 +1510,11 @@ export class AppState {
         }
 
         // Re-wire the listeners that reconfigureAudio normally sets up.
-        this.microphoneCapture.on('data', (chunk: Buffer) => {
-          if (!this._micSttRateApplied && this.googleSTT_User && this.microphoneCapture) {
-            const r = this.microphoneCapture.getSampleRate();
-            this.googleSTT_User.setSampleRate(r);
-            this.googleSTT_User.setAudioChannelCount?.(1);
-            this._micSttRateApplied = true;
-          }
-          this.googleSTT_User?.write(chunk);
+        this.microphoneCapture.on('data', (_chunk: Buffer) => {
+          // Mic audio not routed to STT — interviewer channel only
         });
-        this.microphoneCapture.on('sample_rate_changed', (rate: number) => {
-          this.googleSTT_User?.setSampleRate(rate);
-        });
-        this.microphoneCapture.on('speech_ended', () => {
-          this.googleSTT_User?.notifySpeechEnded?.();
-        });
+        this.microphoneCapture.on('sample_rate_changed', () => { });
+        this.microphoneCapture.on('speech_ended', () => { });
         this.setupMicRecoveryHandler(); // re-attach on the new instance
         this.microphoneCapture.start();
 
