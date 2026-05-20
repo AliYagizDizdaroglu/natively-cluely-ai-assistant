@@ -3073,7 +3073,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
     if (firstResult.kind === 'timeout') {
       console.warn(`[LLMHelper] ${GEMINI_FLASH_MODEL} stalled after ${FIRST_TOKEN_TIMEOUT_MS}ms — falling back to ${FALLBACK_MODEL}`);
-      await primaryStream.return(undefined);
+      // Do NOT await .return() — the generator is blocked inside generateContentStream's HTTP
+      // request and awaiting it would stall here until the server finally responds (~28s more).
+      // Fire-and-forget: the request completes in the background and the generator self-cleans.
+      primaryStream.return(undefined);
       yield* this.streamWithGeminiModel(userMessage, FALLBACK_MODEL, imagePaths, systemWithLanguage);
       return;
     }
