@@ -354,7 +354,11 @@ export class RestSTT extends EventEmitter {
                 }
             }
         } catch (err) {
-            console.error(`[RestSTT] Upload error (id=${utteranceId}):`, err);
+            const status = (err as any)?.response?.status;
+            const errMsg = (err as any)?.response?.data?.error?.message
+                || (err as any)?.response?.statusText
+                || (err instanceof Error ? err.message : String(err));
+            console.error(`[RestSTT] Upload error (id=${utteranceId}): ${status ? `HTTP ${status} ` : ''}${errMsg}`);
             this.emit('error', err instanceof Error ? err : new Error(String(err)));
         } finally {
             this.isUploading = false;
@@ -380,36 +384,43 @@ export class RestSTT extends EventEmitter {
     /**
      * Upload via multipart FormData (Groq, OpenAI, ElevenLabs)
      */
-    private async uploadMultipart(wavBuffer: Buffer): Promise<string> {
+    private buildForm(wavBuffer: Buffer): FormData {
         const form = new FormData();
-
-        form.append('file', wavBuffer, {
-            filename: 'audio.wav',
-            contentType: 'audio/wav',
-        });
-
-        // ElevenLabs uses 'model_id' instead of 'model'
+        form.append('file', wavBuffer, { filename: 'audio.wav', contentType: 'audio/wav' });
         if (this.provider === 'elevenlabs') {
             form.append('model_id', this.config.model);
         } else {
             form.append('model', this.config.model);
         }
-
         if (this.config.extraFormFields) {
             for (const [key, value] of Object.entries(this.config.extraFormFields)) {
                 form.append(key, value);
             }
         }
+        return form;
+    }
 
-        const response = await axios.post(this.config.endpoint, form, {
-            headers: {
-                ...this.config.authHeader,
-                ...form.getHeaders(),
-            },
-            timeout: 30000,
-        });
+    private async uploadMultipart(wavBuffer: Buffer): Promise<string> {
+        const doPost = async () => {
+            const form = this.buildForm(wavBuffer);
+            const response = await axios.post(this.config.endpoint, form, {
+                headers: { ...this.config.authHeader, ...form.getHeaders() },
+                timeout: 30000,
+            });
+            return this.config.extractTranscript(response.data);
+        };
 
-        return this.config.extractTranscript(response.data);
+        try {
+            return await doPost();
+        } catch (err: any) {
+            if (err?.response?.status === 429) {
+                const retryAfterSec = parseInt(err.response.headers?.['retry-after'] || '5', 10);
+                console.warn(`[RestSTT] Rate limited (429) — retrying in ${retryAfterSec}s`);
+                await new Promise(r => setTimeout(r, retryAfterSec * 1000));
+                return await doPost();
+            }
+            throw err;
+        }
     }
 
     /**
