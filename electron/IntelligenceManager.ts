@@ -148,8 +148,8 @@ export class IntelligenceManager extends EventEmitter {
         return this.session.getLastAssistantMessage();
     }
 
-    getFormattedContext(lastSeconds: number = 120): string {
-        return this.session.getFormattedContext(lastSeconds);
+    getFormattedContext(lastSeconds: number = 120, options?: { excludeAssistant?: boolean }): string {
+        return this.session.getFormattedContext(lastSeconds, options);
     }
 
     getLastInterviewerTurn(): string | null {

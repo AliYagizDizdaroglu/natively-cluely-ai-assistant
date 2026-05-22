@@ -358,9 +358,12 @@ export class SessionTracker {
     /**
      * Get formatted context string for LLM prompts
      */
-    getFormattedContext(lastSeconds: number = 120): string {
+    getFormattedContext(lastSeconds: number = 120, options?: { excludeAssistant?: boolean }): string {
         const items = this.getContext(lastSeconds);
-        return items.map(item => {
+        const filtered = options?.excludeAssistant
+            ? items.filter(item => item.role !== 'assistant')
+            : items;
+        return filtered.map(item => {
             const label = item.role === 'interviewer' ? 'INTERVIEWER' :
                 item.role === 'user' ? 'ME' :
                     'ASSISTANT (PREVIOUS SUGGESTION)';

@@ -476,12 +476,15 @@ export function initializeIpcHandlers(appState: AppState): void {
       // Context Injection for "Answer" button (100s rolling window)
       if (!context) {
         // User requested 100 seconds of context for the answer button
-        // Logic: If no explicit context provided (like from manual override), auto-inject from IntelligenceManager
+        // Logic: If no explicit context provided (like from manual override), auto-inject from IntelligenceManager.
+        // When screenshots are attached, exclude prior assistant suggestions to prevent the model
+        // from anchoring on (and regurgitating) the previous answer instead of analyzing the new images.
         try {
-          const autoContext = intelligenceManager.getFormattedContext(100);
+          const excludeAssistant = !!imagePaths?.length;
+          const autoContext = intelligenceManager.getFormattedContext(100, { excludeAssistant });
           if (autoContext && autoContext.trim().length > 0) {
             context = autoContext;
-            console.log(`[IPC] Auto - injected 100s context for gemini - chat - stream(${context.length} chars)`);
+            console.log(`[IPC] Auto - injected 100s context for gemini - chat - stream(${context.length} chars${excludeAssistant ? ', assistant history excluded' : ''})`);
           }
         } catch (ctxErr) {
           console.warn("[IPC] Failed to auto-inject context:", ctxErr);
