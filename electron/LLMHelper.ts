@@ -2988,7 +2988,6 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     const gemmaConfig: Record<string, unknown> = isGemma ? {
       maxOutputTokens: 4096,
       temperature: 0.3,
-      thinkingConfig: { thinkingLevel: "MEDIUM" },
     } : {
       maxOutputTokens: MAX_OUTPUT_TOKENS,
       temperature: 0.4,
@@ -3119,7 +3118,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       await activeClient.models.generateContent({
         model,
         contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
-        config: { maxOutputTokens: 1, thinkingConfig: { thinkingLevel: "MEDIUM" } } as any,
+        config: { maxOutputTokens: 1 } as any,
       });
       console.log(`[LLMHelper] ${model} warmed up in ${Date.now() - t0}ms`);
     } catch (e) {
