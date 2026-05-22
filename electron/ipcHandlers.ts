@@ -835,10 +835,14 @@ export function initializeIpcHandlers(appState: AppState): void {
         // Capture rolling context BEFORE adding the new user message — otherwise the
         // 100s window would echo back the user's just-typed message as both context and
         // question, confusing small models (the "20-char context" log line was just an echo).
+        // When screenshots are attached, exclude prior assistant suggestions to prevent the
+        // model from anchoring on (and regurgitating) the previous answer instead of analyzing
+        // the new images (from 4d5363e).
         let autoContextSnapshot: string | undefined;
         if (!context) {
           try {
-            const snap = intelligenceManager.getFormattedContext(100);
+            const excludeAssistant = !!imagePaths?.length;
+            const snap = intelligenceManager.getFormattedContext(100, { excludeAssistant });
             if (snap && snap.trim().length > 0) autoContextSnapshot = snap;
           } catch (ctxErr) {
             console.warn('[IPC] Failed to capture pre-turn context:', ctxErr);

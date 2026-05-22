@@ -451,8 +451,12 @@ export class SessionTracker {
     /**
      * Get formatted context string for LLM prompts
      */
-    getFormattedContext(lastSeconds: number = 120): string {
-        return this.formatContextItems(this.getContext(lastSeconds));
+    getFormattedContext(lastSeconds: number = 120, options?: { excludeAssistant?: boolean }): string {
+        const items = this.getContext(lastSeconds);
+        const filtered = options?.excludeAssistant
+            ? items.filter(item => item.role !== 'assistant')
+            : items;
+        return this.formatContextItems(filtered);
     }
 
     /**
