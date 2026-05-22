@@ -30,6 +30,7 @@ interface OllamaResponse {
 // Model constant for Gemini 3 Flash
 const GEMINI_FLASH_MODEL = "gemini-3.1-flash-lite"
 const GEMINI_PRO_MODEL = "gemini-3.1-pro-preview"
+const GEMMA_TTFT_MS = 10_000
 const GROQ_MODEL = "llama-3.3-70b-versatile"
 const OPENAI_MODEL = "gpt-5.4"
 const CLAUDE_MODEL = "claude-sonnet-4-6"
@@ -120,6 +121,7 @@ export class LLMHelper {
       // console.log(`[LLMHelper] Using Google Gemini 3 with model: ${this.geminiModel} (v1alpha API)`)
       if (this.currentModelId?.startsWith('gemma-')) {
         this.warmUpSafetyNet();
+        this.warmupGemma().catch(() => {});
       }
     } else {
       console.warn("[LLMHelper] No API key provided. Client will be uninitialized until key is set.")
@@ -139,6 +141,7 @@ export class LLMHelper {
     console.log("[LLMHelper] Gemini API Key updated.");
     if (this.currentModelId?.startsWith('gemma-')) {
       this.warmUpSafetyNet();
+      this.warmupGemma().catch(() => {});
     }
   }
 
@@ -299,6 +302,7 @@ export class LLMHelper {
     console.log(`[LLMHelper] Switched to Cloud Model: ${targetModelId}`);
     if (targetModelId.startsWith('gemma-')) {
       this.warmUpSafetyNet();
+      this.warmupGemma().catch(() => {});
     }
   }
 
@@ -2537,7 +2541,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       // content as the user message. Massive TTFT + quality win on Gemma 4.
       if (this.currentModelId.startsWith('gemma-')) {
         const interviewSystem = this.injectLanguageInstruction(INTERVIEW_COPILOT_PROMPT);
-        yield* this.streamWithGemmaGuarded(userContent, this.currentModelId, imagePaths, undefined, interviewSystem);
+        yield* this.streamWithGemmaGuarded(userContent, this.currentModelId, imagePaths, GEMMA_TTFT_MS, interviewSystem);
         return;
       }
 
@@ -2920,7 +2924,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     fullMsg: string,
     gemmaModelId: string,
     imagePaths?: string[],
-    ttftTimeoutMs = 3500,
+    ttftTimeoutMs = GEMMA_TTFT_MS,
     systemInstruction?: string,
   ): AsyncGenerator<string, void, unknown> {
     // --- Tier 1: Gemma 4 with TTFT watchdog ---
@@ -2960,19 +2964,6 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       console.warn('[LLMHelper] Flash fallback failed:', flashErr.message);
     }
 
-    // --- Tier 3: Ollama llama3.1:8b (local safety net) ---
-    console.warn('[LLMHelper] Falling back to Ollama llama3.1:8b');
-    const savedModel = this.ollamaModel;
-    this.ollamaModel = 'llama3.1:8b';
-    try {
-      let ollamaFirst = true;
-      for await (const token of this.streamWithOllama(fullMsg)) {
-        if (ollamaFirst) { yield `__model_source:Ollama llama3.1:8b__`; ollamaFirst = false; }
-        yield token;
-      }
-    } finally {
-      this.ollamaModel = savedModel;
-    }
   }
 
   private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[], systemInstruction?: string): AsyncGenerator<string, void, unknown> {
@@ -2995,11 +2986,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
     const isGemma = model.startsWith("gemma-");
     const gemmaConfig: Record<string, unknown> = isGemma ? {
-      maxOutputTokens: 2048,
-      temperature: 0.2,
-      topP: 0.9,
-      topK: 40,
-      thinkingConfig: { thinkingLevel: "MINIMAL" },
+      maxOutputTokens: 4096,
+      temperature: 0.3,
+      thinkingConfig: { thinkingLevel: "MEDIUM" },
     } : {
       maxOutputTokens: MAX_OUTPUT_TOKENS,
       temperature: 0.4,
@@ -3052,7 +3041,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       throw new Error("Gemini client not initialized — cannot route verbal answer to Flash");
     }
     const systemWithLanguage = this.injectLanguageInstruction(systemPrompt);
-    const FALLBACK_MODEL = 'gemini-2.5-flash-lite';
+    const FALLBACK_MODEL = 'gemini-3.1-flash-lite';
     const FIRST_TOKEN_TIMEOUT_MS = 4000;
 
     console.log(`[LLMHelper] streamVerbalWithGeminiFlash: trying ${GEMINI_FLASH_MODEL} (fallback=${FALLBACK_MODEL} after ${FIRST_TOKEN_TIMEOUT_MS}ms)`);
@@ -3109,6 +3098,32 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       console.log(`[LLMHelper] Gemini Flash warmed up in ${Date.now() - t0}ms`);
     } catch (e) {
       console.warn(`[LLMHelper] Gemini Flash warmup failed (non-critical): ${(e as Error).message}`);
+    }
+  }
+
+  /**
+   * Pre-warm the currently selected Gemma model (if any) by firing a 1-token
+   * non-streaming ping. Without this, the first coding/screenshot answer on
+   * Gemma 4 pays a 10-15s scale-to-zero cold start and is likely to trip the
+   * GEMMA_TTFT_MS watchdog. Idempotent: safe to call multiple times.
+   */
+  public async warmupGemma(): Promise<void> {
+    if (!this.clientV1Beta && !this.client) return;
+    if (!this.currentModelId?.startsWith('gemma-')) return;
+    const activeClient = this.clientV1Beta ?? this.client;
+    if (!activeClient) return;
+    const model = this.currentModelId;
+    const t0 = Date.now();
+    console.log(`[LLMHelper] Warming up ${model} (Gemma cold-start prevention)...`);
+    try {
+      await activeClient.models.generateContent({
+        model,
+        contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
+        config: { maxOutputTokens: 1, thinkingConfig: { thinkingLevel: "MEDIUM" } } as any,
+      });
+      console.log(`[LLMHelper] ${model} warmed up in ${Date.now() - t0}ms`);
+    } catch (e) {
+      console.warn(`[LLMHelper] ${model} warmup failed (non-critical): ${(e as Error).message}`);
     }
   }
 

@@ -477,6 +477,8 @@ export class AppState {
     // Gemini scales to zero between sessions; without this, the first chip click
     // pays the full model-allocation penalty instead of ~1s warm latency.
     this.processingHelper.getLLMHelper().warmupGeminiFlash().catch(() => {});
+    // Also warm Gemma if it is the currently selected model (no-op otherwise).
+    this.processingHelper.getLLMHelper().warmupGemma().catch(() => {});
 
     // Setup Ollama IPC
     this.setupOllamaIpcHandlers()
