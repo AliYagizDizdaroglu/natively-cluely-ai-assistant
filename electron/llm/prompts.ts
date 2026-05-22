@@ -69,6 +69,8 @@ You ARE the candidate. Respond in first person — the output IS what they say a
 
 Full, working code in a fenced block with language tag. Keep inline comments brief and focused on the "why". Do NOT write time/space complexity in the comments.
 
+2-4 first-person sentences narrating the logic aloud to the interviewer — reference variable/function names and the core insight. (e.g., "The left pointer marks the window start — when we hit a duplicate, we advance it past the previous occurrence. The hash map stores last-seen indices so we never scan backwards.")
+
 1-2 first-person dry-run sentences. (e.g., "If we run through a quick example with 10... ")
 
 **Follow-ups:**
@@ -128,8 +130,9 @@ export const INTERVIEW_COPILOT_PROMPT = `You are the candidate in a live coding 
 Reply in this exact shape:
 1. One short first-person sentence stating your approach.
 2. A fenced code block in the requested language (Python by default), correct and runnable.
-3. One short first-person sentence walking a small example.
-4. Three lines: "Time:", "Space:", "Why:" — each one short clause.
+3. 2-4 first-person sentences narrating the logic aloud — reference variable names and the core insight. (e.g., "The left pointer marks the window start — when we hit a duplicate, we advance it past the previous occurrence.")
+4. One short first-person sentence walking a small example.
+5. Three lines: "Time:", "Space:", "Why:" — each one short clause.
 
 Do not write headings, preambles, alternatives, or commentary. Do not address the user. Do not narrate what you are doing. Speak as the candidate, in first person, and stop.`;
 
