@@ -26,7 +26,7 @@ let _logFile: string | null = null;
 const getLogFile = (): string | null => {
   if (_logFile) return _logFile;
   try {
-    _logFile = path.join(app.getPath('documents'), 'natively_debug.log');
+    _logFile = path.join(app.getAppPath(), 'natively_debug.log');
     return _logFile;
   } catch {
     // app.ready not yet fired — return null, logToFile will skip silently
@@ -2823,6 +2823,20 @@ async function initializeApp() {
 
   // 2. Wait for app to be ready
   await app.whenReady()
+
+  // Reset the log file on every startup so each run starts clean.
+  // The previous session's log is preserved as .log.1 for post-mortem use.
+  try {
+    const logFile = getLogFile();
+    if (logFile) {
+      if (fs.existsSync(logFile)) {
+        const prev = logFile + '.1';
+        if (fs.existsSync(prev)) fs.unlinkSync(prev);
+        fs.renameSync(logFile, prev);
+      }
+      fs.writeFileSync(logFile, `=== Natively session started ${new Date().toISOString()} ===\n`);
+    }
+  } catch { /* non-fatal */ }
 
   // 2a. PRE-EMPTIVE dock hide: must happen before ANY operation that causes macOS to
   // register a dock entry (app.setName, BrowserWindow creation, etc.).
