@@ -6767,24 +6767,14 @@ export function initializeIpcHandlers(appState: AppState): void {
 
   safeHandle('profile:upload-resume', async (_, filePath: string) => {
     try {
-<<<<<<< HEAD
-      // Premium gate: require active license or free trial for profile features
-      if (!isProOrTrialActive()) {
-        return {
-          success: false,
-          error:
-            'Pro license required. Please activate a license key to use Profile Intelligence features.',
-        };
-      }
+      // Fork decision: Profile Intelligence is free-tier (project_product_invariants.md).
+      // Premium gate dropped; path-resolve security check from upstream preserved.
       const resolvedPath = consumeSelectedProfilePath(filePath);
       if (!resolvedPath) {
         console.warn('[IPC] profile:upload-resume rejected: path was not produced by profile:select-file or has expired.');
         return { success: false, error: 'Please re-select the resume file.' };
       }
       console.log(`[IPC] profile:upload-resume called with: ${resolvedPath}`);
-=======
-      console.log(`[IPC] profile:upload-resume called with: ${filePath}`);
->>>>>>> f4c81a9 (feat(profile): make Profile Intelligence fully available to free users)
       const orchestrator = appState.getKnowledgeOrchestrator();
       if (!orchestrator) {
         return {
@@ -6867,14 +6857,8 @@ export function initializeIpcHandlers(appState: AppState): void {
 
   safeHandle('profile:set-mode', async (_, enabled: boolean) => {
     try {
-      // Premium gate: only allow enabling profile mode with active license or free trial
-      if (enabled && !isProOrTrialActive()) {
-        return {
-          success: false,
-          error:
-            'Pro license required. Please activate a license key to use Profile Intelligence features.',
-        };
-      }
+      // Fork decision: ContextToggle is a free-tier surface (project_product_invariants.md).
+      // Upstream's premium gate dropped.
       const orchestrator = appState.getKnowledgeOrchestrator();
       if (!orchestrator) {
         return { success: false, error: 'Knowledge engine not initialized' };
@@ -6939,24 +6923,13 @@ export function initializeIpcHandlers(appState: AppState): void {
 
   safeHandle('profile:upload-jd', async (_, filePath: string) => {
     try {
-<<<<<<< HEAD
-      // Premium gate
-      if (!isProOrTrialActive()) {
-        return {
-          success: false,
-          error:
-            'Pro license required. Please activate a license key to use Profile Intelligence features.',
-        };
-      }
+      // Fork decision: Profile Intelligence is free-tier. Path-resolve check preserved.
       const resolvedPath = consumeSelectedProfilePath(filePath);
       if (!resolvedPath) {
         console.warn('[IPC] profile:upload-jd rejected: path was not produced by profile:select-file or has expired.');
         return { success: false, error: 'Please re-select the JD file.' };
       }
       console.log(`[IPC] profile:upload-jd called with: ${resolvedPath}`);
-=======
-      console.log(`[IPC] profile:upload-jd called with: ${filePath}`);
->>>>>>> f4c81a9 (feat(profile): make Profile Intelligence fully available to free users)
       const orchestrator = appState.getKnowledgeOrchestrator();
       if (!orchestrator) {
         return {
@@ -7002,17 +6975,7 @@ export function initializeIpcHandlers(appState: AppState): void {
 
   safeHandle('profile:research-company', async (_, companyName: string) => {
     try {
-<<<<<<< HEAD
-      // Premium gate
-      if (!isProOrTrialActive()) {
-        return {
-          success: false,
-          error:
-            'Pro license required. Please activate a license key to use Profile Intelligence features.',
-        };
-      }
-=======
->>>>>>> f4c81a9 (feat(profile): make Profile Intelligence fully available to free users)
+      // Fork decision: Profile Intelligence is free-tier.
       const orchestrator = appState.getKnowledgeOrchestrator();
       if (!orchestrator) {
         return { success: false, error: 'Knowledge engine not initialized' };
@@ -7072,17 +7035,7 @@ export function initializeIpcHandlers(appState: AppState): void {
 
   safeHandle('profile:generate-negotiation', async (_, force: boolean = false) => {
     try {
-<<<<<<< HEAD
-      // Premium gate
-      if (!isProOrTrialActive()) {
-        return {
-          success: false,
-          error:
-            'Pro license required. Please activate a license key to use Profile Intelligence features.',
-        };
-      }
-=======
->>>>>>> f4c81a9 (feat(profile): make Profile Intelligence fully available to free users)
+      // Fork decision: Profile Intelligence is free-tier.
       const orchestrator = appState.getKnowledgeOrchestrator();
       if (!orchestrator) {
         return { success: false, error: 'Knowledge engine not initialized' };
