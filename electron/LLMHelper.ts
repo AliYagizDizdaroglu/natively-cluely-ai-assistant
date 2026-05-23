@@ -920,9 +920,10 @@ ANSWER DIRECTLY:`;
         // Pass basePrompt (pre-language-injection) as systemPromptOverride so streamChat
         // calls injectLanguageInstruction exactly once. lastQuestion is the clean user message.
         // enrichedContext carries the mode reference files + custom context.
-        // ignoreKnowledgeMode=true: this is a live suggestion, not a knowledge/profile query.
+        // ignoreKnowledgeMode=false: live suggestions now respect the user's Context toggle.
+        // When the toggle is OFF or no profile is loaded, the gate skips the orchestrator anyway.
         let fullResponse = '';
-        for await (const chunk of this.streamChat(lastQuestion, undefined, enrichedContext, basePrompt, true)) {
+        for await (const chunk of this.streamChat(lastQuestion, undefined, enrichedContext, basePrompt, false)) {
           fullResponse += chunk;
         }
         return this.processResponse(fullResponse);
