@@ -6828,7 +6828,7 @@ export function initializeIpcHandlers(appState: AppState): void {
     try {
       const orchestrator = appState.getKnowledgeOrchestrator();
       if (!orchestrator) {
-        return { hasProfile: false, profileMode: false };
+        return { hasProfile: false, hasJobDescription: false, profileMode: false };
       }
       // Map new KnowledgeStatus back to legacy UI shape temporarily, plus explicit
       // readiness flags used by eval/UI polling. profileFactsReady is true as soon
@@ -6839,6 +6839,7 @@ export function initializeIpcHandlers(appState: AppState): void {
       const activeJD = (orchestrator as any)?.activeJD?.structured_data ?? null;
       return {
         hasProfile: status.hasResume,
+        hasJobDescription: status.hasActiveJD,
         profileMode: status.activeMode,
         name: status.resumeSummary?.name,
         role: status.resumeSummary?.role,
@@ -6856,7 +6857,7 @@ export function initializeIpcHandlers(appState: AppState): void {
           : 'none',
       };
     } catch (error: any) {
-      return { hasProfile: false, profileMode: false };
+      return { hasProfile: false, hasJobDescription: false, profileMode: false };
     }
   });
 

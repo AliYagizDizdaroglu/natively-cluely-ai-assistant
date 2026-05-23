@@ -512,8 +512,11 @@ export interface ElectronAPI {
   // returns explicit readiness flags so the UI can poll "profile is USABLE"
   // (resume_profile_facts_ready) rather than the coarser hasProfile. Facts are
   // ready as soon as structured extraction is saved — NOT gated on embeddings/AOT.
+  // hasJobDescription added by our fork's ContextToggle work — surfaces JD-loaded
+  // state to the UI so the toggle can hide when no JD is present.
   profileGetStatus: () => Promise<{
     hasProfile: boolean
+    hasJobDescription?: boolean
     profileMode: boolean
     name?: string
     role?: string
