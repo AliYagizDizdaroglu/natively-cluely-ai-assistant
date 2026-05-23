@@ -3748,11 +3748,11 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       try {
         console.log(`[LLMHelper] Attempting custom provider for summary...`);
         // Collect the async generator into a Promise so withTimeout works.
-        // ignoreKnowledgeMode=true: meeting summaries must never go through the
-        // profile/knowledge intercept — it would corrupt the output.
+        // ignoreKnowledgeMode=false: meeting summaries now respect the user's Context toggle.
+        // When OFF, the orchestrator gate is skipped and behaviour matches the previous bypass.
         const collectChunks = async (): Promise<string> => {
           let result = '';
-          for await (const chunk of this.streamChat(`Context:\n${context}`, undefined, undefined, systemPrompt, true)) {
+          for await (const chunk of this.streamChat(`Context:\n${context}`, undefined, undefined, systemPrompt, false)) {
             result += chunk;
           }
           return result;
