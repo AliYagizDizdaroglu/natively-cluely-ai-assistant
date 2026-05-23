@@ -2881,19 +2881,20 @@ export function initializeIpcHandlers(appState: AppState): void {
     try {
       const orchestrator = appState.getKnowledgeOrchestrator();
       if (!orchestrator) {
-        return { hasProfile: false, profileMode: false };
+        return { hasProfile: false, hasJobDescription: false, profileMode: false };
       }
       // Map new KnowledgeStatus back to legacy UI shape temporarily
       const status = orchestrator.getStatus();
       return {
         hasProfile: status.hasResume,
+        hasJobDescription: status.hasActiveJD,
         profileMode: status.activeMode,
         name: status.resumeSummary?.name,
         role: status.resumeSummary?.role,
         totalExperienceYears: status.resumeSummary?.totalExperienceYears
       };
     } catch (error: any) {
-      return { hasProfile: false, profileMode: false };
+      return { hasProfile: false, hasJobDescription: false, profileMode: false };
     }
   });
 
