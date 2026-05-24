@@ -35,7 +35,7 @@ export function ProfileIntelligenceSettings({ onClose }: { onClose: () => void }
     const [premiumPlan, setPremiumPlan] = useState<string>('');
     const [isTrialActive, setIsTrialActive] = useState(false);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-    const hasProfileAccess = isPremium || isTrialActive;
+    const hasProfileAccess = true; // Profile Intelligence is available to all users
     const isLight = useResolvedTheme() === 'light';
 
     // Profile Engine State
