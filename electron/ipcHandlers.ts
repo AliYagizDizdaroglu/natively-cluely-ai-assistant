@@ -6767,6 +6767,7 @@ export function initializeIpcHandlers(appState: AppState): void {
 
   safeHandle('profile:upload-resume', async (_, filePath: string) => {
     try {
+<<<<<<< HEAD
       // Premium gate: require active license or free trial for profile features
       if (!isProOrTrialActive()) {
         return {
@@ -6781,6 +6782,9 @@ export function initializeIpcHandlers(appState: AppState): void {
         return { success: false, error: 'Please re-select the resume file.' };
       }
       console.log(`[IPC] profile:upload-resume called with: ${resolvedPath}`);
+=======
+      console.log(`[IPC] profile:upload-resume called with: ${filePath}`);
+>>>>>>> f4c81a9 (feat(profile): make Profile Intelligence fully available to free users)
       const orchestrator = appState.getKnowledgeOrchestrator();
       if (!orchestrator) {
         return {
@@ -6935,6 +6939,7 @@ export function initializeIpcHandlers(appState: AppState): void {
 
   safeHandle('profile:upload-jd', async (_, filePath: string) => {
     try {
+<<<<<<< HEAD
       // Premium gate
       if (!isProOrTrialActive()) {
         return {
@@ -6949,6 +6954,9 @@ export function initializeIpcHandlers(appState: AppState): void {
         return { success: false, error: 'Please re-select the JD file.' };
       }
       console.log(`[IPC] profile:upload-jd called with: ${resolvedPath}`);
+=======
+      console.log(`[IPC] profile:upload-jd called with: ${filePath}`);
+>>>>>>> f4c81a9 (feat(profile): make Profile Intelligence fully available to free users)
       const orchestrator = appState.getKnowledgeOrchestrator();
       if (!orchestrator) {
         return {
@@ -6994,6 +7002,7 @@ export function initializeIpcHandlers(appState: AppState): void {
 
   safeHandle('profile:research-company', async (_, companyName: string) => {
     try {
+<<<<<<< HEAD
       // Premium gate
       if (!isProOrTrialActive()) {
         return {
@@ -7002,6 +7011,8 @@ export function initializeIpcHandlers(appState: AppState): void {
             'Pro license required. Please activate a license key to use Profile Intelligence features.',
         };
       }
+=======
+>>>>>>> f4c81a9 (feat(profile): make Profile Intelligence fully available to free users)
       const orchestrator = appState.getKnowledgeOrchestrator();
       if (!orchestrator) {
         return { success: false, error: 'Knowledge engine not initialized' };
@@ -7061,6 +7072,7 @@ export function initializeIpcHandlers(appState: AppState): void {
 
   safeHandle('profile:generate-negotiation', async (_, force: boolean = false) => {
     try {
+<<<<<<< HEAD
       // Premium gate
       if (!isProOrTrialActive()) {
         return {
@@ -7069,6 +7081,8 @@ export function initializeIpcHandlers(appState: AppState): void {
             'Pro license required. Please activate a license key to use Profile Intelligence features.',
         };
       }
+=======
+>>>>>>> f4c81a9 (feat(profile): make Profile Intelligence fully available to free users)
       const orchestrator = appState.getKnowledgeOrchestrator();
       if (!orchestrator) {
         return { success: false, error: 'Knowledge engine not initialized' };

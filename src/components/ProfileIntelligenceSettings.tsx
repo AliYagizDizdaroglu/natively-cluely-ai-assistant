@@ -564,7 +564,9 @@ export function ProfileIntelligenceSettings({ onClose }: { onClose: () => void }
     const [premiumPlan, setPremiumPlan] = useState<string>(cachedPremium.plan);
     const [isTrialActive] = useState(false);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-    const hasProfileAccess = isPremium || isTrialActive;
+    // Fork decision (2026-06-30): Profile Intelligence is free-tier — see
+    // project_product_invariants.md. Upstream gates on isPremium || isTrialActive.
+    const hasProfileAccess = true;
     const theme = useResolvedTheme();
 
     const [activeSection, setActiveSection] = useState('identity');
