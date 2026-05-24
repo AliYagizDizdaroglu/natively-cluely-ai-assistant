@@ -1,6 +1,7 @@
 import { ChevronUp, ChevronDown } from "lucide-react";
 import icon from "../icon.png";
 import type { OverlayAppearance } from "../../lib/overlayAppearance";
+import { ContextToggle } from "./ContextToggle";
 
 interface TopPillProps {
     expanded: boolean;
@@ -53,6 +54,9 @@ export default function TopPill({
                         onDragStart={(e) => e.preventDefault()}
                     />
                 </button>
+
+                {/* CONTEXT TOGGLE — gates Resume + JD injection */}
+                <ContextToggle appearance={appearance} />
 
                 {/* CENTER SEGMENT */}
                 <button

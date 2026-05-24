@@ -920,9 +920,10 @@ ANSWER DIRECTLY:`;
         // Pass basePrompt (pre-language-injection) as systemPromptOverride so streamChat
         // calls injectLanguageInstruction exactly once. lastQuestion is the clean user message.
         // enrichedContext carries the mode reference files + custom context.
-        // ignoreKnowledgeMode=true: this is a live suggestion, not a knowledge/profile query.
+        // ignoreKnowledgeMode=false: live suggestions now respect the user's Context toggle.
+        // When the toggle is OFF or no profile is loaded, the gate skips the orchestrator anyway.
         let fullResponse = '';
-        for await (const chunk of this.streamChat(lastQuestion, undefined, enrichedContext, basePrompt, true)) {
+        for await (const chunk of this.streamChat(lastQuestion, undefined, enrichedContext, basePrompt, false)) {
           fullResponse += chunk;
         }
         return this.processResponse(fullResponse);
@@ -3750,11 +3751,11 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       try {
         console.log(`[LLMHelper] Attempting custom provider for summary...`);
         // Collect the async generator into a Promise so withTimeout works.
-        // ignoreKnowledgeMode=true: meeting summaries must never go through the
-        // profile/knowledge intercept — it would corrupt the output.
+        // ignoreKnowledgeMode=false: meeting summaries now respect the user's Context toggle.
+        // When OFF, the orchestrator gate is skipped and behaviour matches the previous bypass.
         const collectChunks = async (): Promise<string> => {
           let result = '';
-          for await (const chunk of this.streamChat(`Context:\n${context}`, undefined, undefined, systemPrompt, true)) {
+          for await (const chunk of this.streamChat(`Context:\n${context}`, undefined, undefined, systemPrompt, false)) {
             result += chunk;
           }
           return result;

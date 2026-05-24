@@ -271,8 +271,12 @@ const App: React.FC = () => {
 
     // Listen for open-settings-tab events from other windows (e.g. overlay Modes button)
     const removeOpenSettingsTab = window.electronAPI?.onOpenSettingsTab?.((tab: string) => {
-      setSettingsInitialTab(tab);
-      setIsSettingsOpen(true);
+      if (tab === 'profile') {
+        setIsProfileOpen(true);
+      } else {
+        setSettingsInitialTab(tab);
+        setIsSettingsOpen(true);
+      }
     });
 
     // Listen for meeting processing completion to trigger post-meeting ads
