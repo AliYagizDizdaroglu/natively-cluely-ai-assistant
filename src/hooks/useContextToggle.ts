@@ -5,6 +5,14 @@ interface UseContextToggleResult {
     enabled: boolean;
     /** True when at least one of Resume or JD is loaded. */
     available: boolean;
+    /** True if a resume is loaded. */
+    hasResume: boolean;
+    /** True if a job description is loaded. */
+    hasJobDescription: boolean;
+    /** Candidate name from resume summary, if any. */
+    resumeName?: string;
+    /** Candidate role/title from resume summary, if any. */
+    resumeRole?: string;
     /** Flip the toggle. No-op when unavailable. */
     toggle: () => Promise<void>;
     /** Open the Settings overlay focused on the Profile tab. */
@@ -16,6 +24,10 @@ const TOGGLE_DEBOUNCE_MS = 150;
 export function useContextToggle(): UseContextToggleResult {
     const [enabled, setEnabled] = useState(false);
     const [available, setAvailable] = useState(false);
+    const [hasResume, setHasResume] = useState(false);
+    const [hasJobDescription, setHasJobDescription] = useState(false);
+    const [resumeName, setResumeName] = useState<string | undefined>(undefined);
+    const [resumeRole, setResumeRole] = useState<string | undefined>(undefined);
     const lastClickRef = useRef(0);
 
     const refresh = useCallback(async () => {
@@ -24,6 +36,10 @@ export function useContextToggle(): UseContextToggleResult {
             if (!status) return;
             setAvailable(Boolean(status.hasProfile || status.hasJobDescription));
             setEnabled(Boolean(status.profileMode));
+            setHasResume(Boolean(status.hasProfile));
+            setHasJobDescription(Boolean(status.hasJobDescription));
+            setResumeName(status.name);
+            setResumeRole(status.role);
         } catch (err) {
             console.error('[useContextToggle] profileGetStatus failed:', err);
         }
@@ -31,6 +47,14 @@ export function useContextToggle(): UseContextToggleResult {
 
     useEffect(() => {
         refresh();
+    }, [refresh]);
+
+    // Re-fetch whenever main process changes profile state (upload, delete).
+    useEffect(() => {
+        const unsub = window.electronAPI?.onProfileStatusChanged?.(() => {
+            void refresh();
+        });
+        return () => { unsub?.(); };
     }, [refresh]);
 
     const toggle = useCallback(async () => {
@@ -62,5 +86,14 @@ export function useContextToggle(): UseContextToggleResult {
         }
     }, []);
 
-    return { enabled, available, toggle, openSettings };
+    return {
+        enabled,
+        available,
+        hasResume,
+        hasJobDescription,
+        resumeName,
+        resumeRole,
+        toggle,
+        openSettings,
+    };
 }

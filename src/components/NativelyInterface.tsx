@@ -266,7 +266,11 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
     const SHELL_WIDTH_EXPANDED = 780;
     const STABLE_OVERLAY_WIDTH = SHELL_WIDTH_EXPANDED;
     const shellWidth = useMotionValue(SHELL_WIDTH_COLLAPSED);
-    const scrollMaxH = useTransform(shellWidth, [SHELL_WIDTH_COLLAPSED, SHELL_WIDTH_EXPANDED], [320, 560]);
+    // Scroll container is now sized via CSS flex (`flex-1 min-h-0`) so it
+    // takes whatever vertical space remains after the surrounding chrome
+    // (TopPill, RollingTranscript, DetectedQuestionsPanel, warnings, input
+    // row). No JS-driven maxHeight — that was racing the main process's
+    // 90% screen-height clamp.
 
     // isExpanded mirror for closures inside refs/observers that must not
     // re-bind on every toggle.
@@ -2420,7 +2424,7 @@ Provide only the answer, nothing else.`;
                         />
                         <motion.div
                             className={`relative max-w-full backdrop-blur-2xl border rounded-[24px] overflow-hidden flex flex-col draggable-area overlay-shell-surface ${overlayPanelClass}`}
-                            style={{ ...appearance.shellStyle, width: shellWidth, willChange: 'width' }}
+                            style={{ ...appearance.shellStyle, width: shellWidth, willChange: 'width', maxHeight: '90vh' }}
                         >
 
 
@@ -2527,7 +2531,7 @@ Provide only the answer, nothing else.`;
 
                             {/* Chat History - Only show if there are messages OR active states */}
                             {(messages.length > 0 || isManualRecording || isProcessing) && (
-                                <motion.div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-3 no-drag" style={{ scrollbarWidth: 'none', maxHeight: scrollMaxH }}>
+                                <motion.div ref={scrollContainerRef} className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3 no-drag" style={{ scrollbarWidth: 'none', minHeight: '60px' }}>
                                     {messages.map((msg) => {
                                         // Every row spans the full inner width of the scroll
                                         // container, which itself rides the shell's animated
@@ -2636,7 +2640,7 @@ Provide only the answer, nothing else.`;
                             )}
 
                             {/* Quick Actions - Minimal & Clean */}
-                            <div className={`flex flex-nowrap justify-center items-center gap-1.5 px-4 pb-3 overflow-x-hidden ${rollingTranscript && showTranscript ? 'pt-1' : 'pt-3'}`}>
+                            <div className={`shrink-0 flex flex-nowrap justify-center items-center gap-1.5 px-4 pb-3 overflow-x-hidden ${rollingTranscript && showTranscript ? 'pt-1' : 'pt-3'}`}>
                                 <button onClick={handleWhatToSay} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium border transition-all active:scale-95 duration-200 interaction-base interaction-press whitespace-nowrap shrink-0 ${quickActionClass}`} style={appearance.chipStyle}>
                                     <Pencil className="w-3 h-3 opacity-70" /> What to answer?
                                 </button>
@@ -2672,7 +2676,7 @@ Provide only the answer, nothing else.`;
                             </div>
 
                             {/* Input Area */}
-                            <div className="p-3 pt-0">
+                            <div className="shrink-0 p-3 pt-0">
                                 {/* Latent Context Preview (Attached Screenshot) */}
                                 {attachedContext.length > 0 && (
                                     <div className={`mb-2 rounded-lg p-2 transition-all duration-200 border ${subtleSurfaceClass}`} style={appearance.subtleStyle}>

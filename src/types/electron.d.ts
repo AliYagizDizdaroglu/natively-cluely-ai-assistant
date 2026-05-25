@@ -344,6 +344,7 @@ export interface ElectronAPI {
   profileSetMode: (enabled: boolean) => Promise<{ success: boolean; error?: string }>
   profileDelete: () => Promise<{ success: boolean; error?: string }>
   profileGetProfile: () => Promise<any>
+  onProfileStatusChanged: (callback: () => void) => () => void
   profileSelectFile: () => Promise<{ success?: boolean; cancelled?: boolean; filePath?: string; error?: string }>
 
   // JD & Research API

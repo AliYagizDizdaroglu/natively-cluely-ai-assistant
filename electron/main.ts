@@ -199,14 +199,14 @@ interface ScreenshotCaptureSession {
   restoreWithoutFocus: boolean;
 }
 
-// Premium: Knowledge modules loaded conditionally
+// Knowledge modules (open-source build)
 let KnowledgeOrchestratorClass: any = null;
 let KnowledgeDatabaseManagerClass: any = null;
 try {
-    KnowledgeOrchestratorClass = require('../premium/electron/knowledge/KnowledgeOrchestrator').KnowledgeOrchestrator;
-    KnowledgeDatabaseManagerClass = require('../premium/electron/knowledge/KnowledgeDatabaseManager').KnowledgeDatabaseManager;
-} catch {
-    console.log('[Main] Knowledge modules not available — profile intelligence disabled.');
+    KnowledgeOrchestratorClass = require('./knowledge/KnowledgeOrchestrator').KnowledgeOrchestrator;
+    KnowledgeDatabaseManagerClass = require('./knowledge/KnowledgeDatabaseManager').KnowledgeDatabaseManager;
+} catch (e: any) {
+    console.log('[Main] Knowledge modules not available — profile intelligence disabled.', e.message);
 }
 
 import { CredentialsManager } from "./services/CredentialsManager"
@@ -578,8 +578,8 @@ export class AppState {
       const db = DatabaseManager.getInstance();
       const sqliteDb = db.getDb();
 
-      if (sqliteDb && KnowledgeDatabaseManagerClass && KnowledgeOrchestratorClass) {
-        const knowledgeDb = new KnowledgeDatabaseManagerClass(sqliteDb);
+      if (KnowledgeDatabaseManagerClass && KnowledgeOrchestratorClass) {
+        const knowledgeDb = new KnowledgeDatabaseManagerClass();
         this.knowledgeOrchestrator = new KnowledgeOrchestratorClass(knowledgeDb);
 
         // Wire up LLM functions

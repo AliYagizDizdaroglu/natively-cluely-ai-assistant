@@ -526,13 +526,37 @@ export function initializeIpcHandlers(appState: AppState): void {
             const intent = await classifyIntent(message, message, 0);
             console.log(`[IPC] gemini-chat-stream intent: ${intent.intent} (${intent.confidence.toFixed(2)})`);
             if (intent.intent !== 'coding') {
+              // Knowledge-mode injection for the verbal Flash path. streamChat
+              // does this internally; this branch bypasses streamChat, so we must
+              // inject the resume/JD context here too.
+              let verbalSystemPrompt = VERBAL_WHAT_TO_ANSWER_PROMPT;
+              let verbalContext = context;
+              if (!options?.ignoreKnowledgeMode) {
+                try {
+                  const ko = llmHelper.getKnowledgeOrchestrator?.();
+                  if (ko?.isKnowledgeMode()) {
+                    ko.feedForDepthScoring(message);
+                    const kr = await ko.processQuestion(message);
+                    if (kr) {
+                      if (kr.systemPromptInjection) {
+                        verbalSystemPrompt = `${kr.systemPromptInjection}\n\n${VERBAL_WHAT_TO_ANSWER_PROMPT}`;
+                      }
+                      if (kr.contextBlock) {
+                        verbalContext = verbalContext ? `${kr.contextBlock}\n\n${verbalContext}` : kr.contextBlock;
+                      }
+                    }
+                  }
+                } catch (koErr: any) {
+                  console.warn('[IPC] Knowledge injection (verbal Flash) failed:', koErr?.message);
+                }
+              }
               // Build userContent with the same MEETING/CONTEXT framing streamChat uses
-              const userContent = context
-                ? context.trimStart().startsWith('MEETING CONTEXT')
-                  ? `${context}\n\nUSER QUESTION:\n${message}`
-                  : `CONTEXT:\n${context}\n\nUSER QUESTION:\n${message}`
+              const userContent = verbalContext
+                ? verbalContext.trimStart().startsWith('MEETING CONTEXT')
+                  ? `${verbalContext}\n\nUSER QUESTION:\n${message}`
+                  : `CONTEXT:\n${verbalContext}\n\nUSER QUESTION:\n${message}`
                 : message;
-              stream = llmHelper.streamVerbalWithGeminiFlash(userContent, VERBAL_WHAT_TO_ANSWER_PROMPT, undefined);
+              stream = llmHelper.streamVerbalWithGeminiFlash(userContent, verbalSystemPrompt, undefined);
               routedToFlashVerbal = true;
               event.sender.send("gemini-stream-source", "Gemini Flash 3.1");
             }
@@ -1256,7 +1280,7 @@ export function initializeIpcHandlers(appState: AppState): void {
         const orchestrator = appState.getKnowledgeOrchestrator();
         if (orchestrator) {
           orchestrator.setKnowledgeMode(false);
-          const { DocType } = require('../premium/electron/knowledge/types');
+          const { DocType } = require('./knowledge/types');
           orchestrator.deleteDocumentsByType(DocType.RESUME);
           orchestrator.deleteDocumentsByType(DocType.JD);
         }
@@ -1306,7 +1330,7 @@ export function initializeIpcHandlers(appState: AppState): void {
         const orchestrator = appState.getKnowledgeOrchestrator();
         if (orchestrator) {
           orchestrator.setKnowledgeMode(false);
-          const { DocType } = require('../premium/electron/knowledge/types');
+          const { DocType } = require('./knowledge/types');
           orchestrator.deleteDocumentsByType(DocType.RESUME);
           orchestrator.deleteDocumentsByType(DocType.JD);
         }
@@ -2867,8 +2891,13 @@ export function initializeIpcHandlers(appState: AppState): void {
       if (!orchestrator) {
         return { success: false, error: 'Knowledge engine not initialized. Please ensure API keys are configured.' };
       }
-      const { DocType } = require('../premium/electron/knowledge/types');
+      const { DocType } = require('./knowledge/types');
       const result = await orchestrator.ingestDocument(filePath, DocType.RESUME);
+      if (result.success) {
+        BrowserWindow.getAllWindows().forEach(win => {
+          if (!win.isDestroyed()) win.webContents.send('profile:status-changed');
+        });
+      }
       return result;
     } catch (error: any) {
       console.error('[IPC] profile:upload-resume error:', error);
@@ -2920,8 +2949,11 @@ export function initializeIpcHandlers(appState: AppState): void {
       if (!orchestrator) {
         return { success: false, error: 'Knowledge engine not initialized' };
       }
-      const { DocType } = require('../premium/electron/knowledge/types');
+      const { DocType } = require('./knowledge/types');
       orchestrator.deleteDocumentsByType(DocType.RESUME);
+      BrowserWindow.getAllWindows().forEach(win => {
+        if (!win.isDestroyed()) win.webContents.send('profile:status-changed');
+      });
       return { success: true };
     } catch (error: any) {
       return { success: false, error: error.message };
@@ -2968,8 +3000,13 @@ export function initializeIpcHandlers(appState: AppState): void {
       if (!orchestrator) {
         return { success: false, error: 'Knowledge engine not initialized. Please ensure API keys are configured.' };
       }
-      const { DocType } = require('../premium/electron/knowledge/types');
+      const { DocType } = require('./knowledge/types');
       const result = await orchestrator.ingestDocument(filePath, DocType.JD);
+      if (result.success) {
+        BrowserWindow.getAllWindows().forEach(win => {
+          if (!win.isDestroyed()) win.webContents.send('profile:status-changed');
+        });
+      }
       return result;
     } catch (error: any) {
       console.error('[IPC] profile:upload-jd error:', error);
@@ -2983,8 +3020,11 @@ export function initializeIpcHandlers(appState: AppState): void {
       if (!orchestrator) {
         return { success: false, error: 'Knowledge engine not initialized' };
       }
-      const { DocType } = require('../premium/electron/knowledge/types');
+      const { DocType } = require('./knowledge/types');
       orchestrator.deleteDocumentsByType(DocType.JD);
+      BrowserWindow.getAllWindows().forEach(win => {
+        if (!win.isDestroyed()) win.webContents.send('profile:status-changed');
+      });
       return { success: true };
     } catch (error: any) {
       return { success: false, error: error.message };
@@ -3004,12 +3044,12 @@ export function initializeIpcHandlers(appState: AppState): void {
       const cm = CredentialsManager.getInstance();
       const tavilyApiKey = cm.getTavilyApiKey();
       if (tavilyApiKey) {
-        const { TavilySearchProvider } = require('../premium/electron/knowledge/TavilySearchProvider');
+        const { TavilySearchProvider } = require('./knowledge/TavilySearchProvider');
         engine.setSearchProvider(new TavilySearchProvider(tavilyApiKey));
       } else {
         const nativelyKey = cm.getNativelyApiKey();
         if (nativelyKey) {
-          const { NativelySearchProvider } = require('../premium/electron/knowledge/NativelySearchProvider');
+          const { NativelySearchProvider } = require('./knowledge/NativelySearchProvider');
           // Pass the real trial token when key is the __trial__ sentinel so the
           // server can authenticate via x-trial-token instead of the invalid key.
           const trialToken = nativelyKey === '__trial__' ? cm.getTrialToken() : undefined;

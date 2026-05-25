@@ -436,7 +436,7 @@ ${contextString}`;
                         question,
                         undefined,
                         systemPrompt,
-                        { skipSystemPrompt: true, ignoreKnowledgeMode: true }
+                        { skipSystemPrompt: true, ignoreKnowledgeMode: false }
                     );
                 }
             } else {
@@ -495,7 +495,7 @@ ${contextString}`;
                     question,
                     undefined,
                     systemPrompt,
-                    { skipSystemPrompt: true, ignoreKnowledgeMode: true }
+                    { skipSystemPrompt: true, ignoreKnowledgeMode: false }
                 );
             }
 

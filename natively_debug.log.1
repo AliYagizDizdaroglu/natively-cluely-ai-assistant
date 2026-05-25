@@ -1,1 +1,1023 @@
-2026-05-23T00:53:06.082Z [LOG] [Main] Knowledge modules not available — profile intelligence disabled.
+=== Natively session started 2026-05-25T09:44:28.220Z ===
+2026-05-25T09:44:28.249Z [LOG] [CredentialsManager] Loaded encrypted credentials
+2026-05-25T09:44:28.250Z [LOG] [CredentialsManager] Initialized
+2026-05-25T09:44:28.266Z [LOG] [SettingsManager] Settings loaded successfully: {"isUndetectable":false,"actionButtonMode":"brainstorm","knowledgeMode":true}
+2026-05-25T09:44:28.267Z [LOG] [SettingsManager] Settings loaded
+2026-05-25T09:44:28.268Z [LOG] [AppState] Initialized with isUndetectable=false, disguiseMode=none, verboseLogging=false
+2026-05-25T09:44:28.283Z [LOG] [ModelVersionManager] Loaded persisted state from disk
+2026-05-25T09:44:28.295Z [LOG] [SettingsWindowHelper] Setting content protection to: false
+2026-05-25T09:44:28.296Z [LOG] [ModelSelectorWindowHelper] Setting content protection to: false
+2026-05-25T09:44:28.299Z [LOG] [CropperWindowHelper] Creating cropper window with multi-monitor bounds: {"x":-1440,"y":0,"width":3147,"height":1089}
+2026-05-25T09:44:28.467Z [LOG] [CropperWindowHelper] Window created. Actual bounds: {"x":-1440,"y":0,"width":3148,"height":1090}
+2026-05-25T09:44:28.468Z [LOG] [CropperWindowHelper] Expected bounds: {x:-1440, y:0, width:3147, height:1089}
+2026-05-25T09:44:28.497Z [LOG] [IntelligenceEngine] Initializing LLMs with LLMHelper
+2026-05-25T09:44:28.498Z [LOG] [IntelligenceManager] QuestionDetector wired (model=groq/llama-3.1-8b-instant, debounce=1.5s, dedup=0.7, conf≥0.6, max=5)
+2026-05-25T09:44:28.499Z [LOG] [DatabaseManager] Initializing database at C:\Users\sotka\AppData\Roaming\natively\natively.db
+2026-05-25T09:44:28.500Z [LOG] [DatabaseManager] Directory exists: C:\Users\sotka\AppData\Roaming\natively
+2026-05-25T09:44:28.502Z [LOG] [DatabaseManager] Directory contents: ["blob_storage","Cache","Code Cache","credentials.enc","DawnGraphiteCache","DawnWebGPUCache","extra_screenshots","GPUCache","install_id.txt","install_ping_sent.txt","knowledge.db","Local State","Local Storage","lockfile","model_versions.json","natively-preferences-secure.json","natively.db","Network","Preferences","screenshots","Session Storage","settings.json","Shared Dictionary","SharedStorage","shared_proto_db","VideoDecodeStats"]
+2026-05-25T09:44:28.503Z [LOG] [DatabaseManager] Found existing DB. Size: 8380416 bytes
+2026-05-25T09:44:28.678Z [LOG] [DatabaseManager] sqlite-vec extension loaded successfully
+2026-05-25T09:44:28.680Z [LOG] [DatabaseManager] Current schema version: 14
+2026-05-25T09:44:28.680Z [LOG] [DatabaseManager] Migrations completed.
+2026-05-25T09:44:28.683Z [LOG] [VectorStore] Using native sqlite-vec for vector search
+2026-05-25T09:44:28.684Z [LOG] [EmbeddingPipeline] Initializing with config: {"openaiKey":"your_openai_api_key_here","geminiKey":"AIzaSyDE-wlUKInriQrG0TB3Dzp1uQpKylE7rvo","ollamaUrl":"http://localhost:11434"}
+2026-05-25T09:44:28.699Z [LOG] [AppState] RAGManager initialized
+2026-05-25T09:44:28.709Z [LOG] [KnowledgeOrchestrator] Cache refreshed: 15 total nodes
+2026-05-25T09:44:28.710Z [LOG] [LLMHelper] KnowledgeOrchestrator attached
+2026-05-25T09:44:28.711Z [LOG] [KnowledgeOrchestrator] Knowledge mode ENABLED
+2026-05-25T09:44:28.711Z [LOG] [AppState] Knowledge mode restored from settings
+2026-05-25T09:44:28.712Z [LOG] [AppState] KnowledgeOrchestrator initialized
+2026-05-25T09:44:28.723Z [LOG] [AutoUpdater] Channel: latest
+2026-05-25T09:44:28.724Z [LOG] [ProcessingHelper] Loading stored Gemini API Key from CredentialsManager
+2026-05-25T09:44:28.726Z [LOG] [LLMHelper] Gemini API Key updated.
+2026-05-25T09:44:28.727Z [LOG] [IntelligenceEngine] Initializing LLMs with LLMHelper
+2026-05-25T09:44:28.727Z [LOG] [ProcessingHelper] Initializing RAGManager embeddings with available keys
+2026-05-25T09:44:28.728Z [LOG] [EmbeddingPipeline] Config unchanged or no new keys — skipping re-initialization
+2026-05-25T09:44:28.729Z [LOG] [ProcessingHelper] Retrying pending embeddings...
+2026-05-25T09:44:28.730Z [LOG] [EmbeddingPipeline] No provider, skipping queue processing
+2026-05-25T09:44:28.737Z [LOG] [ModelVersionManager] Next scheduled discovery in ~11 days
+2026-05-25T09:44:28.738Z [LOG] [ModelVersionManager] 📅 Background scheduler started (every ~14 days)
+2026-05-25T09:44:28.739Z [LOG] [ProcessingHelper] Loading stored Default Model: gemma-4-26b-a4b-it
+2026-05-25T09:44:28.741Z [LOG] [LLMHelper] Unloaded Ollama model from GPU: llama3.2
+2026-05-25T09:44:28.742Z [LOG] [LLMHelper] Switched to Cloud Model: gemma-4-26b-a4b-it
+2026-05-25T09:44:28.743Z [LOG] [LLMHelper] Warming up gemma-4-26b-a4b-it (Gemma cold-start prevention)...
+2026-05-25T09:44:28.744Z [LOG] [LLMHelper] STT Language set to: english-us
+2026-05-25T09:44:28.744Z [LOG] [LLMHelper] AI Response Language set to: auto
+2026-05-25T09:44:28.749Z [LOG] [AppState] Applying disguise: none (Natively) on win32
+2026-05-25T09:44:28.757Z [LOG] [OllamaManager] Checking if Ollama is already running...
+2026-05-25T09:44:28.761Z [LOG] [InstallPingManager] Install ping already sent, skipping
+2026-05-25T09:44:28.762Z [LOG] [Init] Loading stored Google Service Account path
+2026-05-25T09:44:28.762Z [LOG] [AppState] Updating Google Credentials to: /path/to/your/service-account.json
+2026-05-25T09:44:28.762Z [LOG] App is ready
+2026-05-25T09:44:28.764Z [LOG] [WindowHelper] Icon Path: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\assets\icons\win\icon.ico
+2026-05-25T09:44:28.764Z [LOG] [WindowHelper] Start URL: http://localhost:5180
+2026-05-25T09:44:28.789Z [LOG] [WindowHelper] BrowserWindow created successfully
+2026-05-25T09:44:28.827Z [LOG] [Tray] Using template icon: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\assets\iconTemplate.png
+2026-05-25T09:44:28.884Z [LOG] [Main] updateTrayMenu called. Screenshot Accelerator: CommandOrControl+H
+2026-05-25T09:44:28.887Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+B -> general:toggle-visibility
+2026-05-25T09:44:28.888Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+B -> general:toggle-mouse-passthrough
+2026-05-25T09:44:28.889Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+Enter -> general:capture-and-process
+2026-05-25T09:44:28.889Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+H -> general:take-screenshot
+2026-05-25T09:44:28.890Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+H -> general:selective-screenshot
+2026-05-25T09:44:28.890Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+Up -> window:move-up
+2026-05-25T09:44:28.891Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+Down -> window:move-down
+2026-05-25T09:44:28.892Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+Left -> window:move-left
+2026-05-25T09:44:28.892Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+Right -> window:move-right
+2026-05-25T09:44:28.913Z [LOG] [SettingsWindowHelper] Creating Settings Window with Content Protection: false
+2026-05-25T09:44:28.920Z [LOG] [Main] CalendarManager initialized
+2026-05-25T09:44:28.921Z [LOG] [MeetingPersistence] Checking for unprocessed meetings...
+2026-05-25T09:44:28.924Z [LOG] [MeetingPersistence] No unprocessed meetings found.
+2026-05-25T09:44:28.926Z [LOG] [ModelVersionManager] Current Model Tiers:
+  --- Vision ---
+  openai: T1=gpt-5.4 | T2/T3=gpt-5.4
+  gemini_flash: T1=gemini-3.1-flash-lite-preview | T2/T3=gemini-3.5-flash
+  claude: T1=claude-sonnet-4-6 | T2/T3=claude-sonnet-4-6
+  gemini_pro: T1=gemini-3.1-pro-preview | T2/T3=gemini-3.1-pro-preview
+  groq_llama: T1=meta-llama/llama-4-scout-17b-16e-instruct | T2/T3=meta-llama/llama-4-scout-17b-16e-instruct
+  --- Text ---
+  text_groq: T1=llama-3.3-70b-versatile | T2/T3=llama-3.3-70b-versatile
+  text_openai: T1=gpt-5.4 | T2/T3=gpt-5.4
+  text_claude: T1=claude-sonnet-4-6 | T2/T3=claude-sonnet-4-6
+  text_gemini_flash: T1=gemini-3.1-flash-lite-preview | T2/T3=gemini-3.5-flash
+  text_gemini_pro: T1=gemini-3.1-pro-preview | T2/T3=gemini-3.1-pro-preview
+  Rollback available for: gemini_flash, text_gemini_flash
+  Last discovery: 2026-05-22T00:51:08.592Z
+  Discovery interval: 14 days
+2026-05-25T09:44:29.103Z [LOG] [AppState] Ollama model ready, re-evaluating RAG pipeline provider
+2026-05-25T09:44:29.105Z [LOG] [EmbeddingPipeline] Config unchanged or no new keys — skipping re-initialization
+2026-05-25T09:44:29.107Z [LOG] [OllamaManager] Ollama is already running. App will not manage its lifecycle.
+2026-05-25T09:44:30.228Z [LOG] [IntentClassifier] Loading zero-shot classifier (mobilebert-uncased-mnli)...
+2026-05-25T09:44:30.327Z [WARN] [LLMHelper] gemma-4-26b-a4b-it warmup failed (non-critical): {"error":{"code":500,"message":"Internal error encountered.","status":"INTERNAL"}}
+2026-05-25T09:44:30.607Z [LOG] [EmbeddingPipeline] Local fallback provider ready (384d)
+2026-05-25T09:44:31.618Z [LOG] [IntentClassifier] Zero-shot classifier loaded successfully.
+2026-05-25T09:44:32.275Z [LOG] [EmbeddingProviderResolver] Provider openai unavailable, trying next...
+2026-05-25T09:44:32.645Z [LOG] [EmbeddingProviderResolver] Selected provider: gemini (768d)
+2026-05-25T09:44:32.646Z [LOG] [EmbeddingPipeline] Ready with provider: gemini (768d)
+2026-05-25T09:44:35.758Z [LOG] [WindowHelper] Switching to LAUNCHER (inactive: false)
+2026-05-25T09:44:35.880Z [LOG] [WindowHelper] loadURL success
+2026-05-25T09:44:35.888Z [LOG] [CropperWindowHelper] URL loaded successfully (attempt 1)
+2026-05-25T09:44:36.030Z [LOG] [DatabaseManager] Demo meeting already exists, skipping seed.
+2026-05-25T09:44:36.790Z [LOG] [LLMHelper] Switched to Cloud Model: gemma-4-26b-a4b-it
+2026-05-25T09:44:36.791Z [LOG] [LLMHelper] Warming up gemma-4-26b-a4b-it (Gemma cold-start prevention)...
+2026-05-25T09:44:36.794Z [LOG] [CredentialsManager] Default Model set to: gemma-4-26b-a4b-it
+2026-05-25T09:44:36.798Z [LOG] [LLMHelper] Switched to Cloud Model: gemma-4-26b-a4b-it
+2026-05-25T09:44:36.798Z [LOG] [LLMHelper] Warming up gemma-4-26b-a4b-it (Gemma cold-start prevention)...
+2026-05-25T09:44:36.802Z [LOG] [CredentialsManager] Default Model set to: gemma-4-26b-a4b-it
+2026-05-25T09:44:37.384Z [WARN] [LLMHelper] gemma-4-26b-a4b-it warmup failed (non-critical): {"error":{"code":500,"message":"Internal error encountered.","status":"INTERNAL"}}
+2026-05-25T09:44:37.722Z [LOG] [LLMHelper] gemma-4-26b-a4b-it warmed up in 930ms
+2026-05-25T09:44:38.737Z [LOG] [AutoUpdater] Development mode: Skipping auto check (use manual button)
+2026-05-25T09:44:39.441Z [LOG] [LLMHelper] ✅ Safety net (llama3.1:8b) warmed up in 10296ms
+2026-05-25T09:45:13.794Z [LOG] [Main] Starting Meeting... {"audio":{"inputDeviceId":null,"outputDeviceId":null}}
+2026-05-25T09:45:13.798Z [LOG] [WindowHelper] Overlay position reset to default for next meeting.
+2026-05-25T09:45:13.800Z [LOG] [Main] Reconfiguring Audio: Input=null, Output=null
+2026-05-25T09:45:13.802Z [LOG] [Main] Initializing SystemAudioCapture...
+2026-05-25T09:45:13.804Z [LOG] [SystemAudioCapture] Initialized (lazy). Device ID: default
+2026-05-25T09:45:13.805Z [LOG] [Main] SystemAudioCapture initialized.
+2026-05-25T09:45:13.806Z [LOG] [Main] device-selection-applied: {"kind":"output","requested":null,"actual":"default","fellBack":false}
+2026-05-25T09:45:13.809Z [LOG] [Main] Initializing MicrophoneCapture...
+2026-05-25T09:45:13.811Z [LOG] [MicrophoneCapture] Initialized wrapper. Device ID: default
+2026-05-25T09:45:13.811Z [LOG] [MicrophoneCapture] Creating native monitor (Eager Init)...
+2026-05-25T09:45:14.493Z [LOG] [Main] MicrophoneCapture initialized.
+2026-05-25T09:45:14.495Z [LOG] [Main] device-selection-applied: {"kind":"input","requested":null,"actual":"default","fellBack":false}
+2026-05-25T09:45:14.497Z [LOG] [Main] Creating interviewer STT provider: deepgram
+2026-05-25T09:45:14.499Z [LOG] [Main] Using DeepgramStreamingSTT for interviewer
+2026-05-25T09:45:14.501Z [LOG] [SystemAudioCapture] Creating native monitor (lazy init)...
+2026-05-25T09:45:14.502Z [LOG] [SystemAudioCapture] Starting native capture...
+2026-05-25T09:45:14.504Z [LOG] [DeepgramStreaming] Connecting (rate=16000, ch=1, lang=en)...
+2026-05-25T09:45:16.834Z [LOG] [MicrophoneCapture] Starting native capture...
+2026-05-25T09:45:16.837Z [LOG] [LiveRAGIndexer] Started for meeting live-meeting-current
+2026-05-25T09:45:16.838Z [LOG] [Main] Audio pipeline started successfully.
+2026-05-25T09:45:16.862Z [LOG] [WindowHelper] Switching to OVERLAY (inactive: false)
+2026-05-25T09:45:16.863Z [LOG] [KeybindManager] Mode changed to: overlay. Refreshing global shortcuts.
+2026-05-25T09:45:16.865Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+B -> general:toggle-visibility
+2026-05-25T09:45:16.867Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+B -> general:toggle-mouse-passthrough
+2026-05-25T09:45:16.868Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Enter -> general:process-screenshots
+2026-05-25T09:45:16.870Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+Enter -> general:capture-and-process
+2026-05-25T09:45:16.872Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+R -> general:reset-cancel
+2026-05-25T09:45:16.873Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+H -> general:take-screenshot
+2026-05-25T09:45:16.874Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+H -> general:selective-screenshot
+2026-05-25T09:45:16.875Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+1 -> chat:whatToAnswer
+2026-05-25T09:45:16.876Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+2 -> chat:clarify
+2026-05-25T09:45:16.877Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+3 -> chat:dynamicAction4
+2026-05-25T09:45:16.878Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+4 -> chat:followUp
+2026-05-25T09:45:16.879Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+5 -> chat:answer
+2026-05-25T09:45:16.881Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+6 -> chat:codeHint
+2026-05-25T09:45:16.883Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+7 -> chat:brainstorm
+2026-05-25T09:45:16.885Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+Up -> window:move-up
+2026-05-25T09:45:16.887Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+Down -> window:move-down
+2026-05-25T09:45:16.888Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+Left -> window:move-left
+2026-05-25T09:45:16.888Z [LOG] [KeybindManager] Registered global shortcut: CommandOrControl+Shift+Right -> window:move-right
+2026-05-25T09:45:17.543Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:45:20.154Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:20.392Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:22.692Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:25.645Z [LOG] [KnowledgeOrchestrator] Knowledge mode DISABLED
+2026-05-25T09:45:25.751Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:28.672Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:29.073Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:29.093Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:31.892Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:40.314Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:46.374Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:47.290Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:47.872Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:48.120Z [LOG] [SystemAudioCapture] Chunk #1: 1920 bytes from Rust
+2026-05-25T09:45:48.121Z [LOG] [DeepgramStreaming] Sample rate set to 48000
+2026-05-25T09:45:48.122Z [LOG] [DeepgramStreaming] Restarting due to config change...
+2026-05-25T09:45:48.123Z [LOG] [DeepgramStreaming] Stopped
+2026-05-25T09:45:48.123Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:45:48.124Z [LOG] [Main] (Reconfigured) Interviewer STT rate locked from first chunk: 48000Hz
+2026-05-25T09:45:48.125Z [LOG] [Main] (Reconfigured) SystemAudio->STT: chunk #1, 1920B, googleSTT=active
+2026-05-25T09:45:48.195Z [LOG] [SystemAudioCapture] Chunk #2: 1920 bytes from Rust
+2026-05-25T09:45:48.196Z [LOG] [Main] (Reconfigured) SystemAudio->STT: chunk #2, 1920B, googleSTT=active
+2026-05-25T09:45:48.217Z [LOG] [SystemAudioCapture] Chunk #3: 1920 bytes from Rust
+2026-05-25T09:45:48.218Z [LOG] [Main] (Reconfigured) SystemAudio->STT: chunk #3, 1920B, googleSTT=active
+2026-05-25T09:45:48.309Z [LOG] [DeepgramStreaming] Closed (code=1000, reason=(empty))
+2026-05-25T09:45:48.312Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:45:48.551Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:48.614Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:48.737Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:45:48.738Z [LOG] [DeepgramStreaming] Flushed 29 buffered chunks
+2026-05-25T09:45:48.834Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:45:49.394Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:49.992Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:45:49.993Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:45:50.312Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:51.071Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:51.314Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:52.134Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:54.092Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:54.193Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:54.532Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:55.294Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:55.732Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:57.991Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:58.132Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:45:58.391Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:00.721Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:46:00.722Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:46:01.739Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:46:01.756Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:01.974Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:02.454Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:02.568Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:46:03.152Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:09.013Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:46:09.014Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:46:10.018Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:46:10.669Z [LOG] [KnowledgeOrchestrator] Knowledge mode ENABLED
+2026-05-25T09:46:10.716Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:46:11.354Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:14.570Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:15.674Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:16.968Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:46:16.969Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:46:17.971Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:46:18.720Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:46:20.492Z [LOG] [KnowledgeOrchestrator] Knowledge mode DISABLED
+2026-05-25T09:46:24.138Z [LOG] [IPC] gemini-chat-stream started using LLMHelper.streamChat
+2026-05-25T09:46:24.139Z [LOG] [IPC] Auto - injected 100s context for gemini - chat - stream(28 chars)
+2026-05-25T09:46:24.140Z [LOG] [IntentClassifier] lastInterviewerTurn: "what are my top skills"
+2026-05-25T09:46:24.141Z [LOG] [IntentClassifier] Tier 1 (regex) no match — falling to SLM
+2026-05-25T09:46:24.288Z [LOG] [IntentClassifier] SLM classified as "example_request" (69.0%): "what are my top skills..."
+2026-05-25T09:46:24.289Z [LOG] [IPC] gemini-chat-stream intent: example_request (0.69)
+2026-05-25T09:46:24.291Z [LOG] [LLMHelper] streamVerbalWithGeminiFlash: trying gemini-3.1-flash-lite (fallback=gemma-4-26b-a4b-it after 4000ms)
+2026-05-25T09:46:24.365Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:24.636Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:24.981Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:46:24.982Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:46:25.132Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:25.313Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:25.715Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:25.990Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:46:26.616Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:46:27.392Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:28.300Z [WARN] [LLMHelper] gemini-3.1-flash-lite stalled after 4000ms — falling back to gemma-4-26b-a4b-it
+2026-05-25T09:46:29.251Z [LOG] [SessionTracker] addAssistantMessage called with: I can't share that information.
+2026-05-25T09:46:29.252Z [LOG] [SessionTracker] lastAssistantMessage updated, history size: 1
+2026-05-25T09:46:30.554Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:31.765Z [LOG] [KnowledgeOrchestrator] Knowledge mode ENABLED
+2026-05-25T09:46:32.373Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:32.964Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:46:32.965Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:46:33.971Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:46:34.698Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:46:34.774Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:35.332Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:36.317Z [LOG] [IPC] gemini-chat-stream started using LLMHelper.streamChat
+2026-05-25T09:46:36.318Z [LOG] [IntentClassifier] lastInterviewerTurn: "what are my top skills"
+2026-05-25T09:46:36.319Z [LOG] [IntentClassifier] Tier 1 (regex) no match — falling to SLM
+2026-05-25T09:46:36.448Z [LOG] [IntentClassifier] SLM classified as "example_request" (69.0%): "what are my top skills..."
+2026-05-25T09:46:36.449Z [LOG] [IPC] gemini-chat-stream intent: example_request (0.69)
+2026-05-25T09:46:36.451Z [LOG] [KnowledgeOrchestrator] Intent classified: profile_detail
+2026-05-25T09:46:36.452Z [LOG] [KnowledgeOrchestrator] Category hints: skills
+2026-05-25T09:46:36.454Z [LOG] [EmbedPipe-timing] embed call reason=getEmbedding textLen=22
+2026-05-25T09:46:36.545Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:36.891Z [LOG] [LLMHelper] streamVerbalWithGeminiFlash: trying gemini-3.1-flash-lite (fallback=gemma-4-26b-a4b-it after 4000ms)
+2026-05-25T09:46:37.804Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:38.118Z [LOG] [SessionTracker] addAssistantMessage called with: My core expertise lies in building end-to-end, sca
+2026-05-25T09:46:38.119Z [LOG] [SessionTracker] lastAssistantMessage updated, history size: 2
+2026-05-25T09:46:40.976Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:46:40.977Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:46:41.985Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:46:42.652Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:46:46.995Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:48.983Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:46:48.983Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:46:49.475Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:49.992Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:46:50.534Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:50.652Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:50.688Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:46:51.112Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:51.273Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:51.770Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:53.692Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:55.133Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:55.333Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:56.813Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:57.014Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:46:57.014Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:46:58.021Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:46:58.744Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:46:59.132Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:46:59.671Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:01.114Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:04.894Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:05.012Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:05.018Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:47:05.019Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:47:05.132Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:05.454Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:06.027Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:47:06.831Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:47:06.933Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:07.876Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:09.134Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:12.311Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:12.975Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:13.053Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:47:13.054Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:47:14.058Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:47:14.593Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:14.711Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:14.753Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:47:15.541Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:15.637Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:18.312Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:19.695Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:20.453Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:21.026Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:47:21.027Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:47:21.834Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:22.040Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:47:22.734Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:47:23.531Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:27.134Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:28.615Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:28.834Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:29.035Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:47:29.036Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:47:30.044Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:47:30.680Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:47:31.370Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:31.555Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:37.040Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:47:37.042Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:47:38.053Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:47:38.894Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:47:39.093Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:39.753Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:39.970Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:40.175Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:41.173Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:44.355Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:45.046Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:47:45.047Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:47:45.793Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:46.059Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:47:46.692Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:47:52.173Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:52.953Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:53.054Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:47:53.055Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:47:54.062Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:47:54.766Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:47:55.134Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:59.270Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:47:59.995Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:00.229Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:00.794Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:01.052Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:48:01.054Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:48:01.715Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:02.059Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:48:02.700Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:48:04.455Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:07.332Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:09.045Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:48:09.046Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:48:10.048Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:48:10.680Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:48:12.615Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:13.194Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:16.294Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:17.051Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:48:17.053Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:48:18.057Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:48:18.563Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:48:24.254Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:24.612Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:25.020Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:48:25.021Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:48:26.034Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:48:26.632Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:48:31.033Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:33.025Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:48:33.027Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:48:34.032Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:48:34.647Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:48:35.912Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:36.252Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:36.794Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:37.971Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:38.633Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:38.955Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:39.831Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:40.350Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:40.614Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:40.674Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:40.832Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:40.890Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:40.934Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:41.051Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:41.059Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:48:41.061Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:48:42.077Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:48:42.793Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:48:43.696Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:44.771Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:45.693Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:46.052Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:46.090Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:47.034Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:47.233Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:48:47.546Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text=""
+2026-05-25T09:48:49.110Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:48:49.110Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:48:50.112Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:48:50.411Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:50.830Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:48:50.970Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:51.393Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:51.832Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:48:56.792Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:00.698Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:49:00.699Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:49:01.716Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:49:02.214Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:02.286Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:49:02.653Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:02.892Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:04.334Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:11.015Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:11.086Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:49:11.087Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:49:12.091Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:49:12.761Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:49:13.552Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:14.873Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:15.392Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:16.273Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:17.134Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:17.692Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:17.813Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:18.675Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:20.574Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:20.692Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:21.374Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:22.471Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:49:22.471Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:49:23.478Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:49:24.207Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:49:25.053Z [LOG] [KnowledgeOrchestrator] Knowledge mode DISABLED
+2026-05-25T09:49:25.853Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:28.451Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:29.553Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:29.894Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:30.573Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:32.673Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:32.970Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:49:32.970Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:49:33.984Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:49:34.713Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:49:37.893Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:38.015Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:41.094Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:41.211Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:43.412Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:44.132Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:44.752Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:44.970Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:45.189Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:49:45.190Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:49:45.511Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:46.193Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:49:46.474Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:46.770Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:49:47.053Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:52.212Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:53.211Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:53.414Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:54.932Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:49:54.933Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:49:55.940Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:49:56.151Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:49:56.580Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:49:57.135Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:02.813Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:03.290Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:03.773Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:04.332Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:04.851Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:05.532Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:05.591Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:05.651Z [LOG] [SystemAudioCapture] Chunk #200: 1920 bytes from Rust
+2026-05-25T09:50:06.153Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:06.226Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="Explain"
+2026-05-25T09:50:06.836Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:06.915Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:06.953Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:50:06.954Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:50:07.033Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:07.813Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:07.961Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:50:08.691Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:50:08.694Z [LOG] [DeepgramStreaming] Flushed 70 buffered chunks
+2026-05-25T09:50:09.253Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:09.572Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:09.615Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text="Texture."
+2026-05-25T09:50:09.616Z [LOG] [Engine-timing] segment-final speaker=interviewer textLen=8
+2026-05-25T09:50:09.617Z [LOG] [QD-timing] reset sincePrev=first interruptedTimer=false
+2026-05-25T09:50:10.333Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:10.873Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:11.127Z [LOG] [QD-timing] debounce elapsed=1510ms → triggering detect
+2026-05-25T09:50:11.128Z [LOG] [QD-timing] detect issued
+2026-05-25T09:50:11.130Z [LOG] [GroqDetectionClient] detect issued at wall=1779702611129
+2026-05-25T09:50:11.445Z [LOG] [GroqDetectionClient] detect ok: gen=315ms body=1ms total=316ms tokens=271
+2026-05-25T09:50:11.446Z [LOG] [QD-timing] detect returned +318ms result=detected=true conf=1.00 q.len=8
+2026-05-25T09:50:11.447Z [LOG] [QuestionDetector] dropping fragment (1 words): "Texture."
+2026-05-25T09:50:11.751Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:12.251Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:12.553Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:12.723Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:50:14.213Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:15.647Z [LOG] [SystemAudioCapture] Chunk #400: 1920 bytes from Rust
+2026-05-25T09:50:18.186Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:50:19.075Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:19.125Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:50:19.126Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:50:20.128Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:50:20.751Z [LOG] [Main] (Reconfigured) SystemAudio->STT: chunk #500, 1920B, googleSTT=active
+2026-05-25T09:50:20.830Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:50:20.833Z [LOG] [DeepgramStreaming] Flushed 72 buffered chunks
+2026-05-25T09:50:21.619Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="Explain"
+2026-05-25T09:50:21.756Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:22.422Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="Explain"
+2026-05-25T09:50:22.515Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:22.749Z [LOG] [SystemAudioCapture] Chunk #600: 1920 bytes from Rust
+2026-05-25T09:50:23.234Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="Explain transformer archetype."
+2026-05-25T09:50:23.753Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:24.033Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="Explain transformer architecture."
+2026-05-25T09:50:24.446Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text="Explain transformer architecture."
+2026-05-25T09:50:24.447Z [LOG] [Engine-timing] segment-final speaker=interviewer textLen=33
+2026-05-25T09:50:24.447Z [LOG] [QD-timing] reset sincePrev=14830ms interruptedTimer=false
+2026-05-25T09:50:25.954Z [LOG] [QD-timing] debounce elapsed=1507ms → triggering detect
+2026-05-25T09:50:25.955Z [LOG] [QD-timing] detect issued
+2026-05-25T09:50:25.956Z [LOG] [GroqDetectionClient] detect issued at wall=1779702625956
+2026-05-25T09:50:26.207Z [LOG] [GroqDetectionClient] detect ok: gen=250ms body=1ms total=251ms tokens=292
+2026-05-25T09:50:26.208Z [LOG] [QD-timing] detect returned +253ms result=detected=true conf=1.00 q.len=33
+2026-05-25T09:50:26.209Z [LOG] [QuestionDetector] chip emitted: intent=verbal confidence=1.00 q="Explain transformer architecture."
+2026-05-25T09:50:26.815Z [LOG] [IPC] answer-detected-question: intent=verbal, question="Explain transformer architecture...."
+2026-05-25T09:50:26.818Z [LOG] [IntelligenceEngine] runWhatShouldISay: using contextOverride snapshot
+2026-05-25T09:50:26.819Z [LOG] [IntelligenceEngine] runWhatShouldISay: intent override → general
+2026-05-25T09:50:26.821Z [LOG] [IntelligenceEngine] Temporal RAG: 0 responses, tone: neutral, intent: general
+2026-05-25T09:50:26.832Z [LOG] [LLMHelper] streamVerbalWithGeminiFlash: trying gemini-3.1-flash-lite (fallback=gemma-4-26b-a4b-it after 4000ms)
+2026-05-25T09:50:28.203Z [LOG] [SessionTracker] addAssistantMessage called with: Transformers work by letting every word in a seque
+2026-05-25T09:50:28.204Z [LOG] [SessionTracker] lastAssistantMessage updated, history size: 3
+2026-05-25T09:50:28.473Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:50:31.052Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:31.327Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:50:31.328Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:50:32.092Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:32.330Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:50:32.413Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:33.008Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:50:33.009Z [LOG] [DeepgramStreaming] Flushed 15 buffered chunks
+2026-05-25T09:50:34.637Z [LOG] [KnowledgeOrchestrator] Knowledge mode ENABLED
+2026-05-25T09:50:36.991Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:50:37.751Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:38.173Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:38.590Z [LOG] [SystemAudioCapture] Chunk #800: 1920 bytes from Rust
+2026-05-25T09:50:40.397Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:50:40.792Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:41.192Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:41.474Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="Explain Transformer"
+2026-05-25T09:50:42.014Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:42.404Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="Explain transformer architecture"
+2026-05-25T09:50:43.020Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text="Explain transformer architecture."
+2026-05-25T09:50:43.024Z [LOG] [Engine-timing] segment-final speaker=interviewer textLen=33
+2026-05-25T09:50:43.025Z [LOG] [QD-timing] reset sincePrev=18578ms interruptedTimer=false
+2026-05-25T09:50:43.152Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:43.461Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:50:43.462Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:50:43.674Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:44.412Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:44.470Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:50:44.529Z [LOG] [QD-timing] debounce elapsed=1504ms → triggering detect
+2026-05-25T09:50:44.530Z [LOG] [QD-timing] detect issued
+2026-05-25T09:50:44.530Z [LOG] [GroqDetectionClient] detect issued at wall=1779702644530
+2026-05-25T09:50:44.865Z [LOG] [GroqDetectionClient] detect ok: gen=334ms body=1ms total=335ms tokens=543
+2026-05-25T09:50:44.866Z [LOG] [QD-timing] detect returned +335ms result=detected=true conf=1.00 q.len=33
+2026-05-25T09:50:44.866Z [LOG] [QuestionDetector] chip updated: id=e740b6dd q="Explain transformer architecture."
+2026-05-25T09:50:45.166Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:50:45.167Z [LOG] [DeepgramStreaming] Flushed 15 buffered chunks
+2026-05-25T09:50:45.811Z [LOG] [SystemAudioCapture] Chunk #1000: 1920 bytes from Rust
+2026-05-25T09:50:45.812Z [LOG] [Main] (Reconfigured) SystemAudio->STT: chunk #1000, 1920B, googleSTT=active
+2026-05-25T09:50:45.957Z [LOG] [IPC] answer-detected-question: intent=verbal, question="Explain transformer architecture...."
+2026-05-25T09:50:45.958Z [LOG] [IntelligenceEngine] runWhatShouldISay: using contextOverride snapshot
+2026-05-25T09:50:45.959Z [LOG] [IntelligenceEngine] runWhatShouldISay: intent override → general
+2026-05-25T09:50:45.960Z [LOG] [IntelligenceEngine] Temporal RAG: 1 responses, tone: neutral, intent: general
+2026-05-25T09:50:45.963Z [LOG] [LLMHelper] streamVerbalWithGeminiFlash: trying gemini-3.1-flash-lite (fallback=gemma-4-26b-a4b-it after 4000ms)
+2026-05-25T09:50:46.792Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:46.914Z [LOG] [LiveRAGIndexer] Saved 1 chunks (1 total) for meeting live-meeting-current
+2026-05-25T09:50:46.916Z [LOG] [EmbedPipe-timing] embed call reason=getEmbedding textLen=67
+2026-05-25T09:50:47.235Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:47.355Z [LOG] [DatabaseManager] Ensured vec0 tables for dim=768
+2026-05-25T09:50:47.365Z [LOG] [LiveRAGIndexer] Embedded 1/1 chunks (1 total with embeddings)
+2026-05-25T09:50:48.535Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:49.130Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:50:49.567Z [LOG] [SessionTracker] addAssistantMessage called with: Think of it like a group of people in a room tryin
+2026-05-25T09:50:49.568Z [LOG] [SessionTracker] lastAssistantMessage updated, history size: 4
+2026-05-25T09:50:49.635Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:50.595Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:51.594Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:51.915Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:53.773Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:54.707Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:50:55.658Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:50:55.658Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:50:56.515Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:56.661Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:50:57.415Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:50:57.416Z [LOG] [DeepgramStreaming] Flushed 16 buffered chunks
+2026-05-25T09:50:58.753Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:50:58.854Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:00.931Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:01.288Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:51:02.272Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:04.975Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:06.787Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:51:06.852Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:07.494Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:07.792Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:51:07.792Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:51:07.869Z [LOG] [SystemAudioCapture] Chunk #1200: 1920 bytes from Rust
+2026-05-25T09:51:08.796Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:51:09.434Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:51:09.435Z [LOG] [DeepgramStreaming] Flushed 15 buffered chunks
+2026-05-25T09:51:11.353Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:17.091Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:17.512Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:19.054Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:19.998Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:51:19.999Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:51:21.007Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:51:21.792Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:51:21.814Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:24.691Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:25.113Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:28.054Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:29.640Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:51:29.640Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:51:30.646Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:51:31.411Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:51:32.414Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:33.393Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:35.935Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:36.272Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:37.239Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:51:37.240Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:51:38.253Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:51:38.950Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:51:41.112Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:42.490Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:43.145Z [LOG] [Main] Global shortcut triggered: general:take-screenshot
+2026-05-25T09:51:43.205Z [LOG] [ScreenshotHelper] Taking screenshot...
+2026-05-25T09:51:43.205Z [LOG] [ScreenshotHelper] Using queue directory: C:\Users\sotka\AppData\Roaming\natively\screenshots\ac6fcaa2-cba3-4f61-a4cd-f597c696093f.png
+2026-05-25T09:51:43.207Z [LOG] [ScreenshotHelper] Target display bounds: {"x":0,"y":0,"width":1707,"height":960}, scale: 1.5
+2026-05-25T09:51:43.835Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:44.187Z [LOG] [ScreenshotHelper] Found 2 screen source(s)
+2026-05-25T09:51:44.188Z [LOG] [ScreenshotHelper] Source: Screen 1, display_id: 214803840
+2026-05-25T09:51:44.188Z [LOG] [ScreenshotHelper] Matched source by display_id: 214803840
+2026-05-25T09:51:44.189Z [LOG] [ScreenshotHelper] Source: Screen 2, display_id: 294103532
+2026-05-25T09:51:44.189Z [LOG] [ScreenshotHelper] Final source: Screen 1 (id: screen:0:0)
+2026-05-25T09:51:44.317Z [LOG] [ScreenshotHelper] Screenshot saved to: C:\Users\sotka\AppData\Roaming\natively\screenshots\ac6fcaa2-cba3-4f61-a4cd-f597c696093f.png
+2026-05-25T09:51:44.318Z [LOG] [ScreenshotHelper] Screenshot successful: C:\Users\sotka\AppData\Roaming\natively\screenshots\ac6fcaa2-cba3-4f61-a4cd-f597c696093f.png
+2026-05-25T09:51:44.319Z [LOG] [WindowHelper] Switching to OVERLAY (inactive: false)
+2026-05-25T09:51:45.237Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:51:45.238Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:51:45.953Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:46.249Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:51:47.018Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:51:47.473Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:49.595Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:50.014Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:51.054Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:51.272Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:53.254Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:51:53.255Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:51:54.263Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:51:54.911Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:51:56.191Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:56.833Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:57.331Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:57.632Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:51:58.413Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:00.475Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:01.245Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:52:01.245Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:52:02.255Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:52:02.968Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:52:03.155Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:07.512Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:08.252Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:08.529Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:09.264Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:52:09.265Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:52:10.269Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:52:10.912Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:52:10.915Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:11.574Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:12.774Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:13.671Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:15.011Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:17.269Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:52:17.270Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:52:18.279Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:52:18.788Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:52:18.992Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:23.212Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:23.284Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:52:23.591Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text=""
+2026-05-25T09:52:25.232Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:52:25.233Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:52:26.233Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:52:26.937Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:52:30.653Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:30.792Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:30.889Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:31.673Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:31.914Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:32.869Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:33.010Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:33.349Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:33.731Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:33.971Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:35.253Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:35.975Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:52:35.975Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:52:36.052Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:36.978Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:52:37.032Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:37.676Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:52:37.913Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:40.213Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:43.691Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:43.912Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:44.554Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:47.171Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:52:47.172Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:52:47.174Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:47.292Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:47.490Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:48.174Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:52:48.433Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:48.529Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:48.790Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:52:51.874Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:52.554Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:52.709Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:52.789Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:52.891Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:52:57.834Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:52:57.835Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:52:58.842Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:52:59.611Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:53:00.594Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:02.892Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:03.791Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:08.594Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:08.977Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:53:08.977Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:53:09.990Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:53:10.581Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:53:12.232Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:12.671Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:14.773Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:16.611Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:19.856Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:53:19.857Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:53:20.873Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:53:21.433Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:21.461Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:53:23.075Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:24.332Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:24.430Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:28.972Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:30.786Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:53:30.787Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:53:31.803Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:53:32.381Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:53:33.553Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:34.734Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:35.173Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:37.134Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:41.615Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:53:41.616Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:53:41.730Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:42.631Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:53:42.653Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:43.388Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:53:48.414Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:48.994Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:49.893Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:49.993Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:51.613Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:51.953Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:52.174Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:52.494Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:53.294Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:53.612Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:53.705Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:53:53.706Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:53:54.711Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:53:54.854Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:56.589Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:53:56.632Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:57.192Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:57.632Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:58.732Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:58.934Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:53:59.934Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:03.643Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:54:03.643Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:54:04.353Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:04.658Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:54:05.234Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:05.359Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:54:05.793Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:06.813Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:08.015Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:09.114Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:09.378Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:54:09.379Z [LOG] [DeepgramStreaming] Reconnecting in 2000ms (attempt 2/10)...
+2026-05-25T09:54:11.094Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:11.381Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:54:12.008Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:54:12.393Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:12.713Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:13.254Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:13.591Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:14.032Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:14.472Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:14.911Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:15.214Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:17.368Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:54:17.369Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:54:18.372Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:54:18.632Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:19.154Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:54:21.014Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:23.732Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:23.870Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:24.190Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:25.014Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:25.367Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:54:25.368Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:54:26.372Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:54:27.151Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:54:27.893Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:30.212Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:31.433Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:33.426Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:54:33.426Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:54:34.442Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:54:35.096Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:54:41.426Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:54:41.427Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:54:41.702Z [LOG] [WindowHelper] Switching to OVERLAY (inactive: true)
+2026-05-25T09:54:41.738Z [LOG] [LLMHelper] Switched to Cloud Model: gemma-4-26b-a4b-it
+2026-05-25T09:54:41.740Z [LOG] [LLMHelper] Warming up gemma-4-26b-a4b-it (Gemma cold-start prevention)...
+2026-05-25T09:54:41.743Z [LOG] [CredentialsManager] Default Model set to: gemma-4-26b-a4b-it
+2026-05-25T09:54:42.307Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:42.452Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:54:42.762Z [LOG] [LLMHelper] gemma-4-26b-a4b-it warmed up in 1022ms
+2026-05-25T09:54:43.023Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:54:44.993Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:46.392Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:46.714Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:49.401Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:54:49.402Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:54:50.414Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:54:50.651Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:50.965Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:54:53.490Z [LOG] [WindowHelper] Switching to OVERLAY (inactive: true)
+2026-05-25T09:54:53.539Z [LOG] [LLMHelper] Switched to Cloud Model: gemma-4-26b-a4b-it
+2026-05-25T09:54:53.541Z [LOG] [LLMHelper] Warming up gemma-4-26b-a4b-it (Gemma cold-start prevention)...
+2026-05-25T09:54:53.544Z [LOG] [CredentialsManager] Default Model set to: gemma-4-26b-a4b-it
+2026-05-25T09:54:54.273Z [WARN] [LLMHelper] gemma-4-26b-a4b-it warmup failed (non-critical): {"error":{"code":500,"message":"Internal error encountered.","status":"INTERNAL"}}
+2026-05-25T09:54:54.672Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:55.693Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:55.891Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:56.152Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:57.255Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:57.368Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:54:57.369Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:54:58.053Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:58.379Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:54:59.108Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:54:59.312Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:59.414Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:59.495Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:59.815Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:54:59.853Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:00.190Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:00.733Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:00.833Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:03.552Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:04.213Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:04.234Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:05.363Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:55:05.365Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:55:06.367Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:55:06.941Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:55:07.432Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:09.012Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:11.353Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:11.955Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:12.752Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:13.429Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:55:13.430Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:55:14.234Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:14.438Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:55:15.238Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:55:15.815Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:15.870Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:18.394Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:19.632Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:21.354Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:21.376Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:55:21.378Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:55:21.595Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:22.382Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:55:23.051Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:55:24.653Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:26.472Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:27.155Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:27.515Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:29.115Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:29.438Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:55:29.440Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:55:30.445Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:55:31.180Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:55:37.491Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:55:37.492Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:55:38.503Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:55:39.253Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:55:39.520Z [LOG] [IntelligenceEngine] runFollowUpQuestions called
+2026-05-25T09:55:39.522Z [WARN] [IntelligenceEngine] No context available for follow-up questions
+2026-05-25T09:55:40.613Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:44.382Z [LOG] [IntelligenceEngine] runFollowUpQuestions called
+2026-05-25T09:55:44.383Z [WARN] [IntelligenceEngine] No context available for follow-up questions
+2026-05-25T09:55:44.615Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:45.383Z [LOG] [IntelligenceEngine] runFollowUpQuestions called
+2026-05-25T09:55:45.385Z [WARN] [IntelligenceEngine] No context available for follow-up questions
+2026-05-25T09:55:45.446Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:55:45.446Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:55:46.455Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:55:47.226Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:55:49.391Z [LOG] [IPC] generate-brainstorm: using 1 image(s) (queue fallback)
+2026-05-25T09:55:49.395Z [LOG] [KnowledgeOrchestrator] Intent classified: general
+2026-05-25T09:55:49.396Z [LOG] [EmbedPipe-timing] embed call reason=getEmbedding textLen=0
+2026-05-25T09:55:51.496Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:52.535Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:53.112Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:53.465Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:55:53.466Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:55:54.473Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:55:55.252Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:55:55.431Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:55:55.595Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:00.930Z [LOG] [SessionTracker] addAssistantMessage called with: __model_source:Gemma 4__I will implement a functio
+2026-05-25T09:56:00.931Z [LOG] [SessionTracker] lastAssistantMessage updated, history size: 5
+2026-05-25T09:56:01.465Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:56:01.466Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:56:02.093Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:02.469Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:56:02.773Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:02.794Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:03.117Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:56:03.118Z [LOG] [DeepgramStreaming] Flushed 8 buffered chunks
+2026-05-25T09:56:03.270Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:03.830Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:03.852Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:03.970Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:04.092Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:04.171Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-05-25T09:56:04.196Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:04.270Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:04.360Z [LOG] [SystemAudioCapture] Chunk #1400: 1920 bytes from Rust
+2026-05-25T09:56:04.510Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text=""
+2026-05-25T09:56:08.313Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:09.475Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:56:09.476Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:56:10.490Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:56:11.154Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:11.234Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:56:12.155Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:14.312Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:14.590Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:15.053Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:15.612Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:17.528Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:56:17.529Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:56:18.536Z [LOG] [DeepgramStreaming] Connecting (rate=48000, ch=1, lang=en)...
+2026-05-25T09:56:18.853Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:19.192Z [LOG] [DeepgramStreaming] Connected
+2026-05-25T09:56:20.214Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:20.532Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:20.630Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:20.893Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:21.653Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:22.191Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:22.272Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:23.574Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:24.872Z [LOG] [MicrophoneCapture] Emitting chunk: 1920 bytes to JS
+2026-05-25T09:56:25.547Z [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)
+2026-05-25T09:56:25.547Z [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...
+2026-05-25T09:56:26.053Z [LOG] [CropperWindowHelper] before-quit: auto-disposing IPC listeners
+2026-05-25T09:56:26.054Z [LOG] App is quitting, cleaning up resources...
+2026-05-25T09:56:26.055Z [LOG] [CropperWindowHelper] Disposing...
+2026-05-25T09:56:26.058Z [LOG] [CropperWindowHelper] IPC listeners removed
+2026-05-25T09:56:26.058Z [LOG] [CropperWindowHelper] Window closed
+2026-05-25T09:56:26.059Z [LOG] [CropperWindowHelper] Disposal complete
+2026-05-25T09:56:26.059Z [LOG] [CredentialsManager] Memory scrubbed
+2026-05-25T09:56:26.060Z [LOG] [ModelVersionManager] Background scheduler stopped
+2026-05-25T09:56:26.060Z [LOG] [LLMHelper] Keys scrubbed from memory
+2026-05-25T09:56:26.060Z [LOG] [Main] Credentials scrubbed from memory on quit
+2026-05-25T09:56:26.138Z [LOG] App is quitting, cleaning up resources...
+2026-05-25T09:56:26.139Z [WARN] [CropperWindowHelper] dispose() called but already disposed
+2026-05-25T09:56:26.139Z [LOG] [CredentialsManager] Memory scrubbed
+2026-05-25T09:56:26.140Z [LOG] [LLMHelper] Keys scrubbed from memory
+2026-05-25T09:56:26.140Z [LOG] [Main] Credentials scrubbed from memory on quit

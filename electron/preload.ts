@@ -95,6 +95,7 @@ interface ElectronAPI {
   // STT Config Events
   onSttConfigChanged: (callback: (data: { configured: boolean; provider: string }) => void) => () => void
   onCredentialsChanged: (callback: () => void) => () => void
+  onProfileStatusChanged: (callback: () => void) => () => void
 
   // Native Audio Service Events
   onNativeAudioTranscript: (callback: (transcript: { speaker: string; text: string; final: boolean }) => void) => () => void
@@ -622,6 +623,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
     const subscription = () => callback();
     ipcRenderer.on('credentials-changed', subscription);
     return () => { ipcRenderer.removeListener('credentials-changed', subscription); };
+  },
+  onProfileStatusChanged: (callback: () => void) => {
+    const subscription = () => callback();
+    ipcRenderer.on('profile:status-changed', subscription);
+    return () => { ipcRenderer.removeListener('profile:status-changed', subscription); };
   },
 
   // Native Audio Service Events
