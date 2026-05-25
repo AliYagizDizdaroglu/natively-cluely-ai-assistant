@@ -63,6 +63,26 @@ export class StealthModeManager {
   }
 
   private handleKey(): void {
-    // Filled in Task 4.
+    if (!this.enabled) return;
+    if (this.adapter.isOverlayFocused()) return;
+
+    if (!this.faded) {
+      this.faded = true;
+      this.adapter.applyFaded();
+      this.emitState();
+    }
+
+    if (this.timer) clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.timer = null;
+      if (!this.faded) return;
+      this.faded = false;
+      this.adapter.applyRestored();
+      this.emitState();
+    }, this.restoreDelayMs);
+  }
+
+  private emitState(): void {
+    // Subscribers wired in Task 5.
   }
 }

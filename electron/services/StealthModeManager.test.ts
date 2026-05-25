@@ -47,3 +47,62 @@ describe('StealthModeManager — lifecycle', () => {
     expect(startSpy).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('StealthModeManager — fade/restore', () => {
+  beforeEach(() => { vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
+
+  it('fades on external keypress, restores 800ms after last keypress', () => {
+    const { source, adapter } = fakes();
+    const mgr = new StealthModeManager(source, adapter);
+    mgr.enable();
+
+    source.fireKey();
+    expect(adapter.faded).toBe(true);
+    expect(mgr.isFaded()).toBe(true);
+
+    vi.advanceTimersByTime(799);
+    expect(adapter.faded).toBe(true);
+
+    vi.advanceTimersByTime(1);
+    expect(adapter.faded).toBe(false);
+    expect(mgr.isFaded()).toBe(false);
+  });
+
+  it('ignores keypresses while our overlay window is focused', () => {
+    const { source, adapter } = fakes();
+    adapter.focused = true;
+    const mgr = new StealthModeManager(source, adapter);
+    mgr.enable();
+
+    source.fireKey();
+    expect(adapter.faded).toBe(false);
+  });
+
+  it('continuing to type extends the restore delay', () => {
+    const { source, adapter } = fakes();
+    const mgr = new StealthModeManager(source, adapter);
+    mgr.enable();
+
+    source.fireKey();
+    vi.advanceTimersByTime(700);
+    source.fireKey();
+    vi.advanceTimersByTime(799);
+    expect(adapter.faded).toBe(true);
+    vi.advanceTimersByTime(1);
+    expect(adapter.faded).toBe(false);
+  });
+
+  it('disable() while faded restores immediately and cancels the timer', () => {
+    const { source, adapter } = fakes();
+    const mgr = new StealthModeManager(source, adapter);
+    mgr.enable();
+    source.fireKey();
+    expect(adapter.faded).toBe(true);
+
+    mgr.disable();
+    expect(adapter.faded).toBe(false);
+    vi.advanceTimersByTime(1000);
+    expect(adapter.faded).toBe(false);
+  });
+});
