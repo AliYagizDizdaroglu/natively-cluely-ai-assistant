@@ -106,3 +106,38 @@ describe('StealthModeManager — fade/restore', () => {
     expect(adapter.faded).toBe(false);
   });
 });
+
+describe('StealthModeManager — onStateChange', () => {
+  beforeEach(() => { vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
+
+  it('emits state on enable, fade, restore, and disable', () => {
+    const { source, adapter } = fakes();
+    const mgr = new StealthModeManager(source, adapter);
+    const events: Array<{ enabled: boolean; faded: boolean }> = [];
+    mgr.onStateChange(s => events.push({ ...s }));
+
+    mgr.enable();
+    source.fireKey();
+    vi.advanceTimersByTime(800);
+    mgr.disable();
+
+    expect(events).toEqual([
+      { enabled: true,  faded: false },
+      { enabled: true,  faded: true  },
+      { enabled: true,  faded: false },
+      { enabled: false, faded: false },
+    ]);
+  });
+
+  it('unsubscriber stops further emissions', () => {
+    const { source, adapter } = fakes();
+    const mgr = new StealthModeManager(source, adapter);
+    const cb = vi.fn();
+    const unsub = mgr.onStateChange(cb);
+    mgr.enable();
+    unsub();
+    source.fireKey();
+    expect(cb).toHaveBeenCalledTimes(1);
+  });
+});
