@@ -47,6 +47,7 @@ export class StealthModeManager {
     this.enabled = true;
     this.source.start();
     this.keyUnsub = this.source.onKeyDown(() => this.handleKey());
+    this.emitState();
   }
 
   disable(): void {
@@ -60,6 +61,7 @@ export class StealthModeManager {
       this.faded = false;
       this.adapter.applyRestored();
     }
+    this.emitState();
   }
 
   private handleKey(): void {
@@ -82,7 +84,17 @@ export class StealthModeManager {
     }, this.restoreDelayMs);
   }
 
+  private listeners = new Set<(s: StealthState) => void>();
+
+  onStateChange(cb: (s: StealthState) => void): () => void {
+    this.listeners.add(cb);
+    return () => { this.listeners.delete(cb); };
+  }
+
   private emitState(): void {
-    // Subscribers wired in Task 5.
+    const snapshot: StealthState = { enabled: this.enabled, faded: this.faded };
+    this.listeners.forEach(cb => {
+      try { cb(snapshot); } catch (e) { console.error('[StealthModeManager] listener threw', e); }
+    });
   }
 }
