@@ -1,3 +1,6 @@
+import { uIOhook } from 'uiohook-napi';
+import type { AppState } from '../main';
+
 export interface StealthKeyEventSource {
   start(): void;
   stop(): void;
@@ -96,5 +99,75 @@ export class StealthModeManager {
     this.listeners.forEach(cb => {
       try { cb(snapshot); } catch (e) { console.error('[StealthModeManager] listener threw', e); }
     });
+  }
+}
+
+// --- Concrete key source backed by uiohook-napi (main process only) ---
+
+export class UioHookKeySource implements StealthKeyEventSource {
+  private static refCount = 0;
+  private listeners = new Set<() => void>();
+  private bound: ((...args: any[]) => void) | null = null;
+
+  start(): void {
+    if (UioHookKeySource.refCount === 0) {
+      try { uIOhook.start(); } catch (e) { console.error('[stealth] uIOhook.start failed', e); }
+    }
+    UioHookKeySource.refCount++;
+
+    if (!this.bound) {
+      this.bound = () => this.listeners.forEach(cb => {
+        try { cb(); } catch (e) { console.error('[stealth] key listener threw', e); }
+      });
+      uIOhook.on('keydown', this.bound);
+    }
+  }
+
+  stop(): void {
+    if (this.bound) {
+      uIOhook.off('keydown', this.bound);
+      this.bound = null;
+    }
+    UioHookKeySource.refCount = Math.max(0, UioHookKeySource.refCount - 1);
+    if (UioHookKeySource.refCount === 0) {
+      try { uIOhook.stop(); } catch (e) { console.error('[stealth] uIOhook.stop failed', e); }
+    }
+  }
+
+  onKeyDown(cb: () => void): () => void {
+    this.listeners.add(cb);
+    return () => { this.listeners.delete(cb); };
+  }
+}
+
+// --- Window adapter wired to the actual overlay window ---
+
+const STEALTH_OPACITY = 0.10;
+
+export class ElectronStealthWindowAdapter implements StealthWindowAdapter {
+  constructor(private readonly appState: AppState) {}
+
+  private overlay() {
+    const win = this.appState.getWindowHelper().getOverlayWindow();
+    return win && !win.isDestroyed() ? win : null;
+  }
+
+  isOverlayFocused(): boolean {
+    const win = this.overlay();
+    return !!win && win.isFocused();
+  }
+
+  applyFaded(): void {
+    const win = this.overlay();
+    if (!win) return;
+    win.setOpacity(STEALTH_OPACITY);
+    win.setIgnoreMouseEvents(true, { forward: true });
+  }
+
+  applyRestored(): void {
+    const win = this.overlay();
+    if (!win) return;
+    win.setOpacity(1);
+    this.appState.getWindowHelper().syncOverlayInteractionPolicy();
   }
 }
