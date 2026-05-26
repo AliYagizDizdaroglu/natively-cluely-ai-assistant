@@ -587,6 +587,24 @@ export class AppState {
   private _dockReassertTimers: NodeJS.Timeout[] = []; // Self-verifying dock-enforcement retry timers
   private _ollamaBootstrapPromise: Promise<void> | null = null;
   private screenshotCaptureInProgress: boolean = false;
+  private stealthModeManager: import('./services/StealthModeManager').StealthModeManager | null = null;
+
+  public getStealthModeManager() {
+    return this.stealthModeManager;
+  }
+
+  public initStealthModeManager(): void {
+    if (this.stealthModeManager) return;
+    const {
+      StealthModeManager,
+      UioHookKeySource,
+      ElectronStealthWindowAdapter,
+    } = require('./services/StealthModeManager');
+    this.stealthModeManager = new StealthModeManager(
+      new UioHookKeySource(),
+      new ElectronStealthWindowAdapter(this),
+    );
+  }
 
 
   // Processing events
@@ -5939,6 +5957,18 @@ async function initializeApp() {
     downloadService.registerProvider(createWhisperDownloadProvider());
   } catch (e: any) {
     console.warn('[main] LocalModelDownloadService init failed (non-fatal):', e?.message);
+  }
+
+  // Apply persisted stealth mode state. The manager is initialized above
+  // before IPC handlers; this restores the user's last enabled/disabled choice.
+  try {
+    const { SettingsManager } = require('./services/SettingsManager');
+    const persisted = SettingsManager.getInstance().get('stealthMode.enabled');
+    if (persisted === true) {
+      appState.getStealthModeManager()?.enable();
+    }
+  } catch (e) {
+    console.error('[stealth] could not apply persisted state', e);
   }
 
   // Apply the full disguise payload (names, dock icon, AUMID) early
