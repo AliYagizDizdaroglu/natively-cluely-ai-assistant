@@ -2,6 +2,7 @@ import { ChevronUp, ChevronDown } from "lucide-react";
 import icon from "../icon.png";
 import type { OverlayAppearance } from "../../lib/overlayAppearance";
 import { ContextToggle } from "./ContextToggle";
+import { StealthToggle } from "./StealthToggle";
 
 interface TopPillProps {
     expanded: boolean;
@@ -57,6 +58,9 @@ export default function TopPill({
 
                 {/* CONTEXT TOGGLE — gates Resume + JD injection */}
                 <ContextToggle appearance={appearance} />
+
+                {/* STEALTH TOGGLE — fades overlay while typing outside our window */}
+                <StealthToggle appearance={appearance} />
 
                 {/* CENTER SEGMENT */}
                 <button
