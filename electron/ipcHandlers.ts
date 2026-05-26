@@ -7968,6 +7968,41 @@ export function initializeIpcHandlers(appState: AppState): void {
     }
   });
 
+  // --- Stealth Mode (overlay-fade on external keypress; distinct from upstream stealthTap*) ---
+  safeHandle("stealth:get-state", async () => {
+    const mgr = appState.getStealthModeManager();
+    return {
+      enabled: !!mgr?.isEnabled(),
+      faded: !!mgr?.isFaded(),
+    };
+  });
+
+  safeHandle("stealth:set-enabled", async (_, enabled: boolean) => {
+    try {
+      const mgr = appState.getStealthModeManager();
+      if (!mgr) return { success: false, error: 'Stealth manager not initialized' };
+
+      if (enabled) mgr.enable();
+      else mgr.disable();
+
+      const { SettingsManager } = require('./services/SettingsManager');
+      SettingsManager.getInstance().set('stealthMode.enabled', enabled);
+      return { success: true };
+    } catch (error: any) {
+      console.error('[stealth:set-enabled] failed', error);
+      return { success: false, error: error?.message ?? 'unknown error' };
+    }
+  });
+
+  const mgrForBroadcast = appState.getStealthModeManager();
+  if (mgrForBroadcast) {
+    mgrForBroadcast.onStateChange((state) => {
+      BrowserWindow.getAllWindows().forEach(win => {
+        if (!win.isDestroyed()) win.webContents.send('stealth:state', state);
+      });
+    });
+  }
+
   // Open the 60s one-click pairing window for the companion browser extension.
   // The user clicks "Connect browser extension" in Settings → this arms the
   // /pair endpoint → the extension's "Connect to Natively" button fetches the

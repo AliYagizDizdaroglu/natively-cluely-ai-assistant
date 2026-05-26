@@ -5911,6 +5911,10 @@ async function initializeApp() {
     console.warn('[Init] ModesManager.ensureSeeded threw (non-fatal):', err);
   }
 
+  // Initialize the stealth manager BEFORE IPC handlers so the IPC layer can
+  // subscribe to its state-change events at registration time.
+  appState.initStealthModeManager();
+
   // Initialize IPC handlers before window creation
   initializeIpcHandlers(appState)
 
