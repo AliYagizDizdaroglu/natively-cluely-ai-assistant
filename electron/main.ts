@@ -2880,10 +2880,13 @@ async function initializeApp() {
   // Explicitly load credentials into helpers
   appState.processingHelper.loadStoredCredentials();
 
+  // Initialize the stealth manager BEFORE IPC handlers so the IPC layer can
+  // subscribe to its state-change events at registration time.
+  appState.initStealthModeManager();
+
   // Initialize IPC handlers before window creation
   initializeIpcHandlers(appState)
 
-  appState.initStealthModeManager();
   try {
     const { SettingsManager } = require('./services/SettingsManager');
     const persisted = SettingsManager.getInstance().get('stealthMode.enabled');
