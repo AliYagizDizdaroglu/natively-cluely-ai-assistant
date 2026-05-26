@@ -1382,6 +1382,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // User-initiated Hindsight opt-out. Sets the explicit-disable sentinel so the synthetic
   // default can't silently re-enable Hindsight on next launch. Idempotent.
   disableHindsight: () => ipcRenderer.invoke('hindsight:disable'),
+  onStealthStateChanged: (callback: (state: { enabled: boolean; faded: boolean }) => void) => {
+    const subscription = (_: any, state: { enabled: boolean; faded: boolean }) => callback(state);
+    ipcRenderer.on('stealth:state', subscription);
+    return () => { ipcRenderer.removeListener('stealth:state', subscription); };
+  },
 
   // Native Audio Service Events
   onNativeAudioTranscript: (
@@ -2189,6 +2194,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   profileUploadResume: (filePath: string) => ipcRenderer.invoke('profile:upload-resume', filePath),
   profileGetStatus: () => ipcRenderer.invoke('profile:get-status'),
   profileSetMode: (enabled: boolean) => ipcRenderer.invoke('profile:set-mode', enabled),
+  stealthGetState: () => ipcRenderer.invoke('stealth:get-state'),
+  stealthSetEnabled: (enabled: boolean) => ipcRenderer.invoke('stealth:set-enabled', enabled),
   profileDelete: () => ipcRenderer.invoke('profile:delete'),
   profileGetProfile: () => ipcRenderer.invoke('profile:get-profile'),
   profileSelectFile: () => ipcRenderer.invoke('profile:select-file'),
