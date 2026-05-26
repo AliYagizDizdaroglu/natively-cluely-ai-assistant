@@ -36,6 +36,22 @@ if (fs.existsSync(premiumDir)) {
   entryPoints.push(...findTs(premiumDir).map(f => path.relative(rootDir, f)));
 }
 
+// Incremental skip: if no source file is newer than the oldest output, nothing changed.
+const force = process.argv.includes('--force');
+if (!force) {
+  const allSrc = entryPoints.map(f => path.resolve(rootDir, f));
+  const newestSrc = Math.max(...allSrc.map(f => { try { return fs.statSync(f).mtimeMs; } catch { return 0; } }));
+  const allOut = allSrc.map(f => {
+    const rel = path.relative(path.join(rootDir, 'electron'), f).replace(/\.ts$/, '.js');
+    return path.join(outDir, 'electron', rel);
+  });
+  const oldestOut = Math.min(...allOut.map(f => { try { return fs.statSync(f).mtimeMs; } catch { return 0; } }));
+  if (newestSrc <= oldestOut) {
+    console.log('[build-electron] Up to date, skipping build (use --force to override)');
+    process.exit(0);
+  }
+}
+
 const start = Date.now();
 
 build({

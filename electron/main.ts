@@ -268,15 +268,20 @@ export class AppState {
 
   public initStealthModeManager(): void {
     if (this.stealthModeManager) return;
-    const {
-      StealthModeManager,
-      UioHookKeySource,
-      ElectronStealthWindowAdapter,
-    } = require('./services/StealthModeManager');
-    this.stealthModeManager = new StealthModeManager(
-      new UioHookKeySource(),
-      new ElectronStealthWindowAdapter(this),
-    );
+    try {
+      const {
+        StealthModeManager,
+        UioHookKeySource,
+        ElectronStealthWindowAdapter,
+      } = require('./services/StealthModeManager');
+      this.stealthModeManager = new StealthModeManager(
+        new UioHookKeySource(),
+        new ElectronStealthWindowAdapter(this),
+      );
+      console.log('[StealthModeManager] Initialized');
+    } catch (e) {
+      console.error('[StealthModeManager] Failed to initialize — stealth mode disabled:', e);
+    }
   }
 
 

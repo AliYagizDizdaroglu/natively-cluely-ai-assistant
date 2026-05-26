@@ -3527,6 +3527,8 @@ export function initializeIpcHandlers(appState: AppState): void {
         if (!win.isDestroyed()) win.webContents.send('stealth:state', state);
       });
     });
+  } else {
+    console.warn('[stealth] Manager not available at IPC registration — state broadcasts will not work');
   }
 }
 
