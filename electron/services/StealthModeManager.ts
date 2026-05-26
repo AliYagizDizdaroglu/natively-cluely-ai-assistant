@@ -1,5 +1,10 @@
-import { uIOhook } from 'uiohook-napi';
 import type { AppState } from '../main';
+
+// Lazy accessor — defers the native require until start() is first called
+function getUioHook(): typeof import('uiohook-napi')['uIOhook'] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return (require('uiohook-napi') as typeof import('uiohook-napi')).uIOhook;
+}
 
 export interface StealthKeyEventSource {
   start(): void;
@@ -110,8 +115,9 @@ export class UioHookKeySource implements StealthKeyEventSource {
   private bound: ((...args: any[]) => void) | null = null;
 
   start(): void {
+    const hook = getUioHook();
     if (UioHookKeySource.refCount === 0) {
-      try { uIOhook.start(); } catch (e) { console.error('[stealth] uIOhook.start failed', e); }
+      try { hook.start(); } catch (e) { console.error('[stealth] uIOhook.start failed', e); }
     }
     UioHookKeySource.refCount++;
 
@@ -119,18 +125,19 @@ export class UioHookKeySource implements StealthKeyEventSource {
       this.bound = () => this.listeners.forEach(cb => {
         try { cb(); } catch (e) { console.error('[stealth] key listener threw', e); }
       });
-      uIOhook.on('keydown', this.bound);
+      hook.on('keydown', this.bound);
     }
   }
 
   stop(): void {
     if (this.bound) {
-      uIOhook.off('keydown', this.bound);
+      const hook = getUioHook();
+      hook.off('keydown', this.bound);
       this.bound = null;
-    }
-    UioHookKeySource.refCount = Math.max(0, UioHookKeySource.refCount - 1);
-    if (UioHookKeySource.refCount === 0) {
-      try { uIOhook.stop(); } catch (e) { console.error('[stealth] uIOhook.stop failed', e); }
+      UioHookKeySource.refCount = Math.max(0, UioHookKeySource.refCount - 1);
+      if (UioHookKeySource.refCount === 0) {
+        try { hook.stop(); } catch (e) { console.error('[stealth] uIOhook.stop failed', e); }
+      }
     }
   }
 
