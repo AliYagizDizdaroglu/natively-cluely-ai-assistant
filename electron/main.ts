@@ -595,15 +595,20 @@ export class AppState {
 
   public initFadeManager(): void {
     if (this.fadeManager) return;
-    const {
-      FadeManager,
-      UioHookKeySource,
-      ElectronFadeWindowAdapter,
-    } = require('./services/FadeManager');
-    this.fadeManager = new FadeManager(
-      new UioHookKeySource(),
-      new ElectronFadeWindowAdapter(this),
-    );
+    try {
+      const {
+        FadeManager,
+        UioHookKeySource,
+        ElectronFadeWindowAdapter,
+      } = require('./services/FadeManager');
+      this.fadeManager = new FadeManager(
+        new UioHookKeySource(),
+        new ElectronFadeWindowAdapter(this),
+      );
+      console.log('[FadeManager] Initialized');
+    } catch (e) {
+      console.error('[FadeManager] Failed to initialize — privacy fade disabled:', e);
+    }
   }
 
 
