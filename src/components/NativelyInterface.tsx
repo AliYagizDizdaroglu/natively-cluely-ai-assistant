@@ -229,6 +229,7 @@ import GlassEffectLayer from './ui/GlassEffectLayer';
 import ResizeToggle from './ui/ResizeToggle';
 import RollingTranscript from './ui/RollingTranscript';
 import TopPill from './ui/TopPill';
+import { DetectedQuestionsPanel } from './DetectedQuestionsPanel';
 
 // PERF: hoisted plugin arrays. ReactMarkdown receives `remarkPlugins` and
 // `rehypePlugins` as new array literals if defined inline at the call site —
@@ -6073,6 +6074,16 @@ Provide only the answer, nothing else.`;
                   }}
                 />
               ) : null}
+
+              {/* Detected Questions chips — mounted unconditionally so chips can appear
+                  even when chat is empty. Panel returns null when no chips exist.
+                  TODO: when useStreamMetrics lands (step 16), add onChipClickStart
+                  to kick off TTFT + model attribution like the manual "What to answer?" flow. */}
+              <DetectedQuestionsPanel
+                onChipClickStart={() => {
+                  setIsProcessing(true);
+                }}
+              />
 
               {/* Chat History - Only show if there are messages OR active states */}
               {showAnswerPanel && (
