@@ -127,6 +127,12 @@ export interface IntelligenceModeEvents {
     // newly created candidate action (post-dedupe). Renderer subscribes via
     // window.electronAPI.onIntelligenceDynamicAction and renders cards.
     'dynamic_action_emitted': (action: DynamicAction) => void;
+    // Passive question detector hooks. Emitted on every final interviewer turn
+    // so the additive Groq-detector surface (clickable chips in TopPill) can
+    // run its single-flight classifier without re-implementing transcript
+    // routing. Upstream's own `maybeSpeculate` / extractor remains unchanged.
+    'transcript_segment_final': (segment: TranscriptSegment) => void;
+    'speaker_change': (prevSpeaker: string, newSpeaker: string) => void;
 }
 
 export class IntelligenceEngine extends EventEmitter {
@@ -387,9 +393,29 @@ export class IntelligenceEngine extends EventEmitter {
     /**
      * Process transcript from native audio, and trigger follow-up if appropriate
      */
+    private lastTranscriptSpeaker: string = '';
+
     handleTranscript(segment: TranscriptSegment, skipRefinementCheck: boolean = false): void {
         const result = this.session.handleTranscript(segment);
         this.lastTranscriptTime = Date.now();
+
+        // Emit transcript_segment_final + speaker_change for the additive
+        // question-detector chip surface. Emissions are best-effort; a thrown
+        // listener must never break the answer pipeline.
+        if (segment.final) {
+            try { this.emit('transcript_segment_final', segment); } catch (e) {
+                console.warn('[IntelligenceEngine] transcript_segment_final listener threw', (e as Error)?.message);
+            }
+        }
+        if (segment.speaker !== this.lastTranscriptSpeaker) {
+            const prev = this.lastTranscriptSpeaker;
+            this.lastTranscriptSpeaker = segment.speaker;
+            if (prev) {
+                try { this.emit('speaker_change', prev, segment.speaker); } catch (e) {
+                    console.warn('[IntelligenceEngine] speaker_change listener threw', (e as Error)?.message);
+                }
+            }
+        }
 
         if (segment.speaker === 'interviewer') {
             if (!segment.final) {

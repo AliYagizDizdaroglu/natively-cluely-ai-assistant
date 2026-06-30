@@ -13,6 +13,9 @@ import { SessionTracker } from './SessionTracker';
 import { IntelligenceEngine } from './IntelligenceEngine';
 import { MeetingPersistence } from './MeetingPersistence';
 import { ScreenContext } from './services/screen/ScreenContextService';
+import { QuestionDetector, DetectedQuestionChip, SnapshotProvider } from './services/QuestionDetector';
+import { GroqDetectionClient } from './services/GroqDetectionClient';
+import { CredentialsManager } from './services/CredentialsManager';
 
 // Re-export types for backward compatibility
 export type { TranscriptSegment, SuggestionTrigger, ContextItem } from './SessionTracker';
@@ -34,6 +37,7 @@ export class IntelligenceManager extends EventEmitter {
     private session: SessionTracker;
     private engine: IntelligenceEngine;
     private persistence: MeetingPersistence;
+    private detector: QuestionDetector | null = null;
 
     constructor(llmHelper: LLMHelper) {
         super();
@@ -50,6 +54,43 @@ export class IntelligenceManager extends EventEmitter {
 
         // Forward all engine events through the facade
         this.forwardEngineEvents();
+
+        // Additive passive question detector — gated on a Groq API key being
+        // present AND the NATIVELY_QUESTION_DETECTION env var being on. Surfaces
+        // as clickable chips above the chat (upstream's invisible pre-warming
+        // via maybeSpeculate remains unchanged and unaffected).
+        this.initDetector();
+    }
+
+    private initDetector(): void {
+        const flagOn = (process.env.NATIVELY_QUESTION_DETECTION ?? '').toLowerCase() === 'on';
+        if (!flagOn) return;
+        const apiKey = CredentialsManager.getInstance().getGroqApiKey();
+        if (!apiKey) {
+            console.log('[IntelligenceManager] Question detector flag is on but no Groq key — detector disabled');
+            return;
+        }
+        const snapshotProvider: SnapshotProvider = {
+            getRecentInterviewerTranscript: () => this.session.getFormattedContext(30),
+            getContextSnapshot: () => this.session.getFormattedContext(60),
+        };
+        this.detector = new QuestionDetector({
+            client: new GroqDetectionClient({ model: 'llama-3.1-8b-instant', apiKey }),
+            snapshotProvider,
+            onChip: (chip: DetectedQuestionChip) => this.emit('detected_question', chip),
+            onChipUpdate: (chip: DetectedQuestionChip) => this.emit('detected_question_update', chip),
+        });
+        this.engine.on('transcript_segment_final', (segment) => {
+            try { this.detector?.onTranscriptFinal(segment); } catch (e) {
+                console.warn('[IntelligenceManager] detector.onTranscriptFinal threw', (e as Error)?.message);
+            }
+        });
+        this.engine.on('speaker_change', (prev: string, next: string) => {
+            try { this.detector?.onSpeakerChange(prev, next); } catch (e) {
+                console.warn('[IntelligenceManager] detector.onSpeakerChange threw', (e as Error)?.message);
+            }
+        });
+        console.log('[IntelligenceManager] Question detector wired (Groq llama-3.1-8b-instant)');
     }
 
     /**

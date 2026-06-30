@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { OllamaDetectionClient } from './OllamaDetectionClient';
+import { DetectionClient } from './DetectionClient';
 import { jaccardSimilarity } from './jaccardSimilarity';
 import { DetectionResponse } from '../llm/prompts/questionDetection';
 
@@ -31,7 +31,7 @@ export interface SnapshotProvider {
 }
 
 export interface QuestionDetectorOptions {
-    client: OllamaDetectionClient;
+    client: DetectionClient;
     snapshotProvider: SnapshotProvider;
     onChip: (chip: DetectedQuestionChip) => void;
     onChipUpdate?: (chip: DetectedQuestionChip) => void;

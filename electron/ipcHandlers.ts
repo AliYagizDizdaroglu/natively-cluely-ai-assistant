@@ -7972,6 +7972,48 @@ export function initializeIpcHandlers(appState: AppState): void {
     }
   });
 
+  // --- Passive question detector (additive Groq chip surface) ---
+  // Wire chip emissions from IntelligenceManager to renderer events. Detector
+  // is gated at construction time by NATIVELY_QUESTION_DETECTION + Groq key
+  // presence; when disabled these listeners simply never fire.
+  try {
+    const intelligenceManager = appState.getIntelligenceManager();
+    if (intelligenceManager) {
+      intelligenceManager.on('detected_question', (chip: any) => {
+        for (const win of BrowserWindow.getAllWindows()) {
+          if (!win.isDestroyed()) win.webContents.send('detected-question', chip);
+        }
+      });
+      intelligenceManager.on('detected_question_update', (chip: any) => {
+        for (const win of BrowserWindow.getAllWindows()) {
+          if (!win.isDestroyed()) win.webContents.send('detected-question-update', chip);
+        }
+      });
+    }
+  } catch (e: any) {
+    console.warn('[IPC] could not wire detector chip broadcasts:', e?.message);
+  }
+
+  safeHandle("answer-detected-question", async (_event, payload: {
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    contextSnapshot: string;
+  }) => {
+    try {
+      console.log(`[IPC] answer-detected-question: intent=${payload.intent}, question="${payload.question.slice(0, 60)}..."`);
+      const intelligenceManager = appState.getIntelligenceManager();
+      // Route through the existing runWhatShouldISay — upstream's intent
+      // classification + context routing handle the rest. The chip payload's
+      // intent + contextSnapshot are informational hints; the engine derives
+      // its own routing from the question text + live transcript.
+      await intelligenceManager.runWhatShouldISay(payload.question, 1.0, undefined, { forceFresh: true });
+      return { ok: true };
+    } catch (e: any) {
+      console.error('[IPC] answer-detected-question failed:', e);
+      return { ok: false, error: e?.message ?? 'unknown error' };
+    }
+  });
+
   // --- Privacy Fade (overlay fades on external keypress; distinct from upstream stealthTap*) ---
   safeHandle("fade:get-state", async () => {
     const mgr = appState.getFadeManager();
