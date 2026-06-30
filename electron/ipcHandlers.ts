@@ -7968,37 +7968,37 @@ export function initializeIpcHandlers(appState: AppState): void {
     }
   });
 
-  // --- Stealth Mode (overlay-fade on external keypress; distinct from upstream stealthTap*) ---
-  safeHandle("stealth:get-state", async () => {
-    const mgr = appState.getStealthModeManager();
+  // --- Privacy Fade (overlay fades on external keypress; distinct from upstream stealthTap*) ---
+  safeHandle("fade:get-state", async () => {
+    const mgr = appState.getFadeManager();
     return {
       enabled: !!mgr?.isEnabled(),
       faded: !!mgr?.isFaded(),
     };
   });
 
-  safeHandle("stealth:set-enabled", async (_, enabled: boolean) => {
+  safeHandle("fade:set-enabled", async (_, enabled: boolean) => {
     try {
-      const mgr = appState.getStealthModeManager();
-      if (!mgr) return { success: false, error: 'Stealth manager not initialized' };
+      const mgr = appState.getFadeManager();
+      if (!mgr) return { success: false, error: 'Fade manager not initialized' };
 
       if (enabled) mgr.enable();
       else mgr.disable();
 
       const { SettingsManager } = require('./services/SettingsManager');
-      SettingsManager.getInstance().set('stealthMode.enabled', enabled);
+      SettingsManager.getInstance().set('fade.enabled', enabled);
       return { success: true };
     } catch (error: any) {
-      console.error('[stealth:set-enabled] failed', error);
+      console.error('[fade:set-enabled] failed', error);
       return { success: false, error: error?.message ?? 'unknown error' };
     }
   });
 
-  const mgrForBroadcast = appState.getStealthModeManager();
+  const mgrForBroadcast = appState.getFadeManager();
   if (mgrForBroadcast) {
     mgrForBroadcast.onStateChange((state) => {
       BrowserWindow.getAllWindows().forEach(win => {
-        if (!win.isDestroyed()) win.webContents.send('stealth:state', state);
+        if (!win.isDestroyed()) win.webContents.send('fade:state', state);
       });
     });
   }

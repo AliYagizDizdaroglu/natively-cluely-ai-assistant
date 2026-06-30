@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 
-export interface UseStealthToggleResult {
+export interface UseFadeToggleResult {
     enabled: boolean;
     faded: boolean;
     setEnabled: (enabled: boolean) => Promise<void>;
 }
 
-export function useStealthToggle(): UseStealthToggleResult {
+export function useFadeToggle(): UseFadeToggleResult {
     const [enabled, setEnabledState] = useState(false);
     const [faded, setFaded] = useState(false);
 
@@ -14,19 +14,19 @@ export function useStealthToggle(): UseStealthToggleResult {
         let cancelled = false;
         (async () => {
             try {
-                const state = await window.electronAPI?.stealthGetState?.();
+                const state = await window.electronAPI?.fadeGetState?.();
                 if (cancelled || !state) return;
                 setEnabledState(state.enabled);
                 setFaded(state.faded);
             } catch (err) {
-                console.error('[useStealthToggle] stealthGetState failed:', err);
+                console.error('[useFadeToggle] fadeGetState failed:', err);
             }
         })();
         return () => { cancelled = true; };
     }, []);
 
     useEffect(() => {
-        const unsub = window.electronAPI?.onStealthStateChanged?.((state) => {
+        const unsub = window.electronAPI?.onFadeStateChanged?.((state) => {
             setEnabledState(state.enabled);
             setFaded(state.faded);
         });
@@ -37,13 +37,13 @@ export function useStealthToggle(): UseStealthToggleResult {
         const prev = enabled;
         setEnabledState(next); // optimistic
         try {
-            const result = await window.electronAPI?.stealthSetEnabled?.(next);
+            const result = await window.electronAPI?.fadeSetEnabled?.(next);
             if (!result?.success) {
-                console.warn('[useStealthToggle] stealthSetEnabled failed:', result?.error);
+                console.warn('[useFadeToggle] fadeSetEnabled failed:', result?.error);
                 setEnabledState(prev);
             }
         } catch (err) {
-            console.error('[useStealthToggle] stealthSetEnabled threw:', err);
+            console.error('[useFadeToggle] fadeSetEnabled threw:', err);
             setEnabledState(prev);
         }
     }, [enabled]);

@@ -1,19 +1,19 @@
 import React from 'react';
 import { EyeOff } from 'lucide-react';
 import type { OverlayAppearance } from '../../lib/overlayAppearance';
-import { useStealthToggle } from '../../hooks/useStealthToggle';
+import { useFadeToggle } from '../../hooks/useFadeToggle';
 
-interface StealthToggleProps {
+interface FadeToggleProps {
     appearance: OverlayAppearance;
 }
 
-export const StealthToggle: React.FC<StealthToggleProps> = ({ appearance }) => {
-    const { enabled, faded, setEnabled } = useStealthToggle();
+export const FadeToggle: React.FC<FadeToggleProps> = ({ appearance }) => {
+    const { enabled, faded, setEnabled } = useFadeToggle();
 
-    const label = enabled ? 'Stealth: ON' : 'Stealth: OFF';
+    const label = enabled ? 'Fade: ON' : 'Fade: OFF';
     const ariaLabel = enabled
-        ? 'Stealth mode is ON. Overlay fades while typing outside the app. Click to disable.'
-        : 'Stealth mode is OFF. Click to enable typing-aware fade.';
+        ? 'Privacy fade is ON. Overlay fades while typing outside the app. Click to disable.'
+        : 'Privacy fade is OFF. Click to enable typing-aware fade.';
 
     // Visual states: off | on-idle | on-faded (subtle pulse).
     const stateClasses = !enabled
@@ -60,4 +60,4 @@ export const StealthToggle: React.FC<StealthToggleProps> = ({ appearance }) => {
     );
 };
 
-export default StealthToggle;
+export default FadeToggle;
