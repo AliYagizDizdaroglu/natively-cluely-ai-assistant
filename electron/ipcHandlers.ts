@@ -8048,7 +8048,7 @@ export function initializeIpcHandlers(appState: AppState): void {
       });
     });
   } else {
-    console.warn('[stealth] Manager not available at IPC registration — state broadcasts will not work');
+    console.warn('[fade] Manager not available at IPC registration — state broadcasts will not work');
   }
 
   // Open the 60s one-click pairing window for the companion browser extension.
