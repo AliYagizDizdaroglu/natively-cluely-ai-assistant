@@ -70,12 +70,19 @@ export class IntelligenceManager extends EventEmitter {
             console.log('[IntelligenceManager] Question detector flag is on but no Groq key — detector disabled');
             return;
         }
+        // Model resolution: env override > default.
+        // Default: openai/gpt-oss-20b — Groq's sanctioned replacement for the
+        // deprecated llama-3.1-8b-instant (decommissioned 2026-08-16). 20B MoE
+        // (3.6B active) at ~1000 TPS on Groq's LPU, MMLU 85% vs 68% for the
+        // 8B Llama. Free-tier RPD is tighter (1K vs 14.4K) — heavy users may
+        // swap via NATIVELY_QUESTION_DETECTION_MODEL=<their-choice>.
+        const model = process.env.NATIVELY_QUESTION_DETECTION_MODEL ?? 'openai/gpt-oss-20b';
         const snapshotProvider: SnapshotProvider = {
             getRecentInterviewerTranscript: () => this.session.getFormattedContext(30),
             getContextSnapshot: () => this.session.getFormattedContext(60),
         };
         this.detector = new QuestionDetector({
-            client: new GroqDetectionClient({ model: 'llama-3.1-8b-instant', apiKey }),
+            client: new GroqDetectionClient({ model, apiKey }),
             snapshotProvider,
             onChip: (chip: DetectedQuestionChip) => this.emit('detected_question', chip),
             onChipUpdate: (chip: DetectedQuestionChip) => this.emit('detected_question_update', chip),
@@ -90,7 +97,7 @@ export class IntelligenceManager extends EventEmitter {
                 console.warn('[IntelligenceManager] detector.onSpeakerChange threw', (e as Error)?.message);
             }
         });
-        console.log('[IntelligenceManager] Question detector wired (Groq llama-3.1-8b-instant)');
+        console.log(`[IntelligenceManager] Question detector wired (Groq ${model})`);
     }
 
     /**

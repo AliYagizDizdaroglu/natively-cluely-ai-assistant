@@ -26,7 +26,10 @@ export class GroqDetectionClient implements DetectionClient {
         this.model = opts.model;
         this.apiKey = opts.apiKey;
         this.apiUrl = opts.apiUrl ?? DEFAULT_API_URL;
-        this.timeoutMs = opts.timeoutMs ?? 5000;
+        // 8s default: gpt-oss-20b is a 20B MoE (3.6B active) — ~1000 TPS on Groq's
+        // LPU so detection itself completes in <1s, but the timeout includes
+        // network jitter + cold-LPU allocation. 8s gives defensive headroom.
+        this.timeoutMs = opts.timeoutMs ?? 8000;
     }
 
     async detect(input: DetectionInput): Promise<DetectionResponse | null> {
@@ -57,7 +60,20 @@ export class GroqDetectionClient implements DetectionClient {
             });
 
             if (!response.ok) {
-                console.warn(`[GroqDetectionClient] HTTP ${response.status}`);
+                if (response.status === 429) {
+                    const retryAfter = response.headers.get('retry-after');
+                    // Free-tier gpt-oss-20b: 30 RPM / 1K RPD / 8K TPM / 200K TPD.
+                    // RPD ceiling is the most common heavy-user hit — surface it
+                    // explicitly so users can swap to a different model via
+                    // NATIVELY_QUESTION_DETECTION_MODEL or upgrade Groq tier.
+                    console.warn(
+                        `[GroqDetectionClient] Rate limited (429${retryAfter ? `, retry-after=${retryAfter}s` : ''}). ` +
+                        `Free-tier daily/per-minute quota likely exhausted for model="${this.model}". ` +
+                        `Detector will silently skip until the quota resets.`,
+                    );
+                } else {
+                    console.warn(`[GroqDetectionClient] HTTP ${response.status}`);
+                }
                 return null;
             }
 
