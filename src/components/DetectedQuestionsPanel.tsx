@@ -44,20 +44,20 @@ export const DetectedQuestionsPanel: React.FC<DetectedQuestionsPanelProps> = ({ 
     return (
         <div
             className="
-                mx-3 mb-2 rounded-lg
-                bg-bg-primary/50 border border-border-subtle
-                backdrop-blur-sm
+                mx-3 mb-2 rounded-xl
+                bg-white/[0.05] border border-white/10
+                backdrop-blur-md
                 overflow-hidden
             "
             onMouseEnter={resetCollapseTimer}
             onMouseMove={resetCollapseTimer}
         >
-            <div className="flex items-center justify-between px-3 py-1.5 text-[11px] uppercase tracking-wide text-text-tertiary">
+            <div className="flex items-center justify-between px-3 py-1.5 text-[11px] uppercase tracking-wide overlay-text-muted">
                 <span>Detected Questions ({chips.length})</span>
                 <button
                     type="button"
                     onClick={() => setCollapsed(c => !c)}
-                    className="hover:text-text-secondary transition-colors"
+                    className="overlay-text-muted hover:opacity-100 opacity-80 transition-opacity"
                     aria-label={collapsed ? 'Expand' : 'Collapse'}
                 >
                     {collapsed ? '▸' : '▾'}
@@ -84,7 +84,7 @@ export const DetectedQuestionsPanel: React.FC<DetectedQuestionsPanelProps> = ({ 
                 <button
                     type="button"
                     onClick={() => setCollapsed(false)}
-                    className="w-full px-3 py-1.5 text-xs text-text-tertiary hover:text-text-secondary text-left"
+                    className="w-full px-3 py-1.5 text-xs overlay-text-muted hover:opacity-100 opacity-80 text-left transition-opacity"
                 >
                     {chips.length} {chips.length === 1 ? 'question' : 'questions'} ready ▸
                 </button>
