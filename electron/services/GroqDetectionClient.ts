@@ -22,12 +22,15 @@ interface GroqDetectionClientOptions {
 
 /**
  * Groq cloud replacement for OllamaDetectionClient.
- * Uses llama-3.1-8b-instant via Groq's OpenAI-compatible chat completions API.
- * Zero cold-start (model always hot), ~300ms total latency vs ~2100ms warm Ollama.
+ * Uses openai/gpt-oss-20b via Groq's OpenAI-compatible chat completions API —
+ * Groq's sanctioned replacement for llama-3.1-8b-instant (decommissioned
+ * 2026-08-16). 20B MoE (3.6B active) at ~1000 TPS on Groq's LPU, MMLU 85%
+ * vs 68% for the 8B Llama. Override via NATIVELY_QUESTION_DETECTION_MODEL.
+ * Zero cold-start (model always hot), sub-second total latency.
  *
- * Free tier: 30 RPM / 14.4K RPD / 6K TPM / 500K TPD.
- * Each detect call ≈ 300-500 tokens → ~12-20 calls/min within TPM ceiling.
- * Real interview cadence (1-2 questions/min) is well under that.
+ * Free tier (gpt-oss-20b): 30 RPM / 1K RPD / 8K TPM / 200K TPD. Tighter daily
+ * request budget than the old 8B (1K vs 14.4K RPD) — heavy users may hit the
+ * ceiling (429) and can point at a different model via the env override.
  *
  * Returns null on any error (HTTP, timeout, parse failure). Never throws.
  */
@@ -35,12 +38,14 @@ export class GroqDetectionClient implements IDetectionClient {
     private readonly getApiKey: () => string | undefined;
     private readonly timeoutMs: number;
     private readonly endpoint = 'https://api.groq.com/openai/v1/chat/completions';
-    private readonly model = 'llama-3.1-8b-instant';
+    private readonly model = process.env.NATIVELY_QUESTION_DETECTION_MODEL ?? 'openai/gpt-oss-20b';
     private parseErrorStreak = 0;
 
     constructor(opts: GroqDetectionClientOptions) {
         this.getApiKey = opts.getApiKey;
-        this.timeoutMs = opts.timeoutMs ?? 5000;
+        // 8s default: gpt-oss-20b is larger than the old 8B — sub-second in
+        // practice, but the timeout absorbs network jitter + cold-LPU allocation.
+        this.timeoutMs = opts.timeoutMs ?? 8000;
     }
 
     async detect(input: DetectionInput): Promise<DetectionResponse | null> {
@@ -80,7 +85,12 @@ export class GroqDetectionClient implements IDetectionClient {
             if (!response.ok) {
                 console.warn(`[GroqDetectionClient] HTTP ${response.status} after ${t1 - t0}ms`);
                 if (response.status === 429) {
-                    console.warn('[GroqDetectionClient] Rate limited — check TPM/RPM usage');
+                    const retryAfter = response.headers.get('retry-after');
+                    console.warn(
+                        `[GroqDetectionClient] Rate limited (429${retryAfter ? `, retry-after=${retryAfter}s` : ''}) ` +
+                        `for model="${this.model}" — free-tier daily/per-minute quota likely exhausted. ` +
+                        `Detector will skip until it resets (or set NATIVELY_QUESTION_DETECTION_MODEL to another model).`,
+                    );
                 }
                 return null;
             }

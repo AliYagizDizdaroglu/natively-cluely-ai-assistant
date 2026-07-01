@@ -46,7 +46,8 @@ export class IntelligenceManager extends EventEmitter {
         this.forwardEngineEvents();
 
         // Initialize passive question detector.
-        // Uses Groq cloud (llama-3.1-8b-instant) — zero cold-start, ~300ms latency.
+        // Uses Groq cloud (openai/gpt-oss-20b by default; override via
+        // NATIVELY_QUESTION_DETECTION_MODEL) — zero cold-start, sub-second latency.
         const detectionClient = new GroqDetectionClient({
             getApiKey: () => CredentialsManager.getInstance().getGroqSttApiKey(),
         });
@@ -74,7 +75,8 @@ export class IntelligenceManager extends EventEmitter {
             this.questionDetector.onSpeakerChange(prev, next);
         });
 
-        console.log('[IntelligenceManager] QuestionDetector wired (model=groq/llama-3.1-8b-instant, debounce=1.5s, dedup=0.7, conf≥0.6, max=5)');
+        const detectorModel = process.env.NATIVELY_QUESTION_DETECTION_MODEL ?? 'openai/gpt-oss-20b';
+        console.log(`[IntelligenceManager] QuestionDetector wired (model=groq/${detectorModel}, debounce=1.5s, dedup=0.7, conf≥0.6, max=5)`);
     }
 
     /** Clear detector state — call on meeting boundary. */
