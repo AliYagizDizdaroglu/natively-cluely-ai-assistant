@@ -577,8 +577,17 @@ export function initializeIpcHandlers(appState: AppState): void {
           }
         }
         if (!routedToFlashVerbal) {
+          // Screenshot / vision questions ALWAYS use Gemma 4 31B (best at
+          // reading code/diagrams off-screen), regardless of the dropdown pick.
+          // Text questions honor the selected model. The Gemma path also emits
+          // the model-source sentinel, so the answer bubble shows attribution.
+          const hasImages = !!imagePaths?.length;
+          const modelOverride = hasImages ? 'gemma-4-31b-it' : undefined;
+          if (hasImages) {
+            event.sender.send('gemini-stream-source', 'Gemma 4 31B');
+          }
           // Default path: streamChat handles full routing (Gemma for coding, etc.)
-          stream = llmHelper.streamChat(message, imagePaths, context, options?.skipSystemPrompt ? "" : undefined, options?.ignoreKnowledgeMode);
+          stream = llmHelper.streamChat(message, imagePaths, context, options?.skipSystemPrompt ? "" : undefined, options?.ignoreKnowledgeMode, modelOverride);
         }
 
         for await (const token of stream!) {

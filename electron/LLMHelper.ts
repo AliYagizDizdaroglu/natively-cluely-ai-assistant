@@ -2318,7 +2318,11 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     imagePaths?: string[],
     context?: string,
     systemPromptOverride?: string, // Optional override (defaults to HARD_SYSTEM_PROMPT)
-    ignoreKnowledgeMode: boolean = false
+    ignoreKnowledgeMode: boolean = false,
+    // Optional per-call model override — routes THIS call to a specific model
+    // without mutating the persisted selection. Used to force screenshot/vision
+    // questions onto Gemma 4 31B regardless of the dropdown pick.
+    modelOverride?: string,
   ): AsyncGenerator<string, void, unknown> {
 
     // ============================================================
@@ -2544,19 +2548,25 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     if (this.client) {
       const fullMsg = `${finalSystemPrompt}\n\n${userContent}`;
 
+      // Per-call override (e.g. screenshots forced to Gemma 4 31B) takes
+      // precedence over the persisted dropdown selection for THIS call only.
+      const activeModelId = modelOverride ?? this.currentModelId;
+
       // Gemma 4+ — use guarded path with TTFT watchdog + fallback chain.
       // Send the minimal interview prompt as systemInstruction (cacheable, doesn't
       // teach the model the forbidden-label vocabulary) and pass only the user
       // content as the user message. Massive TTFT + quality win on Gemma 4.
-      if (this.currentModelId.startsWith('gemma-')) {
+      // (streamWithGemmaGuarded also emits the __model_source:Gemma 4__ sentinel
+      // → the chat bubble shows the model attribution beside TTFT.)
+      if (activeModelId.startsWith('gemma-')) {
         const interviewSystem = this.injectLanguageInstruction(INTERVIEW_COPILOT_PROMPT);
-        yield* this.streamWithGemmaGuarded(userContent, this.currentModelId, imagePaths, GEMMA_TTFT_MS, interviewSystem);
+        yield* this.streamWithGemmaGuarded(userContent, activeModelId, imagePaths, GEMMA_TTFT_MS, interviewSystem);
         return;
       }
 
       // Other Gemini models — direct or race
-      if (this.isGeminiModel(this.currentModelId)) {
-        yield* this.streamWithGeminiModel(fullMsg, this.currentModelId, imagePaths);
+      if (this.isGeminiModel(activeModelId)) {
+        yield* this.streamWithGeminiModel(fullMsg, activeModelId, imagePaths);
         return;
       }
 
