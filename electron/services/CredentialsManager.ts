@@ -84,7 +84,22 @@ export class CredentialsManager {
      */
     public init(): void {
         this.loadCredentials();
+        this.migrateDefaultModel();
         console.log('[CredentialsManager] Initialized');
+    }
+
+    /**
+     * One-time migration: the Gemma 4 26B A4B model was our previous default;
+     * we now target the dense 31B variant (gemma-4-31b-it) — same family, higher
+     * quality, and the 26B still works but we want new users on 31B. Idempotent
+     * and side-effect-free for anyone who deliberately picked a non-Gemma model.
+     */
+    private migrateDefaultModel(): void {
+        if (this.credentials.defaultModel === 'gemma-4-26b-a4b-it') {
+            this.credentials.defaultModel = 'gemma-4-31b-it';
+            this.saveCredentials();
+            console.log('[CredentialsManager] Migrated defaultModel: gemma-4-26b-a4b-it → gemma-4-31b-it');
+        }
     }
 
     // =========================================================================
