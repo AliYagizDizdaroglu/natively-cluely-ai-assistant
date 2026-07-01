@@ -3042,7 +3042,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       throw new Error("Gemini client not initialized — cannot route verbal answer to Flash");
     }
     const systemWithLanguage = this.injectLanguageInstruction(systemPrompt);
-    const FALLBACK_MODEL = 'gemma-4-26b-a4b-it';
+    const FALLBACK_MODEL = 'gemma-4-31b-a4b-it';
     const FIRST_TOKEN_TIMEOUT_MS = 4000;
 
     console.log(`[LLMHelper] streamVerbalWithGeminiFlash: trying ${GEMINI_FLASH_MODEL} (fallback=${FALLBACK_MODEL} after ${FIRST_TOKEN_TIMEOUT_MS}ms)`);

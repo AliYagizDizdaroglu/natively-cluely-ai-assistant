@@ -120,7 +120,7 @@ DETERMINISTIC EXECUTION RULES — HIGHEST PRIORITY AFTER SECURITY:
 // INTERVIEW COPILOT — Minimal prompt for Gemma 4 (low-latency, no CoT leak)
 // ==========================================
 /**
- * Used ONLY for the live interview / coding-screenshot path on Gemma 4 26B A4B.
+ * Used ONLY for the live interview / coding-screenshot path on Gemma 4 31B A4B.
  * Designed positively: no vocabulary list of forbidden labels (which acts as a
  * schema anchor for instruction-tuned models), no "starting to think" phrasing,
  * no XML scaffolding. ~150 tokens. Sent as systemInstruction.

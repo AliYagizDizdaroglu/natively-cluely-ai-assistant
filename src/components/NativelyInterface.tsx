@@ -2524,7 +2524,7 @@ Provide only the answer, nothing else.`;
                             <DetectedQuestionsPanel
                                 onChipClickStart={(intent) => {
                                     sm.start();
-                                    sm.setSource(intent === 'coding' ? 'Gemma 4 26B' : 'Gemini Flash 3.1');
+                                    sm.setSource(intent === 'coding' ? 'Gemma 4 31B' : 'Gemini Flash 3.1');
                                     setIsProcessing(true);
                                 }}
                             />
