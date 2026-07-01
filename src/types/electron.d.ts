@@ -347,10 +347,10 @@ export interface ElectronAPI {
   onProfileStatusChanged: (callback: () => void) => () => void
   profileSelectFile: () => Promise<{ success?: boolean; cancelled?: boolean; filePath?: string; error?: string }>
 
-  // Stealth Mode API
-  stealthGetState: () => Promise<{ enabled: boolean; faded: boolean }>
-  stealthSetEnabled: (enabled: boolean) => Promise<{ success: boolean; error?: string }>
-  onStealthStateChanged: (callback: (state: { enabled: boolean; faded: boolean }) => void) => () => void
+  // Privacy Fade API (overlay fades while typing in other apps)
+  fadeGetState: () => Promise<{ enabled: boolean; faded: boolean }>
+  fadeSetEnabled: (enabled: boolean) => Promise<{ success: boolean; error?: string }>
+  onFadeStateChanged: (callback: (state: { enabled: boolean; faded: boolean }) => void) => () => void
 
   // JD & Research API
   profileUploadJD: (filePath: string) => Promise<{ success: boolean; error?: string }>

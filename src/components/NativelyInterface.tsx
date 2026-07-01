@@ -2779,7 +2779,12 @@ Provide only the answer, nothing else.`;
                                                 {(() => {
                                                     const m = currentModel;
                                                     if (m.startsWith('ollama-')) return m.replace('ollama-', '');
-                                                    if (m === 'gemini-3.1-flash-lite-preview') return 'Gemini 3.1 Flash';
+                                                    // The 4 curated chat-pane models
+                                                    if (m === 'gemini-3.1-flash-lite' || m === 'gemini-3.1-flash-lite-preview') return 'Gemini 3.1 Flash Lite';
+                                                    if (m === 'gemini-2.5-flash') return 'Gemini 2.5 Flash';
+                                                    if (m === 'gemma-4-31b-it') return 'Gemma 4 31B';
+                                                    if (m === 'gemma-4-26b-a4b-it') return 'Gemma 4 26B';
+                                                    // Legacy / other providers (still possible via Settings)
                                                     if (m === 'gemini-3.1-pro-preview') return 'Gemini 3.1 Pro';
                                                     if (m === 'llama-3.3-70b-versatile') return 'Groq Llama 3.3';
                                                     if (m === 'gpt-5.4') return 'GPT 5.4';

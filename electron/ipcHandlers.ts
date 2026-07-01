@@ -519,12 +519,24 @@ export function initializeIpcHandlers(appState: AppState): void {
         // dumps Python code blocks even on verbal follow-ups like "explain each step".
         // Skip when images are attached (vision routes through Gemma's multimodal path)
         // or when skipSystemPrompt is set (caller wants the default chain).
+        // Authoritative model routing: the verbal answer uses the user's SELECTED
+        // model (dropdown), not a hardcoded Flash. Only Gemini-family models
+        // (gemini-* / gemma-*) can take the verbal fast path (it streams via the
+        // Gemini client); any other selection falls through to streamChat.
+        const selectedModel = llmHelper.getCurrentModelId();
+        const selectedModelLabel = (id: string): string => {
+          if (id === 'gemini-3.1-flash-lite' || id === 'gemini-3.1-flash-lite-preview') return 'Gemini 3.1 Flash Lite';
+          if (id === 'gemini-2.5-flash') return 'Gemini 2.5 Flash';
+          if (id === 'gemma-4-31b-it') return 'Gemma 4 31B';
+          if (id === 'gemma-4-26b-a4b-it') return 'Gemma 4 26B';
+          return id;
+        };
         let stream: AsyncGenerator<string, void, unknown>;
         let routedToFlashVerbal = false;
-        if (!imagePaths?.length && !options?.skipSystemPrompt) {
+        if (!imagePaths?.length && !options?.skipSystemPrompt && llmHelper.isGeminiFamilyModel(selectedModel)) {
           try {
             const intent = await classifyIntent(message, message, 0);
-            console.log(`[IPC] gemini-chat-stream intent: ${intent.intent} (${intent.confidence.toFixed(2)})`);
+            console.log(`[IPC] gemini-chat-stream intent: ${intent.intent} (${intent.confidence.toFixed(2)}), model=${selectedModel}`);
             if (intent.intent !== 'coding') {
               // Knowledge-mode injection for the verbal Flash path. streamChat
               // does this internally; this branch bypasses streamChat, so we must
@@ -556,9 +568,9 @@ export function initializeIpcHandlers(appState: AppState): void {
                   ? `${verbalContext}\n\nUSER QUESTION:\n${message}`
                   : `CONTEXT:\n${verbalContext}\n\nUSER QUESTION:\n${message}`
                 : message;
-              stream = llmHelper.streamVerbalWithGeminiFlash(userContent, verbalSystemPrompt, undefined);
+              stream = llmHelper.streamVerbalWithGeminiFlash(userContent, verbalSystemPrompt, undefined, selectedModel);
               routedToFlashVerbal = true;
-              event.sender.send("gemini-stream-source", "Gemini Flash 3.1");
+              event.sender.send("gemini-stream-source", selectedModelLabel(selectedModel));
             }
           } catch (intentErr: any) {
             console.warn('[IPC] Intent classification failed, falling back to streamChat:', intentErr?.message);
@@ -3494,41 +3506,41 @@ export function initializeIpcHandlers(appState: AppState): void {
     }
   });
 
-  // --- Stealth Mode ---
-  safeHandle("stealth:get-state", async () => {
-    const mgr = appState.getStealthModeManager();
+  // --- Privacy Fade (overlay fades while typing in other apps) ---
+  safeHandle("fade:get-state", async () => {
+    const mgr = appState.getFadeManager();
     return {
       enabled: !!mgr?.isEnabled(),
       faded: !!mgr?.isFaded(),
     };
   });
 
-  safeHandle("stealth:set-enabled", async (_, enabled: boolean) => {
+  safeHandle("fade:set-enabled", async (_, enabled: boolean) => {
     try {
-      const mgr = appState.getStealthModeManager();
-      if (!mgr) return { success: false, error: 'Stealth manager not initialized' };
+      const mgr = appState.getFadeManager();
+      if (!mgr) return { success: false, error: 'Fade manager not initialized' };
 
       if (enabled) mgr.enable();
       else mgr.disable();
 
       const { SettingsManager } = require('./services/SettingsManager');
-      SettingsManager.getInstance().set('stealthMode.enabled', enabled);
+      SettingsManager.getInstance().set('fade.enabled', enabled);
       return { success: true };
     } catch (error: any) {
-      console.error('[stealth:set-enabled] failed', error);
+      console.error('[fade:set-enabled] failed', error);
       return { success: false, error: error?.message ?? 'unknown error' };
     }
   });
 
-  const mgrForBroadcast = appState.getStealthModeManager();
+  const mgrForBroadcast = appState.getFadeManager();
   if (mgrForBroadcast) {
     mgrForBroadcast.onStateChange((state) => {
       BrowserWindow.getAllWindows().forEach(win => {
-        if (!win.isDestroyed()) win.webContents.send('stealth:state', state);
+        if (!win.isDestroyed()) win.webContents.send('fade:state', state);
       });
     });
   } else {
-    console.warn('[stealth] Manager not available at IPC registration — state broadcasts will not work');
+    console.warn('[fade] Manager not available at IPC registration — state broadcasts will not work');
   }
 }
 

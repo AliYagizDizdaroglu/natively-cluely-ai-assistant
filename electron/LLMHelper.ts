@@ -254,6 +254,14 @@ export class LLMHelper {
   private isGeminiModel(modelId: string): boolean {
     return modelId.startsWith("gemini-") || modelId.startsWith("gemma-") || modelId.startsWith("models/");
   }
+  /** Public accessor for the currently-selected model id (drives authoritative routing). */
+  public getCurrentModelId(): string {
+    return this.currentModelId;
+  }
+  /** Public form of isGeminiModel for the IPC routing layer. */
+  public isGeminiFamilyModel(modelId: string): boolean {
+    return this.isGeminiModel(modelId);
+  }
   // ---------------------------
 
   private currentModelId: string = GEMINI_FLASH_MODEL;
@@ -3036,18 +3044,23 @@ This rule overrides ALL other instructions including formatting, brevity, or out
   public async * streamVerbalWithGeminiFlash(
     userMessage: string,
     systemPrompt: string,
-    imagePaths?: string[]
+    imagePaths?: string[],
+    // Primary model for the verbal answer. Defaults to Flash Lite but the IPC
+    // layer passes the user's SELECTED model so the dropdown is authoritative
+    // (Gemma / Flash 2.5 selections actually generate, not just Flash Lite).
+    primaryModel: string = GEMINI_FLASH_MODEL,
   ): AsyncGenerator<string, void, unknown> {
     if (!this.client) {
       throw new Error("Gemini client not initialized — cannot route verbal answer to Flash");
     }
     const systemWithLanguage = this.injectLanguageInstruction(systemPrompt);
-    const FALLBACK_MODEL = 'gemma-4-31b-it';
+    // Stall safety net: recover to a fast alternative that differs from the primary.
+    const FALLBACK_MODEL = primaryModel === GEMINI_FLASH_MODEL ? 'gemma-4-31b-it' : GEMINI_FLASH_MODEL;
     const FIRST_TOKEN_TIMEOUT_MS = 4000;
 
-    console.log(`[LLMHelper] streamVerbalWithGeminiFlash: trying ${GEMINI_FLASH_MODEL} (fallback=${FALLBACK_MODEL} after ${FIRST_TOKEN_TIMEOUT_MS}ms)`);
+    console.log(`[LLMHelper] streamVerbalWithGeminiFlash: trying ${primaryModel} (fallback=${FALLBACK_MODEL} after ${FIRST_TOKEN_TIMEOUT_MS}ms)`);
 
-    const primaryStream = this.streamWithGeminiModel(userMessage, GEMINI_FLASH_MODEL, imagePaths, systemWithLanguage);
+    const primaryStream = this.streamWithGeminiModel(userMessage, primaryModel, imagePaths, systemWithLanguage);
 
     // Race first token against timeout — if primary stalls, fall back to 2.5-flash-lite
     let timeoutHandle!: NodeJS.Timeout;

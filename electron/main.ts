@@ -260,27 +260,27 @@ export class AppState {
   private _dockReassertTimers: NodeJS.Timeout[] = []; // Re-assert dock-hidden state after show+focus
   private _ollamaBootstrapPromise: Promise<void> | null = null;
   private screenshotCaptureInProgress: boolean = false;
-  private stealthModeManager: import('./services/StealthModeManager').StealthModeManager | null = null;
+  private fadeManager: import('./services/FadeManager').FadeManager | null = null;
 
-  public getStealthModeManager() {
-    return this.stealthModeManager;
+  public getFadeManager() {
+    return this.fadeManager;
   }
 
-  public initStealthModeManager(): void {
-    if (this.stealthModeManager) return;
+  public initFadeManager(): void {
+    if (this.fadeManager) return;
     try {
       const {
-        StealthModeManager,
+        FadeManager,
         UioHookKeySource,
-        ElectronStealthWindowAdapter,
-      } = require('./services/StealthModeManager');
-      this.stealthModeManager = new StealthModeManager(
+        ElectronFadeWindowAdapter,
+      } = require('./services/FadeManager');
+      this.fadeManager = new FadeManager(
         new UioHookKeySource(),
-        new ElectronStealthWindowAdapter(this),
+        new ElectronFadeWindowAdapter(this),
       );
-      console.log('[StealthModeManager] Initialized');
+      console.log('[FadeManager] Initialized');
     } catch (e) {
-      console.error('[StealthModeManager] Failed to initialize — stealth mode disabled:', e);
+      console.error('[FadeManager] Failed to initialize — privacy fade disabled:', e);
     }
   }
 
@@ -2885,21 +2885,24 @@ async function initializeApp() {
   // Explicitly load credentials into helpers
   appState.processingHelper.loadStoredCredentials();
 
-  // Initialize the stealth manager BEFORE IPC handlers so the IPC layer can
+  // Initialize the privacy fade manager BEFORE IPC handlers so the IPC layer can
   // subscribe to its state-change events at registration time.
-  appState.initStealthModeManager();
+  appState.initFadeManager();
 
   // Initialize IPC handlers before window creation
   initializeIpcHandlers(appState)
 
   try {
     const { SettingsManager } = require('./services/SettingsManager');
-    const persisted = SettingsManager.getInstance().get('stealthMode.enabled');
+    // Read fade.enabled, falling back to the legacy stealthMode.enabled key so a
+    // user who had it enabled before the rename keeps it on.
+    const sm = SettingsManager.getInstance();
+    const persisted = sm.get('fade.enabled') ?? sm.get('stealthMode.enabled');
     if (persisted === true) {
-      appState.getStealthModeManager()?.enable();
+      appState.getFadeManager()?.enable();
     }
   } catch (e) {
-    console.error('[stealth] could not apply persisted state', e);
+    console.error('[fade] could not apply persisted state', e);
   }
 
   // Apply the full disguise payload (names, dock icon, AUMID) early

@@ -1,16 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { StealthModeManager, StealthKeyEventSource, StealthWindowAdapter } from './StealthModeManager';
+import { FadeManager, FadeKeyEventSource, FadeWindowAdapter } from './FadeManager';
 
 function fakes() {
   let listener: (() => void) | null = null;
-  const source: StealthKeyEventSource & { fireKey: () => void; started: boolean } = {
+  const source: FadeKeyEventSource & { fireKey: () => void; started: boolean } = {
     started: false,
     start() { this.started = true; },
     stop() { this.started = false; },
     onKeyDown(cb) { listener = cb; return () => { listener = null; }; },
     fireKey() { listener?.(); },
   };
-  const adapter: StealthWindowAdapter & { faded: boolean; focused: boolean } = {
+  const adapter: FadeWindowAdapter & { faded: boolean; focused: boolean } = {
     faded: false,
     focused: false,
     isOverlayFocused() { return this.focused; },
@@ -20,13 +20,13 @@ function fakes() {
   return { source, adapter };
 }
 
-describe('StealthModeManager — lifecycle', () => {
+describe('FadeManager — lifecycle', () => {
   beforeEach(() => { vi.useFakeTimers(); });
   afterEach(() => { vi.useRealTimers(); });
 
   it('starts the key source when enabled and stops it when disabled', () => {
     const { source, adapter } = fakes();
-    const mgr = new StealthModeManager(source, adapter);
+    const mgr = new FadeManager(source, adapter);
 
     expect(source.started).toBe(false);
     mgr.enable();
@@ -41,20 +41,20 @@ describe('StealthModeManager — lifecycle', () => {
   it('does nothing if enable() is called twice', () => {
     const { source, adapter } = fakes();
     const startSpy = vi.spyOn(source, 'start');
-    const mgr = new StealthModeManager(source, adapter);
+    const mgr = new FadeManager(source, adapter);
     mgr.enable();
     mgr.enable();
     expect(startSpy).toHaveBeenCalledTimes(1);
   });
 });
 
-describe('StealthModeManager — fade/restore', () => {
+describe('FadeManager — fade/restore', () => {
   beforeEach(() => { vi.useFakeTimers(); });
   afterEach(() => { vi.useRealTimers(); });
 
   it('fades on external keypress, restores 800ms after last keypress', () => {
     const { source, adapter } = fakes();
-    const mgr = new StealthModeManager(source, adapter);
+    const mgr = new FadeManager(source, adapter);
     mgr.enable();
 
     source.fireKey();
@@ -72,7 +72,7 @@ describe('StealthModeManager — fade/restore', () => {
   it('ignores keypresses while our overlay window is focused', () => {
     const { source, adapter } = fakes();
     adapter.focused = true;
-    const mgr = new StealthModeManager(source, adapter);
+    const mgr = new FadeManager(source, adapter);
     mgr.enable();
 
     source.fireKey();
@@ -81,7 +81,7 @@ describe('StealthModeManager — fade/restore', () => {
 
   it('continuing to type extends the restore delay', () => {
     const { source, adapter } = fakes();
-    const mgr = new StealthModeManager(source, adapter);
+    const mgr = new FadeManager(source, adapter);
     mgr.enable();
 
     source.fireKey();
@@ -95,7 +95,7 @@ describe('StealthModeManager — fade/restore', () => {
 
   it('disable() while faded restores immediately and cancels the timer', () => {
     const { source, adapter } = fakes();
-    const mgr = new StealthModeManager(source, adapter);
+    const mgr = new FadeManager(source, adapter);
     mgr.enable();
     source.fireKey();
     expect(adapter.faded).toBe(true);
@@ -107,13 +107,13 @@ describe('StealthModeManager — fade/restore', () => {
   });
 });
 
-describe('StealthModeManager — onStateChange', () => {
+describe('FadeManager — onStateChange', () => {
   beforeEach(() => { vi.useFakeTimers(); });
   afterEach(() => { vi.useRealTimers(); });
 
   it('emits state on enable, fade, restore, and disable', () => {
     const { source, adapter } = fakes();
-    const mgr = new StealthModeManager(source, adapter);
+    const mgr = new FadeManager(source, adapter);
     const events: Array<{ enabled: boolean; faded: boolean }> = [];
     mgr.onStateChange(s => events.push({ ...s }));
 
@@ -132,7 +132,7 @@ describe('StealthModeManager — onStateChange', () => {
 
   it('unsubscriber stops further emissions', () => {
     const { source, adapter } = fakes();
-    const mgr = new StealthModeManager(source, adapter);
+    const mgr = new FadeManager(source, adapter);
     const cb = vi.fn();
     const unsub = mgr.onStateChange(cb);
     mgr.enable();

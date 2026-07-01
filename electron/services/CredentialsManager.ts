@@ -31,6 +31,9 @@ export interface StoredCredentials {
     customProviders?: CustomProvider[];
     curlProviders?: CurlProvider[];
     defaultModel?: string;
+    /** One-time sentinel: legacy Gemma defaults were moved to Flash Lite once.
+     *  Prevents an explicit later Gemma pick from being reset on every launch. */
+    defaultModelMigratedToFlashLite?: boolean;
     nativelyApiKey?: string;
     // STT Provider settings
     sttProvider?: 'none' | 'google' | 'groq' | 'openai' | 'deepgram' | 'elevenlabs' | 'azure' | 'ibmwatson' | 'soniox' | 'natively';
@@ -89,17 +92,24 @@ export class CredentialsManager {
     }
 
     /**
-     * One-time migration: the Gemma 4 26B A4B model was our previous default;
-     * we now target the dense 31B variant (gemma-4-31b-it) — same family, higher
-     * quality, and the 26B still works but we want new users on 31B. Idempotent
-     * and side-effect-free for anyone who deliberately picked a non-Gemma model.
+     * One-time migration: move legacy Gemma defaults (26B / 31B) to Gemini 3.1
+     * Flash Lite — the new default, which is faster and matches the verbal answer
+     * path. Guarded by a sentinel so it runs exactly ONCE: if the user later
+     * explicitly picks Gemma from the dropdown, that choice is saved and this
+     * migration never resets it on a subsequent launch.
      */
     private migrateDefaultModel(): void {
-        if (this.credentials.defaultModel === 'gemma-4-26b-a4b-it') {
-            this.credentials.defaultModel = 'gemma-4-31b-it';
-            this.saveCredentials();
-            console.log('[CredentialsManager] Migrated defaultModel: gemma-4-26b-a4b-it → gemma-4-31b-it');
+        if (this.credentials.defaultModelMigratedToFlashLite) return;
+        if (
+            this.credentials.defaultModel === 'gemma-4-26b-a4b-it' ||
+            this.credentials.defaultModel === 'gemma-4-31b-it'
+        ) {
+            const prev = this.credentials.defaultModel;
+            this.credentials.defaultModel = 'gemini-3.1-flash-lite';
+            console.log(`[CredentialsManager] Migrated defaultModel: ${prev} → gemini-3.1-flash-lite`);
         }
+        this.credentials.defaultModelMigratedToFlashLite = true;
+        this.saveCredentials();
     }
 
     // =========================================================================
@@ -200,7 +210,7 @@ export class CredentialsManager {
         return this.credentials.aiResponseLanguage || 'auto';
     }
     public getDefaultModel(): string {
-        return this.credentials.defaultModel || 'gemini-3.1-flash-lite-preview';
+        return this.credentials.defaultModel || 'gemini-3.1-flash-lite';
     }
 
     public getNativelyApiKey(): string | undefined {

@@ -629,10 +629,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on('profile:status-changed', subscription);
     return () => { ipcRenderer.removeListener('profile:status-changed', subscription); };
   },
-  onStealthStateChanged: (callback: (state: { enabled: boolean; faded: boolean }) => void) => {
+  onFadeStateChanged: (callback: (state: { enabled: boolean; faded: boolean }) => void) => {
     const subscription = (_: any, state: { enabled: boolean; faded: boolean }) => callback(state);
-    ipcRenderer.on('stealth:state', subscription);
-    return () => { ipcRenderer.removeListener('stealth:state', subscription); };
+    ipcRenderer.on('fade:state', subscription);
+    return () => { ipcRenderer.removeListener('fade:state', subscription); };
   },
 
   // Native Audio Service Events
@@ -1192,8 +1192,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   profileUploadResume: (filePath: string) => ipcRenderer.invoke('profile:upload-resume', filePath),
   profileGetStatus: () => ipcRenderer.invoke('profile:get-status'),
   profileSetMode: (enabled: boolean) => ipcRenderer.invoke('profile:set-mode', enabled),
-  stealthGetState: () => ipcRenderer.invoke('stealth:get-state'),
-  stealthSetEnabled: (enabled: boolean) => ipcRenderer.invoke('stealth:set-enabled', enabled),
+  fadeGetState: () => ipcRenderer.invoke('fade:get-state'),
+  fadeSetEnabled: (enabled: boolean) => ipcRenderer.invoke('fade:set-enabled', enabled),
   profileDelete: () => ipcRenderer.invoke('profile:delete'),
   profileGetProfile: () => ipcRenderer.invoke('profile:get-profile'),
   profileSelectFile: () => ipcRenderer.invoke('profile:select-file'),

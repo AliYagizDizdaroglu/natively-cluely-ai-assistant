@@ -6,14 +6,14 @@ function getUioHook(): typeof import('uiohook-napi')['uIOhook'] {
   return (require('uiohook-napi') as typeof import('uiohook-napi')).uIOhook;
 }
 
-export interface StealthKeyEventSource {
+export interface FadeKeyEventSource {
   start(): void;
   stop(): void;
   /** Subscribe to keydown events. Returns an unsubscriber. */
   onKeyDown(cb: () => void): () => void;
 }
 
-export interface StealthWindowAdapter {
+export interface FadeWindowAdapter {
   /** True if our overlay window currently has keyboard focus. */
   isOverlayFocused(): boolean;
   /** Apply faded state: opacity 0.10 + click-through on. */
@@ -22,17 +22,17 @@ export interface StealthWindowAdapter {
   applyRestored(): void;
 }
 
-export interface StealthState {
+export interface FadeState {
   enabled: boolean;
   faded: boolean;
 }
 
-export interface StealthModeManagerOptions {
+export interface FadeManagerOptions {
   /** Milliseconds after the last keypress before restoring. Default 800. */
   restoreDelayMs?: number;
 }
 
-export class StealthModeManager {
+export class FadeManager {
   private enabled = false;
   private faded = false;
   private keyUnsub: (() => void) | null = null;
@@ -40,9 +40,9 @@ export class StealthModeManager {
   private readonly restoreDelayMs: number;
 
   constructor(
-    private readonly source: StealthKeyEventSource,
-    private readonly adapter: StealthWindowAdapter,
-    opts: StealthModeManagerOptions = {},
+    private readonly source: FadeKeyEventSource,
+    private readonly adapter: FadeWindowAdapter,
+    opts: FadeManagerOptions = {},
   ) {
     this.restoreDelayMs = opts.restoreDelayMs ?? 800;
   }
@@ -92,24 +92,24 @@ export class StealthModeManager {
     }, this.restoreDelayMs);
   }
 
-  private listeners = new Set<(s: StealthState) => void>();
+  private listeners = new Set<(s: FadeState) => void>();
 
-  onStateChange(cb: (s: StealthState) => void): () => void {
+  onStateChange(cb: (s: FadeState) => void): () => void {
     this.listeners.add(cb);
     return () => { this.listeners.delete(cb); };
   }
 
   private emitState(): void {
-    const snapshot: StealthState = { enabled: this.enabled, faded: this.faded };
+    const snapshot: FadeState = { enabled: this.enabled, faded: this.faded };
     this.listeners.forEach(cb => {
-      try { cb(snapshot); } catch (e) { console.error('[StealthModeManager] listener threw', e); }
+      try { cb(snapshot); } catch (e) { console.error('[FadeManager] listener threw', e); }
     });
   }
 }
 
 // --- Concrete key source backed by uiohook-napi (main process only) ---
 
-export class UioHookKeySource implements StealthKeyEventSource {
+export class UioHookKeySource implements FadeKeyEventSource {
   private static refCount = 0;
   private listeners = new Set<() => void>();
   private bound: ((...args: any[]) => void) | null = null;
@@ -117,13 +117,13 @@ export class UioHookKeySource implements StealthKeyEventSource {
   start(): void {
     const hook = getUioHook();
     if (UioHookKeySource.refCount === 0) {
-      try { hook.start(); } catch (e) { console.error('[stealth] uIOhook.start failed', e); }
+      try { hook.start(); } catch (e) { console.error('[fade] uIOhook.start failed', e); }
     }
     UioHookKeySource.refCount++;
 
     if (!this.bound) {
       this.bound = () => this.listeners.forEach(cb => {
-        try { cb(); } catch (e) { console.error('[stealth] key listener threw', e); }
+        try { cb(); } catch (e) { console.error('[fade] key listener threw', e); }
       });
       hook.on('keydown', this.bound);
     }
@@ -136,7 +136,7 @@ export class UioHookKeySource implements StealthKeyEventSource {
       this.bound = null;
       UioHookKeySource.refCount = Math.max(0, UioHookKeySource.refCount - 1);
       if (UioHookKeySource.refCount === 0) {
-        try { hook.stop(); } catch (e) { console.error('[stealth] uIOhook.stop failed', e); }
+        try { hook.stop(); } catch (e) { console.error('[fade] uIOhook.stop failed', e); }
       }
     }
   }
@@ -149,9 +149,9 @@ export class UioHookKeySource implements StealthKeyEventSource {
 
 // --- Window adapter wired to the actual overlay window ---
 
-const STEALTH_OPACITY = 0.10;
+const FADE_OPACITY = 0.10;
 
-export class ElectronStealthWindowAdapter implements StealthWindowAdapter {
+export class ElectronFadeWindowAdapter implements FadeWindowAdapter {
   constructor(private readonly appState: AppState) {}
 
   private overlay() {
@@ -167,7 +167,7 @@ export class ElectronStealthWindowAdapter implements StealthWindowAdapter {
   applyFaded(): void {
     const win = this.overlay();
     if (!win) return;
-    win.setOpacity(STEALTH_OPACITY);
+    win.setOpacity(FADE_OPACITY);
     win.setIgnoreMouseEvents(true, { forward: true });
   }
 

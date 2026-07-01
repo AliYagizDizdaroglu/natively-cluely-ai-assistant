@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { Check, Loader2, Wifi, WifiOff } from 'lucide-react';
-import { STANDARD_CLOUD_MODELS, prettifyModelId } from '../utils/modelUtils';
 import { useResolvedTheme } from '../hooks/useResolvedTheme';
 
 // Define Model Types
@@ -72,51 +71,19 @@ const ModelSelectorWindow = () => {
                     // Ignore ollama errors here
                 }
 
-                // Build the list
+                // Curated 4-model list (all Gemini-API models). Requires a Gemini key.
+                // Intentionally NOT surfacing OpenAI/Claude/Groq/Ollama/Custom here —
+                // the chat pane offers exactly these four. (Other providers are still
+                // configurable in Settings → AI Providers.)
                 const models: ModelOption[] = [];
-
-                if (creds?.hasNativelyKey) {
-                    models.push({ id: 'natively', name: 'Natively API', type: 'cloud', provider: 'natively' });
-                }
-
-                // Cloud Models — standard models + unique preferred models
-                for (const [prov, cfg] of Object.entries(STANDARD_CLOUD_MODELS)) {
-                    if (!cfg.hasKeyCheck(creds)) continue;
-                    cfg.ids.forEach((id, i) => {
-                        models.push({ id, name: cfg.names[i], type: 'cloud', provider: prov });
-                    });
-                    const pm = creds?.[cfg.pmKey];
-                    if (pm && !cfg.ids.includes(pm)) {
-                        models.push({ id: pm, name: prettifyModelId(pm), type: 'cloud', provider: prov });
-                    }
-                }
-
-                // Dynamically fetch Gemma models from the real Gemini API
                 if (creds?.hasGeminiKey) {
-                    try {
-                        const result = await window.electronAPI?.fetchProviderModels?.('gemini');
-                        if (result?.success && result.models) {
-                            const gemmaModels = result.models.filter(m => m.id.startsWith('gemma-'));
-                            gemmaModels.forEach(m => {
-                                if (!models.some(existing => existing.id === m.id)) {
-                                    models.push({ id: m.id, name: m.label, type: 'cloud', provider: 'gemini' });
-                                }
-                            });
-                        }
-                    } catch (e) {
-                        console.warn('Failed to fetch Gemma models dynamically:', e);
-                    }
+                    models.push(
+                        { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite', type: 'cloud', provider: 'gemini' },
+                        { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', type: 'cloud', provider: 'gemini' },
+                        { id: 'gemma-4-31b-it', name: 'Gemma 4 31B', type: 'cloud', provider: 'gemini' },
+                        { id: 'gemma-4-26b-a4b-it', name: 'Gemma 4 26B', type: 'cloud', provider: 'gemini' },
+                    );
                 }
-
-                // Custom Providers
-                customProviders.forEach((p: any) => {
-                    models.push({ id: p.id, name: p.name, type: 'custom' });
-                });
-
-                // Ollama
-                ollamaModels.forEach((m: string) => {
-                    models.push({ id: `ollama-${m}`, name: `${m} (Local)`, type: 'ollama' });
-                });
 
                 localStorage.setItem('cached-models', JSON.stringify(models));
                 setAvailableModels(models);
