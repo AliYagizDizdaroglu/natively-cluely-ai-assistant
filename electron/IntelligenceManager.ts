@@ -46,8 +46,9 @@ export class IntelligenceManager extends EventEmitter {
         this.forwardEngineEvents();
 
         // Initialize passive question detector.
-        // Uses Groq cloud (openai/gpt-oss-20b by default; override via
-        // NATIVELY_QUESTION_DETECTION_MODEL) — zero cold-start, sub-second latency.
+        // Uses Groq cloud (llama-3.1-8b-instant by default; override via
+        // NATIVELY_QUESTION_DETECTION_MODEL). gpt-oss-20b 403s on this account's
+        // key — see GroqDetectionClient note. Deprecation: 2026-08-16.
         const detectionClient = new GroqDetectionClient({
             getApiKey: () => CredentialsManager.getInstance().getGroqSttApiKey(),
         });
@@ -75,8 +76,31 @@ export class IntelligenceManager extends EventEmitter {
             this.questionDetector.onSpeakerChange(prev, next);
         });
 
-        const detectorModel = process.env.NATIVELY_QUESTION_DETECTION_MODEL ?? 'openai/gpt-oss-20b';
+        const detectorModel = process.env.NATIVELY_QUESTION_DETECTION_MODEL ?? 'llama-3.1-8b-instant';
         console.log(`[IntelligenceManager] QuestionDetector wired (model=groq/${detectorModel}, debounce=1.5s, dedup=0.7, conf≥0.6, max=5)`);
+
+        // Startup self-test: fires ONE synthetic detection ~2.5s after boot to
+        // verify the detection model + Groq key + JSON parsing work end-to-end.
+        // Logs a clear PASS/FAIL so "chips don't appear" can be diagnosed as a
+        // model/key problem vs an audio/transcript-delivery problem. Delayed so
+        // credentials are fully loaded first.
+        setTimeout(() => {
+            const key = CredentialsManager.getInstance().getGroqSttApiKey();
+            if (!key) {
+                console.warn('[QuestionDetector] SELF-TEST SKIPPED: no Groq STT API key found (set it in Settings → STT → Groq). Detector cannot run without it.');
+                return;
+            }
+            void detectionClient.detect({
+                recentInterviewerTranscript: 'INTERVIEWER: Can you implement an LRU cache in Python?',
+                fullConversationContext: 'INTERVIEWER: Can you implement an LRU cache in Python?',
+            }).then(r => {
+                if (r) {
+                    console.log(`[QuestionDetector] SELF-TEST PASS: model=${detectorModel} detected=${r.detected} intent=${r.intent} conf=${r.confidence}`);
+                } else {
+                    console.warn(`[QuestionDetector] SELF-TEST FAIL: detect() returned null for model=${detectorModel} — see [GroqDetectionClient] log above for the HTTP/parse cause.`);
+                }
+            }).catch(e => console.warn('[QuestionDetector] SELF-TEST threw:', e?.message));
+        }, 2500);
     }
 
     /** Clear detector state — call on meeting boundary. */

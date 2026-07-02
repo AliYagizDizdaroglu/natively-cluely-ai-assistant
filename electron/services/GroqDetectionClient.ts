@@ -22,23 +22,26 @@ interface GroqDetectionClientOptions {
 
 /**
  * Groq cloud replacement for OllamaDetectionClient.
- * Uses openai/gpt-oss-20b via Groq's OpenAI-compatible chat completions API —
- * Groq's sanctioned replacement for llama-3.1-8b-instant (decommissioned
- * 2026-08-16). 20B MoE (3.6B active) at ~1000 TPS on Groq's LPU, MMLU 85%
- * vs 68% for the 8B Llama. Override via NATIVELY_QUESTION_DETECTION_MODEL.
- * Zero cold-start (model always hot), sub-second total latency.
+ * Uses llama-3.1-8b-instant via Groq's OpenAI-compatible chat completions API.
+ * Zero cold-start (model always hot), ~700ms total latency.
  *
- * Free tier (gpt-oss-20b): 30 RPM / 1K RPD / 8K TPM / 200K TPD. Tighter daily
- * request budget than the old 8B (1K vs 14.4K RPD) — heavy users may hit the
- * ceiling (429) and can point at a different model via the env override.
+ * NOTE (2026-07-02): we tried defaulting to openai/gpt-oss-20b (Groq's stated
+ * replacement, since llama-3.1-8b-instant is slated for decommission 2026-08-16)
+ * but this account's key gets HTTP 403 on gpt-oss-20b — that model needs
+ * explicit access/terms-acceptance on the Groq console that this key lacks.
+ * llama-3.1-8b-instant works today, so it's the default. Before the Aug-16
+ * cutoff, either enable gpt-oss-20b on the Groq console, or point at another
+ * model the key CAN reach (e.g. llama-3.3-70b-versatile) via
+ * NATIVELY_QUESTION_DETECTION_MODEL.
  *
+ * Free tier (llama-3.1-8b-instant): 30 RPM / 14.4K RPD / 6K TPM / 500K TPD.
  * Returns null on any error (HTTP, timeout, parse failure). Never throws.
  */
 export class GroqDetectionClient implements IDetectionClient {
     private readonly getApiKey: () => string | undefined;
     private readonly timeoutMs: number;
     private readonly endpoint = 'https://api.groq.com/openai/v1/chat/completions';
-    private readonly model = process.env.NATIVELY_QUESTION_DETECTION_MODEL ?? 'openai/gpt-oss-20b';
+    private readonly model = process.env.NATIVELY_QUESTION_DETECTION_MODEL ?? 'llama-3.1-8b-instant';
     private parseErrorStreak = 0;
 
     constructor(opts: GroqDetectionClientOptions) {
