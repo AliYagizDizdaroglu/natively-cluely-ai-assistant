@@ -46,9 +46,10 @@ export class IntelligenceManager extends EventEmitter {
         this.forwardEngineEvents();
 
         // Initialize passive question detector.
-        // Uses Groq cloud (llama-3.1-8b-instant by default; override via
-        // NATIVELY_QUESTION_DETECTION_MODEL). gpt-oss-20b 403s on this account's
-        // key — see GroqDetectionClient note. Deprecation: 2026-08-16.
+        // Uses Groq cloud (openai/gpt-oss-20b by default; override via
+        // NATIVELY_QUESTION_DETECTION_MODEL). gpt-oss-20b must be enabled once
+        // per Groq project (console.groq.com/settings/project/limits) — the
+        // startup self-test logs PASS/FAIL so misconfig is obvious.
         const detectionClient = new GroqDetectionClient({
             getApiKey: () => CredentialsManager.getInstance().getGroqSttApiKey(),
         });
@@ -76,7 +77,7 @@ export class IntelligenceManager extends EventEmitter {
             this.questionDetector.onSpeakerChange(prev, next);
         });
 
-        const detectorModel = process.env.NATIVELY_QUESTION_DETECTION_MODEL ?? 'llama-3.1-8b-instant';
+        const detectorModel = process.env.NATIVELY_QUESTION_DETECTION_MODEL ?? 'openai/gpt-oss-20b';
         console.log(`[IntelligenceManager] QuestionDetector wired (model=groq/${detectorModel}, debounce=1.5s, dedup=0.7, conf≥0.6, max=5)`);
 
         // Startup self-test: fires ONE synthetic detection ~2.5s after boot to

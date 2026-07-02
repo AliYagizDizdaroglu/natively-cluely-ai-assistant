@@ -22,26 +22,26 @@ interface GroqDetectionClientOptions {
 
 /**
  * Groq cloud replacement for OllamaDetectionClient.
- * Uses llama-3.1-8b-instant via Groq's OpenAI-compatible chat completions API.
- * Zero cold-start (model always hot), ~700ms total latency.
+ * Uses openai/gpt-oss-20b via Groq's OpenAI-compatible chat completions API —
+ * Groq's sanctioned replacement for llama-3.1-8b-instant (decommissioned
+ * 2026-08-16). 20B MoE (3.6B active) on Groq's LPU, ~1s total latency,
+ * MMLU 85% vs 68% for the 8B Llama. Override via NATIVELY_QUESTION_DETECTION_MODEL.
  *
- * NOTE (2026-07-02): we tried defaulting to openai/gpt-oss-20b (Groq's stated
- * replacement, since llama-3.1-8b-instant is slated for decommission 2026-08-16)
- * but this account's key gets HTTP 403 on gpt-oss-20b — that model needs
- * explicit access/terms-acceptance on the Groq console that this key lacks.
- * llama-3.1-8b-instant works today, so it's the default. Before the Aug-16
- * cutoff, either enable gpt-oss-20b on the Groq console, or point at another
- * model the key CAN reach (e.g. llama-3.3-70b-versatile) via
- * NATIVELY_QUESTION_DETECTION_MODEL.
+ * NOTE (2026-07-02): gpt-oss-20b is blocked by default at the Groq PROJECT
+ * level (403 "model_permission_blocked_project"). It must be enabled once at
+ * console.groq.com/settings/project/limits for the project the API key belongs
+ * to. If a key can't reach it, the startup self-test logs a clear FAIL — fall
+ * back via the env override to a reachable model (e.g. llama-3.1-8b-instant
+ * until Aug-16, or llama-3.3-70b-versatile after).
  *
- * Free tier (llama-3.1-8b-instant): 30 RPM / 14.4K RPD / 6K TPM / 500K TPD.
+ * Free tier (gpt-oss-20b): 30 RPM / 1K RPD / 8K TPM / 200K TPD.
  * Returns null on any error (HTTP, timeout, parse failure). Never throws.
  */
 export class GroqDetectionClient implements IDetectionClient {
     private readonly getApiKey: () => string | undefined;
     private readonly timeoutMs: number;
     private readonly endpoint = 'https://api.groq.com/openai/v1/chat/completions';
-    private readonly model = process.env.NATIVELY_QUESTION_DETECTION_MODEL ?? 'llama-3.1-8b-instant';
+    private readonly model = process.env.NATIVELY_QUESTION_DETECTION_MODEL ?? 'openai/gpt-oss-20b';
     private parseErrorStreak = 0;
 
     constructor(opts: GroqDetectionClientOptions) {
