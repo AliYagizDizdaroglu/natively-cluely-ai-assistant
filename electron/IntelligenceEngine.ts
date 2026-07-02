@@ -249,10 +249,12 @@ export class IntelligenceEngine extends EventEmitter {
     ): Promise<string | null> {
         const now = Date.now();
 
-        // Bypass cooldown when the user explicitly attached images (capture-and-process intent).
-        // The cooldown exists to debounce auto-triggers, not explicit shortcuts with context.
-        const hasImages = imagePaths && imagePaths.length > 0;
-        if (!hasImages && now - this.lastTriggerTime < this.triggerCooldown) {
+        // Bypass cooldown for explicit user actions: attached images (capture-and-
+        // process intent) and detected-question chip clicks (contextOverride).
+        // The cooldown exists to debounce auto-triggers — swallowing a deliberate
+        // click makes the chip appear dead.
+        const isExplicitAction = (imagePaths && imagePaths.length > 0) || !!options.contextOverride;
+        if (!isExplicitAction && now - this.lastTriggerTime < this.triggerCooldown) {
             return null;
         }
 
