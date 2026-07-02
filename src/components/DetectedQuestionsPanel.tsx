@@ -44,6 +44,7 @@ export const DetectedQuestionsPanel: React.FC<DetectedQuestionsPanelProps> = ({ 
     return (
         <div
             className="
+                shrink-0
                 mx-3 mb-2 rounded-xl
                 bg-white/[0.05] border border-white/10
                 backdrop-blur-md
