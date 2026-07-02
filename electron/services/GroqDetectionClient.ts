@@ -86,7 +86,11 @@ export class GroqDetectionClient implements IDetectionClient {
 
             const t1 = Date.now();
             if (!response.ok) {
-                console.warn(`[GroqDetectionClient] HTTP ${response.status} after ${t1 - t0}ms`);
+                // Log the response body — Groq's error message names the exact
+                // cause (bad model id, terms-not-accepted, tier, key scope, etc.).
+                let errBody = '';
+                try { errBody = (await response.text()).slice(0, 400); } catch { /* ignore */ }
+                console.warn(`[GroqDetectionClient] HTTP ${response.status} after ${t1 - t0}ms model="${this.model}" body=${errBody}`);
                 if (response.status === 429) {
                     const retryAfter = response.headers.get('retry-after');
                     console.warn(
