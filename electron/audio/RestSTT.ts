@@ -267,7 +267,10 @@ export class RestSTT extends EventEmitter {
         if (!this.isActive) return;
 
         console.log(`[RestSTT] Speech ended detected by native VAD — flushing buffer immediately`);
-        this.flushAndUpload();
+        // Stamp the flush with the VAD speech-end time so downstream consumers
+        // (QuestionDetector silence debounce) can credit the real silence that
+        // elapses during upload instead of restarting their clocks on arrival.
+        this.flushAndUpload(Date.now());
     }
 
     public finalize(): void {
@@ -279,7 +282,7 @@ export class RestSTT extends EventEmitter {
     /**
      * Concatenate buffered chunks, add WAV header, and upload to REST API
      */
-    private async flushAndUpload(): Promise<void> {
+    private async flushAndUpload(speechEndedAt?: number): Promise<void> {
         // Skip if no data
         if (this.chunks.length === 0 || this.totalBufferedBytes < MIN_BUFFER_BYTES) return;
 
@@ -350,6 +353,9 @@ export class RestSTT extends EventEmitter {
                         text: transcript.trim(),
                         isFinal: true,
                         confidence: 1.0,
+                        // Only present for VAD speech-end flushes — safety-net flushes
+                        // happen mid-speech, where crediting would be wrong.
+                        ...(speechEndedAt !== undefined ? { speechEndedAt } : {}),
                     });
                 }
             }

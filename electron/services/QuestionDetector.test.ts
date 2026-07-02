@@ -37,7 +37,9 @@ describe('QuestionDetector', () => {
             onChip: c => chips.push(c),
         });
 
-        det.onTranscriptFinal({ speaker: 'interviewer', text: 'what is X?', timestamp: 0, final: true });
+        // No trailing '?' — the fast path is exercised by its own tests below;
+        // this fixture must go through the silence debounce.
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'explain the architecture of X', timestamp: 0, final: true });
 
         // before 1.5s — no detection
         await vi.advanceTimersByTimeAsync(1499);
@@ -233,6 +235,145 @@ describe('QuestionDetector', () => {
         await vi.advanceTimersByTimeAsync(2000);
         await vi.runAllTimersAsync();
         expect(client.detect).not.toHaveBeenCalled();
+    });
+
+    it('credits elapsed time since speechEndedAt against the silence debounce', async () => {
+        const client = makeClientWith([
+            { detected: true, question: 'What is X about?', intent: 'verbal', confidence: 0.9 },
+        ]);
+        const chips: DetectedQuestionChip[] = [];
+        const det = new QuestionDetector({
+            client,
+            snapshotProvider: stubSnapshotProvider('i', 'c'),
+            onChip: c => chips.push(c),
+        });
+
+        // Speech actually ended 1000ms ago (VAD hangover + STT upload already elapsed)
+        det.onTranscriptFinal({
+            speaker: 'interviewer', text: 'tell me about X', timestamp: Date.now(),
+            final: true, speechEndedAt: Date.now() - 1000,
+        });
+
+        // 1500 - 1000 already elapsed = 500ms remaining. At 499ms: nothing yet.
+        await vi.advanceTimersByTimeAsync(499);
+        expect(client.detect).not.toHaveBeenCalled();
+
+        // At exactly 500ms the credited timer must have fired — do NOT run
+        // remaining timers here, or an uncredited 1500ms timer would pass too.
+        await vi.advanceTimersByTimeAsync(1);
+        await Promise.resolve();
+        await Promise.resolve();
+        expect(client.detect).toHaveBeenCalledTimes(1);
+        expect(chips).toHaveLength(1);
+    });
+
+    it('fires immediately when speechEndedAt is older than the full debounce window', async () => {
+        const client = makeClientWith([
+            { detected: true, question: 'What is X about?', intent: 'verbal', confidence: 0.9 },
+        ]);
+        const det = new QuestionDetector({
+            client,
+            snapshotProvider: stubSnapshotProvider('i', 'c'),
+            onChip: () => {},
+        });
+
+        // Slow upload: 2s of real silence already elapsed — no additional wait needed
+        det.onTranscriptFinal({
+            speaker: 'interviewer', text: 'tell me about X', timestamp: Date.now(),
+            final: true, speechEndedAt: Date.now() - 2000,
+        });
+
+        // Only 0-delay timers may run — an uncredited 1500ms timer must not fire.
+        await vi.advanceTimersByTimeAsync(0);
+        await Promise.resolve();
+        await Promise.resolve();
+        expect(client.detect).toHaveBeenCalledTimes(1);
+    });
+
+    it('uses the full debounce when speechEndedAt is absent (streaming/other providers)', async () => {
+        const client = makeClientWith([
+            { detected: true, question: 'What is X about?', intent: 'verbal', confidence: 0.9 },
+        ]);
+        const det = new QuestionDetector({
+            client,
+            snapshotProvider: stubSnapshotProvider('i', 'c'),
+            onChip: () => {},
+        });
+
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'tell me about X', timestamp: Date.now(), final: true });
+
+        await vi.advanceTimersByTimeAsync(1499);
+        expect(client.detect).not.toHaveBeenCalled();
+        await vi.advanceTimersByTimeAsync(1);
+        await vi.runAllTimersAsync();
+        expect(client.detect).toHaveBeenCalledTimes(1);
+    });
+
+    it('fires detection immediately when a final segment ends with a question mark', async () => {
+        const client = makeClientWith([
+            { detected: true, question: 'How do Transformers work?', intent: 'verbal', confidence: 0.95 },
+        ]);
+        const chips: DetectedQuestionChip[] = [];
+        const det = new QuestionDetector({
+            client,
+            snapshotProvider: stubSnapshotProvider('i', 'c'),
+            onChip: c => chips.push(c),
+        });
+
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'How do Transformers work?', timestamp: Date.now(), final: true });
+
+        // No timer advance at all — the '?' ending is a strong end-of-question signal
+        await Promise.resolve();
+        await Promise.resolve();
+        expect(client.detect).toHaveBeenCalledTimes(1);
+    });
+
+    it('question-mark fast path cancels a pending debounce timer (no duplicate detect)', async () => {
+        const client = makeClientWith([
+            { detected: true, question: 'What about edge cases?', intent: 'verbal', confidence: 0.95 },
+            { detected: true, question: 'What about edge cases?', intent: 'verbal', confidence: 0.95 },
+        ]);
+        const det = new QuestionDetector({
+            client,
+            snapshotProvider: stubSnapshotProvider('i', 'c'),
+            onChip: () => {},
+            onChipUpdate: () => {},
+        });
+
+        // Plain final starts a debounce...
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'so tell me', timestamp: Date.now(), final: true });
+        await vi.advanceTimersByTimeAsync(500);
+        // ...then the question tail arrives with '?': fires now, old timer cancelled
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'what about edge cases?', timestamp: Date.now(), final: true });
+        await Promise.resolve();
+        await Promise.resolve();
+        expect(client.detect).toHaveBeenCalledTimes(1);
+
+        // Advancing past the original debounce window must not fire a second detect
+        await vi.advanceTimersByTimeAsync(3000);
+        await Promise.resolve();
+        await Promise.resolve();
+        expect(client.detect).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not fast-path short question-mark fragments (< 3 words)', async () => {
+        const client = makeClientWith([
+            { detected: true, question: 'ok?', intent: 'verbal', confidence: 0.95 },
+        ]);
+        const det = new QuestionDetector({
+            client,
+            snapshotProvider: stubSnapshotProvider('i', 'c'),
+            onChip: () => {},
+        });
+
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'ok?', timestamp: Date.now(), final: true });
+        await Promise.resolve();
+        await Promise.resolve();
+        // fragment: falls back to the normal silence debounce
+        expect(client.detect).not.toHaveBeenCalled();
+        await vi.advanceTimersByTimeAsync(1500);
+        await Promise.resolve();
+        expect(client.detect).toHaveBeenCalledTimes(1);
     });
 
     it('clear() during in-flight detection drops the result (no chip emitted)', async () => {

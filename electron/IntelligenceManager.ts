@@ -112,7 +112,7 @@ export class IntelligenceManager extends EventEmitter {
         // [Main] forwarding detected-question.
         if (process.env.NATIVELY_DETECTOR_CHAIN_TEST === '1') {
             setTimeout(() => {
-                console.log('[ChainTest] injecting synthetic interviewer transcript (final) into the real pipeline...');
+                console.log('[ChainTest] injecting synthetic interviewer transcript (final, ends with "?") into the real pipeline...');
                 this.addTranscript({
                     speaker: 'interviewer',
                     text: 'Can you implement an LRU cache in Python?',
@@ -120,8 +120,22 @@ export class IntelligenceManager extends EventEmitter {
                     final: true,
                     confidence: 1,
                 }, false);
-                // Detector fires after its ~1.5s silence debounce.
+                // Ends with '?' → detector takes the fast path (no debounce).
             }, 6000);
+            // Second injection: no '?', but stamped with a speech-end 900ms in the
+            // past (typical VAD hangover + upload) → detector should schedule only
+            // the remaining ~600ms of its 1.5s debounce (crediting path).
+            setTimeout(() => {
+                console.log('[ChainTest] injecting credited transcript (no "?", speechEndedAt=-900ms)...');
+                this.addTranscript({
+                    speaker: 'interviewer',
+                    text: 'Walk me through the tradeoffs between LFU and FIFO eviction policies.',
+                    timestamp: Date.now(),
+                    final: true,
+                    confidence: 1,
+                    speechEndedAt: Date.now() - 900,
+                }, false);
+            }, 14000);
         }
     }
 

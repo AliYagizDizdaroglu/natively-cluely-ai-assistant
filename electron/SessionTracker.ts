@@ -12,6 +12,8 @@ export interface TranscriptSegment {
     timestamp: number;
     final: boolean;
     confidence?: number;
+    /** Wall-clock of VAD speech-end for REST STT segments — see QuestionDetector debounce crediting. */
+    speechEndedAt?: number;
 }
 
 export interface SuggestionTrigger {

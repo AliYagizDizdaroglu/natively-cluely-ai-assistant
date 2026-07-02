@@ -12,6 +12,13 @@ export interface TranscriptSegmentLite {
     text: string;
     timestamp: number;
     final: boolean;
+    /**
+     * Wall-clock when the audio for this segment actually ended (VAD speech-end),
+     * set by REST STT providers where upload time passes between speech end and
+     * transcript arrival. When present, that already-elapsed real silence is
+     * credited against the silence debounce so we don't count it twice.
+     */
+    speechEndedAt?: number;
 }
 
 export interface DetectedQuestionChip {
@@ -85,7 +92,29 @@ export class QuestionDetector {
 
     onTranscriptFinal(segment: TranscriptSegmentLite): void {
         if (segment.speaker !== 'interviewer' || !segment.final) return;
-        this.resetSilenceTimer();
+        // Fast path: a final segment ending in '?' is a strong end-of-question
+        // signal (Whisper punctuates reliably) — skip the silence debounce.
+        // Guard against sub-3-word fragments ("ok?") that would waste a detect
+        // call; those keep the normal debounce. If more speech follows a fast-
+        // path fire, the containment dedup converts the result to a chip update.
+        if (this.isCompleteQuestionText(segment.text)) {
+            console.log(`[QD-timing] fast-path: final ends with '?' → triggering detect immediately`);
+            if (this.silenceTimer) {
+                clearTimeout(this.silenceTimer);
+                this.silenceTimer = null;
+            }
+            this.lastResetAtMs = Date.now();
+            this.triggerDetection();
+            return;
+        }
+        this.resetSilenceTimer(segment.speechEndedAt);
+    }
+
+    private isCompleteQuestionText(text: string): boolean {
+        const trimmed = text.trim();
+        // Allow closing quotes/brackets after the question mark (incl. full-width '？')
+        if (!/[?？]["'”’)\]]*$/.test(trimmed)) return false;
+        return trimmed.split(/\s+/).length >= 3;
     }
 
     onSpeakerChange(prevSpeaker: string, newSpeaker: string): void {
@@ -110,11 +139,16 @@ export class QuestionDetector {
         this.generation++;
     }
 
-    private resetSilenceTimer(): void {
+    private resetSilenceTimer(speechEndedAt?: number): void {
         const now = Date.now();
         const sincePrev = this.lastResetAtMs === null ? null : now - this.lastResetAtMs;
         const interrupted = this.silenceTimer !== null;
-        console.log(`[QD-timing] reset sincePrev=${sincePrev === null ? 'first' : `${sincePrev}ms`} interruptedTimer=${interrupted}`);
+        // Real-world silence already elapsed between VAD speech-end and this
+        // transcript arriving (hangover + upload). Credit it so the debounce
+        // measures "silence since speech ended", not "silence since transcript".
+        const credited = speechEndedAt !== undefined ? Math.max(0, now - speechEndedAt) : 0;
+        const remaining = Math.max(0, this.opts.silenceDebounceMs - credited);
+        console.log(`[QD-timing] reset sincePrev=${sincePrev === null ? 'first' : `${sincePrev}ms`} interruptedTimer=${interrupted} credited=${credited}ms remaining=${remaining}ms`);
         this.lastResetAtMs = now;
         if (this.silenceTimer) clearTimeout(this.silenceTimer);
         const scheduledAt = now;
@@ -123,7 +157,7 @@ export class QuestionDetector {
             const elapsed = Date.now() - scheduledAt;
             console.log(`[QD-timing] debounce elapsed=${elapsed}ms → triggering detect`);
             this.triggerDetection();
-        }, this.opts.silenceDebounceMs);
+        }, remaining);
     }
 
     private triggerDetection(): void {

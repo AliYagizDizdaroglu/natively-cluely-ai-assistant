@@ -958,7 +958,7 @@ export class AppState {
     stt.setRecognitionLanguage(sttLanguage);
 
     // Wire Transcript Events
-    stt.on('transcript', (segment: { text: string, isFinal: boolean, confidence: number }) => {
+    stt.on('transcript', (segment: { text: string, isFinal: boolean, confidence: number, speechEndedAt?: number }) => {
       if (!this.isMeetingActive) {
         return;
       }
@@ -968,7 +968,8 @@ export class AppState {
         text: segment.text,
         timestamp: Date.now(),
         final: segment.isFinal,
-        confidence: segment.confidence
+        confidence: segment.confidence,
+        speechEndedAt: segment.speechEndedAt
       });
 
       // Feed final transcript to JIT RAG indexer
