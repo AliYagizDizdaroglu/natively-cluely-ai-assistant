@@ -37,6 +37,27 @@ interface GroqDetectionClientOptions {
  * Free tier (gpt-oss-20b): 30 RPM / 1K RPD / 8K TPM / 200K TPD.
  * Returns null on any error (HTTP, timeout, parse failure). Never throws.
  */
+/**
+ * Strict response schema for Groq structured outputs (constrained decoding).
+ * Supported on openai/gpt-oss-* models — guarantees parseable, shape-valid JSON,
+ * eliminating the json-parse/schema-validate failure paths entirely.
+ */
+const DETECTION_JSON_SCHEMA = {
+    name: 'question_detection',
+    strict: true,
+    schema: {
+        type: 'object',
+        properties: {
+            detected: { type: 'boolean' },
+            question: { type: 'string' },
+            intent: { type: 'string', enum: ['verbal', 'coding', 'behavioral'] },
+            confidence: { type: 'number' },
+        },
+        required: ['detected', 'question', 'intent', 'confidence'],
+        additionalProperties: false,
+    },
+} as const;
+
 export class GroqDetectionClient implements IDetectionClient {
     private readonly getApiKey: () => string | undefined;
     private readonly timeoutMs: number;
@@ -72,7 +93,18 @@ export class GroqDetectionClient implements IDetectionClient {
                 },
                 body: JSON.stringify({
                     model: this.model,
-                    response_format: { type: 'json_object' },
+                    // gpt-oss models: strict json_schema (guaranteed-valid JSON) and
+                    // reasoning_effort "low" — the classification doesn't need medium
+                    // reasoning, and reasoning tokens dominate decode latency
+                    // (measured: 161→84 completion tokens, tail spikes halved).
+                    // Other models (env-override fallbacks) may reject those params,
+                    // so they keep plain json_object mode.
+                    ...(this.model.startsWith('openai/gpt-oss')
+                        ? {
+                            response_format: { type: 'json_schema', json_schema: DETECTION_JSON_SCHEMA },
+                            reasoning_effort: 'low',
+                        }
+                        : { response_format: { type: 'json_object' } }),
                     stream: false,
                     temperature: 0.1,
                     top_p: 0.9,
