@@ -1987,6 +1987,7 @@ export class AppState {
 
     this.intelligenceManager.on('question-detected', (chip: any) => {
       const win = mainWindow()
+      console.log(`[Main] forwarding detected-question → renderer (win=${!!win}) intent=${chip?.intent} q="${String(chip?.question ?? '').slice(0, 50)}"`)
       if (win) {
         win.webContents.send('detected-question', chip)
       }

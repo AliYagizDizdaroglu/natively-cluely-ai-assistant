@@ -102,6 +102,27 @@ export class IntelligenceManager extends EventEmitter {
                 }
             }).catch(e => console.warn('[QuestionDetector] SELF-TEST threw:', e?.message));
         }, 2500);
+
+        // Full-chain test (env-gated, NATIVELY_DETECTOR_CHAIN_TEST=1): injects a
+        // synthetic INTERVIEWER question through the REAL pipeline
+        // (session → engine → transcript-segment-final → detector → debounce →
+        // detect → chip → question-detected → main.ts → webContents.send) so the
+        // whole path is verifiable without live interviewer audio. Watch the log
+        // for: [Engine-timing] segment-final → detect ok → chip emitted →
+        // [Main] forwarding detected-question.
+        if (process.env.NATIVELY_DETECTOR_CHAIN_TEST === '1') {
+            setTimeout(() => {
+                console.log('[ChainTest] injecting synthetic interviewer transcript (final) into the real pipeline...');
+                this.addTranscript({
+                    speaker: 'interviewer',
+                    text: 'Can you implement an LRU cache in Python?',
+                    timestamp: Date.now(),
+                    final: true,
+                    confidence: 1,
+                }, false);
+                // Detector fires after its ~1.5s silence debounce.
+            }, 6000);
+        }
     }
 
     /** Clear detector state — call on meeting boundary. */
