@@ -2,6 +2,7 @@ import { LLMHelper } from "../LLMHelper";
 import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
+import { filterVerbalLines } from "./verbalStreamFilter";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -18,114 +19,6 @@ export class WhatToAnswerLLM {
 
     constructor(llmHelper: LLMHelper) {
         this.llmHelper = llmHelper;
-    }
-
-    /**
-     * Two-mode filter for the verbal path:
-     *   HARD_DROP — pure coding artifacts with no substantive content (Time:/Space:/Why:
-     *               complexity bullets, clarifying-back questions).
-     *   REWRITE   — meta-preamble openers that DO carry substance after the verb phrase
-     *               (e.g. "I will explain the Transformer as X" → "The Transformer as X").
-     *               Strip the preamble, keep the substance, capitalize result.
-     */
-    private async *filterVerbalLines(
-        source: AsyncGenerator<string>
-    ): AsyncGenerator<string> {
-        const HARD_DROP = [
-            'Time:', 'Space:', 'Why:', 'Time complexity', 'Space complexity',
-            // Clarifying-back openers — never appropriate in interview responses
-            "Are you looking for", "Are you asking about", "Are you more interested in",
-            "Would you like me", "Would you prefer", "Would you rather",
-            "Do you want me to", "Do you want a", "Do you want me",
-            "Should I focus on", "Should I go", "Should I start",
-            "Which would you", "Which one would",
-        ];
-
-        // Strip the verb phrase ONLY. Preserve articles (the/a/an) and connectors so
-        // the remaining text stays grammatical. If stripping leaves a dangling
-        // syntactic word (as/by/with/to/how/etc.), abort the rewrite — those break
-        // grammar without their preceding verb.
-        const REWRITE_PATTERNS: RegExp[] = [
-            /^(I'll|I will|I am|I'm|Let me|Let's|I am going to|I'm going to)\s+(explain|show|demonstrate|describe|cover|outline|implement|illustrate|present|discuss|walk\s+(?:you\s+)?through|break\s+down|talk\s+about|go\s+through|go\s+over|run\s+through)\s+/i,
-            /^(I'm|I am)\s+(explaining|showing|demonstrating|describing|covering|outlining|implementing|illustrating|presenting|discussing|walking\s+(?:you\s+)?through|breaking\s+down|going\s+through|using\s+a|using\s+the)\s+/i,
-        ];
-
-        // Syntactic danglers — if a rewritten line starts with these, the original
-        // sentence structure was "verb X [dangler] Y" and stripping the verb leaves
-        // a fragment. Let the original through unchanged instead of producing junk.
-        const DANGLER_RE = /^(as|by|with|how|why|what|that|to|in|on|for|about|using|through|where|when|while|so)\b/i;
-
-        let lineBuffer = '';
-
-        const shouldHardDrop = (line: string) => {
-            const trimmed = line.trimStart();
-            return HARD_DROP.some(p => trimmed.startsWith(p));
-        };
-
-        // Returns rewritten line, OR the original (if rewriting would break grammar),
-        // OR null if no preamble matched at all.
-        const rewritePreamble = (line: string): string | null => {
-            const trimmed = line.trimStart();
-            const leading = line.slice(0, line.length - trimmed.length);
-            for (const pattern of REWRITE_PATTERNS) {
-                if (pattern.test(trimmed)) {
-                    const stripped = trimmed.replace(pattern, '');
-                    if (stripped.trim().length < 8) return ''; // substance too small — drop
-                    // Grammar safety: if stripped starts with a dangler (as/by/with/etc.),
-                    // the original sentence depended on the verb. Better to keep the
-                    // preamble than emit a fragment.
-                    if (DANGLER_RE.test(stripped)) {
-                        diagLog(`rewrite: SKIP (dangler) — keeping original: ${JSON.stringify(trimmed.slice(0, 60))}`);
-                        return line; // return original unchanged
-                    }
-                    const capitalized = stripped[0].toUpperCase() + stripped.slice(1);
-                    diagLog(`rewrite: ${JSON.stringify(trimmed.slice(0, 60))} → ${JSON.stringify(capitalized.slice(0, 60))}`);
-                    return leading + capitalized;
-                }
-            }
-            return null;
-        };
-
-        diagLog(`>>> filterVerbalLines started`);
-        let chunkCount = 0;
-        for await (const chunk of source) {
-            chunkCount++;
-            diagLog(`  chunk #${chunkCount}: ${JSON.stringify(chunk)} (lineBuffer pre: ${JSON.stringify(lineBuffer.slice(0, 120))})`);
-            const combined = lineBuffer + chunk;
-            const lines = combined.split('\n');
-            // Last element may be an incomplete line — hold in buffer
-            lineBuffer = lines.pop()!;
-
-            for (let i = 0; i < lines.length; i++) {
-                if (shouldHardDrop(lines[i])) {
-                    diagLog(`    HARD_DROP: ${JSON.stringify(lines[i].slice(0, 80))}`);
-                    continue;
-                }
-                const rewritten = rewritePreamble(lines[i]);
-                if (rewritten !== null) {
-                    if (rewritten === '') continue; // substance too small after strip
-                    yield rewritten + (i < lines.length - 1 || lineBuffer !== '' ? '\n' : '');
-                    continue;
-                }
-                yield lines[i] + (i < lines.length - 1 || lineBuffer !== '' ? '\n' : '');
-            }
-        }
-
-        // Flush remaining buffer
-        if (lineBuffer) {
-            if (shouldHardDrop(lineBuffer)) {
-                diagLog(`<<< flush HARD_DROP: ${JSON.stringify(lineBuffer.slice(0, 80))}`);
-            } else {
-                const rewritten = rewritePreamble(lineBuffer);
-                if (rewritten !== null) {
-                    if (rewritten !== '') yield rewritten;
-                    diagLog(`<<< flush rewritten: ${JSON.stringify(rewritten.slice(0, 80))}`);
-                } else {
-                    yield lineBuffer;
-                    diagLog(`<<< flush yielded: ${JSON.stringify(lineBuffer.slice(0, 80))}`);
-                }
-            }
-        }
     }
 
     /**
@@ -311,8 +204,10 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 //   otherwise the first content line is "__model_source:Gemma 4__I'll explain..."
                 //   and DROP_PREFIXES can't match against the sentinel-prefixed line.
                 // filterCodeFences suppresses any ``` blocks that slip through.
-                // filterVerbalLines drops coding-format prose (Time:/Space:/Why: bullets, preambles).
-                yield* this.filterVerbalLines(this.filterCodeFences(this.stripModelSentinel(rawStream)));
+                // filterVerbalLines (streaming — see verbalStreamFilter.ts) drops
+                //   coding-format prose (Time:/Space:/Why: bullets, preambles) while
+                //   passing tokens through as soon as each line's prefix is disambiguated.
+                yield* filterVerbalLines(this.filterCodeFences(this.stripModelSentinel(rawStream)));
             }
             // ────────────────────────────────────────────────────────────────────────
 
