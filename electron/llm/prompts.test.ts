@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { INTERVIEW_COPILOT_PROMPT } from './prompts';
+import { INTERVIEW_COPILOT_PROMPT, CODE_HINT_PROMPT, BRAINSTORM_MODE_PROMPT, resolveGemmaSystemPrompt } from './prompts';
 
-describe('INTERVIEW_COPILOT_PROMPT (sole prompt Gemma 4 31B ever receives)', () => {
+describe('INTERVIEW_COPILOT_PROMPT (Gemma 4 31B default prompt when no caller override is given)', () => {
     it('still defaults to Python and preserves the requested-language override', () => {
         expect(INTERVIEW_COPILOT_PROMPT).toContain('requested language (Python by default)');
     });
@@ -25,5 +25,27 @@ describe('INTERVIEW_COPILOT_PROMPT (sole prompt Gemma 4 31B ever receives)', () 
         expect(INTERVIEW_COPILOT_PROMPT).toContain('Time:');
         expect(INTERVIEW_COPILOT_PROMPT).toContain('Space:');
         expect(INTERVIEW_COPILOT_PROMPT).toContain('Why:');
+    });
+});
+
+describe('resolveGemmaSystemPrompt (streamChat Gemma branch must not silently discard caller overrides)', () => {
+    it('returns the resolved system prompt when the caller passed an explicit override', () => {
+        // Second arg models `baseSystemPrompt` in streamChat, which may carry extra
+        // augmentation (e.g. active-mode suffix) beyond the raw caller-supplied value —
+        // the resolved value, not the raw one, is what must reach Gemma.
+        const augmented = `${CODE_HINT_PROMPT}\n\n## ACTIVE MODE\nSome suffix`;
+        expect(resolveGemmaSystemPrompt(CODE_HINT_PROMPT, augmented)).toBe(augmented);
+    });
+
+    it('falls back to INTERVIEW_COPILOT_PROMPT when the caller passed no override', () => {
+        // Even if internal knowledge-mode/active-mode injection later mutated the
+        // resolved prompt, Gemma's TTFT-critical default path must stay untouched
+        // unless the caller itself asked for something specific.
+        expect(resolveGemmaSystemPrompt(undefined, 'some internally-injected prompt')).toBe(INTERVIEW_COPILOT_PROMPT);
+    });
+
+    it('regression: CODE_HINT_PROMPT and BRAINSTORM_MODE_PROMPT are no longer silently replaced by INTERVIEW_COPILOT_PROMPT', () => {
+        expect(resolveGemmaSystemPrompt(CODE_HINT_PROMPT, CODE_HINT_PROMPT)).toBe(CODE_HINT_PROMPT);
+        expect(resolveGemmaSystemPrompt(BRAINSTORM_MODE_PROMPT, BRAINSTORM_MODE_PROMPT)).toBe(BRAINSTORM_MODE_PROMPT);
     });
 });

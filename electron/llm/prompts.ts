@@ -120,7 +120,10 @@ DETERMINISTIC EXECUTION RULES — HIGHEST PRIORITY AFTER SECURITY:
 // INTERVIEW COPILOT — Minimal prompt for Gemma 4 (low-latency, no CoT leak)
 // ==========================================
 /**
- * Used ONLY for the live interview / coding-screenshot path on Gemma 4 31B (dense, no A4B — A4B was 26B-only).
+ * Gemma 4 31B's DEFAULT prompt (dense, no A4B — A4B was 26B-only) for the live
+ * interview / coding-screenshot path — used whenever streamChat() gets no explicit
+ * systemPromptOverride. Callers that pass their own override (e.g. CODE_HINT_PROMPT,
+ * BRAINSTORM_MODE_PROMPT) get that instead — see resolveGemmaSystemPrompt below.
  * Designed positively: no vocabulary list of forbidden labels (which acts as a
  * schema anchor for instruction-tuned models), no "starting to think" phrasing,
  * no XML scaffolding. ~150 tokens. Sent as systemInstruction.
@@ -135,6 +138,24 @@ Reply in this exact shape:
 5. Three lines: "Time:", "Space:", "Why:" — each one short clause.
 
 Do not write headings, preambles, alternatives, or commentary. Do not address the user. Do not narrate what you are doing. Speak as the candidate, in first person, and stop.`;
+
+/**
+ * Gemma 4 defaults to the minimal INTERVIEW_COPILOT_PROMPT above (TTFT-critical
+ * live-interview path). But callers like CodeHintLLM/BrainstormLLM/AnswerLLM pass
+ * their own systemPromptOverride to streamChat() for a reason — Gemma must honor
+ * it instead of silently overwriting it with the interview prompt.
+ *
+ * `callerOverride` must be the caller's raw, pre-mutation argument (used only to
+ * test "did the immediate caller ask for something specific"); `resolvedSystemPrompt`
+ * is the fully-resolved value (which may carry further augmentation, e.g. an
+ * active-mode suffix) that actually gets sent when that gate is open.
+ */
+export function resolveGemmaSystemPrompt(
+  callerOverride: string | undefined,
+  resolvedSystemPrompt: string,
+): string {
+  return callerOverride ? resolvedSystemPrompt : INTERVIEW_COPILOT_PROMPT;
+}
 
 // ==========================================
 // ASSIST MODE (Passive / Default)

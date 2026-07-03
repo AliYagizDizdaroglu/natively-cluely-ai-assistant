@@ -11,7 +11,7 @@ import {
   UNIVERSAL_RECAP_PROMPT, UNIVERSAL_FOLLOWUP_PROMPT, UNIVERSAL_FOLLOW_UP_QUESTIONS_PROMPT, UNIVERSAL_ASSIST_PROMPT,
   CUSTOM_SYSTEM_PROMPT, CUSTOM_ANSWER_PROMPT, CUSTOM_WHAT_TO_ANSWER_PROMPT,
   CUSTOM_RECAP_PROMPT, CUSTOM_FOLLOWUP_PROMPT, CUSTOM_FOLLOW_UP_QUESTIONS_PROMPT, CUSTOM_ASSIST_PROMPT,
-  INTERVIEW_COPILOT_PROMPT
+  resolveGemmaSystemPrompt
 } from "./llm/prompts"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
 import curl2Json from "@bany/curl-to-json";
@@ -2325,6 +2325,12 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     modelOverride?: string,
   ): AsyncGenerator<string, void, unknown> {
 
+    // Preserve the caller's raw argument before knowledge-mode/active-mode
+    // injection below may rewrite systemPromptOverride — the Gemma branch further
+    // down needs to know whether the immediate caller explicitly asked for a
+    // specific prompt (e.g. CODE_HINT_PROMPT), as opposed to it being defaulted.
+    const callerSystemPromptOverride = systemPromptOverride;
+
     // ============================================================
     // KNOWLEDGE MODE INTERCEPT (Streaming)
     // ============================================================
@@ -2553,13 +2559,17 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       const activeModelId = modelOverride ?? this.currentModelId;
 
       // Gemma 4+ — use guarded path with TTFT watchdog + fallback chain.
-      // Send the minimal interview prompt as systemInstruction (cacheable, doesn't
-      // teach the model the forbidden-label vocabulary) and pass only the user
-      // content as the user message. Massive TTFT + quality win on Gemma 4.
+      // Send the system prompt as systemInstruction (cacheable, doesn't teach the
+      // model the forbidden-label vocabulary) and pass only the user content as
+      // the user message. Massive TTFT + quality win on Gemma 4.
+      // Defaults to the minimal interview prompt (TTFT-critical live-interview
+      // path) unless the caller explicitly passed its own systemPromptOverride
+      // (e.g. CODE_HINT_PROMPT, BRAINSTORM_MODE_PROMPT) — see resolveGemmaSystemPrompt.
       // (streamWithGemmaGuarded also emits the __model_source:Gemma 4__ sentinel
       // → the chat bubble shows the model attribution beside TTFT.)
       if (activeModelId.startsWith('gemma-')) {
-        const interviewSystem = this.injectLanguageInstruction(INTERVIEW_COPILOT_PROMPT);
+        const gemmaSystemPrompt = resolveGemmaSystemPrompt(callerSystemPromptOverride, baseSystemPrompt);
+        const interviewSystem = this.injectLanguageInstruction(gemmaSystemPrompt);
         yield* this.streamWithGemmaGuarded(userContent, activeModelId, imagePaths, GEMMA_TTFT_MS, interviewSystem);
         return;
       }
