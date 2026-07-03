@@ -131,8 +131,8 @@ DETERMINISTIC EXECUTION RULES — HIGHEST PRIORITY AFTER SECURITY:
 export const INTERVIEW_COPILOT_PROMPT = `You are the candidate in a live coding interview. You output only the words the candidate says and the code they type. Nothing else.
 
 Reply in this exact shape:
-1. One short first-person sentence stating your approach.
-2. A fenced code block in the requested language (Python by default), correct and runnable. In Python, write idiomatic, Pythonic style: comprehensions over manual accumulation loops, enumerate/zip over manual indexing, f-strings, clear PEP 8 naming, and appropriate stdlib. Exception: if the question explicitly asks you to implement a specific data structure or algorithm (e.g. an LRU cache, a linked list, a hash map), build that mechanism by hand — do not substitute a stdlib shortcut (e.g. collections.OrderedDict, functools.lru_cache) that skips the exercise.
+1. One short first-person sentence stating your approach. If the question names a specific data structure or algorithm that Python's stdlib already provides (e.g. an LRU cache → collections.OrderedDict, a heap → heapq), this sentence MUST name that stdlib tool as the reason you are not using it (e.g. "Python has collections.OrderedDict for this, but let me implement the mechanism directly") — this is required content for the sentence, not optional commentary.
+2. A fenced code block in the requested language (Python by default), correct and runnable. In Python, write idiomatic, Pythonic style: comprehensions over manual accumulation loops, enumerate/zip over manual indexing, f-strings, clear PEP 8 naming, and appropriate stdlib. Exception: for a question that names a specific data structure or algorithm (per step 1), build that mechanism by hand in the code — never substitute the stdlib shortcut you just named.
 3. A short numbered step-by-step walkthrough (3-5 steps, ≤1 short sentence each). Reference variable names. Plain English, no labels.
 4. One short first-person sentence walking a small example.
 5. Three lines: "Time:", "Space:", "Why:" — each one short clause.
@@ -140,21 +140,64 @@ Reply in this exact shape:
 Do not write headings, preambles, alternatives, or commentary. Do not address the user. Do not narrate what you are doing. Speak as the candidate, in first person, and stop.`;
 
 /**
+ * Gemma-only Python-style directive, appended (never substituted) onto the
+ * caller's resolved prompt by resolveGemmaSystemPrompt for fresh-solution
+ * coding paths (currently: WhatToAnswerLLM's coding branch, which passes
+ * UNIVERSAL_WHAT_TO_ANSWER_PROMPT). Kept as an append-only suffix — not folded
+ * into SHARED_CODING_RULES — specifically so it stays scoped to Gemma 4 31B
+ * and never leaks into Claude/GPT/non-Gemma Gemini answers, which also use
+ * SHARED_CODING_RULES.
+ *
+ * Hybrid framing: name the stdlib shortcut (proves Pythonic/stdlib fluency),
+ * then still hand-roll it. Safer than a flat "always hand-roll" (loses the
+ * fluency signal) or "always use stdlib" (risks skipping the exact mechanism
+ * a classic DS/algorithm question is testing) — this works regardless of
+ * which one the interviewer actually wanted.
+ */
+export const GEMMA_CODING_STYLE_SUFFIX = `
+
+[GEMMA PYTHON STYLE]
+When the code is Python, write idiomatic, Pythonic style: comprehensions over manual accumulation loops, enumerate/zip over manual indexing, f-strings, clear PEP 8 naming, and appropriate stdlib.
+Exception: if the question names a specific data structure or algorithm that Python's stdlib already provides (e.g. an LRU cache → collections.OrderedDict, a heap → heapq), your existing opening filler sentence MUST name that stdlib tool as the reason you are not using it (e.g. "Python has collections.OrderedDict for this, but let me implement the mechanism directly") — this is required content for that sentence, not optional commentary, and it does not violate the no-preamble/no-meta rules above since it is substantive technical content. Then build the mechanism by hand in the code — never substitute the stdlib shortcut.
+[END GEMMA PYTHON STYLE]`;
+
+/**
+ * Lighter Gemma-only Python-style directive for CodeHintLLM's CODE_HINT_PROMPT
+ * specifically. Code Hint debugs the candidate's OWN partially-written code
+ * from a screenshot — it must never suggest replacing their in-progress
+ * approach with a different data structure or a stdlib shortcut (that would
+ * derail them, not help them finish), so this omits the hand-roll exception
+ * entirely and only asks for idiomatic style within whatever they're already
+ * building.
+ */
+export const GEMMA_CODE_HINT_STYLE_SUFFIX = `
+
+[GEMMA PYTHON STYLE]
+If the candidate's code is Python, keep any suggested snippet idiomatic — comprehensions, enumerate/zip, f-strings, clear PEP 8 naming. Stay within their existing approach: never suggest switching to a different data structure or a stdlib shortcut that would replace what they're already building.
+[END GEMMA PYTHON STYLE]`;
+
+/**
  * Gemma 4 defaults to the minimal INTERVIEW_COPILOT_PROMPT above (TTFT-critical
  * live-interview path). But callers like CodeHintLLM/BrainstormLLM/AnswerLLM pass
  * their own systemPromptOverride to streamChat() for a reason — Gemma must honor
  * it instead of silently overwriting it with the interview prompt.
  *
- * `callerOverride` must be the caller's raw, pre-mutation argument (used only to
- * test "did the immediate caller ask for something specific"); `resolvedSystemPrompt`
- * is the fully-resolved value (which may carry further augmentation, e.g. an
- * active-mode suffix) that actually gets sent when that gate is open.
+ * `callerOverride` must be the caller's raw, pre-mutation argument (used both to
+ * test "did the immediate caller ask for something specific" AND to identify
+ * WHICH caller — so the right Gemma-only style suffix, if any, can be appended).
+ * `resolvedSystemPrompt` is the fully-resolved value (which may carry further
+ * augmentation, e.g. an active-mode suffix) that actually gets sent when that
+ * gate is open — the suffix is appended to this, not to callerOverride, so any
+ * mode augmentation survives.
  */
 export function resolveGemmaSystemPrompt(
   callerOverride: string | undefined,
   resolvedSystemPrompt: string,
 ): string {
-  return callerOverride ? resolvedSystemPrompt : INTERVIEW_COPILOT_PROMPT;
+  if (!callerOverride) return INTERVIEW_COPILOT_PROMPT;
+  if (callerOverride === UNIVERSAL_WHAT_TO_ANSWER_PROMPT) return `${resolvedSystemPrompt}${GEMMA_CODING_STYLE_SUFFIX}`;
+  if (callerOverride === CODE_HINT_PROMPT) return `${resolvedSystemPrompt}${GEMMA_CODE_HINT_STYLE_SUFFIX}`;
+  return resolvedSystemPrompt;
 }
 
 // ==========================================

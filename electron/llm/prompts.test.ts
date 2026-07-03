@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { INTERVIEW_COPILOT_PROMPT, CODE_HINT_PROMPT, BRAINSTORM_MODE_PROMPT, resolveGemmaSystemPrompt } from './prompts';
+import {
+    INTERVIEW_COPILOT_PROMPT,
+    CODE_HINT_PROMPT,
+    BRAINSTORM_MODE_PROMPT,
+    UNIVERSAL_WHAT_TO_ANSWER_PROMPT,
+    GEMMA_CODING_STYLE_SUFFIX,
+    GEMMA_CODE_HINT_STYLE_SUFFIX,
+    resolveGemmaSystemPrompt,
+} from './prompts';
 
 describe('INTERVIEW_COPILOT_PROMPT (Gemma 4 31B default prompt when no caller override is given)', () => {
     it('still defaults to Python and preserves the requested-language override', () => {
@@ -19,6 +27,15 @@ describe('INTERVIEW_COPILOT_PROMPT (Gemma 4 31B default prompt when no caller ov
         expect(INTERVIEW_COPILOT_PROMPT).toMatch(/hand|by hand|implement.*yourself|skip(s|ping)? the exercise/i);
     });
 
+    it('uses hybrid framing: names a concrete stdlib shortcut in the opening sentence, then still hand-rolls', () => {
+        // Pure hand-roll-only lost the "it can be Pythonic" signal; pure
+        // stdlib-only risks skipping the exercise. The hybrid names the shortcut
+        // (proves stdlib fluency) without gambling the actual answer on a guess
+        // about what the interviewer wanted.
+        expect(INTERVIEW_COPILOT_PROMPT).toMatch(/OrderedDict/);
+        expect(INTERVIEW_COPILOT_PROMPT).toMatch(/opening sentence|step 1/i);
+    });
+
     it('keeps the 5-part output shape intact (regression guard on the surrounding structure)', () => {
         expect(INTERVIEW_COPILOT_PROMPT).toContain('One short first-person sentence stating your approach');
         expect(INTERVIEW_COPILOT_PROMPT).toContain('step-by-step walkthrough');
@@ -28,15 +45,25 @@ describe('INTERVIEW_COPILOT_PROMPT (Gemma 4 31B default prompt when no caller ov
     });
 });
 
-describe('resolveGemmaSystemPrompt (streamChat Gemma branch must not silently discard caller overrides)', () => {
-    it('returns the resolved system prompt when the caller passed an explicit override', () => {
-        // Second arg models `baseSystemPrompt` in streamChat, which may carry extra
-        // augmentation (e.g. active-mode suffix) beyond the raw caller-supplied value —
-        // the resolved value, not the raw one, is what must reach Gemma.
-        const augmented = `${CODE_HINT_PROMPT}\n\n## ACTIVE MODE\nSome suffix`;
-        expect(resolveGemmaSystemPrompt(CODE_HINT_PROMPT, augmented)).toBe(augmented);
+describe('GEMMA_CODING_STYLE_SUFFIX / GEMMA_CODE_HINT_STYLE_SUFFIX content', () => {
+    it('full suffix (fresh-solution paths) uses the same hybrid framing as INTERVIEW_COPILOT_PROMPT', () => {
+        expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/idiomatic|Pythonic/i);
+        expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/OrderedDict/);
+        expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/opening.*sentence/i);
+        expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/by hand/i);
     });
 
+    it('lighter Code Hint suffix stays idiomatic-only — never redirects the candidate to a different approach', () => {
+        // Code Hint debugs code the candidate already started. Suggesting they
+        // switch to a stdlib shortcut mid-flow would replace their approach,
+        // not help them finish it — the opposite of what a hint should do.
+        expect(GEMMA_CODE_HINT_STYLE_SUFFIX).toMatch(/idiomatic|Pythonic/i);
+        expect(GEMMA_CODE_HINT_STYLE_SUFFIX).toMatch(/existing approach|never suggest switching/i);
+        expect(GEMMA_CODE_HINT_STYLE_SUFFIX).not.toMatch(/OrderedDict/);
+    });
+});
+
+describe('resolveGemmaSystemPrompt (streamChat Gemma branch must not silently discard caller overrides)', () => {
     it('falls back to INTERVIEW_COPILOT_PROMPT when the caller passed no override', () => {
         // Even if internal knowledge-mode/active-mode injection later mutated the
         // resolved prompt, Gemma's TTFT-critical default path must stay untouched
@@ -44,8 +71,29 @@ describe('resolveGemmaSystemPrompt (streamChat Gemma branch must not silently di
         expect(resolveGemmaSystemPrompt(undefined, 'some internally-injected prompt')).toBe(INTERVIEW_COPILOT_PROMPT);
     });
 
-    it('regression: CODE_HINT_PROMPT and BRAINSTORM_MODE_PROMPT are no longer silently replaced by INTERVIEW_COPILOT_PROMPT', () => {
-        expect(resolveGemmaSystemPrompt(CODE_HINT_PROMPT, CODE_HINT_PROMPT)).toBe(CODE_HINT_PROMPT);
+    it('passes non-coding overrides through untouched (e.g. BRAINSTORM_MODE_PROMPT — no code allowed there at all)', () => {
         expect(resolveGemmaSystemPrompt(BRAINSTORM_MODE_PROMPT, BRAINSTORM_MODE_PROMPT)).toBe(BRAINSTORM_MODE_PROMPT);
+    });
+
+    it('passes an unrecognized override through untouched (general fallthrough — Clarify/Recap/FollowUp/Answer, etc.)', () => {
+        const augmented = 'some other prompt\n\n## ACTIVE MODE\nSome suffix';
+        expect(resolveGemmaSystemPrompt('some other prompt', augmented)).toBe(augmented);
+    });
+
+    it('WhatToAnswerLLM coding path (UNIVERSAL_WHAT_TO_ANSWER_PROMPT): resolved prompt + full hybrid style suffix', () => {
+        const augmented = `${UNIVERSAL_WHAT_TO_ANSWER_PROMPT}\n\n## ACTIVE MODE\nSome suffix`;
+        const result = resolveGemmaSystemPrompt(UNIVERSAL_WHAT_TO_ANSWER_PROMPT, augmented);
+        expect(result).toBe(`${augmented}${GEMMA_CODING_STYLE_SUFFIX}`);
+        // The caller's own content (incl. any mode augmentation) must survive —
+        // this is not a silent replacement, only an addition.
+        expect(result).toContain(augmented);
+    });
+
+    it('CodeHintLLM path (CODE_HINT_PROMPT): resolved prompt + lighter idiomatic-only suffix, no hand-roll exception', () => {
+        const augmented = `${CODE_HINT_PROMPT}\n\n## ACTIVE MODE\nSome suffix`;
+        const result = resolveGemmaSystemPrompt(CODE_HINT_PROMPT, augmented);
+        expect(result).toBe(`${augmented}${GEMMA_CODE_HINT_STYLE_SUFFIX}`);
+        expect(result).toContain(augmented);
+        expect(result).toContain('DO NOT WRITE THE FULL SOLUTION');
     });
 });
