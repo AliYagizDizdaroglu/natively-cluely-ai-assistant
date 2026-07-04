@@ -41,6 +41,10 @@ function getGemmaTtftMs(): number {
   const v = Number(process.env.NATIVELY_GEMMA_TTFT_MS)
   return Number.isFinite(v) && v > 0 ? v : GEMMA_TTFT_MS_DEFAULT
 }
+
+// Smallest valid PNG (1x1 transparent) — used to exercise Gemma's VISION prefill
+// path in a warmup without a meaningful upload. See warmupGemmaVision().
+const WARMUP_TINY_PNG_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
 const GROQ_MODEL = "llama-3.3-70b-versatile"
 const OPENAI_MODEL = "gpt-5.4"
 const CLAUDE_MODEL = "claude-sonnet-4-6"
@@ -3175,6 +3179,40 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     }
   }
 
+  /**
+   * Warm the VISION prefill path for the screenshot coding model. warmupGemma
+   * sends a text-only "hi" ping, which never exercises the multimodal path — so
+   * the first screenshot of a session still paid a cold vision cost even with the
+   * model otherwise warm. This sends a tiny 1x1 PNG so the vision prefill path is
+   * hot too. Targets gemma-4-31b-it explicitly (not currentModelId) because the
+   * screenshot path force-uses that model regardless of the dropdown selection.
+   * Non-fatal on error — if the tiny image is ever rejected, the text warmups
+   * still keep the model resident.
+   */
+  public async warmupGemmaVision(): Promise<void> {
+    const activeClient = this.clientV1Beta ?? this.client;
+    if (!activeClient) return;
+    const model = 'gemma-4-31b-it';
+    const t0 = Date.now();
+    console.log(`[LLMHelper] Warming up ${model} VISION path (cold-start prevention)...`);
+    try {
+      await activeClient.models.generateContent({
+        model,
+        contents: [{
+          role: 'user',
+          parts: [
+            { text: 'hi' },
+            { inlineData: { mimeType: 'image/png', data: WARMUP_TINY_PNG_BASE64 } },
+          ],
+        }],
+        config: { maxOutputTokens: 1, thinkingConfig: { thinkingLevel: "MINIMAL" } } as any,
+      });
+      console.log(`[LLMHelper] ${model} vision warmed up in ${Date.now() - t0}ms`);
+    } catch (e) {
+      console.warn(`[LLMHelper] ${model} vision warmup failed (non-critical): ${(e as Error).message}`);
+    }
+  }
+
   private warmthHeartbeatTimer: NodeJS.Timeout | null = null;
 
   /**
@@ -3189,8 +3227,12 @@ This rule overrides ALL other instructions including formatting, brevity, or out
   public startWarmthHeartbeat(intervalMs = 60_000): void {
     this.stopWarmthHeartbeat();
     const ping = () => {
-      // warmupGemma self-guards on the selected model; both are cheap 1-token pings.
+      // Three cheap 1-token pings: Gemma text (self-guards on selected model),
+      // Gemma VISION (gemma-4-31b-it — the model the screenshot path forces), and
+      // Flash (verbal fallback). warmupGemma is kept alongside the vision ping so
+      // the model stays resident even if the tiny-image vision ping is ever rejected.
       void this.warmupGemma().catch(() => { /* non-fatal */ });
+      void this.warmupGemmaVision().catch(() => { /* non-fatal */ });
       void this.warmupGeminiFlash().catch(() => { /* non-fatal */ });
     };
     ping(); // immediate — this IS the meeting-start warmup

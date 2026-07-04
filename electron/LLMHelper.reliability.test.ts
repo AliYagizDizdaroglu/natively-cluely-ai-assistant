@@ -17,9 +17,11 @@ const defaultImpl = async (_params: { model: string }) => {
     return s();
 };
 const generateContentStream = vi.fn(defaultImpl);
+// warmups use the non-streaming generateContent, not the stream.
+const generateContent = vi.fn(async (_params?: any) => ({ text: () => 'ok' }));
 
 vi.mock('@google/genai', () => ({
-    GoogleGenAI: vi.fn().mockImplementation(() => ({ models: { generateContentStream } })),
+    GoogleGenAI: vi.fn().mockImplementation(() => ({ models: { generateContentStream, generateContent } })),
 }));
 
 import { LLMHelper } from './LLMHelper';
@@ -80,26 +82,48 @@ describe('LLMHelper keep-warm heartbeat', () => {
         vi.useRealTimers();
     });
 
-    it('pings warmups immediately and then on the interval, and stops cleanly', () => {
+    it('pings warmups (text, vision, flash) immediately and then on the interval, and stops cleanly', () => {
         vi.useFakeTimers();
         const helper = new LLMHelper('fake-gemini-key');
         const gemmaSpy = vi.spyOn(helper, 'warmupGemma').mockResolvedValue(undefined);
+        const visionSpy = vi.spyOn(helper, 'warmupGemmaVision').mockResolvedValue(undefined);
         const flashSpy = vi.spyOn(helper, 'warmupGeminiFlash').mockResolvedValue(undefined);
 
         helper.startWarmthHeartbeat(1000);
 
-        // Immediate warm so the meeting's first coding answer hits a hot model.
+        // Immediate warm so the meeting's first coding/screenshot answer hits a hot model.
         expect(gemmaSpy).toHaveBeenCalledTimes(1);
+        expect(visionSpy).toHaveBeenCalledTimes(1);
         expect(flashSpy).toHaveBeenCalledTimes(1);
 
         vi.advanceTimersByTime(3000);
         expect(gemmaSpy).toHaveBeenCalledTimes(4); // immediate + 3 intervals
+        expect(visionSpy).toHaveBeenCalledTimes(4);
         expect(flashSpy).toHaveBeenCalledTimes(4);
 
         helper.stopWarmthHeartbeat();
         vi.advanceTimersByTime(5000);
         expect(gemmaSpy).toHaveBeenCalledTimes(4); // no further pings after stop
+        expect(visionSpy).toHaveBeenCalledTimes(4);
         expect(flashSpy).toHaveBeenCalledTimes(4);
+    });
+
+    it('warmupGemmaVision pings gemma-4-31b-it with an inline PNG image part (exercises the vision prefill)', async () => {
+        generateContent.mockClear();
+        const helper = new LLMHelper('fake-gemini-key');
+
+        await helper.warmupGemmaVision();
+
+        expect(generateContent).toHaveBeenCalled();
+        const params = generateContent.mock.calls.at(-1)![0] as any;
+        // Screenshot path force-uses gemma-4-31b-it regardless of dropdown, so the
+        // vision warmup must target that exact model, not currentModelId.
+        expect(params.model).toBe('gemma-4-31b-it');
+        const parts = params.contents[0].parts;
+        const hasImage = parts.some((p: any) =>
+            p.inlineData?.mimeType === 'image/png' && typeof p.inlineData?.data === 'string' && p.inlineData.data.length > 0);
+        expect(hasImage).toBe(true);
+        expect(params.config.maxOutputTokens).toBe(1);
     });
 
     it('startWarmthHeartbeat is idempotent — a second call does not double the interval', () => {
