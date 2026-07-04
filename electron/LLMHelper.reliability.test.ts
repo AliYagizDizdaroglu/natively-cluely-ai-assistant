@@ -151,12 +151,12 @@ describe('LLMHelper Gemma TTFT watchdog', () => {
         expect(vision).toBeGreaterThanOrEqual(12_000);
     });
 
-    it('scales the vision budget with image count (a 3-screenshot prefill is ~3x a single image)', () => {
+    it('scales the vision budget with image count (sized above measured warm TTFT: 1 img ~3.9s, 3 img ~18.9s)', () => {
         delete process.env.NATIVELY_GEMMA_VISION_TTFT_MS;
-        expect(getGemmaVisionTtftMs(1)).toBe(12_000);  // unchanged single-image default
-        expect(getGemmaVisionTtftMs(2)).toBe(16_000);
-        expect(getGemmaVisionTtftMs(3)).toBe(20_000);
-        expect(getGemmaVisionTtftMs(5)).toBe(28_000);
+        expect(getGemmaVisionTtftMs(1)).toBe(12_000);  // 1 image — 3.9s observed, generous margin
+        expect(getGemmaVisionTtftMs(2)).toBe(18_000);
+        expect(getGemmaVisionTtftMs(3)).toBe(24_000);  // 3 images — 18.9s observed, ~5s margin
+        expect(getGemmaVisionTtftMs(5)).toBe(36_000);
         expect(getGemmaVisionTtftMs(3)).toBeGreaterThan(getGemmaVisionTtftMs(1));
     });
 

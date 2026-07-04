@@ -47,15 +47,15 @@ export function getGemmaTtftMs(): number {
 }
 
 // VISION budget: image/screenshot requests get a LARGER window than text because
-// a single Gemma vision attempt takes ~6-7s to first token (vision prefill over
-// many image tokens), and prefill scales with image COUNT — a 3-screenshot
-// coding question is ~3x the image tokens of one. A flat budget would abandon
-// healthy multi-screenshot answers to Flash, so scale it: base + perImage*count.
-// Defaults (8s + 4s/image) give 1 img=12s (unchanged), 3 img=20s, 5 img=28s.
+// vision prefill scales (super-linearly) with image COUNT. MEASURED warm TTFT on
+// gemma-4-31b-it (2026-07-05, ~200KB screenshots): 1 image ~3.9s, 3 images ~18.9s.
+// A flat budget would abandon healthy multi-screenshot answers to Flash, so scale
+// it: base + perImage*count, sized with margin above the measured curve. Defaults
+// (6s + 6s/image) give 1 img=12s, 3 img=24s (~5s over the observed 18.9s), 5 img=36s.
 // An explicit NATIVELY_GEMMA_VISION_TTFT_MS still wins as a flat override;
 // base/perImage tunable via NATIVELY_GEMMA_VISION_TTFT_BASE_MS / _PER_IMAGE_MS.
-const GEMMA_VISION_TTFT_BASE_MS_DEFAULT = 8_000
-const GEMMA_VISION_TTFT_PER_IMAGE_MS_DEFAULT = 4_000
+const GEMMA_VISION_TTFT_BASE_MS_DEFAULT = 6_000
+const GEMMA_VISION_TTFT_PER_IMAGE_MS_DEFAULT = 6_000
 export function getGemmaVisionTtftMs(imageCount = 1): number {
   const flat = Number(process.env.NATIVELY_GEMMA_VISION_TTFT_MS)
   if (Number.isFinite(flat) && flat > 0) return flat // explicit flat override wins
