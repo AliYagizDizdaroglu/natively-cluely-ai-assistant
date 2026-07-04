@@ -24,7 +24,7 @@ vi.mock('@google/genai', () => ({
     GoogleGenAI: vi.fn().mockImplementation(() => ({ models: { generateContentStream, generateContent } })),
 }));
 
-import { LLMHelper, getGemmaTtftMs, getGemmaVisionTtftMs } from './LLMHelper';
+import { LLMHelper, getGemmaTtftMs, getGemmaVisionTtftMs, getGemmaMaxAttempts } from './LLMHelper';
 
 async function drain(gen: AsyncGenerator<string, void, unknown>) {
     const chunks: string[] = [];
@@ -149,6 +149,51 @@ describe('LLMHelper Gemma TTFT watchdog', () => {
         expect(vision).toBeGreaterThan(text);
         expect(text).toBe(6_000);       // the value the user asked for
         expect(vision).toBeGreaterThanOrEqual(12_000);
+    });
+
+    it('scales the vision budget with image count (a 3-screenshot prefill is ~3x a single image)', () => {
+        delete process.env.NATIVELY_GEMMA_VISION_TTFT_MS;
+        expect(getGemmaVisionTtftMs(1)).toBe(12_000);  // unchanged single-image default
+        expect(getGemmaVisionTtftMs(2)).toBe(16_000);
+        expect(getGemmaVisionTtftMs(3)).toBe(20_000);
+        expect(getGemmaVisionTtftMs(5)).toBe(28_000);
+        expect(getGemmaVisionTtftMs(3)).toBeGreaterThan(getGemmaVisionTtftMs(1));
+    });
+
+    it('flat NATIVELY_GEMMA_VISION_TTFT_MS override wins over per-image scaling', () => {
+        process.env.NATIVELY_GEMMA_VISION_TTFT_MS = '9000';
+        expect(getGemmaVisionTtftMs(3)).toBe(9000);
+        delete process.env.NATIVELY_GEMMA_VISION_TTFT_MS;
+    });
+
+    it('caps multi-image attempts below text/single-image (bounds per-retry re-upload cost)', () => {
+        delete process.env.NATIVELY_GEMMA_MAX_ATTEMPTS;
+        delete process.env.NATIVELY_GEMMA_VISION_MAX_ATTEMPTS;
+        expect(getGemmaMaxAttempts(0)).toBe(3);  // text
+        expect(getGemmaMaxAttempts(1)).toBe(3);  // single image — one re-upload is cheap
+        expect(getGemmaMaxAttempts(2)).toBe(2);  // multi-image — capped
+        expect(getGemmaMaxAttempts(3)).toBe(2);
+    });
+
+    it('a multi-image request caps Gemma attempts at 2 then falls back to Flash', async () => {
+        let gemmaAttempts = 0;
+        generateContentStream.mockImplementation(async (params: { model: string }) => {
+            if (String(params.model).startsWith('gemma-')) {
+                gemmaAttempts++;
+                async function* boom() { throw new Error('{"error":{"code":500,"status":"INTERNAL"}}'); }
+                return boom();
+            }
+            async function* flash() { yield { text: () => 'flash-answer' }; }
+            return flash();
+        });
+
+        const helper = new LLMHelper('fake-gemini-key');
+        // 2 attached screenshots → attempt cap 2 (vs 3 for text). Fast errors, so
+        // the (large) vision budget doesn't bind — the attempt cap does.
+        const out = (await drain(helper.streamChat('q', ['a.png', 'b.png'], undefined, undefined, false, 'gemma-4-31b-it'))).join('');
+
+        expect(gemmaAttempts).toBe(2);
+        expect(out).toContain('flash-answer');
     });
 });
 

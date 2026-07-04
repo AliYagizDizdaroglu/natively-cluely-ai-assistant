@@ -36,31 +36,50 @@ const GEMINI_PRO_MODEL = "gemini-3.1-pro-preview"
 // healthy Gemma answers well under this, so the window is mostly spent absorbing
 // a transient 500 + retry (see streamWithGemmaGuarded). Tunable live (no rebuild)
 // via NATIVELY_GEMMA_TTFT_MS.
+function envPosNum(raw: string | undefined, fallback: number): number {
+  const v = Number(raw)
+  return Number.isFinite(v) && v > 0 ? v : fallback
+}
+
 const GEMMA_TTFT_MS_DEFAULT = 6_000
 export function getGemmaTtftMs(): number {
-  const v = Number(process.env.NATIVELY_GEMMA_TTFT_MS)
-  return Number.isFinite(v) && v > 0 ? v : GEMMA_TTFT_MS_DEFAULT
+  return envPosNum(process.env.NATIVELY_GEMMA_TTFT_MS, GEMMA_TTFT_MS_DEFAULT)
 }
 
 // VISION budget: image/screenshot requests get a LARGER window than text because
 // a single Gemma vision attempt takes ~6-7s to first token (vision prefill over
-// many image tokens). A text-sized 6s budget structurally cannot fit even one
-// successful vision attempt after a fast 500, so retries there would never help.
-// 12s leaves room for a fast-500 + a successful vision retry. Tunable via
-// NATIVELY_GEMMA_VISION_TTFT_MS.
-const GEMMA_VISION_TTFT_MS_DEFAULT = 12_000
-export function getGemmaVisionTtftMs(): number {
-  const v = Number(process.env.NATIVELY_GEMMA_VISION_TTFT_MS)
-  return Number.isFinite(v) && v > 0 ? v : GEMMA_VISION_TTFT_MS_DEFAULT
+// many image tokens), and prefill scales with image COUNT — a 3-screenshot
+// coding question is ~3x the image tokens of one. A flat budget would abandon
+// healthy multi-screenshot answers to Flash, so scale it: base + perImage*count.
+// Defaults (8s + 4s/image) give 1 img=12s (unchanged), 3 img=20s, 5 img=28s.
+// An explicit NATIVELY_GEMMA_VISION_TTFT_MS still wins as a flat override;
+// base/perImage tunable via NATIVELY_GEMMA_VISION_TTFT_BASE_MS / _PER_IMAGE_MS.
+const GEMMA_VISION_TTFT_BASE_MS_DEFAULT = 8_000
+const GEMMA_VISION_TTFT_PER_IMAGE_MS_DEFAULT = 4_000
+export function getGemmaVisionTtftMs(imageCount = 1): number {
+  const flat = Number(process.env.NATIVELY_GEMMA_VISION_TTFT_MS)
+  if (Number.isFinite(flat) && flat > 0) return flat // explicit flat override wins
+  const base = envPosNum(process.env.NATIVELY_GEMMA_VISION_TTFT_BASE_MS, GEMMA_VISION_TTFT_BASE_MS_DEFAULT)
+  const perImage = envPosNum(process.env.NATIVELY_GEMMA_VISION_TTFT_PER_IMAGE_MS, GEMMA_VISION_TTFT_PER_IMAGE_MS_DEFAULT)
+  return base + perImage * Math.max(1, imageCount)
 }
 
 // Max Gemma attempts within the TTFT budget. Transient 500s ("Internal error")
 // come back fast and usually clear on retry, so retrying keeps the answer on
-// Gemma instead of falling back to Flash. Override via NATIVELY_GEMMA_MAX_ATTEMPTS.
+// Gemma instead of falling back to Flash. MULTI-image requests (2+ screenshots)
+// are capped lower because every retry re-uploads ALL images — one retry is
+// usually enough to clear a transient 500, and 3x N-image uploads is wasteful.
+// Override via NATIVELY_GEMMA_MAX_ATTEMPTS (text/single) and
+// NATIVELY_GEMMA_VISION_MAX_ATTEMPTS (multi-image cap).
 const GEMMA_MAX_ATTEMPTS_DEFAULT = 3
-export function getGemmaMaxAttempts(): number {
-  const v = Number(process.env.NATIVELY_GEMMA_MAX_ATTEMPTS)
-  return Number.isFinite(v) && v >= 1 ? Math.floor(v) : GEMMA_MAX_ATTEMPTS_DEFAULT
+const GEMMA_VISION_MAX_ATTEMPTS_DEFAULT = 2
+export function getGemmaMaxAttempts(imageCount = 0): number {
+  const cfg = Math.max(1, Math.floor(envPosNum(process.env.NATIVELY_GEMMA_MAX_ATTEMPTS, GEMMA_MAX_ATTEMPTS_DEFAULT)))
+  if (imageCount >= 2) {
+    const visionCap = Math.max(1, Math.floor(envPosNum(process.env.NATIVELY_GEMMA_VISION_MAX_ATTEMPTS, GEMMA_VISION_MAX_ATTEMPTS_DEFAULT)))
+    return Math.min(cfg, visionCap)
+  }
+  return cfg
 }
 
 // Whether a Gemma error is worth retrying. Server/transient errors (5xx,
@@ -3000,8 +3019,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     gemmaModelId: string,
     imagePaths?: string[],
     // Vision requests get a larger budget than text — a single vision attempt is
-    // ~6-7s, so a text-sized budget can't fit a retry after a fast 500.
-    ttftBudgetMs = (imagePaths?.length ? getGemmaVisionTtftMs() : getGemmaTtftMs()),
+    // ~6-7s and prefill scales with image count, so the budget grows per image.
+    ttftBudgetMs = (imagePaths?.length ? getGemmaVisionTtftMs(imagePaths.length) : getGemmaTtftMs()),
     systemInstruction?: string,
   ): AsyncGenerator<string, void, unknown> {
     // --- Tier 1: Gemma with a shared TTFT budget + bounded retries ---
@@ -3012,7 +3031,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     // would just burn the remaining budget), so only fast errors are retried, and
     // only while the error is retryable AND budget + attempts remain.
     const deadline = Date.now() + ttftBudgetMs;
-    const maxAttempts = getGemmaMaxAttempts();
+    const maxAttempts = getGemmaMaxAttempts(imagePaths?.length ?? 0);
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       const remaining = deadline - Date.now();
