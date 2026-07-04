@@ -30,16 +30,47 @@ interface OllamaResponse {
 // Model constant for Gemini 3 Flash
 const GEMINI_FLASH_MODEL = "gemini-3.1-flash-lite"
 const GEMINI_PRO_MODEL = "gemini-3.1-pro-preview"
-// TTFT watchdog for the Gemma coding path: if the first token doesn't arrive
-// within this window, abandon Gemma and fall back to warm Gemini Flash. Lowered
-// from 10s to 4s — with the meeting keep-warm heartbeat (startWarmthHeartbeat)
-// a healthy Gemma answers well under 4s, so this now mainly catches cold-starts
-// and stalls fast instead of making the user wait the old 10s. Tunable live
-// (no rebuild) via NATIVELY_GEMMA_TTFT_MS.
-const GEMMA_TTFT_MS_DEFAULT = 4_000
-function getGemmaTtftMs(): number {
+// TTFT budget for the Gemma coding path: the total window in which Gemma may
+// produce a first token (across bounded retries) before we abandon it and fall
+// back to warm Gemini Flash. TEXT default 6s — with the keep-warm heartbeat a
+// healthy Gemma answers well under this, so the window is mostly spent absorbing
+// a transient 500 + retry (see streamWithGemmaGuarded). Tunable live (no rebuild)
+// via NATIVELY_GEMMA_TTFT_MS.
+const GEMMA_TTFT_MS_DEFAULT = 6_000
+export function getGemmaTtftMs(): number {
   const v = Number(process.env.NATIVELY_GEMMA_TTFT_MS)
   return Number.isFinite(v) && v > 0 ? v : GEMMA_TTFT_MS_DEFAULT
+}
+
+// VISION budget: image/screenshot requests get a LARGER window than text because
+// a single Gemma vision attempt takes ~6-7s to first token (vision prefill over
+// many image tokens). A text-sized 6s budget structurally cannot fit even one
+// successful vision attempt after a fast 500, so retries there would never help.
+// 12s leaves room for a fast-500 + a successful vision retry. Tunable via
+// NATIVELY_GEMMA_VISION_TTFT_MS.
+const GEMMA_VISION_TTFT_MS_DEFAULT = 12_000
+export function getGemmaVisionTtftMs(): number {
+  const v = Number(process.env.NATIVELY_GEMMA_VISION_TTFT_MS)
+  return Number.isFinite(v) && v > 0 ? v : GEMMA_VISION_TTFT_MS_DEFAULT
+}
+
+// Max Gemma attempts within the TTFT budget. Transient 500s ("Internal error")
+// come back fast and usually clear on retry, so retrying keeps the answer on
+// Gemma instead of falling back to Flash. Override via NATIVELY_GEMMA_MAX_ATTEMPTS.
+const GEMMA_MAX_ATTEMPTS_DEFAULT = 3
+export function getGemmaMaxAttempts(): number {
+  const v = Number(process.env.NATIVELY_GEMMA_MAX_ATTEMPTS)
+  return Number.isFinite(v) && v >= 1 ? Math.floor(v) : GEMMA_MAX_ATTEMPTS_DEFAULT
+}
+
+// Whether a Gemma error is worth retrying. Server/transient errors (5xx,
+// INTERNAL, UNAVAILABLE, network) usually clear on retry; client errors (bad
+// key, bad request, permission) will fail identically, so bail to Flash at once.
+function isRetryableGemmaError(err: any): boolean {
+  const msg = (err?.message ?? String(err)).toLowerCase()
+  if (/api_key_invalid|invalid_argument|permission_denied|unauthenticated|"code":\s*4\d\d/.test(msg)) return false
+  if (/internal|unavailable|overloaded|deadline|resource_exhausted|"code":\s*5\d\d|fetch failed|econnreset|etimedout|socket hang up|network/.test(msg)) return true
+  return true // unknown shape — allow a retry; the budget + attempt cap bound the cost
 }
 
 // Smallest valid PNG (1x1 transparent) — used to exercise Gemma's VISION prefill
@@ -2584,7 +2615,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       if (activeModelId.startsWith('gemma-')) {
         const gemmaSystemPrompt = resolveGemmaSystemPrompt(callerSystemPromptOverride, baseSystemPrompt);
         const interviewSystem = this.injectLanguageInstruction(gemmaSystemPrompt);
-        yield* this.streamWithGemmaGuarded(userContent, activeModelId, imagePaths, getGemmaTtftMs(), interviewSystem);
+        // Budget arg omitted — streamWithGemmaGuarded picks text vs vision based on imagePaths.
+        yield* this.streamWithGemmaGuarded(userContent, activeModelId, imagePaths, undefined, interviewSystem);
         return;
       }
 
@@ -2967,41 +2999,71 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     fullMsg: string,
     gemmaModelId: string,
     imagePaths?: string[],
-    ttftTimeoutMs = getGemmaTtftMs(),
+    // Vision requests get a larger budget than text — a single vision attempt is
+    // ~6-7s, so a text-sized budget can't fit a retry after a fast 500.
+    ttftBudgetMs = (imagePaths?.length ? getGemmaVisionTtftMs() : getGemmaTtftMs()),
     systemInstruction?: string,
   ): AsyncGenerator<string, void, unknown> {
-    // --- Tier 1: Gemma 4 with TTFT watchdog ---
-    const gemmaGen = this.streamWithGeminiModel(fullMsg, gemmaModelId, imagePaths, systemInstruction);
+    // --- Tier 1: Gemma with a shared TTFT budget + bounded retries ---
+    // Gemma on the free tier intermittently 500s ("Internal error"), and those
+    // errors return fast, so retrying within the budget usually lands on a healthy
+    // replica and keeps the answer on Gemma (better for coding) instead of falling
+    // back to Flash. A genuine no-first-token STALL can't be helped by a retry (it
+    // would just burn the remaining budget), so only fast errors are retried, and
+    // only while the error is retryable AND budget + attempts remain.
+    const deadline = Date.now() + ttftBudgetMs;
+    const maxAttempts = getGemmaMaxAttempts();
 
-    let firstResult: IteratorResult<string, void> | undefined;
-    let gemmaErr: Error | undefined;
-    const timedOut = await Promise.race<boolean>([
-      gemmaGen.next()
-        .then(r => { firstResult = r; return false; })
-        .catch(err => { gemmaErr = err; return true; }),
-      new Promise<boolean>(resolve => setTimeout(() => resolve(true), ttftTimeoutMs)),
-    ]);
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) break; // budget exhausted — go to Flash
 
-    if (!timedOut && firstResult) {
-      yield `__model_source:Gemma 4__`;
-      if (firstResult.value) yield firstResult.value;
-      if (!firstResult.done) yield* gemmaGen;
-      return;
+      const gemmaGen = this.streamWithGeminiModel(fullMsg, gemmaModelId, imagePaths, systemInstruction);
+      let firstResult: IteratorResult<string, void> | undefined;
+      let gemmaErr: Error | undefined;
+      let timer: NodeJS.Timeout | undefined;
+      const timedOut = await Promise.race<boolean>([
+        gemmaGen.next()
+          .then(r => { firstResult = r; return false; })
+          .catch(err => { gemmaErr = err; return true; }),
+        new Promise<boolean>(resolve => { timer = setTimeout(() => resolve(true), remaining); }),
+      ]);
+      if (timer) clearTimeout(timer);
+
+      if (!timedOut && firstResult) {
+        if (attempt > 1) console.log(`[LLMHelper] Gemma recovered on attempt ${attempt}/${maxAttempts}`);
+        yield `__model_source:Gemma 4__`;
+        if (firstResult.value) yield firstResult.value;
+        if (!firstResult.done) yield* gemmaGen;
+        return;
+      }
+
+      if (gemmaErr) {
+        const detail = (gemmaErr.message ?? String(gemmaErr)).slice(0, 140);
+        if (!isRetryableGemmaError(gemmaErr)) {
+          console.warn(`[LLMHelper] Gemma failed (non-retryable: ${detail}) — falling back to Gemini Flash`);
+          break;
+        }
+        if (attempt >= maxAttempts) {
+          console.warn(`[LLMHelper] Gemma failed ${maxAttempts}x (last: ${detail}) — falling back to Gemini Flash`);
+          break;
+        }
+        // Small backoff to let a transient server error clear, capped by the budget.
+        const backoff = Math.min(150, Math.max(0, deadline - Date.now()));
+        console.warn(`[LLMHelper] Gemma attempt ${attempt}/${maxAttempts} failed fast (${detail}) — retrying${backoff ? ` in ${backoff}ms` : ''}`);
+        if (backoff > 0) await new Promise(r => setTimeout(r, backoff));
+        continue;
+      }
+
+      // Timed out with no error → genuine stall. Retrying won't help within budget.
+      console.warn(`[LLMHelper] ⏱ Gemma produced no first token within the ${ttftBudgetMs}ms budget (attempt ${attempt}) — falling back to Gemini Flash`);
+      break;
     }
 
     // --- Tier 2: Gemini Flash ---
-    // Report the ACTUAL fallback cause. Previously this always said "TTFT timeout
-    // after Ns" even when Gemma 500'd in milliseconds — the log implied a long
-    // wait that never happened. Distinguish the fast-error case from a genuine
-    // no-first-token stall.
-    if (gemmaErr) {
-      console.warn(`[LLMHelper] Gemma failed fast (${(gemmaErr.message ?? String(gemmaErr)).slice(0, 140)}) — falling back to Gemini Flash`);
-    } else {
-      console.warn(`[LLMHelper] ⏱ Gemma produced no first token within ${ttftTimeoutMs}ms — falling back to Gemini Flash`);
-    }
     try {
       let flashFirst = true;
-      // Pass systemInstruction so Flash also uses the interview prompt when Gemma times out
+      // Pass systemInstruction so Flash also uses the interview prompt on fallback.
       for await (const token of this.streamWithGeminiModel(fullMsg, GEMINI_FLASH_MODEL, imagePaths, systemInstruction)) {
         if (flashFirst) { yield `__model_source:Gemini Flash__`; flashFirst = false; }
         yield token;

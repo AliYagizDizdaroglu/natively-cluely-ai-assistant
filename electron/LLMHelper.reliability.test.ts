@@ -24,7 +24,7 @@ vi.mock('@google/genai', () => ({
     GoogleGenAI: vi.fn().mockImplementation(() => ({ models: { generateContentStream, generateContent } })),
 }));
 
-import { LLMHelper } from './LLMHelper';
+import { LLMHelper, getGemmaTtftMs, getGemmaVisionTtftMs } from './LLMHelper';
 
 async function drain(gen: AsyncGenerator<string, void, unknown>) {
     const chunks: string[] = [];
@@ -66,9 +66,89 @@ describe('LLMHelper Gemma TTFT watchdog', () => {
         const models = generateContentStream.mock.calls.map(c => String((c[0] as any).model));
         expect(models[0]).toMatch(/^gemma-/);
         expect(models.some(m => m.startsWith('gemini-'))).toBe(true);
+        // A genuine stall must NOT be retried — only one Gemma attempt before Flash.
+        expect(models.filter(m => m.startsWith('gemma-')).length).toBe(1);
 
         await vi.advanceTimersByTimeAsync(10);
         await p.catch(() => { /* hanging gemma leg is abandoned by design */ });
+    });
+
+    it('retries Gemma on a transient 500 within the budget and keeps the answer on Gemma when a retry succeeds', async () => {
+        process.env.NATIVELY_GEMMA_TTFT_MS = '5000';
+        let gemmaAttempts = 0;
+        generateContentStream.mockImplementation(async (params: { model: string }) => {
+            if (String(params.model).startsWith('gemma-')) {
+                gemmaAttempts++;
+                if (gemmaAttempts === 1) {
+                    async function* boom() { throw new Error('{"error":{"code":500,"status":"INTERNAL","message":"Internal error encountered."}}'); }
+                    return boom();
+                }
+                async function* ok() { yield { text: () => 'gemma-answer' }; }
+                return ok();
+            }
+            async function* flash() { yield { text: () => 'flash-answer' }; }
+            return flash();
+        });
+
+        const helper = new LLMHelper('fake-gemini-key');
+        const out = (await drain(helper.streamChat('q', undefined, undefined, undefined, false, 'gemma-4-31b-it'))).join('');
+
+        expect(gemmaAttempts).toBe(2);          // failed once, retried, succeeded
+        expect(out).toContain('gemma-answer');   // stayed on Gemma
+        expect(out).not.toContain('flash-answer'); // did NOT fall back
+    });
+
+    it('does NOT retry a non-retryable error (bad key) — falls straight to Flash', async () => {
+        process.env.NATIVELY_GEMMA_TTFT_MS = '5000';
+        let gemmaAttempts = 0;
+        generateContentStream.mockImplementation(async (params: { model: string }) => {
+            if (String(params.model).startsWith('gemma-')) {
+                gemmaAttempts++;
+                async function* bad() { throw new Error('{"error":{"code":400,"status":"INVALID_ARGUMENT","message":"API key not valid. API_KEY_INVALID"}}'); }
+                return bad();
+            }
+            async function* flash() { yield { text: () => 'flash-answer' }; }
+            return flash();
+        });
+
+        const helper = new LLMHelper('fake-gemini-key');
+        const out = (await drain(helper.streamChat('q', undefined, undefined, undefined, false, 'gemma-4-31b-it'))).join('');
+
+        expect(gemmaAttempts).toBe(1);          // bailed immediately, no wasted retries
+        expect(out).toContain('flash-answer');
+    });
+
+    it('caps Gemma retries at NATIVELY_GEMMA_MAX_ATTEMPTS then falls back to Flash', async () => {
+        process.env.NATIVELY_GEMMA_TTFT_MS = '5000';
+        process.env.NATIVELY_GEMMA_MAX_ATTEMPTS = '3';
+        let gemmaAttempts = 0;
+        generateContentStream.mockImplementation(async (params: { model: string }) => {
+            if (String(params.model).startsWith('gemma-')) {
+                gemmaAttempts++;
+                async function* boom() { throw new Error('{"error":{"code":503,"status":"UNAVAILABLE","message":"overloaded"}}'); }
+                return boom();
+            }
+            async function* flash() { yield { text: () => 'flash-answer' }; }
+            return flash();
+        });
+
+        const helper = new LLMHelper('fake-gemini-key');
+        const out = (await drain(helper.streamChat('q', undefined, undefined, undefined, false, 'gemma-4-31b-it'))).join('');
+
+        expect(gemmaAttempts).toBe(3);          // exactly the cap
+        expect(out).toContain('flash-answer');
+        delete process.env.NATIVELY_GEMMA_MAX_ATTEMPTS;
+    });
+
+    it('gives image/vision requests a larger budget than text (a text-sized budget cannot fit a vision retry)', () => {
+        // Structural check on the exported knobs rather than a full stream: the
+        // vision budget must exceed the text budget so a post-500 vision retry
+        // (each vision attempt ~6-7s) has room to complete.
+        const text = getGemmaTtftMs();
+        const vision = getGemmaVisionTtftMs();
+        expect(vision).toBeGreaterThan(text);
+        expect(text).toBe(6_000);       // the value the user asked for
+        expect(vision).toBeGreaterThanOrEqual(12_000);
     });
 });
 
