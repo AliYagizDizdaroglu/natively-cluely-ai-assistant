@@ -30,7 +30,17 @@ interface OllamaResponse {
 // Model constant for Gemini 3 Flash
 const GEMINI_FLASH_MODEL = "gemini-3.1-flash-lite"
 const GEMINI_PRO_MODEL = "gemini-3.1-pro-preview"
-const GEMMA_TTFT_MS = 10_000
+// TTFT watchdog for the Gemma coding path: if the first token doesn't arrive
+// within this window, abandon Gemma and fall back to warm Gemini Flash. Lowered
+// from 10s to 4s — with the meeting keep-warm heartbeat (startWarmthHeartbeat)
+// a healthy Gemma answers well under 4s, so this now mainly catches cold-starts
+// and stalls fast instead of making the user wait the old 10s. Tunable live
+// (no rebuild) via NATIVELY_GEMMA_TTFT_MS.
+const GEMMA_TTFT_MS_DEFAULT = 4_000
+function getGemmaTtftMs(): number {
+  const v = Number(process.env.NATIVELY_GEMMA_TTFT_MS)
+  return Number.isFinite(v) && v > 0 ? v : GEMMA_TTFT_MS_DEFAULT
+}
 const GROQ_MODEL = "llama-3.3-70b-versatile"
 const OPENAI_MODEL = "gpt-5.4"
 const CLAUDE_MODEL = "claude-sonnet-4-6"
@@ -2570,7 +2580,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       if (activeModelId.startsWith('gemma-')) {
         const gemmaSystemPrompt = resolveGemmaSystemPrompt(callerSystemPromptOverride, baseSystemPrompt);
         const interviewSystem = this.injectLanguageInstruction(gemmaSystemPrompt);
-        yield* this.streamWithGemmaGuarded(userContent, activeModelId, imagePaths, GEMMA_TTFT_MS, interviewSystem);
+        yield* this.streamWithGemmaGuarded(userContent, activeModelId, imagePaths, getGemmaTtftMs(), interviewSystem);
         return;
       }
 
@@ -2953,7 +2963,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     fullMsg: string,
     gemmaModelId: string,
     imagePaths?: string[],
-    ttftTimeoutMs = GEMMA_TTFT_MS,
+    ttftTimeoutMs = getGemmaTtftMs(),
     systemInstruction?: string,
   ): AsyncGenerator<string, void, unknown> {
     // --- Tier 1: Gemma 4 with TTFT watchdog ---
@@ -2968,10 +2978,6 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       new Promise<boolean>(resolve => setTimeout(() => resolve(true), ttftTimeoutMs)),
     ]);
 
-    if (gemmaErr) {
-      console.warn('[LLMHelper] Gemma API error, falling back:', gemmaErr.message);
-    }
-
     if (!timedOut && firstResult) {
       yield `__model_source:Gemma 4__`;
       if (firstResult.value) yield firstResult.value;
@@ -2980,7 +2986,15 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     }
 
     // --- Tier 2: Gemini Flash ---
-    console.warn(`[LLMHelper] ⏱ Gemma TTFT timeout after ${ttftTimeoutMs}ms, falling back to Gemini Flash`);
+    // Report the ACTUAL fallback cause. Previously this always said "TTFT timeout
+    // after Ns" even when Gemma 500'd in milliseconds — the log implied a long
+    // wait that never happened. Distinguish the fast-error case from a genuine
+    // no-first-token stall.
+    if (gemmaErr) {
+      console.warn(`[LLMHelper] Gemma failed fast (${(gemmaErr.message ?? String(gemmaErr)).slice(0, 140)}) — falling back to Gemini Flash`);
+    } else {
+      console.warn(`[LLMHelper] ⏱ Gemma produced no first token within ${ttftTimeoutMs}ms — falling back to Gemini Flash`);
+    }
     try {
       let flashFirst = true;
       // Pass systemInstruction so Flash also uses the interview prompt when Gemma times out
@@ -3158,6 +3172,40 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       console.log(`[LLMHelper] ${model} warmed up in ${Date.now() - t0}ms`);
     } catch (e) {
       console.warn(`[LLMHelper] ${model} warmup failed (non-critical): ${(e as Error).message}`);
+    }
+  }
+
+  private warmthHeartbeatTimer: NodeJS.Timeout | null = null;
+
+  /**
+   * Keep the coding model (Gemma) and the verbal fallback (Flash) hot for the
+   * duration of a meeting. Cloud providers scale less-used models to zero after
+   * idle; the next request then pays a 5-17s cold start (or 500s). This fires an
+   * immediate warmup — so the meeting's FIRST coding answer already hits a hot
+   * model — then re-pings every `intervalMs` so the model never scales down
+   * mid-meeting. Idempotent: a second call restarts the single timer rather than
+   * stacking. Pair with stopWarmthHeartbeat() at meeting end.
+   */
+  public startWarmthHeartbeat(intervalMs = 60_000): void {
+    this.stopWarmthHeartbeat();
+    const ping = () => {
+      // warmupGemma self-guards on the selected model; both are cheap 1-token pings.
+      void this.warmupGemma().catch(() => { /* non-fatal */ });
+      void this.warmupGeminiFlash().catch(() => { /* non-fatal */ });
+    };
+    ping(); // immediate — this IS the meeting-start warmup
+    this.warmthHeartbeatTimer = setInterval(ping, intervalMs);
+    // Never let the heartbeat alone hold the process open.
+    this.warmthHeartbeatTimer.unref?.();
+    console.log(`[LLMHelper] Warmth heartbeat started (every ${intervalMs}ms)`);
+  }
+
+  /** Stop the keep-warm heartbeat. Safe to call when none is running. */
+  public stopWarmthHeartbeat(): void {
+    if (this.warmthHeartbeatTimer) {
+      clearInterval(this.warmthHeartbeatTimer);
+      this.warmthHeartbeatTimer = null;
+      console.log('[LLMHelper] Warmth heartbeat stopped');
     }
   }
 

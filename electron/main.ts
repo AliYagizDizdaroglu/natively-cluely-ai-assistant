@@ -1690,6 +1690,12 @@ export class AppState {
 
     this.isMeetingActive = true;
     this.broadcastMeetingState()
+
+    // Keep the coding model (Gemma) + verbal fallback (Flash) hot for the whole
+    // meeting. Fires an immediate warmup so the first coding answer doesn't pay a
+    // scale-to-zero cold start, then re-pings periodically. Stopped in endMeeting().
+    this.processingHelper.getLLMHelper().startWarmthHeartbeat();
+
     if (metadata) {
       this.intelligenceManager.setMeetingMetadata(metadata);
     }
@@ -1756,6 +1762,9 @@ export class AppState {
 
   public async endMeeting(): Promise<void> {
     console.log('[Main] Ending Meeting...');
+
+    // Stop keeping the models warm — no meeting, no need to hold the GPUs hot.
+    this.processingHelper.getLLMHelper().stopWarmthHeartbeat();
 
     // Reset Mouse Passthrough so the next meeting overlay starts fresh and focusable
     if (this.overlayMousePassthrough) {
