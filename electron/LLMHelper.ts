@@ -46,16 +46,18 @@ export function getGemmaTtftMs(): number {
   return envPosNum(process.env.NATIVELY_GEMMA_TTFT_MS, GEMMA_TTFT_MS_DEFAULT)
 }
 
-// VISION budget: image/screenshot requests get a LARGER window than text because
-// vision prefill scales (super-linearly) with image COUNT. MEASURED warm TTFT on
-// gemma-4-31b-it (2026-07-05, ~200KB screenshots): 1 image ~3.9s, 3 images ~18.9s.
-// A flat budget would abandon healthy multi-screenshot answers to Flash, so scale
-// it: base + perImage*count, sized with margin above the measured curve. Defaults
-// (6s + 6s/image) give 1 img=12s, 3 img=24s (~5s over the observed 18.9s), 5 img=36s.
-// An explicit NATIVELY_GEMMA_VISION_TTFT_MS still wins as a flat override;
-// base/perImage tunable via NATIVELY_GEMMA_VISION_TTFT_BASE_MS / _PER_IMAGE_MS.
-const GEMMA_VISION_TTFT_BASE_MS_DEFAULT = 6_000
-const GEMMA_VISION_TTFT_PER_IMAGE_MS_DEFAULT = 6_000
+// VISION budget: image/screenshot requests get a LARGER window than text.
+// MEASURED warm TTFT on gemma-4-31b-it (2026-07-05, real screenshots): 1 img 3.9s,
+// 3 img 18.9s, 5 img 4.9s, 8 img 7.9s, 10 img 7.3s. Takeaway: TTFT is dominated by
+// SERVER VARIANCE (~4-19s), NOT image count — 10 images is no slower than 3. So the
+// budget is mostly flat (covers the ~19s slow case at any count) with only a mild
+// per-image bump for payload safety: base 14s + 2s/image → 1 img=16s, 3 img=20s,
+// 10 img=34s. (A steep per-image curve would waste budget — a stalled 10-image
+// request would pointlessly wait ~66s before Flash.) Explicit
+// NATIVELY_GEMMA_VISION_TTFT_MS still wins as a flat override; base/perImage tunable
+// via NATIVELY_GEMMA_VISION_TTFT_BASE_MS / _PER_IMAGE_MS.
+const GEMMA_VISION_TTFT_BASE_MS_DEFAULT = 14_000
+const GEMMA_VISION_TTFT_PER_IMAGE_MS_DEFAULT = 2_000
 export function getGemmaVisionTtftMs(imageCount = 1): number {
   const flat = Number(process.env.NATIVELY_GEMMA_VISION_TTFT_MS)
   if (Number.isFinite(flat) && flat > 0) return flat // explicit flat override wins

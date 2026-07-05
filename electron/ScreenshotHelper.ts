@@ -400,7 +400,10 @@ async function stitchImages(captures: DisplayCapture[], selection: Electron.Rect
 export class ScreenshotHelper {
   private screenshotQueue: string[] = []
   private extraScreenshotQueue: string[] = []
-  private readonly MAX_SCREENSHOTS = 5
+  // 10 verified safe on gemma-4-31b-it (2026-07-05): 10 real screenshots (~2.2MB)
+  // accepted and answered with ~7s TTFT — no slower than 3. Keep in sync with the
+  // renderer's attachedContext slice(-10) in NativelyInterface.tsx.
+  private readonly MAX_SCREENSHOTS = 10
 
   private readonly screenshotDir: string
   private readonly extraScreenshotDir: string

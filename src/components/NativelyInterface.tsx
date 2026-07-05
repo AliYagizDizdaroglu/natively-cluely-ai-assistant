@@ -668,10 +668,11 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
     const handleScreenshotAttach = (data: { path: string; preview: string }) => {
         setIsExpanded(true);
         setAttachedContext(prev => {
-            // Prevent duplicates and cap at 5
+            // Prevent duplicates and cap at 10 (verified safe on gemma-4-31b-it —
+            // 10 screenshots answer in ~7s; keep in sync with ScreenshotHelper.MAX_SCREENSHOTS)
             if (prev.some(s => s.path === data.path)) return prev;
             const updated = [...prev, data];
-            return updated.slice(-5); // Keep last 5
+            return updated.slice(-10); // Keep last 10
         });
     };
 
@@ -1167,7 +1168,7 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
         const pending = pendingCaptureRef.current;
         let currentAttachments = attachedContext;
         if (pending && !currentAttachments.some(s => s.path === pending.path)) {
-            currentAttachments = [...currentAttachments, pending].slice(-5);
+            currentAttachments = [...currentAttachments, pending].slice(-10);
         }
 
         if (currentAttachments.length > 0) {
@@ -2308,7 +2309,7 @@ Provide only the answer, nothing else.`;
 
             setAttachedContext(prev => {
                 if (prev.some(s => s.path === data.path)) return prev;
-                return [...prev, data].slice(-5);
+                return [...prev, data].slice(-10);
             });
 
             // Use requestAnimationFrame so we wait for at least one paint cycle —

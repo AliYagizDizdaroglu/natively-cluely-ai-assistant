@@ -151,12 +151,16 @@ describe('LLMHelper Gemma TTFT watchdog', () => {
         expect(vision).toBeGreaterThanOrEqual(12_000);
     });
 
-    it('scales the vision budget with image count (sized above measured warm TTFT: 1 img ~3.9s, 3 img ~18.9s)', () => {
+    it('scales the vision budget mildly with image count (TTFT is variance-dominated ~4-19s, not count-driven)', () => {
+        // Measured warm TTFT (2026-07-05, real screenshots): 1 img 3.9s, 3 img 18.9s,
+        // 5 img 4.9s, 8 img 7.9s, 10 img 7.3s — count is a weak driver, server variance
+        // dominates. Budget = base 14s + 2s/image: covers the ~19s slow case at every
+        // count without a 66s stall-wait at the 10-image cap.
         delete process.env.NATIVELY_GEMMA_VISION_TTFT_MS;
-        expect(getGemmaVisionTtftMs(1)).toBe(12_000);  // 1 image — 3.9s observed, generous margin
-        expect(getGemmaVisionTtftMs(2)).toBe(18_000);
-        expect(getGemmaVisionTtftMs(3)).toBe(24_000);  // 3 images — 18.9s observed, ~5s margin
-        expect(getGemmaVisionTtftMs(5)).toBe(36_000);
+        expect(getGemmaVisionTtftMs(1)).toBe(16_000);
+        expect(getGemmaVisionTtftMs(3)).toBe(20_000);   // covers the 18.9s slow case
+        expect(getGemmaVisionTtftMs(5)).toBe(24_000);
+        expect(getGemmaVisionTtftMs(10)).toBe(34_000);  // 10-image cap — 7.3s observed, huge margin
         expect(getGemmaVisionTtftMs(3)).toBeGreaterThan(getGemmaVisionTtftMs(1));
     });
 
