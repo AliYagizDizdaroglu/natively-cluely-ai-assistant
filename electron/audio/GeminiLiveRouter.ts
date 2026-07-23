@@ -19,15 +19,21 @@ import { EventEmitter } from 'events';
  * at speech pace, ~7s/turn, with thought-summary noise. Routing to the existing
  * warmed REST streaming models is both faster and consistent.
  *
- * Failure policy: HARD-FAIL VISIBLE (user's explicit choice). After
- * MAX_RECONNECT_ATTEMPTS consecutive failures the router emits
- * {state:'failed', reason} and stays down — no silent fallback. The whisper →
+ * Failure policy: HARD-FAIL VISIBLE (user's explicit choice) + meeting-length
+ * self-healing. After QUICK_RECONNECT_ATTEMPTS consecutive failures the router
+ * emits {state:'failed', reason} (red chip) — never a silent fallback — but
+ * keeps retrying every SLOW_RETRY_INTERVAL_MS for as long as the meeting runs,
+ * resurrecting to 'connected' when the API/network recovers. The whisper →
  * detector → chip chain keeps running underneath regardless, so the app still
- * works; the UI just shows Live as down.
+ * works; the UI just shows Live as down while it is.
  *
- * Session limits: the Live API caps audio-only sessions at 15 min and single
- * connections at ~10 min. The server sends `goAway` before dropping; we
- * reconnect with the session-resumption handle so context carries over.
+ * Session limits: the Live API caps audio-only sessions at 15 min (lifted by
+ * contextWindowCompression) and single connections at ~10 min. The server
+ * sends `goAway` before dropping; we reconnect with the session-resumption
+ * handle so context carries over. Audio that arrives while disconnected is
+ * ring-buffered (20s) and replayed on reconnect, so questions spoken during a
+ * reconnect gap are still heard. Context loss on a failed resume is harmless
+ * here: each question routes independently, so the listener needs no history.
  */
 
 export type LiveRouterState =
@@ -142,10 +148,23 @@ export function resampleTo16kMono(
   return Buffer.from(outS16.buffer, outS16.byteOffset, outS16.byteLength);
 }
 
-const MAX_RECONNECT_ATTEMPTS = 3;
+/**
+ * Meeting-length persistence: quick retries handle transient blips; after they
+ * are exhausted the router goes 'failed' (VISIBLE — red chip) but keeps trying
+ * on a slow cadence for the rest of the meeting, resurrecting to 'connected'
+ * if the API/network recovers. Only stop() (toggle off / meeting end) ends it.
+ */
+const QUICK_RECONNECT_ATTEMPTS = 3;
 const RECONNECT_BASE_DELAY_MS = 300;
+const SLOW_RETRY_INTERVAL_MS = 15_000;
 /** Suppress re-detections of the same question (model may re-fire after a tool response). */
 const DUPLICATE_WINDOW_MS = 10_000;
+/**
+ * Ring buffer for audio that arrives while disconnected (initial connect,
+ * goAway reconnects every ~10 min, network blips). Flushed on reconnect so a
+ * question spoken during the gap is still heard. 20s of 16kHz mono PCM16.
+ */
+const GAP_BUFFER_MAX_BYTES = 16_000 * 2 * 20;
 
 /** Minimal surface of the @google/genai live session we use — injectable for tests. */
 export interface LiveSessionLike {
@@ -182,8 +201,11 @@ export class GeminiLiveRouter extends EventEmitter {
   private resumptionHandle: string | null = null;
   private reconnectAttempts = 0;
   private stopping = false;
+  private inSlowRetry = false;
   private reconnectTimer: NodeJS.Timeout | null = null;
   private recentQuestions: Array<{ text: string; at: number }> = [];
+  private gapBuffer: Buffer[] = [];
+  private gapBufferBytes = 0;
 
   constructor(
     private readonly getApiKey: () => string | undefined,
@@ -208,6 +230,8 @@ export class GeminiLiveRouter extends EventEmitter {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
     }
+    this.gapBuffer = [];
+    this.gapBufferBytes = 0;
     const session = this.session;
     this.session = null;
     try {
@@ -221,18 +245,52 @@ export class GeminiLiveRouter extends EventEmitter {
   /**
    * Tee point for interviewer-channel PCM (called next to googleSTT.write).
    * Resamples to the Live API's required 16kHz mono PCM16 and streams it.
-   * No-ops unless connected, so callers never need to guard.
+   * While disconnected (initial connect, goAway reconnect, network blip) the
+   * audio is ring-buffered and replayed on reconnect so no question is lost.
+   * Callers never need to guard — idle/stopped states drop silently.
    */
   public write(chunk: Buffer, sampleRate: number, numChannels = 1): void {
-    if (this.state !== 'connected' || !this.session) return;
+    if (this.state === 'idle' || this.state === 'stopped' || this.stopping) return;
     try {
       const pcm = resampleTo16kMono(chunk, sampleRate, numChannels);
       if (pcm.length === 0) return;
-      this.session.sendRealtimeInput({
-        audio: { data: pcm.toString('base64'), mimeType: 'audio/pcm;rate=16000' },
-      });
+      if (this.state === 'connected' && this.session) {
+        this.session.sendRealtimeInput({
+          audio: { data: pcm.toString('base64'), mimeType: 'audio/pcm;rate=16000' },
+        });
+      } else {
+        this.bufferGapAudio(pcm);
+      }
     } catch (err: any) {
       console.warn('[LiveRouter] write failed:', err?.message ?? err);
+    }
+  }
+
+  private bufferGapAudio(pcm16k: Buffer): void {
+    this.gapBuffer.push(pcm16k);
+    this.gapBufferBytes += pcm16k.length;
+    while (this.gapBufferBytes > GAP_BUFFER_MAX_BYTES && this.gapBuffer.length > 0) {
+      const dropped = this.gapBuffer.shift()!;
+      this.gapBufferBytes -= dropped.length;
+    }
+  }
+
+  /** Replay audio captured while disconnected. Server accepts faster-than-realtime input. */
+  private maybeFlushGapBuffer(): void {
+    if (this.state !== 'connected' || !this.session || this.gapBuffer.length === 0) return;
+    const chunks = this.gapBuffer;
+    this.gapBuffer = [];
+    this.gapBufferBytes = 0;
+    console.log(`[LiveRouter] replaying ${chunks.length} buffered gap chunk(s)`);
+    for (const pcm of chunks) {
+      try {
+        this.session.sendRealtimeInput({
+          audio: { data: pcm.toString('base64'), mimeType: 'audio/pcm;rate=16000' },
+        });
+      } catch (err: any) {
+        console.warn('[LiveRouter] gap replay failed:', err?.message ?? err);
+        return;
+      }
     }
   }
 
@@ -245,10 +303,20 @@ export class GeminiLiveRouter extends EventEmitter {
   private async connect(): Promise<void> {
     const apiKey = this.getApiKey();
     if (!apiKey) {
-      this.setState('failed', 'No Gemini API key configured');
+      // Visible failure, but keep the slow retry alive — the user may paste a
+      // key into Settings mid-meeting and Live Mode should self-heal.
+      if (!this.inSlowRetry) {
+        this.setState('failed', 'No Gemini API key configured');
+        this.inSlowRetry = true;
+      }
+      this.scheduleSlowRetry();
       return;
     }
-    this.setState(this.reconnectAttempts > 0 ? 'reconnecting' : 'connecting');
+    // During slow retry the chip stays 'failed' (visible) — no amber flapping
+    // every 15s; the next successful open flips it straight back to green.
+    if (!this.inSlowRetry) {
+      this.setState(this.reconnectAttempts > 0 ? 'reconnecting' : 'connecting');
+    }
     try {
       const session = await this.connectFn({
         apiKey,
@@ -268,7 +336,10 @@ export class GeminiLiveRouter extends EventEmitter {
         callbacks: {
           onopen: () => {
             this.reconnectAttempts = 0;
+            this.inSlowRetry = false;
             this.setState('connected');
+            // Replay anything spoken while we were disconnected.
+            this.maybeFlushGapBuffer();
           },
           onmessage: (msg) => this.handleMessage(msg),
           onerror: (e: any) => {
@@ -287,6 +358,9 @@ export class GeminiLiveRouter extends EventEmitter {
         return;
       }
       this.session = session;
+      // onopen may have fired before the session handle was assigned — flush
+      // now that both conditions (connected + session) can hold.
+      this.maybeFlushGapBuffer();
     } catch (err: any) {
       this.handleClose({ reason: err?.message ?? String(err) });
     }
@@ -370,21 +444,40 @@ export class GeminiLiveRouter extends EventEmitter {
 
   private scheduleReconnect(reason: string): void {
     if (this.stopping) return;
-    if (this.reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
-      // Hard-fail VISIBLE: surface the terminal state; never silently degrade.
-      console.error(`[LiveRouter] giving up after ${MAX_RECONNECT_ATTEMPTS} attempts: ${reason}`);
-      this.setState('failed', reason);
+    if (this.reconnectAttempts >= QUICK_RECONNECT_ATTEMPTS) {
+      // Hard-fail VISIBLE (red chip + reason) — but stay alive for the whole
+      // meeting: keep retrying on a slow cadence and resurrect on success.
+      // Emit 'failed' only on the transition so the UI doesn't flap.
+      if (!this.inSlowRetry) {
+        console.error(
+          `[LiveRouter] ${QUICK_RECONNECT_ATTEMPTS} quick attempts failed (${reason}) — visible-failed, retrying every ${SLOW_RETRY_INTERVAL_MS / 1000}s`
+        );
+        this.setState('failed', reason);
+        this.inSlowRetry = true;
+      } else {
+        console.warn(`[LiveRouter] slow retry failed (${reason}) — next in ${SLOW_RETRY_INTERVAL_MS / 1000}s`);
+      }
+      this.scheduleSlowRetry();
       return;
     }
     this.reconnectAttempts++;
     const delay = RECONNECT_BASE_DELAY_MS * this.reconnectAttempts;
     console.warn(
-      `[LiveRouter] reconnecting (attempt ${this.reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS}) in ${delay}ms — ${reason}`
+      `[LiveRouter] reconnecting (attempt ${this.reconnectAttempts}/${QUICK_RECONNECT_ATTEMPTS}) in ${delay}ms — ${reason}`
     );
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
       if (!this.stopping) void this.connect();
     }, delay);
+    this.reconnectTimer.unref?.();
+  }
+
+  private scheduleSlowRetry(): void {
+    if (this.stopping || this.reconnectTimer) return;
+    this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = null;
+      if (!this.stopping) void this.connect();
+    }, SLOW_RETRY_INTERVAL_MS);
     this.reconnectTimer.unref?.();
   }
 }

@@ -136,14 +136,14 @@ describe('GeminiLiveRouter connection lifecycle', () => {
     expect(cfg.inputAudioTranscription).toEqual({});
   });
 
-  it('retries with backoff and hard-fails VISIBLY after exhausting attempts', async () => {
+  it('retries with backoff and hard-fails VISIBLY after exhausting quick attempts', async () => {
     vi.useFakeTimers();
     const failingConnect: LiveConnectFn = vi.fn(async () => {
       throw new Error('boom 503');
     }) as any;
     const h = makeHarness({ connectFn: failingConnect });
     await h.router.start();
-    // initial attempt + 3 scheduled retries, then terminal 'failed'
+    // initial attempt + 3 scheduled retries, then visible 'failed'
     await vi.advanceTimersByTimeAsync(300);
     await vi.advanceTimersByTimeAsync(600);
     await vi.advanceTimersByTimeAsync(900);
@@ -152,6 +152,38 @@ describe('GeminiLiveRouter connection lifecycle', () => {
     expect(states[states.length - 1]).toBe('failed');
     expect(h.statuses[h.statuses.length - 1].reason).toContain('boom 503');
     expect(h.router.getState()).toBe('failed');
+  });
+
+  it('keeps retrying slowly after visible failure and resurrects on success', async () => {
+    vi.useFakeTimers();
+    let failCount = 0;
+    let cbs: any = null;
+    const session = {
+      sendRealtimeInput: () => {},
+      sendToolResponse: () => {},
+      close: () => {},
+    };
+    const connectFn: LiveConnectFn = vi.fn(async (params: any) => {
+      if (failCount < 5) {
+        failCount++;
+        throw new Error('offline');
+      }
+      cbs = params.callbacks;
+      return session as any;
+    }) as any;
+    const h = makeHarness({ connectFn });
+    await h.router.start();
+    await vi.advanceTimersByTimeAsync(300);
+    await vi.advanceTimersByTimeAsync(600);
+    await vi.advanceTimersByTimeAsync(900); // quick attempts exhausted (4 fails)
+    expect(h.router.getState()).toBe('failed');
+    await vi.advanceTimersByTimeAsync(15_000); // slow retry #1 → fails (5th)
+    expect(h.router.getState()).toBe('failed');
+    // 'failed' emitted exactly once — no status flapping during slow retries
+    expect(h.statuses.filter((s) => s.state === 'failed').length).toBe(1);
+    await vi.advanceTimersByTimeAsync(15_000); // slow retry #2 → succeeds
+    cbs.onopen();
+    expect(h.router.getState()).toBe('connected');
   });
 
   it('reconnects on unexpected close and reuses the stored resumption handle', async () => {
@@ -293,11 +325,70 @@ describe('GeminiLiveRouter question routing', () => {
 });
 
 describe('GeminiLiveRouter audio write path', () => {
-  it('drops audio unless connected', async () => {
+  it('buffers audio while disconnected and replays it on open', async () => {
+    // Delayed connect so the disconnected window is observable
+    let resolveConnect: ((s: any) => void) | null = null;
+    let cbs: any = null;
+    const sentAudio: any[] = [];
+    const session = {
+      sendRealtimeInput: (i: any) => sentAudio.push(i),
+      sendToolResponse: () => {},
+      close: () => {},
+    };
+    const connectFn: LiveConnectFn = vi.fn((params: any) => {
+      cbs = params.callbacks;
+      return new Promise((res) => {
+        resolveConnect = () => res(session);
+      });
+    }) as any;
+    const h = makeHarness({ connectFn });
+    const startP = h.router.start(); // connect pending
+    const raw = Buffer.alloc(320); // 10ms @ 16kHz
+    raw.writeInt16LE(1234, 0);
+    h.router.write(raw, 16_000); // no session yet → buffered
+    expect(sentAudio.length).toBe(0);
+    cbs.onopen(); // connected, session still unassigned → flush deferred
+    resolveConnect!(session);
+    await startP; // session assigned → buffered audio replayed
+    expect(sentAudio.length).toBe(1);
+    expect(Buffer.from(sentAudio[0].audio.data, 'base64').readInt16LE(0)).toBe(1234);
+    // Live audio flows directly from here
+    h.router.write(raw, 16_000);
+    expect(sentAudio.length).toBe(2);
+  });
+
+  it('replays audio spoken during a goAway reconnect gap', async () => {
+    vi.useFakeTimers();
     const h = makeHarness();
-    await h.router.start(); // connecting, not yet connected
-    h.router.write(Buffer.alloc(320), 16_000);
+    await h.router.start();
+    h.getCbs().onopen();
+    h.getCbs().onmessage({ goAway: {} }); // session dropped, reconnect pending
+    const raw = Buffer.alloc(320);
+    raw.writeInt16LE(-77, 0);
+    h.router.write(raw, 16_000); // during the gap → buffered
     expect(h.sentAudio.length).toBe(0);
+    await vi.advanceTimersByTimeAsync(300); // reconnect fires
+    h.getCbs().onopen(); // → flush
+    expect(h.sentAudio.length).toBe(1);
+    expect(Buffer.from(h.sentAudio[0].audio.data, 'base64').readInt16LE(0)).toBe(-77);
+  });
+
+  it('caps the gap buffer at 20s, dropping the oldest audio', async () => {
+    const h = makeHarness();
+    await h.router.start(); // connecting — everything buffers
+    for (let i = 0; i < 25; i++) {
+      const chunk = Buffer.alloc(16_000 * 2); // 1s of 16kHz PCM16
+      chunk.writeInt16LE(i, 0); // tag each second
+      h.router.write(chunk, 16_000);
+    }
+    h.getCbs().onopen(); // → flush what survived
+    const total = h.sentAudio.reduce(
+      (n: number, s: any) => n + Buffer.from(s.audio.data, 'base64').length,
+      0
+    );
+    expect(total).toBe(16_000 * 2 * 20); // exactly 20s kept
+    // seconds 0-4 were dropped — the first surviving chunk is tagged 5
+    expect(Buffer.from(h.sentAudio[0].audio.data, 'base64').readInt16LE(0)).toBe(5);
   });
 
   it('resamples and forwards PCM as base64 16kHz once connected', async () => {

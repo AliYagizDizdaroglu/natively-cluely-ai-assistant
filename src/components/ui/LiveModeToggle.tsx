@@ -42,7 +42,7 @@ export const LiveModeToggle: React.FC<LiveModeToggleProps> = ({ appearance }) =>
                     : 'Live: ON';
 
     const title = failed
-        ? `Live Mode failed: ${status.reason ?? 'unknown error'} — answers still work via the standard pipeline.`
+        ? `Live Mode failed: ${status.reason ?? 'unknown error'} — auto-retrying every 15s; answers still work via the standard pipeline.`
         : enabled
             ? 'Live Mode is listening to the interviewer channel and auto-answers detected questions. Click to turn off.'
             : 'Turn on Live Mode: a Gemini Live listener hears the interviewer and auto-answers (Gemma for coding, Flash for verbal).';
