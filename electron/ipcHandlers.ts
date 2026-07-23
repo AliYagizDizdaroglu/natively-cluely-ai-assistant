@@ -2406,6 +2406,19 @@ export function initializeIpcHandlers(appState: AppState): void {
     }
   });
 
+  // ── Live Mode (Gemini Live listener) ──────────────────────────────────────
+  // Toggle + state query. The router itself lives in main.ts (AppState); status
+  // updates flow renderer-ward via the 'live-mode-status' broadcast, detected
+  // questions via 'live-question'.
+  safeHandle("live-mode:set", async (_event, enabled: boolean) => {
+    appState.setLiveModeEnabled(!!enabled);
+    return { enabled: appState.getLiveModeEnabled(), state: appState.getLiveRouterState() };
+  });
+
+  safeHandle("live-mode:get", async () => {
+    return { enabled: appState.getLiveModeEnabled(), state: appState.getLiveRouterState() };
+  });
+
   safeHandle("generate-clarify", async () => {
     try {
       const intelligenceManager = appState.getIntelligenceManager();

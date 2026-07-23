@@ -217,6 +217,11 @@ export interface ElectronAPI {
     intent: 'verbal' | 'coding' | 'behavioral';
     contextSnapshot: string;
   }) => Promise<{ ok: boolean }>
+  // Live Mode (Gemini Live listener)
+  setLiveMode: (enabled: boolean) => Promise<{ enabled: boolean; state: string }>
+  getLiveMode: () => Promise<{ enabled: boolean; state: string }>
+  onLiveModeStatus: (callback: (data: { state: string; reason?: string }) => void) => () => void
+  onLiveQuestion: (callback: (data: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => void) => () => void
   onIntelligenceRefinedAnswerToken: (callback: (data: { token: string; intent: string }) => void) => () => void
   onIntelligenceRefinedAnswer: (callback: (data: { answer: string; intent: string }) => void) => () => void
   onIntelligenceFollowUpQuestionsUpdate: (callback: (data: { questions: string }) => void) => () => void

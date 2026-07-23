@@ -3,6 +3,7 @@ import icon from "../icon.png";
 import type { OverlayAppearance } from "../../lib/overlayAppearance";
 import { ContextToggle } from "./ContextToggle";
 import { FadeToggle } from "./FadeToggle";
+import { LiveModeToggle } from "./LiveModeToggle";
 
 interface TopPillProps {
     expanded: boolean;
@@ -58,6 +59,9 @@ export default function TopPill({
 
                 {/* CONTEXT TOGGLE — gates Resume + JD injection */}
                 <ContextToggle appearance={appearance} />
+
+                {/* LIVE TOGGLE — optional Gemini Live listener (auto-answer) */}
+                <LiveModeToggle appearance={appearance} />
 
                 {/* FADE TOGGLE — fades overlay while typing outside our window */}
                 <FadeToggle appearance={appearance} />

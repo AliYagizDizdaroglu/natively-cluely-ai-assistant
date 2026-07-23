@@ -159,6 +159,7 @@ import { SystemAudioCapture } from "./audio/SystemAudioCapture"
 import { MicrophoneCapture } from "./audio/MicrophoneCapture"
 import { GoogleSTT } from "./audio/GoogleSTT"
 import { RestSTT } from "./audio/RestSTT"
+import { GeminiLiveRouter } from "./audio/GeminiLiveRouter"
 import { DeepgramStreamingSTT } from "./audio/DeepgramStreamingSTT"
 import { SonioxStreamingSTT } from "./audio/SonioxStreamingSTT"
 import { ElevenLabsStreamingSTT } from "./audio/ElevenLabsStreamingSTT"
@@ -862,6 +863,12 @@ export class AppState {
   private googleSTT: STTProvider | null = null; // Interviewer
   private googleSTT_User: STTProvider | null = null; // User
 
+  // Live Mode (optional): Gemini Live listener on the interviewer channel.
+  // The live model only detects + routes questions (handle_question tool);
+  // answers still come from the normal engine path (Gemma coding / Flash verbal).
+  private liveRouter: GeminiLiveRouter | null = null;
+  private liveModeEnabled = false;
+
   private createSTTProvider(speaker: 'interviewer' | 'user'): STTProvider | null {
     const { CredentialsManager } = require('./services/CredentialsManager');
     const sttProvider = CredentialsManager.getInstance().getSttProvider();
@@ -1128,6 +1135,8 @@ export class AppState {
             console.log(`[Main] SystemAudio->STT: chunk #${_sysChunkCount}, ${chunk.length}B, googleSTT=${this.googleSTT ? 'active' : 'NULL'}`);
           }
           this.googleSTT?.write(chunk);
+          // Live Mode tee — no-ops unless the live router is connected.
+          this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
         });
         this.systemAudioCapture.on('sample_rate_changed', (rate: number) => {
           console.log(`[Main] SystemAudioCapture rate updated dynamically to ${rate}Hz`);
@@ -1241,6 +1250,8 @@ export class AppState {
           console.log(`[Main] (Reconfigured) SystemAudio->STT: chunk #${_rcfgSysChunkCount}, ${chunk.length}B, googleSTT=${this.googleSTT ? 'active' : 'NULL'}`);
         }
         this.googleSTT?.write(chunk);
+        // Live Mode tee — no-ops unless the live router is connected.
+        this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
       });
       this.systemAudioCapture.on('sample_rate_changed', (rate: number) => {
         console.log(`[Main] (Reconfigured) SystemAudioCapture rate updated dynamically to ${rate}Hz`);
@@ -1279,6 +1290,8 @@ export class AppState {
             console.log(`[Main] (Default) SystemAudio->STT: chunk #${_dfltSysChunkCount}, ${chunk.length}B, googleSTT=${this.googleSTT ? 'active' : 'NULL'}`);
           }
           this.googleSTT?.write(chunk);
+          // Live Mode tee — no-ops unless the live router is connected.
+          this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
         });
         this.systemAudioCapture.on('sample_rate_changed', (rate: number) => {
           console.log(`[Main] (Reconfigured Default) SystemAudioCapture rate updated dynamically to ${rate}Hz`);
@@ -1734,6 +1747,13 @@ export class AppState {
         this.systemAudioCapture?.start();
         this.googleSTT?.start();
 
+        // Live Mode (optional): Gemini Live listener on the same interviewer
+        // channel. Failure policy is hard-fail VISIBLE — status broadcasts to
+        // the UI; the whisper→detector→chip chain keeps running regardless.
+        if (this.liveModeEnabled) {
+          this.startLiveRouter();
+        }
+
         // Start Microphone
         this.microphoneCapture?.start();
         this.googleSTT_User?.start();
@@ -1760,6 +1780,60 @@ export class AppState {
     }, 0); // Defer to next event loop tick — ensures IPC response reaches renderer before audio init
   }
 
+  // ── Live Mode (Gemini Live listener) ────────────────────────────────────
+
+  public setLiveModeEnabled(enabled: boolean): void {
+    this.liveModeEnabled = !!enabled;
+    console.log(`[Main] Live Mode ${this.liveModeEnabled ? 'enabled' : 'disabled'}`);
+    if (this.liveModeEnabled && this.isMeetingActive) {
+      this.startLiveRouter();
+    } else if (!this.liveModeEnabled) {
+      this.stopLiveRouter();
+      this.broadcast('live-mode-status', { state: 'idle' });
+    }
+  }
+
+  public getLiveModeEnabled(): boolean {
+    return this.liveModeEnabled;
+  }
+
+  public getLiveRouterState(): string {
+    return this.liveRouter?.getState() ?? 'idle';
+  }
+
+  private startLiveRouter(): void {
+    this.stopLiveRouter();
+    const { CredentialsManager } = require('./services/CredentialsManager');
+    const router = new GeminiLiveRouter(
+      () => CredentialsManager.getInstance().getGeminiApiKey() || process.env.GEMINI_API_KEY
+    );
+    router.on('status', (s: { state: string; reason?: string }) => {
+      console.log(`[Main] Live Mode status: ${s.state}${s.reason ? ` (${s.reason})` : ''}`);
+      this.broadcast('live-mode-status', s);
+    });
+    router.on('question', (q: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => {
+      if (!this.isMeetingActive) return;
+      console.log(`[Main] Live question (${q.intent}): "${q.question.slice(0, 80)}"`);
+      // Renderer first: it kicks off stream metrics + shows the heard question,
+      // so the answer card gets TTFT/model attribution like a chip click would.
+      this.broadcast('live-question', { question: q.question, intent: q.intent });
+      // Same engine path as a chip click — Gemma 4 31B for coding, Flash verbal
+      // otherwise. All prompt/warmth/retry behavior applies unchanged.
+      void this.intelligenceManager
+        .runWhatShouldISay(q.question, 1.0, undefined, { intentOverride: q.intent })
+        .catch((err: any) => console.error('[Main] Live auto-answer failed:', err?.message ?? err));
+    });
+    this.liveRouter = router;
+    void router.start();
+  }
+
+  private stopLiveRouter(): void {
+    if (!this.liveRouter) return;
+    this.liveRouter.stop();
+    this.liveRouter.removeAllListeners();
+    this.liveRouter = null;
+  }
+
   public async endMeeting(): Promise<void> {
     console.log('[Main] Ending Meeting...');
 
@@ -1778,6 +1852,7 @@ export class AppState {
     // and the user sees their last words vanish.
     this.systemAudioCapture?.stop();
     this.microphoneCapture?.stop();
+    this.stopLiveRouter();
     this.googleSTT?.finalize?.();
     this.googleSTT_User?.finalize?.();
     await new Promise(resolve => setTimeout(resolve, 250));

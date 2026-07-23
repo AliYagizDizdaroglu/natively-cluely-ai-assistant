@@ -794,6 +794,25 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
 
 
 
+        // Live Mode: the main process auto-answers questions the Gemini Live
+        // listener detects (same engine path as a chip click). Mirror
+        // DetectedQuestionsPanel.onChipClickStart so the answer card gets
+        // stream metrics + model attribution ("· Live" marks the source), and
+        // surface the heard question as a user bubble for visible context.
+        if (window.electronAPI.onLiveQuestion) {
+            cleanups.push(window.electronAPI.onLiveQuestion((data) => {
+                sm.start();
+                sm.setSource(`${data.intent === 'coding' ? 'Gemma 4 31B' : 'Gemini Flash 3.1'} · Live`);
+                setIsProcessing(true);
+                setIsExpanded(true);
+                setMessages(prev => [...prev, {
+                    id: `live-${Date.now()}`,
+                    role: 'user',
+                    text: `🎙 ${data.question}`
+                }]);
+            }));
+        }
+
         cleanups.push(window.electronAPI.onIntelligenceSuggestedAnswerToken((data) => {
             // First-token marker for TTFT — fires on the first arriving token of this stream.
             // markFirstToken is idempotent (early-returns if firstTokenTs is already set).

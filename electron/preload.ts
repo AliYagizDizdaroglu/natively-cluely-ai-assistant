@@ -823,6 +823,23 @@ contextBridge.exposeInMainWorld("electronAPI", {
     intent: 'verbal' | 'coding' | 'behavioral';
     contextSnapshot: string;
   }) => ipcRenderer.invoke("answer-detected-question", payload),
+  // ── Live Mode (Gemini Live listener) ──
+  setLiveMode: (enabled: boolean) => ipcRenderer.invoke("live-mode:set", enabled),
+  getLiveMode: () => ipcRenderer.invoke("live-mode:get"),
+  onLiveModeStatus: (callback: (data: { state: string; reason?: string }) => void) => {
+    const subscription = (_: any, data: any) => callback(data)
+    ipcRenderer.on("live-mode-status", subscription)
+    return () => {
+      ipcRenderer.removeListener("live-mode-status", subscription)
+    }
+  },
+  onLiveQuestion: (callback: (data: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => void) => {
+    const subscription = (_: any, data: any) => callback(data)
+    ipcRenderer.on("live-question", subscription)
+    return () => {
+      ipcRenderer.removeListener("live-question", subscription)
+    }
+  },
   onIntelligenceRefinedAnswerToken: (callback: (data: { token: string; intent: string }) => void) => {
     const subscription = (_: any, data: any) => callback(data)
     ipcRenderer.on("intelligence-refined-answer-token", subscription)
