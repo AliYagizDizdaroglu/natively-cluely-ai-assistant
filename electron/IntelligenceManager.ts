@@ -249,6 +249,7 @@ export class IntelligenceManager extends EventEmitter {
         options: {
             intentOverride?: 'verbal' | 'coding' | 'behavioral';
             contextOverride?: string;
+            bypassCooldown?: boolean;
         } = {}
     ): Promise<string | null> {
         return this.engine.runWhatShouldISay(question, confidence, imagePaths, options);

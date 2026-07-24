@@ -245,15 +245,19 @@ export class IntelligenceEngine extends EventEmitter {
         options: {
             intentOverride?: 'verbal' | 'coding' | 'behavioral';
             contextOverride?: string;
+            bypassCooldown?: boolean;
         } = {}
     ): Promise<string | null> {
         const now = Date.now();
 
         // Bypass cooldown for explicit user actions: attached images (capture-and-
-        // process intent) and detected-question chip clicks (contextOverride).
-        // The cooldown exists to debounce auto-triggers — swallowing a deliberate
-        // click makes the chip appear dead.
-        const isExplicitAction = (imagePaths && imagePaths.length > 0) || !!options.contextOverride;
+        // process intent), detected-question chip clicks (contextOverride), and
+        // Live Mode auto-answers (bypassCooldown — the live model already judged
+        // this a real interviewer question, like a chip). The cooldown exists to
+        // debounce noisy auto-triggers — swallowing a deliberate answer makes the
+        // feature appear dead.
+        const isExplicitAction =
+            (imagePaths && imagePaths.length > 0) || !!options.contextOverride || !!options.bypassCooldown;
         if (!isExplicitAction && now - this.lastTriggerTime < this.triggerCooldown) {
             return null;
         }

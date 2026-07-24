@@ -1820,7 +1820,7 @@ export class AppState {
       // Same engine path as a chip click — Gemma 4 31B for coding, Flash verbal
       // otherwise. All prompt/warmth/retry behavior applies unchanged.
       void this.intelligenceManager
-        .runWhatShouldISay(q.question, 1.0, undefined, { intentOverride: q.intent })
+        .runWhatShouldISay(q.question, 1.0, undefined, { intentOverride: q.intent, bypassCooldown: true })
         .catch((err: any) => console.error('[Main] Live auto-answer failed:', err?.message ?? err));
     });
     this.liveRouter = router;

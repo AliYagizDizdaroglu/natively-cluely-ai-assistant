@@ -36,6 +36,14 @@ describe('INTERVIEW_COPILOT_PROMPT (Gemma 4 31B default prompt when no caller ov
         expect(INTERVIEW_COPILOT_PROMPT).toMatch(/opening sentence|step 1/i);
     });
 
+    it('reinforced: gives a fill-in template for the stdlib-naming sentence so Gemma cannot drop it as flourish', () => {
+        // A single live run via Live Mode dropped the stdlib mention while still
+        // hand-rolling correctly — the soft clause was the most droppable line.
+        // Front-loaded template + "skipping it is a failure" hardens compliance.
+        expect(INTERVIEW_COPILOT_PROMPT).toMatch(/but let me implement the mechanism directly/);
+        expect(INTERVIEW_COPILOT_PROMPT).toMatch(/skipping it is a failure/i);
+    });
+
     it('keeps the 5-part output shape intact (regression guard on the surrounding structure)', () => {
         expect(INTERVIEW_COPILOT_PROMPT).toContain('One short first-person sentence stating your approach');
         expect(INTERVIEW_COPILOT_PROMPT).toContain('step-by-step walkthrough');
@@ -51,6 +59,10 @@ describe('GEMMA_CODING_STYLE_SUFFIX / GEMMA_CODE_HINT_STYLE_SUFFIX content', () 
         expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/OrderedDict/);
         expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/opening.*sentence/i);
         expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/by hand/i);
+        // Reinforcement (2026-07): front-loaded fill-in template + hard failure
+        // framing, after a live miss on the Live Mode path.
+        expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/but let me implement the mechanism directly/);
+        expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/skipping it is a failure/i);
     });
 
     it('lighter Code Hint suffix stays idiomatic-only — never redirects the candidate to a different approach', () => {

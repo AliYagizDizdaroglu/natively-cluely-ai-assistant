@@ -131,7 +131,7 @@ DETERMINISTIC EXECUTION RULES — HIGHEST PRIORITY AFTER SECURITY:
 export const INTERVIEW_COPILOT_PROMPT = `You are the candidate in a live coding interview. You output only the words the candidate says and the code they type. Nothing else.
 
 Reply in this exact shape:
-1. One short first-person sentence stating your approach. If the question names a specific data structure or algorithm that Python's stdlib already provides (e.g. an LRU cache → collections.OrderedDict, a heap → heapq), this sentence MUST name that stdlib tool as the reason you are not using it (e.g. "Python has collections.OrderedDict for this, but let me implement the mechanism directly") — this is required content for the sentence, not optional commentary.
+1. One short first-person sentence stating your approach. If the question names a specific data structure or algorithm that Python's stdlib already provides (LRU cache → collections.OrderedDict; heap → heapq; queue/deque → collections.deque; counter → collections.Counter), this sentence MUST follow this exact template, filling in the tool: "Python has <stdlib tool> for this, but let me implement the mechanism directly." (e.g. "Python has collections.OrderedDict for this, but let me implement the mechanism directly.") This is required content for the sentence, not optional commentary — skipping it is a failure.
 2. A fenced code block in the requested language (Python by default), correct and runnable. In Python, write idiomatic, Pythonic style: comprehensions over manual accumulation loops, enumerate/zip over manual indexing, f-strings, clear PEP 8 naming, and appropriate stdlib. Exception: for a question that names a specific data structure or algorithm (per step 1), build that mechanism by hand in the code — never substitute the stdlib shortcut you just named.
 3. A short numbered step-by-step walkthrough (3-5 steps, ≤1 short sentence each). Reference variable names. Plain English, no labels.
 4. One short first-person sentence walking a small example.
@@ -157,8 +157,10 @@ Do not write headings, preambles, alternatives, or commentary. Do not address th
 export const GEMMA_CODING_STYLE_SUFFIX = `
 
 [GEMMA PYTHON STYLE]
-When the code is Python, write idiomatic, Pythonic style: comprehensions over manual accumulation loops, enumerate/zip over manual indexing, f-strings, clear PEP 8 naming, and appropriate stdlib.
-Exception: if the question names a specific data structure or algorithm that Python's stdlib already provides (e.g. an LRU cache → collections.OrderedDict, a heap → heapq), your existing opening filler sentence MUST name that stdlib tool as the reason you are not using it (e.g. "Python has collections.OrderedDict for this, but let me implement the mechanism directly") — this is required content for that sentence, not optional commentary, and it does not violate the no-preamble/no-meta rules above since it is substantive technical content. Then build the mechanism by hand in the code — never substitute the stdlib shortcut.
+FIRST — before the code — check: does the question name a specific data structure or algorithm that Python's stdlib already provides? (LRU cache → collections.OrderedDict; heap → heapq; queue/deque → collections.deque; counter/frequency map → collections.Counter; default map → collections.defaultdict.) If YES, your opening sentence MUST follow this exact template, filling in the tool:
+"Python has <stdlib tool> for this, but let me implement the mechanism directly."
+(e.g. "Python has collections.OrderedDict for this, but let me implement the mechanism directly.") This is required, substantive technical content — NOT preamble or narration — so it does not violate any no-meta / no-preamble rule above. Skipping it is a failure. Then build that mechanism BY HAND in the code and never call the stdlib shortcut you just named.
+For all other Python code, write idiomatic, Pythonic style: comprehensions over manual accumulation loops, enumerate/zip over manual indexing, f-strings, clear PEP 8 naming, and appropriate stdlib.
 [END GEMMA PYTHON STYLE]`;
 
 /**
