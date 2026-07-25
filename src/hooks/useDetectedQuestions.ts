@@ -7,6 +7,8 @@ export interface DetectedQuestionChip {
     confidence: number;
     contextSnapshot: string;
     detectedAt: number;
+    /** 'live' = heard by the Gemini Live listener; absent/undefined = whisper→Groq detector. */
+    source?: 'live' | 'whisper';
 }
 
 const MAX_CHIPS = 5;

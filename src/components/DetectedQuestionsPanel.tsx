@@ -72,6 +72,7 @@ export const DetectedQuestionsPanel: React.FC<DetectedQuestionsPanelProps> = ({ 
                             id={chip.id}
                             question={chip.question}
                             intent={chip.intent}
+                            source={chip.source}
                             onClick={(id) => {
                                 resetCollapseTimer();
                                 onChipClickStart?.(chip.intent);

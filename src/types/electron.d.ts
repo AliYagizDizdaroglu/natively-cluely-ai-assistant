@@ -203,6 +203,7 @@ export interface ElectronAPI {
     confidence: number;
     contextSnapshot: string;
     detectedAt: number;
+    source?: 'live' | 'whisper';
   }) => void) => () => void
   onDetectedQuestionUpdate: (callback: (chip: {
     id: string;
