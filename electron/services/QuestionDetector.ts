@@ -80,6 +80,13 @@ export class QuestionDetector {
      */
     private generation = 0;
 
+    /**
+     * When false, the whisper→chip detection pipeline is muted: transcript /
+     * speaker events are ignored and no detect() calls fire. Lets the user run
+     * Live-only (or neither) without tearing down audio. Default on.
+     */
+    private enabled = true;
+
     constructor(opts: QuestionDetectorOptions) {
         this.opts = {
             ...DEFAULTS,
@@ -90,7 +97,22 @@ export class QuestionDetector {
         } as Required<QuestionDetectorOptions>;
     }
 
+    /** Mute/unmute the whisper→chip pipeline. Muting also cancels any pending debounce. */
+    setEnabled(enabled: boolean): void {
+        this.enabled = !!enabled;
+        if (!this.enabled && this.silenceTimer) {
+            clearTimeout(this.silenceTimer);
+            this.silenceTimer = null;
+        }
+        console.log(`[QuestionDetector] detection ${this.enabled ? 'enabled' : 'disabled'}`);
+    }
+
+    isEnabled(): boolean {
+        return this.enabled;
+    }
+
     onTranscriptFinal(segment: TranscriptSegmentLite): void {
+        if (!this.enabled) return;
         if (segment.speaker !== 'interviewer' || !segment.final) return;
         // Fast path: a final segment ending in '?' is a strong end-of-question
         // signal (Whisper punctuates reliably) — skip the silence debounce.
@@ -118,6 +140,7 @@ export class QuestionDetector {
     }
 
     onSpeakerChange(prevSpeaker: string, newSpeaker: string): void {
+        if (!this.enabled) return;
         // Interviewer handed off (silence or user starting): fire immediately
         if (prevSpeaker === 'interviewer' && newSpeaker !== 'interviewer') {
             if (this.silenceTimer) {

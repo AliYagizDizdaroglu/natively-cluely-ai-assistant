@@ -139,6 +139,15 @@ export class IntelligenceManager extends EventEmitter {
         }
     }
 
+    /** Mute/unmute the whisper→chip detection pipeline (independent of Live Mode). */
+    setDetectionEnabled(enabled: boolean): void {
+        this.questionDetector.setEnabled(enabled);
+    }
+
+    getDetectionEnabled(): boolean {
+        return this.questionDetector.isEnabled();
+    }
+
     /** Clear detector state — call on meeting boundary. */
     clearDetectedQuestions(): void {
         this.questionDetector.clear();

@@ -9,48 +9,47 @@ interface LiveModeToggleProps {
 
 /**
  * TopPill chip for the optional Live Mode (Gemini Live listener).
- * One click toggles; the status dot mirrors the router state:
- *   gray  = off / idle / stopped
- *   amber = connecting / reconnecting
- *   green = connected (listening)
- *   red   = FAILED — hard-fail visible (user's choice): the reason goes in the
- *           tooltip and the chip stays red until toggled off/on or fixed.
+ * One click cycles Off → Suggest → Auto → Off.
+ *   Off     — grey, router down
+ *   Suggest — detected question drops a chip you click (safest for real interviews)
+ *   Auto    — detected question answered hands-free
+ * The status dot mirrors the router:
+ *   grey off/idle · amber connecting/reconnecting · green connected · red FAILED
+ * Red is hard-fail VISIBLE (auto-retrying) — reason lives in the tooltip.
  */
 export const LiveModeToggle: React.FC<LiveModeToggleProps> = ({ appearance }) => {
-    const { enabled, status, toggle } = useLiveMode();
+    const { mode, status, cycle } = useLiveMode();
 
-    const failed = enabled && status.state === 'failed';
-    const connecting = enabled && (status.state === 'connecting' || status.state === 'reconnecting');
-    const connected = enabled && status.state === 'connected';
+    const on = mode !== 'off';
+    const failed = on && status.state === 'failed';
+    const connecting = on && (status.state === 'connecting' || status.state === 'reconnecting');
+    const connected = on && status.state === 'connected';
 
-    const dotClass = failed
-        ? 'bg-red-400'
-        : connected
-            ? 'bg-emerald-400'
-            : connecting
-                ? 'bg-amber-300 animate-pulse'
-                : 'bg-white/30';
-
-    const label = !enabled
-        ? 'Live: OFF'
+    const dotClass = !on
+        ? 'bg-white/30'
         : failed
-            ? 'Live: FAILED'
+            ? 'bg-red-400'
             : connected
-                ? 'Live: ON'
+                ? 'bg-emerald-400'
                 : connecting
-                    ? 'Live: …'
-                    : 'Live: ON';
+                    ? 'bg-amber-300 animate-pulse'
+                    : 'bg-white/30';
 
+    const label = mode === 'off' ? 'Live: OFF' : mode === 'suggest' ? 'Live: Suggest' : 'Live: Auto';
+
+    const modeExplain = mode === 'suggest'
+        ? 'Suggest: a detected question drops a chip you click to answer.'
+        : mode === 'auto'
+            ? 'Auto: detected questions are answered hands-free.'
+            : 'Off: the Live listener is not running.';
     const title = failed
         ? `Live Mode failed: ${status.reason ?? 'unknown error'} — auto-retrying every 15s; answers still work via the standard pipeline.`
-        : enabled
-            ? 'Live Mode is listening to the interviewer channel and auto-answers detected questions. Click to turn off.'
-            : 'Turn on Live Mode: a Gemini Live listener hears the interviewer and auto-answers (Gemma for coding, Flash for verbal).';
+        : `${modeExplain} Click to cycle Off → Suggest → Auto.`;
 
     return (
         <button
             type="button"
-            onClick={() => { void toggle(); }}
+            onClick={() => { void cycle(); }}
             aria-label={title}
             title={title}
             className={`
@@ -64,7 +63,7 @@ export const LiveModeToggle: React.FC<LiveModeToggleProps> = ({ appearance }) =>
                 font-medium
                 border
                 interaction-base interaction-hover interaction-press
-                ${enabled ? 'opacity-100' : 'opacity-80'}
+                ${on ? 'opacity-100' : 'opacity-80'}
                 ${failed ? 'border-red-400/50' : ''}
             `}
             style={appearance.chipStyle}

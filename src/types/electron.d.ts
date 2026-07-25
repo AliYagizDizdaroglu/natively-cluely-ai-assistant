@@ -218,10 +218,13 @@ export interface ElectronAPI {
     contextSnapshot: string;
   }) => Promise<{ ok: boolean }>
   // Live Mode (Gemini Live listener)
-  setLiveMode: (enabled: boolean) => Promise<{ enabled: boolean; state: string }>
-  getLiveMode: () => Promise<{ enabled: boolean; state: string }>
+  setLiveMode: (mode: 'off' | 'suggest' | 'auto') => Promise<{ mode: 'off' | 'suggest' | 'auto'; state: string }>
+  getLiveMode: () => Promise<{ mode: 'off' | 'suggest' | 'auto'; state: string }>
   onLiveModeStatus: (callback: (data: { state: string; reason?: string }) => void) => () => void
   onLiveQuestion: (callback: (data: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => void) => () => void
+  // Whisper→chip detection pipeline (independent on/off)
+  setDetectionEnabled: (enabled: boolean) => Promise<{ enabled: boolean }>
+  getDetectionEnabled: () => Promise<{ enabled: boolean }>
   onIntelligenceRefinedAnswerToken: (callback: (data: { token: string; intent: string }) => void) => () => void
   onIntelligenceRefinedAnswer: (callback: (data: { answer: string; intent: string }) => void) => () => void
   onIntelligenceFollowUpQuestionsUpdate: (callback: (data: { questions: string }) => void) => () => void

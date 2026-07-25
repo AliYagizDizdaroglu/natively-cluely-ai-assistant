@@ -824,8 +824,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
     contextSnapshot: string;
   }) => ipcRenderer.invoke("answer-detected-question", payload),
   // ── Live Mode (Gemini Live listener) ──
-  setLiveMode: (enabled: boolean) => ipcRenderer.invoke("live-mode:set", enabled),
+  setLiveMode: (mode: 'off' | 'suggest' | 'auto') => ipcRenderer.invoke("live-mode:set", mode),
   getLiveMode: () => ipcRenderer.invoke("live-mode:get"),
+  // ── Whisper→chip detection pipeline (independent on/off) ──
+  setDetectionEnabled: (enabled: boolean) => ipcRenderer.invoke("detection:set-enabled", enabled),
+  getDetectionEnabled: () => ipcRenderer.invoke("detection:get-enabled"),
   onLiveModeStatus: (callback: (data: { state: string; reason?: string }) => void) => {
     const subscription = (_: any, data: any) => callback(data)
     ipcRenderer.on("live-mode-status", subscription)

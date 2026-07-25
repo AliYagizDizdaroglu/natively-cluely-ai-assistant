@@ -4,6 +4,7 @@ import type { OverlayAppearance } from "../../lib/overlayAppearance";
 import { ContextToggle } from "./ContextToggle";
 import { FadeToggle } from "./FadeToggle";
 import { LiveModeToggle } from "./LiveModeToggle";
+import { DetectionToggle } from "./DetectionToggle";
 
 interface TopPillProps {
     expanded: boolean;
@@ -60,7 +61,10 @@ export default function TopPill({
                 {/* CONTEXT TOGGLE — gates Resume + JD injection */}
                 <ContextToggle appearance={appearance} />
 
-                {/* LIVE TOGGLE — optional Gemini Live listener (auto-answer) */}
+                {/* DETECT TOGGLE — whisper→chip question detection on/off */}
+                <DetectionToggle appearance={appearance} />
+
+                {/* LIVE TOGGLE — Gemini Live listener: Off / Suggest / Auto */}
                 <LiveModeToggle appearance={appearance} />
 
                 {/* FADE TOGGLE — fades overlay while typing outside our window */}

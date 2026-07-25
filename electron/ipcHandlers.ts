@@ -2407,16 +2407,27 @@ export function initializeIpcHandlers(appState: AppState): void {
   });
 
   // ── Live Mode (Gemini Live listener) ──────────────────────────────────────
-  // Toggle + state query. The router itself lives in main.ts (AppState); status
-  // updates flow renderer-ward via the 'live-mode-status' broadcast, detected
-  // questions via 'live-question'.
-  safeHandle("live-mode:set", async (_event, enabled: boolean) => {
-    appState.setLiveModeEnabled(!!enabled);
-    return { enabled: appState.getLiveModeEnabled(), state: appState.getLiveRouterState() };
+  // Three-state mode (off / suggest / auto) + router state query. The router
+  // lives in main.ts (AppState); status flows via 'live-mode-status', auto
+  // answers via 'live-question', suggest chips via 'detected-question'.
+  safeHandle("live-mode:set", async (_event, mode: 'off' | 'suggest' | 'auto') => {
+    appState.setLiveMode(mode);
+    return { mode: appState.getLiveMode(), state: appState.getLiveRouterState() };
   });
 
   safeHandle("live-mode:get", async () => {
-    return { enabled: appState.getLiveModeEnabled(), state: appState.getLiveRouterState() };
+    return { mode: appState.getLiveMode(), state: appState.getLiveRouterState() };
+  });
+
+  // ── Whisper→chip question detection (the STT detection pipeline) ───────────
+  // Independent on/off so the user can run Live-only, chips-only, or both.
+  safeHandle("detection:set-enabled", async (_event, enabled: boolean) => {
+    appState.getIntelligenceManager().setDetectionEnabled(!!enabled);
+    return { enabled: appState.getIntelligenceManager().getDetectionEnabled() };
+  });
+
+  safeHandle("detection:get-enabled", async () => {
+    return { enabled: appState.getIntelligenceManager().getDetectionEnabled() };
   });
 
   safeHandle("generate-clarify", async () => {

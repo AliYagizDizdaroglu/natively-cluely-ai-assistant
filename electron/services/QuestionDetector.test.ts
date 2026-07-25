@@ -55,6 +55,53 @@ describe('QuestionDetector', () => {
         expect(chips[0].contextSnapshot).toBe('ctx');
     });
 
+    it('setEnabled(false) mutes the pipeline: no fast-path fire, no debounce fire', async () => {
+        const client = makeClientWith([
+            { detected: true, question: 'What is X?', intent: 'verbal', confidence: 0.9 },
+        ]);
+        const chips: DetectedQuestionChip[] = [];
+        const det = new QuestionDetector({
+            client,
+            snapshotProvider: stubSnapshotProvider('i', 'c'),
+            onChip: c => chips.push(c),
+        });
+        det.setEnabled(false);
+        expect(det.isEnabled()).toBe(false);
+
+        // Fast path (ends with '?') — must NOT fire while disabled
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'what is X exactly?', timestamp: 0, final: true });
+        // Debounce path — must NOT fire while disabled
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'explain the architecture', timestamp: 0, final: true });
+        await vi.runAllTimersAsync();
+        expect(client.detect).not.toHaveBeenCalled();
+        expect(chips).toHaveLength(0);
+
+        // Re-enable → detection works again (fast path)
+        det.setEnabled(true);
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'what is X exactly?', timestamp: 0, final: true });
+        await vi.runAllTimersAsync();
+        expect(client.detect).toHaveBeenCalledTimes(1);
+        expect(chips).toHaveLength(1);
+    });
+
+    it('setEnabled(false) cancels a pending debounce so it never fires late', async () => {
+        const client = makeClientWith([
+            { detected: true, question: 'What is X?', intent: 'verbal', confidence: 0.9 },
+        ]);
+        const chips: DetectedQuestionChip[] = [];
+        const det = new QuestionDetector({
+            client,
+            snapshotProvider: stubSnapshotProvider('i', 'c'),
+            onChip: c => chips.push(c),
+        });
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'explain the architecture', timestamp: 0, final: true });
+        await vi.advanceTimersByTimeAsync(1000); // partway through the 1.5s debounce
+        det.setEnabled(false);
+        await vi.runAllTimersAsync();
+        expect(client.detect).not.toHaveBeenCalled();
+        expect(chips).toHaveLength(0);
+    });
+
     it('resets silence timer on each new interviewer segment', async () => {
         const client = makeClientWith([
             { detected: true, question: 'Tell me about Q', intent: 'verbal', confidence: 0.9 },

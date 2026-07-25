@@ -866,8 +866,12 @@ export class AppState {
   // Live Mode (optional): Gemini Live listener on the interviewer channel.
   // The live model only detects + routes questions (handle_question tool);
   // answers still come from the normal engine path (Gemma coding / Flash verbal).
+  //   'off'     — router not running
+  //   'suggest' — detected question surfaces a chip (user clicks to answer)
+  //   'auto'    — detected question is answered immediately (hands-free)
   private liveRouter: GeminiLiveRouter | null = null;
-  private liveModeEnabled = false;
+  private liveMode: 'off' | 'suggest' | 'auto' = 'off';
+  private liveChipSeq = 0;
 
   private createSTTProvider(speaker: 'interviewer' | 'user'): STTProvider | null {
     const { CredentialsManager } = require('./services/CredentialsManager');
@@ -1750,7 +1754,7 @@ export class AppState {
         // Live Mode (optional): Gemini Live listener on the same interviewer
         // channel. Failure policy is hard-fail VISIBLE — status broadcasts to
         // the UI; the whisper→detector→chip chain keeps running regardless.
-        if (this.liveModeEnabled) {
+        if (this.liveMode !== 'off') {
           this.startLiveRouter();
         }
 
@@ -1782,19 +1786,23 @@ export class AppState {
 
   // ── Live Mode (Gemini Live listener) ────────────────────────────────────
 
-  public setLiveModeEnabled(enabled: boolean): void {
-    this.liveModeEnabled = !!enabled;
-    console.log(`[Main] Live Mode ${this.liveModeEnabled ? 'enabled' : 'disabled'}`);
-    if (this.liveModeEnabled && this.isMeetingActive) {
-      this.startLiveRouter();
-    } else if (!this.liveModeEnabled) {
+  public setLiveMode(mode: 'off' | 'suggest' | 'auto'): void {
+    const next = mode === 'suggest' || mode === 'auto' ? mode : 'off';
+    const wasRunning = this.liveMode !== 'off';
+    this.liveMode = next;
+    console.log(`[Main] Live Mode → ${next}`);
+    if (next === 'off') {
       this.stopLiveRouter();
       this.broadcast('live-mode-status', { state: 'idle' });
+    } else if (this.isMeetingActive && !wasRunning) {
+      // off → suggest/auto during a meeting: bring the router up. suggest↔auto
+      // needs no reconnect — the mode is read live in the question handler.
+      this.startLiveRouter();
     }
   }
 
-  public getLiveModeEnabled(): boolean {
-    return this.liveModeEnabled;
+  public getLiveMode(): 'off' | 'suggest' | 'auto' {
+    return this.liveMode;
   }
 
   public getLiveRouterState(): string {
@@ -1812,8 +1820,32 @@ export class AppState {
       this.broadcast('live-mode-status', s);
     });
     router.on('question', (q: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => {
-      if (!this.isMeetingActive) return;
-      console.log(`[Main] Live question (${q.intent}): "${q.question.slice(0, 80)}"`);
+      if (!this.isMeetingActive || this.liveMode === 'off') return;
+      console.log(`[Main] Live question (${q.intent}, mode=${this.liveMode}): "${q.question.slice(0, 80)}"`);
+
+      if (this.liveMode === 'suggest') {
+        // Surface a chip through the SAME path the whisper detector uses — the
+        // renderer's existing chip UI + click handler take over (click answers
+        // via runWhatShouldISay with contextOverride, already cooldown-exempt).
+        // No answer is generated until the user clicks.
+        let contextSnapshot = '';
+        try {
+          contextSnapshot = this.intelligenceManager.getFormattedContext(60) ?? '';
+        } catch { /* context not ready — chip still works, answer uses live context */ }
+        const chip = {
+          id: `live-${Date.now()}-${++this.liveChipSeq}`,
+          question: q.question,
+          intent: q.intent,
+          confidence: 1.0,
+          contextSnapshot,
+          detectedAt: Date.now(),
+          source: 'live' as const,
+        };
+        this.broadcast('detected-question', chip);
+        return;
+      }
+
+      // mode === 'auto' — answer immediately, hands-free.
       // Renderer first: it kicks off stream metrics + shows the heard question,
       // so the answer card gets TTFT/model attribution like a chip click would.
       this.broadcast('live-question', { question: q.question, intent: q.intent });

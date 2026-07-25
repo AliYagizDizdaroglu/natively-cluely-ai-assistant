@@ -2,12 +2,12 @@ import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
-// Hook is mocked per-test via this mutable holder
 const hookState: {
-    enabled: boolean;
+    mode: 'off' | 'suggest' | 'auto';
     status: { state: string; reason?: string };
-    toggle: () => Promise<void>;
-} = { enabled: false, status: { state: 'idle' }, toggle: vi.fn(async () => {}) };
+    setLiveMode: (m: any) => Promise<void>;
+    cycle: () => void;
+} = { mode: 'off', status: { state: 'idle' }, setLiveMode: vi.fn(async () => {}), cycle: vi.fn() };
 
 vi.mock('../../hooks/useLiveMode', () => ({
     useLiveMode: () => hookState,
@@ -17,28 +17,36 @@ import { LiveModeToggle } from './LiveModeToggle';
 
 const appearance = { chipStyle: {}, pillStyle: {}, iconStyle: {} } as any;
 
-describe('LiveModeToggle', () => {
-    it('shows OFF when disabled', () => {
-        hookState.enabled = false;
+describe('LiveModeToggle (three-state)', () => {
+    it('shows OFF when off', () => {
+        hookState.mode = 'off';
         hookState.status = { state: 'idle' };
         render(<LiveModeToggle appearance={appearance} />);
         expect(screen.getByText('Live: OFF')).toBeTruthy();
     });
 
-    it('shows ON while connected', () => {
-        hookState.enabled = true;
+    it('shows Suggest and explains chip-click behavior in the tooltip', () => {
+        hookState.mode = 'suggest';
         hookState.status = { state: 'connected' };
         render(<LiveModeToggle appearance={appearance} />);
-        expect(screen.getByText('Live: ON')).toBeTruthy();
+        expect(screen.getByText('Live: Suggest')).toBeTruthy();
+        expect(screen.getByRole('button').getAttribute('title')).toMatch(/chip you click/i);
     });
 
-    it('hard-fail is VISIBLE: FAILED label + reason and auto-retry note in the tooltip', () => {
-        hookState.enabled = true;
+    it('shows Auto and explains hands-free behavior', () => {
+        hookState.mode = 'auto';
+        hookState.status = { state: 'connected' };
+        render(<LiveModeToggle appearance={appearance} />);
+        expect(screen.getByText('Live: Auto')).toBeTruthy();
+        expect(screen.getByRole('button').getAttribute('title')).toMatch(/hands-free/i);
+    });
+
+    it('hard-fail is VISIBLE: reason + auto-retry note in the tooltip when a mode is active', () => {
+        hookState.mode = 'auto';
         hookState.status = { state: 'failed', reason: 'quota exceeded' };
         render(<LiveModeToggle appearance={appearance} />);
-        expect(screen.getByText('Live: FAILED')).toBeTruthy();
-        const btn = screen.getByRole('button');
-        expect(btn.getAttribute('title')).toContain('quota exceeded');
-        expect(btn.getAttribute('title')).toContain('auto-retrying');
+        const title = screen.getByRole('button').getAttribute('title') || '';
+        expect(title).toContain('quota exceeded');
+        expect(title).toContain('auto-retrying');
     });
 });
