@@ -160,6 +160,7 @@ import { MicrophoneCapture } from "./audio/MicrophoneCapture"
 import { GoogleSTT } from "./audio/GoogleSTT"
 import { RestSTT } from "./audio/RestSTT"
 import { GeminiLiveRouter } from "./audio/GeminiLiveRouter"
+import { ChipDeduper } from "./services/ChipDeduper"
 import { DeepgramStreamingSTT } from "./audio/DeepgramStreamingSTT"
 import { SonioxStreamingSTT } from "./audio/SonioxStreamingSTT"
 import { ElevenLabsStreamingSTT } from "./audio/ElevenLabsStreamingSTT"
@@ -871,6 +872,8 @@ export class AppState {
   //   'auto'    — detected question is answered immediately (hands-free)
   private liveRouter: GeminiLiveRouter | null = null;
   private liveMode: 'off' | 'suggest' | 'auto' = 'off';
+  /** Shared across whisper→Groq and Live so one question yields one chip. */
+  private readonly chipDeduper = new ChipDeduper();
   private liveChipSeq = 0;
 
   private createSTTProvider(speaker: 'interviewer' | 'user'): STTProvider | null {
@@ -1706,6 +1709,9 @@ export class AppState {
     }
 
     this.isMeetingActive = true;
+    // Fresh meeting, fresh dedup history — a question asked in a previous
+    // meeting must not suppress the same question in this one.
+    this.chipDeduper.reset();
     this.broadcastMeetingState()
 
     // Keep the coding model (Gemma) + verbal fallback (Flash) hot for the whole
@@ -1822,6 +1828,14 @@ export class AppState {
     router.on('question', (q: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => {
       if (!this.isMeetingActive || this.liveMode === 'off') return;
       console.log(`[Main] Live question (${q.intent}, mode=${this.liveMode}): "${q.question.slice(0, 80)}"`);
+
+      // One dedup authority for both pipelines. Without this, whisper→Groq and
+      // the Live listener each broadcast their own chip for the same question.
+      const verdict = this.chipDeduper.admit({ question: q.question, source: 'live' });
+      if (!verdict.admitted) {
+        console.log(`[Main] suppressed duplicate live question (already surfaced by ${verdict.duplicateOfSource}): "${q.question.slice(0, 50)}"`);
+        return;
+      }
 
       if (this.liveMode === 'suggest') {
         // Surface a chip through the SAME path the whisper detector uses — the
@@ -2103,6 +2117,14 @@ export class AppState {
     })
 
     this.intelligenceManager.on('question-detected', (chip: any) => {
+      const verdict = this.chipDeduper.admit({
+        question: String(chip?.question ?? ''),
+        source: 'whisper',
+      })
+      if (!verdict.admitted) {
+        console.log(`[Main] suppressed duplicate whisper chip (already surfaced by ${verdict.duplicateOfSource}): "${String(chip?.question ?? '').slice(0, 50)}"`)
+        return
+      }
       const win = mainWindow()
       console.log(`[Main] forwarding detected-question → renderer (win=${!!win}) intent=${chip?.intent} q="${String(chip?.question ?? '').slice(0, 50)}"`)
       if (win) {
