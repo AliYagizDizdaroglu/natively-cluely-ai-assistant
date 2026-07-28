@@ -161,6 +161,7 @@ import { GoogleSTT } from "./audio/GoogleSTT"
 import { RestSTT } from "./audio/RestSTT"
 import { GeminiLiveRouter } from "./audio/GeminiLiveRouter"
 import { ChipDeduper } from "./services/ChipDeduper"
+import { SttChannel } from "./audio/SttChannel"
 import { DeepgramStreamingSTT } from "./audio/DeepgramStreamingSTT"
 import { SonioxStreamingSTT } from "./audio/SonioxStreamingSTT"
 import { ElevenLabsStreamingSTT } from "./audio/ElevenLabsStreamingSTT"
@@ -875,16 +876,15 @@ export class AppState {
   /** Shared across whisper→Groq and Live so one question yields one chip. */
   private readonly chipDeduper = new ChipDeduper();
   /**
-   * Interviewer STT channel on/off. Measured 2026-07-28: when Live Mode is on
-   * it detects every question ~2.5s sooner than the whisper→Groq path and finds
-   * nothing that path misses, so transcribing the interviewer becomes pure cost.
-   * Gating the writes (rather than tearing down the provider) keeps the stream
-   * warm so it resumes instantly — Live is preview-tier and can hard-fail.
-   *
-   * Only the INTERVIEWER channel. The user/mic channel is untouched: Live never
-   * hears the candidate, so that transcript is the only record of what they said.
+   * Interviewer STT channel on/off. Only the INTERVIEWER channel — the user/mic
+   * channel is untouched, since Live never hears the candidate and that
+   * transcript is the only record of what they said. See SttChannel for why
+   * this gates rather than disposes.
    */
-  private sttEnabled = true;
+  private readonly sttChannel = new SttChannel(
+    () => this.googleSTT,
+    (enabled) => this.broadcast('stt-enabled-changed', { enabled })
+  );
   private liveChipSeq = 0;
 
   private createSTTProvider(speaker: 'interviewer' | 'user'): STTProvider | null {
@@ -1890,24 +1890,17 @@ export class AppState {
    * Live, and the user/mic channel running.
    */
   private writeInterviewerStt(chunk: Buffer): void {
-    if (!this.sttEnabled) return;
-    this.googleSTT?.write(chunk);
+    this.sttChannel.write(chunk);
   }
 
   public setSttEnabled(enabled: boolean): void {
-    if (this.sttEnabled === enabled) return;
-    this.sttEnabled = enabled;
+    if (this.sttChannel.isEnabled() === enabled) return;
     console.log(`[Main] interviewer STT channel ${enabled ? 'ENABLED' : 'DISABLED'}`);
-    if (!enabled) {
-      // Close out whatever is half-transcribed so no partial lands later and
-      // gets attributed to speech from after the switch-off.
-      this.googleSTT?.notifySpeechEnded?.();
-    }
-    this.broadcast('stt-enabled-changed', { enabled });
+    this.sttChannel.setEnabled(enabled);
   }
 
   public getSttEnabled(): boolean {
-    return this.sttEnabled;
+    return this.sttChannel.isEnabled();
   }
 
   private stopLiveRouter(): void {
