@@ -5,6 +5,7 @@ import {
   resampleTo16kMono,
   LIVE_LISTENER_PROMPT,
   HANDLE_QUESTION_TOOL,
+  hasQuestionSubstance,
   type LiveConnectFn,
   type LiveSessionLike,
 } from './GeminiLiveRouter';
@@ -57,6 +58,51 @@ function makeHarness(opts?: { apiKey?: string | undefined; connectFn?: LiveConne
 
 afterEach(() => {
   vi.useRealTimers();
+});
+
+describe('hasQuestionSubstance', () => {
+  it('rejects the mid-turn fragment that produced a junk answer', () => {
+    // realistic-paths V5: "Um, so, what is... [2s pause] how would you explain
+    // eventual consistency" fired "What is?" during the pause and answered it.
+    expect(hasQuestionSubstance('What is?')).toBe(false);
+    expect(hasQuestionSubstance('Um, so what is')).toBe(false);
+    expect(hasQuestionSubstance('So?')).toBe(false);
+  });
+
+  it('keeps a terse but real prompt', () => {
+    // Why content words and not a word-count floor.
+    expect(hasQuestionSubstance('Reverse a linked list.')).toBe(true);
+  });
+
+  it('keeps every shape of real question we have observed', () => {
+    for (const q of [
+      'Tell me about a time you genuinely failed at something.',
+      'How would you explain eventual consistency to a junior engineer?',
+      'Write a function that checks whether a string is a palindrome.',
+      'How would you scale out the database?',
+      'I want to understand how you handle sustained pressure.',
+    ]) {
+      expect(hasQuestionSubstance(q), q).toBe(true);
+    }
+  });
+});
+
+describe('GeminiLiveRouter fragment suppression', () => {
+  it('does not emit a question for a contentless fragment, but still acks it', async () => {
+    const h = makeHarness();
+    await h.router.start();
+    h.getCbs().onopen();
+    h.getCbs().onmessage({
+      toolCall: {
+        functionCalls: [
+          { id: 'c1', name: 'handle_question', args: { question: 'What is?', category: 'verbal_technical' } },
+        ],
+      },
+    });
+    expect(h.questions).toHaveLength(0);
+    // The model's turn must still complete or the session stalls.
+    expect(h.toolResponses).toHaveLength(1);
+  });
 });
 
 describe('liveCategoryToIntent', () => {

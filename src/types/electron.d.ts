@@ -232,6 +232,8 @@ export interface ElectronAPI {
   // Whisper→chip detection pipeline (independent on/off)
   setDetectionEnabled: (enabled: boolean) => Promise<{ enabled: boolean }>
   getDetectionEnabled: () => Promise<{ enabled: boolean }>
+  setSttEnabled: (enabled: boolean) => Promise<{ enabled: boolean }>
+  getSttEnabled: () => Promise<{ enabled: boolean }>
   onIntelligenceRefinedAnswerToken: (callback: (data: { token: string; intent: string }) => void) => () => void
   onIntelligenceRefinedAnswer: (callback: (data: { answer: string; intent: string }) => void) => () => void
   onIntelligenceFollowUpQuestionsUpdate: (callback: (data: { questions: string }) => void) => () => void

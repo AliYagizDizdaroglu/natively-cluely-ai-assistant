@@ -93,6 +93,46 @@ export const HANDLE_QUESTION_TOOL = {
   ],
 };
 
+/**
+ * Function words — carry no subject matter on their own. Used to tell a real
+ * question from a fragment the model emitted mid-turn.
+ */
+const FUNCTION_WORDS = new Set([
+  'a', 'about', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'been', 'but',
+  'by', 'can', 'could', 'did', 'do', 'does', 'for', 'from', 'had', 'has',
+  'have', 'how', 'i', 'if', 'in', 'is', 'it', 'its', 'just', 'like', 'may',
+  'me', 'might', 'much', 'my', 'of', 'on', 'or', 'our', 'out', 'should', 'so',
+  'some', 'that', 'the', 'their', 'them', 'then', 'there', 'these', 'they',
+  'this', 'to', 'um', 'up', 'us', 'was', 'we', 'were', 'what', 'when', 'where',
+  'which', 'who', 'why', 'will', 'with', 'would', 'you', 'your',
+]);
+
+/**
+ * Minimum topic words for a report to be treated as a real question.
+ *
+ * Measured 2026-07-28: on a mid-question pause the listener sometimes emits the
+ * partial turn as a question — "What is?" — which then gets answered, producing
+ * a junk card (realistic-paths V5). Every genuine reported question in a 35-fire
+ * corpus carried >= 2 content words; the fragments carried 0. Two is chosen over
+ * a word-count floor so a terse-but-real prompt ("Reverse a linked list.")
+ * still passes.
+ */
+const MIN_CONTENT_WORDS = 2;
+
+/** Topic-bearing words in a question, deduped. */
+export function questionContentWords(question: string): string[] {
+  const words = question.toLowerCase().match(/[a-z][a-z'-]*/g) ?? [];
+  return [...new Set(words.filter((w) => w.length > 1 && !FUNCTION_WORDS.has(w)))];
+}
+
+/**
+ * Does this look like a question at all, as opposed to a fragment the model
+ * emitted before the interviewer finished speaking?
+ */
+export function hasQuestionSubstance(question: string): boolean {
+  return questionContentWords(question).length >= MIN_CONTENT_WORDS;
+}
+
 /** Map the live model's routing category onto the existing chip intent union. */
 export function liveCategoryToIntent(category: string): ChipIntent {
   if (category === 'coding_heavy') return 'coding';
@@ -407,7 +447,12 @@ export class GeminiLiveRouter extends EventEmitter {
         ).includes(rawCategory as LiveCategory)
           ? (rawCategory as LiveCategory)
           : 'verbal_technical';
-        if (!question || this.isDuplicate(question)) continue;
+        if (!question) continue;
+        if (!hasQuestionSubstance(question)) {
+          console.log(`[LiveRouter] ignored fragment (no subject matter): "${question}"`);
+          continue;
+        }
+        if (this.isDuplicate(question)) continue;
         const event: LiveQuestionEvent = {
           question,
           category,

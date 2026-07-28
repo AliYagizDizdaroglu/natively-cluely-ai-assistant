@@ -2460,6 +2460,15 @@ export function initializeIpcHandlers(appState: AppState): void {
     return { enabled: appState.getIntelligenceManager().getDetectionEnabled() };
   });
 
+  safeHandle("stt:set-enabled", async (_event, enabled: boolean) => {
+    appState.setSttEnabled(!!enabled);
+    return { enabled: appState.getSttEnabled() };
+  });
+
+  safeHandle("stt:get-enabled", async () => {
+    return { enabled: appState.getSttEnabled() };
+  });
+
   safeHandle("generate-clarify", async () => {
     try {
       const intelligenceManager = appState.getIntelligenceManager();

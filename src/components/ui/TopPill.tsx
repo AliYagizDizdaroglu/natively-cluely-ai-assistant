@@ -5,6 +5,7 @@ import { ContextToggle } from "./ContextToggle";
 import { FadeToggle } from "./FadeToggle";
 import { LiveModeToggle } from "./LiveModeToggle";
 import { DetectionToggle } from "./DetectionToggle";
+import { SttToggle } from "./SttToggle";
 
 interface TopPillProps {
     expanded: boolean;
@@ -63,6 +64,7 @@ export default function TopPill({
 
                 {/* DETECT TOGGLE — whisper→chip question detection on/off */}
                 <DetectionToggle appearance={appearance} />
+                <SttToggle appearance={appearance} />
 
                 {/* LIVE TOGGLE — Gemini Live listener: Off / Suggest / Auto */}
                 <LiveModeToggle appearance={appearance} />

@@ -874,6 +874,17 @@ export class AppState {
   private liveMode: 'off' | 'suggest' | 'auto' = 'off';
   /** Shared across whisper→Groq and Live so one question yields one chip. */
   private readonly chipDeduper = new ChipDeduper();
+  /**
+   * Interviewer STT channel on/off. Measured 2026-07-28: when Live Mode is on
+   * it detects every question ~2.5s sooner than the whisper→Groq path and finds
+   * nothing that path misses, so transcribing the interviewer becomes pure cost.
+   * Gating the writes (rather than tearing down the provider) keeps the stream
+   * warm so it resumes instantly — Live is preview-tier and can hard-fail.
+   *
+   * Only the INTERVIEWER channel. The user/mic channel is untouched: Live never
+   * hears the candidate, so that transcript is the only record of what they said.
+   */
+  private sttEnabled = true;
   private liveChipSeq = 0;
 
   private createSTTProvider(speaker: 'interviewer' | 'user'): STTProvider | null {
@@ -1141,7 +1152,7 @@ export class AppState {
           if (_sysChunkCount <= 3 || _sysChunkCount % 500 === 0) {
             console.log(`[Main] SystemAudio->STT: chunk #${_sysChunkCount}, ${chunk.length}B, googleSTT=${this.googleSTT ? 'active' : 'NULL'}`);
           }
-          this.googleSTT?.write(chunk);
+          this.writeInterviewerStt(chunk);
           // Live Mode tee — no-ops unless the live router is connected.
           this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
         });
@@ -1256,7 +1267,7 @@ export class AppState {
         if (_rcfgSysChunkCount <= 3 || _rcfgSysChunkCount % 500 === 0) {
           console.log(`[Main] (Reconfigured) SystemAudio->STT: chunk #${_rcfgSysChunkCount}, ${chunk.length}B, googleSTT=${this.googleSTT ? 'active' : 'NULL'}`);
         }
-        this.googleSTT?.write(chunk);
+        this.writeInterviewerStt(chunk);
         // Live Mode tee — no-ops unless the live router is connected.
         this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
       });
@@ -1296,7 +1307,7 @@ export class AppState {
           if (_dfltSysChunkCount <= 3 || _dfltSysChunkCount % 500 === 0) {
             console.log(`[Main] (Default) SystemAudio->STT: chunk #${_dfltSysChunkCount}, ${chunk.length}B, googleSTT=${this.googleSTT ? 'active' : 'NULL'}`);
           }
-          this.googleSTT?.write(chunk);
+          this.writeInterviewerStt(chunk);
           // Live Mode tee — no-ops unless the live router is connected.
           this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
         });
@@ -1871,6 +1882,32 @@ export class AppState {
     });
     this.liveRouter = router;
     void router.start();
+  }
+
+  /**
+   * Interviewer PCM → STT, unless the channel is switched off. Dropping the
+   * chunk here stops transcription and its API spend while leaving capture,
+   * Live, and the user/mic channel running.
+   */
+  private writeInterviewerStt(chunk: Buffer): void {
+    if (!this.sttEnabled) return;
+    this.googleSTT?.write(chunk);
+  }
+
+  public setSttEnabled(enabled: boolean): void {
+    if (this.sttEnabled === enabled) return;
+    this.sttEnabled = enabled;
+    console.log(`[Main] interviewer STT channel ${enabled ? 'ENABLED' : 'DISABLED'}`);
+    if (!enabled) {
+      // Close out whatever is half-transcribed so no partial lands later and
+      // gets attributed to speech from after the switch-off.
+      this.googleSTT?.notifySpeechEnded?.();
+    }
+    this.broadcast('stt-enabled-changed', { enabled });
+  }
+
+  public getSttEnabled(): boolean {
+    return this.sttEnabled;
   }
 
   private stopLiveRouter(): void {

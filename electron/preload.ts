@@ -835,6 +835,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // ── Whisper→chip detection pipeline (independent on/off) ──
   setDetectionEnabled: (enabled: boolean) => ipcRenderer.invoke("detection:set-enabled", enabled),
   getDetectionEnabled: () => ipcRenderer.invoke("detection:get-enabled"),
+  setSttEnabled: (enabled: boolean) => ipcRenderer.invoke("stt:set-enabled", enabled),
+  getSttEnabled: () => ipcRenderer.invoke("stt:get-enabled"),
   onLiveModeStatus: (callback: (data: { state: string; reason?: string }) => void) => {
     const subscription = (_: any, data: any) => callback(data)
     ipcRenderer.on("live-mode-status", subscription)
