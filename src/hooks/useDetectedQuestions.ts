@@ -14,6 +14,23 @@ export interface DetectedQuestionChip {
 const MAX_CHIPS = 5;
 
 /**
+ * How long a Live chip stays supersedable by the next Live chip.
+ *
+ * Measured 2026-07-29: when the interviewer gives a contentful lead-in, pauses
+ * 2.5-3s, then asks the real question, the Live listener fires a
+ * plausible-but-wrong question during the pause ("Okay, a tree question for
+ * you." → "What kind of data do you want to store in the tree?"). The correct
+ * question always followed, 7.4-11.6s later in every observed case, so 15s
+ * covers the gap.
+ *
+ * Trade-off, accepted deliberately: two genuinely distinct questions asked
+ * within 15s collapse to the later one. Only chips the user has not clicked are
+ * affected — clicking removes the chip from this queue, so a chip they acted on
+ * is never pulled out from under them.
+ */
+const LIVE_SUPERSEDE_WINDOW_MS = 15_000;
+
+/**
  * Renderer-side chip queue for passive question detector.
  * - Subscribes to detected-question + detected-question-update IPC events
  * - Maintains a FIFO queue capped at 5
@@ -28,7 +45,18 @@ export function useDetectedQuestions() {
         cleanups.push(
             window.electronAPI.onDetectedQuestion((chip) => {
                 setChips(prev => {
-                    const next = [chip, ...prev];
+                    let base = prev;
+                    if (chip.source === 'live') {
+                        // Drop the previous, still-unclicked Live chip if this one
+                        // arrived hot on its heels — it is almost certainly the real
+                        // question replacing one guessed during a mid-question pause.
+                        const stale = prev.findIndex(c =>
+                            c.source === 'live' &&
+                            chip.detectedAt - c.detectedAt <= LIVE_SUPERSEDE_WINDOW_MS
+                        );
+                        if (stale !== -1) base = prev.filter((_, i) => i !== stale);
+                    }
+                    const next = [chip, ...base];
                     if (next.length > MAX_CHIPS) next.length = MAX_CHIPS;
                     return next;
                 });

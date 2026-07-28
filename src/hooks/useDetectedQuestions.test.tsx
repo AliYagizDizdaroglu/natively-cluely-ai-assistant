@@ -101,3 +101,55 @@ describe('useDetectedQuestions', () => {
         expect(answerDetectedQuestionMock).not.toHaveBeenCalled();
     });
 });
+
+describe('useDetectedQuestions — Live supersede', () => {
+    const liveChip = (id: string, q: string, at: number): MockChip & { source: 'live' } => ({
+        ...makeChip(id, q), detectedAt: at, source: 'live',
+    });
+    const whisperChip = (id: string, q: string, at: number): MockChip & { source: 'whisper' } => ({
+        ...makeChip(id, q), detectedAt: at, source: 'whisper',
+    });
+
+    it('replaces an unclicked Live chip when the real question follows', () => {
+        // Measured 2026-07-29: a contentful lead-in plus a 2.5-3s pause makes the
+        // listener guess ("Okay, a tree question for you." → "What kind of data
+        // do you want to store in the tree?"), and the real question lands
+        // 7.4-11.6s later. The guess must not linger next to it.
+        const { result } = renderHook(() => useDetectedQuestions());
+        act(() => detectedCb?.(liveChip('a', 'What kind of data goes in the tree?', 1000)));
+        act(() => detectedCb?.(liveChip('b', 'Check whether a binary tree is height-balanced.', 9000)));
+        expect(result.current.chips).toHaveLength(1);
+        expect(result.current.chips[0].id).toBe('b');
+    });
+
+    it('keeps both when the next Live question arrives after the window', () => {
+        const { result } = renderHook(() => useDetectedQuestions());
+        act(() => detectedCb?.(liveChip('a', 'first', 1000)));
+        act(() => detectedCb?.(liveChip('b', 'second', 20000)));
+        expect(result.current.chips.map(c => c.id)).toEqual(['b', 'a']);
+    });
+
+    it('never supersedes a chip the user already clicked', () => {
+        answerDetectedQuestionMock.mockResolvedValue({ ok: true });
+        const { result } = renderHook(() => useDetectedQuestions());
+        act(() => detectedCb?.(liveChip('a', 'first', 1000)));
+        act(() => { result.current.clickChip('a'); });
+        act(() => detectedCb?.(liveChip('b', 'second', 3000)));
+        expect(result.current.chips.map(c => c.id)).toEqual(['b']);
+        expect(answerDetectedQuestionMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('leaves whisper chips alone — only Live guesses mid-pause', () => {
+        const { result } = renderHook(() => useDetectedQuestions());
+        act(() => detectedCb?.(whisperChip('a', 'first', 1000)));
+        act(() => detectedCb?.(whisperChip('b', 'second', 3000)));
+        expect(result.current.chips.map(c => c.id)).toEqual(['b', 'a']);
+    });
+
+    it('a Live chip does not displace a whisper chip', () => {
+        const { result } = renderHook(() => useDetectedQuestions());
+        act(() => detectedCb?.(whisperChip('w', 'from whisper', 1000)));
+        act(() => detectedCb?.(liveChip('l', 'from live', 3000)));
+        expect(result.current.chips.map(c => c.id)).toEqual(['l', 'w']);
+    });
+});

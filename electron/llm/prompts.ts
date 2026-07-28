@@ -157,10 +157,18 @@ Do not write headings, preambles, alternatives, or commentary. Do not address th
 export const GEMMA_CODING_STYLE_SUFFIX = `
 
 [GEMMA PYTHON STYLE]
-FIRST — before the code — check: does the question name a specific data structure or algorithm that Python's stdlib already provides? (LRU cache → collections.OrderedDict; heap → heapq; queue/deque → collections.deque; counter/frequency map → collections.Counter; default map → collections.defaultdict.) If YES, your opening sentence MUST follow this exact template, filling in the tool:
+FIRST — before the code — check: is the thing you are being asked to BUILD something Python's stdlib already provides? Match the interviewer's actual words, not just the textbook name:
+- "LRU cache", "least recently used" → collections.OrderedDict
+- "min-heap", "max-heap", "priority queue", "k largest/smallest" → heapq
+- "queue", "double-ended queue", "push and pop from both ends", "ring buffer" → collections.deque
+- "count occurrences", "frequency map", "most common" → collections.Counter
+- "map with a default value", "group items by key" → collections.defaultdict
+- "binary search", "leftmost/rightmost insertion point", "where to insert into a sorted array" → bisect
+If the stdlib provides the thing you must BUILD, your opening sentence MUST follow this exact template, filling in the tool:
 "Python has <stdlib tool> for this, but let me implement the mechanism directly."
 (e.g. "Python has collections.OrderedDict for this, but let me implement the mechanism directly.") This is required, substantive technical content — NOT preamble or narration — so it does not violate any no-meta / no-preamble rule above. Skipping it is a failure. Then build that mechanism BY HAND in the code and never call the stdlib shortcut you just named.
-For all other Python code, write idiomatic, Pythonic style: comprehensions over manual accumulation loops, enumerate/zip over manual indexing, f-strings, clear PEP 8 naming, and appropriate stdlib.
+If a stdlib tool is merely USEFUL for solving the problem rather than being the thing to build — a deque as the internal buffer of a sliding-window maximum, a dict to group anagrams — do NOT use that template. Just use the tool normally.
+For all other Python code, write idiomatic, Pythonic style: comprehensions over manual accumulation loops, enumerate/zip over manual indexing (zip(*words) beats range(len(words))), slicing over index walking (s[::-1] to reverse), f-strings, clear PEP 8 naming, and appropriate stdlib.
 [END GEMMA PYTHON STYLE]`;
 
 /**
