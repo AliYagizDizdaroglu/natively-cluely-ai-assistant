@@ -823,6 +823,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
     intent: 'verbal' | 'coding' | 'behavioral';
     contextSnapshot: string;
   }) => ipcRenderer.invoke("answer-detected-question", payload),
+  // "Answer now with Flash Lite" — cancel a slow deep-model answer and re-run fast
+  answerNowFast: (payload: {
+    question: string;
+    intent?: 'verbal' | 'coding' | 'behavioral';
+    contextSnapshot?: string;
+  }) => ipcRenderer.invoke("answer-now-fast", payload),
   // ── Live Mode (Gemini Live listener) ──
   setLiveMode: (mode: 'off' | 'suggest' | 'auto') => ipcRenderer.invoke("live-mode:set", mode),
   getLiveMode: () => ipcRenderer.invoke("live-mode:get"),

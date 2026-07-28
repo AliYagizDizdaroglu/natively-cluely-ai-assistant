@@ -140,28 +140,36 @@ describe('LLMHelper Gemma TTFT watchdog', () => {
         delete process.env.NATIVELY_GEMMA_MAX_ATTEMPTS;
     });
 
-    it('gives image/vision requests a larger budget than text (a text-sized budget cannot fit a vision retry)', () => {
-        // Structural check on the exported knobs rather than a full stream: the
-        // vision budget must exceed the text budget so a post-500 vision retry
-        // (each vision attempt ~6-7s) has room to complete.
+    it('never gives image/vision requests LESS budget than text', () => {
+        // Text budget is 30s (2026-07-28): hard questions — open-ended system design
+        // especially — legitimately take Gemma 5-12s+ to first token, and the old 6s
+        // budget bailed to Flash mid-think. The user can cut the wait short with the
+        // "Answer now with Flash Lite" button, so patience is cheap.
+        // A screenshot coding problem is at least as hard as a spoken one, so the
+        // vision budget is floored at the text budget.
         const text = getGemmaTtftMs();
-        const vision = getGemmaVisionTtftMs();
-        expect(vision).toBeGreaterThan(text);
-        expect(text).toBe(6_000);       // the value the user asked for
-        expect(vision).toBeGreaterThanOrEqual(12_000);
+        expect(text).toBe(30_000);
+        expect(getGemmaVisionTtftMs(1)).toBeGreaterThanOrEqual(text);
+        expect(getGemmaVisionTtftMs(10)).toBeGreaterThanOrEqual(text);
     });
 
-    it('scales the vision budget mildly with image count (TTFT is variance-dominated ~4-19s, not count-driven)', () => {
+    it('scales the vision budget mildly with image count once above the text floor', () => {
         // Measured warm TTFT (2026-07-05, real screenshots): 1 img 3.9s, 3 img 18.9s,
         // 5 img 4.9s, 8 img 7.9s, 10 img 7.3s — count is a weak driver, server variance
-        // dominates. Budget = base 14s + 2s/image: covers the ~19s slow case at every
-        // count without a 66s stall-wait at the 10-image cap.
+        // dominates. Formula = base 14s + 2s/image, floored at the 30s text budget.
+        // With the default 30s floor, counts 1-8 clamp to 30s and only 9+ exceed it;
+        // lower the floor here to assert the underlying per-image curve still holds.
         delete process.env.NATIVELY_GEMMA_VISION_TTFT_MS;
+        process.env.NATIVELY_GEMMA_TTFT_MS = '6000';    // temporarily restore a low floor
         expect(getGemmaVisionTtftMs(1)).toBe(16_000);
         expect(getGemmaVisionTtftMs(3)).toBe(20_000);   // covers the 18.9s slow case
         expect(getGemmaVisionTtftMs(5)).toBe(24_000);
         expect(getGemmaVisionTtftMs(10)).toBe(34_000);  // 10-image cap — 7.3s observed, huge margin
         expect(getGemmaVisionTtftMs(3)).toBeGreaterThan(getGemmaVisionTtftMs(1));
+        delete process.env.NATIVELY_GEMMA_TTFT_MS;
+        // Back at the real 30s floor, low image counts clamp up rather than down.
+        expect(getGemmaVisionTtftMs(1)).toBe(30_000);
+        expect(getGemmaVisionTtftMs(10)).toBe(34_000);
     });
 
     it('flat NATIVELY_GEMMA_VISION_TTFT_MS override wins over per-image scaling', () => {

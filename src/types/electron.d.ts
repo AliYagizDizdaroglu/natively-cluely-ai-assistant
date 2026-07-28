@@ -218,6 +218,12 @@ export interface ElectronAPI {
     intent: 'verbal' | 'coding' | 'behavioral';
     contextSnapshot: string;
   }) => Promise<{ ok: boolean }>
+  // "Answer now with Flash Lite" — cancel a slow deep-model answer and re-run fast
+  answerNowFast: (payload: {
+    question: string;
+    intent?: 'verbal' | 'coding' | 'behavioral';
+    contextSnapshot?: string;
+  }) => Promise<{ ok: boolean }>
   // Live Mode (Gemini Live listener)
   setLiveMode: (mode: 'off' | 'suggest' | 'auto') => Promise<{ mode: 'off' | 'suggest' | 'auto'; state: string }>
   getLiveMode: () => Promise<{ mode: 'off' | 'suggest' | 'auto'; state: string }>

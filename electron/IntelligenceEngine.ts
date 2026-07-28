@@ -246,6 +246,8 @@ export class IntelligenceEngine extends EventEmitter {
             intentOverride?: 'verbal' | 'coding' | 'behavioral';
             contextOverride?: string;
             bypassCooldown?: boolean;
+            /** "Answer now with Flash Lite" — skip the deep model, answer fast. */
+            forceFastModel?: boolean;
         } = {}
     ): Promise<string | null> {
         const now = Date.now();
@@ -373,7 +375,7 @@ export class IntelligenceEngine extends EventEmitter {
             let fullAnswer = "";
             // RC-03 fix: hold a reference to the generator so we can call .return()
             // to properly terminate the network request when a new generation starts.
-            const stream = this.whatToAnswerLLM.generateStream(preparedTranscript, temporalContext, intentResult, imagePaths);
+            const stream = this.whatToAnswerLLM.generateStream(preparedTranscript, temporalContext, intentResult, imagePaths, options.forceFastModel);
             let streamAborted = false;
 
             for await (const token of stream) {

@@ -41,7 +41,13 @@ function envPosNum(raw: string | undefined, fallback: number): number {
   return Number.isFinite(v) && v > 0 ? v : fallback
 }
 
-const GEMMA_TTFT_MS_DEFAULT = 6_000
+// 30s (was 6s): hard interview questions — open-ended system design especially —
+// legitimately take Gemma 5-12s+ to first token (measured 2026-07-28: 5.9s, 7.8s,
+// 12.1s, 12.3s on scaling/deploy-safety questions). A 6s budget bailed to Flash
+// mid-think and threw away the better answer. The user can always cut the wait
+// short with the "Answer now with Flash Lite" button, so a long budget costs
+// nothing but patience — and only when the model is genuinely still working.
+const GEMMA_TTFT_MS_DEFAULT = 30_000
 export function getGemmaTtftMs(): number {
   return envPosNum(process.env.NATIVELY_GEMMA_TTFT_MS, GEMMA_TTFT_MS_DEFAULT)
 }
@@ -63,7 +69,10 @@ export function getGemmaVisionTtftMs(imageCount = 1): number {
   if (Number.isFinite(flat) && flat > 0) return flat // explicit flat override wins
   const base = envPosNum(process.env.NATIVELY_GEMMA_VISION_TTFT_BASE_MS, GEMMA_VISION_TTFT_BASE_MS_DEFAULT)
   const perImage = envPosNum(process.env.NATIVELY_GEMMA_VISION_TTFT_PER_IMAGE_MS, GEMMA_VISION_TTFT_PER_IMAGE_MS_DEFAULT)
-  return base + perImage * Math.max(1, imageCount)
+  // Floor at the text budget: a screenshot coding problem is at least as hard as
+  // a spoken one, so it must never get LESS patience than text. (Without this
+  // floor the 30s text budget would exceed the 16s single-image budget.)
+  return Math.max(getGemmaTtftMs(), base + perImage * Math.max(1, imageCount))
 }
 
 // Max Gemma attempts within the TTFT budget. Transient 500s ("Internal error")

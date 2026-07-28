@@ -90,6 +90,15 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
     const [sttInterviewerError, setSttInterviewerError] = useState<string>('');
     const [sttInterviewerProvider, setSttInterviewerProvider] = useState<string>('');
     const [isProcessing, setIsProcessing] = useState(false);
+    // Question currently being answered by the deep model (Gemma). Kept so the
+    // "Answer now with Flash Lite" escape hatch can re-run the SAME question on
+    // the fast path when the 30s budget is more patience than the moment allows.
+    const [inFlightQuestion, setInFlightQuestion] = useState<{
+        question: string;
+        intent?: 'verbal' | 'coding' | 'behavioral';
+        contextSnapshot?: string;
+    } | null>(null);
+    const [answeringFast, setAnsweringFast] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [conversationContext, setConversationContext] = useState<string>('');
     const [isManualRecording, setIsManualRecording] = useState(false);
@@ -802,9 +811,10 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
         if (window.electronAPI.onLiveQuestion) {
             cleanups.push(window.electronAPI.onLiveQuestion((data) => {
                 sm.start();
-                sm.setSource(`${data.intent === 'coding' ? 'Gemma 4 31B' : 'Gemini Flash 3.1'} · Live`);
+                sm.setSource(`${data.intent === 'behavioral' ? 'Gemini Flash 3.1' : 'Gemma 4 31B'} · Live`);
                 setIsProcessing(true);
                 setIsExpanded(true);
+                setInFlightQuestion({ question: data.question, intent: data.intent });
                 setMessages(prev => [...prev, {
                     id: `live-${Date.now()}`,
                     role: 'user',
@@ -873,6 +883,8 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
 
         cleanups.push(window.electronAPI.onIntelligenceSuggestedAnswer((data) => {
             setIsProcessing(false);
+            setInFlightQuestion(null);
+            setAnsweringFast(false);
             // Finalize stream metrics — TTFT was captured on first token, this gives totalMs/tok/s.
             // markDone returns the computed snapshot synchronously so we can attach to the message
             // without waiting for React state to settle.
@@ -2542,10 +2554,13 @@ Provide only the answer, nothing else.`;
                                 onChipClickStart kicks off stream metrics so the answer bubble gets a
                                 TTFT/model attribution line (same as the manual "What to answer?" flow). */}
                             <DetectedQuestionsPanel
-                                onChipClickStart={(intent) => {
+                                onChipClickStart={(intent, question, contextSnapshot) => {
                                     sm.start();
-                                    sm.setSource(intent === 'coding' ? 'Gemma 4 31B' : 'Gemini Flash 3.1');
+                                    // Behavioral answers on Flash Lite; coding AND
+                                    // verbal-technical both run on Gemma now.
+                                    sm.setSource(intent === 'behavioral' ? 'Gemini Flash 3.1' : 'Gemma 4 31B');
                                     setIsProcessing(true);
+                                    if (question) setInFlightQuestion({ question, intent, contextSnapshot });
                                 }}
                             />
 
@@ -2647,12 +2662,37 @@ Provide only the answer, nothing else.`;
                                     )}
 
                                     {isProcessing && (
-                                        <div className="flex justify-start">
+                                        <div className="flex justify-start items-center gap-2">
                                             <div className="px-3 py-2 flex gap-1.5">
                                                 <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                                                 <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                                                 <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                                             </div>
+                                            {/* Escape hatch for the 30s deep-model budget: re-runs the same
+                                                question on Flash Lite immediately. Starting a new generation
+                                                aborts the slow one, so this cancels the wait AND answers. */}
+                                            {inFlightQuestion && !answeringFast && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setAnsweringFast(true);
+                                                        sm.start();
+                                                        sm.setSource('Gemini Flash 3.1 · fast');
+                                                        window.electronAPI.answerNowFast({
+                                                            question: inFlightQuestion.question,
+                                                            intent: inFlightQuestion.intent,
+                                                            contextSnapshot: inFlightQuestion.contextSnapshot,
+                                                        }).catch((e: any) => {
+                                                            console.error('[NativelyInterface] answerNowFast failed:', e);
+                                                            setAnsweringFast(false);
+                                                        });
+                                                    }}
+                                                    title="Skip the deeper model and answer immediately with Flash Lite"
+                                                    className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-medium border border-white/15 overlay-chip-surface overlay-text-interactive opacity-80 hover:opacity-100 transition-opacity no-drag"
+                                                >
+                                                    <Zap className="w-3 h-3" /> Answer now
+                                                </button>
+                                            )}
                                         </div>
                                     )}
                                     <div ref={messagesEndRef} />

@@ -2406,6 +2406,36 @@ export function initializeIpcHandlers(appState: AppState): void {
     }
   });
 
+  // "Answer now with Flash Lite" — the escape hatch for the 30s Gemma budget.
+  // Re-runs the SAME question on the fast verbal path. Starting a new generation
+  // bumps the engine's generationId, which aborts the in-flight slow stream, so
+  // this both cancels the wait and delivers an answer immediately.
+  safeHandle("answer-now-fast", async (_event, payload: {
+    question: string;
+    intent?: 'verbal' | 'coding' | 'behavioral';
+    contextSnapshot?: string;
+  }) => {
+    try {
+      if (!payload?.question) throw new Error('answer-now-fast: missing question');
+      console.log(`[IPC] answer-now-fast: "${payload.question.slice(0, 60)}..."`);
+      await appState.getIntelligenceManager().runWhatShouldISay(
+        payload.question,
+        1.0,
+        undefined,
+        {
+          intentOverride: payload.intent,
+          contextOverride: payload.contextSnapshot,
+          bypassCooldown: true,
+          forceFastModel: true,
+        }
+      );
+      return { ok: true };
+    } catch (e: any) {
+      console.error('[IPC] answer-now-fast failed:', e);
+      throw e;
+    }
+  });
+
   // ── Live Mode (Gemini Live listener) ──────────────────────────────────────
   // Three-state mode (off / suggest / auto) + router state query. The router
   // lives in main.ts (AppState); status flows via 'live-mode-status', auto

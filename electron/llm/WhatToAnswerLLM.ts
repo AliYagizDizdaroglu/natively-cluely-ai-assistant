@@ -119,7 +119,11 @@ export class WhatToAnswerLLM {
         cleanedTranscript: string,
         temporalContext?: TemporalContext,
         intentResult?: IntentResult,
-        imagePaths?: string[]
+        imagePaths?: string[],
+        // Escape hatch for the "Answer now with Flash Lite" button: skip the
+        // deeper (slower) model entirely and answer on the fast verbal path,
+        // whatever the intent. Used when the candidate can't wait any longer.
+        forceFastModel?: boolean
     ): AsyncGenerator<string> {
         try {
             // Build a rich message context
@@ -157,17 +161,34 @@ ANSWER SHAPE: ${intentResult.answerShape}
             // Note: WhatToAnswer has a very specific prompt. 
             // We should use UNIVERSAL_WHAT_TO_ANSWER_PROMPT as override
 
-            // ── Hard binary router ───────────────────────────────────────────────────
+            // ── Router ───────────────────────────────────────────────────────────────
             // Decision in TypeScript using already-computed intentResult — 0ms overhead.
             // intentResult is computed before generateStream() is called by IntelligenceEngine.
+            //
+            // Three routes:
+            //   coding            → Gemma, coding prompt (code + walkthrough + complexity)
+            //   general/technical → Gemma, VERBAL prompt (deep prose, filters applied)
+            //   behavioral        → Flash Lite, VERBAL prompt (fast, conversational)
+            //
+            // Verbal-TECHNICAL moved onto Gemma 2026-07-28 after measuring it against
+            // flash-lite on 6 hard technical questions: same TTFT (1.1s vs 0.9s), better
+            // tradeoff articulation (2/6 vs 1/6), and it led with the CORRECT mechanism
+            // where flash-lite drifted off-question. The old comment here claimed Gemma
+            // emits "coding-shaped output" on verbal questions — re-tested and false:
+            // 0/6 code fences, 0/6 Time:/Space:, 0/6 bullets with the VERBAL prompt.
+            // Behavioral stays on Flash Lite: it already scores 7/7 and is ~2.3s faster
+            // to finish, and depth buys nothing on "tell me about a time…".
             const isCoding = intentResult?.intent === 'coding';
+            const isBehavioral = intentResult?.intent === 'behavioral';
+            // forceFastModel (Answer-now button) collapses everything to the fast path.
+            const useDeepModel = !forceFastModel && (isCoding || !isBehavioral);
 
             diagLog(`=== generateStream invoked ===`);
-            diagLog(`intentResult: ${JSON.stringify(intentResult)}`);
-            diagLog(`isCoding: ${isCoding} → path: ${isCoding ? 'CODING (no filter)' : 'VERBAL (filter applied)'}`);
+            diagLog(`intentResult: ${JSON.stringify(intentResult)} forceFastModel=${!!forceFastModel}`);
+            diagLog(`route: ${forceFastModel ? 'FAST-OVERRIDE (Flash Lite)' : isCoding ? 'CODING (Gemma, no filter)' : isBehavioral ? 'BEHAVIORAL (Flash Lite, filtered)' : 'VERBAL-TECHNICAL (Gemma, filtered)'}`);
             diagLog(`transcript preview: ${JSON.stringify(cleanedTranscript.slice(0, 200))}`);
 
-            if (isCoding) {
+            if (isCoding && !forceFastModel) {
                 // Coding path: full prompt with SHARED_CODING_RULES, images passed through.
                 yield* this.llmHelper.streamChat(
                     fullMessage,
@@ -176,28 +197,41 @@ ANSWER SHAPE: ${intentResult.answerShape}
                     UNIVERSAL_WHAT_TO_ANSWER_PROMPT
                 );
             } else {
-                // Verbal path: route to Gemini Flash 3.1 (not Gemma) for conversational
-                // depth. Gemma 4 produces shallow coding-shaped output for technical
-                // questions even with VERBAL_WHAT_TO_ANSWER_PROMPT; Gemini Flash handles
-                // verbal interview answers far better at similar TTFT.
-                // Falls back to default streamChat (Gemma) if Gemini client isn't ready.
+                // Verbal paths — both use VERBAL_WHAT_TO_ANSWER_PROMPT and the same
+                // output filters; they differ only in which model generates.
                 let rawStream: AsyncGenerator<string>;
-                try {
-                    rawStream = this.llmHelper.streamVerbalWithGeminiFlash(
-                        fullMessage,
-                        VERBAL_WHAT_TO_ANSWER_PROMPT,
-                        undefined // no images on verbal path — reduces prefill latency
-                    );
-                    diagLog(`verbal path: routed to Gemini Flash 3.1`);
-                } catch (e) {
-                    console.warn(`[WhatToAnswerLLM] Gemini Flash routing failed, falling back to default streamChat:`, (e as Error).message);
-                    diagLog(`verbal path: Flash failed (${(e as Error).message}), falling back to streamChat`);
+                if (useDeepModel) {
+                    // VERBAL-TECHNICAL → deep model (Gemma via streamChat, which honors
+                    // the user's selected model). resolveGemmaSystemPrompt passes the
+                    // VERBAL prompt through untouched (it only augments the coding and
+                    // code-hint prompts), so no coding scaffolding leaks in.
+                    diagLog(`verbal-technical path: routed to deep model via streamChat`);
                     rawStream = this.llmHelper.streamChat(
                         fullMessage,
-                        undefined,
+                        undefined, // no images on verbal path — reduces prefill latency
                         undefined,
                         VERBAL_WHAT_TO_ANSWER_PROMPT
                     );
+                } else {
+                    // BEHAVIORAL (or forced-fast) → Gemini Flash Lite for speed.
+                    // Falls back to default streamChat if the Gemini client isn't ready.
+                    try {
+                        rawStream = this.llmHelper.streamVerbalWithGeminiFlash(
+                            fullMessage,
+                            VERBAL_WHAT_TO_ANSWER_PROMPT,
+                            undefined
+                        );
+                        diagLog(`fast verbal path: routed to Gemini Flash Lite`);
+                    } catch (e) {
+                        console.warn(`[WhatToAnswerLLM] Gemini Flash routing failed, falling back to default streamChat:`, (e as Error).message);
+                        diagLog(`fast verbal path: Flash failed (${(e as Error).message}), falling back to streamChat`);
+                        rawStream = this.llmHelper.streamChat(
+                            fullMessage,
+                            undefined,
+                            undefined,
+                            VERBAL_WHAT_TO_ANSWER_PROMPT
+                        );
+                    }
                 }
                 // Compose: sentinel strip → fence filter → line filter (outer-to-inner order)
                 // stripModelSentinel removes __model_source:X__ that LLMHelper prepends —

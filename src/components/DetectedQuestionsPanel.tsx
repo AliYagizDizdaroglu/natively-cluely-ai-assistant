@@ -11,7 +11,11 @@ interface DetectedQuestionsPanelProps {
      * gets a TTFT/model attribution in its message bubble — same as the manual
      * "What to answer?" flow.
      */
-    onChipClickStart?: (intent: 'verbal' | 'coding' | 'behavioral') => void;
+    onChipClickStart?: (
+        intent: 'verbal' | 'coding' | 'behavioral',
+        question?: string,
+        contextSnapshot?: string,
+    ) => void;
 }
 
 /**
@@ -75,7 +79,7 @@ export const DetectedQuestionsPanel: React.FC<DetectedQuestionsPanelProps> = ({ 
                             source={chip.source}
                             onClick={(id) => {
                                 resetCollapseTimer();
-                                onChipClickStart?.(chip.intent);
+                                onChipClickStart?.(chip.intent, chip.question, chip.contextSnapshot);
                                 clickChip(id);
                             }}
                         />
