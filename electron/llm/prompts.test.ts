@@ -6,6 +6,8 @@ import {
     UNIVERSAL_WHAT_TO_ANSWER_PROMPT,
     GEMMA_CODING_STYLE_SUFFIX,
     GEMMA_CODE_HINT_STYLE_SUFFIX,
+    STDLIB_FRAMING_APPLIES,
+    STDLIB_FRAMING_EXCLUDES,
     resolveGemmaSystemPrompt,
 } from './prompts';
 
@@ -107,5 +109,53 @@ describe('resolveGemmaSystemPrompt (streamChat Gemma branch must not silently di
         expect(result).toBe(`${augmented}${GEMMA_CODE_HINT_STYLE_SUFFIX}`);
         expect(result).toContain(augmented);
         expect(result).toContain('DO NOT WRITE THE FULL SOLUTION');
+    });
+});
+
+describe('stdlib framing rule — shared between the voice and screenshot coding paths', () => {
+    // The rule used to be written out twice: inline in INTERVIEW_COPILOT_PROMPT
+    // (screenshot/default path) and in GEMMA_CODING_STYLE_SUFFIX (voice path).
+    // They drifted — a fix to one never reached the other, and the screenshot
+    // path spuriously claimed "Python has collections.deque for this" on
+    // sliding-window, anagram and bracket-matching problems. These tests fail if
+    // either path stops composing the shared constants.
+    it('both coding prompts carry the SAME trigger list', () => {
+        expect(INTERVIEW_COPILOT_PROMPT).toContain(STDLIB_FRAMING_APPLIES);
+        expect(GEMMA_CODING_STYLE_SUFFIX).toContain(STDLIB_FRAMING_APPLIES);
+    });
+
+    it('both coding prompts carry the SAME over-application guard', () => {
+        expect(INTERVIEW_COPILOT_PROMPT).toContain(STDLIB_FRAMING_EXCLUDES);
+        expect(GEMMA_CODING_STYLE_SUFFIX).toContain(STDLIB_FRAMING_EXCLUDES);
+    });
+
+    it('the trigger list maps interviewer phrasings, not just textbook tool names', () => {
+        // Listing "collections.deque" alone did not fire on "push and pop from
+        // both ends" (0/6 measured); the phrasings are what made it work.
+        for (const phrase of [
+            'push and pop from both ends',
+            'leftmost/rightmost insertion point',
+            'least recently used',
+            'priority queue',
+        ]) {
+            expect(STDLIB_FRAMING_APPLIES).toContain(phrase);
+        }
+    });
+
+    it('the guard names each case measured firing spuriously', () => {
+        for (const kase of ['sliding-window', 'anagrams', 'bracket matching', 'k most frequent']) {
+            expect(STDLIB_FRAMING_EXCLUDES).toContain(kase);
+        }
+    });
+
+    it('the template sentence itself is identical in both paths', () => {
+        const template = 'Python has <stdlib tool> for this, but let me implement the mechanism directly.';
+        expect(INTERVIEW_COPILOT_PROMPT).toContain(template);
+        expect(GEMMA_CODING_STYLE_SUFFIX).toContain(template);
+    });
+
+    it('CodeHint still has NO hand-roll rule — it debugs in-progress code', () => {
+        expect(GEMMA_CODE_HINT_STYLE_SUFFIX).not.toContain(STDLIB_FRAMING_APPLIES);
+        expect(GEMMA_CODE_HINT_STYLE_SUFFIX).not.toContain('implement the mechanism directly');
     });
 });

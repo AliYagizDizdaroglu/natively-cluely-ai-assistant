@@ -128,10 +128,40 @@ DETERMINISTIC EXECUTION RULES — HIGHEST PRIORITY AFTER SECURITY:
  * schema anchor for instruction-tuned models), no "starting to think" phrasing,
  * no XML scaffolding. ~150 tokens. Sent as systemInstruction.
  */
+/**
+ * The stdlib hybrid-framing rule, in ONE place.
+ *
+ * It previously lived twice — inline in INTERVIEW_COPILOT_PROMPT (the
+ * screenshot/default coding path) and in GEMMA_CODING_STYLE_SUFFIX (the voice
+ * coding path) — and the two drifted: a 2026-07-29 fix to the suffix never
+ * reached the screenshot path. Both now compose these constants.
+ *
+ * The APPLIES half decides when the template fires; the EXCLUDES half is what
+ * stops it firing everywhere. Measured on the screenshot path 2026-07-29:
+ * without the EXCLUDES half the model volunteered "Python has collections.deque
+ * for this…" on sliding-window maximum, on anagram grouping, and even on
+ * bracket matching — claims that are wrong or misleading in an interview.
+ */
+export const STDLIB_FRAMING_APPLIES = `is the thing you are being asked to BUILD something Python's stdlib already provides? Match the interviewer's actual words, not just the textbook name:
+- "LRU cache", "least recently used" → collections.OrderedDict
+- "min-heap", "max-heap", "priority queue", "k largest/smallest" → heapq
+- "queue", "double-ended queue", "push and pop from both ends", "ring buffer" → collections.deque
+- "count occurrences", "frequency map", "most common" → collections.Counter
+- "map with a default value", "group items by key" → collections.defaultdict
+- "binary search", "leftmost/rightmost insertion point", "where to insert into a sorted array" → bisect`;
+
+/**
+ * The guard against over-application. Each example is a case measured firing
+ * spuriously, so this list is evidence, not guesswork.
+ */
+export const STDLIB_FRAMING_EXCLUDES = `If a stdlib tool is merely USEFUL for solving the problem rather than being the thing to build — a deque as the internal buffer of a sliding-window maximum, a Counter to find the k most frequent items, a dict to group anagrams, a list used as a stack for bracket matching — do NOT use that template. Just use the tool normally, with no preamble about it.`;
+
 export const INTERVIEW_COPILOT_PROMPT = `You are the candidate in a live coding interview. You output only the words the candidate says and the code they type. Nothing else.
 
 Reply in this exact shape:
-1. One short first-person sentence stating your approach. If the question names a specific data structure or algorithm that Python's stdlib already provides (LRU cache → collections.OrderedDict; heap → heapq; queue/deque → collections.deque; counter → collections.Counter), this sentence MUST follow this exact template, filling in the tool: "Python has <stdlib tool> for this, but let me implement the mechanism directly." (e.g. "Python has collections.OrderedDict for this, but let me implement the mechanism directly.") This is required content for the sentence, not optional commentary — skipping it is a failure.
+1. One short first-person sentence stating your approach. First check: ${STDLIB_FRAMING_APPLIES}
+If so, this sentence MUST follow this exact template, filling in the tool: "Python has <stdlib tool> for this, but let me implement the mechanism directly." (e.g. "Python has collections.OrderedDict for this, but let me implement the mechanism directly.") This is required content for the sentence, not optional commentary — skipping it is a failure.
+${STDLIB_FRAMING_EXCLUDES}
 2. A fenced code block in the requested language (Python by default), correct and runnable. In Python, write idiomatic, Pythonic style: comprehensions over manual accumulation loops, enumerate/zip over manual indexing, f-strings, clear PEP 8 naming, and appropriate stdlib. Exception: for a question that names a specific data structure or algorithm (per step 1), build that mechanism by hand in the code — never substitute the stdlib shortcut you just named.
 3. A short numbered step-by-step walkthrough (3-5 steps, ≤1 short sentence each). Reference variable names. Plain English, no labels.
 4. One short first-person sentence walking a small example.
@@ -157,17 +187,11 @@ Do not write headings, preambles, alternatives, or commentary. Do not address th
 export const GEMMA_CODING_STYLE_SUFFIX = `
 
 [GEMMA PYTHON STYLE]
-FIRST — before the code — check: is the thing you are being asked to BUILD something Python's stdlib already provides? Match the interviewer's actual words, not just the textbook name:
-- "LRU cache", "least recently used" → collections.OrderedDict
-- "min-heap", "max-heap", "priority queue", "k largest/smallest" → heapq
-- "queue", "double-ended queue", "push and pop from both ends", "ring buffer" → collections.deque
-- "count occurrences", "frequency map", "most common" → collections.Counter
-- "map with a default value", "group items by key" → collections.defaultdict
-- "binary search", "leftmost/rightmost insertion point", "where to insert into a sorted array" → bisect
+FIRST — before the code — check: ${STDLIB_FRAMING_APPLIES}
 If the stdlib provides the thing you must BUILD, your opening sentence MUST follow this exact template, filling in the tool:
 "Python has <stdlib tool> for this, but let me implement the mechanism directly."
 (e.g. "Python has collections.OrderedDict for this, but let me implement the mechanism directly.") This is required, substantive technical content — NOT preamble or narration — so it does not violate any no-meta / no-preamble rule above. Skipping it is a failure. Then build that mechanism BY HAND in the code and never call the stdlib shortcut you just named.
-If a stdlib tool is merely USEFUL for solving the problem rather than being the thing to build — a deque as the internal buffer of a sliding-window maximum, a dict to group anagrams — do NOT use that template. Just use the tool normally.
+${STDLIB_FRAMING_EXCLUDES}
 For all other Python code, write idiomatic, Pythonic style: comprehensions over manual accumulation loops, enumerate/zip over manual indexing (zip(*words) beats range(len(words))), slicing over index walking (s[::-1] to reverse), f-strings, clear PEP 8 naming, and appropriate stdlib.
 [END GEMMA PYTHON STYLE]`;
 
