@@ -586,7 +586,9 @@ export function initializeIpcHandlers(appState: AppState): void {
           if (hasImages) {
             event.sender.send('gemini-stream-source', 'Gemma 4 31B');
           }
-          // Default path: streamChat handles full routing (Gemma for coding, etc.)
+          // Default path: streamChat handles full routing. It routes on the user's
+          // selected model (NOT "Gemma for coding" — that was never true); the only
+          // model pin is the screenshot modelOverride set just above.
           stream = llmHelper.streamChat(message, imagePaths, context, options?.skipSystemPrompt ? "" : undefined, options?.ignoreKnowledgeMode, modelOverride);
         }
 

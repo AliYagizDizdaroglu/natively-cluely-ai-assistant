@@ -4,11 +4,13 @@ import {
     CODE_HINT_PROMPT,
     BRAINSTORM_MODE_PROMPT,
     UNIVERSAL_WHAT_TO_ANSWER_PROMPT,
-    GEMMA_CODING_STYLE_SUFFIX,
+    CODING_STYLE_SUFFIX,
     GEMMA_CODE_HINT_STYLE_SUFFIX,
     STDLIB_FRAMING_APPLIES,
     STDLIB_FRAMING_EXCLUDES,
+    CODE_MUST_RUN_RULE,
     resolveGemmaSystemPrompt,
+    resolveStyleSuffix,
 } from './prompts';
 
 describe('INTERVIEW_COPILOT_PROMPT (Gemma 4 31B default prompt when no caller override is given)', () => {
@@ -55,16 +57,16 @@ describe('INTERVIEW_COPILOT_PROMPT (Gemma 4 31B default prompt when no caller ov
     });
 });
 
-describe('GEMMA_CODING_STYLE_SUFFIX / GEMMA_CODE_HINT_STYLE_SUFFIX content', () => {
+describe('CODING_STYLE_SUFFIX / GEMMA_CODE_HINT_STYLE_SUFFIX content', () => {
     it('full suffix (fresh-solution paths) uses the same hybrid framing as INTERVIEW_COPILOT_PROMPT', () => {
-        expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/idiomatic|Pythonic/i);
-        expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/OrderedDict/);
-        expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/opening.*sentence/i);
-        expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/by hand/i);
+        expect(CODING_STYLE_SUFFIX).toMatch(/idiomatic|Pythonic/i);
+        expect(CODING_STYLE_SUFFIX).toMatch(/OrderedDict/);
+        expect(CODING_STYLE_SUFFIX).toMatch(/opening.*sentence/i);
+        expect(CODING_STYLE_SUFFIX).toMatch(/by hand/i);
         // Reinforcement (2026-07): front-loaded fill-in template + hard failure
         // framing, after a live miss on the Live Mode path.
-        expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/but let me implement the mechanism directly/);
-        expect(GEMMA_CODING_STYLE_SUFFIX).toMatch(/skipping it is a failure/i);
+        expect(CODING_STYLE_SUFFIX).toMatch(/but let me implement the mechanism directly/);
+        expect(CODING_STYLE_SUFFIX).toMatch(/skipping it is a failure/i);
     });
 
     it('lighter Code Hint suffix stays idiomatic-only — never redirects the candidate to a different approach', () => {
@@ -97,7 +99,7 @@ describe('resolveGemmaSystemPrompt (streamChat Gemma branch must not silently di
     it('WhatToAnswerLLM coding path (UNIVERSAL_WHAT_TO_ANSWER_PROMPT): resolved prompt + full hybrid style suffix', () => {
         const augmented = `${UNIVERSAL_WHAT_TO_ANSWER_PROMPT}\n\n## ACTIVE MODE\nSome suffix`;
         const result = resolveGemmaSystemPrompt(UNIVERSAL_WHAT_TO_ANSWER_PROMPT, augmented);
-        expect(result).toBe(`${augmented}${GEMMA_CODING_STYLE_SUFFIX}`);
+        expect(result).toBe(`${augmented}${CODING_STYLE_SUFFIX}`);
         // The caller's own content (incl. any mode augmentation) must survive —
         // this is not a silent replacement, only an addition.
         expect(result).toContain(augmented);
@@ -114,19 +116,19 @@ describe('resolveGemmaSystemPrompt (streamChat Gemma branch must not silently di
 
 describe('stdlib framing rule — shared between the voice and screenshot coding paths', () => {
     // The rule used to be written out twice: inline in INTERVIEW_COPILOT_PROMPT
-    // (screenshot/default path) and in GEMMA_CODING_STYLE_SUFFIX (voice path).
+    // (screenshot/default path) and in CODING_STYLE_SUFFIX (voice path).
     // They drifted — a fix to one never reached the other, and the screenshot
     // path spuriously claimed "Python has collections.deque for this" on
     // sliding-window, anagram and bracket-matching problems. These tests fail if
     // either path stops composing the shared constants.
     it('both coding prompts carry the SAME trigger list', () => {
         expect(INTERVIEW_COPILOT_PROMPT).toContain(STDLIB_FRAMING_APPLIES);
-        expect(GEMMA_CODING_STYLE_SUFFIX).toContain(STDLIB_FRAMING_APPLIES);
+        expect(CODING_STYLE_SUFFIX).toContain(STDLIB_FRAMING_APPLIES);
     });
 
     it('both coding prompts carry the SAME over-application guard', () => {
         expect(INTERVIEW_COPILOT_PROMPT).toContain(STDLIB_FRAMING_EXCLUDES);
-        expect(GEMMA_CODING_STYLE_SUFFIX).toContain(STDLIB_FRAMING_EXCLUDES);
+        expect(CODING_STYLE_SUFFIX).toContain(STDLIB_FRAMING_EXCLUDES);
     });
 
     it('the trigger list maps interviewer phrasings, not just textbook tool names', () => {
@@ -148,10 +150,58 @@ describe('stdlib framing rule — shared between the voice and screenshot coding
         }
     });
 
+    it('the guard rejects NEAR-neighbour tools, not just auxiliary ones (LFU regression)', () => {
+        // Measured 2026-07-30, n=4 per arm: "implement an LFU cache" made the model
+        // claim "Python has collections.OrderedDict for this" 4/4 WITH the suffix and
+        // 0/4 without it. OrderedDict gives least-RECENTLY-used; the claim is simply
+        // false, and the answers then died on NameError. The exclusion has to cover
+        // "close but wrong tool", not only "right tool, auxiliary use".
+        expect(STDLIB_FRAMING_EXCLUDES).toMatch(/LFU/);
+        expect(STDLIB_FRAMING_EXCLUDES).toMatch(/EXACT match|exactly/i);
+        // The other measured mis-fire from the same run: heapq inside a median finder.
+        expect(STDLIB_FRAMING_EXCLUDES).toMatch(/median/i);
+    });
+
+    it('every coding prompt insists the code still runs as pasted', () => {
+        // Root cause of the LFU failures: the hand-roll rule was read as licence to
+        // drop `import collections` while the code still used collections.defaultdict
+        // internally. NameError, 4/4. Both coding paths must carry the counter-rule.
+        expect(INTERVIEW_COPILOT_PROMPT).toContain(CODE_MUST_RUN_RULE);
+        expect(CODING_STYLE_SUFFIX).toContain(CODE_MUST_RUN_RULE);
+        expect(CODE_MUST_RUN_RULE).toMatch(/import/i);
+        expect(CODE_MUST_RUN_RULE).toMatch(/NameError/);
+    });
+});
+
+describe('resolveStyleSuffix — one mapping shared by the Gemma and plain-Gemini branches', () => {
+    // The bug this locks down: streamChat applied the coding suffix ONLY inside
+    // `activeModelId.startsWith('gemma-')`, while CredentialsManager defaults and
+    // migrates every user to gemini-3.1-flash-lite. Measured result on the shipped
+    // default: 0/4 correct framing and 13/15 executable, vs 15/15 with the suffix.
+    it('gives the coding suffix to the coding caller', () => {
+        expect(resolveStyleSuffix(UNIVERSAL_WHAT_TO_ANSWER_PROMPT)).toBe(CODING_STYLE_SUFFIX);
+    });
+
+    it('gives the lighter hint suffix to CodeHint', () => {
+        expect(resolveStyleSuffix(CODE_HINT_PROMPT)).toBe(GEMMA_CODE_HINT_STYLE_SUFFIX);
+    });
+
+    it('gives nothing to callers with no style rule, and is safe to concatenate', () => {
+        for (const caller of [BRAINSTORM_MODE_PROMPT, undefined, 'some unrelated prompt']) {
+            expect(resolveStyleSuffix(caller)).toBe('');
+        }
+    });
+
+    it('is what the Gemma branch uses, so the two branches cannot drift apart again', () => {
+        const augmented = `${UNIVERSAL_WHAT_TO_ANSWER_PROMPT}\n\n[MODE]`;
+        expect(resolveGemmaSystemPrompt(UNIVERSAL_WHAT_TO_ANSWER_PROMPT, augmented))
+            .toBe(`${augmented}${resolveStyleSuffix(UNIVERSAL_WHAT_TO_ANSWER_PROMPT)}`);
+    });
+
     it('the template sentence itself is identical in both paths', () => {
         const template = 'Python has <stdlib tool> for this, but let me implement the mechanism directly.';
         expect(INTERVIEW_COPILOT_PROMPT).toContain(template);
-        expect(GEMMA_CODING_STYLE_SUFFIX).toContain(template);
+        expect(CODING_STYLE_SUFFIX).toContain(template);
     });
 
     it('CodeHint still has NO hand-roll rule — it debugs in-progress code', () => {

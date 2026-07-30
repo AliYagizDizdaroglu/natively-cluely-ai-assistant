@@ -154,7 +154,23 @@ export const STDLIB_FRAMING_APPLIES = `is the thing you are being asked to BUILD
  * The guard against over-application. Each example is a case measured firing
  * spuriously, so this list is evidence, not guesswork.
  */
-export const STDLIB_FRAMING_EXCLUDES = `If a stdlib tool is merely USEFUL for solving the problem rather than being the thing to build — a deque as the internal buffer of a sliding-window maximum, a Counter to find the k most frequent items, a dict to group anagrams, a list used as a stack for bracket matching — do NOT use that template. Just use the tool normally, with no preamble about it.`;
+export const STDLIB_FRAMING_EXCLUDES = `If a stdlib tool is merely USEFUL for solving the problem rather than being the thing to build — a deque as the internal buffer of a sliding-window maximum, a Counter to find the k most frequent items, a dict to group anagrams, a list used as a stack for bracket matching, a heapq inside a running-median structure — do NOT use that template. Just use the tool normally, with no preamble about it.
+The template also requires an EXACT match: the stdlib tool must be the very thing asked for, not a near neighbour. If the question names a variant the stdlib does not actually provide, do NOT name a tool that only almost fits — an LFU cache is NOT collections.OrderedDict (OrderedDict gives you least-RECENTLY-used, not least-FREQUENTLY-used), so an LFU question gets no template and no stdlib claim. When in doubt, say nothing about the stdlib and just write the code.`;
+
+/**
+ * The measured failure mode of the two rules above, and the reason this exists.
+ *
+ * Measured 2026-07-30 (scratchpad/verify-hard-item.mjs, n=4 per arm): on "implement
+ * an LFU cache", the framing rule fired 4/4 with the suffix and 0/4 without it. The
+ * model half-complied — the sentence said it would not use the stdlib, the code
+ * still used collections.defaultdict as an internal helper (a legitimate auxiliary
+ * use, not the banned shortcut), and it DROPPED the import. Every one of those
+ * answers died on `NameError: name 'collections' is not defined`. The same models
+ * without this instruction wrote `from collections import ...` and passed 4/4.
+ *
+ * So the hand-roll rule must never be read as licence to skip an import.
+ */
+export const CODE_MUST_RUN_RULE = `Whatever you say about the standard library, the code you write must run exactly as pasted: every module, class and function it references must be imported or defined. Declining to use a stdlib shortcut as the ANSWER never means dropping an import for a tool you still use internally — if your code says collections.defaultdict anywhere, it needs \`import collections\` (or \`from collections import defaultdict\`) at the top. Code that raises NameError is a total failure regardless of how good the approach was.`;
 
 export const INTERVIEW_COPILOT_PROMPT = `You are the candidate in a live coding interview. You output only the words the candidate says and the code they type. Nothing else.
 
@@ -163,6 +179,7 @@ Reply in this exact shape:
 If so, this sentence MUST follow this exact template, filling in the tool: "Python has <stdlib tool> for this, but let me implement the mechanism directly." (e.g. "Python has collections.OrderedDict for this, but let me implement the mechanism directly.") This is required content for the sentence, not optional commentary — skipping it is a failure.
 ${STDLIB_FRAMING_EXCLUDES}
 2. A fenced code block in the requested language (Python by default), correct and runnable. In Python, write idiomatic, Pythonic style: comprehensions over manual accumulation loops, enumerate/zip over manual indexing, f-strings, clear PEP 8 naming, and appropriate stdlib. Exception: for a question that names a specific data structure or algorithm (per step 1), build that mechanism by hand in the code — never substitute the stdlib shortcut you just named.
+${CODE_MUST_RUN_RULE}
 3. A short numbered step-by-step walkthrough (3-5 steps, ≤1 short sentence each). Reference variable names. Plain English, no labels.
 4. One short first-person sentence walking a small example.
 5. Three lines: "Time:", "Space:", "Why:" — each one short clause.
@@ -170,30 +187,42 @@ ${STDLIB_FRAMING_EXCLUDES}
 Do not write headings, preambles, alternatives, or commentary. Do not address the user. Do not narrate what you are doing. Speak as the candidate, in first person, and stop.`;
 
 /**
- * Gemma-only Python-style directive, appended (never substituted) onto the
- * caller's resolved prompt by resolveGemmaSystemPrompt for fresh-solution
- * coding paths (currently: WhatToAnswerLLM's coding branch, which passes
- * UNIVERSAL_WHAT_TO_ANSWER_PROMPT). Kept as an append-only suffix — not folded
- * into SHARED_CODING_RULES — specifically so it stays scoped to Gemma 4 31B
- * and never leaks into Claude/GPT/non-Gemma Gemini answers, which also use
- * SHARED_CODING_RULES.
+ * Python-style directive for fresh-solution coding paths, appended (never
+ * substituted) onto the caller's resolved prompt by resolveCodingSystemPrompt
+ * (currently: WhatToAnswerLLM's coding branch, which passes
+ * UNIVERSAL_WHAT_TO_ANSWER_PROMPT). Kept as an append-only suffix rather than
+ * folded into SHARED_CODING_RULES so it stays scoped to Gemini-family models
+ * and never leaks into Claude/GPT answers, which also use SHARED_CODING_RULES.
  *
  * Hybrid framing: name the stdlib shortcut (proves Pythonic/stdlib fluency),
  * then still hand-roll it. Safer than a flat "always hand-roll" (loses the
  * fluency signal) or "always use stdlib" (risks skipping the exact mechanism
  * a classic DS/algorithm question is testing) — this works regardless of
  * which one the interviewer actually wanted.
+ *
+ * WAS Gemma-only until 2026-07-30. It was renamed and extended to Flash Lite
+ * because the Gemma-only scoping was measured to be the whole quality gap on
+ * the voice coding path, not a model-tier difference: streamChat only applied
+ * it inside the `activeModelId.startsWith('gemma-')` branch, while
+ * CredentialsManager defaults (and migrates) everyone to gemini-3.1-flash-lite.
+ * Across 16 executed problems Flash Lite without it produced a broken LRU cache
+ * (undefined Node, 4/7 samples), a deque missing half its API, and `import
+ * heapq` in answer to "implement a min-heap" — 0/4 correct framing. With it:
+ * 15/15 executed correct and 4/4 framing, matching Gemma at ~7x lower latency.
+ * The Claude/GPT part of the original scoping is preserved — this is still not
+ * in SHARED_CODING_RULES — because no Claude/GPT measurements exist.
  */
-export const GEMMA_CODING_STYLE_SUFFIX = `
+export const CODING_STYLE_SUFFIX = `
 
-[GEMMA PYTHON STYLE]
+[PYTHON STYLE]
 FIRST — before the code — check: ${STDLIB_FRAMING_APPLIES}
 If the stdlib provides the thing you must BUILD, your opening sentence MUST follow this exact template, filling in the tool:
 "Python has <stdlib tool> for this, but let me implement the mechanism directly."
 (e.g. "Python has collections.OrderedDict for this, but let me implement the mechanism directly.") This is required, substantive technical content — NOT preamble or narration — so it does not violate any no-meta / no-preamble rule above. Skipping it is a failure. Then build that mechanism BY HAND in the code and never call the stdlib shortcut you just named.
 ${STDLIB_FRAMING_EXCLUDES}
+${CODE_MUST_RUN_RULE}
 For all other Python code, write idiomatic, Pythonic style: comprehensions over manual accumulation loops, enumerate/zip over manual indexing (zip(*words) beats range(len(words))), slicing over index walking (s[::-1] to reverse), f-strings, clear PEP 8 naming, and appropriate stdlib.
-[END GEMMA PYTHON STYLE]`;
+[END PYTHON STYLE]`;
 
 /**
  * Lighter Gemma-only Python-style directive for CodeHintLLM's CODE_HINT_PROMPT
@@ -209,6 +238,25 @@ export const GEMMA_CODE_HINT_STYLE_SUFFIX = `
 [GEMMA PYTHON STYLE]
 If the candidate's code is Python, keep any suggested snippet idiomatic — comprehensions, enumerate/zip, f-strings, clear PEP 8 naming. Stay within their existing approach: never suggest switching to a different data structure or a stdlib shortcut that would replace what they're already building.
 [END GEMMA PYTHON STYLE]`;
+
+/**
+ * Which style suffix, if any, a given caller's prompt earns — the single source
+ * of truth shared by BOTH the Gemma branch and the plain-Gemini branch of
+ * streamChat.
+ *
+ * This exists because the two branches disagreed until 2026-07-30: only Gemma
+ * got a suffix, so the default model (gemini-3.1-flash-lite) silently answered
+ * coding questions with no framing rule and no Pythonic rule. Keeping the
+ * mapping in one function is what stops that drifting apart again.
+ *
+ * Returns '' for callers with no style suffix (BRAINSTORM, VERBAL, …), so it is
+ * always safe to concatenate.
+ */
+export function resolveStyleSuffix(callerOverride: string | undefined): string {
+  if (callerOverride === UNIVERSAL_WHAT_TO_ANSWER_PROMPT) return CODING_STYLE_SUFFIX;
+  if (callerOverride === CODE_HINT_PROMPT) return GEMMA_CODE_HINT_STYLE_SUFFIX;
+  return '';
+}
 
 /**
  * Gemma 4 defaults to the minimal INTERVIEW_COPILOT_PROMPT above (TTFT-critical
@@ -229,9 +277,7 @@ export function resolveGemmaSystemPrompt(
   resolvedSystemPrompt: string,
 ): string {
   if (!callerOverride) return INTERVIEW_COPILOT_PROMPT;
-  if (callerOverride === UNIVERSAL_WHAT_TO_ANSWER_PROMPT) return `${resolvedSystemPrompt}${GEMMA_CODING_STYLE_SUFFIX}`;
-  if (callerOverride === CODE_HINT_PROMPT) return `${resolvedSystemPrompt}${GEMMA_CODE_HINT_STYLE_SUFFIX}`;
-  return resolvedSystemPrompt;
+  return `${resolvedSystemPrompt}${resolveStyleSuffix(callerOverride)}`;
 }
 
 // ==========================================

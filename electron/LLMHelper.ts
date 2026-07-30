@@ -11,7 +11,8 @@ import {
   UNIVERSAL_RECAP_PROMPT, UNIVERSAL_FOLLOWUP_PROMPT, UNIVERSAL_FOLLOW_UP_QUESTIONS_PROMPT, UNIVERSAL_ASSIST_PROMPT,
   CUSTOM_SYSTEM_PROMPT, CUSTOM_ANSWER_PROMPT, CUSTOM_WHAT_TO_ANSWER_PROMPT,
   CUSTOM_RECAP_PROMPT, CUSTOM_FOLLOWUP_PROMPT, CUSTOM_FOLLOW_UP_QUESTIONS_PROMPT, CUSTOM_ASSIST_PROMPT,
-  resolveGemmaSystemPrompt
+  resolveGemmaSystemPrompt,
+  resolveStyleSuffix
 } from "./llm/prompts"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
 import curl2Json from "@bany/curl-to-json";
@@ -2650,9 +2651,17 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         return;
       }
 
-      // Other Gemini models — direct or race
+      // Other Gemini models — direct or race.
+      // These get the SAME caller-specific style suffix the Gemma branch gets
+      // (resolveStyleSuffix is the shared source of truth). Until 2026-07-30 they
+      // did not, and since CredentialsManager defaults everyone to
+      // gemini-3.1-flash-lite, the coding path shipped with no framing rule and
+      // no Pythonic rule for almost every user: measured 0/4 correct framing and
+      // 13/15 executable vs 15/15 once the suffix is applied. See CODING_STYLE_SUFFIX.
       if (this.isGeminiModel(activeModelId)) {
-        yield* this.streamWithGeminiModel(fullMsg, activeModelId, imagePaths);
+        const styleSuffix = resolveStyleSuffix(callerSystemPromptOverride);
+        const geminiMsg = styleSuffix ? `${finalSystemPrompt}${styleSuffix}\n\n${userContent}` : fullMsg;
+        yield* this.streamWithGeminiModel(geminiMsg, activeModelId, imagePaths);
         return;
       }
 

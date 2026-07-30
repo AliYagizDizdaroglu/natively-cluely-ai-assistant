@@ -38,7 +38,7 @@ vi.mock('@google/genai', () => ({
 }));
 
 import { LLMHelper } from './LLMHelper';
-import { CODE_HINT_PROMPT } from './llm/prompts';
+import { CODE_HINT_PROMPT, UNIVERSAL_WHAT_TO_ANSWER_PROMPT, CODING_STYLE_SUFFIX, BRAINSTORM_MODE_PROMPT } from './llm/prompts';
 
 async function drain(gen: AsyncGenerator<string, void, unknown>) {
     const chunks: string[] = [];
@@ -72,5 +72,56 @@ describe('LLMHelper.streamChat — Gemma branch must honor caller system prompt 
         expect(generateContentStream).toHaveBeenCalledTimes(1);
         const { config } = generateContentStream.mock.calls[0][0];
         expect(config.systemInstruction).toContain('You are the candidate in a live coding interview');
+    });
+});
+
+describe('LLMHelper.streamChat — the coding style suffix must reach NON-Gemma Gemini models too', () => {
+    // Regression guard for the bug this file's Gemma tests hid: resolveGemmaSystemPrompt
+    // was only called inside `activeModelId.startsWith('gemma-')`, so the shipped
+    // default (CredentialsManager defaults AND migrates everyone to
+    // gemini-3.1-flash-lite) answered coding questions with no framing rule and no
+    // Pythonic rule. Measured on 16 executed problems: 0/4 framing and 13/15 correct
+    // without the suffix, 4/4 and 15/15 with it.
+    //
+    // The plain-Gemini branch has no systemInstruction — the prompt is inlined into
+    // the user message — so these assert on the message text, not on config.
+    const userText = (call: { contents: any }) => call.contents[0].parts[0].text as string;
+
+    beforeEach(() => {
+        generateContentStream.mockClear();
+    });
+
+    it('appends the coding suffix for the coding caller on Flash Lite', async () => {
+        const helper = new LLMHelper('fake-gemini-key');
+
+        await drain(helper.streamChat('implement an LRU cache', undefined, undefined, UNIVERSAL_WHAT_TO_ANSWER_PROMPT, false, 'gemini-3.1-flash-lite'));
+
+        expect(generateContentStream).toHaveBeenCalledTimes(1);
+        const call = generateContentStream.mock.calls[0][0];
+        expect(call.model).toBe('gemini-3.1-flash-lite');
+        expect(userText(call)).toContain(CODING_STYLE_SUFFIX);
+        // The caller's own prompt must survive alongside it, not be replaced.
+        expect(userText(call)).toContain('implement an LRU cache');
+    });
+
+    it('does NOT append it for non-coding callers on Flash Lite', async () => {
+        const helper = new LLMHelper('fake-gemini-key');
+
+        await drain(helper.streamChat('how do I open this up', undefined, undefined, BRAINSTORM_MODE_PROMPT, false, 'gemini-3.1-flash-lite'));
+
+        expect(generateContentStream).toHaveBeenCalledTimes(1);
+        expect(userText(generateContentStream.mock.calls[0][0])).not.toContain(CODING_STYLE_SUFFIX);
+    });
+
+    it('carries the LFU guard and the must-run rule through to what Flash Lite actually receives', async () => {
+        // End-to-end version of the prompts.test.ts unit checks: the two guards added
+        // after the hard-set run have to survive composition into the real message.
+        const helper = new LLMHelper('fake-gemini-key');
+
+        await drain(helper.streamChat('implement an LFU cache', undefined, undefined, UNIVERSAL_WHAT_TO_ANSWER_PROMPT, false, 'gemini-3.1-flash-lite'));
+
+        const sent = userText(generateContentStream.mock.calls[0][0]);
+        expect(sent).toMatch(/LFU/);
+        expect(sent).toMatch(/NameError/);
     });
 });

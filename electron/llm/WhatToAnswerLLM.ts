@@ -185,7 +185,11 @@ ANSWER SHAPE: ${intentResult.answerShape}
 
             diagLog(`=== generateStream invoked ===`);
             diagLog(`intentResult: ${JSON.stringify(intentResult)} forceFastModel=${!!forceFastModel}`);
-            diagLog(`route: ${forceFastModel ? 'FAST-OVERRIDE (Flash Lite)' : isCoding ? 'CODING (Gemma, no filter)' : isBehavioral ? 'BEHAVIORAL (Flash Lite, filtered)' : 'VERBAL-TECHNICAL (Gemma, filtered)'}`);
+            // NB: "CODING"/"VERBAL-TECHNICAL" do NOT pin a model — streamChat routes on
+            // the user's dropdown selection, which CredentialsManager defaults (and
+            // migrates) to gemini-3.1-flash-lite. This log used to claim "Gemma" for
+            // both and sent me looking in the wrong place; it names the path, not the model.
+            diagLog(`route: ${forceFastModel ? 'FAST-OVERRIDE (Flash Lite)' : isCoding ? 'CODING (selected model, no filter)' : isBehavioral ? 'BEHAVIORAL (Flash Lite, filtered)' : 'VERBAL-TECHNICAL (selected model, filtered)'}`);
             diagLog(`transcript preview: ${JSON.stringify(cleanedTranscript.slice(0, 200))}`);
 
             if (isCoding && !forceFastModel) {
