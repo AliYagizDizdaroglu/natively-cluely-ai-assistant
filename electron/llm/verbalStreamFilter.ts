@@ -141,6 +141,98 @@ function decidePartialLine(buf: string): PartialDecision {
     return { t: 'wait' };
 }
 
+const SENTINEL = '__MORE__';
+
+/** One offered expansion: a short noun-phrase label the UI can render as a chip. */
+export interface Suggestion {
+    /** 1-based index as emitted by the model. */
+    n: number;
+    /** 3-8 word noun phrase naming depth the answer left out. */
+    label: string;
+}
+
+/**
+ * Splits a completed verbal answer into the spoken part and its expansion offers.
+ *
+ * The model is asked (see SPOKEN_LENGTH_AND_DEPTH) to keep the spoken answer under
+ * the word budget and name any depth it dropped after a `__MORE__` sentinel:
+ *
+ *     ...spoken answer...
+ *     __MORE__
+ *     1| trade-offs of vnode count
+ *     2| hot-key handling on the ring
+ *
+ * Tolerant by design: a missing block is the common case (correct whenever the
+ * answer is already complete), and malformed lines are dropped rather than shown,
+ * because leaking `1| ...` into the answer bubble is worse than losing one chip.
+ */
+export function extractSuggestions(text: string): { answer: string; suggestions: Suggestion[] } {
+    const i = text.indexOf(SENTINEL);
+    if (i === -1) return { answer: text, suggestions: [] };
+
+    const answer = text.slice(0, i).replace(/\s+$/, '');
+    const suggestions: Suggestion[] = [];
+    for (const raw of text.slice(i + SENTINEL.length).split('\n')) {
+        const line = raw.trim();
+        if (!line) continue;
+        const m = line.match(/^(\d+)\s*\|\s*(.+)$/);
+        if (!m) continue;                       // stray prose inside the block — drop it
+        const label = m[2].trim().replace(/^["'`]|["'`]$/g, '');
+        if (label) suggestions.push({ n: Number(m[1]), label });
+    }
+    return { answer, suggestions };
+}
+
+/**
+ * Streaming guard for the sentinel: yields the spoken answer and suppresses
+ * everything from `__MORE__` onward, so the block never flashes on screen while
+ * tokens arrive. Captured offers are handed to `onSuggestions` at stream end.
+ *
+ * Holds back only a short tail (the sentinel can straddle a chunk boundary) —
+ * enough to recognise a partial `__MOR`, not enough to stall the stream.
+ */
+export async function* stripSuggestionBlock(
+    source: AsyncGenerator<string>,
+    onSuggestions?: (s: Suggestion[]) => void,
+): AsyncGenerator<string> {
+    let pending = '';   // possible partial sentinel, not yet safe to emit
+    let tail = '';      // everything after the sentinel
+    let found = false;
+
+    for await (const chunk of source) {
+        if (found) { tail += chunk; continue; }
+        pending += chunk;
+        const at = pending.indexOf(SENTINEL);
+        if (at !== -1) {
+            found = true;
+            const before = pending.slice(0, at);
+            if (before) yield before;
+            tail = pending.slice(at + SENTINEL.length);
+            pending = '';
+            continue;
+        }
+        // Emit everything that cannot be the start of the sentinel; keep the rest.
+        const keep = longestSentinelPrefixSuffix(pending);
+        const emit = pending.slice(0, pending.length - keep);
+        if (emit) yield emit;
+        pending = pending.slice(pending.length - keep);
+    }
+
+    if (!found && pending) yield pending;
+    if (onSuggestions) {
+        onSuggestions(found ? extractSuggestions(SENTINEL + tail).suggestions : []);
+    }
+}
+
+/** Length of the longest suffix of `s` that is a proper prefix of the sentinel. */
+function longestSentinelPrefixSuffix(s: string): number {
+    const max = Math.min(SENTINEL.length - 1, s.length);
+    for (let n = max; n > 0; n--) {
+        if (s.endsWith(SENTINEL.slice(0, n))) return n;
+    }
+    return 0;
+}
+
 /**
  * Streaming verbal-line filter. Same filtering semantics as the original
  * line-buffered version, but tokens flow through as soon as a line's prefix

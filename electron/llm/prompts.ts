@@ -170,7 +170,59 @@ The template also requires an EXACT match: the stdlib tool must be the very thin
  *
  * So the hand-roll rule must never be read as licence to skip an import.
  */
-export const CODE_MUST_RUN_RULE = `Whatever you say about the standard library, the code you write must run exactly as pasted: every module, class and function it references must be imported or defined. Declining to use a stdlib shortcut as the ANSWER never means dropping an import for a tool you still use internally — if your code says collections.defaultdict anywhere, it needs \`import collections\` (or \`from collections import defaultdict\`) at the top. Code that raises NameError is a total failure regardless of how good the approach was.`;
+/**
+ * Sentinel that opens the optional expansion-offer block on the verbal paths.
+ * Same `__NAME__` convention as `__model_source:X__` so the stream layer can
+ * strip it before display — see extractSuggestions() in verbalStreamFilter.
+ */
+export const SUGGESTIONS_SENTINEL = '__MORE__';
+
+/** Spoken-answer word budget. 30s at ~140wpm conversational pace. */
+export const SPOKEN_WORD_BUDGET = 70;
+
+/**
+ * Condensed spoken answer + optional numbered depth offers, for the verbal paths.
+ *
+ * Why: EXECUTION_CONTRACT rule 11 asks for answers speakable in under 30 seconds,
+ * but "30 seconds" is not a unit a model can count — measured 2026-07-30, medians
+ * ran 32-39s with 43-61% of answers over budget, and the LLM judge rated those same
+ * answers 4.9/5 for "speakable". Only the word count caught it. This states the
+ * budget in words instead, and rather than DELETING the overflow it names it so the
+ * UI can offer it on demand.
+ *
+ * A/B measured 2026-07-30 (ab-suggestions.mjs, 31 questions x 2 reps x 4 arms):
+ *   TECH median words   gemma 73->68, flash 72->67   (both now under budget)
+ *   over budget         gemma 61%->39%, flash 54%->39%
+ *   key-claim anchors   100% -> 100% on BOTH models   <- no content lost
+ *   spurious offers on trivial questions   0/24
+ *   labels that restate the answer          3/131
+ *   malformed blocks                        0
+ *   latency delta                           flash -23ms, gemma +361ms
+ *
+ * Two rules below are load-bearing rather than stylistic:
+ *  - "labels, not questions": a chip reading "Would you like me to explain vnodes?"
+ *    is bad UI. (It would survive verbalStreamFilter — the `N|` prefix means the
+ *    line no longer starts with a HARD_DROP opener — but it still reads wrong.)
+ *  - "zero is correct": without an explicit permission to stay silent, this kind of
+ *    rule over-fires. It is the same failure the stdlib framing rule had. Measured
+ *    0/24 spurious on trivial questions with this wording.
+ */
+export const SPOKEN_LENGTH_AND_DEPTH = `
+[SPOKEN LENGTH + OPTIONAL DEPTH]
+Your spoken answer is read aloud in a live conversation. Keep it to AT MOST ${SPOKEN_WORD_BUDGET} words — roughly 30 seconds. Say the single most important thing completely and correctly; do not try to cover every angle. Never sacrifice the core technical claim to save words.
+
+If, and ONLY if, there is genuinely substantive depth you had to leave out, list it after the answer in this exact form, on its own lines:
+${SUGGESTIONS_SENTINEL}
+1| <3-8 word noun phrase naming the omitted depth>
+2| <another, if warranted>
+
+Rules for that block:
+- At most 3 entries. Fewer is better. Zero is correct whenever the answer already covers what matters.
+- Each entry must name something SUBSTANTIVE that is NOT already stated in your answer. Restating a point you just made is a failure.
+- They are LABELS, not questions. Write "trade-offs of vnode count", never "Would you like me to explain vnodes?". Never address the listener.
+- If the question is simple enough to answer completely in a sentence or two, output NO ${SUGGESTIONS_SENTINEL} block at all.`;
+
+export const CODE_MUST_RUN_RULE =`Whatever you say about the standard library, the code you write must run exactly as pasted: every module, class and function it references must be imported or defined. Declining to use a stdlib shortcut as the ANSWER never means dropping an import for a tool you still use internally — if your code says collections.defaultdict anywhere, it needs \`import collections\` (or \`from collections import defaultdict\`) at the top. Code that raises NameError is a total failure regardless of how good the approach was.`;
 
 export const INTERVIEW_COPILOT_PROMPT = `You are the candidate in a live coding interview. You output only the words the candidate says and the code they type. Nothing else.
 
@@ -2292,7 +2344,8 @@ BAD 2 (meta-preamble + implementation speak):
 GOOD (substantive opening + concept-level explanation, picks an interpretation and commits):
 "Transformers work by letting every word in a sentence look at every other word and decide which ones matter most for its meaning — that's the attention mechanism. Instead of reading left-to-right like older models, the whole sequence gets processed at once, so context flows in every direction. Stacking these attention layers builds up richer and richer representations, which is why the same architecture works for translation, code, images, and audio."
 
-Output ONLY the spoken answer. Nothing else.`;
+Output ONLY the spoken answer. Nothing else.
+${SPOKEN_LENGTH_AND_DEPTH}`;
 
 /**
  * UNIVERSAL: Recap / Summary

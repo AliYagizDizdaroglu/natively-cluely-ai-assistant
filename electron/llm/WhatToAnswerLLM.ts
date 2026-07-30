@@ -2,7 +2,7 @@ import { LLMHelper } from "../LLMHelper";
 import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
-import { filterVerbalLines } from "./verbalStreamFilter";
+import { filterVerbalLines, stripSuggestionBlock, type Suggestion } from "./verbalStreamFilter";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -123,7 +123,12 @@ export class WhatToAnswerLLM {
         // Escape hatch for the "Answer now with Flash Lite" button: skip the
         // deeper (slower) model entirely and answer on the fast verbal path,
         // whatever the intent. Used when the candidate can't wait any longer.
-        forceFastModel?: boolean
+        forceFastModel?: boolean,
+        // Called exactly once per stream with the expansion offers the model
+        // attached to a verbal answer — an empty array when it correctly offered
+        // none, and always empty on the coding path. The spoken text yielded by
+        // this generator never contains the block — see stripSuggestionBlock.
+        onSuggestions?: (suggestions: Suggestion[]) => void,
     ): AsyncGenerator<string> {
         try {
             // Build a rich message context
@@ -200,6 +205,10 @@ ANSWER SHAPE: ${intentResult.answerShape}
                     undefined,
                     UNIVERSAL_WHAT_TO_ANSWER_PROMPT
                 );
+                // Coding answers carry no expansion offers (code is exempt from the
+                // spoken word budget). Still notify, so a caller always gets exactly
+                // one callback per stream and never waits on one that cannot arrive.
+                onSuggestions?.([]);
             } else {
                 // Verbal paths — both use VERBAL_WHAT_TO_ANSWER_PROMPT and the same
                 // output filters; they differ only in which model generates.
@@ -237,7 +246,7 @@ ANSWER SHAPE: ${intentResult.answerShape}
                         );
                     }
                 }
-                // Compose: sentinel strip → fence filter → line filter (outer-to-inner order)
+                // Compose: sentinel strip → fence filter → line filter → offers strip
                 // stripModelSentinel removes __model_source:X__ that LLMHelper prepends —
                 //   otherwise the first content line is "__model_source:Gemma 4__I'll explain..."
                 //   and DROP_PREFIXES can't match against the sentinel-prefixed line.
@@ -245,7 +254,13 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 // filterVerbalLines (streaming — see verbalStreamFilter.ts) drops
                 //   coding-format prose (Time:/Space:/Why: bullets, preambles) while
                 //   passing tokens through as soon as each line's prefix is disambiguated.
-                yield* filterVerbalLines(this.filterCodeFences(this.stripModelSentinel(rawStream)));
+                // stripSuggestionBlock is OUTERMOST so the __MORE__ block never reaches
+                //   the bubble even for a token-boundary split; the labels it captures are
+                //   handed to onSuggestions for the UI to render as chips.
+                yield* stripSuggestionBlock(
+                    filterVerbalLines(this.filterCodeFences(this.stripModelSentinel(rawStream))),
+                    onSuggestions,
+                );
             }
             // ────────────────────────────────────────────────────────────────────────
 

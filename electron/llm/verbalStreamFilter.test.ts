@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { filterVerbalLines } from './verbalStreamFilter';
+import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, type Suggestion } from './verbalStreamFilter';
 
 /** Feed `text` through the filter in fixed-size chunks; return concatenated output. */
 async function runFilter(text: string, chunkSize = 6): Promise<string> {
@@ -101,5 +101,87 @@ describe('filterVerbalLines streaming behavior', () => {
         // under half the text (17 chunks total).
         expect(consumedAtFirstYield).toBeGreaterThan(0);
         expect(consumedAtFirstYield).toBeLessThanOrEqual(9);
+    });
+});
+
+/** Feed `text` through the offers guard in fixed-size chunks. */
+async function runStrip(text: string, chunkSize: number): Promise<{ out: string; sugg: Suggestion[] }> {
+    async function* source() {
+        for (let i = 0; i < text.length; i += chunkSize) yield text.slice(i, i + chunkSize);
+    }
+    let out = '';
+    let sugg: Suggestion[] = [];
+    for await (const c of stripSuggestionBlock(source(), s => { sugg = s; })) out += c;
+    return { out, sugg };
+}
+
+describe('extractSuggestions — splitting the spoken answer from its expansion offers', () => {
+    const ANSWER = 'Consistent hashing keeps key movement small when a node joins.';
+
+    it('returns the whole text and no offers when the model correctly stayed silent', () => {
+        // The common case: a complete short answer needs no offers. Measured 0/24
+        // spurious blocks on trivial questions, so this path is the norm, not the edge.
+        expect(extractSuggestions(ANSWER)).toEqual({ answer: ANSWER, suggestions: [] });
+    });
+
+    it('splits the answer from the offers and parses the labels', () => {
+        const { answer, suggestions } = extractSuggestions(
+            `${ANSWER}\n__MORE__\n1| trade-offs of vnode count\n2| hot-key handling on the ring\n`,
+        );
+        expect(answer).toBe(ANSWER);
+        expect(suggestions).toEqual([
+            { n: 1, label: 'trade-offs of vnode count' },
+            { n: 2, label: 'hot-key handling on the ring' },
+        ]);
+    });
+
+    it('drops stray prose inside the block rather than leaking it into a chip', () => {
+        const { suggestions } = extractSuggestions(
+            `${ANSWER}\n__MORE__\nHere are some things I left out:\n1| vnode count trade-offs\n`,
+        );
+        expect(suggestions).toEqual([{ n: 1, label: 'vnode count trade-offs' }]);
+    });
+
+    it('never leaves the sentinel in the spoken answer', () => {
+        const { answer } = extractSuggestions(`${ANSWER}\n__MORE__\n1| something\n`);
+        expect(answer).not.toContain('__MORE__');
+        expect(answer).not.toMatch(/\d\|/);
+    });
+});
+
+describe('stripSuggestionBlock — the block must never flash on screen mid-stream', () => {
+    const FULL = 'Bloom filters answer membership fast.\n__MORE__\n1| false positive rate math\n2| counting filters for deletes\n';
+    const SPOKEN = 'Bloom filters answer membership fast.';
+
+    // Chunk sizes chosen to straddle the sentinel: at 1 and 3 the string "__MORE__"
+    // is split across boundaries, which is exactly when a naive indexOf leaks "__MO".
+    it.each([1, 3, 4, 7, 500])('suppresses the block at chunk size %i', async (size) => {
+        const { out, sugg } = await runStrip(FULL, size);
+        expect(out).not.toContain('__MORE__');
+        expect(out).not.toContain('__MO');
+        expect(out.trim()).toBe(SPOKEN);
+        expect(sugg.map(s => s.label)).toEqual(['false positive rate math', 'counting filters for deletes']);
+    });
+
+    it('passes an answer with no block through byte-for-byte', async () => {
+        const { out, sugg } = await runStrip(SPOKEN, 3);
+        expect(out).toBe(SPOKEN);
+        expect(sugg).toEqual([]);
+    });
+
+    it('reports an empty array (not a missing call) when no offers were made', async () => {
+        // Callers rely on exactly one callback per stream; a never-fired callback
+        // would leave a UI spinner waiting forever.
+        let called = 0;
+        async function* src() { yield 'Short and complete.'; }
+        for await (const _ of stripSuggestionBlock(src(), () => { called++; })) { /* drain */ }
+        expect(called).toBe(1);
+    });
+
+    it('does not mistake ordinary underscores in prose for the sentinel', async () => {
+        const text = 'Use snake_case for names, and __init__ is the constructor.';
+        const { out, sugg } = await runStrip(text, 2);
+        expect(out).toBe(text);
+        expect(sugg).toEqual([]);
     });
 });
