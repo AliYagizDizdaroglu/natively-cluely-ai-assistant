@@ -1,4 +1,5 @@
 import { jaccardSimilarity } from './jaccardSimilarity';
+import { sameAnchor } from './questionReconcile';
 
 /**
  * Cross-pipeline chip dedup.
@@ -19,6 +20,8 @@ export type ChipSource = 'live' | 'whisper';
 export interface DedupCandidate {
   question: string;
   source: ChipSource;
+  /** Transcript sentence this detection came from (Task 5 reconcile); anchors match anchors. */
+  anchor?: string;
 }
 
 export interface AdmitResult {
@@ -26,12 +29,16 @@ export interface AdmitResult {
   /** Which pipeline already surfaced this question — set only when suppressed. */
   duplicateOfSource?: ChipSource;
   duplicateOfQuestion?: string;
+  /** Set only when suppressed: whether the original detection has already been answered. */
+  alreadyAnswered?: boolean;
 }
 
 interface CacheEntry {
   text: string;
   source: ChipSource;
   at: number;
+  anchor?: string;
+  answered: boolean;
 }
 
 export interface ChipDeduperOptions {
@@ -71,16 +78,17 @@ export class ChipDeduper {
     const now = Date.now();
     this.cache = this.cache.filter((e) => now - e.at < this.windowMs);
 
-    const match = this.findSimilar(text);
+    const match = this.findSimilar(text, candidate.anchor);
     if (match) {
       return {
         admitted: false,
         duplicateOfSource: match.source,
         duplicateOfQuestion: match.text,
+        alreadyAnswered: match.answered,
       };
     }
 
-    this.cache.push({ text, source: candidate.source, at: now });
+    this.cache.push({ text, source: candidate.source, at: now, anchor: candidate.anchor, answered: false });
     if (this.cache.length > this.cacheSize) this.cache.shift();
     return { admitted: true };
   }
@@ -89,9 +97,18 @@ export class ChipDeduper {
     this.cache = [];
   }
 
-  private findSimilar(text: string): CacheEntry | null {
+  /** Record that the question (or its near-duplicate already in the cache) has been answered. */
+  markAnswered(question: string): void {
+    const text = (question ?? '').trim();
+    if (!text) return;
+    const entry = this.findSimilar(text);
+    if (entry) entry.answered = true;
+  }
+
+  private findSimilar(text: string, anchor?: string): CacheEntry | null {
     const normNew = text.toLowerCase().trim();
     for (const entry of this.cache) {
+      if (anchor && entry.anchor && sameAnchor(anchor, entry.anchor)) return entry;
       const normExisting = entry.text.toLowerCase().trim();
       // Containment catches STT fragmentation, where Jaccard is misleadingly
       // low: "architecture." vs "Can you explain Transformers? architecture."

@@ -82,3 +82,32 @@ describe('ChipDeduper', () => {
     ).toBe(true);
   });
 });
+
+describe('ChipDeduper — answered mark and anchors (2026-09-02)', () => {
+  it('a suppressed duplicate says whether the original was already answered', () => {
+    const d = new ChipDeduper();
+    d.admit({ question: 'What is a Pod?', source: 'whisper' });
+    expect(d.admit({ question: 'What is a Pod?', source: 'live' }).alreadyAnswered).toBe(false);
+    d.markAnswered('What is a Pod?');
+    expect(d.admit({ question: 'What is a Pod?', source: 'live' }).alreadyAnswered).toBe(true);
+  });
+
+  it('two detections anchored to the same transcript sentence are one question even when their texts differ', () => {
+    const d = new ChipDeduper();
+    const anchor = 'How would you handle a dataset that must be deleted on request for compliance?';
+    d.admit({ question: anchor, source: 'whisper', anchor });
+    const live = d.admit({
+      question: 'How do you design a system where customer data must be deleted on request for co',
+      source: 'live',
+      anchor,
+    });
+    expect(live.admitted).toBe(false);
+    expect(live.duplicateOfSource).toBe('whisper');
+  });
+
+  it('anchors only compare against anchors — an unrelated question with no anchor is still admitted', () => {
+    const d = new ChipDeduper();
+    d.admit({ question: 'What is a Pod?', source: 'whisper', anchor: 'What is a Pod?' });
+    expect(d.admit({ question: 'How do you keep base images patched?', source: 'live' }).admitted).toBe(true);
+  });
+});
