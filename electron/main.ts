@@ -218,6 +218,7 @@ import { PhoneMirrorService } from "./services/PhoneMirrorService"
 import { setVerboseLoggingFlag } from "./verboseLog"
 import { ReleaseNotesManager } from "./update/ReleaseNotesManager"
 import { OllamaManager } from './services/OllamaManager'
+import { normalizeLiveMode } from './services/liveMode'
 
 export class AppState {
   private static instance: AppState | null = null
@@ -3123,6 +3124,24 @@ async function initializeApp() {
   console.log("App is ready")
 
   appState.createWindow()
+
+  // Dev-only: the interview60 harness relaunches the app unattended and needs a
+  // meeting running without a click. Same env-gate pattern as
+  // NATIVELY_DETECTOR_CHAIN_TEST; production never sets either variable.
+  // NATIVELY_LIVE_MODE seeds (and, via setLiveMode, persists) the Live mode so the
+  // very first unattended launch comes up listening in Auto.
+  if (process.env.NATIVELY_AUTOSTART_MEETING === '1') {
+    setTimeout(() => {
+      const seeded = process.env.NATIVELY_LIVE_MODE;
+      if (seeded) {
+        console.log(`[Init] NATIVELY_LIVE_MODE=${seeded} — seeding Live mode before the meeting starts`);
+        appState.setLiveMode(normalizeLiveMode(seeded));
+      }
+      console.log('[Init] NATIVELY_AUTOSTART_MEETING=1 — starting a meeting automatically');
+      appState.startMeeting({ title: 'autostart', source: 'env' })
+        .catch((err: any) => console.error('[Init] autostart meeting failed:', err?.message ?? err));
+    }, 1500);
+  }
 
   // Apply initial stealth state based on isUndetectable setting.
   // NOTE: app.dock.hide() was already called pre-emptively before createWindow()
