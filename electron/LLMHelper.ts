@@ -21,6 +21,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import axios from 'axios';
 import { createProviderRateLimiters, RateLimiter } from './services/RateLimiter';
+import { ProviderCooldown } from './services/providerCooldown';
 const execAsync = promisify(exec);
 
 interface OllamaResponse {
@@ -145,6 +146,9 @@ export class LLMHelper {
 
   // Self-improving model version manager for vision analysis
   private modelVersionManager: ModelVersionManager;
+
+  // Skips a provider for 10 min after a rate-limit failure in structured generation
+  private structuredCooldown = new ProviderCooldown();
 
   constructor(apiKey?: string, useOllama: boolean = false, ollamaModel?: string, ollamaUrl?: string, groqApiKey?: string, openaiApiKey?: string, claudeApiKey?: string) {
     this.useOllama = useOllama
@@ -1484,6 +1488,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       }
 
       for (const provider of providers) {
+        if (this.structuredCooldown.shouldSkip(provider.name)) {
+          console.log(`[LLMHelper] ⏭️ Structured generation: skipping ${provider.name} (rate-limited within the last 10 min)`);
+          continue;
+        }
         try {
           console.log(`[LLMHelper] 🧠 Structured generation: trying ${provider.name}...`);
           const result = await provider.execute();
@@ -1497,6 +1505,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
           const reason = (error?.message ?? String(error)).toString().slice(0, 240);
           console.warn(`[LLMHelper] ⚠️ Structured generation: ${provider.name} failed: ${reason}`);
           lastFailureByProvider.set(provider.name, reason);
+          this.structuredCooldown.noteFailure(provider.name, reason);
         }
       }
     }
