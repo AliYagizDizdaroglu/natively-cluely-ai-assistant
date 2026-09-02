@@ -35,6 +35,7 @@ export class IntelligenceManager extends EventEmitter {
     private engine: IntelligenceEngine;
     private persistence: MeetingPersistence;
     private questionDetector: QuestionDetector;
+    private recentInterviewerSpeech: import('./services/questionReconcile').RecentSpeech[] = [];
 
     constructor(llmHelper: LLMHelper) {
         super();
@@ -236,7 +237,19 @@ export class IntelligenceManager extends EventEmitter {
     // ============================================
 
     handleTranscript(segment: import('./SessionTracker').TranscriptSegment): void {
+        if (segment.speaker === 'interviewer' && segment.text.trim()) {
+            // Interims included: on 2026-09-02 the only record of a question the
+            // STT socket dropped mid-sentence was its last interim.
+            this.recentInterviewerSpeech.push({ text: segment.text, at: segment.timestamp, final: segment.final });
+            if (this.recentInterviewerSpeech.length > 40) this.recentInterviewerSpeech.shift();
+        }
         this.engine.handleTranscript(segment);
+    }
+
+    /** Interviewer finals and interims from the last windowMs, oldest first. */
+    getRecentInterviewerSpeech(windowMs: number = 15_000): import('./services/questionReconcile').RecentSpeech[] {
+        const cutoff = Date.now() - windowMs;
+        return this.recentInterviewerSpeech.filter((s) => s.at >= cutoff);
     }
 
     async handleSuggestionTrigger(trigger: import('./SessionTracker').SuggestionTrigger): Promise<void> {

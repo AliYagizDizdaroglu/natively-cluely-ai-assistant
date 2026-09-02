@@ -219,6 +219,8 @@ import { setVerboseLoggingFlag } from "./verboseLog"
 import { ReleaseNotesManager } from "./update/ReleaseNotesManager"
 import { OllamaManager } from './services/OllamaManager'
 import { normalizeLiveMode } from './services/liveMode'
+import { decideDispatch } from './services/detectionDispatch'
+import { reconcileLiveQuestion } from './services/questionReconcile'
 
 export class AppState {
   private static instance: AppState | null = null
@@ -1845,6 +1847,50 @@ export class AppState {
     return this.liveRouter?.getState() ?? 'idle';
   }
 
+  /**
+   * One path for both detectors. The deduper decides identity; decideDispatch
+   * decides the action; Auto answers exactly once per question from whichever
+   * detector fired first (the STT detector could never answer before this).
+   */
+  private dispatchDetection(d: {
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    source: 'live' | 'whisper';
+    anchor?: string;
+    verdict: 'match' | 'paraphrase' | 'replaced' | 'unverifiable';
+    chip?: any;
+  }): void {
+    const verdict = this.chipDeduper.admit({ question: d.question, source: d.source, anchor: d.anchor });
+    const action = this.liveMode === 'off' && d.source === 'whisper' ? (verdict.admitted ? 'chip' : 'drop') : decideDispatch(this.liveMode, verdict);
+    const anchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
+    if (action === 'drop') {
+      console.log(`[Main] dispatch: drop source=${d.source} anchor=${anchorLog} verdict=${d.verdict} duplicateOf=${verdict.duplicateOfSource ?? 'none'} answered=${verdict.alreadyAnswered === true}`);
+      return;
+    }
+    console.log(`[Main] dispatch: ${action} source=${d.source} anchor=${anchorLog} verdict=${d.verdict}`);
+    if (action === 'chip') {
+      let contextSnapshot = '';
+      try { contextSnapshot = this.intelligenceManager.getFormattedContext(60) ?? ''; } catch { /* chip still works */ }
+      const chip = d.chip ?? {
+        id: `live-${Date.now()}-${++this.liveChipSeq}`,
+        question: d.question,
+        intent: d.intent,
+        confidence: 1.0,
+        contextSnapshot,
+        detectedAt: Date.now(),
+        source: 'live' as const,
+      };
+      this.broadcast('detected-question', chip);
+      return;
+    }
+    // answer — mark first so a duplicate arriving during generation is dropped
+    this.chipDeduper.markAnswered(verdict.admitted ? d.question : (verdict.duplicateOfQuestion ?? d.question));
+    this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source });
+    void this.intelligenceManager
+      .runWhatShouldISay(d.question, 1.0, undefined, { intentOverride: d.intent, bypassCooldown: true })
+      .catch((err: any) => console.error('[Main] auto-answer failed:', err?.message ?? err));
+  }
+
   private startLiveRouter(): void {
     this.stopLiveRouter();
     const { CredentialsManager } = require('./services/CredentialsManager');
@@ -1858,46 +1904,17 @@ export class AppState {
     router.on('question', (q: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => {
       if (!this.isMeetingActive || this.liveMode === 'off') return;
       console.log(`[Main] Live question (${q.intent}, mode=${this.liveMode}): "${q.question.slice(0, 80)}"`);
-
-      // One dedup authority for both pipelines. Without this, whisper→Groq and
-      // the Live listener each broadcast their own chip for the same question.
-      const verdict = this.chipDeduper.admit({ question: q.question, source: 'live' });
-      if (!verdict.admitted) {
-        console.log(`[Main] suppressed duplicate live question (already surfaced by ${verdict.duplicateOfSource}): "${q.question.slice(0, 50)}"`);
-        return;
+      const r = reconcileLiveQuestion(q.question, this.intelligenceManager.getRecentInterviewerSpeech(15_000));
+      if (r.verdict === 'replaced') {
+        console.log(`[Main] Live question replaced by transcript: live=${JSON.stringify(q.question.slice(0, 80))} said=${JSON.stringify(r.text.slice(0, 80))}`);
       }
-
-      if (this.liveMode === 'suggest') {
-        // Surface a chip through the SAME path the whisper detector uses — the
-        // renderer's existing chip UI + click handler take over (click answers
-        // via runWhatShouldISay with contextOverride, already cooldown-exempt).
-        // No answer is generated until the user clicks.
-        let contextSnapshot = '';
-        try {
-          contextSnapshot = this.intelligenceManager.getFormattedContext(60) ?? '';
-        } catch { /* context not ready — chip still works, answer uses live context */ }
-        const chip = {
-          id: `live-${Date.now()}-${++this.liveChipSeq}`,
-          question: q.question,
-          intent: q.intent,
-          confidence: 1.0,
-          contextSnapshot,
-          detectedAt: Date.now(),
-          source: 'live' as const,
-        };
-        this.broadcast('detected-question', chip);
-        return;
-      }
-
-      // mode === 'auto' — answer immediately, hands-free.
-      // Renderer first: it kicks off stream metrics + shows the heard question,
-      // so the answer card gets TTFT/model attribution like a chip click would.
-      this.broadcast('live-question', { question: q.question, intent: q.intent });
-      // Same engine path as a chip click — Gemma 4 31B for coding, Flash verbal
-      // otherwise. All prompt/warmth/retry behavior applies unchanged.
-      void this.intelligenceManager
-        .runWhatShouldISay(q.question, 1.0, undefined, { intentOverride: q.intent, bypassCooldown: true })
-        .catch((err: any) => console.error('[Main] Live auto-answer failed:', err?.message ?? err));
+      this.dispatchDetection({
+        question: r.text,
+        intent: r.verdict === 'replaced' ? 'verbal' : q.intent,
+        source: 'live',
+        anchor: r.anchor ?? undefined,
+        verdict: r.verdict,
+      });
     });
     this.liveRouter = router;
     void router.start();
@@ -2166,19 +2183,15 @@ export class AppState {
     })
 
     this.intelligenceManager.on('question-detected', (chip: any) => {
-      const verdict = this.chipDeduper.admit({
-        question: String(chip?.question ?? ''),
+      const question = String(chip?.question ?? '');
+      this.dispatchDetection({
+        question,
+        intent: chip?.intent ?? 'verbal',
         source: 'whisper',
-      })
-      if (!verdict.admitted) {
-        console.log(`[Main] suppressed duplicate whisper chip (already surfaced by ${verdict.duplicateOfSource}): "${String(chip?.question ?? '').slice(0, 50)}"`)
-        return
-      }
-      const win = mainWindow()
-      console.log(`[Main] forwarding detected-question → renderer (win=${!!win}) intent=${chip?.intent} q="${String(chip?.question ?? '').slice(0, 50)}"`)
-      if (win) {
-        win.webContents.send('detected-question', chip)
-      }
+        anchor: question,
+        verdict: 'match',
+        chip,
+      });
     })
 
     this.intelligenceManager.on('question-detected-update', (chip: any) => {
