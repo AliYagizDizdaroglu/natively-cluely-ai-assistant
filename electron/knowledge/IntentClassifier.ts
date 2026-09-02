@@ -22,10 +22,16 @@ const COMPANY_KEYWORDS = [
     'benefits', 'perks', 'work life', 'remote', 'office', 'environment',
 ];
 
-const NEGOTIATION_KEYWORDS = [
-    'salary', 'compensation', 'pay', 'offer', 'negotiate', 'counter', 'package',
-    'equity', 'stock', 'rsu', 'signing bonus', 'raise', 'budget', 'range',
-    'base', 'total comp', 'market rate', 'worth', 'expect', 'requirement',
+// A strong term alone means negotiation. Weak terms are everyday technical
+// vocabulary ("base image", "expect", "range", "stock") and count only next to
+// a strong one — on 2026-09-02 they labelled 25 of 27 technical questions
+// "negotiation" and routed them through the coaching path.
+const STRONG_NEGOTIATION = [
+    'salary', 'compensation', 'negotiate', 'negotiable', 'equity', 'rsu', 'rsus', 'signing bonus',
+    'total comp', 'market rate', 'counteroffer', 'counter offer',
+];
+const WEAK_NEGOTIATION = [
+    'base', 'range', 'expect', 'expectations', 'pay', 'offer', 'package', 'budget', 'raise', 'stock', 'worth', 'requirement',
 ];
 
 const PROFILE_DETAIL_KEYWORDS = [
@@ -34,17 +40,24 @@ const PROFILE_DETAIL_KEYWORDS = [
     'describe your', 'walk me through', 'portfolio', 'leadership',
 ];
 
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+/** Whole-word (or whole-phrase) match; "pay" must not match "payload", "base" must not match "database". */
+export function hasWord(lower: string, term: string): boolean {
+    return new RegExp(`(^|[^a-z0-9])${escapeRe(term)}(?![a-z0-9])`).test(lower);
+}
+
 /**
  * Classifies the intent of a question using keyword matching.
  */
 export function classifyIntent(question: string): IntentType {
     const lower = question.toLowerCase();
 
-    if (INTRO_KEYWORDS.some(kw => lower.includes(kw))) return IntentType.INTRO;
-    if (NEGOTIATION_KEYWORDS.some(kw => lower.includes(kw))) return IntentType.NEGOTIATION;
-    if (COMPANY_KEYWORDS.some(kw => lower.includes(kw))) return IntentType.COMPANY_RESEARCH;
-    if (PROFILE_DETAIL_KEYWORDS.some(kw => lower.includes(kw))) return IntentType.PROFILE_DETAIL;
-    if (TECHNICAL_KEYWORDS.some(kw => lower.includes(kw))) return IntentType.TECHNICAL;
+    if (INTRO_KEYWORDS.some(kw => hasWord(lower, kw))) return IntentType.INTRO;
+    const strong = STRONG_NEGOTIATION.some(kw => hasWord(lower, kw));
+    if (strong) return IntentType.NEGOTIATION;
+    if (COMPANY_KEYWORDS.some(kw => hasWord(lower, kw))) return IntentType.COMPANY_RESEARCH;
+    if (PROFILE_DETAIL_KEYWORDS.some(kw => hasWord(lower, kw))) return IntentType.PROFILE_DETAIL;
+    if (TECHNICAL_KEYWORDS.some(kw => hasWord(lower, kw))) return IntentType.TECHNICAL;
 
     return IntentType.GENERAL;
 }

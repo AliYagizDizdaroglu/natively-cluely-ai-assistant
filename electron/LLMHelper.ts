@@ -2399,6 +2399,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     // without mutating the persisted selection. Used to force screenshot/vision
     // questions onto Gemma 4 31B regardless of the dropdown pick.
     modelOverride?: string,
+    // The interviewer's actual question, for the knowledge orchestrator. The
+    // composed `message` carries prior suggestions and framing; classifying
+    // that kept every technical question in the negotiation path.
+    knowledgeQuestion?: string,
   ): AsyncGenerator<string, void, unknown> {
 
     // Preserve the caller's raw argument before knowledge-mode/active-mode
@@ -2415,7 +2419,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         // Feed to depth scorer only (not negotiation tracker) — mirrors non-streaming path fix.
         this.knowledgeOrchestrator.feedForDepthScoring(message);
 
-        const knowledgeResult = await this.knowledgeOrchestrator.processQuestion(message);
+        const knowledgeResult = await this.knowledgeOrchestrator.processQuestion(knowledgeQuestion ?? message);
         if (knowledgeResult) {
           // Fix 1: short-circuit for live negotiation coaching — bypass second LLM call
           if (knowledgeResult.liveNegotiationResponse) {

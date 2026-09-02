@@ -3,6 +3,7 @@ import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from ".
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
 import { filterVerbalLines, stripSuggestionBlock, type Suggestion } from "./verbalStreamFilter";
+import { lastInterviewerTurn } from "./lastInterviewerTurn";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -161,6 +162,7 @@ ANSWER SHAPE: ${intentResult.answerShape}
             const fullMessage = extraContext
                 ? `${extraContext}\n\n${transcriptLabel}:\n${cleanedTranscript}${trailer}`
                 : `${transcriptLabel}:\n${cleanedTranscript}${trailer}`;
+            const knowledgeQuestion = lastInterviewerTurn(cleanedTranscript);
 
             // Use Universal Prompt
             // Note: WhatToAnswer has a very specific prompt. 
@@ -203,7 +205,10 @@ ANSWER SHAPE: ${intentResult.answerShape}
                     fullMessage,
                     imagePaths,
                     undefined,
-                    UNIVERSAL_WHAT_TO_ANSWER_PROMPT
+                    UNIVERSAL_WHAT_TO_ANSWER_PROMPT,
+                    undefined,
+                    undefined,
+                    knowledgeQuestion
                 );
                 // Coding answers carry no expansion offers (code is exempt from the
                 // spoken word budget). Still notify, so a caller always gets exactly
@@ -223,7 +228,10 @@ ANSWER SHAPE: ${intentResult.answerShape}
                         fullMessage,
                         undefined, // no images on verbal path — reduces prefill latency
                         undefined,
-                        VERBAL_WHAT_TO_ANSWER_PROMPT
+                        VERBAL_WHAT_TO_ANSWER_PROMPT,
+                        undefined,
+                        undefined,
+                        knowledgeQuestion
                     );
                 } else {
                     // BEHAVIORAL (or forced-fast) → Gemini Flash Lite for speed.
@@ -242,7 +250,10 @@ ANSWER SHAPE: ${intentResult.answerShape}
                             fullMessage,
                             undefined,
                             undefined,
-                            VERBAL_WHAT_TO_ANSWER_PROMPT
+                            VERBAL_WHAT_TO_ANSWER_PROMPT,
+                            undefined,
+                            undefined,
+                            knowledgeQuestion
                         );
                     }
                 }
