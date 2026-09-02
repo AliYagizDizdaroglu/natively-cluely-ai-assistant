@@ -1726,14 +1726,17 @@ export class AppState {
 
     // Live mode used to live only in memory, so every restart forgot it and an
     // unattended relaunch came up deaf. Restore the stored mode when the
-    // meeting starts — the router needs an active meeting anyway.
+    // meeting starts — just the mode, not the router: the deferred audio-init
+    // callback below already starts the router once when liveMode !== 'off',
+    // the same path an IPC live-mode:set before a meeting takes. Starting it
+    // here too would tear it down and rebuild it a tick later (startLiveRouter()
+    // begins with stopLiveRouter()).
     {
       const { CredentialsManager } = require('./services/CredentialsManager');
       const stored = CredentialsManager.getInstance().getLiveMode();
       if (stored !== 'off' && this.liveMode === 'off') {
         this.liveMode = stored;
         console.log(`[Main] Live Mode restored → ${stored}`);
-        this.startLiveRouter();
       }
     }
     this.broadcastMeetingState()
