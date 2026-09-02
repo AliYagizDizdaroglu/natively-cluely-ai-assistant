@@ -32,6 +32,19 @@ export class DeepgramStreamingSTT extends EventEmitter {
     private buffer: Buffer[] = [];
     private isConnecting = false;
 
+    // Per-socket accounting for the close summary. The 2026-09-02 flight test
+    // showed the server closing every socket ~10 s after open as idle even
+    // while it was transcribing; this line is what says whether our audio and
+    // keepalives actually reached send().
+    private sockSeq = 0;
+    private sockOpenedAt = 0;
+    private sockChunks = 0;
+    private sockBytes = 0;
+    private sockKeepAlives = 0;
+    private sockLastSendAt = 0;
+    private sockLastReadyState: number | string = 'n/a';
+    private sockNotOpenWrites = 0;
+
     constructor(apiKey: string) {
         super();
         this.apiKey = apiKey;
@@ -127,7 +140,13 @@ export class DeepgramStreamingSTT extends EventEmitter {
         }
 
         try {
+            const rs = typeof this.live?.getReadyState === 'function' ? this.live.getReadyState() : 'n/a';
+            this.sockLastReadyState = rs;
+            if (rs !== 'n/a' && rs !== 1) this.sockNotOpenWrites++;
             this.live.send(chunk);
+            this.sockChunks++;
+            this.sockBytes += chunk.length;
+            this.sockLastSendAt = Date.now();
         } catch (err: any) {
             console.error('[DeepgramStreaming] Send error:', err?.message);
         }
@@ -161,6 +180,10 @@ export class DeepgramStreamingSTT extends EventEmitter {
                 this.isConnecting = false;
                 this.isOpen = true;
                 console.log('[DeepgramStreaming] Connected');
+                this.sockSeq++;
+                this.sockOpenedAt = Date.now();
+                this.sockChunks = 0; this.sockBytes = 0; this.sockKeepAlives = 0;
+                this.sockLastSendAt = this.sockOpenedAt; this.sockLastReadyState = 'n/a'; this.sockNotOpenWrites = 0;
 
                 // Register Transcript inside Open per SDK README pattern
                 this.live.on(LiveTranscriptionEvents.Transcript, (data: any) => {
@@ -193,6 +216,7 @@ export class DeepgramStreamingSTT extends EventEmitter {
                 this.keepAliveInterval = setInterval(() => {
                     if (this.isOpen) {
                         try { this.live?.keepAlive(); } catch { }
+                        this.sockKeepAlives++;
                     }
                 }, KEEPALIVE_INTERVAL_MS);
 
@@ -211,6 +235,11 @@ export class DeepgramStreamingSTT extends EventEmitter {
                 const code = event?.code ?? 'unknown';
                 const reason = event?.reason || '(empty)';
                 console.log(`[DeepgramStreaming] Closed (code=${code}, reason=${reason})`);
+                if (this.sockOpenedAt) {
+                    const now = Date.now();
+                    console.log(`[DeepgramStreaming] socket #${this.sockSeq} lived ${((now - this.sockOpenedAt) / 1000).toFixed(1)}s — ${this.sockChunks} chunks / ${this.sockBytes} bytes to send() after the flush, ${this.sockKeepAlives} keepalive ticks, last send ${((now - this.sockLastSendAt) / 1000).toFixed(1)}s before close, readyState at last write=${this.sockLastReadyState}, writes while not open=${this.sockNotOpenWrites}`);
+                    this.sockOpenedAt = 0;
+                }
 
                 this.isOpen = false;
                 this.isConnecting = false;
