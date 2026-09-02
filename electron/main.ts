@@ -1723,6 +1723,19 @@ export class AppState {
     // Fresh meeting, fresh dedup history — a question asked in a previous
     // meeting must not suppress the same question in this one.
     this.chipDeduper.reset();
+
+    // Live mode used to live only in memory, so every restart forgot it and an
+    // unattended relaunch came up deaf. Restore the stored mode when the
+    // meeting starts — the router needs an active meeting anyway.
+    {
+      const { CredentialsManager } = require('./services/CredentialsManager');
+      const stored = CredentialsManager.getInstance().getLiveMode();
+      if (stored !== 'off' && this.liveMode === 'off') {
+        this.liveMode = stored;
+        console.log(`[Main] Live Mode restored → ${stored}`);
+        this.startLiveRouter();
+      }
+    }
     this.broadcastMeetingState()
 
     // Keep the coding model (Gemma) + verbal fallback (Flash) hot for the whole
@@ -1807,6 +1820,8 @@ export class AppState {
     const next = mode === 'suggest' || mode === 'auto' ? mode : 'off';
     const wasRunning = this.liveMode !== 'off';
     this.liveMode = next;
+    const { CredentialsManager } = require('./services/CredentialsManager');
+    CredentialsManager.getInstance().setLiveMode(next);
     console.log(`[Main] Live Mode → ${next}`);
     if (next === 'off') {
       this.stopLiveRouter();

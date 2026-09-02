@@ -6,6 +6,7 @@
 import { app, safeStorage } from 'electron';
 import fs from 'fs';
 import path from 'path';
+import { normalizeLiveMode } from './liveMode';
 
 const CREDENTIALS_PATH = path.join(app.getPath('userData'), 'credentials.enc');
 
@@ -31,6 +32,8 @@ export interface StoredCredentials {
     customProviders?: CustomProvider[];
     curlProviders?: CurlProvider[];
     defaultModel?: string;
+    /** Live listener mode, restored on the next meeting start (was lost on every restart). */
+    liveMode?: 'off' | 'suggest' | 'auto';
     /** One-time sentinel: legacy Gemma defaults were moved to Flash Lite once.
      *  Prevents an explicit later Gemma pick from being reset on every launch. */
     defaultModelMigratedToFlashLite?: boolean;
@@ -213,6 +216,10 @@ export class CredentialsManager {
         return this.credentials.defaultModel || 'gemini-3.1-flash-lite';
     }
 
+    public getLiveMode(): 'off' | 'suggest' | 'auto' {
+        return normalizeLiveMode(this.credentials.liveMode);
+    }
+
     public getNativelyApiKey(): string | undefined {
         return this.credentials.nativelyApiKey;
     }
@@ -352,6 +359,12 @@ export class CredentialsManager {
         this.credentials.defaultModel = model;
         this.saveCredentials();
         console.log(`[CredentialsManager] Default Model set to: ${model}`);
+    }
+
+    public setLiveMode(mode: 'off' | 'suggest' | 'auto'): void {
+        this.credentials.liveMode = normalizeLiveMode(mode);
+        this.saveCredentials();
+        console.log(`[CredentialsManager] Live Mode set to: ${this.credentials.liveMode}`);
     }
 
     public setNativelyApiKey(key: string): void {
