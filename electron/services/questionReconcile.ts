@@ -13,7 +13,7 @@ export interface RecentSpeech { text: string; at: number; final: boolean }
 export type ReconcileVerdict = 'match' | 'paraphrase' | 'replaced' | 'unverifiable';
 export interface Reconciled { text: string; anchor: string | null; verdict: ReconcileVerdict; score: number }
 
-const words = (s: string) => new Set((s.toLowerCase().match(/[a-z0-9]+/g) || []).filter((w) => w.length > 3));
+const words = (s: string) => { const tokens: string[] = s.toLowerCase().match(/[a-z0-9]+/g) ?? []; return new Set(tokens.filter((w) => w.length > 3)); };
 
 /** Fraction of a's content words (len > 3) present in b. 0 when a has none. */
 export function overlap(a: string, b: string): number {
