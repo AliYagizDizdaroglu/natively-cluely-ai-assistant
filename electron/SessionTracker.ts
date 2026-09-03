@@ -238,6 +238,10 @@ export class SessionTracker {
      */
     addAssistantMessage(text: string): void {
         console.log(`[SessionTracker] addAssistantMessage called with:`, text.substring(0, 50));
+        // Whole answer, one JSON-encoded line: the flight-test harness grades
+        // answers from this log (interview60.judge.mjs). Nothing else in the app
+        // keeps the text, so without it no hour can be graded for correctness.
+        if (text && text.trim()) console.log(`[Answer] full: ${JSON.stringify(text)}`);
 
         // Natively-style filtering
         if (!text) return;
