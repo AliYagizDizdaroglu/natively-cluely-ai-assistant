@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { pairAnswers, summarizeVerdicts, verdictOf } from './interview60.judge.mjs';
+import { mergeVerdicts, pairAnswers, summarizeVerdicts, verdictOf } from './interview60.judge.mjs';
 
 const t = (s: string) => Date.parse(`2026-09-04T08:00:${s}Z`);
 const timeline = {
@@ -58,5 +58,30 @@ describe('summarizeVerdicts', () => {
             },
         };
         expect(summarizeVerdicts(judged)).toEqual({ model: 'claude-opus-5', n: 3, acceptable: 1, weak: 1, wrong: 1, errors: 0 });
+    });
+});
+
+describe('mergeVerdicts (graded outside the script — the no-key route)', () => {
+    it('keys a doubled item with a suffix, applies verdictOf, marks an undelivered answer wrong and a missing or malformed verdict as an error', () => {
+        // A second W01 dispatch inside W01's window: the same item answered twice.
+        const dbg2 = dbg + '\n' + [
+            '2026-09-04T08:01:00.000Z [LOG] [Main] dispatch: answer source=whisper anchor="Difference between a docker image and a container" verdict=match',
+            '2026-09-04T08:01:03.000Z [LOG] [Answer] full: "Images are immutable templates and containers are their running instances."',
+        ].join('\n');
+        const pairs = pairAnswers(dbg2, timeline);
+        expect(pairs.map((p) => p.id)).toEqual(['W01', 'W02', 'C01', 'W01']);
+
+        const merged = mergeVerdicts(pairs, {
+            W01: { correctness: 2, on_topic: 2, delivery: 2, reason: 'clear and correct' },
+            'W01#2': { correctness: 3, on_topic: 2, delivery: 2, reason: 'out of range' },
+            // C01 has no verdict at all
+        });
+        expect(merged.model).toBe('claude-opus-5');
+        expect(Object.keys(merged.items)).toEqual(['W01', 'W02', 'C01', 'W01#2']);
+        expect(merged.items.W01).toMatchObject({ kind: 'spoken', verdict: 'acceptable', correctness: 2, on_topic: 2, delivery: 2, reason: 'clear and correct' });
+        expect(merged.items.W02).toMatchObject({ verdict: 'wrong', reason: 'no answer was delivered' });
+        expect(merged.items.C01).toMatchObject({ kind: 'cue', verdict: 'error', reason: 'no verdict' });
+        expect(merged.items['W01#2']).toMatchObject({ verdict: 'error', reason: 'verdict correctness=3' });
+        expect(summarizeVerdicts(merged)).toEqual({ model: 'claude-opus-5', n: 3, acceptable: 1, weak: 0, wrong: 1, errors: 1 });
     });
 });
