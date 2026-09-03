@@ -30,7 +30,7 @@ interface OllamaResponse {
 }
 
 // Model constant for Gemini 3 Flash
-const GEMINI_FLASH_MODEL = "gemini-3.1-flash-lite"
+export const GEMINI_FLASH_MODEL = "gemini-3.1-flash-lite"
 const GEMINI_PRO_MODEL = "gemini-3.1-pro-preview"
 // TTFT budget for the Gemma coding path: the total window in which Gemma may
 // produce a first token (across bounded retries) before we abandon it and fall

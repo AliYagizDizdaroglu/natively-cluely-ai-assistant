@@ -806,12 +806,13 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
         // Live Mode: the main process auto-answers questions the Gemini Live
         // listener detects (same engine path as a chip click). Mirror
         // DetectedQuestionsPanel.onChipClickStart so the answer card gets
-        // stream metrics + model attribution ("· Live" marks the source), and
-        // surface the heard question as a user bubble for visible context.
+        // stream metrics, and surface the heard question as a user bubble for
+        // visible context.
         if (window.electronAPI.onLiveQuestion) {
             cleanups.push(window.electronAPI.onLiveQuestion((data) => {
                 sm.start();
-                sm.setSource(`${data.intent === 'behavioral' ? 'Gemini Flash 3.1' : 'Gemma 4 31B'} · Live`);
+                // Model attribution arrives with the stream's __model_source sentinel (suggested_answer_source); no guessing.
+                sm.setSource('…');
                 setIsProcessing(true);
                 setIsExpanded(true);
                 setInFlightQuestion({ question: data.question, intent: data.intent });
@@ -2556,9 +2557,8 @@ Provide only the answer, nothing else.`;
                             <DetectedQuestionsPanel
                                 onChipClickStart={(intent, question, contextSnapshot) => {
                                     sm.start();
-                                    // Behavioral answers on Flash Lite; coding AND
-                                    // verbal-technical both run on Gemma now.
-                                    sm.setSource(intent === 'behavioral' ? 'Gemini Flash 3.1' : 'Gemma 4 31B');
+                                    // Model attribution arrives with the stream's __model_source sentinel (suggested_answer_source); no guessing.
+                                    sm.setSource('…');
                                     setIsProcessing(true);
                                     if (question) setInFlightQuestion({ question, intent, contextSnapshot });
                                 }}

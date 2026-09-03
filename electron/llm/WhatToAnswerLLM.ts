@@ -1,9 +1,10 @@
-import { LLMHelper } from "../LLMHelper";
+import { LLMHelper, GEMINI_FLASH_MODEL } from "../LLMHelper";
 import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
 import { filterVerbalLines, stripSuggestionBlock, type Suggestion } from "./verbalStreamFilter";
 import { lastInterviewerTurn } from "./lastInterviewerTurn";
+import { tapFirstToken } from "./streamTaps";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -217,6 +218,11 @@ ANSWER SHAPE: ${intentResult.answerShape}
             } else {
                 // Verbal paths — both use VERBAL_WHAT_TO_ANSWER_PROMPT and the same
                 // output filters; they differ only in which model generates.
+                // Name the model that will answer, outside the filter chain (which
+                // strips sentinels), so the bar under the answer stops guessing.
+                const primaryModel = useDeepModel ? this.llmHelper.getCurrentModelId() : GEMINI_FLASH_MODEL;
+                yield `__model_source:${primaryModel}__`;
+                const t0 = Date.now();
                 let rawStream: AsyncGenerator<string>;
                 if (useDeepModel) {
                     // VERBAL-TECHNICAL → deep model (Gemma via streamChat, which honors
@@ -268,9 +274,14 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 // stripSuggestionBlock is OUTERMOST so the __MORE__ block never reaches
                 //   the bubble even for a token-boundary split; the labels it captures are
                 //   handed to onSuggestions for the UI to render as chips.
-                yield* stripSuggestionBlock(
-                    filterVerbalLines(this.filterCodeFences(this.stripModelSentinel(rawStream))),
-                    onSuggestions,
+                yield* tapFirstToken(
+                    stripSuggestionBlock(
+                        filterVerbalLines(this.filterCodeFences(this.stripModelSentinel(rawStream))),
+                        onSuggestions,
+                    ),
+                    (ms) => diagLog(`first token ${ms}ms`),
+                    (head) => diagLog(`answer head: ${JSON.stringify(head)}`),
+                    t0,
                 );
             }
             // ────────────────────────────────────────────────────────────────────────
