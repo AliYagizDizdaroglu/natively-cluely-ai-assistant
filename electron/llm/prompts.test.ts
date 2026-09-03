@@ -4,11 +4,14 @@ import {
     CODE_HINT_PROMPT,
     BRAINSTORM_MODE_PROMPT,
     UNIVERSAL_WHAT_TO_ANSWER_PROMPT,
+    VERBAL_WHAT_TO_ANSWER_PROMPT,
     CODING_STYLE_SUFFIX,
     GEMMA_CODE_HINT_STYLE_SUFFIX,
     STDLIB_FRAMING_APPLIES,
     STDLIB_FRAMING_EXCLUDES,
     CODE_MUST_RUN_RULE,
+    SPOKEN_WORD_BUDGET,
+    SPOKEN_WORD_TARGET,
     resolveGemmaSystemPrompt,
     resolveStyleSuffix,
 } from './prompts';
@@ -207,5 +210,14 @@ describe('resolveStyleSuffix — one mapping shared by the Gemma and plain-Gemin
     it('CodeHint still has NO hand-roll rule — it debugs in-progress code', () => {
         expect(GEMMA_CODE_HINT_STYLE_SUFFIX).not.toContain(STDLIB_FRAMING_APPLIES);
         expect(GEMMA_CODE_HINT_STYLE_SUFFIX).not.toContain('implement the mechanism directly');
+    });
+});
+
+describe('spoken word budget', () => {
+    it('instructs the model to a target below the gate, because flash-lite lands ~5 words over what it is told', () => {
+        expect(SPOKEN_WORD_TARGET).toBe(60);
+        expect(SPOKEN_WORD_BUDGET).toBe(70);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain(`AT MOST ${SPOKEN_WORD_TARGET} words`);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).not.toContain(`AT MOST ${SPOKEN_WORD_BUDGET} words`);
     });
 });

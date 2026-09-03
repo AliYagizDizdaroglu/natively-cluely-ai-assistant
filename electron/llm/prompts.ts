@@ -181,6 +181,13 @@ export const SUGGESTIONS_SENTINEL = '__MORE__';
 export const SPOKEN_WORD_BUDGET = 70;
 
 /**
+ * What the model is TOLD. Measured 2026-09-02 (answer-only pass, 52 questions):
+ * told 70 it produced a median of 71 and a max of 81. The gate stays at 70;
+ * the instruction aims lower so the answers land inside it.
+ */
+export const SPOKEN_WORD_TARGET = 60;
+
+/**
  * Condensed spoken answer + optional numbered depth offers, for the verbal paths.
  *
  * Why: EXECUTION_CONTRACT rule 11 asks for answers speakable in under 30 seconds,
@@ -209,7 +216,7 @@ export const SPOKEN_WORD_BUDGET = 70;
  */
 export const SPOKEN_LENGTH_AND_DEPTH = `
 [SPOKEN LENGTH + OPTIONAL DEPTH]
-Your spoken answer is read aloud in a live conversation. Keep it to AT MOST ${SPOKEN_WORD_BUDGET} words — roughly 30 seconds. Say the single most important thing completely and correctly; do not try to cover every angle. Never sacrifice the core technical claim to save words.
+Your spoken answer is read aloud in a live conversation. Keep it to AT MOST ${SPOKEN_WORD_TARGET} words — roughly 30 seconds. Say the single most important thing completely and correctly; do not try to cover every angle. Never sacrifice the core technical claim to save words.
 
 If, and ONLY if, there is genuinely substantive depth you had to leave out, list it after the answer in this exact form, on its own lines:
 ${SUGGESTIONS_SENTINEL}
