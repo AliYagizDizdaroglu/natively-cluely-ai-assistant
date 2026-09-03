@@ -210,6 +210,15 @@ interface DetectionInput {
   anchor?: string;
   verdict: 'match' | 'paraphrase' | 'replaced' | 'unverifiable';
   chip?: any;
+  /**
+   * Set only when this call is liveHold's own resolution of a previously held
+   * detection. Must skip the hold branch even if the fresh verdict is still
+   * 'unverifiable' (R37: "else proceed with the fresh verdict") — otherwise a
+   * still-empty STT window re-offers to the hold forever (previous is always
+   * null by the time onResolve runs, since resolveNow() clears `pending`
+   * first), so the detection is never dispatched.
+   */
+  resolving?: boolean;
 }
 
 // Knowledge modules (open-source build)
@@ -896,7 +905,7 @@ export class AppState {
    */
   private readonly liveHold = createLiveHold<DetectionInput>({
     holdMs: 2500,
-    onResolve: (held) => this.reconcileAndDispatchLive(held.question, held.intent),
+    onResolve: (held) => this.reconcileAndDispatchLive(held.question, held.intent, true),
   });
   /**
    * Interviewer STT channel on/off. Only the INTERVIEWER channel — the user/mic
@@ -1881,8 +1890,10 @@ export class AppState {
     // An unverifiable Live claim (nothing heard from the interviewer STT in
     // the last 15s to check it against) is held rather than dispatched blind
     // — R37. Resolved by the next interviewer final or a timeout, whichever
-    // comes first; see liveHold.ts and resolveLiveHold's caller.
-    if (this.liveMode !== 'off' && d.source === 'live' && d.verdict === 'unverifiable') {
+    // comes first; see liveHold.ts and resolveLiveHold's caller. `resolving`
+    // means this call IS that resolution — never re-hold, even if the fresh
+    // verdict is still unverifiable, or the hold never terminates.
+    if (this.liveMode !== 'off' && d.source === 'live' && d.verdict === 'unverifiable' && !d.resolving) {
       const previous = this.liveHold.offer(d);
       if (previous) {
         const prevAnchorLog = JSON.stringify((previous.anchor ?? previous.question).slice(0, 80));
@@ -1945,9 +1956,12 @@ export class AppState {
    * actually heard, then run it through dispatchDetection. Shared by the
    * router's 'question' event and liveHold's onResolve — resolving a held
    * detection re-reconciles with a fresh transcript window rather than
-   * reusing the (already known unverifiable) first verdict.
+   * reusing the (already known unverifiable) first verdict. `resolving` must
+   * be true only for the liveHold call site: it tells dispatchDetection this
+   * IS the hold's resolution, so a still-unverifiable verdict is dispatched
+   * rather than re-held (see DetectionInput.resolving).
    */
-  private reconcileAndDispatchLive(question: string, intent: 'verbal' | 'coding' | 'behavioral'): void {
+  private reconcileAndDispatchLive(question: string, intent: 'verbal' | 'coding' | 'behavioral', resolving = false): void {
     const r = reconcileLiveQuestion(question, this.intelligenceManager.getRecentInterviewerSpeech(15_000));
     if (r.verdict === 'replaced') {
       console.log(`[Main] Live question replaced by transcript: live=${JSON.stringify(question.slice(0, 80))} said=${JSON.stringify(r.text.slice(0, 80))}`);
@@ -1958,6 +1972,7 @@ export class AppState {
       source: 'live',
       anchor: r.anchor ?? undefined,
       verdict: r.verdict,
+      resolving,
     });
   }
 

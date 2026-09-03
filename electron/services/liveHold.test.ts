@@ -94,4 +94,46 @@ describe('createLiveHold', () => {
         hold.onInterviewerFinal();
         expect(onResolve).not.toHaveBeenCalled();
     });
+
+    // Regression: electron/main.ts's dispatchDetection() holds a Live detection
+    // whenever verdict === 'unverifiable', and its onResolve callback
+    // (reconcileAndDispatchLive) re-enters dispatchDetection with a freshly
+    // reconciled verdict. Because resolveNow() nulls `pending` *before* calling
+    // onResolve, a re-offer made from inside onResolve always sees
+    // previous === null — so if the STT window is still empty and the fresh
+    // verdict is unverifiable again, the old dispatchDetection guard held it
+    // AGAIN: no dispatch line, a brand new timer, forever. main.ts itself has
+    // no test harness (Electron entry point), so this mirrors the fixed
+    // dispatchDetection contract — a `resolving` flag that must skip the hold
+    // branch exactly once — using createLiveHold directly, the same way the
+    // bug was originally verified against the compiled module.
+    it('a detection that resolves to unverifiable again is dispatched exactly once, never re-held', () => {
+        vi.useFakeTimers();
+        const dispatched: string[] = [];
+        let hold: ReturnType<typeof createLiveHold<{ id: string; verdict: string }>>;
+
+        function dispatchDetection(d: { id: string; verdict: string }, resolving = false): void {
+            if (d.verdict === 'unverifiable' && !resolving) {
+                hold.offer(d);
+                return;
+            }
+            dispatched.push(d.id);
+        }
+
+        hold = createLiveHold<{ id: string; verdict: string }>({
+            holdMs: 2500,
+            // The STT window stays empty forever: every re-reconcile is unverifiable again.
+            onResolve: (held) => dispatchDetection({ id: held.id, verdict: 'unverifiable' }, true),
+        });
+
+        dispatchDetection({ id: 'a', verdict: 'unverifiable' });
+        expect(dispatched).toEqual([]);
+
+        vi.advanceTimersByTime(2500);
+        expect(dispatched).toEqual(['a']);
+
+        // No re-hold means no fresh timer: well past 2×holdMs, nothing more fires.
+        vi.advanceTimersByTime(6000);
+        expect(dispatched).toEqual(['a']);
+    });
 });
