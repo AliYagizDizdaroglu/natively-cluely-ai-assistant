@@ -1956,6 +1956,13 @@ export class AppState {
       console.log(`[Main] Live question (${q.intent}, mode=${this.liveMode}): "${q.question.slice(0, 80)}"`);
       this.reconcileAndDispatchLive(q.question, q.intent);
     });
+    // Shadow captions: Live's own transcription of the interviewer channel,
+    // logged verbatim so the flight test can score it against the script and
+    // the STT transcript (interview60 harness). Not fed anywhere; the
+    // transcript still comes from STT. Fragments, not sentences — join offline.
+    router.on('caption', (c: { text: string }) => {
+      if (this.isMeetingActive) console.log(`[LiveCaption] fragment ${JSON.stringify(c.text)}`);
+    });
     this.liveRouter = router;
     void router.start();
   }
