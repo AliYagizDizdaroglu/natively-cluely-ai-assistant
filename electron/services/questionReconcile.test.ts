@@ -56,3 +56,23 @@ describe('reconcileLiveQuestion — fixtures from the 2026-09-02 log', () => {
         expect(r.anchor).toBe('How do you keep base images patched across many model services?');
     });
 });
+
+describe('reconcileLiveQuestion — fragment guard (Live-only hour, 2026-09-03)', () => {
+    it('W04: the latest thing said is a fragment ("?") → unverifiable, Live wording kept, no anchor', () => {
+        // The caption segmenter had cut the question into tiny finals; only "?" was
+        // left in the 15 s window when Live fired. "?" replaced the question and was
+        // then dropped as a fragment — a real question lost. A fragment is no evidence.
+        const r = reconcileLiveQuestion('What is a SageMaker endpoint and what does it actually host?', [sp('?', -14900)]);
+        expect(r.verdict).toBe('unverifiable');
+        expect(r.text).toBe('What is a SageMaker endpoint and what does it actually host?');
+        expect(r.anchor).toBeNull();
+    });
+    it('a fragment interim among real sentences never wins: the best real sentence still decides', () => {
+        const r = reconcileLiveQuestion('What is a SageMaker endpoint and what does it actually host?', [
+            sp('What is a SageMaker endpoint, and what does it actually host?', -3000),
+            sp('Um.', -500, false),
+        ]);
+        expect(r.verdict).toBe('match');
+        expect(r.anchor).toBe('What is a SageMaker endpoint, and what does it actually host?');
+    });
+});
