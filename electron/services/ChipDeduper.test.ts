@@ -167,20 +167,23 @@ describe('ChipDeduper — containment ignores trailing punctuation (R36 fix wave
   });
 });
 
-describe('ChipDeduper — content-word overlap catches an anchor-split STT double (R36 round 4, Ruling R45)', () => {
-  it('W10 (run 2): an STT split sent whisper and Live to different anchors, but the texts still overlap 3/5 = 0.6', () => {
-    // Real run-2 evidence: the STT split one question into two finals.
-    // Whisper anchored to "...for a trail?" (its own STT mis-hearing of
-    // "training"); Live anchored to a later, different transcript segment,
-    // "training data set that gets versioned weekly." — different anchors,
-    // so the anchor rule cannot catch this. Containment and Jaccard (0.5) do
-    // not fire either — verified independently before writing this test.
+describe('ChipDeduper — content-word overlap catches an anchor-split STT double, cross-detector and within 5s only (R36 round 5, Ruling R45)', () => {
+  it('W10 (run 2): different anchors, different sources, 4s apart — duplicate', () => {
+    // Real run-2 evidence: the STT split one question into two finals 4s
+    // apart (07:43:55 whisper, 07:43:59 live). Whisper anchored to "...for a
+    // trail?" (its own STT mis-hearing of "training"); Live anchored to a
+    // later, different transcript segment, "training data set that gets
+    // versioned weekly." — different anchors, so the anchor rule cannot
+    // catch this. Containment and Jaccard (0.5) do not fire either —
+    // verified independently. Content-word overlap is 3/5 = 0.6.
+    vi.useFakeTimers();
     const d = new ChipDeduper();
     d.admit({
       question: 'How would you organize an S3 bucket layout for a trail?',
       source: 'whisper',
       anchor: 'How would you organize an S3 bucket layout for a trail?',
     });
+    vi.advanceTimersByTime(4000);
     const live = d.admit({
       question: 'How would you organise an S3 bucket layout for a training dataset that gets versioned weekly?',
       source: 'live',
@@ -189,22 +192,47 @@ describe('ChipDeduper — content-word overlap catches an anchor-split STT doubl
     expect(live.admitted).toBe(false);
   });
 
-  it('two short, topically different questions sharing one word do not match', () => {
-    // "what/difference/between" also appear in a "what is the difference
-    // between X and Y" reading of a drift question, which would trivially
-    // over-match on the shared template rather than the topic — this pair
-    // avoids that template so the assertion is about topic overlap, not
-    // shared boilerplate. Verified by computation before writing.
+  it('the same W10 pair 8s apart across sources is NOT a duplicate — past the 5s cross-detector bound', () => {
+    // A spoken question takes longer than 5s, so nothing genuinely
+    // different can land inside that window from two detectors — but past
+    // it, the content-word rule must not fire at all, on anything.
+    vi.useFakeTimers();
     const d = new ChipDeduper();
-    d.admit({ question: 'What is the difference between a pod and a deployment?', source: 'whisper' });
+    d.admit({
+      question: 'How would you organize an S3 bucket layout for a trail?',
+      source: 'whisper',
+      anchor: 'How would you organize an S3 bucket layout for a trail?',
+    });
+    vi.advanceTimersByTime(8000);
     expect(
-      d.admit({ question: 'What causes concept drift in a production model?', source: 'live' }).admitted
+      d.admit({
+        question: 'How would you organise an S3 bucket layout for a training dataset that gets versioned weekly?',
+        source: 'live',
+        anchor: 'training data set that gets versioned weekly.',
+      }).admitted
+    ).toBe(true);
+  });
+
+  it('the same W10 pair 4s apart from the SAME source is NOT a duplicate — the content-word rule only ever applies across detectors', () => {
+    // Same source means this was never an STT-split-across-pipelines case —
+    // it falls back to containment/Jaccard (0.5 here), which do not fire.
+    vi.useFakeTimers();
+    const d = new ChipDeduper();
+    d.admit({ question: 'How would you organize an S3 bucket layout for a trail?', source: 'whisper' });
+    vi.advanceTimersByTime(4000);
+    expect(
+      d.admit({
+        question: 'How would you organise an S3 bucket layout for a training dataset that gets versioned weekly?',
+        source: 'whisper',
+      }).admitted
     ).toBe(true);
   });
 
   it('a text with only 3 content words never matches by this rule alone (the 4-word floor)', () => {
     // 100% of the shorter text's content words appear in the longer one, and
     // neither containment nor Jaccard (0.33) fires — isolates the floor.
+    // Different sources, effectively 0s apart (no fake timer needed) — well
+    // inside the 5s bound, so the floor is what is actually being tested.
     const d = new ChipDeduper();
     d.admit({ question: 'Explain container orchestration.', source: 'whisper' });
     expect(
@@ -213,5 +241,32 @@ describe('ChipDeduper — content-word overlap catches an anchor-split STT doubl
         source: 'live',
       }).admitted
     ).toBe(true);
+  });
+
+  it('a documented limitation: two literal "what is the difference between X and Y" questions merge within 5s across detectors, and stop merging past it', () => {
+    // The coordinator's own round-4 illustrative pair, taken literally: two
+    // DIFFERENT questions sharing the "what is the difference between"
+    // template (3 of 4 content words = 0.75) look exactly like an
+    // STT-split double under this rule — it cannot distinguish "one
+    // question, two detectors" from "two template-shaped questions asked
+    // back to back". Accepted per Ruling R45: no interviewer asks two
+    // distinct questions within 5s of each other, so inside that window
+    // between two detectors it is always treated as one utterance.
+    vi.useFakeTimers();
+    const withinBound = new ChipDeduper();
+    withinBound.admit({ question: 'What is the difference between a pod and a deployment?', source: 'whisper' });
+    vi.advanceTimersByTime(4000);
+    expect(
+      withinBound.admit({ question: 'What is the difference between data drift and concept drift?', source: 'live' })
+        .admitted
+    ).toBe(false); // merged — the documented false positive
+
+    const pastBound = new ChipDeduper();
+    pastBound.admit({ question: 'What is the difference between a pod and a deployment?', source: 'whisper' });
+    vi.advanceTimersByTime(8000);
+    expect(
+      pastBound.admit({ question: 'What is the difference between data drift and concept drift?', source: 'live' })
+        .admitted
+    ).toBe(true); // past 5s — no longer merged
   });
 });

@@ -69,8 +69,12 @@ function contentWords(text: string): Set<string> {
  * Jaccard 0.5). S = the text with fewer content words, L = the other;
  * similar iff S has at least 4 content words and 60% of them appear in L —
  * the W10 pair measures 3/5 = 0.6 (organise/organize and trail/training
- * miss). The 4-word floor keeps short neighbours apart: two DIFFERENT short
- * questions can otherwise share enough incidental vocabulary to look alike.
+ * miss). The 4-word floor alone is not enough: two DIFFERENT questions
+ * sharing a template ("What is the difference between X and Y?") can clear
+ * 60% on the template words alone (Ruling R45 round-5 finding, 0.75 for
+ * "pod and a deployment" vs "data drift and concept drift"). findSimilar
+ * only calls this across detectors within CROSS_DETECTOR_MS, which is what
+ * actually keeps two different template questions apart — see there.
  */
 function contentWordSimilar(a: string, b: string): boolean {
   const A = contentWords(a), B = contentWords(b);
@@ -80,6 +84,16 @@ function contentWordSimilar(a: string, b: string): boolean {
   for (const w of S) if (L.has(w)) hit++;
   return hit / S.size >= 0.6;
 }
+
+/**
+ * How close together two detections from DIFFERENT pipelines must land for
+ * content-word overlap to treat them as one STT-split question (Ruling
+ * R45). Provenance: run 2's W10 gap was 4s (07:43:55 whisper to 07:43:59
+ * live); 5000 gives that a margin. A spoken interview question takes
+ * longer than 5s to ask, so two genuinely different questions cannot both
+ * fall inside this window from two detectors — only one utterance can.
+ */
+const CROSS_DETECTOR_MS = 5000;
 
 export interface ChipDeduperOptions {
   /**
@@ -119,7 +133,7 @@ export class ChipDeduper {
     const now = Date.now();
     this.cache = this.cache.filter((e) => now - e.at < this.windowMs);
 
-    const match = this.findSimilar(text, candidate.anchor);
+    const match = this.findSimilar(text, candidate.anchor, candidate.source, now);
     if (match) {
       return {
         admitted: false,
@@ -147,11 +161,26 @@ export class ChipDeduper {
     if (entry) entry.answered = true;
   }
 
-  private findSimilar(text: string, anchor?: string): CacheEntry | null {
+  private findSimilar(text: string, anchor: string | undefined, source: ChipSource, now: number): CacheEntry | null {
     const normNew = normalizeForContainment(text);
     for (const entry of this.cache) {
       if (anchor && entry.anchor && sameAnchor(anchor, entry.anchor)) return entry;
-      if (contentWordSimilar(text, entry.text)) return entry;
+      // Content-word overlap only ever applies across the two detectors,
+      // within CROSS_DETECTOR_MS of each other (Ruling R45): it exists to
+      // catch one question the STT split into two finals that whisper and
+      // Live each anchored to separately — a signature only cross-pipeline,
+      // close-together detections can have. A spoken interview question
+      // takes longer than that to ask, so nothing genuinely different can
+      // land inside the same window from two detectors; two SAME-source
+      // detections, or two detections further apart, fall back to
+      // containment/Jaccard below, same as before this rule existed.
+      if (
+        entry.source !== source &&
+        now - entry.at <= CROSS_DETECTOR_MS &&
+        contentWordSimilar(text, entry.text)
+      ) {
+        return entry;
+      }
       const normExisting = normalizeForContainment(entry.text);
       // Containment catches STT fragmentation, where Jaccard is misleadingly
       // low: "architecture." vs "Can you explain Transformers? architecture."
