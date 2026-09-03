@@ -160,7 +160,9 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
                 detectMs: mine.length ? Math.min(...mine.map((d) => d.at)) - spokeEnd : null,
                 dispatches: surfaced, verdict: ans?.verdict ?? mine[0]?.verdict ?? null,
                 routeCoding: !!(route && /^CODING/.test(route.route)),
-                raceLoss: mine.some((d) => d.action === 'drop' && !d.answered) && !ans };
+                // verdict=fragment drops are R36-round-3 noise (a Live claim
+                // too short to be anything), not a real race loss signal.
+                raceLoss: mine.some((d) => d.action === 'drop' && d.verdict !== 'fragment' && !d.answered) && !ans };
         }
         // baseline attribution (no dispatch lines): the report's original rule
         const live = best(liveQ);
@@ -209,6 +211,11 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         ? dispatches.filter((d) => d.action === 'answer' && d.verdict === 'unverifiable'
             && interviewerSttFinalAt.some((t) => Math.abs(t - d.at) <= 10000)).length
         : 0;
+    // Live claims too short to be anything (< 4 words) — dropped on sight,
+    // never held, never answered (R36 round 3). Informational, counted over
+    // all dispatch lines regardless of claimed status, same as `caught`; not
+    // part of the gate — a dropped fragment is the fix working, not a failure.
+    const liveFragmentsDropped = hasDispatch ? dispatches.filter((d) => d.verdict === 'fragment').length : 0;
 
     const heard = items.filter((i) => i.heardBy !== null).length;
     const answered = items.filter((i) => i.answered).length;
@@ -266,7 +273,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     return {
         startedAt: timeline.startedAt, endedAt: timeline.endedAt, durationMin, items,
         heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti,
-        caught, unverifiableWithSttUp, raceLosses,
+        caught, unverifiableWithSttUp, liveFragmentsDropped, raceLosses,
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
         detectP50, ttftP90, ttftSource,

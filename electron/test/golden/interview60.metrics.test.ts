@@ -112,6 +112,9 @@ describe.skipIf(!have)(`computeRun on the 2026-09-02 baseline (regression: the n
  *     unverifiableWithSttUp), the second has no interviewer STT final
  *     anywhere nearby (does not) — proving the metric is gated on "STT was
  *     actually up nearby", not just a raw count of unverifiable answers.
+ *   one verdict=fragment drop, claimed by Q1 (already answered) — proves
+ *     raceLoss ignores fragment-verdict drops (it stays false, same as
+ *     before) while liveFragmentsDropped still counts it.
  */
 describe('computeRun on a synthetic run (exercises the dispatch: branch and in-app TTFT, neither reachable from the 2026-09-02 baseline)', () => {
     const T0 = Date.parse('2026-01-01T00:00:00.000Z');
@@ -147,6 +150,12 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         const dbgLines = [
             // Q1: answered by live 2000ms after playedAt.
             `${iso(T0 + 2000)} [LOG] [Main] dispatch: answer source=live anchor="Explain how container orchestration platforms schedule workloads across a cluster." verdict=match`,
+            // R36 fix wave round 3 (statement-shaped Live detections): a
+            // fragment drop line, claimed by Q1 (anchor is a short excerpt of
+            // Q1.q, so it overlaps nothing else) — inside an already-answered
+            // item's window, so it must not flip raceLoss, only count toward
+            // liveFragmentsDropped.
+            `${iso(T0 + 10000)} [LOG] [Main] dispatch: drop source=live anchor="container orchestration platforms" verdict=fragment`,
             // Q2: whisper chip at +1500ms (the earliest detection — this is what
             // detectMs will read), then a live drop (duplicate of whisper) at
             // +1800ms, then the actual answer from whisper at +3000ms.
@@ -236,10 +245,17 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(q1.verdict).toBe('match');
         // route text starts with "CODING".
         expect(q1.routeCoding).toBe(true);
-        // no drop dispatch for Q1 at all, so the `mine.some(drop && !answered)`
-        // half of raceLoss is false regardless of the `!ans` half.
+        // Q1's window also claims the +10000 fragment drop (R36 round 3): its
+        // verdict === 'fragment' excludes it from the `mine.some(drop &&
+        // !answered)` half of raceLoss, and Q1 is answered so the `!ans` half
+        // is already false too — raceLoss is false for both reasons at once.
         expect(q1.raceLoss).toBe(false);
-        // detectMs = earliest dispatch.at - spokeEnd = (T0+2000) - T0 = 2000.
+        // liveFragmentsDropped counts the fragment line regardless of which
+        // item claimed it (mirrors how `caught` counts over all dispatch
+        // lines) — informational, not part of the gate.
+        expect(m.liveFragmentsDropped).toBe(1);
+        // detectMs = earliest dispatch.at - spokeEnd = (T0+2000) - T0 = 2000
+        // — the fragment at +10000 is later, so it doesn't change this.
         expect(q1.detectMs).toBe(2000);
         // one dispatch (the answer), no drop/chip to add to it.
         expect(q1.dispatches).toBe(1);
