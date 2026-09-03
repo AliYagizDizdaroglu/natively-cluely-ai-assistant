@@ -1,8 +1,8 @@
-import { LLMHelper, GEMINI_FLASH_MODEL } from "../LLMHelper";
+import { LLMHelper, GEMINI_FLASH_FALLBACK_MODEL, GEMINI_FLASH_MODEL } from "../LLMHelper";
 import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
-import { filterVerbalLines, stripSuggestionBlock, type Suggestion } from "./verbalStreamFilter";
+import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, type Suggestion } from "./verbalStreamFilter";
 import { lastInterviewerTurn } from "./lastInterviewerTurn";
 import { tapFirstToken } from "./streamTaps";
 import * as fs from "fs";
@@ -11,6 +11,10 @@ import * as path from "path";
 // Diagnostic file logger — writes to project root so we can read it from outside electron
 const DIAG_LOG = path.join(process.cwd(), "verbal-diag.log");
 function diagLog(msg: string) {
+    // Never from a test run: the file is the LIVE app's diagnostic log (cwd of
+    // the checkout), and a unit test's synthetic "boom"/"socket hang up" lines
+    // landed in the middle of a real measurement on 2026-09-02.
+    if (process.env.VITEST) return;
     try {
         fs.appendFileSync(DIAG_LOG, `[${new Date().toISOString()}] ${msg}\n`);
     } catch { /* swallow — never break the stream on log failure */ }
@@ -21,6 +25,44 @@ export class WhatToAnswerLLM {
 
     constructor(llmHelper: LLMHelper) {
         this.llmHelper = llmHelper;
+    }
+
+    /**
+     * Run the primary verbal stream; if it fails BEFORE producing any content,
+     * answer the same question on the fallback model instead.
+     *
+     * The first-content guard is the whole point. Once a token has reached the
+     * bubble we cannot restart — the reader would watch the answer begin twice,
+     * mid-interview. So a mid-stream failure is re-thrown and surfaces as an
+     * error; only a clean pre-token failure is recoverable.
+     *
+     * Both arguments arrive ALREADY FILTERED, so the __model_source__ sentinel
+     * yielded here sits outside both filter chains: stripModelSentinel would
+     * otherwise eat it and the redirection would be silent again.
+     *
+     * Note this is not an independent leg — the fallback is another Gemini model
+     * on the same key, so a quota or auth fault takes out both. It covers a
+     * per-model stall, block or capacity error, not a credential outage.
+     */
+    private async *withVerbalFallback(
+        primary: AsyncGenerator<string>,
+        makeFallback: () => AsyncGenerator<string>,
+    ): AsyncGenerator<string> {
+        let started = false;
+        try {
+            for await (const chunk of primary) {
+                if (chunk) started = true;
+                yield chunk;
+            }
+        } catch (err) {
+            if (started) throw err;
+            const msg = (err as Error)?.message ?? String(err);
+            console.warn(`[WhatToAnswerLLM] verbal primary failed before first token (${msg}) — redirecting to ${GEMINI_FLASH_FALLBACK_MODEL}`);
+            diagLog(`verbal primary FAILED pre-token: ${msg} -> redirect ${GEMINI_FLASH_FALLBACK_MODEL}`);
+            // Label carries no "_" — consumers match /__model_source:([^_]+)__/.
+            yield `__model_source:${GEMINI_FLASH_FALLBACK_MODEL} (fallback)__`;
+            yield* makeFallback();
+        }
     }
 
     /**
@@ -274,10 +316,39 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 // stripSuggestionBlock is OUTERMOST so the __MORE__ block never reaches
                 //   the bubble even for a token-boundary split; the labels it captures are
                 //   handed to onSuggestions for the UI to render as chips.
+                // stripSpokenNotation is OUTERMOST: it runs after the suggestion
+                // block is consumed, so it can never damage the __MORE__ sentinel.
+                // This answer is read aloud — "`ModelLatency`" would otherwise be
+                // spoken as "backtick ModelLatency backtick".
+                // stripSuggestionBlock fires onSuggestions once per stream, and the
+                // contract upstream is exactly one callback per generateStream — so
+                // when the fallback runs a SECOND filtered stream, only the first
+                // callback may escape.
+                let suggestionsSent = false;
+                const onSuggestionsOnce = (s: Suggestion[]) => {
+                    if (suggestionsSent) return;
+                    suggestionsSent = true;
+                    onSuggestions?.(s);
+                };
+                const filtered = (raw: AsyncGenerator<string>) =>
+                    stripSpokenNotation(
+                        stripSuggestionBlock(
+                            filterVerbalLines(this.filterCodeFences(this.stripModelSentinel(raw))),
+                            onSuggestionsOnce,
+                        ),
+                    );
+
                 yield* tapFirstToken(
-                    stripSuggestionBlock(
-                        filterVerbalLines(this.filterCodeFences(this.stripModelSentinel(rawStream))),
-                        onSuggestions,
+                    this.withVerbalFallback(
+                        filtered(rawStream),
+                        () => filtered(
+                            this.llmHelper.streamVerbalWithGeminiFlash(
+                                fullMessage,
+                                VERBAL_WHAT_TO_ANSWER_PROMPT,
+                                undefined,
+                                GEMINI_FLASH_FALLBACK_MODEL,
+                            ),
+                        ),
                     ),
                     (ms) => diagLog(`first token ${ms}ms`),
                     (head) => diagLog(`answer head: ${JSON.stringify(head)}`),
@@ -287,8 +358,14 @@ ANSWER SHAPE: ${intentResult.answerShape}
             // ────────────────────────────────────────────────────────────────────────
 
         } catch (error) {
+            // Name the failure. The old blanket "Could you repeat that?" was
+            // indistinguishable from a genuine request to repeat, so an outage
+            // looked like the app politely stalling — on EVERY question, with the
+            // real cause only in a console nobody has open mid-interview.
+            const msg = (error as Error)?.message ?? String(error);
             console.error("[WhatToAnswerLLM] Stream failed:", error);
-            yield "Could you repeat that? I want to make sure I address your question properly.";
+            diagLog(`generateStream FAILED (fallback exhausted or unavailable): ${msg}`);
+            yield `[No answer — both the primary model and the ${GEMINI_FLASH_FALLBACK_MODEL} fallback failed: ${msg.slice(0, 160)}]`;
         }
     }
 }

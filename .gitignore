@@ -12,6 +12,9 @@ natively/
 env
 /env
 *.log
+# Rotated logs too: `*.log` does NOT match `natively_debug.log.1`, which is how
+# a debug log carrying an API key ended up committed.
+*.log.*
 /Users/evin/natively-cluely-ai-assistant/natively
 natively
 npm-debug.log*
@@ -235,3 +238,21 @@ scratch_clean.js
 scratch_clean2.js
 scratch_extract.js
 scratch_svg.html
+
+# Golden-set run artifacts (generated screenshots, cached results, temp scripts)
+electron/test/golden/shots/
+electron/test/golden/results.json
+electron/test/golden/.tmp/
+
+# interview60 harness — generated audio and run state (rebuild: interview60.build-audio-local.mjs; the report .html/.md is left to you to keep or not)
+electron/test/golden/interview60.wav
+electron/test/golden/probe-continuous.wav
+electron/test/golden/interview60-tts/
+electron/test/golden/interview60-tts-local/
+electron/test/golden/interview60.timeline.json
+electron/test/golden/interview60.answers.json
+electron/test/golden/interview60.run*.log
+electron/test/golden/interview60.run.err
+
+# interview60 run snapshots (logs + JSON per run; the report page is the deliverable)
+electron/test/golden/interview60.runs/

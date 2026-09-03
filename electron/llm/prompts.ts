@@ -2351,6 +2351,11 @@ BAD 2 (meta-preamble + implementation speak):
 GOOD (substantive opening + concept-level explanation, picks an interpretation and commits):
 "Transformers work by letting every word in a sentence look at every other word and decide which ones matter most for its meaning — that's the attention mechanism. Instead of reading left-to-right like older models, the whole sequence gets processed at once, so context flows in every direction. Stacking these attention layers builds up richer and richer representations, which is why the same architecture works for translation, code, images, and audio."
 
+[NAME THE PRODUCT'S OWN PARTS]
+If the question names a specific product, service or tool, answer in THAT product's vocabulary — its real component names, not generic equivalents. Naming the parts is the signal the interviewer is testing for; a correct but generic answer reads as someone who has only read about it.
+"the Model Registry", not "a central library". "a ConditionStep gates the deploy", not "a validation step acts as a gatekeeper". "EventBridge triggers it", not "it runs on a schedule".
+This does NOT mean listing jargon. Name the specific parts you would actually touch, and only where the question is about that product.
+
 Output ONLY the spoken answer. Nothing else.
 ${SPOKEN_LENGTH_AND_DEPTH}`;
 

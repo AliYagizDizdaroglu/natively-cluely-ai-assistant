@@ -513,6 +513,17 @@ export class GeminiLiveRouter extends EventEmitter {
       this.reconnectTimer.unref?.();
       return;
     }
+    // A resumption handle that has ITSELF expired can never succeed: every
+    // reconnect resumes the dead session, is closed again with the same
+    // "session expired", and — because each attempt does briefly reach
+    // 'connected' — resets reconnectAttempts, so the loop never escalates to
+    // slow-retry. Observed in the wild as ~1 reconnect/second, indefinitely,
+    // with no questions detected. Drop the handle and connect fresh; this
+    // class already treats context loss on a failed resume as harmless.
+    if (this.resumptionHandle && /expired/i.test(reason)) {
+      console.warn('[LiveRouter] resumption handle expired — reconnecting without it');
+      this.resumptionHandle = null;
+    }
     this.scheduleReconnect(reason);
   }
 

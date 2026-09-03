@@ -304,3 +304,77 @@ export async function* filterVerbalLines(
         }
     }
 }
+
+// ── spoken notation cleanup ────────────────────────────────────────────────
+// The verbal answer is READ ALOUD, so notation that renders fine on screen is
+// spoken literally: "$O(\log n)$" becomes "dollar sign O of backslash log n",
+// and "`ModelLatency`" becomes "backtick ModelLatency backtick". Measured three
+// times, always on the most technical answers — the SageMaker p99 answer that
+// correctly named ModelLatency vs OverheadLatency is exactly the one that
+// sounded broken.
+//
+// Runs AFTER stripSuggestionBlock so it can never damage the __MORE__ sentinel;
+// underscores are deliberately not in the notation set.
+
+/** Remove screen-only notation from a fully-assembled span of spoken text. */
+function cleanNotation(s: string): string {
+    return s
+        // backticks: never spoken, never meaningful aloud
+        .replace(/`+/g, '')
+        // markdown emphasis markers
+        .replace(/\*\*/g, '')
+        // LaTeX delimiters: an OPENING '$' is followed by something non-numeric
+        // ("$O("), a CLOSING '$' follows a non-space ("n)$"). A currency '$' is
+        // preceded by a space and followed by a digit, so "$5 million" survives.
+        .replace(/\$(?=[^\d\s])|(?<=\S)\$/g, '')
+        // backslash commands: "\log n" -> "log n", "\(" -> "("
+        .replace(/\\(?=[A-Za-z(){}[\]])/g, '');
+}
+
+/**
+ * Streaming notation stripper. Holds back a single trailing '*', '$' or '\'
+ * because each needs the following character before it can be judged — without
+ * that, a chunk boundary landing inside "**" or before "$O(" would leak.
+ */
+export async function* stripSpokenNotation(
+    source: AsyncIterable<string>
+): AsyncGenerator<string, void, unknown> {
+    let carry = '';
+    // A structured payload must pass through untouched. streamChat's knowledge
+    // short-circuit yields one JSON object ({"__negotiationCoaching":…}) in
+    // place of speech; stripping the backslash from its "\n" escapes leaves
+    // JSON that still parses but whose text has a stray "n" where each line
+    // break was. Decided once, on the first non-blank character.
+    let decided = false;
+    let passthrough = false;
+    for await (const chunk of source) {
+        if (!decided) {
+            const probe = (carry + chunk).trimStart();
+            if (!probe) { carry += chunk; continue; }
+            decided = true;
+            passthrough = probe.startsWith('{');
+            if (passthrough) { yield carry + chunk; carry = ''; continue; }
+        }
+        if (passthrough) { yield chunk; continue; }
+        let s = carry + chunk;
+        carry = '';
+        // Defer judgement on a trailing lookahead-sensitive character. A trailing
+        // "**" is held as a pair: holding only one star split the pair so that a
+        // stream ENDING in bold ("…and **p99**") leaked "**" — the first star was
+        // emitted as a lone survivor and the held one flushed after it.
+        const held = s.match(/(\*\*|[*$\\])$/);
+        if (held) {
+            carry = held[0];
+            s = s.slice(0, -carry.length);
+        }
+        if (s) {
+            const out = cleanNotation(s);
+            if (out) yield out;
+        }
+    }
+    // Stream ended while holding a character — surface it rather than swallow it.
+    if (carry) {
+        const out = passthrough ? carry : cleanNotation(carry);
+        if (out) yield out;
+    }
+}

@@ -7,6 +7,7 @@ import Database from 'better-sqlite3';
 import { VectorStore } from './VectorStore';
 
 import { EmbeddingProviderResolver, AppAPIConfig } from './EmbeddingProviderResolver';
+import { describeConfig } from './configRedaction';
 import { IEmbeddingProvider } from './providers/IEmbeddingProvider';
 import { LocalEmbeddingProvider } from './providers/LocalEmbeddingProvider';
 
@@ -54,7 +55,9 @@ export class EmbeddingPipeline {
             return this.initPromise ?? Promise.resolve();
         }
         this._lastConfig = { ...config };
-        console.log('[EmbeddingPipeline] Initializing with config:', config);
+        // Presence only — logging the config object itself wrote the user's full
+        // API keys into natively_debug.log on every start. See configRedaction.ts.
+        console.log('[EmbeddingPipeline] Initializing with config:', describeConfig(config));
         this.initPromise = this._doInitialize(config);
         return this.initPromise;
     }

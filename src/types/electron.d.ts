@@ -196,6 +196,7 @@ export interface ElectronAPI {
   onIntelligenceAssistUpdate: (callback: (data: { insight: string }) => void) => () => void
   onIntelligenceSuggestedAnswerToken: (callback: (data: { token: string; question: string; confidence: number }) => void) => () => void
   onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number }) => void) => () => void
+  onIntelligenceSuggestedAnswerSource: (callback: (label: string) => void) => () => void
   onDetectedQuestion: (callback: (chip: {
     id: string;
     question: string;

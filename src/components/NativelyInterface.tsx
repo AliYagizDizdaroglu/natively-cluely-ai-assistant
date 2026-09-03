@@ -1220,11 +1220,11 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
         }
 
         try {
-            // Start stream metrics for the What-to-Answer flow.
-            // Source label is best-effort — verbal answers route to Gemini Flash 3.1
-            // via WhatToAnswerLLM, coding answers stay on Gemma 4 via the default streamChat.
-            // Until we wire suggested_answer_source through IPC, default to Flash since
-            // that's the dominant verbal path.
+            // Start stream metrics for the What-to-Answer flow. The label below is
+            // only the optimistic default for the dominant path; the real producer
+            // arrives on intelligence-suggested-answer-source and overwrites it —
+            // which is how a fallback redirect becomes visible instead of silently
+            // still reading "Gemini Flash 3.1".
             sm.start();
             sm.setSource('Gemini Flash 3.1');
             // Pass imagePath if attached
@@ -1390,6 +1390,15 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
         // Stream Source (model label for metrics)
         if (window.electronAPI.onGeminiStreamSource) {
             cleanups.push(window.electronAPI.onGeminiStreamSource((label: string) => {
+                sm.setSource(label);
+            }));
+        }
+
+        // Same, for the verbal What-to-Answer path. Fires only when the producer
+        // is not the assumed default — i.e. on a fallback redirect — so the bar
+        // stops claiming a model that did not answer.
+        if (window.electronAPI.onIntelligenceSuggestedAnswerSource) {
+            cleanups.push(window.electronAPI.onIntelligenceSuggestedAnswerSource((label: string) => {
                 sm.setSource(label);
             }));
         }

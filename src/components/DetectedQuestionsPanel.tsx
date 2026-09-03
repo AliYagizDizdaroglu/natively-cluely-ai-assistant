@@ -29,10 +29,20 @@ export const DetectedQuestionsPanel: React.FC<DetectedQuestionsPanelProps> = ({ 
     const [collapsed, setCollapsed] = useState(false);
     const interactionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const resetCollapseTimer = () => {
+    const armCollapseTimer = () => {
         if (interactionTimerRef.current) clearTimeout(interactionTimerRef.current);
-        setCollapsed(false);
         interactionTimerRef.current = setTimeout(() => setCollapsed(true), AUTO_COLLAPSE_MS);
+    };
+    // Expand AND arm — for new chips arriving and for a chip being clicked.
+    const resetCollapseTimer = () => {
+        setCollapsed(false);
+        armCollapseTimer();
+    };
+    // Hover never expands. It only stops an OPEN panel from auto-collapsing
+    // while the mouse is over it; opening is the header click's job. The panel
+    // used to drop open whenever the cursor crossed it (reported 2026-09-02).
+    const keepOpenWhileHovered = () => {
+        if (!collapsed) armCollapseTimer();
     };
 
     // Restart timer whenever new chips arrive
@@ -54,20 +64,18 @@ export const DetectedQuestionsPanel: React.FC<DetectedQuestionsPanelProps> = ({ 
                 backdrop-blur-md
                 overflow-hidden
             "
-            onMouseEnter={resetCollapseTimer}
-            onMouseMove={resetCollapseTimer}
+            onMouseEnter={keepOpenWhileHovered}
+            onMouseMove={keepOpenWhileHovered}
         >
-            <div className="flex items-center justify-between px-3 py-1.5 text-[11px] uppercase tracking-wide overlay-text-muted">
+            <button
+                type="button"
+                onClick={() => setCollapsed(c => !c)}
+                aria-expanded={!collapsed}
+                className="w-full flex items-center justify-between px-3 py-1.5 text-[11px] uppercase tracking-wide overlay-text-muted hover:opacity-100 opacity-80 transition-opacity text-left"
+            >
                 <span>Detected Questions ({chips.length})</span>
-                <button
-                    type="button"
-                    onClick={() => setCollapsed(c => !c)}
-                    className="overlay-text-muted hover:opacity-100 opacity-80 transition-opacity"
-                    aria-label={collapsed ? 'Expand' : 'Collapse'}
-                >
-                    {collapsed ? '▸' : '▾'}
-                </button>
-            </div>
+                <span aria-hidden="true">{collapsed ? '▸' : '▾'}</span>
+            </button>
             {!collapsed && (
                 <div className="flex flex-col gap-1 px-2 pb-2">
                     {chips.map(chip => (

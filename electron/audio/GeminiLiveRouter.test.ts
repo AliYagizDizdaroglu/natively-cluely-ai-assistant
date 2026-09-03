@@ -453,6 +453,45 @@ describe('GeminiLiveRouter audio write path', () => {
   });
 });
 
+describe('GeminiLiveRouter expired-resumption recovery', () => {
+  /**
+   * Observed in the wild after long uptime: ~1 reconnect/second forever, every
+   * one closing with "BidiGenerateContent session expired", no questions
+   * detected. The resumption handle had itself expired, so each reconnect
+   * resumed a dead session — and because each attempt did briefly reach
+   * 'connected', reconnectAttempts reset and the loop never escalated.
+   */
+  it('drops an expired resumption handle so the next connect starts fresh', async () => {
+    const h = makeHarness();
+    await h.router.start();
+    h.getCbs().onopen();
+
+    // Server issues a resumption handle, as it does in normal operation.
+    h.getCbs().onmessage({ sessionResumptionUpdate: { resumable: true, newHandle: 'handle-1' } });
+
+    // Session hard-expires.
+    h.getCbs().onclose({ reason: 'BidiGenerateContent session expired' });
+    await vi.waitFor(() => expect(h.connectCalls.length).toBe(2));
+
+    // The reconnect must NOT carry the dead handle.
+    const resumed = h.connectCalls[1]?.config?.sessionResumption;
+    expect(resumed?.handle ?? null).toBe(null);
+  });
+
+  it('still resumes with the handle for an ordinary (non-expiry) drop', async () => {
+    const h = makeHarness();
+    await h.router.start();
+    h.getCbs().onopen();
+    h.getCbs().onmessage({ sessionResumptionUpdate: { resumable: true, newHandle: 'handle-1' } });
+
+    // A transient network drop is exactly what resumption exists for.
+    h.getCbs().onclose({ reason: 'connection reset' });
+    await vi.waitFor(() => expect(h.connectCalls.length).toBe(2));
+
+    expect(h.connectCalls[1]?.config?.sessionResumption?.handle).toBe('handle-1');
+  });
+});
+
 describe('GeminiLiveRouter quota backoff', () => {
   /**
    * Live-only hour 2026-09-03 13:45–13:54 UTC on gemini-2.5-flash-native-audio-latest:

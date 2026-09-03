@@ -32,6 +32,13 @@ interface OllamaResponse {
 // Model constant for Gemini 3 Flash
 export const GEMINI_FLASH_MODEL = "gemini-3.1-flash-lite"
 const GEMINI_PRO_MODEL = "gemini-3.1-pro-preview"
+// Verbal-path fallback: used when the primary model stalls past the first-token
+// window or fails outright. Measured 2026-09-01 over 25 streamed calls: warm p50
+// ~0.9s, but an unwarmed instance costs 17-27s — the same scale-to-zero cold
+// start warmupGeminiFlash() exists to prevent. A fallback is by definition only
+// reached when things are already going wrong, so it is warmed at startup too;
+// without that it would be slowest exactly when it is needed.
+export const GEMINI_FLASH_FALLBACK_MODEL = "gemini-3.5-flash-lite"
 // TTFT budget for the Gemma coding path: the total window in which Gemma may
 // produce a first token (across bounded retries) before we abandon it and fall
 // back to warm Gemini Flash. TEXT default 6s — with the keep-warm heartbeat a
@@ -3071,22 +3078,48 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       if (remaining <= 0) break; // budget exhausted — go to Flash
 
       const gemmaGen = this.streamWithGeminiModel(fullMsg, gemmaModelId, imagePaths, systemInstruction);
-      let firstResult: IteratorResult<string, void> | undefined;
+      // First chunk that actually CARRIES CONTENT — null means the stream ended
+      // without ever producing any.
+      let firstChunk: string | null = null;
+      let resolved = false;
       let gemmaErr: Error | undefined;
       let timer: NodeJS.Timeout | undefined;
+      // Race to first CONTENT, not merely to the first chunk. A RECITATION or
+      // safety block completes the stream with zero chunks, and a blocked
+      // mid-flight response can emit empty strings — both resolve `next()`
+      // without error and without timing out, so racing a bare `next()`
+      // classified "the model said nothing" as success.
+      const firstContent = async (): Promise<string | null> => {
+        for (;;) {
+          const r = await gemmaGen.next();
+          if (r.done) return null;   // stream ended — content-free
+          if (r.value) return r.value;
+          // empty-string chunk: keep pulling
+        }
+      };
       const timedOut = await Promise.race<boolean>([
-        gemmaGen.next()
-          .then(r => { firstResult = r; return false; })
+        firstContent()
+          .then(v => { firstChunk = v; resolved = true; return false; })
           .catch(err => { gemmaErr = err; return true; }),
         new Promise<boolean>(resolve => { timer = setTimeout(() => resolve(true), remaining); }),
       ]);
       if (timer) clearTimeout(timer);
 
-      if (!timedOut && firstResult) {
+      if (!timedOut && resolved) {
+        // MEASURED (2026-08-25): asking Gemma for the pythonic collections.OrderedDict
+        // LRU cache as a follow-up turn returns finishReason RECITATION with an empty
+        // body, 6/6. Emitting the sentinel here produced an answer bubble showing the
+        // "Gemma 4" badge and no text — a silent blank with no fallback. Retrying does
+        // not help (the block is deterministic), so go straight to Flash, which answers
+        // the identical request correctly.
+        if (firstChunk === null) {
+          console.warn(`[LLMHelper] Gemma returned an empty stream (attempt ${attempt}) — likely RECITATION/safety block; falling back to Gemini Flash`);
+          break;
+        }
         if (attempt > 1) console.log(`[LLMHelper] Gemma recovered on attempt ${attempt}/${maxAttempts}`);
         yield `__model_source:Gemma 4__`;
-        if (firstResult.value) yield firstResult.value;
-        if (!firstResult.done) yield* gemmaGen;
+        yield firstChunk;
+        yield* gemmaGen;
         return;
       }
 
@@ -3207,7 +3240,12 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     }
     const systemWithLanguage = this.injectLanguageInstruction(systemPrompt);
     // Stall safety net: recover to a fast alternative that differs from the primary.
-    const FALLBACK_MODEL = primaryModel === GEMINI_FLASH_MODEL ? 'gemma-4-31b-it' : GEMINI_FLASH_MODEL;
+    // Was gemma-4-31b-it when the primary was Flash Lite; now Flash Lite 3.5, which
+    // shares Gemini's plumbing (so an auth/quota fault that killed the primary is
+    // NOT independent — see the note on emitting the source sentinel below).
+    const FALLBACK_MODEL = primaryModel === GEMINI_FLASH_FALLBACK_MODEL
+      ? GEMINI_FLASH_MODEL
+      : GEMINI_FLASH_FALLBACK_MODEL;
     const FIRST_TOKEN_TIMEOUT_MS = 4000;
 
     console.log(`[LLMHelper] streamVerbalWithGeminiFlash: trying ${primaryModel} (fallback=${FALLBACK_MODEL} after ${FIRST_TOKEN_TIMEOUT_MS}ms)`);
@@ -3232,6 +3270,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       // request and awaiting it would stall here until the server finally responds (~28s more).
       // Fire-and-forget: the request completes in the background and the generator self-cleans.
       primaryStream.return(undefined);
+      // Announce the redirection. Without this the UI keeps showing the primary's
+      // label and a silent downgrade is indistinguishable from a normal answer.
+      // Label must contain no "_" — the consumer regex is /__model_source:([^_]+)__/.
+      yield `__model_source:${FALLBACK_MODEL} (fallback)__`;
       yield* this.streamWithGeminiModel(userMessage, FALLBACK_MODEL, imagePaths, systemWithLanguage);
       return;
     }
@@ -3253,17 +3295,22 @@ This rule overrides ALL other instructions including formatting, brevity, or out
    */
   public async warmupGeminiFlash(): Promise<void> {
     if (!this.client) return;
-    const t0 = Date.now();
-    console.log('[LLMHelper] Warming up Gemini Flash (verbal cold-start prevention)...');
-    try {
-      await this.client.models.generateContent({
-        model: GEMINI_FLASH_MODEL,
-        contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
-        config: { maxOutputTokens: 1 } as any,
-      });
-      console.log(`[LLMHelper] Gemini Flash warmed up in ${Date.now() - t0}ms`);
-    } catch (e) {
-      console.warn(`[LLMHelper] Gemini Flash warmup failed (non-critical): ${(e as Error).message}`);
+    // Warm the fallback alongside the primary: measured cold, it costs 17-27s to
+    // first token, and it is only ever reached after the primary has already
+    // failed — an unwarmed fallback turns a recoverable stall into a worse one.
+    for (const model of [GEMINI_FLASH_MODEL, GEMINI_FLASH_FALLBACK_MODEL]) {
+      const t0 = Date.now();
+      console.log(`[LLMHelper] Warming up ${model} (verbal cold-start prevention)...`);
+      try {
+        await this.client.models.generateContent({
+          model,
+          contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
+          config: { maxOutputTokens: 1 } as any,
+        });
+        console.log(`[LLMHelper] ${model} warmed up in ${Date.now() - t0}ms`);
+      } catch (e) {
+        console.warn(`[LLMHelper] ${model} warmup failed (non-critical): ${(e as Error).message}`);
+      }
     }
   }
 

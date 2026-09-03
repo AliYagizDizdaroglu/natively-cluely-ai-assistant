@@ -2161,6 +2161,15 @@ export class AppState {
       }
     })
 
+    // Which model actually produced the verbal answer. The renderer used to
+    // hardcode "Gemini Flash 3.1" here, so a fallback redirect was invisible.
+    this.intelligenceManager.on('suggested_answer_source', (label: string) => {
+      const win = mainWindow()
+      if (win) {
+        win.webContents.send('intelligence-suggested-answer-source', label)
+      }
+    })
+
     this.intelligenceManager.on('refined_answer_token', (token: string, intent: string) => {
       const win = mainWindow()
       if (win) {

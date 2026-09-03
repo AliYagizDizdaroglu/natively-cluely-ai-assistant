@@ -220,7 +220,9 @@ export class ElevenLabsStreamingSTT extends EventEmitter {
         this.isConnecting = true;
         this.isSessionReady = false;
         
-        console.log(`[ElevenLabsStreaming] Connecting... key=${this.apiKey?.slice(0, 8)}...`);
+        // Presence only — an 8-char prefix is still enough to correlate a key
+        // across log files, and this line lands in natively_debug.log.
+        console.log(`[ElevenLabsStreaming] Connecting... key=${this.apiKey ? 'set' : 'unset'}`);
 
         // raw WebSocket URL with parameters
         let url = `${ELEVENLABS_WS_URL}?model_id=scribe_v2_realtime&include_timestamps=true&sample_rate=${this.targetSampleRate}`;

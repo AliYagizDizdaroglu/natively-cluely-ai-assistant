@@ -142,6 +142,7 @@ interface ElectronAPI {
   // Intelligence Mode Events
   onIntelligenceAssistUpdate: (callback: (data: { insight: string }) => void) => () => void
   onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number }) => void) => () => void
+  onIntelligenceSuggestedAnswerSource: (callback: (label: string) => void) => () => void
   onIntelligenceRefinedAnswer: (callback: (data: { answer: string; intent: string }) => void) => () => void
   onIntelligenceRecap: (callback: (data: { summary: string }) => void) => () => void
   onIntelligenceClarify: (callback: (data: { clarification: string }) => void) => () => void
@@ -781,6 +782,13 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("intelligence-suggested-answer-token", subscription)
     return () => {
       ipcRenderer.removeListener("intelligence-suggested-answer-token", subscription)
+    }
+  },
+  onIntelligenceSuggestedAnswerSource: (callback: (label: string) => void) => {
+    const subscription = (_: any, label: string) => callback(label)
+    ipcRenderer.on("intelligence-suggested-answer-source", subscription)
+    return () => {
+      ipcRenderer.removeListener("intelligence-suggested-answer-source", subscription)
     }
   },
   onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number }) => void) => {

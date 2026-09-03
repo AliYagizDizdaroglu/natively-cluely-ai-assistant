@@ -6,6 +6,11 @@ import { SessionTracker, TranscriptSegment } from './SessionTracker';
 import { LLMHelper } from './LLMHelper';
 import { DatabaseManager, Meeting } from './db/DatabaseManager';
 import { GROQ_TITLE_PROMPT, GROQ_SUMMARY_JSON_PROMPT } from './llm';
+import {
+    SUMMARY_CONTEXT_CHAR_CAP,
+    TITLE_CONTEXT_CHAR_CAP,
+    clampSummaryContext,
+} from './llm/summaryContextLimits';
 const crypto = require('crypto');
 
 export class MeetingPersistence {
@@ -112,7 +117,7 @@ export class MeetingPersistence {
                 const titlePrompt = `Generate a concise 3-6 word title for this meeting context. Output ONLY the title text. Do not use quotes or conversational filler.`;
                 const groqTitlePrompt = GROQ_TITLE_PROMPT;
 
-                const generatedTitle = await this.llmHelper.generateMeetingSummary(titlePrompt, data.context.substring(0, 5000), groqTitlePrompt);
+                const generatedTitle = await this.llmHelper.generateMeetingSummary(titlePrompt, clampSummaryContext(data.context, TITLE_CONTEXT_CHAR_CAP), groqTitlePrompt);
                 if (generatedTitle) title = generatedTitle.replace(/["*]/g, '').trim();
             }
 
@@ -204,7 +209,7 @@ Return ONLY valid JSON (no markdown code blocks):
                     groqSummaryPrompt = GROQ_SUMMARY_JSON_PROMPT;
                 }
 
-                const generatedSummary = await this.llmHelper.generateMeetingSummary(summaryPrompt, data.context.substring(0, 10000), groqSummaryPrompt);
+                const generatedSummary = await this.llmHelper.generateMeetingSummary(summaryPrompt, clampSummaryContext(data.context, SUMMARY_CONTEXT_CHAR_CAP), groqSummaryPrompt);
 
                 if (generatedSummary) {
                     // Strip markdown fences if present

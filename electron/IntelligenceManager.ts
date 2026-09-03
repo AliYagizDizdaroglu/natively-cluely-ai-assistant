@@ -201,6 +201,7 @@ export class IntelligenceManager extends EventEmitter {
     private forwardEngineEvents(): void {
         const events = [
             'assist_update', 'suggested_answer', 'suggested_answer_token',
+            'suggested_answer_source',
             'refined_answer', 'refined_answer_token',
             'recap', 'recap_token', 'clarify', 'clarify_token',
             'follow_up_questions_update', 'follow_up_questions_token',
