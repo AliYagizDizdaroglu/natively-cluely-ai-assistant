@@ -3161,6 +3161,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
   }
 
   private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[], systemInstruction?: string): AsyncGenerator<string, void, unknown> {
+    this.noteModelUse(model);
     if (!this.client) throw new Error("Gemini client not initialized");
 
     // Gemma models require v1beta; Gemini models use v1alpha
@@ -3293,12 +3294,12 @@ This rule overrides ALL other instructions including formatting, brevity, or out
    * first verbal answer in a session takes 10-13s (scale-to-zero cold start);
    * after warmup it drops to ~1s. Call fire-and-forget at app startup.
    */
-  public async warmupGeminiFlash(): Promise<void> {
+  public async warmupGeminiFlash(models: string[] = [GEMINI_FLASH_MODEL, GEMINI_FLASH_FALLBACK_MODEL]): Promise<void> {
     if (!this.client) return;
     // Warm the fallback alongside the primary: measured cold, it costs 17-27s to
     // first token, and it is only ever reached after the primary has already
     // failed — an unwarmed fallback turns a recoverable stall into a worse one.
-    for (const model of [GEMINI_FLASH_MODEL, GEMINI_FLASH_FALLBACK_MODEL]) {
+    for (const model of models) {
       const t0 = Date.now();
       console.log(`[LLMHelper] Warming up ${model} (verbal cold-start prevention)...`);
       try {
@@ -3307,7 +3308,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
           contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
           config: { maxOutputTokens: 1 } as any,
         });
-        console.log(`[LLMHelper] ${model} warmed up in ${Date.now() - t0}ms`);
+        this.noteModelUse(model);
+      console.log(`[LLMHelper] ${model} warmed up in ${Date.now() - t0}ms`);
       } catch (e) {
         console.warn(`[LLMHelper] ${model} warmup failed (non-critical): ${(e as Error).message}`);
       }
@@ -3334,6 +3336,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
         config: { maxOutputTokens: 1, thinkingConfig: { thinkingLevel: "MINIMAL" } } as any,
       });
+      this.noteModelUse(model);
       console.log(`[LLMHelper] ${model} warmed up in ${Date.now() - t0}ms`);
     } catch (e) {
       console.warn(`[LLMHelper] ${model} warmup failed (non-critical): ${(e as Error).message}`);
@@ -3368,6 +3371,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         }],
         config: { maxOutputTokens: 1, thinkingConfig: { thinkingLevel: "MINIMAL" } } as any,
       });
+      this.noteModelUse(model);
       console.log(`[LLMHelper] ${model} vision warmed up in ${Date.now() - t0}ms`);
     } catch (e) {
       console.warn(`[LLMHelper] ${model} vision warmup failed (non-critical): ${(e as Error).message}`);
@@ -3375,6 +3379,21 @@ This rule overrides ALL other instructions including formatting, brevity, or out
   }
 
   private warmthHeartbeatTimer: NodeJS.Timeout | null = null;
+  /**
+   * Last API use per model id — answers and successful warmups. The heartbeat
+   * pings only models that have sat idle for a whole interval: during an
+   * interview the answers keep the slots warm, so pings cost no requests.
+   * Measured 2026-09-03: the unconditional 60 s heartbeat spent 64 requests an
+   * hour per model — the entire free-tier day (500/model) in eight hours.
+   */
+  private lastModelUseAt = new Map<string, number>();
+  private noteModelUse(model: string): void {
+    this.lastModelUseAt.set(model, Date.now());
+  }
+  /** True when `model` has not been used for at least `withinMs`. */
+  public isModelIdle(model: string, withinMs: number): boolean {
+    return Date.now() - (this.lastModelUseAt.get(model) ?? 0) >= withinMs;
+  }
 
   /**
    * Keep the coding model (Gemma) and the verbal fallback (Flash) hot for the
@@ -3385,18 +3404,25 @@ This rule overrides ALL other instructions including formatting, brevity, or out
    * mid-meeting. Idempotent: a second call restarts the single timer rather than
    * stacking. Pair with stopWarmthHeartbeat() at meeting end.
    */
-  public startWarmthHeartbeat(intervalMs = 60_000): void {
+  public startWarmthHeartbeat(intervalMs = 300_000): void {
     this.stopWarmthHeartbeat();
-    const ping = () => {
+    const ping = (force = false) => {
       // Three cheap 1-token pings: Gemma text (self-guards on selected model),
       // Gemma VISION (gemma-4-31b-it — the model the screenshot path forces), and
       // Flash (verbal fallback). warmupGemma is kept alongside the vision ping so
       // the model stays resident even if the tiny-image vision ping is ever rejected.
-      void this.warmupGemma().catch(() => { /* non-fatal */ });
-      void this.warmupGemmaVision().catch(() => { /* non-fatal */ });
-      void this.warmupGeminiFlash().catch(() => { /* non-fatal */ });
+      // Each lane pings only when idle for a whole interval — an answer that
+      // just streamed through a model is a better warmup than a ping.
+      const idle = (model: string | null | undefined) => force || !model || this.isModelIdle(model, intervalMs);
+      // Gemma text: warmupGemma is a no-op unless a Gemma model is selected, so
+      // idleness only matters when one is.
+      const gemmaText = this.currentModelId?.startsWith('gemma-') ? this.currentModelId : null;
+      if (!gemmaText || idle(gemmaText)) void this.warmupGemma().catch(() => { /* non-fatal */ });
+      if (idle('gemma-4-31b-it')) void this.warmupGemmaVision().catch(() => { /* non-fatal */ });
+      const flash = [GEMINI_FLASH_MODEL, GEMINI_FLASH_FALLBACK_MODEL].filter((m) => idle(m));
+      if (flash.length) void this.warmupGeminiFlash(flash).catch(() => { /* non-fatal */ });
     };
-    ping(); // immediate — this IS the meeting-start warmup
+    ping(true); // immediate — this IS the meeting-start warmup
     this.warmthHeartbeatTimer = setInterval(ping, intervalMs);
     // Never let the heartbeat alone hold the process open.
     this.warmthHeartbeatTimer.unref?.();
