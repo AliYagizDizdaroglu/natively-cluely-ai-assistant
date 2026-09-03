@@ -157,16 +157,20 @@ routing, answering, and Live-session stability are all measured on the real app.
 | `interview60.build-audio.mjs` | same via Gemini TTS — better voice, but it hit a daily quota wall after 3 clips |
 | `interview60.calibrate-audio.mjs` | proves the live detector hears the chosen voice BEFORE an hour is spent |
 | `interview60.calibrate-detector.mjs` | proves the STT detector returns two-clause questions whole — prompt plus the deterministic scenario-sentence merge in `mergeScenarioSentence.ts` — on the real Groq model, by relaunching the app with `NATIVELY_DETECTOR_CALIBRATE=1` and reading its `[DetectorCalibration]` lines |
-| `interview60.run.mjs` | `preflight` / `app` / `report` / `auto` — see below |
+| `interview60.run.mjs` | `preflight` / `app` / `report` / `gate` / `auto` — see below |
 | `interview60.answers.mjs` | answer-only pass over the same questions: scored quality + latency, no Live |
 | `interview60.chains.mjs` | chain-question continuity: follow-ups that lean on "it"/"that", asked with the app's transcript vs standalone |
+| `interview60.metrics.mjs` | `computeRun(dir) → RunMetrics` — the one analysis (attribution, STT, coaching, gate) shared by `gate` and the report, plus the spec §6 pass table (`GATE`, `evaluateGate`) |
 | `interview60.report-html.mjs` | builds the flight-test report page from the logs |
 
 ```bash
-node electron/test/golden/interview60.run.mjs auto [label]   # stop → build → relaunch → probe → hour → report → snapshot to interview60.runs/<stamp>-<label>/
+node electron/test/golden/interview60.run.mjs auto [label]   # stop → build → relaunch → probe → hour → report → snapshot to interview60.runs/<stamp>-<label>/ → gate
 node electron/test/golden/interview60.run.mjs app:start|app:stop|probe   # the pieces, individually
+node electron/test/golden/interview60.run.mjs gate <dir>   # judge a run snapshot against the spec §6 pass table; exits 0/1
 node electron/test/golden/interview60.answers.mjs      # AFTER the hour (same key — do not run concurrently)
-node electron/test/golden/interview60.report-html.mjs  # writes interview60.report.html
+node electron/test/golden/interview60.report-html.mjs                       # writes interview60.report.html from the live checkout's own logs
+node electron/test/golden/interview60.report-html.mjs <dir>                 # same page, from a run snapshot instead
+node electron/test/golden/interview60.report-html.mjs <beforeDir> <afterDir>  # adds a gate table, a before/after strip, and an iterations table
 ```
 
 Two things that will silently waste the hour if forgotten:

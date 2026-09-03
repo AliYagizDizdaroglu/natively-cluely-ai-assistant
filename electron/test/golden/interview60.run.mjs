@@ -26,6 +26,7 @@ import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { INTERVIEW } from './interview60.questions.mjs';
 import { logSize as libLogSize, logSince as libLogSince, waitForLogLines, snapshotRun, sleep as libSleep } from './interview60.lib.mjs';
+import { computeRun, evaluateGate } from './interview60.metrics.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
@@ -330,6 +331,17 @@ ${spokenItems.filter((i) => !byEither.includes(i)).map((i) => `- ${i.id}: ${i.q}
     console.log(`\nwrote ${REPORT}`);
 }
 
+// ── GATE ───────────────────────────────────────────────────────────────────
+/** Judge a run folder against the spec §6 pass table (interview60.metrics.mjs). Exits 0/1. */
+function gate(dir) {
+    const m = computeRun(dir);
+    const g = evaluateGate(m);
+    console.log(`GATE  ${path.basename(dir)}  ${m.startedAt} → ${m.endedAt}\n`);
+    for (const r of g.rows) console.log(`  ${r.pass ? 'PASS' : 'FAIL'}  ${r.label.padEnd(56)} ${r.value}   (before: ${r.before})`);
+    console.log(`\n  ${g.pass ? 'GATE PASSED' : 'GATE FAILED — ' + g.rows.filter((r) => !r.pass).map((r) => r.label).join('; ')}`);
+    process.exit(g.pass ? 0 : 1);
+}
+
 /**
  * Wait for quota reset, re-verify, then run — one command, no babysitting.
  *
@@ -380,6 +392,7 @@ async function auto(label = 'after') {
     const dest = path.join(RUNS_DIR, `${stamp}-${label}`);
     const copied = snapshotRun(dest, [DEBUG_LOG, DIAG_LOG, TIMELINE, REPORT, ANSWERS, CHAINS, HTML]);
     console.log(`AUTO  snapshot ${dest}: ${copied.join(', ')}`);
+    gate(dest);
 }
 
 const cmd = process.argv[2];
@@ -389,5 +402,6 @@ else if (cmd === 'report') report();
 else if (cmd === 'app:start') await appStart();
 else if (cmd === 'app:stop') appStop();
 else if (cmd === 'probe') { const p = await probe(); console.log(p.ready ? 'PROBE READY' : `PROBE NOT READY — ${p.reason}`); process.exit(p.ready ? 0 : 1); }
+else if (cmd === 'gate') gate(path.resolve(process.argv[3]));
 else if (cmd === 'auto') await auto(process.argv[3]);   // label defaults to "after"
-else { console.log('usage: interview60.run.mjs preflight|app|report|app:start|app:stop|probe|auto [label]'); process.exit(2); }
+else { console.log('usage: interview60.run.mjs preflight|app|report|app:start|app:stop|probe|gate <dir>|auto [label]'); process.exit(2); }

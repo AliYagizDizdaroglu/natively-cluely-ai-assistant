@@ -3,6 +3,15 @@
  * page (published as an Artifact).
  *
  *   node electron/test/golden/interview60.report-html.mjs
+ *   node electron/test/golden/interview60.report-html.mjs <beforeDir>
+ *   node electron/test/golden/interview60.report-html.mjs <beforeDir> <afterDir>
+ *
+ * With no args, the report describes the live checkout's own log files (today's
+ * behaviour, via computeRunFromFiles). With one dir, it describes that run
+ * snapshot instead. With two, it additionally renders a gate table and a
+ * before/after strip comparison against the second dir, so a re-run of the
+ * hour can be judged without re-deriving any number by hand — the one
+ * analysis lives in interview60.metrics.mjs; this file only renders it.
  *
  * Inputs (all read-only):
  *   interview60.timeline.json     what was played, when
@@ -32,181 +41,34 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { INTERVIEW } from './interview60.questions.mjs';
+import { computeRun, computeRunFromFiles, evaluateGate, GATE } from './interview60.metrics.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
-const rd = (f) => fs.readFileSync(f, 'utf8');
+const RUNS_DIR = path.join(HERE, 'interview60.runs');
 const exists = (f) => fs.existsSync(f);
 
-const timeline = JSON.parse(rd(path.join(HERE, 'interview60.timeline.json')));
-const answers = exists(path.join(HERE, 'interview60.answers.json')) ? JSON.parse(rd(path.join(HERE, 'interview60.answers.json'))) : null;
+const [beforeDirArg, afterDirArg] = process.argv.slice(2);
+const before = beforeDirArg
+    ? computeRun(path.resolve(beforeDirArg))
+    : computeRunFromFiles({
+        debugLog: path.join(PROJ, 'natively_debug.log'),
+        diagLog: path.join(PROJ, 'verbal-diag.log'),
+        timelinePath: path.join(HERE, 'interview60.timeline.json'),
+        answersPath: path.join(HERE, 'interview60.answers.json'),
+    });
+const after = afterDirArg ? computeRun(path.resolve(afterDirArg)) : null;
 
-function logSince(f, from, to) {
-    if (!exists(f)) return '';
-    const fd = fs.openSync(f, 'r');
-    try {
-        const size = fs.statSync(f).size;
-        const end = to ?? size;
-        if (end <= from) return '';
-        const buf = Buffer.alloc(end - from);
-        fs.readSync(fd, buf, 0, buf.length, from);
-        return buf.toString('utf8');
-    } finally { fs.closeSync(fd); }
-}
-const dbg = logSince(path.join(PROJ, 'natively_debug.log'), timeline.startDebug, timeline.endDebug);
-// verbal-diag.log is the LIVE app's file, and a unit-test run at 16:21:50 wrote
-// six synthetic lines ("boom", "primary died", "socket hang up"…) into the
-// middle of this measurement. That second is excluded here rather than
-// filtered by message text, and the exclusion is stated in the page footer.
-// (diagLog now no-ops under vitest, so this cannot recur.)
-const CONTAMINATED = ['[2026-09-02T16:21:50'];
-const diag = logSince(path.join(PROJ, 'verbal-diag.log'), timeline.startDiag, timeline.endDiag)
-    .split('\n').filter((l) => !CONTAMINATED.some((p) => l.startsWith(p))).join('\n');
-
-// ── parse the app's own account of the hour ──────────────────────────────────
-const ts = (s) => Date.parse(s);
-const liveQ = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] Live question \((\w+), mode=(\w+)\): "([^"]*)"/gm)]
-    .map((m) => ({ at: ts(m[1]), intent: m[2], mode: m[3], heard: m[4] }));
-const suppressed = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] suppressed duplicate live question \(already surfaced by (\w+)\): "([^"]*)"/gm)]
-    .map((m) => ({ at: ts(m[1]), by: m[2], heard: m[3] }));
-const whisperFwd = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] forwarding detected-question → renderer \(win=\w+\) intent=(\w+) q="([^"]*)"/gm)]
-    .map((m) => ({ at: ts(m[1]), intent: m[2], heard: m[3] }));
-const routes = [...diag.matchAll(/^\[(\S+)\] route: ([^\n]+)/gm)].map((m) => ({ at: ts(m[1]), route: m[2].trim() }));
-const redirects = [...diag.matchAll(/verbal primary FAILED pre-token: ([^\n]*)/g)].map((m) => m[1]);
-const hardFails = [...diag.matchAll(/generateStream FAILED[^\n]*/g)].map((m) => m[0]);
-const count = (re, s = dbg) => (s.match(re) || []).length;
-// Reconnect cadence: the intervals between "reconnecting" lines. A near-constant
-// interval is a server-side session limit (goAway), not instability.
-const reconnectAt = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] Live Mode status: reconnecting/gm)].map((m) => ts(m[1]));
-const reconnectGaps = reconnectAt.slice(1).map((t, i) => (t - reconnectAt[i]) / 1000).sort((a, b) => a - b);
-const stats = {
-    reconnects: count(/Live Mode status: reconnecting/g),
-    reconnectMedianGapS: reconnectGaps.length ? Math.round(reconnectGaps[Math.floor(reconnectGaps.length / 2)]) : null,
-    whisperLostRace: count(/suppressed duplicate whisper chip \(already surfaced by live\)/g),
-    liveLostRace: count(/suppressed duplicate live question \(already surfaced by whisper\)/g),
-    expired: count(/session expired/g),
-    liveFailed: count(/Live Mode status: failed/g),
-    proAttempts: count(/Structured generation: trying Gemini Pro/g),
-    pro429: count(/Transient error \(429\)/g),
-    coachingBlobs: count(/__negotiationCoaching/g),
-    classifiedNegotiation: count(/Intent classified: negotiation/g),
-    classifiedTotal: count(/Intent classified:/g),
-};
-
-// ── the STT socket (Deepgram): closed by the server every ~12 s, all hour ────
-const sttClosedAt = [...dbg.matchAll(/^(\S+) \[LOG\] \[DeepgramStreaming\] Closed \(code=1011/gm)].map((m) => ts(m[1]));
-const sttOpenAt = [...dbg.matchAll(/^(\S+) \[LOG\] \[DeepgramStreaming\] Connected/gm)].map((m) => ts(m[1]));
-const sttReconnectAt = [...dbg.matchAll(/^(\S+) \[LOG\] \[DeepgramStreaming\] Reconnecting in/gm)].map((m) => ts(m[1]));
-const sttGaps = sttClosedAt.slice(1).map((t, i) => (t - sttClosedAt[i]) / 1000).sort((a, b) => a - b);
-// lifetime of each socket: its Connected line → its Closed line
-const sttLife = sttClosedAt.map((c) => { const o = sttOpenAt.filter((t) => t < c).pop(); return o ? (c - o) / 1000 : null; }).filter((x) => x != null).sort((a, b) => a - b);
-const finals = [...dbg.matchAll(/^(\S+) \[LOG\] \[DeepgramStreaming\] Transcript event — isFinal=true, text="([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), text: m[2] }));
-const partials = [...dbg.matchAll(/^(\S+) \[LOG\] \[DeepgramStreaming\] Transcript event — isFinal=false, text="([^"]+)"/gm)].map((m) => ({ at: ts(m[1]), text: m[2] }));
-// an empty final whose most recent partial (inside 12 s, and after the last real
-// final) had words: Deepgram had the utterance and then dropped it
-const lostUtterances = finals.filter((f) => !f.text).map((f) => {
-    const lastPartial = partials.filter((p) => p.at < f.at && f.at - p.at < 12000).pop();
-    const lastFinal = finals.filter((g) => g.at < f.at && g.text).pop();
-    return lastPartial && (!lastFinal || lastPartial.at > lastFinal.at) ? { at: f.at, text: lastPartial.text } : null;
-}).filter(Boolean);
-const q10 = (a, p) => (a.length ? Math.round(a[Math.min(a.length - 1, Math.floor(a.length * p))] * 10) / 10 : null); // pct() is declared further down
-const stt = {
-    closes: sttClosedAt.length,
-    gapMedianS: q10(sttGaps, .5),
-    lifeP10: q10(sttLife, .1),
-    lifeP90: q10(sttLife, .9),
-    finals: finals.filter((f) => f.text).length,
-    emptyFinals: finals.filter((f) => !f.text).length,
-    finalsAfterReconnect: finals.filter((f) => f.text && sttReconnectAt.some((r) => f.at - r >= 0 && f.at - r <= 3000)),
-    lostUtterances,
-};
-
-// ── attribute detections to the questions that were played ───────────────────
-const norm = (s) => new Set((s.toLowerCase().match(/[a-z0-9]+/g) || []).filter((w) => w.length > 3));
-function overlap(a, b) {
-    const A = norm(a), B = norm(b);
-    if (!A.size) return 0;
-    let hit = 0; for (const w of A) if (B.has(w)) hit++;
-    return hit / A.size;
-}
-const spoken = timeline.items.filter((i) => i.kind === 'spoken');
-const cues = timeline.items.filter((i) => i.kind !== 'spoken');
-
-const items = spoken.map((it) => {
-    const spokeEnd = it.playedAt + Math.round(it.clipSecs * 1000);
-    // Time window first, lexical overlap second. Live paraphrases and truncates
-    // ("Why do docker layer's matter?" for a 9-word question), so a strict
-    // overlap bar marks heard questions as missed. Gaps between items are
-    // 45–70 s, so anything detected inside an item's window with even modest
-    // overlap is that item; overlap only breaks ties between candidates.
-    // +60 s: after a Live reconnect the gap buffer replays what was said, and
-    // one detection (W06) arrived 46 s after its sentence ended. Overlap ranking
-    // keeps a late detection from being claimed by the following item.
-    const win = (ev) => ev.at >= it.playedAt - 2000 && ev.at <= spokeEnd + 60000;
-    const best = (list) => {
-        const c = list.filter(win).map((e) => ({ e, ov: overlap(e.heard, it.q) })).sort((a, b) => b.ov - a.ov);
-        if (!c.length) return null;
-        // Live rewrites questions in its tool call ("make a large S3 dataset load
-        // faster" → "optimize data loading into a training job"), so 0.3 is the
-        // realistic bar for the top candidate; below that only a lone candidate
-        // in the window is accepted.
-        if (c[0].ov >= 0.3) return c[0].e;
-        return c.length === 1 && c[0].ov >= 0.15 ? c[0].e : null;
-    };
-    const live = best(liveQ);
-    const sup = live ? suppressed.find((s) => Math.abs(s.at - live.at) < 50) ?? null : null;
-    const wf = best(whisperFwd);
-    const route = live && !sup ? routes.find((r) => r.at >= live.at && r.at <= live.at + 4000) ?? null : null;
-    let outcome;
-    if (route) outcome = 'answered';
-    else if (live && sup) outcome = 'suppressed';
-    else if (!live && wf) outcome = 'whisper-only';
-    else if (live && !route) outcome = 'live-no-answer';
-    else outcome = 'missed';
-    return { ...it, spokeEnd, live, sup, wf, route, outcome, detectMs: live ? live.at - spokeEnd : null };
-});
-
-// Live lines claimed by no item: an invented question, or a paraphrase too far
-// from anything played to attribute. Never counted as a hit either way.
-const claimed = new Set(items.map((i) => i.live).filter(Boolean));
-const orphanLive = liveQ.filter((q) => !claimed.has(q) && !suppressed.some((s) => Math.abs(s.at - q.at) < 50))
-    // compared against every item played, cues included — the cue sentences were spoken aloud too
-    .map((q) => ({ ...q, bestOv: Math.max(0, ...timeline.items.map((i) => overlap(q.heard, i.q))) }));
-const invented = orphanLive.filter((q) => q.bestOv < 0.3);
-// both detectors surfaced the same question and the deduper matched neither
-// text to the other: two chips on screen for one question
-const doubleChips = items.filter((i) => i.live && i.wf && !i.sup);
-
+const {
+    items, invented, surfacedMulti, stats, stt, routes, redirects, hardFails, liveQ, orphanLive, cues,
+    answersPass: A, startedAt, endedAt, durationMin, detectP50, detectP90, heard, answered,
+} = before;
 const n = items.length;
-const tally = (o) => items.filter((i) => i.outcome === o).length;
-const answered = tally('answered');
-const unanswered = tally('suppressed') + tally('whisper-only') + tally('live-no-answer');
-const missed = tally('missed');
-const detectedAny = items.filter((i) => i.live || i.wf).length;
-const detMs = items.map((i) => i.detectMs).filter((x) => x != null && x > -5000).sort((a, b) => a - b);
-const pct = (a, p) => a.length ? a[Math.min(a.length - 1, Math.floor(a.length * p))] : null;
+const complete = !!endedAt;
+const detectedAny = heard;
+const missed = n - heard;
+const unanswered = heard - answered;
 const intentOfLive = liveQ.reduce((a, q) => ({ ...a, [q.intent]: (a[q.intent] || 0) + 1 }), {});
-const complete = !!timeline.endedAt;
-const durationMin = complete ? ((ts(timeline.endedAt) - timeline.startedMs) / 60000).toFixed(1) : null;
-
-// ── answer-only pass (scored quality) ────────────────────────────────────────
-let A = null;
-if (answers) {
-    const done = Object.values(answers).filter((v) => v.spoken);
-    const tr = Object.values(answers).filter((v) => v.transientError);
-    const ttft = done.map((v) => v.ttft).sort((a, b) => a - b), total = done.map((v) => v.total).sort((a, b) => a - b), ws = done.map((v) => v.words).sort((a, b) => a - b);
-    const checks = done.length ? Object.keys(done[0].checks) : [];
-    A = {
-        n: done.length, transient: tr.length,
-        ttft: { p50: pct(ttft, .5), p90: pct(ttft, .9), max: ttft.at(-1) },
-        total: { p50: pct(total, .5), p90: pct(total, .9), max: total.at(-1) },
-        words: { median: pct(ws, .5), max: ws.at(-1), over: ws.filter((w) => w > 70).length },
-        checks: Object.fromEntries(checks.map((c) => [c, done.filter((v) => v.checks[c]).length])),
-        samples: done.slice(0, 3),
-        finish: done.reduce((a, v) => ({ ...a, [v.finish]: (a[v.finish] || 0) + 1 }), {}),
-    };
-}
 
 // ── html helpers ─────────────────────────────────────────────────────────────
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -217,6 +79,17 @@ const mono = (lines) => `<pre class="log">${esc(Array.isArray(lines) ? lines.joi
 
 const OUTCOME_LABEL = { answered: 'Answered', suppressed: 'Detected by Live, suppressed as duplicate of the STT chip — never answered', 'whisper-only': 'Detected only by the STT/Groq detector — never answered', 'live-no-answer': 'Detected by Live, no answer produced', missed: 'Not detected by either detector' };
 const outcomeShort = { answered: 'answered', suppressed: 'unanswered · race', 'whisper-only': 'unanswered · STT-only', 'live-no-answer': 'unanswered', missed: 'not detected' };
+/** Presentation-only outcome label, derived from the RunMetrics item fields
+ * (heardBy/answered/raceLoss) — the same classification the old per-item
+ * `outcome` field encoded, before the fields moved to interview60.metrics.mjs. */
+function outcomeOf(i) {
+    if (i.answered) return 'answered';
+    if (i.raceLoss) return 'suppressed';
+    if (i.heardBy === 'whisper') return 'whisper-only';
+    if (i.heardBy === 'live' || i.heardBy === 'both') return 'live-no-answer';
+    return 'missed';
+}
+const tally = (o) => items.filter((i) => outcomeOf(i) === o).length;
 
 // ── findings (ranked) ────────────────────────────────────────────────────────
 const findings = [
@@ -232,6 +105,7 @@ const findings = [
         cause: `Two detectors run in parallel: the STT→Groq "whisper" detector and Gemini Live. A single deduper decides which one gets to surface the chip. Auto-answer is wired only to the Live branch, and that branch returns at the dedupe gate before reaching the answer call (main.ts, "suppressed duplicate live question"). The whisper branch only sends a chip to the renderer and never answers. The winner is timing luck, not a fixed bias — over the hour Live won ${stats.whisperLostRace} races and lost ${stats.liveLostRace} — so the outcome per question is effectively a coin toss that lands on "silently dropped" whenever STT is first.`,
         fix: 'Not changed during the run (a code change requires an app restart, which would have ended the measurement).',
         recommendation: 'One-line class of fix: when liveMode === \'auto\' and the deduper reports a duplicate from the whisper source, still trigger runWhatShouldISay once — or have the whisper path answer when Auto is on. Then re-run this exact hour; the strip below should turn almost entirely teal. This does not affect Suggest mode, where a chip from either detector is clicked by the candidate.',
+        after: (m) => `${m.raceLosses} of ${m.items.length} lost the race`,
     },
     {
         sev: 'critical', status: 'fixed',
@@ -264,6 +138,7 @@ const findings = [
         cause: 'classifyIntent() is substring matching over a keyword list that includes ordinary words ("base", "range", "expect", "pay", "offer", "package"). It is called with the composed prompt — transcript, prior assistant messages, framing — not the question (the embedding call on the same string logs textLen=1061 for a 43-character question). Once one coaching blob lands in the transcript, every later classification sees negotiation vocabulary in it and the state is self-sustaining. The first trigger on a fresh session fires on the scaffolding itself.',
         fix: 'Not changed. Zero-code mitigation available: the Context toggle → profile:set-mode → setKnowledgeMode(false) disables the orchestrator entirely.',
         recommendation: 'Classify on the question only, with word-boundary matching (or a model call), and never on the composed prompt. Separately, structured generation should not try Pro first on a key where Pro is rate-limited — it costs ~3.2s per question before the fallback even starts. For the interview itself: Context OFF removes this whole path.',
+        after: (m) => `${m.coachingAnswers} coaching-path answers`,
     },
     {
         sev: 'high', status: 'open',
@@ -286,11 +161,12 @@ const findings = [
         cause: 'Not established, and the evidence is contradictory on its face, so no guess is offered. What is established: (1) the server is behaving — against the same key, the same 48 kHz linear16 chunk shape at real time and at the ~25% duty the run log shows, a socket stays open as long as audio flows, and a KeepAlive every 8 s keeps a silent one open; a socket sent nothing dies at 12 s. (2) DeepgramStreamingSTT itself is sound — the compiled class, driven exactly as main.ts drives it (setSampleRate 48000, start, write 1920-byte chunks every 80 ms), held a socket for 40 s under both transports the SDK can pick (Node\'s WebSocket, and the ws package that Electron 33 uses). (3) Inside the running app, sockets die 10.3–10.8 s after open no matter what was transcribed on them, and idle ones die at 6.3 s — earlier than an idle socket dies standalone. So something specific to the Electron process means that what reaches the wire after the initial buffered flush is not counted by the server, even though the server transcribes it. That sentence contradicts itself, which is the point: one of the two observations is not what it looks like, and only a wire-level count from inside the app will say which.',
         fix: 'Not changed.',
         recommendation: 'Instrument, then fix. Log, per socket, the bytes handed to live.send() and each keepAlive() tick from inside DeepgramStreamingSTT in the running app, alongside the transcript timeline; the 34 s probe reproduces the close within 30 s, so the loop is fast. If the steady writes are not reaching the wire, the buffer handed to write() by the capture is the first suspect (the SDK sends asynchronously). Until it is fixed, count on losing roughly one question per hour on the STT path and treat a fragment chip ("Times.") as a symptom of this, not of the interviewer.',
+        after: (m) => `${m.sttCloses} closes, ${m.lostUtterances} lost utterance${m.lostUtterances === 1 ? '' : 's'}`,
     },
     {
         sev: 'high', status: 'open',
         title: 'Live surfaced a question that was never asked, and Auto mode answered it',
-        symptom: `At 16:01:13 the Live detector emitted "Tell me about a time you handled a resource constraint problem in a deployment." No such sentence exists anywhere in the hour of audio. The STT partials from the same seconds carry the question actually being spoken — M04, "Why would you use CloudFormation instead of configuring things by hand in the console?" — word for word, so the audio was clean. The chip on screen was the invented question, and Auto mode answered it with a behavioural intent override. The answer that came back was about CloudFormation, because the answer prompt is built from the STT transcript rather than from Live's label — the reader saw the wrong question over the right answer. Over the hour ${invented.length} of ${liveQ.length} Live lines match${invented.length === 1 ? 'es' : ''} no played question${orphanLive.length - invented.length > 0 ? `, and ${orphanLive.length - invented.length} more ${orphanLive.length - invented.length === 1 ? 'is' : 'are'} a re-detection or a paraphrase that no single question can claim` : ''}. Related: ${doubleChips.length} question${doubleChips.length === 1 ? '' : 's'} reached the renderer from both detectors because the deduper compares text and Live had rewritten it (M25: "How would you handle a dataset that must be deleted on request for compliance?" became "How do you design a system where customer data must be deleted on request…", one chip marked coding, the other verbal); whether the chip list merged them on screen was not observed.`,
+        symptom: `At 16:01:13 the Live detector emitted "Tell me about a time you handled a resource constraint problem in a deployment." No such sentence exists anywhere in the hour of audio. The STT partials from the same seconds carry the question actually being spoken — M04, "Why would you use CloudFormation instead of configuring things by hand in the console?" — word for word, so the audio was clean. The chip on screen was the invented question, and Auto mode answered it with a behavioural intent override. The answer that came back was about CloudFormation, because the answer prompt is built from the STT transcript rather than from Live's label — the reader saw the wrong question over the right answer. Over the hour ${invented} of ${liveQ.length} Live lines match${invented === 1 ? 'es' : ''} no played question${orphanLive.length - invented > 0 ? `, and ${orphanLive.length - invented} more ${orphanLive.length - invented === 1 ? 'is' : 'are'} a re-detection or a paraphrase that no single question can claim` : ''}. Related: ${surfacedMulti} question${surfacedMulti === 1 ? '' : 's'} reached the renderer from both detectors because the deduper compares text and Live had rewritten it (M25: "How would you handle a dataset that must be deleted on request for compliance?" became "How do you design a system where customer data must be deleted on request…", one chip marked coding, the other verbal); whether the chip list merged them on screen was not observed.`,
         evidence: [
             '16:01:08.232  [DeepgramStreaming] Transcript event — isFinal=false, text="Why would you use CloudFormation instead of configuring things by"',
             '16:01:13.273  [Main] Live question (behavioral, mode=auto): "Tell me about a time you handled a resource constraint problem in a deployment."',
@@ -300,6 +176,7 @@ const findings = [
         cause: 'The Live detector\'s output is a model-written string — the question as Gemini Live chose to phrase it — and nothing compares it with what the STT heard before it becomes the chip text and the intent. Usually the rewrite is harmless ("Walk me through…" → "How…"); once this hour it was a different question, and its intent was used to choose the answer style.',
         fix: 'Not changed.',
         recommendation: 'Cross-check every Live question against the last few seconds of STT transcript (token overlap, the same measure this report uses). On a good match surface the transcript\'s wording; on a poor match surface the transcript sentence and treat Live\'s intent as advisory. The same check removes the double chips, since both detectors would then agree on the text.',
+        after: (m) => `${m.invented} invented, ${m.surfacedMulti} double${m.surfacedMulti === 1 ? '' : 's'}`,
     },
     {
         sev: 'medium', status: 'open',
@@ -354,6 +231,7 @@ const findings = [
         cause: 'The coding branch in WhatToAnswerLLM bypasses filterVerbalLines, stripSpokenNotation and the word budget, so a question asked aloud can get a code-shaped answer with fences and Time/Space annotations.',
         fix: 'Not changed.',
         recommendation: 'Treat "coding" from the live detector as advisory unless a screenshot is attached; route spoken questions through the verbal filters regardless. The rate over a full hour is the number to act on — see the strip and table.',
+        after: (m) => `${m.codingForSpoken} spoken question${m.codingForSpoken === 1 ? '' : 's'} routed CODING`,
     },
     {
         sev: 'medium', status: 'open',
@@ -387,12 +265,45 @@ const findings = [
         cause: 'A model trait, not a prompt bug: the product-vocabulary prompt change trimmed the worst case (96→81 words) but not the median.',
         fix: 'Not changed.',
         recommendation: 'Either accept it, or lower SPOKEN_WORD_BUDGET to ~60 so the model lands near 70 (a hypothesis — one golden-set run confirms it) and the gate stops failing on a decision already made.',
+        after: (m) => (m.answersPass ? `${m.answersPass.words.over}/${m.answersPass.n} over 70 words` : '—'),
     },
 ];
 
-// ── page ─────────────────────────────────────────────────────────────────────
-const strip = items.map((i) => `<span class="cell cell--${i.outcome}" title="${esc(i.id)} · ${esc(outcomeShort[i.outcome])} · ${esc(i.q)}"><span class="sr">${esc(i.id)} ${esc(outcomeShort[i.outcome])}</span></span>`).join('');
-const stripRows = items.map((i) => `<tr><td class="num">${esc(i.id)}</td><td>${esc(i.q)}</td><td><span class="dot dot--${i.outcome}" aria-hidden="true"></span>${esc(outcomeShort[i.outcome])}</td><td class="num">${i.live ? esc(i.live.intent) : i.wf ? esc(i.wf.intent) + ' (STT)' : '—'}</td><td class="num">${i.detectMs != null ? fmt(i.detectMs) + ' ms' : '—'}</td></tr>`).join('');
+// ── the hour strip, and its table — reusable for a before/after comparison ──
+function renderStrip(its) {
+    return its.map((i) => { const o = outcomeOf(i); return `<span class="cell cell--${o}" title="${esc(i.id)} · ${esc(outcomeShort[o])} · ${esc(i.q)}"><span class="sr">${esc(i.id)} ${esc(outcomeShort[o])}</span></span>`; }).join('');
+}
+function renderStripRows(its) {
+    return its.map((i) => { const o = outcomeOf(i); return `<tr><td class="num">${esc(i.id)}</td><td>${esc(i.q)}</td><td><span class="dot dot--${o}" aria-hidden="true"></span>${esc(outcomeShort[o])}</td><td class="num">${i.heardBy ?? '—'}</td><td class="num">${i.detectMs != null ? fmt(i.detectMs) + ' ms' : '—'}</td></tr>`; }).join('');
+}
+const strip = renderStrip(items);
+const stripRows = renderStripRows(items);
+
+// ── gate table + before/after strips + iterations, only when a second dir was given ──
+const gateSection = !after ? '' : (() => {
+    const g = evaluateGate(after);
+    const gateRows = g.rows.map((r, i) => `<tr><td>${esc(r.label)}</td><td class="num">${esc(GATE[i].before)}</td><td class="num">${esc(r.value)}</td><td class="num">${r.pass ? 'PASS' : 'FAIL'}</td></tr>`).join('');
+    const afterLabel = `After · ${esc((after.startedAt ?? '').slice(0, 10) || 'this run')}`;
+    const iterations = exists(RUNS_DIR)
+        ? fs.readdirSync(RUNS_DIR, { withFileTypes: true }).filter((e) => e.isDirectory())
+            .map((e) => computeRun(path.join(RUNS_DIR, e.name)))
+            .map((rm) => `<tr><td>${esc(path.basename(rm.dir))}</td><td class="num">${rm.answered}/${rm.items.length}</td><td class="num">${rm.heard}/${rm.items.length}</td><td class="num">${rm.sttCloses}</td></tr>`)
+            .join('')
+        : '';
+    return `
+<section aria-label="Gate">
+  <h2>Gate — ${g.pass ? 'PASSED' : 'FAILED'}</h2>
+  <p class="measure">Spec §6, judged against the after run. "Before" is the fixed reference this report was written against; "after" is recomputed every time.</p>
+  <div class="tablewrap"><table><thead><tr><th>Row</th><th class="num">Before</th><th class="num">After</th><th class="num">Gate</th></tr></thead><tbody>${gateRows}</tbody></table></div>
+  <h3>The hour, before vs after</h3>
+  <div class="strip" role="img" aria-label="Before run outcomes">${renderStrip(before.items)}</div>
+  <p class="muted" style="margin:2px 0 10px">Before · 2026-09-02</p>
+  <div class="strip" role="img" aria-label="After run outcomes">${renderStrip(after.items)}</div>
+  <p class="muted" style="margin:2px 0 22px">${esc(afterLabel)}</p>
+  <h3>Iterations</h3>
+  <div class="tablewrap"><table><thead><tr><th>Run</th><th class="num">Answered</th><th class="num">Heard</th><th class="num">STT closes</th></tr></thead><tbody>${iterations}</tbody></table></div>
+</section>`;
+})();
 
 const verdictAuto = unanswered / n >= 0.2
     ? `Not reliable in <strong>Auto</strong> mode: ${unanswered} of ${n} questions were detected and then never answered.`
@@ -512,9 +423,10 @@ const html = `<title>Natively Flight Test</title>
   <div class="verdict__body">
     <p><strong>${verdictAuto}</strong> ${complete ? '' : '<em>(run still in progress — numbers below are partial)</em>'}</p>
     <p>The candidate's normal mode — <strong>Suggest</strong>, click a chip — is not affected by that race, and with the three shipped fixes (resumption loop, masked failures, verbal fallback) it is usable for a real interview <em>only with Context switched off</em>. That is not a tuning tip: with Context on, a keyword classifier labels every technical question "negotiation", the answer you see is the negotiation-coaching response, and the verbal answer pipeline — its prompt, filters and word budget — never runs. It happened to read acceptably this hour because the model ignored the framing; it also cost ~3 seconds of rate-limited Gemini Pro retries per question.</p>
-    <p class="muted">Live detection itself was strong: ${detectedAny} of ${n} questions heard, detection latency p50 ${fmt(pct(detMs, .5))} ms, ${stats.expired} session-expiry loops, ${stats.reconnects} routine reconnect${stats.reconnects === 1 ? '' : 's'} over ${durationMin ?? '…'} minutes. The STT socket is another story: Deepgram closed it ${stt.closes} times, once every ${stt.gapMedianS ?? '…'} s, and ${stt.lostUtterances.length} question${stt.lostUtterances.length === 1 ? '' : 's'} fell into the gaps. And once, Live surfaced a question nobody asked.</p>
+    <p class="muted">Live detection itself was strong: ${detectedAny} of ${n} questions heard, detection latency p50 ${fmt(detectP50)} ms, ${stats.expired} session-expiry loops, ${stats.reconnects} routine reconnect${stats.reconnects === 1 ? '' : 's'} over ${durationMin ?? '…'} minutes. The STT socket is another story: Deepgram closed it ${stt.closes} times, once every ${stt.gapMedianS ?? '…'} s, and ${stt.lostUtterances.length} question${stt.lostUtterances.length === 1 ? '' : 's'} fell into the gaps. And once, Live surfaced a question nobody asked.</p>
   </div>
 </section>
+${gateSection}
 
 <div class="tiles" role="list" aria-label="Headline numbers">
   <div class="tile" role="listitem"><span class="tile__label">Spoken questions</span><span class="tile__value">${n}</span><span class="tile__sub">+ ${cues.length} screenshot cues</span></div>
@@ -529,7 +441,7 @@ const html = `<title>Natively Flight Test</title>
 <p class="measure">Fifty-two spoken questions in the order they were asked, easy to hard. Hover a cell for the question; the table underneath has the same data.</p>
 <div class="strip" role="img" aria-label="Outcome of each of the ${n} spoken questions in order">${strip}</div>
 <div class="legend"><span><i class="dot dot--answered"></i>answered</span><span><i class="dot dot--suppressed"></i>heard, never answered</span><span><i class="dot dot--missed"></i>not detected</span></div>
-<details><summary>Table view — every question</summary><div class="tablewrap"><table><thead><tr><th class="num">#</th><th>Question as asked</th><th>Outcome</th><th class="num">Intent</th><th class="num">Detect latency</th></tr></thead><tbody>${stripRows}</tbody></table></div></details>
+<details><summary>Table view — every question</summary><div class="tablewrap"><table><thead><tr><th class="num">#</th><th>Question as asked</th><th>Outcome</th><th class="num">Heard by</th><th class="num">Detect latency</th></tr></thead><tbody>${stripRows}</tbody></table></div></details>
 
 <h2>Findings, ranked</h2>
 <p class="measure">Each one: what was seen, the log line that proves it, why it happens, and where it stands. Two were fixed during the session and are verified in the run above; the rest are yours to prioritise.</p>
@@ -543,12 +455,13 @@ ${findings.map((f) => `
     <dt>Cause</dt><dd>${esc(f.cause)}</dd>
     <dt>Status</dt><dd>${esc(f.fix)}</dd>
     <dt>Next</dt><dd>${esc(f.recommendation)}</dd>
+    ${after && f.after ? `<dt>After</dt><dd>${esc(f.after(after))}</dd>` : ''}
   </dl>
 </article>`).join('')}
 
 <h2>What works</h2>
 <ul class="good">
-  <li><strong>Hearing the question.</strong> ${detectedAny} of ${n} questions detected; Live detection latency p50 ${fmt(pct(detMs, .5))} ms, p90 ${fmt(pct(detMs, .9))} ms, measured from the end of the spoken sentence.</li>
+  <li><strong>Hearing the question.</strong> ${detectedAny} of ${n} questions detected; Live detection latency p50 ${fmt(detectP50)} ms, p90 ${fmt(detectP90)} ms, measured from the end of the spoken sentence.</li>
   <li><strong>Live session stability, once the resumption bug was fixed</strong> (the Live session — not the STT socket, see the finding). ${stats.expired} expiry loops across the hour. ${stats.reconnects} reconnect${stats.reconnects === 1 ? '' : 's'}, ${stats.reconnectMedianGapS ? `at a metronomic ~${Math.round(stats.reconnectMedianGapS / 60 * 10) / 10} min median interval — a server-side session limit, not instability — ` : ''}each recovered with the gap buffer replaying what was said meanwhile.</li>
   <li><strong>Answer speed on the default model.</strong> gemini-3.1-flash-lite streams a first word in 2.3 s (p50) and finishes under 5 s worst case across 15 probes, 0 errors — inside interview rhythm.</li>
   <li><strong>Answer correctness.</strong> All 13 MLOps answers scored earlier were technically correct and named real components (ModelLatency vs OverheadLatency, ProcessingStep → TrainingStep → ModelStep, PSI / KS tests). ${A ? `The answer-only pass over this hour's ${A.n} questions: ${Object.entries(A.checks).map(([k, v]) => `${k} ${v}/${A.n}`).join(' · ')}.` : 'The answer-only pass over this hour\'s questions is pending.'}</li>
@@ -585,7 +498,7 @@ ${A ? `<tr><td>gemini-3.1-flash-lite <span class="muted">(this hour, answer-only
 
 <h3>Detection — Live, from end of sentence to chip</h3>
 <div class="tablewrap"><table><thead><tr><th>Condition</th><th class="num">p50</th><th class="num">p90</th><th class="num">Detected</th><th>Notes</th></tr></thead><tbody>
-<tr><td>This hour, in the app</td><td class="num">${fmt(pct(detMs, .5))} ms</td><td class="num">${fmt(pct(detMs, .9))} ms</td><td class="num">${detectedAny}/${n}</td><td>continuous audio; system-audio capture only emits while the device renders</td></tr>
+<tr><td>This hour, in the app</td><td class="num">${fmt(detectP50)} ms</td><td class="num">${fmt(detectP90)} ms</td><td class="num">${detectedAny}/${n}</td><td>continuous audio; system-audio capture only emits while the device renders</td></tr>
 <tr><td>Calibration, local voice, direct to router</td><td class="num">465 ms</td><td class="num">650 ms</td><td class="num">3/3</td><td>Windows SAPI voice heard at 92–100% word overlap</td></tr>
 <tr><td>Earlier, Gemini TTS voice</td><td class="num">1,211 ms</td><td class="num">—</td><td class="num">8/8</td><td>from the pipeline race audit</td></tr>
 </tbody></table></div>
@@ -601,7 +514,7 @@ ${A ? `<tr><td>gemini-3.1-flash-lite <span class="muted">(this hour, answer-only
 ${(() => {
     const f = path.join(HERE, 'interview60.chains.json');
     if (!exists(f)) return '<p class="measure muted">Pending — the chain-continuity pass runs after the hour (same key; it must not contend with the run).</p>';
-    const C = JSON.parse(rd(f));
+    const C = JSON.parse(fs.readFileSync(f, 'utf8'));
     const hits = (t, anchors) => anchors.filter((a) => t.toLowerCase().includes(a)).length;
     const asksBack = (t) => /\b(which|what) (image|endpoint|model|task|deployment|check)\b.*\?|could you clarify|what do you mean|not sure what/i.test(t);
     let fu = 0, better = 0, ctxAsk = 0, saAsk = 0;
@@ -653,7 +566,7 @@ ${detail}
 </ul>
 
 <div class="foot">
-  <p>Run started ${esc(timeline.startedAt)}${complete ? `, ended ${esc(timeline.endedAt)} (${durationMin} min)` : ' — in progress'}. Stimulus: <code>electron/test/golden/interview60.wav</code> (55 items, 60.5 min, local TTS). Runner: <code>interview60.run.mjs</code>; scoring: <code>interview60.answers.mjs</code>; this page: <code>interview60.report-html.mjs</code>. Source of every number: <code>natively_debug.log</code>, <code>verbal-diag.log</code>, and the JSON files beside them. One second of <code>verbal-diag.log</code> (16:21:50 UTC) is excluded: a unit-test run wrote six synthetic failure lines into the live file during the measurement; the leak is closed (diag logging is now a no-op under vitest) and no real answer was in flight that second.</p>
+  <p>Run started ${esc(startedAt)}${complete ? `, ended ${esc(endedAt)} (${durationMin} min)` : ' — in progress'}. Stimulus: <code>electron/test/golden/interview60.wav</code> (55 items, 60.5 min, local TTS). Runner: <code>interview60.run.mjs</code>; scoring: <code>interview60.answers.mjs</code>; this page: <code>interview60.report-html.mjs</code>. Source of every number: <code>natively_debug.log</code>, <code>verbal-diag.log</code>, and the JSON files beside them. One second of <code>verbal-diag.log</code> (16:21:50 UTC) is excluded: a unit-test run wrote six synthetic failure lines into the live file during the measurement; the leak is closed (diag logging is now a no-op under vitest) and no real answer was in flight that second.</p>
 </div>
 </div>
 `;
@@ -666,4 +579,5 @@ const ascii = html.replace(/[^\x00-\x7F]/g, (c) => `&#${c.codePointAt(0)};`);
 fs.writeFileSync(path.join(HERE, 'interview60.report.html'), ascii);
 console.log(`items ${n}  answered ${answered}  unanswered ${unanswered}  missed ${missed}  detected ${detectedAny}  complete=${complete}`);
 console.log(`stats ${JSON.stringify(stats)}`);
+if (after) console.log(`gate (after) ${evaluateGate(after).pass ? 'PASSED' : 'FAILED'}`);
 console.log(`wrote ${path.join(HERE, 'interview60.report.html')}`);
