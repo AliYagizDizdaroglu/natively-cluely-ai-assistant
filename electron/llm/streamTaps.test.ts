@@ -23,4 +23,34 @@ describe('tapFirstToken', () => {
         await drain(tapFirstToken(chunks([]), (ms) => firsts.push(ms), (h) => heads.push(h)));
         expect(firsts).toEqual([]); expect(heads).toEqual([]);
     });
+
+    // R36 fix wave addendum: withVerbalFallback's redirect sentinel
+    // (__model_source:<model> (fallback)__) reaches tapFirstToken unfiltered —
+    // it sits outside both filter chains by design (WhatToAnswerLLM.ts:39-41).
+    // Run 1 evidence: 34 of 36 streams failed pre-token and redirected, yet the
+    // tap counted the sentinel as the first token (TTFT p90 0.8s) and one
+    // recorded head was literally the sentinel glued to the real opener.
+    it('a sentinel chunk does not trigger onFirst or join the head — onFirst/onHead fire on the real text that follows', async () => {
+        const firsts: number[] = []; const heads: string[] = [];
+        const out = await drain(tapFirstToken(
+            chunks(['__model_source:gemini-3.5-flash-lite (fallback)__', 'Versioning ', 'models…']),
+            (ms) => firsts.push(ms), (h) => heads.push(h), Date.now() - 5,
+        ));
+        // Passed through unchanged — the sentinel still reaches the consumer.
+        expect(out).toEqual(['__model_source:gemini-3.5-flash-lite (fallback)__', 'Versioning ', 'models…']);
+        expect(firsts.length).toBe(1);
+        expect(firsts[0]).toBeGreaterThanOrEqual(5);
+        expect(heads).toEqual(['Versioning models…']);
+    });
+
+    it('a stream of only a sentinel reports no first-token time and no head', async () => {
+        const firsts: number[] = []; const heads: string[] = [];
+        const out = await drain(tapFirstToken(
+            chunks(['__model_source:gemini-3.5-flash-lite (fallback)__']),
+            (ms) => firsts.push(ms), (h) => heads.push(h),
+        ));
+        expect(out).toEqual(['__model_source:gemini-3.5-flash-lite (fallback)__']);
+        expect(firsts).toEqual([]);
+        expect(heads).toEqual([]);
+    });
 });
