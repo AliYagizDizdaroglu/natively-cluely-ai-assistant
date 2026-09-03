@@ -26,7 +26,7 @@ import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { INTERVIEW } from './interview60.questions.mjs';
 import { logSize as libLogSize, logSince as libLogSince, waitForLogLines, snapshotRun, sleep as libSleep } from './interview60.lib.mjs';
-import { computeRun, evaluateGate } from './interview60.metrics.mjs';
+import { computeRun, computeRunFromFiles, evaluateGate } from './interview60.metrics.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
@@ -106,20 +106,45 @@ function ps(cmd) {
     return execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', cmd], { encoding: 'utf8', stdio: 'pipe' });
 }
 
-/** Kill the app: the tree we spawned if we have its pid, else every electron process running THIS checkout. */
+/** Command line of a running process, or '' if it's already gone (or the query fails). */
+function commandLineOf(pid) {
+    try {
+        return ps(`(Get-CimInstance Win32_Process -Filter "ProcessId=${pid}").CommandLine`).trim();
+    } catch { return ''; }
+}
+
+/**
+ * Kill the app: the tree we spawned if we have its pid, else every electron
+ * process running THIS checkout (never node.exe — a vitest/vite/tsc process
+ * of an unrelated session also has this checkout's path on its command line,
+ * and killing node.exe by path prefix took those out too).
+ */
 function appStop() {
     fs.mkdirSync(RUNS_DIR, { recursive: true });
     if (fs.existsSync(PID_FILE)) {
         const pid = Number(fs.readFileSync(PID_FILE, 'utf8').trim());
-        console.log(`APP STOP  taskkill tree pid=${pid}`);
-        try { execFileSync('taskkill', ['/PID', String(pid), '/T', '/F'], { stdio: 'pipe' }); } catch { /* already gone */ }
+        // Windows recycles pids — the tracked pid can belong to an unrelated
+        // process by the time we get here (R35). Only tree-kill it if its
+        // command line still looks like the electron/npm start we spawned.
+        const cmdLine = commandLineOf(pid);
+        const looksLikeOurs = /electron(\.exe)?/i.test(cmdLine) || /npm(\.cmd)?["']?\s+start/i.test(cmdLine);
+        if (looksLikeOurs) {
+            console.log(`APP STOP  taskkill tree pid=${pid}`);
+            try { execFileSync('taskkill', ['/PID', String(pid), '/T', '/F'], { stdio: 'pipe' }); } catch { /* already gone */ }
+        } else {
+            console.log(`APP STOP  skipped pid-file pid=${pid} — command line no longer names electron/npm start: ${cmdLine || '(process gone)'}`);
+        }
         fs.unlinkSync(PID_FILE);
     }
-    // Hand-started instance (or a leftover): match on the checkout path in the
-    // command line. Exclude THIS process and its parent — the harness itself is
-    // a node process whose command line contains the checkout path.
+    // Hand-started instance (or a leftover): electron.exe only, whose command
+    // line contains the checkout path and is NOT under a git worktree of it
+    // (a worktree session's own electron.exe also carries the checkout's path
+    // as a prefix). Exclude THIS process and its parent — the harness itself
+    // is a node process whose command line contains the checkout path, but it
+    // is excluded anyway by matching electron.exe only, never node.exe.
     const needle = PROJ.replace(/\\/g, '\\\\');
-    const out = ps(`Get-CimInstance Win32_Process | Where-Object { $_.Name -match '^(electron|node)\\.exe$' -and $_.CommandLine -match '${needle.replace(/'/g, "''")}' -and $_.ProcessId -ne ${process.pid} -and $_.ProcessId -ne ${process.ppid} } | ForEach-Object { $_.ProcessId }`);
+    const notWorktree = '\\\\.claude\\\\worktrees\\\\';
+    const out = ps(`Get-CimInstance Win32_Process | Where-Object { $_.Name -match '^electron\\.exe$' -and $_.CommandLine -match '${needle.replace(/'/g, "''")}' -and $_.CommandLine -notmatch '${notWorktree}' -and $_.ProcessId -ne ${process.pid} -and $_.ProcessId -ne ${process.ppid} } | ForEach-Object { $_.ProcessId }`);
     const pids = out.split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
     for (const pid of pids) {
         try { execFileSync('taskkill', ['/PID', pid, '/T', '/F'], { stdio: 'pipe' }); } catch { /* raced */ }
@@ -164,12 +189,25 @@ async function appStart() {
     console.log('APP START  listening in Auto');
 }
 
-/** One flash-lite call + the Live preflight. Any 429 postpones the hour. */
+/**
+ * Five consecutive flash-lite 200s, 15s apart, then the Live preflight. Any
+ * non-200 fails this attempt immediately (the caller's retry loop starts the
+ * count over on the next attempt).
+ *
+ * Run 1's probe saw a single 200 at 04:09:40 UTC, then hit a 429 wall 15s
+ * later: a key that is actually walled for the day can still return one or
+ * two 200s on a leaky-bucket burst right after being idle, so a single 200 is
+ * not proof of headroom. The free tier is 500 requests/model/day — five 200s
+ * 15s apart is not a burst.
+ */
 async function probe() {
-    const s = await modelAlive('gemini-3.1-flash-lite');
-    console.log(`PROBE  gemini-3.1-flash-lite HTTP ${s}`);
-    if (s === 429) return { ready: false, reason: 'flash-lite quota (429)' };
-    if (s !== 200) return { ready: false, reason: `flash-lite HTTP ${s}` };
+    for (let k = 1; k <= 5; k++) {
+        const s = await modelAlive('gemini-3.1-flash-lite');
+        console.log(`PROBE  gemini-3.1-flash-lite HTTP ${s} (${k}/5)`);
+        if (s === 429) return { ready: false, reason: 'flash-lite quota (429)' };
+        if (s !== 200) return { ready: false, reason: `flash-lite HTTP ${s}` };
+        if (k < 5) await sleep(15000);
+    }
     const out = runPreflight();
     console.log(out);
     return /READY — safe to start the hour/.test(out) ? { ready: true } : { ready: false, reason: 'preflight not green' };
@@ -243,88 +281,42 @@ async function appPass() {
 
 // ── REPORT ─────────────────────────────────────────────────────────────────
 /**
- * Heard text is never the canonical text: Live drops lead-ins ("To start, …"),
- * paraphrases ("Walk me through how…" → "How…") and mis-hears plurals. A prefix
- * comparison marked the very first detected question as undetected. report()
- * attributes by play window first and uses overlap only as a 0.15 sanity floor,
- * the same rule as interview60.report-html.mjs.
+ * Derived from computeRunFromFiles/evaluateGate — the same functions `gate`
+ * uses — instead of re-deriving detection/dedup/routing numbers from the raw
+ * logs a second, independent way. Before this, report() parsed log lines that
+ * had since been retired (`forwarding detected-question`, `suppressed
+ * duplicate live question`) so its counts silently went to zero while the
+ * gate (reading the current dispatch-line format) kept working; deriving both
+ * from one source means the folder's .md and its gate can never disagree.
+ *
+ * Uses computeRunFromFiles rather than computeRun(dir): report() runs BEFORE
+ * the snapshot, against the live checkout's files, which don't follow the
+ * run-dir naming convention (debug/diag logs at the project root, timeline
+ * beside this script) — see computeRunFromFiles' own docstring.
  */
-function overlap(a, b) {
-    const norm = (s) => new Set((s.toLowerCase().match(/[a-z0-9]+/g) || []).filter((w) => w.length > 3));
-    const A = norm(a), B = norm(b);
-    if (!A.size) return 0;
-    let hit = 0; for (const w of A) if (B.has(w)) hit++;
-    return hit / A.size;
-}
-
 function report() {
-    const t = JSON.parse(fs.readFileSync(TIMELINE, 'utf8'));
-    const dbg = logSince(DEBUG_LOG, t.startDebug);
-    // Same exclusion as interview60.report-html.mjs: a unit-test run at 16:21:50
-    // on 2026-09-02 wrote synthetic failure lines into the live diag file.
-    const CONTAMINATED = ['[2026-09-02T16:21:50'];
-    const diag = logSince(DIAG_LOG, t.startDiag).split('\n').filter((l) => !CONTAMINATED.some((p) => l.startsWith(p))).join('\n');
-
-    const detections = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] Live question \((\w+), mode=(\w+)\): "([^"]*)"/gm)]
-        .map((m) => ({ at: Date.parse(m[1]), intent: m[2], mode: m[3], q: m[4] }));
-    const whisperFwd = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] forwarding detected-question → renderer \(win=\w+\) intent=(\w+) q="([^"]*)"/gm)]
-        .map((m) => ({ at: Date.parse(m[1]), intent: m[2], q: m[3] }));
-    // Per-item attribution, same rule as interview60.report-html.mjs: a detection
-    // belongs to the item whose play window it falls in (gaps are 45–70 s), with
-    // overlap only as a sanity floor because Live paraphrases.
-    const inWindow = (i, d) => {
-        const end = i.playedAt + (i.clipSecs ?? 0) * 1000;
-        return d.at >= i.playedAt - 2000 && d.at <= end + 60000 && overlap(d.q, i.q) >= 0.15;
-    };
-    const spokenItems = t.items.filter((i) => i.kind === 'spoken');
-    const byLive = spokenItems.filter((i) => detections.some((d) => inWindow(i, d)));
-    const bySTT = spokenItems.filter((i) => whisperFwd.some((d) => inWindow(i, d)));
-    const byEither = spokenItems.filter((i) => byLive.includes(i) || bySTT.includes(i));
-    // Live lines that belong to no played item (cues included — the cue sentences
-    // were spoken aloud too): invented questions, or paraphrases too far from the
-    // source to attribute. Listed, never counted as hits.
-    const orphans = detections.filter((d) => !t.items.some((i) => inWindow(i, d)));
-    const dupes = (dbg.match(/suppressed duplicate live question/g) || []).length;
-    const reconnects = (dbg.match(/Live Mode status: reconnecting/g) || []).length;
-    const disconnects = (dbg.match(/Live Mode status: (disconnected|error)/g) || []).length;
-    const routes = [...diag.matchAll(/route: ([A-Z-]+(?: \([^)]*\))?)/g)].map((m) => m[1]);
-    const redirects = [...diag.matchAll(/verbal primary FAILED pre-token: ([^\n]*)/g)].map((m) => m[1]);
-    const hardFails = [...diag.matchAll(/generateStream FAILED[^\n]*/g)].map((m) => m[0]);
-
-    const spoken = t.items.filter((i) => i.kind === 'spoken').length;
-    const routeCount = routes.reduce((a, r) => ({ ...a, [r]: (a[r] || 0) + 1 }), {});
-    const intentCount = detections.reduce((a, d) => ({ ...a, [d.intent]: (a[d.intent] || 0) + 1 }), {});
+    const m = computeRunFromFiles({ debugLog: DEBUG_LOG, diagLog: DIAG_LOG, timelinePath: TIMELINE, answersPath: ANSWERS });
+    const g = evaluateGate(m);
+    const routeCount = m.routes.reduce((a, r) => ({ ...a, [r.route]: (a[r.route] || 0) + 1 }), {});
 
     const md = `# 60-minute interview run
 
-- started ${t.startedAt}
-- ended   ${t.endedAt ?? '(incomplete)'}
-- items played: ${t.items.length} (${spoken} spoken questions, ${t.items.length - spoken} screenshot cues)
+- started ${m.startedAt}
+- ended   ${m.endedAt ?? '(incomplete)'}
+- items played: ${m.items.length} spoken questions + ${m.cues.length} screenshot cues
 
-## Detection
-- Live question lines: ${detections.length} (raw — includes re-detections and lines that match no played question)
-- spoken questions heard by Live: **${byLive.length}** / ${spoken}
-- spoken questions heard by the STT/Groq detector: ${bySTT.length} / ${spoken}
-- heard by either detector: **${byEither.length}** / ${spoken}
-- Live lines matching no played question: ${orphans.length}${orphans.length ? '\n' + orphans.map((d) => `  - ${new Date(d.at).toISOString().slice(11, 19)} (${d.intent}) "${d.q}"`).join('\n') : ''}
-- duplicates suppressed: ${dupes}
-- intents: ${JSON.stringify(intentCount)}
-- live modes seen: ${JSON.stringify([...new Set(detections.map((d) => d.mode))])}
+## Gate
+${g.rows.map((r) => `- ${r.pass ? 'PASS' : 'FAIL'}  ${r.label}: ${r.value}   (before: ${r.before})`).join('\n')}
 
-## Live session stability
-- reconnects: ${reconnects}
-- disconnects/errors: ${disconnects}
+**${g.pass ? 'GATE PASSED' : 'GATE FAILED — ' + g.rows.filter((r) => !r.pass).map((r) => r.label).join('; ')}**
 
 ## Answer routing
 - routes taken: ${JSON.stringify(routeCount)}
-- **fallback redirects: ${redirects.length}**${redirects.length ? '\n' + redirects.map((r) => `  - ${r}`).join('\n') : ''}
-- **hard failures: ${hardFails.length}**${hardFails.length ? '\n' + hardFails.map((r) => `  - ${r}`).join('\n') : ''}
-
-## Heard only by the STT detector (never auto-answered in Auto mode)
-${bySTT.filter((i) => !byLive.includes(i)).map((i) => `- ${i.id}: ${i.q}`).join('\n') || '(none)'}
+- fallback redirects: ${m.redirects.length}
+- hard failures: ${m.hardFails.length}
 
 ## Heard by neither detector
-${spokenItems.filter((i) => !byEither.includes(i)).map((i) => `- ${i.id}: ${i.q}`).join('\n') || '(none — every spoken question was heard by at least one detector)'}
+${m.items.filter((i) => i.heardBy === null).map((i) => `- ${i.id}: ${i.q}`).join('\n') || '(none — every spoken question was heard by at least one detector)'}
 `;
     fs.writeFileSync(REPORT, md);
     console.log(md);
@@ -390,7 +382,21 @@ async function auto(label = 'after') {
     report();
     const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
     const dest = path.join(RUNS_DIR, `${stamp}-${label}`);
-    const copied = snapshotRun(dest, [DEBUG_LOG, DIAG_LOG, TIMELINE, REPORT, ANSWERS, CHAINS, HTML]);
+    // interview60.answers.json/.chains.json/.report.html/.report.md can be
+    // leftovers from an earlier run — answers/chains are a separate manual
+    // pass, not written by auto() itself — so copying them unconditionally
+    // would silently mislabel stale data as belonging to THIS run. Skip any
+    // of them older than this run's own start.
+    const startedMs = JSON.parse(fs.readFileSync(TIMELINE, 'utf8')).startedMs;
+    const STALE_CHECKED = new Set([ANSWERS, CHAINS, HTML, REPORT]);
+    const skipped = [];
+    const files = [DEBUG_LOG, DIAG_LOG, TIMELINE, REPORT, ANSWERS, CHAINS, HTML].filter((f) => {
+        if (!STALE_CHECKED.has(f) || !fs.existsSync(f)) return true;
+        if (fs.statSync(f).mtimeMs < startedMs) { skipped.push(path.basename(f)); return false; }
+        return true;
+    });
+    if (skipped.length) console.log(`AUTO  snapshot skipping stale (older than this run): ${skipped.join(', ')}`);
+    const copied = snapshotRun(dest, files);
     console.log(`AUTO  snapshot ${dest}: ${copied.join(', ')}`);
     gate(dest);
 }

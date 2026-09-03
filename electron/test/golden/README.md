@@ -189,3 +189,34 @@ Two things that will silently waste the hour if forgotten:
 
 `auto` re-runs preflight at the last moment for exactly that reason, and aborts
 without spending the hour if it is not green.
+
+### The probe requires five consecutive 200s, not one
+
+A single `modelAlive('gemini-3.1-flash-lite')` 200 is not proof of headroom: on
+2026-09-03 the probe saw HTTP 200 at 04:09:40 UTC, and the free tier (500
+requests/model/day) walled every subsequent call with a 429 fifteen seconds
+later — a key that is genuinely exhausted for the day can still return one or
+two 200s on a leaky-bucket burst right after being idle. `probe()` now
+requires **five** consecutive 200s, 15 s apart, logging one
+`PROBE  gemini-3.1-flash-lite HTTP <status> (<k>/5)` line per attempt; any
+non-200 fails that attempt outright (the `auto` retry loop tries again in 2
+min, restarting the count from 1). Only once all five land does the existing
+end-to-end preflight run.
+
+### `app:stop` only ever touches this checkout's own electron.exe
+
+Two failure modes it guards against:
+
+- **Matching `node.exe` by command-line path prefix** used to also kill any
+  `vitest`/`vite`/`tsc` process — of this session or an unrelated one — whose
+  command line happened to contain the checkout path. `app:stop` now matches
+  `electron.exe` only.
+- **A git worktree of this checkout has its own `electron.exe`** whose command
+  line also contains the main checkout's path as a prefix (`<checkout>\.claude\
+  worktrees\<name>\...`). The broad process scan now excludes any command line
+  containing `\.claude\worktrees\`.
+- **The tracked pid-file pid can be stale** — Windows recycles process ids, so
+  by the time `app:stop` runs, that pid may belong to an unrelated process.
+  Before `taskkill /T /F` on it, `app:stop` reads that pid's own command line
+  and only kills it if it still names an `electron`/`npm start` process; it
+  logs what it skipped otherwise.
