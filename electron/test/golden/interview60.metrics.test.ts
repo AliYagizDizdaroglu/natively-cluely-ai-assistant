@@ -193,6 +193,9 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             `${iso(T0 + 646500)} [LOG] [Main] dispatch: answer source=whisper anchor="Explain how a load balancer performs health checks on backend servers." verdict=match`,
             // R36 fix wave (Ruling R31): one Stream-failed line -> answerFailures = 1.
             `${iso(T0 + 700000)} [ERROR] [WhatToAnswerLLM] Stream failed: 429 exceeded your current quota`,
+            // Fix wave round 7 (Ruling: heuristic chip when the detector is
+            // unavailable): one degraded-chip line -> heuristicChips = 1.
+            `${iso(T0 + 710000)} [LOG] [QuestionDetector] degraded: chip from heuristic (detector unavailable): "What is the interviewer asking here"`,
             // R36 fix wave (Ruling R34): two unverifiable answers, timed past
             // every item's window (unclaimed -> both add to answersToNobody).
             // Only the first has an interviewer STT final within +/-10s.
@@ -370,6 +373,8 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // delivered = max(0, answered - answerFailures) = max(0, 2 - 1) = 1.
         expect(m.answerFailures).toBe(1);
         expect(m.delivered).toBe(1);
+        // heuristicChips = count of "[QuestionDetector] degraded: chip" lines = 1.
+        expect(m.heuristicChips).toBe(1);
         // answersToNobody: dispatches.filter(action==='answer' && unclaimed by
         // any item). Q1's and Q2's answer dispatches ARE claimed (they're in
         // those items' `mine`); so are W01's and W02's (claimed by W01 and W02

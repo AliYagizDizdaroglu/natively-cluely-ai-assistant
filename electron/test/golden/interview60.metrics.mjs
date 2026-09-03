@@ -34,7 +34,7 @@ export function computeRun(dir) {
  * Returns the RunMetrics contract used by `gate` and the headline numbers
  * (dir, startedAt, endedAt, durationMin, items, heard, answered, delivered,
  * answerFailures, answersToNobody, surfacedMax, surfacedMulti, caught,
- * unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, raceLosses, sttCloses,
+ * unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, heuristicChips, raceLosses, sttCloses,
  * lostUtterances, fragmentChips, coachingAnswers, codingForSpoken,
  * expiryLoops, liveReconnects, detectP50, ttftP90, ttftSource) plus a few
  * extra fields (stats, stt, routes, redirects, hardFails, liveQ, orphanLive,
@@ -233,6 +233,11 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const cueAnswers = hasDispatch
         ? dispatches.filter((d) => d.action === 'answer' && claimOf.get(d) && claimOf.get(d).kind !== 'spoken').length
         : 0;
+    // Chips built by the degraded-detection heuristic when Groq's detect()
+    // call returns null (free-tier daily token limit — run 3: 64 of 85
+    // calls). Informational: the fallback firing is the fix working (round
+    // 7), not a failure signal on its own.
+    const heuristicChips = count(/\[QuestionDetector\] degraded: chip/g);
 
     const heard = items.filter((i) => i.heardBy !== null).length;
     const answered = items.filter((i) => i.answered).length;
@@ -290,7 +295,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     return {
         startedAt: timeline.startedAt, endedAt: timeline.endedAt, durationMin, items,
         heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti,
-        caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, raceLosses,
+        caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, heuristicChips, raceLosses,
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
         detectP50, ttftP90, ttftSource,

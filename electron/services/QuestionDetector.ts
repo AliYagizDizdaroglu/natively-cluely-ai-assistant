@@ -3,6 +3,7 @@ import { IDetectionClient } from './GroqDetectionClient';
 import { jaccardSimilarity } from './jaccardSimilarity';
 import { mergeScenarioSentence } from './mergeScenarioSentence';
 import { DetectionResponse } from '../llm/prompts/questionDetection';
+import { isFragment, looksLikeQuestion, normalizeQuestionText } from './questionShape';
 
 /**
  * Subset of TranscriptSegment used by the detector. Defined inline to avoid
@@ -75,6 +76,13 @@ export class QuestionDetector {
     // not reliable at that, so this makes it deterministic in code instead.
     // refTime = speechEndedAt when known (real elapsed silence), else timestamp.
     private recentFinals: { text: string; refTime: number }[] = [];
+    // Last TWO interviewer finals, unconditionally — mirrors recentFinals's own
+    // last-2 tracking but WITHOUT its >= 3-word gate (which exists only to
+    // protect mergeScenarioSentence from filler evictions like "Um."). The
+    // degraded-detection path needs this because its own completion final can
+    // be a single word ("solve...." — run 3's W09) that recentFinals would
+    // never record, leaving it with nothing to join the real question to.
+    private recentFinalsUnfiltered: { text: string; refTime: number }[] = [];
     // Phase 1 latency instrumentation only — wall-clock of last resetSilenceTimer()
     // so each `[QD-timing] reset` log can report how long the *previous* debounce
     // window was actually allowed to run before being interrupted by a fresh
@@ -121,6 +129,11 @@ export class QuestionDetector {
     onTranscriptFinal(segment: TranscriptSegmentLite): void {
         if (!this.enabled) return;
         if (segment.speaker !== 'interviewer' || !segment.final) return;
+        const refTime = segment.speechEndedAt ?? segment.timestamp;
+        // Unconditional — see the field's own doc for why this exists
+        // alongside the gated recentFinals below.
+        this.recentFinalsUnfiltered.push({ text: segment.text, refTime });
+        if (this.recentFinalsUnfiltered.length > 2) this.recentFinalsUnfiltered.shift();
         // Record before the fast-path check so a '?' final that triggers detection
         // immediately below is already in the list when runDetection() reads it.
         // Skip sub-3-word fragments ("Um.") — recentFinals holds only the last
@@ -128,7 +141,7 @@ export class QuestionDetector {
         // mergeScenarioSentence needs (before-run bug: prev="Um." < 4 words, so
         // the merge that depended on the statement never fired).
         if (segment.text.trim().split(/\s+/).filter(Boolean).length >= 3) {
-            this.recentFinals.push({ text: segment.text, refTime: segment.speechEndedAt ?? segment.timestamp });
+            this.recentFinals.push({ text: segment.text, refTime });
             if (this.recentFinals.length > 2) this.recentFinals.shift();
         }
         // Fast path: a final segment ending in '?' is a strong end-of-question
@@ -177,6 +190,7 @@ export class QuestionDetector {
         this.queuedTrigger = false;
         this.dedupCache = [];
         this.recentFinals = [];
+        this.recentFinalsUnfiltered = [];
         this.generation++;
     }
 
@@ -222,6 +236,15 @@ export class QuestionDetector {
         // Captured before the await below so a final arriving during the detect()
         // call cannot shift which two finals this detection's merge is based on.
         const [prev, cur] = this.recentFinals.slice(-2);
+        // NOT the same `slice(-2)` destructuring as above: with exactly one
+        // entry, `[a, b] = [x].slice(-2)` puts x in `a` (prev) and leaves `b`
+        // (cur) undefined — harmless above, since mergeScenarioSentence
+        // treats a missing cur/prev as "nothing to merge" either way, but
+        // wrong here, where a single final must still become `cur` (the
+        // thing to build a degraded chip from), not silently vanish.
+        const unfilteredLen = this.recentFinalsUnfiltered.length;
+        const degradedCur = unfilteredLen >= 1 ? this.recentFinalsUnfiltered[unfilteredLen - 1] : undefined;
+        const degradedPrev = unfilteredLen >= 2 ? this.recentFinalsUnfiltered[unfilteredLen - 2] : undefined;
         const recentInterviewerTranscript = this.opts.snapshotProvider.getRecentInterviewerTranscript();
         const fullContext = this.opts.snapshotProvider.getContextSnapshot();
         const detectedAt = Date.now();
@@ -249,7 +272,16 @@ export class QuestionDetector {
         // Drop the result — it belongs to a previous session.
         if (myGeneration !== this.generation) return;
 
-        if (!result || !result.detected) return;
+        // null = rate-limited/unavailable/timeout (GroqDetectionClient never
+        // throws for this — see the catch above, which is for other clients).
+        // Run 3: the free-tier daily token limit hit mid-interview, 64 of 85
+        // detect() calls returned null. Falls back to a text-shape heuristic
+        // on the finals themselves rather than surfacing nothing at all.
+        if (result === null) {
+            this.runDegradedDetection(degradedPrev, degradedCur, fullContext, detectedAt);
+            return;
+        }
+        if (!result.detected) return;
         if (result.confidence < this.opts.confidenceThreshold) return;
         if (result.question.trim().length === 0) return;
         // Reject fragments that aren't substantive enough to be standalone questions.
@@ -299,6 +331,67 @@ export class QuestionDetector {
             detectedAt,
         };
 
+        this.dedupCache.push({ id: chip.id, text: chip.question });
+        if (this.dedupCache.length > this.opts.dedupCacheSize) {
+            this.dedupCache.shift();
+        }
+        this.opts.onChip(chip);
+    }
+
+    /**
+     * Ruling: heuristic chip when the detector is unavailable (run 3, 2026-09-03).
+     * client.detect() returned null — a Groq free-tier daily-token-limit outage,
+     * not "not a question". Rather than surface nothing, fall back to a
+     * text-shape check on the finals themselves: join the last interviewer
+     * final to the one before it (if close enough to plausibly be its
+     * continuation — e.g. W09's "...actually..." + " solve...." split across
+     * two STT finals 810ms apart), normalize, and only emit a chip if that
+     * joined text still looks like a question. No scenario merge here — the
+     * join above already covers the two-final case mergeScenarioSentence
+     * exists for on the normal path.
+     */
+    private runDegradedDetection(
+        prev: { text: string; refTime: number } | undefined,
+        cur: { text: string; refTime: number } | undefined,
+        fullContext: string,
+        detectedAt: number,
+    ): void {
+        if (!cur) return;
+        const usePrev = prev !== undefined && cur.refTime - prev.refTime <= 6000;
+        const joined = (usePrev ? prev!.text + ' ' : '') + cur.text;
+        const text = normalizeQuestionText(joined);
+
+        if (isFragment(text) || !looksLikeQuestion(text)) {
+            console.log(`[QuestionDetector] degraded: no chip (not question-shaped): ${JSON.stringify(text)}`);
+            return;
+        }
+
+        console.log(`[QuestionDetector] degraded: chip from heuristic (detector unavailable): ${JSON.stringify(text)}`);
+
+        const match = this.findSimilarChip(text);
+        if (match) {
+            const updated: DetectedQuestionChip = {
+                id: match.id,
+                question: text,
+                intent: 'verbal',
+                confidence: this.opts.confidenceThreshold,
+                contextSnapshot: fullContext,
+                detectedAt,
+            };
+            const cacheEntry = this.dedupCache.find(e => e.id === match.id);
+            if (cacheEntry) cacheEntry.text = text;
+            this.opts.onChipUpdate(updated);
+            return;
+        }
+
+        const chip: DetectedQuestionChip = {
+            id: randomUUID(),
+            question: text,
+            intent: 'verbal',
+            confidence: this.opts.confidenceThreshold,
+            contextSnapshot: fullContext,
+            detectedAt,
+        };
         this.dedupCache.push({ id: chip.id, text: chip.question });
         if (this.dedupCache.length > this.opts.dedupCacheSize) {
             this.dedupCache.shift();

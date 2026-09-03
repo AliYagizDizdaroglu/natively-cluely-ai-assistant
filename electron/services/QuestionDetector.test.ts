@@ -512,4 +512,144 @@ describe('QuestionDetector', () => {
         expect(chips).toHaveLength(1);
         expect(chips[0].question).toBe('A SageMaker endpoint has p99 latency creeping up. How do you diagnose and fix it?');
     });
+
+    // Round 7 — the Groq detection model hit its free-tier daily token
+    // limit mid-interview (run 3: 64 of 85 detect() calls returned null,
+    // never threw). client.detect() returning null is the signal ("null =
+    // rate-limited/unavailable/timeout" per runDetection's own comment) —
+    // these tests use makeClientWith([null, ...]) to force that path.
+    describe('degraded detection when client.detect() returns null (run 3, Ruling: heuristic chip when the detector is unavailable)', () => {
+        it('W09: two STT finals ("...actually..." then " solve....") join and normalize into one heuristic chip', async () => {
+            const client = makeClientWith([null]);
+            const chips: DetectedQuestionChip[] = [];
+            const det = new QuestionDetector({
+                client,
+                snapshotProvider: stubSnapshotProvider('i', 'c'),
+                onChip: c => chips.push(c),
+            });
+
+            const t0 = 10_000;
+            det.onTranscriptFinal({ speaker: 'interviewer', text: 'What problem does infrastructure as code actually...', timestamp: t0, final: true });
+            // 1s apart (run 3's actual gap was 810ms) — well inside the 1.5s
+            // debounce, so this final's arrival resets it; well inside the 6s
+            // cross-final join window too.
+            await vi.advanceTimersByTimeAsync(1000);
+            det.onTranscriptFinal({ speaker: 'interviewer', text: ' solve....', timestamp: t0 + 1000, final: true });
+            await vi.advanceTimersByTimeAsync(1500);
+            await vi.runAllTimersAsync();
+
+            expect(client.detect).toHaveBeenCalledTimes(1);
+            expect(chips).toHaveLength(1);
+            // Exact normalized string: joined with a space, "."/"…" runs each
+            // collapsed to one space, whitespace collapsed, trimmed.
+            expect(chips[0].question).toBe('What problem does infrastructure as code actually solve');
+            expect(chips[0].intent).toBe('verbal');
+            expect(chips[0].confidence).toBe(0.6); // default confidenceThreshold
+        });
+
+        it('M10: "...for a production..." then " model...." joins into one heuristic chip', async () => {
+            const client = makeClientWith([null]);
+            const chips: DetectedQuestionChip[] = [];
+            const det = new QuestionDetector({
+                client,
+                snapshotProvider: stubSnapshotProvider('i', 'c'),
+                onChip: c => chips.push(c),
+            });
+
+            const t0 = 10_000;
+            det.onTranscriptFinal({ speaker: 'interviewer', text: 'Which metrics would you put on a dashboard for a production...', timestamp: t0, final: true });
+            await vi.advanceTimersByTimeAsync(1000);
+            det.onTranscriptFinal({ speaker: 'interviewer', text: ' model....', timestamp: t0 + 1000, final: true });
+            await vi.advanceTimersByTimeAsync(1500);
+            await vi.runAllTimersAsync();
+
+            expect(chips).toHaveLength(1);
+            expect(chips[0].question).toBe('Which metrics would you put on a dashboard for a production model');
+        });
+
+        it('a statement final produces no chip, and logs the no-chip line', async () => {
+            const client = makeClientWith([null]);
+            const chips: DetectedQuestionChip[] = [];
+            const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+            const det = new QuestionDetector({
+                client,
+                snapshotProvider: stubSnapshotProvider('i', 'c'),
+                onChip: c => chips.push(c),
+            });
+
+            det.onTranscriptFinal({ speaker: 'interviewer', text: 'We use Airflow for orchestration.', timestamp: 0, final: true });
+            await vi.advanceTimersByTimeAsync(1500);
+            await vi.runAllTimersAsync();
+
+            expect(chips).toHaveLength(0);
+            const logged = logSpy.mock.calls.map(c => c.join(' ')).join('\n');
+            expect(logged).toContain('[QuestionDetector] degraded: no chip (not question-shaped): "We use Airflow for orchestration"');
+            logSpy.mockRestore();
+        });
+
+        it('a fragment final produces no chip', async () => {
+            const client = makeClientWith([null]);
+            const chips: DetectedQuestionChip[] = [];
+            const det = new QuestionDetector({
+                client,
+                snapshotProvider: stubSnapshotProvider('i', 'c'),
+                onChip: c => chips.push(c),
+            });
+
+            // "yeah okay" is 2 words — under isFragment's 4-word floor, and
+            // must reach the debounce (not the '?' fast path) to exercise this.
+            det.onTranscriptFinal({ speaker: 'interviewer', text: 'yeah okay', timestamp: 0, final: true });
+            await vi.advanceTimersByTimeAsync(1500);
+            await vi.runAllTimersAsync();
+
+            expect(chips).toHaveLength(0);
+        });
+
+        it('a degraded chip deduplicates against an existing similar chip (update, not a new chip)', async () => {
+            const client = makeClientWith([
+                { detected: true, question: 'What is the time complexity of quicksort?', intent: 'verbal', confidence: 0.9 },
+                null,
+            ]);
+            const events: { type: 'new' | 'update' }[] = [];
+            const det = new QuestionDetector({
+                client,
+                snapshotProvider: stubSnapshotProvider('i', 'c'),
+                onChip: () => events.push({ type: 'new' }),
+                onChipUpdate: () => events.push({ type: 'update' }),
+            });
+
+            det.onTranscriptFinal({ speaker: 'interviewer', text: 'What is the time complexity of quicksort?', timestamp: 0, final: true });
+            await Promise.resolve();
+            await Promise.resolve();
+            expect(events).toEqual([{ type: 'new' }]);
+
+            // > 6s after the first final, so the degraded join does not pull
+            // the first final in as `prev` — isolates the dedup assertion to
+            // this final's own text.
+            det.onTranscriptFinal({ speaker: 'interviewer', text: 'What is the time complexity of quicksort exactly?', timestamp: 10_000, final: true });
+            await Promise.resolve();
+            await Promise.resolve();
+            expect(events).toEqual([{ type: 'new' }, { type: 'update' }]);
+        });
+
+        it('when detect() returns a real result, no degraded log line appears', async () => {
+            const client = makeClientWith([
+                { detected: true, question: 'What is X?', intent: 'verbal', confidence: 0.9 },
+            ]);
+            const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+            const det = new QuestionDetector({
+                client,
+                snapshotProvider: stubSnapshotProvider('i', 'c'),
+                onChip: () => {},
+            });
+
+            det.onTranscriptFinal({ speaker: 'interviewer', text: 'explain the architecture of X', timestamp: 0, final: true });
+            await vi.advanceTimersByTimeAsync(1500);
+            await vi.runAllTimersAsync();
+
+            const logged = logSpy.mock.calls.map(c => c.join(' ')).join('\n');
+            expect(logged).not.toContain('degraded');
+            logSpy.mockRestore();
+        });
+    });
 });

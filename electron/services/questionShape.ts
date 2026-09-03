@@ -19,3 +19,46 @@ export function isFragment(text: string): boolean {
     const words = text.trim().split(/\s+/).filter(Boolean);
     return words.length < 4;
 }
+
+/**
+ * Collapse STT ellipsis/period runs into a single space, then collapse
+ * whitespace. Run 3's degraded-detection join (QuestionDetector.ts, Ruling:
+ * heuristic chip when the detector is unavailable) concatenates two
+ * interviewer finals that each trail off with "..."/"…." at a sentence
+ * break — e.g. "...actually..." + " solve...." — and this is the shared
+ * cleanup both looksLikeQuestion and that join apply, so the two never
+ * silently diverge on what "the text" is.
+ */
+export function normalizeQuestionText(text: string): string {
+    return text.replace(/[.…]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+const QUESTION_WORDS = new Set([
+    'what', 'why', 'how', 'when', 'where', 'which', 'who', 'whom', 'whose',
+    'would', 'could', 'should', 'can', 'do', 'does', 'did',
+    'is', 'are', 'was', 'were', 'have', 'has', 'had', 'will',
+    'tell', 'describe', 'explain', 'walk', 'compare', 'discuss', 'talk',
+    'name', 'list', 'give', 'share', 'imagine', 'suppose', 'say', 'let',
+    'show', 'define', 'outline', 'summarize', 'summarise', 'contrast', 'justify',
+]);
+
+/** Trailing closing quotes/brackets a "?" may sit behind, e.g. `she asked "why?"`. */
+const TRAILING_CLOSERS = /[")\]'’”»›]+$/;
+
+/**
+ * A last-resort filter for the Groq-detector-unavailable fallback (run 3:
+ * the free-tier daily token limit hit mid-interview, detect() returned null
+ * on 64 of 85 calls): true iff the normalized text ends with "?"/"？"
+ * (closing quotes/brackets allowed after it) or its first word is a
+ * question word. The same shape check R44 withdrew as isQuestionShaped —
+ * revived here for a narrower purpose (filtering a heuristically-joined
+ * final before it becomes a chip, not gating a hold).
+ */
+export function looksLikeQuestion(text: string): boolean {
+    const trimmed = normalizeQuestionText(text);
+    if (!trimmed) return false;
+    if (/[?？]$/.test(trimmed.replace(TRAILING_CLOSERS, ''))) return true;
+    const firstToken = trimmed.split(/\s+/)[0] ?? '';
+    const firstWord = firstToken.toLowerCase().replace(/[^a-z]/g, '');
+    return QUESTION_WORDS.has(firstWord);
+}
