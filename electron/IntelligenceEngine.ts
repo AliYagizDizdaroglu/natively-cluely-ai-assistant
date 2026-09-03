@@ -352,15 +352,23 @@ export class IntelligenceEngine extends EventEmitter {
             );
             let intentResult: IntentResult;
             if (options.intentOverride) {
+                const hasImages = !!(imagePaths && imagePaths.length > 0);
+                // A detector's "coding" is a guess about the answer's shape. Spoken,
+                // with nothing on screen, the candidate answers aloud — the verbal
+                // prompt and filters apply. 4 of 52 spoken questions were routed
+                // past every filter on 2026-09-02.
+                const advisoryCoding = options.intentOverride === 'coding' && !hasImages;
                 const mapped = options.intentOverride === 'verbal' ? 'general'
                             : options.intentOverride === 'behavioral' ? 'behavioral'
+                            : advisoryCoding ? 'general'
                             : 'coding';
                 intentResult = {
                     intent: mapped,
                     confidence: 1.0,
                     answerShape: getAnswerShapeGuidance(mapped),
                 };
-                console.log(`[IntelligenceEngine] runWhatShouldISay: intent override → ${mapped}`);
+                if (advisoryCoding) console.log('[IntelligenceEngine] runWhatShouldISay: intent override coding → general (spoken question, no screenshot)');
+                else console.log(`[IntelligenceEngine] runWhatShouldISay: intent override → ${mapped}`);
             } else {
                 intentResult = await classifyIntent(
                     lastInterviewerTurn,
