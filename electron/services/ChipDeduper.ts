@@ -67,14 +67,18 @@ function contentWords(text: string): Set<string> {
  * Jaccard both miss (run 2's W10: "...bucket layout for a trail?" vs
  * "...bucket layout for a training dataset that gets versioned weekly?",
  * Jaccard 0.5). S = the text with fewer content words, L = the other;
- * similar iff S has at least 4 content words and 60% of them appear in L —
- * the W10 pair measures 3/5 = 0.6 (organise/organize and trail/training
- * miss). The 4-word floor alone is not enough: two DIFFERENT questions
- * sharing a template ("What is the difference between X and Y?") can clear
- * 60% on the template words alone (Ruling R45 round-5 finding, 0.75 for
- * "pod and a deployment" vs "data drift and concept drift"). findSimilar
- * only calls this across detectors within CROSS_DETECTOR_MS, which is what
- * actually keeps two different template questions apart — see there.
+ * similar iff S has at least 4 content words and 60% of them appear in L.
+ * The real field pair (both sides say "organize") measures 4/5 = 0.80; the
+ * unit test's fixture text deliberately sits right on the 0.60 boundary
+ * instead (its Live side says "organise", so it and "trail"/"training" both
+ * miss, landing exactly at 3/5) to prove the threshold itself, not just
+ * this one field pair with margin to spare. The 4-word floor alone is not
+ * enough: two DIFFERENT questions sharing a template ("What is the
+ * difference between X and Y?") can clear 60% on the template words alone
+ * (Ruling R45 round-5 finding, 0.75 for "pod and a deployment" vs "data
+ * drift and concept drift"). findSimilar only calls this across detectors
+ * within CROSS_DETECTOR_MS, which is what actually keeps two different
+ * template questions apart — see there.
  */
 function contentWordSimilar(a: string, b: string): boolean {
   const A = contentWords(a), B = contentWords(b);

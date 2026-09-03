@@ -138,20 +138,57 @@ describe('createLiveHold', () => {
         expect(dispatched).toEqual(['a']);
     });
 
-    // Round 3 (R36), narrowed in round 4 (R44 withdraws the statement-shaped
-    // hold this test block used to also cover — see questionShape.ts's
-    // docstring for why). A fragment is still dropped unconditionally,
-    // structurally never reaching liveHold.offer at all — no timer to
-    // out-wait, so this needs no fake-timer setup.
-    it('a fragment is dropped immediately with one verdict=fragment line — never held, never answered', () => {
+    // Round 6: mirrors dispatchDetection's actual committed order — the
+    // fragment guard checked FIRST and unconditionally, the unverifiable
+    // hold second and only for a non-fragment (git show HEAD:electron/
+    // main.ts lines ~1890-1913). Uses the real isFragment and the real
+    // createLiveHold; only the chipDeduper/decideDispatch admit path beyond
+    // both branches is mocked, same limitation as every main.ts mirror in
+    // this fix wave.
+    it('a detection that is BOTH a fragment and unverifiable is dropped by the fragment guard — never reaches the hold', () => {
+        vi.useFakeTimers();
         const log: string[] = [];
+        const onResolve = vi.fn();
+        const hold = createLiveHold<{ id: string; text: string; verdict: string }>({ holdMs: 2500, onResolve });
+        const offerSpy = vi.spyOn(hold, 'offer');
 
-        function dispatchDetection(d: { id: string; text: string }): void {
+        function dispatchDetection(d: { id: string; text: string; verdict: string }, resolving = false): void {
+            // main.ts ~1890-1897: unconditional, checked before the verdict.
             if (isFragment(d.text)) { log.push(`drop:fragment:${d.id}`); return; }
-            log.push(`answer:${d.id}`);
+            // main.ts ~1898-1911: only for a fresh (non-resolving) detection.
+            if (d.verdict === 'unverifiable' && !resolving) { hold.offer(d); return; }
+            log.push(`admit:${d.id}`);
         }
 
-        dispatchDetection({ id: 'live2', text: 'training jobs are' }); // H06, 3 words
+        dispatchDetection({ id: 'live2', text: 'training jobs are', verdict: 'unverifiable' }); // H06, 3 words
         expect(log).toEqual(['drop:fragment:live2']);
+        expect(offerSpy).not.toHaveBeenCalled();
+
+        // No timer was ever armed for this detection — confirm nothing
+        // fires later either.
+        vi.advanceTimersByTime(10_000);
+        expect(log).toEqual(['drop:fragment:live2']);
+        expect(onResolve).not.toHaveBeenCalled();
+    });
+
+    it('a non-fragment unverifiable detection IS held, not dropped — the contrast case for the guard above', () => {
+        vi.useFakeTimers();
+        const log: string[] = [];
+        const hold = createLiveHold<{ id: string; text: string; verdict: string }>({
+            holdMs: 2500,
+            onResolve: (held) => log.push(`resolved:${held.id}`),
+        });
+
+        function dispatchDetection(d: { id: string; text: string; verdict: string }, resolving = false): void {
+            if (isFragment(d.text)) { log.push(`drop:fragment:${d.id}`); return; }
+            if (d.verdict === 'unverifiable' && !resolving) { hold.offer(d); return; }
+            log.push(`admit:${d.id}`);
+        }
+
+        dispatchDetection({ id: 'live3', text: 'A question long enough not to be a fragment', verdict: 'unverifiable' });
+        expect(log).toEqual([]); // held, not dispatched yet
+
+        vi.advanceTimersByTime(2500);
+        expect(log).toEqual(['resolved:live3']);
     });
 });
