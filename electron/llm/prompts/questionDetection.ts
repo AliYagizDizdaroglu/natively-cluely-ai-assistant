@@ -3,9 +3,15 @@
 /**
  * System prompt for the passive question detector.
  * Kept intentionally short — every token costs detection latency.
- * The prompt returns the most recent prompt complete with the scenario sentence
- * it depends on (H02/H03 on 2026-09-02 surfaced as bare 'How do you diagnose
- * and fix it?') and classifies into verbal | coding | behavioral.
+ * The prompt ASKS the model to return the most recent question complete with
+ * the scenario sentence it depends on — but the model is not reliable at that
+ * for the statement+question shape: calibrated live against Groq on
+ * 2026-09-02/03, the "...in the cluster. How do you track that down?" shape
+ * never merged in 3/3 runs, and the "...creeping up. How do you diagnose and
+ * fix it?" shape merged in only 1/3. `QuestionDetector` (see
+ * mergeScenarioSentence.ts) guarantees the merge deterministically in code,
+ * regardless of what the model returns. Also classifies into verbal | coding
+ * | behavioral.
  */
 export const QUESTION_DETECTION_SYSTEM_PROMPT = `You are detecting questions asked by an interviewer to a candidate in a live interview.
 Identify the most recent question or prompt that requires the candidate to respond, and return it COMPLETE as asked: when the question depends on the interviewer's sentence just before it — the question starts with "and" or "so", or "it"/"that"/"this" appears anywhere in it referring back to that sentence, even inside a phrase like "fix it" or "track that down" — include that earlier sentence too, so the question stands on its own. Quote the interviewer's own words; do not shorten or rephrase.

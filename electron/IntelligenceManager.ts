@@ -140,22 +140,39 @@ export class IntelligenceManager extends EventEmitter {
             }, 14000);
         }
 
-        // Env-gated calibration of the detection prompt on the REAL model with the app's
-        // own key (NATIVELY_DETECTOR_CALIBRATE=1): the harness reads these lines. Delayed
-        // so credentials are loaded first. Never set in production.
+        // Env-gated calibration of the detection prompt + deterministic merge, on the
+        // REAL model with the app's own key (NATIVELY_DETECTOR_CALIBRATE=1): the
+        // harness reads these lines. Goes through a real QuestionDetector per case
+        // (not detectionClient directly) so the gate exercises the merge in
+        // mergeScenarioSentence.ts, not just the prompt — the prompt alone is not
+        // reliable for this (see questionDetection.ts). Delayed so credentials are
+        // loaded first. Never set in production.
         if (process.env.NATIVELY_DETECTOR_CALIBRATE === '1') {
             setTimeout(async () => {
                 let pass = 0;
                 for (const c of DETECTOR_CALIBRATION_CASES) {
-                    let r: { detected: boolean; question: string } | null = null;
-                    try {
-                        r = await detectionClient.detect({ recentInterviewerTranscript: c.transcript, fullConversationContext: c.transcript });
-                    } catch (e: any) {
-                        console.warn(`[DetectorCalibration] ERROR ${c.id} — ${e?.message ?? e}`);
-                    }
-                    const j = judgeDetection(r, c.mustContain);
+                    const lines = c.statement ? [`[INTERVIEWER]: ${c.statement}`, `[INTERVIEWER]: ${c.question}`] : [`[INTERVIEWER]: ${c.question}`];
+                    const transcript = lines.join('\n');
+                    const chip = await new Promise<DetectedQuestionChip | null>((resolve) => {
+                        const ceiling = setTimeout(() => resolve(null), 15000);
+                        const det = new QuestionDetector({
+                            client: detectionClient,
+                            snapshotProvider: {
+                                getRecentInterviewerTranscript: () => transcript,
+                                getContextSnapshot: () => transcript,
+                            },
+                            onChip: (ch) => { clearTimeout(ceiling); resolve(ch); },
+                        });
+                        const t0 = Date.now();
+                        if (c.statement) {
+                            det.onTranscriptFinal({ speaker: 'interviewer', text: c.statement, timestamp: t0 - 3000, final: true });
+                        }
+                        det.onTranscriptFinal({ speaker: 'interviewer', text: c.question, timestamp: t0, final: true });
+                    });
+                    const result: { detected: boolean; question: string } | null = chip ? { detected: true, question: chip.question } : null;
+                    const j = judgeDetection(result, c.mustContain);
                     if (j.ok) pass++;
-                    console.log(`[DetectorCalibration] ${j.ok ? 'PASS' : 'FAIL'} ${c.id} detected=${r?.detected ?? null} q=${JSON.stringify(r?.question ?? '')}${j.missing.length ? ` missing=${j.missing.join(',')}` : ''}`);
+                    console.log(`[DetectorCalibration] ${j.ok ? 'PASS' : 'FAIL'} ${c.id} detected=${result !== null} q=${JSON.stringify(result?.question ?? '')}${j.missing.length ? ` missing=${j.missing.join(',')}` : ''}`);
                 }
                 console.log(`[DetectorCalibration] ${pass}/${DETECTOR_CALIBRATION_CASES.length} pass`);
             }, 3000);

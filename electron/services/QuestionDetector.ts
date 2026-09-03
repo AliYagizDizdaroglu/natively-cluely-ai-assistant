@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { IDetectionClient } from './GroqDetectionClient';
 import { jaccardSimilarity } from './jaccardSimilarity';
+import { mergeScenarioSentence } from './mergeScenarioSentence';
 import { DetectionResponse } from '../llm/prompts/questionDetection';
 
 /**
@@ -68,6 +69,12 @@ export class QuestionDetector {
     private inflightDetection: Promise<void> | null = null;
     private queuedTrigger = false;
     private dedupCache: { id: string; text: string }[] = [];
+    // Last TWO interviewer finals, for the deterministic scenario-sentence merge
+    // (mergeScenarioSentence.ts) — the detection prompt asks the model to return
+    // the question complete with the sentence it depends on, but the model is
+    // not reliable at that, so this makes it deterministic in code instead.
+    // refTime = speechEndedAt when known (real elapsed silence), else timestamp.
+    private recentFinals: { text: string; refTime: number }[] = [];
     // Phase 1 latency instrumentation only — wall-clock of last resetSilenceTimer()
     // so each `[QD-timing] reset` log can report how long the *previous* debounce
     // window was actually allowed to run before being interrupted by a fresh
@@ -114,6 +121,10 @@ export class QuestionDetector {
     onTranscriptFinal(segment: TranscriptSegmentLite): void {
         if (!this.enabled) return;
         if (segment.speaker !== 'interviewer' || !segment.final) return;
+        // Record before the fast-path check so a '?' final that triggers detection
+        // immediately below is already in the list when runDetection() reads it.
+        this.recentFinals.push({ text: segment.text, refTime: segment.speechEndedAt ?? segment.timestamp });
+        if (this.recentFinals.length > 2) this.recentFinals.shift();
         // Fast path: a final segment ending in '?' is a strong end-of-question
         // signal (Whisper punctuates reliably) — skip the silence debounce.
         // Guard against sub-3-word fragments ("ok?") that would waste a detect
@@ -159,6 +170,7 @@ export class QuestionDetector {
         }
         this.queuedTrigger = false;
         this.dedupCache = [];
+        this.recentFinals = [];
         this.generation++;
     }
 
@@ -201,6 +213,9 @@ export class QuestionDetector {
 
     private async runDetection(): Promise<void> {
         const myGeneration = this.generation;
+        // Captured before the await below so a final arriving during the detect()
+        // call cannot shift which two finals this detection's merge is based on.
+        const [prev, cur] = this.recentFinals.slice(-2);
         const recentInterviewerTranscript = this.opts.snapshotProvider.getRecentInterviewerTranscript();
         const fullContext = this.opts.snapshotProvider.getContextSnapshot();
         const detectedAt = Date.now();
@@ -242,12 +257,21 @@ export class QuestionDetector {
             return;
         }
 
+        // Deterministic scenario-sentence merge (mergeScenarioSentence.ts): the
+        // prompt asks the model to return the question complete with the sentence
+        // it depends on, but the model is not reliable at that — this guarantees
+        // it in code instead, using the last two interviewer finals captured above.
+        const mergedQuestion = mergeScenarioSentence(result.question, prev, cur);
+        if (mergedQuestion !== result.question) {
+            console.log(`[QuestionDetector] merged scenario sentence into question: ${JSON.stringify(mergedQuestion)}`);
+        }
+
         // Dedup check
-        const match = this.findSimilarChip(result.question);
+        const match = this.findSimilarChip(mergedQuestion);
         if (match) {
             const updated: DetectedQuestionChip = {
                 id: match.id,
-                question: result.question,
+                question: mergedQuestion,
                 intent: result.intent,
                 confidence: result.confidence,
                 contextSnapshot: fullContext,
@@ -255,14 +279,14 @@ export class QuestionDetector {
             };
             // refresh dedup cache entry text
             const cacheEntry = this.dedupCache.find(e => e.id === match.id);
-            if (cacheEntry) cacheEntry.text = result.question;
+            if (cacheEntry) cacheEntry.text = mergedQuestion;
             this.opts.onChipUpdate(updated);
             return;
         }
 
         const chip: DetectedQuestionChip = {
             id: randomUUID(),
-            question: result.question,
+            question: mergedQuestion,
             intent: result.intent,
             confidence: result.confidence,
             contextSnapshot: fullContext,

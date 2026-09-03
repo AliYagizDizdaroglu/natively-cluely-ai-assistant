@@ -156,7 +156,7 @@ routing, answering, and Live-session stability are all measured on the real app.
 | `interview60.build-audio-local.mjs` | renders `interview60.wav` with Windows SAPI (free, unmetered) |
 | `interview60.build-audio.mjs` | same via Gemini TTS — better voice, but it hit a daily quota wall after 3 clips |
 | `interview60.calibrate-audio.mjs` | proves the live detector hears the chosen voice BEFORE an hour is spent |
-| `interview60.calibrate-detector.mjs` | proves the STT detector's prompt returns two-clause questions whole, on the real Groq model, by relaunching the app with `NATIVELY_DETECTOR_CALIBRATE=1` and reading its `[DetectorCalibration]` lines |
+| `interview60.calibrate-detector.mjs` | proves the STT detector returns two-clause questions whole — prompt plus the deterministic scenario-sentence merge in `mergeScenarioSentence.ts` — on the real Groq model, by relaunching the app with `NATIVELY_DETECTOR_CALIBRATE=1` and reading its `[DetectorCalibration]` lines |
 | `interview60.run.mjs` | `preflight` / `app` / `report` / `auto` — see below |
 | `interview60.answers.mjs` | answer-only pass over the same questions: scored quality + latency, no Live |
 | `interview60.chains.mjs` | chain-question continuity: follow-ups that lean on "it"/"that", asked with the app's transcript vs standalone |

@@ -49,6 +49,7 @@ describe('GroqDetectionClient request shape', () => {
 
         expect(body.model).toBe('openai/gpt-oss-20b');
         expect(body.reasoning_effort).toBe('low');
+        expect(body.temperature).toBe(0);
         expect(body.response_format.type).toBe('json_schema');
         expect(body.response_format.json_schema.strict).toBe(true);
         const schema = body.response_format.json_schema.schema;

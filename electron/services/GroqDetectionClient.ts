@@ -106,7 +106,7 @@ export class GroqDetectionClient implements IDetectionClient {
                         }
                         : { response_format: { type: 'json_object' } }),
                     stream: false,
-                    temperature: 0.1,
+                    temperature: 0,
                     top_p: 0.9,
                     messages: [
                         { role: 'system', content: QUESTION_DETECTION_SYSTEM_PROMPT },

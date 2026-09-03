@@ -19,6 +19,12 @@ describe('judgeDetection', () => {
         const j = judgeDetection(null, ['sagemaker', 'latency', 'diagnose']);
         expect(j).toEqual({ ok: false, missing: ['sagemaker', 'latency', 'diagnose'] });
     });
+
+    it('fails when detected=false even though the question contains every required word', () => {
+        const result = { detected: false, question: 'A SageMaker endpoint has p99 latency creeping up — how do you diagnose and fix it?' };
+        const j = judgeDetection(result, ['sagemaker', 'latency', 'diagnose']);
+        expect(j).toEqual({ ok: false, missing: [] });
+    });
 });
 
 describe('DETECTOR_CALIBRATION_CASES', () => {

@@ -455,4 +455,34 @@ describe('QuestionDetector', () => {
         expect(chips).toHaveLength(0);
         expect(updates).toHaveLength(0);
     });
+
+    it('merges the scenario sentence deterministically when the model returns only the bare question (H02 shape)', async () => {
+        const client = makeClientWith([
+            { detected: true, question: 'How do you diagnose and fix it?', intent: 'verbal', confidence: 0.9 },
+        ]);
+        const chips: DetectedQuestionChip[] = [];
+        const det = new QuestionDetector({
+            client,
+            snapshotProvider: stubSnapshotProvider('i', 'c'),
+            onChip: c => chips.push(c),
+        });
+
+        const t0 = 10_000;
+        // Statement alone doesn't end with '?' — it starts the silence debounce.
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'A SageMaker endpoint has p99 latency creeping up.', timestamp: t0 - 3000, final: true });
+        // The '?' final that follows takes the fast path: clears that debounce and
+        // fires detection immediately — exactly one detect() call, not two.
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'How do you diagnose and fix it?', timestamp: t0, final: true });
+
+        await Promise.resolve();
+        await Promise.resolve();
+        expect(client.detect).toHaveBeenCalledTimes(1);
+        expect(chips).toHaveLength(1);
+        expect(chips[0].question).toBe('A SageMaker endpoint has p99 latency creeping up. How do you diagnose and fix it?');
+
+        // Advancing past the original (now-cancelled) debounce window must not
+        // trigger a second, duplicate detect call.
+        await vi.advanceTimersByTimeAsync(3000);
+        expect(client.detect).toHaveBeenCalledTimes(1);
+    });
 });
