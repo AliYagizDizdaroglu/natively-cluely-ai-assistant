@@ -455,7 +455,23 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             'Technical questions answered via the coaching path',
             'Spoken questions routed CODING',
             'Live expiry loops',
+            'Interview-acceptable answers (Opus 5 judge)',
         ]);
+    });
+
+    it('reads the judge pass: spoken verdicts only, and the row fails below 47 acceptable or on any wrong', () => {
+        // Fixture: 2 acceptable + 1 weak + 1 wrong spoken, 1 acceptable cue (ignored).
+        fs.writeFileSync(path.join(dir, 'interview60.judge.json'), JSON.stringify({ model: 'claude-opus-5', items: {
+            W01: { kind: 'spoken', verdict: 'acceptable' }, W02: { kind: 'spoken', verdict: 'acceptable' },
+            W03: { kind: 'spoken', verdict: 'weak' }, W04: { kind: 'spoken', verdict: 'wrong' }, C01: { kind: 'cue', verdict: 'acceptable' },
+        } }));
+        const mj = computeRun(dir);
+        expect(mj.judge).toEqual({ model: 'claude-opus-5', n: 4, acceptable: 2, weak: 1, wrong: 1, errors: 0 });
+        const row = evaluateGate(mj).rows.find((r) => r.label === 'Interview-acceptable answers (Opus 5 judge)');
+        expect(row.value).toBe('2 acceptable, 1 weak, 1 wrong of 4');
+        expect(row.pass).toBe(false);
+        // Without the file the row reads 'not run' and fails — the pass is part of the gate, not optional.
+        expect(evaluateGate(m).rows.find((r) => r.label === 'Interview-acceptable answers (Opus 5 judge)').value).toBe('not run');
     });
 });
 
@@ -495,6 +511,7 @@ describe('GATE', () => {
             'Technical questions answered via the coaching path',
             'Spoken questions routed CODING',
             'Live expiry loops',
+            'Interview-acceptable answers (Opus 5 judge)',
             'Answer TTFT p90 · detect p50',
         ]);
     });

@@ -160,6 +160,7 @@ routing, answering, and Live-session stability are all measured on the real app.
 | `interview60.run.mjs` | `preflight` / `app` / `report` / `gate` / `auto` — see below |
 | `interview60.answers.mjs` | answer-only pass over the same questions: scored quality + latency, no Live |
 | `interview60.chains.mjs` | chain-question continuity: follow-ups that lean on "it"/"that", asked with the app's transcript vs standalone |
+| `interview60.judge.mjs` | judge pass over the hour's OWN answers: Claude Opus 5 grades each delivered answer against the scripted question for correctness, on-topic-ness and spoken delivery (0-2 each); feeds the gate row "Interview-acceptable answers" (≥ 47 of 52 acceptable, 0 wrong). Reads `[Answer] full:` lines that SessionTracker logs once per answer. Needs `ANTHROPIC_API_KEY` (or `CLAUDE_API_KEY`) in `.env`; resumable; run AFTER the hour, never during it |
 | `interview60.metrics.mjs` | `computeRun(dir) → RunMetrics` — the one analysis (attribution, STT, coaching, gate) shared by `gate` and the report, plus the spec §6 pass table (`GATE`, `evaluateGate`). Each dispatch line is claimed by exactly one item (highest anchor overlap, ties to the latest); `delivered` (= `answered` minus `[WhatToAnswerLLM] Stream failed` lines) is what the "Answered hands-free" row judges; a `verdict=replaced` line is `caught` (informational — the reconciler catching a mismatch, not an invented question reaching the user) |
 | `interview60.report-html.mjs` | builds the flight-test report page from the logs |
 
@@ -168,6 +169,7 @@ node electron/test/golden/interview60.run.mjs auto [label]   # stop → build �
 node electron/test/golden/interview60.run.mjs app:start|app:stop|probe   # the pieces, individually
 node electron/test/golden/interview60.run.mjs gate <dir>   # judge a run snapshot against the spec §6 pass table; exits 0/1
 node electron/test/golden/interview60.answers.mjs      # AFTER the hour (same key — do not run concurrently)
+node --env-file=.env electron/test/golden/interview60.judge.mjs electron/test/golden/interview60.runs/<run>   # AFTER the hour: grades the delivered answers (Claude Opus 5, ~$1-4)
 node electron/test/golden/interview60.report-html.mjs                       # writes interview60.report.html from the live checkout's own logs
 node electron/test/golden/interview60.report-html.mjs <dir>                 # same page, from a run snapshot instead
 node electron/test/golden/interview60.report-html.mjs <beforeDir> <afterDir>  # adds a gate table, a before/after strip, and an iterations table

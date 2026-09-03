@@ -21,6 +21,7 @@ export function computeRun(dir) {
             diagLog: path.join(dir, 'verbal-diag.log'),
             timelinePath: path.join(dir, 'interview60.timeline.json'),
             answersPath: path.join(dir, 'interview60.answers.json'),
+            judgePath: path.join(dir, 'interview60.judge.json'),
         }),
     };
 }
@@ -42,7 +43,7 @@ export function computeRun(dir) {
  * needs — kept here so that prose and the gate never re-derive the same
  * numbers two different ways.
  */
-export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPath }) {
+export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPath, judgePath = null }) {
     // logSince() silently returns '' for a missing file (it's built to tolerate
     // a not-yet-rotated-in log), which would otherwise turn a bad run dir into
     // an all-zero table instead of an error naming what's missing.
@@ -53,6 +54,8 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const diag = logSince(diagLog, timeline.startDiag, timeline.endDiag)
         .split('\n').filter((l) => !CONTAMINATED.some((p) => l.startsWith(p))).join('\n');
     const answers = fs.existsSync(answersPath) ? JSON.parse(fs.readFileSync(answersPath, 'utf8')) : null;
+    // Judge pass (interview60.judge.mjs): spoken-question verdicts from Claude Opus 5 over the hour's own answers.
+    const judge = judgePath && fs.existsSync(judgePath) ? summarizeJudge(JSON.parse(fs.readFileSync(judgePath, 'utf8'))) : null;
 
     // — parse (moved verbatim from the report generator) —
     const liveQ = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] Live question \((\w+), mode=(\w+)\): "([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), intent: m[2], mode: m[3], heard: m[4] }));
@@ -298,7 +301,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, heuristicChips, raceLosses,
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
-        detectP50, ttftP90, ttftSource,
+        detectP50, ttftP90, ttftSource, judge,
         // extra — feed the report's findings prose and tables; not part of the gate
         detectP90, stats, stt, routes, redirects, hardFails, liveQ, orphanLive, cues, answersPass,
     };
@@ -312,8 +315,16 @@ export const GATE = [
     { key: 'coaching', label: 'Technical questions answered via the coaching path', before: '25', pass: (m) => m.coachingAnswers === 0, show: (m) => String(m.coachingAnswers) },
     { key: 'coding', label: 'Spoken questions routed CODING', before: '4 routes (2 of them screenshot cues)', pass: (m) => m.codingForSpoken === 0, show: (m) => `${m.codingForSpoken}, ${m.cueAnswers} cue answers` },
     { key: 'expiry', label: 'Live expiry loops', before: '0', pass: (m) => m.expiryLoops === 0, show: (m) => String(m.expiryLoops) },
+    { key: 'quality', label: 'Interview-acceptable answers (Opus 5 judge)', before: 'not graded', pass: (m) => !!m.judge && m.judge.wrong === 0 && m.judge.acceptable >= 47, show: (m) => m.judge ? `${m.judge.acceptable} acceptable, ${m.judge.weak} weak, ${m.judge.wrong} wrong of ${m.judge.n}${m.judge.errors ? `, ${m.judge.errors} errors` : ''}` : 'not run' },
     { key: 'latency', label: 'Answer TTFT p90 · detect p50', before: '3.7 s (answer-only pass) · 4.1 s', pass: (m) => (m.ttftP90 ?? Infinity) <= 5000 && (m.detectP50 ?? Infinity) <= 5000, show: (m) => `${m.ttftP90 == null ? '—' : (m.ttftP90 / 1000).toFixed(1) + ' s'}${m.ttftSource === 'answer-only' ? ' (answer-only pass)' : ''} · ${m.detectP50 == null ? '—' : (m.detectP50 / 1000).toFixed(1) + ' s'}` },
 ];
+
+/** Counts over spoken items only — mirrors summarizeVerdicts in interview60.judge.mjs (kept dependency-free here). */
+export function summarizeJudge(judged) {
+    const spoken = Object.values(judged.items ?? {}).filter((v) => v.kind === 'spoken');
+    const count = (verdict) => spoken.filter((v) => v.verdict === verdict).length;
+    return { model: judged.model ?? null, n: spoken.length, acceptable: count('acceptable'), weak: count('weak'), wrong: count('wrong'), errors: count('error') };
+}
 
 export function evaluateGate(m) {
     const rows = GATE.map((g) => ({ label: g.label, before: g.before, value: g.show(m), pass: g.pass(m) }));
