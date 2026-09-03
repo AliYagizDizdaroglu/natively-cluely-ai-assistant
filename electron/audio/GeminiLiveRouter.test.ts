@@ -452,3 +452,66 @@ describe('GeminiLiveRouter audio write path', () => {
     expect(decoded.length / 2).toBe(160); // 480 / 3
   });
 });
+
+describe('GeminiLiveRouter quota backoff', () => {
+  /**
+   * Live-only hour 2026-09-03 13:45–13:54 UTC on gemini-2.5-flash-native-audio-latest:
+   * the 13:45 goAway reconnect was closed with code 1011 "You exceeded your current
+   * quota"; the 300 ms quick retry resumed the ~10K-token session, was closed again,
+   * and — each attempt briefly reaching connected — never escalated: 311 quota closes
+   * in nine minutes (65–78/min at the peak) and four questions lost. One quota close
+   * must become a growing pause and a fresh session, not a storm.
+   */
+  const QUOTA = 'You exceeded your current quota, please check your plan and billing details.';
+
+  it('backs off 5 s on a quota close and reconnects without the resumption handle', async () => {
+    vi.useFakeTimers();
+    const h = makeHarness();
+    await h.router.start();
+    h.getCbs().onopen();
+    h.getCbs().onmessage({ sessionResumptionUpdate: { resumable: true, newHandle: 'handle-1' } });
+    h.getCbs().onclose({ code: 1011, reason: QUOTA });
+    expect(h.statuses.at(-1)).toEqual({ state: 'reconnecting', reason: 'quota backoff' });
+
+    await vi.advanceTimersByTimeAsync(2000); // inside the old quick-retry window
+    expect(h.connectCalls.length).toBe(1);
+    await vi.advanceTimersByTimeAsync(3001); // 5 s total
+    expect(h.connectCalls.length).toBe(2);
+    expect(h.connectCalls[1]?.config?.sessionResumption?.handle ?? null).toBe(null);
+  });
+
+  it('doubles the pause on consecutive quota closes and clears it once real messages flow', async () => {
+    vi.useFakeTimers();
+    const h = makeHarness();
+    await h.router.start();
+    h.getCbs().onopen();
+    h.getCbs().onclose({ code: 1011, reason: QUOTA });
+    await vi.advanceTimersByTimeAsync(5001);
+    expect(h.connectCalls.length).toBe(2);
+
+    // Second consecutive quota close: 10 s.
+    h.getCbs().onopen();
+    h.getCbs().onclose({ code: 1011, reason: QUOTA });
+    await vi.advanceTimersByTimeAsync(9000);
+    expect(h.connectCalls.length).toBe(2);
+    await vi.advanceTimersByTimeAsync(1001);
+    expect(h.connectCalls.length).toBe(3);
+
+    // A session that does real work resets the backoff to 5 s.
+    h.getCbs().onopen();
+    h.getCbs().onmessage({ serverContent: { inputTranscription: { text: 'hello' } } });
+    h.getCbs().onclose({ code: 1011, reason: QUOTA });
+    await vi.advanceTimersByTimeAsync(5001);
+    expect(h.connectCalls.length).toBe(4);
+  });
+
+  it('an ordinary close still quick-retries', async () => {
+    vi.useFakeTimers();
+    const h = makeHarness();
+    await h.router.start();
+    h.getCbs().onopen();
+    h.getCbs().onclose({ code: 1000, reason: 'connection closed' });
+    await vi.advanceTimersByTimeAsync(301);
+    expect(h.connectCalls.length).toBe(2);
+  });
+});

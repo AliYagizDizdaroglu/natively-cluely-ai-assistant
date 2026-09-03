@@ -197,6 +197,17 @@ export function resampleTo16kMono(
 const QUICK_RECONNECT_ATTEMPTS = 3;
 const RECONNECT_BASE_DELAY_MS = 300;
 const SLOW_RETRY_INTERVAL_MS = 15_000;
+/**
+ * Quota closes (code 1011 "You exceeded your current quota") back off instead of
+ * quick-retrying. 2026-09-03 13:45–13:54 UTC on gemini-2.5-flash-native-audio-latest:
+ * a goAway reconnect was quota-closed, the 300 ms retry resumed the ~10K-token
+ * session and was closed again, and — each attempt briefly reaching connected —
+ * the loop never escalated: 311 closes in nine minutes (65–78/min at the peak),
+ * four questions lost. 5 s doubling to 60 s, and the reconnect starts a fresh
+ * session so the old context is not re-billed on every attempt.
+ */
+const QUOTA_BACKOFF_BASE_MS = 5_000;
+const QUOTA_BACKOFF_MAX_MS = 60_000;
 /** Suppress re-detections of the same question (model may re-fire after a tool response). */
 const DUPLICATE_WINDOW_MS = 10_000;
 /**
@@ -243,6 +254,8 @@ export class GeminiLiveRouter extends EventEmitter {
   private stopping = false;
   private inSlowRetry = false;
   private reconnectTimer: NodeJS.Timeout | null = null;
+  /** Consecutive quota closes; reset once a session carries real traffic. */
+  private quotaCloses = 0;
   private recentQuestions: Array<{ text: string; at: number }> = [];
   private gapBuffer: Buffer[] = [];
   private gapBufferBytes = 0;
@@ -407,6 +420,8 @@ export class GeminiLiveRouter extends EventEmitter {
   }
 
   private handleMessage(msg: any): void {
+    // Real traffic proves the quota is back: the next quota close starts the backoff over.
+    if (this.quotaCloses && (msg?.serverContent || msg?.toolCall)) this.quotaCloses = 0;
     // Session resumption handles — store the newest so reconnects keep context.
     const update = msg?.sessionResumptionUpdate;
     if (update?.resumable && update?.newHandle) {
@@ -484,6 +499,20 @@ export class GeminiLiveRouter extends EventEmitter {
     this.session = null;
     if (this.stopping) return; // stop() already set the terminal state
     const reason = e?.reason ? String(e.reason) : 'connection closed';
+    if (/quota|resource_exhausted/i.test(reason)) {
+      this.quotaCloses++;
+      this.resumptionHandle = null;
+      const delay = Math.min(QUOTA_BACKOFF_MAX_MS, QUOTA_BACKOFF_BASE_MS * 2 ** (this.quotaCloses - 1));
+      console.warn(`[LiveRouter] quota close #${this.quotaCloses} — backing off ${delay}ms, reconnecting fresh`);
+      if (!this.inSlowRetry) this.setState('reconnecting', 'quota backoff');
+      if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = setTimeout(() => {
+        this.reconnectTimer = null;
+        if (!this.stopping) void this.connect();
+      }, delay);
+      this.reconnectTimer.unref?.();
+      return;
+    }
     this.scheduleReconnect(reason);
   }
 
