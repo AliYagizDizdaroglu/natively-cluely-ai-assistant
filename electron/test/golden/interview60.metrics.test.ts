@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,8 +11,14 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const BEFORE = path.join(HERE, 'interview60.runs', '2026-09-02-before');
 const have = fs.existsSync(path.join(BEFORE, 'natively_debug.log'));
 
-describe.skipIf(!have)('computeRun on the 2026-09-02 baseline (regression: the numbers the published report shows)', () => {
-    const m = computeRun(BEFORE);
+// computeRun(BEFORE) must NOT run at describe-body/collection time: skipIf only
+// skips the it()s, and a describe body runs unconditionally during collection
+// (proved in the isolation worktree, where interview60.runs/ is gitignored and
+// absent — the bare call threw ENOENT there even with skipIf true). Deferring
+// it into beforeAll keeps a clean checkout green.
+describe.skipIf(!have)(`computeRun on the 2026-09-02 baseline (regression: the numbers the published report shows)${have ? '' : ` — SKIPPED: fixture not present at ${BEFORE} (gitignored)`}`, () => {
+    let m: any;
+    beforeAll(() => { m = computeRun(BEFORE); });
     it('attributes the hour the way the report did', () => {
         expect(m.items.length).toBe(52);
         expect(m.heard).toBe(51);
