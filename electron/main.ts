@@ -241,7 +241,7 @@ import { normalizeLiveMode } from './services/liveMode'
 import { decideDispatch } from './services/detectionDispatch'
 import { reconcileLiveQuestion } from './services/questionReconcile'
 import { createLiveHold } from './services/liveHold'
-import { isFragment, isQuestionShaped } from './services/questionShape'
+import { isFragment } from './services/questionShape'
 
 export class AppState {
   private static instance: AppState | null = null
@@ -1888,28 +1888,13 @@ export class AppState {
    * detector fired first (the STT detector could never answer before this).
    */
   private dispatchDetection(d: DetectionInput): void {
-    // Live sometimes fires on the STATEMENT half of a two-sentence scenario
-    // question — the STT window already contains it, so reconcileLiveQuestion
-    // returns verdict=match, and the old code answered the statement before
-    // the actual question was ever asked (13 of 52 Live answers in run 2).
-    // Text-shape only, checked before the reconcile verdict is trusted.
-    if (d.source === 'live') {
-      if (isFragment(d.question)) {
-        const anchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
-        console.log(`[Main] dispatch: drop source=live anchor=${anchorLog} verdict=fragment`);
-        return;
-      }
-      if (!isQuestionShaped(d.question) && !d.resolving && this.liveMode !== 'off') {
-        // Same hold path as an unverifiable verdict (R37): give the STT a
-        // chance to catch up to the real question instead of answering the
-        // statement on the spot.
-        const previous = this.liveHold.offer(d);
-        if (previous) {
-          const prevAnchorLog = JSON.stringify((previous.anchor ?? previous.question).slice(0, 80));
-          console.log(`[Main] dispatch: drop source=live anchor=${prevAnchorLog} verdict=unverifiable duplicateOf=live answered=false`);
-        }
-        return;
-      }
+    // A Live claim under 4 words is never worth admitting, holding, or
+    // answering (R36 round 3). Text-shape only, checked before the reconcile
+    // verdict is trusted, regardless of mode or resolving.
+    if (d.source === 'live' && isFragment(d.question)) {
+      const anchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
+      console.log(`[Main] dispatch: drop source=live anchor=${anchorLog} verdict=fragment`);
+      return;
     }
     // An unverifiable Live claim (nothing heard from the interviewer STT in
     // the last 15s to check it against) is held rather than dispatched blind

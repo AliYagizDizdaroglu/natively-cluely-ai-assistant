@@ -166,3 +166,52 @@ describe('ChipDeduper — containment ignores trailing punctuation (R36 fix wave
     ).toBe(false);
   });
 });
+
+describe('ChipDeduper — content-word overlap catches an anchor-split STT double (R36 round 4, Ruling R45)', () => {
+  it('W10 (run 2): an STT split sent whisper and Live to different anchors, but the texts still overlap 3/5 = 0.6', () => {
+    // Real run-2 evidence: the STT split one question into two finals.
+    // Whisper anchored to "...for a trail?" (its own STT mis-hearing of
+    // "training"); Live anchored to a later, different transcript segment,
+    // "training data set that gets versioned weekly." — different anchors,
+    // so the anchor rule cannot catch this. Containment and Jaccard (0.5) do
+    // not fire either — verified independently before writing this test.
+    const d = new ChipDeduper();
+    d.admit({
+      question: 'How would you organize an S3 bucket layout for a trail?',
+      source: 'whisper',
+      anchor: 'How would you organize an S3 bucket layout for a trail?',
+    });
+    const live = d.admit({
+      question: 'How would you organise an S3 bucket layout for a training dataset that gets versioned weekly?',
+      source: 'live',
+      anchor: 'training data set that gets versioned weekly.',
+    });
+    expect(live.admitted).toBe(false);
+  });
+
+  it('two short, topically different questions sharing one word do not match', () => {
+    // "what/difference/between" also appear in a "what is the difference
+    // between X and Y" reading of a drift question, which would trivially
+    // over-match on the shared template rather than the topic — this pair
+    // avoids that template so the assertion is about topic overlap, not
+    // shared boilerplate. Verified by computation before writing.
+    const d = new ChipDeduper();
+    d.admit({ question: 'What is the difference between a pod and a deployment?', source: 'whisper' });
+    expect(
+      d.admit({ question: 'What causes concept drift in a production model?', source: 'live' }).admitted
+    ).toBe(true);
+  });
+
+  it('a text with only 3 content words never matches by this rule alone (the 4-word floor)', () => {
+    // 100% of the shorter text's content words appear in the longer one, and
+    // neither containment nor Jaccard (0.33) fires — isolates the floor.
+    const d = new ChipDeduper();
+    d.admit({ question: 'Explain container orchestration.', source: 'whisper' });
+    expect(
+      d.admit({
+        question: 'Explain how container orchestration schedules workloads across a cluster.',
+        source: 'live',
+      }).admitted
+    ).toBe(true);
+  });
+});

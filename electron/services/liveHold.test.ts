@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { createLiveHold } from './liveHold';
-import { isFragment, isQuestionShaped } from './questionShape';
+import { isFragment } from './questionShape';
 
 afterEach(() => {
     vi.useRealTimers();
@@ -138,63 +138,20 @@ describe('createLiveHold', () => {
         expect(dispatched).toEqual(['a']);
     });
 
-    // Round 3 (Ruling: statement-shaped Live detections wait for the question).
-    // Real isFragment/isQuestionShaped are used directly — only the
-    // chipDeduper/decideDispatch admit path (main.ts-only, untestable in
-    // isolation) is mirrored, same limitation as the round-2 regression test.
-    it('a statement-shaped Live text is held; once whisper answers the merged question meanwhile, the hold resolves to one duplicate drop, never a second answer', () => {
-        vi.useFakeTimers();
-        const log: string[] = [];
-        let whisperAnswered = false;
-        let hold: ReturnType<typeof createLiveHold<{ id: string; text: string }>>;
-
-        function dispatchDetection(d: { id: string; text: string }, resolving = false): void {
-            if (isFragment(d.text)) { log.push(`drop:fragment:${d.id}`); return; }
-            if (!isQuestionShaped(d.text) && !resolving) { hold.offer(d); return; }
-            // resolving (or already question-shaped): the normal admit path,
-            // simplified to the one fact this test cares about.
-            if (resolving && whisperAnswered) { log.push(`drop:duplicateOf=whisper:answered=true:${d.id}`); return; }
-            log.push(`answer:${d.id}`);
-        }
-
-        hold = createLiveHold<{ id: string; text: string }>({
-            holdMs: 2500,
-            onResolve: (held) => dispatchDetection(held, true),
-        });
-
-        // H09 (run 2): the statement half, not the question.
-        dispatchDetection({ id: 'live1', text: 'a resource by hand and now your stack will not update.' });
-        expect(log).toEqual([]); // held, not dispatched yet
-
-        // Whisper hears the merged (statement + question) sentence and answers
-        // it while Live's detection is still held.
-        whisperAnswered = true;
-
-        vi.advanceTimersByTime(2500);
-        expect(log).toEqual(['drop:duplicateOf=whisper:answered=true:live1']);
-    });
-
+    // Round 3 (R36), narrowed in round 4 (R44 withdraws the statement-shaped
+    // hold this test block used to also cover — see questionShape.ts's
+    // docstring for why). A fragment is still dropped unconditionally,
+    // structurally never reaching liveHold.offer at all — no timer to
+    // out-wait, so this needs no fake-timer setup.
     it('a fragment is dropped immediately with one verdict=fragment line — never held, never answered', () => {
-        vi.useFakeTimers();
         const log: string[] = [];
-        let hold: ReturnType<typeof createLiveHold<{ id: string; text: string }>>;
 
-        function dispatchDetection(d: { id: string; text: string }, resolving = false): void {
+        function dispatchDetection(d: { id: string; text: string }): void {
             if (isFragment(d.text)) { log.push(`drop:fragment:${d.id}`); return; }
-            if (!isQuestionShaped(d.text) && !resolving) { hold.offer(d); return; }
             log.push(`answer:${d.id}`);
         }
-
-        hold = createLiveHold<{ id: string; text: string }>({
-            holdMs: 2500,
-            onResolve: (held) => dispatchDetection(held, true),
-        });
 
         dispatchDetection({ id: 'live2', text: 'training jobs are' }); // H06, 3 words
-        expect(log).toEqual(['drop:fragment:live2']);
-
-        // Nothing was ever held, so nothing fires later either.
-        vi.advanceTimersByTime(10_000);
         expect(log).toEqual(['drop:fragment:live2']);
     });
 });

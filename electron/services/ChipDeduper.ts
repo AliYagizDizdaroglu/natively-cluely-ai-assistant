@@ -54,6 +54,33 @@ function normalizeForContainment(text: string): string {
   return text.toLowerCase().replace(/\s+/g, ' ').trim().replace(/[?.!,;:]+$/, '');
 }
 
+/** Lower-cased words longer than 3 letters — same definition questionReconcile's overlap() uses. */
+function contentWords(text: string): Set<string> {
+  const tokens: string[] = text.toLowerCase().match(/[a-z0-9]+/g) ?? [];
+  return new Set(tokens.filter((w) => w.length > 3));
+}
+
+/**
+ * Content-word overlap on the TEXTS, independent of anchor (Ruling R45): an
+ * STT split can send two detections of the same question to different
+ * anchors — one final each, worded differently enough that containment and
+ * Jaccard both miss (run 2's W10: "...bucket layout for a trail?" vs
+ * "...bucket layout for a training dataset that gets versioned weekly?",
+ * Jaccard 0.5). S = the text with fewer content words, L = the other;
+ * similar iff S has at least 4 content words and 60% of them appear in L —
+ * the W10 pair measures 3/5 = 0.6 (organise/organize and trail/training
+ * miss). The 4-word floor keeps short neighbours apart: two DIFFERENT short
+ * questions can otherwise share enough incidental vocabulary to look alike.
+ */
+function contentWordSimilar(a: string, b: string): boolean {
+  const A = contentWords(a), B = contentWords(b);
+  const [S, L] = A.size <= B.size ? [A, B] : [B, A];
+  if (S.size < 4) return false;
+  let hit = 0;
+  for (const w of S) if (L.has(w)) hit++;
+  return hit / S.size >= 0.6;
+}
+
 export interface ChipDeduperOptions {
   /**
    * How long an admitted question suppresses near-duplicates. Long enough to
@@ -124,6 +151,7 @@ export class ChipDeduper {
     const normNew = normalizeForContainment(text);
     for (const entry of this.cache) {
       if (anchor && entry.anchor && sameAnchor(anchor, entry.anchor)) return entry;
+      if (contentWordSimilar(text, entry.text)) return entry;
       const normExisting = normalizeForContainment(entry.text);
       // Containment catches STT fragmentation, where Jaccard is misleadingly
       // low: "architecture." vs "Can you explain Transformers? architecture."
