@@ -38,4 +38,22 @@ describe('looksLikeQuestion', () => {
     it('ends with a question mark', () => {
         expect(looksLikeQuestion('Kubernetes or ECS for this?')).toBe(true);
     });
+
+    it('round 8: an opener word that also starts plain statements is excluded, so those statements are not question-shaped', () => {
+        // "let"/"is"/"give" were all in QUESTION_WORDS through round 7,
+        // purely because they can also open a question ("Let's...", "Is
+        // X...", "Give an example..."). A false positive here does not just
+        // show a stray chip, it gets answered hands-free, so round 8 narrows
+        // the list to words that plausibly open an interview question.
+        expect(looksLikeQuestion('Let me tell you about the team.')).toBe(false);
+        expect(looksLikeQuestion('Is that clear.')).toBe(false);
+    });
+
+    it('round 8: a narrowed opener word ("tell") still matches', () => {
+        expect(looksLikeQuestion('Tell me about a time you disagreed with a manager.')).toBe(true);
+    });
+
+    it('round 8: the terminal "?" rule is unaffected by the narrower opener list', () => {
+        expect(looksLikeQuestion('Is a Pod the same as a container?')).toBe(true);
+    });
 });

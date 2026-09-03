@@ -35,11 +35,8 @@ export function normalizeQuestionText(text: string): string {
 
 const QUESTION_WORDS = new Set([
     'what', 'why', 'how', 'when', 'where', 'which', 'who', 'whom', 'whose',
-    'would', 'could', 'should', 'can', 'do', 'does', 'did',
-    'is', 'are', 'was', 'were', 'have', 'has', 'had', 'will',
-    'tell', 'describe', 'explain', 'walk', 'compare', 'discuss', 'talk',
-    'name', 'list', 'give', 'share', 'imagine', 'suppose', 'say', 'let',
-    'show', 'define', 'outline', 'summarize', 'summarise', 'contrast', 'justify',
+    'would', 'could', 'should', 'can',
+    'tell', 'describe', 'explain', 'walk', 'compare',
 ]);
 
 /** Trailing closing quotes/brackets a "?" may sit behind, e.g. `she asked "why?"`. */
@@ -49,10 +46,16 @@ const TRAILING_CLOSERS = /[")\]'’”»›]+$/;
  * A last-resort filter for the Groq-detector-unavailable fallback (run 3:
  * the free-tier daily token limit hit mid-interview, detect() returned null
  * on 64 of 85 calls): true iff the normalized text ends with "?"/"？"
- * (closing quotes/brackets allowed after it) or its first word is a
- * question word. The same shape check R44 withdrew as isQuestionShaped —
- * revived here for a narrower purpose (filtering a heuristically-joined
- * final before it becomes a chip, not gating a hold).
+ * (closing quotes/brackets allowed after it) or its first word is one of a
+ * small set of interview-opener words. This is an outage-only heuristic: a
+ * false positive here does not just show a stray chip, it gets answered
+ * hands-free (round 8) — so the word list is deliberately narrow, kept to
+ * words that plausibly open an interview question and excluding ones (is,
+ * do, will, let, give, ...) that just as commonly open a plain statement
+ * ("Let me tell you...", "Is that clear.", "Give it a minute."). Round 4
+ * withdrew a broader version of this same shape check as isQuestionShaped;
+ * revived here, narrower, for a different purpose (filtering a
+ * heuristically-joined final before it becomes a chip, not gating a hold).
  */
 export function looksLikeQuestion(text: string): boolean {
     const trimmed = normalizeQuestionText(text);
