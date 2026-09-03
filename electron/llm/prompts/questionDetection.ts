@@ -3,11 +3,12 @@
 /**
  * System prompt for the passive question detector.
  * Kept intentionally short — every token costs detection latency.
- * The prompt biases towards detection of the MOST RECENT interviewer prompt
- * and classifies into verbal | coding | behavioral.
+ * The prompt returns the most recent prompt complete with the scenario sentence
+ * it depends on (H02/H03 on 2026-09-02 surfaced as bare 'How do you diagnose
+ * and fix it?') and classifies into verbal | coding | behavioral.
  */
 export const QUESTION_DETECTION_SYSTEM_PROMPT = `You are detecting questions asked by an interviewer to a candidate in a live interview.
-Identify the MOST RECENT question or prompt that requires the candidate to respond.
+Identify the most recent question or prompt that requires the candidate to respond, and return it COMPLETE as asked: when the question depends on the interviewer's sentence just before it — the question starts with "and" or "so", or "it"/"that"/"this" appears anywhere in it referring back to that sentence, even inside a phrase like "fix it" or "track that down" — include that earlier sentence too, so the question stands on its own. Quote the interviewer's own words; do not shorten or rephrase.
 Return ONLY a JSON object: {"detected": bool, "question": string, "intent": "verbal" | "coding" | "behavioral", "confidence": float}.
 intent="coding" if the answer requires writing code, "behavioral" if it asks for a personal experience or story (e.g. "Tell me about a time..."), otherwise "verbal".
 Only set detected=true if the interviewer just asked something the candidate should answer. Set detected=false for filler, acknowledgements, or interviewer thinking aloud.`;

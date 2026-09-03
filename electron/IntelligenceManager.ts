@@ -15,6 +15,7 @@ import { MeetingPersistence } from './MeetingPersistence';
 import { QuestionDetector, DetectedQuestionChip } from './services/QuestionDetector';
 import { GroqDetectionClient } from './services/GroqDetectionClient';
 import { CredentialsManager } from './services/CredentialsManager';
+import { DETECTOR_CALIBRATION_CASES, judgeDetection } from './services/detectorCalibration';
 
 // Re-export types for backward compatibility
 export type { TranscriptSegment, SuggestionTrigger, ContextItem } from './SessionTracker';
@@ -137,6 +138,27 @@ export class IntelligenceManager extends EventEmitter {
                     speechEndedAt: Date.now() - 900,
                 }, false);
             }, 14000);
+        }
+
+        // Env-gated calibration of the detection prompt on the REAL model with the app's
+        // own key (NATIVELY_DETECTOR_CALIBRATE=1): the harness reads these lines. Delayed
+        // so credentials are loaded first. Never set in production.
+        if (process.env.NATIVELY_DETECTOR_CALIBRATE === '1') {
+            setTimeout(async () => {
+                let pass = 0;
+                for (const c of DETECTOR_CALIBRATION_CASES) {
+                    let r: { detected: boolean; question: string } | null = null;
+                    try {
+                        r = await detectionClient.detect({ recentInterviewerTranscript: c.transcript, fullConversationContext: c.transcript });
+                    } catch (e: any) {
+                        console.warn(`[DetectorCalibration] ERROR ${c.id} — ${e?.message ?? e}`);
+                    }
+                    const j = judgeDetection(r, c.mustContain);
+                    if (j.ok) pass++;
+                    console.log(`[DetectorCalibration] ${j.ok ? 'PASS' : 'FAIL'} ${c.id} detected=${r?.detected ?? null} q=${JSON.stringify(r?.question ?? '')}${j.missing.length ? ` missing=${j.missing.join(',')}` : ''}`);
+                }
+                console.log(`[DetectorCalibration] ${pass}/${DETECTOR_CALIBRATION_CASES.length} pass`);
+            }, 3000);
         }
     }
 
