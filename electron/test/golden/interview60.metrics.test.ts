@@ -120,6 +120,10 @@ describe.skipIf(!have)(`computeRun on the 2026-09-02 baseline (regression: the n
  *   one verdict=fragment drop, claimed by Q1 (already answered) — proves
  *     raceLoss ignores fragment-verdict drops (it stays false, same as
  *     before) while liveFragmentsDropped still counts it.
+ *   C01, a screenshot cue (kind='screenshot', far past every other item so
+ *     its window cannot collide with anything else) with its own answer
+ *     dispatch — claim-once now considers cues too, so C01's answer is a
+ *     cueAnswer, not a 4th line in answersToNobody.
  */
 describe('computeRun on a synthetic run (exercises the dispatch: branch and in-app TTFT, neither reachable from the 2026-09-02 baseline)', () => {
     const T0 = Date.parse('2026-01-01T00:00:00.000Z');
@@ -146,6 +150,11 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
                 { id: 'Q4', kind: 'spoken', q: 'How would you rotate credentials for a service without causing an outage.', playedAt: T0 + 360000, clipSecs: 0 },
                 { id: 'W01', kind: 'spoken', q: 'Explain how a load balancer distributes incoming traffic across backend servers.', playedAt: T0 + 600000, clipSecs: 0 },
                 { id: 'W02', kind: 'spoken', q: 'Explain how a load balancer performs health checks on backend servers.', playedAt: T0 + 645000, clipSecs: 0 },
+                // R36 fix wave round 3 (Ruling: screenshot cues are items
+                // too): far past every other item/dispatch in this fixture
+                // (T0+1000000) so its window cannot accidentally overlap
+                // anything else.
+                { id: 'C01', kind: 'screenshot', q: 'Take a look at this problem on screen and walk me through your approach.', playedAt: T0 + 1000000, clipSecs: 5 },
             ],
         };
 
@@ -190,6 +199,10 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             `${iso(T0 + 800000)} [LOG] [Main] dispatch: answer source=live anchor="An unverifiable Live claim with a real interviewer final nearby." verdict=unverifiable`,
             `${iso(T0 + 805000)} [LOG] [RestSTT] Transcript: "the actual thing the interviewer said" id=r1`,
             `${iso(T0 + 900000)} [LOG] [Main] dispatch: answer source=live anchor="An unverifiable Live claim with no interviewer STT anywhere nearby." verdict=unverifiable`,
+            // R36 fix wave round 3 (Ruling: screenshot cues are items too):
+            // C01's own answer, inside C01's window — claimed by the cue, so
+            // it must NOT add a 4th line to answersToNobody.
+            `${iso(T0 + 1002000)} [LOG] [Main] dispatch: answer source=live anchor="Take a look at this problem on screen and walk me through your approach." verdict=match`,
             // Two STT socket closes (code=1011) with a Connected before each.
             `${iso(T0 + 1000)} [LOG] [DeepgramStreaming] Connected`,
             `${iso(T0 + 11000)} [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)`,
@@ -330,6 +343,19 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(w02.heardBy).toBe('whisper');
         expect(w01.detectMs).toBe(1000); // (T0+601000) - (T0+600000).
         expect(w02.detectMs).toBe(1500); // (T0+646500) - (T0+645000).
+    });
+
+    it('C01 — a screenshot cue is a claim-once candidate, so its own answer is a cue answer, not answersToNobody (Ruling: screenshot cues are items too)', () => {
+        // C01 itself never appears in m.items (spoken-only) — only claim-once
+        // sees it, via cueAnswers.
+        expect(m.items.find((i: any) => i.id === 'C01')).toBeUndefined();
+        expect(m.cueAnswers).toBe(1);
+        // Unchanged from the "top-level counts" test below: C01's answer is
+        // now claimed (by the cue), so it was never a candidate to add a 4th
+        // line to answersToNobody, and answered (spoken-only) never saw C01
+        // at all either way.
+        expect(m.answersToNobody).toBe(3);
+        expect(m.answered).toBe(2);
     });
 
     it('top-level counts, each derived from the lines above', () => {

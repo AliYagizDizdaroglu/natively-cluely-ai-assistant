@@ -34,7 +34,7 @@ export function computeRun(dir) {
  * Returns the RunMetrics contract used by `gate` and the headline numbers
  * (dir, startedAt, endedAt, durationMin, items, heard, answered, delivered,
  * answerFailures, answersToNobody, surfacedMax, surfacedMulti, caught,
- * unverifiableWithSttUp, liveFragmentsDropped, raceLosses, sttCloses,
+ * unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, raceLosses, sttCloses,
  * lostUtterances, fragmentChips, coachingAnswers, codingForSpoken,
  * expiryLoops, liveReconnects, detectP50, ttftP90, ttftSource) plus a few
  * extra fields (stats, stt, routes, redirects, hardFails, liveQ, orphanLive,
@@ -114,7 +114,16 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const hasDispatch = dispatches.length > 0;
     const spoken = timeline.items.filter((i) => i.kind === 'spoken');
     const claimedLive = new Set();
-    const itemWindows = spoken.map((it) => ({ ...it, spokeEnd: it.playedAt + Math.round(it.clipSecs * 1000) }));
+    const windowOf = (it) => ({ ...it, spokeEnd: it.playedAt + Math.round(it.clipSecs * 1000) });
+    const itemWindows = spoken.map(windowOf);
+    // Screenshot cues are candidates for claim-once too, so a cue's own
+    // answer is claimed by the cue instead of falling through to
+    // answersToNobody (run 2: 3 of 3 "to nobody" answers were verbal answers
+    // to the three screenshot cues, overlap 0.89-1.00 against the cue's own
+    // q). Spoken/heard/surfaced*/raceLosses below stay spoken-only —
+    // itemWindows itself is unchanged.
+    const cueWindows = timeline.items.filter((i) => i.kind !== 'spoken').map(windowOf);
+    const allWindows = [...itemWindows, ...cueWindows];
 
     // Claim each dispatch line for exactly one item — the item with the
     // highest anchor overlap (checked both directions), ties broken by the
@@ -123,10 +132,10 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     // [playedAt-2s, spokeEnd+60s] window, so two items whose tails overlapped
     // (a 45s gap between items, a 60s tail) could BOTH claim the same line —
     // a false "double" (whole-branch review, Important #1).
-    const claimOf = new Map(); // dispatch -> item
+    const claimOf = new Map(); // dispatch -> item (spoken or cue)
     if (hasDispatch) {
         for (const d of dispatches) {
-            const candidates = itemWindows
+            const candidates = allWindows
                 .filter((it) => d.at >= it.playedAt - 2000 && d.at <= it.spokeEnd + 60000)
                 .map((it) => ({ it, score: Math.max(overlap(d.anchor, it.q), overlap(it.q, d.anchor)) }))
                 .filter((c) => c.score >= 0.15);
@@ -217,6 +226,13 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     // all dispatch lines regardless of claimed status, same as `caught`; not
     // part of the gate — a dropped fragment is the fix working, not a failure.
     const liveFragmentsDropped = hasDispatch ? dispatches.filter((d) => d.verdict === 'fragment').length : 0;
+    // Answer dispatches claimed by a screenshot cue rather than a spoken item
+    // — informational (folded into the CODING row's `show`, not gated on its
+    // own): these used to fall into answersToNobody because cues were never
+    // claim-once candidates.
+    const cueAnswers = hasDispatch
+        ? dispatches.filter((d) => d.action === 'answer' && claimOf.get(d) && claimOf.get(d).kind !== 'spoken').length
+        : 0;
 
     const heard = items.filter((i) => i.heardBy !== null).length;
     const answered = items.filter((i) => i.answered).length;
@@ -274,7 +290,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     return {
         startedAt: timeline.startedAt, endedAt: timeline.endedAt, durationMin, items,
         heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti,
-        caught, unverifiableWithSttUp, liveFragmentsDropped, raceLosses,
+        caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, raceLosses,
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
         detectP50, ttftP90, ttftSource,
@@ -289,7 +305,7 @@ export const GATE = [
     { key: 'surfaced', label: 'Surfaced detections per question', before: '12 doubles, 1 invented', pass: (m) => m.surfacedMulti === 0 && m.answersToNobody === 0, show: (m) => `${m.surfacedMulti} doubles, ${m.caught} caught, ${m.answersToNobody} unclaimed` },
     { key: 'stt', label: 'STT socket closes / lost utterances / fragment chips', before: '299 / 2 / 5', pass: (m) => m.sttCloses <= 5 && m.lostUtterances === 0 && m.fragmentChips === 0, show: (m) => `${m.sttCloses} / ${m.lostUtterances} / ${m.fragmentChips}` },
     { key: 'coaching', label: 'Technical questions answered via the coaching path', before: '25', pass: (m) => m.coachingAnswers === 0, show: (m) => String(m.coachingAnswers) },
-    { key: 'coding', label: 'Spoken questions routed CODING', before: '4 routes (2 of them screenshot cues)', pass: (m) => m.codingForSpoken === 0, show: (m) => String(m.codingForSpoken) },
+    { key: 'coding', label: 'Spoken questions routed CODING', before: '4 routes (2 of them screenshot cues)', pass: (m) => m.codingForSpoken === 0, show: (m) => `${m.codingForSpoken}, ${m.cueAnswers} cue answers` },
     { key: 'expiry', label: 'Live expiry loops', before: '0', pass: (m) => m.expiryLoops === 0, show: (m) => String(m.expiryLoops) },
     { key: 'latency', label: 'Answer TTFT p90 · detect p50', before: '3.7 s (answer-only pass) · 4.1 s', pass: (m) => (m.ttftP90 ?? Infinity) <= 5000 && (m.detectP50 ?? Infinity) <= 5000, show: (m) => `${m.ttftP90 == null ? '—' : (m.ttftP90 / 1000).toFixed(1) + ' s'}${m.ttftSource === 'answer-only' ? ' (answer-only pass)' : ''} · ${m.detectP50 == null ? '—' : (m.detectP50 / 1000).toFixed(1) + ' s'}` },
 ];
