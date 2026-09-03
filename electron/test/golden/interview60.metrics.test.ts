@@ -101,10 +101,15 @@ describe.skipIf(!have)(`computeRun on the 2026-09-02 baseline (regression: the n
  *     has its own dispatch line whose anchor is an exact match for its OWN
  *     item but which ALSO clears the 0.15 overlap floor against the OTHER
  *     item (0.625/0.556, measured with the real overlap()). Before claim-once
- *     each item independently scanned its whole window, so W01 and W02 would
- *     EACH have claimed BOTH lines (dispatches=2 apiece — two false
- *     "doubles"); claim-once assigns each line to its single
- *     highest-overlap item, so each ends up with dispatches=1.
+ *     each item independently scanned its own window AND the overlap floor —
+ *     W01's window ([598000,660000]) reaches forward far enough to also
+ *     contain W02's +646500 line, so W01 would have wrongly claimed BOTH
+ *     lines (dispatches=2, a false "double"); W02's window ([643000,705000])
+ *     does NOT reach back to W01's +601000 line (601000 < 643000), so W02
+ *     would already have been dispatches=1 pre-fix even without claim-once —
+ *     the false double here was one-sided. claim-once assigns each line to
+ *     its single highest-overlap item regardless, so both end up with
+ *     dispatches=1.
  *   one [WhatToAnswerLLM] Stream failed line — answerFailures = 1.
  *   two verdict=unverifiable answers, timed past every item's window (so
  *     both are unclaimed, adding to answersToNobody): the first has an
@@ -308,11 +313,15 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
     it('W01/W02 — 45s apart, sharing vocabulary, each claimed exactly once (Ruling R33, the whole-branch review finding)', () => {
         const w01 = m.items.find((i: any) => i.id === 'W01');
         const w02 = m.items.find((i: any) => i.id === 'W02');
-        // Before claim-once, both items independently scanned their own window
-        // and each would have found BOTH the +601000 and +646500 lines (each
-        // clears the 0.15 overlap floor against both items) — dispatches=2 on
-        // BOTH, two false "doubles". Claim-once assigns each line to its
-        // single highest-overlap item, so each ends up with exactly one.
+        // Before claim-once, each item independently scanned its own window:
+        // W01's window ([598000,660000]) reaches forward far enough to also
+        // contain W02's own +646500 line (which clears the 0.15 overlap floor
+        // against W01.q too) — dispatches=2, a false "double". W02's window
+        // ([643000,705000]) does NOT reach back to W01's +601000 line
+        // (601000 < 643000), so W02 was already dispatches=1 even pre-fix —
+        // the false double was one-sided, not mutual. Claim-once assigns each
+        // line to its single highest-overlap item regardless, so both end up
+        // with exactly one.
         expect(w01.dispatches).toBe(1);
         expect(w02.dispatches).toBe(1);
         // Not just "1", but the RIGHT one: W01 claims its own (source=live),
@@ -346,9 +355,11 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // surfacedMax = max(dispatches) across items = max(1,2,0,0,1,1) = 2 (Q2).
         expect(m.surfacedMax).toBe(2);
         // surfacedMulti = count of items with dispatches > 1 = just Q2 = 1.
-        // Before claim-once this would have been 3 (Q2, W01 and W02 would each
-        // show dispatches=2) — the false-double bug the W01/W02 test above
-        // proves fixed.
+        // Before claim-once this would have been 2 (Q2 plus W01, which would
+        // have wrongly claimed both the +601000 and +646500 lines) — W02 was
+        // already dispatches=1 pre-fix (its window doesn't reach back to
+        // +601000), so it was never the second double. Still the false-double
+        // bug the W01/W02 test above proves fixed — just one-sided, not two.
         expect(m.surfacedMulti).toBe(1);
         // caught (formerly "invented") = dispatches.filter(verdict==='replaced')
         // .length, counted over ALL dispatch lines regardless of claimed status

@@ -32,9 +32,10 @@ export function computeRun(dir) {
  * thin wrapper over this for a snapshotted run folder.
  *
  * Returns the RunMetrics contract used by `gate` and the headline numbers
- * (dir, startedAt, endedAt, durationMin, items, heard, answered,
- * answersToNobody, surfacedMax, surfacedMulti, invented, raceLosses,
- * sttCloses, lostUtterances, fragmentChips, coachingAnswers, codingForSpoken,
+ * (dir, startedAt, endedAt, durationMin, items, heard, answered, delivered,
+ * answerFailures, answersToNobody, surfacedMax, surfacedMulti, caught,
+ * unverifiableWithSttUp, liveFragmentsDropped, raceLosses, sttCloses,
+ * lostUtterances, fragmentChips, coachingAnswers, codingForSpoken,
  * expiryLoops, liveReconnects, detectP50, ttftP90, ttftSource) plus a few
  * extra fields (stats, stt, routes, redirects, hardFails, liveQ, orphanLive,
  * cues, answersPass, detectP90) that only the report's findings/tables prose
