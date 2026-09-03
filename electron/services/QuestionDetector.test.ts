@@ -485,4 +485,31 @@ describe('QuestionDetector', () => {
         await vi.advanceTimersByTimeAsync(3000);
         expect(client.detect).toHaveBeenCalledTimes(1);
     });
+
+    it('a short interviewer fragment ("Um.") between the statement and the question does not evict the statement from recentFinals (R36 fix wave)', async () => {
+        // Before-run bug: recentFinals holds only the last TWO finals. A filler
+        // fragment like "Um." used to occupy one of those two slots and evict
+        // the real scenario statement, so mergeScenarioSentence saw prev="Um."
+        // (< 4 words) and refused to merge — the question surfaced bare.
+        const client = makeClientWith([
+            { detected: true, question: 'How do you diagnose and fix it?', intent: 'verbal', confidence: 0.9 },
+        ]);
+        const chips: DetectedQuestionChip[] = [];
+        const det = new QuestionDetector({
+            client,
+            snapshotProvider: stubSnapshotProvider('i', 'c'),
+            onChip: c => chips.push(c),
+        });
+
+        const t0 = 10_000;
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'A SageMaker endpoint has p99 latency creeping up.', timestamp: t0 - 5000, final: true });
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'Um.', timestamp: t0 - 2000, final: true });
+        det.onTranscriptFinal({ speaker: 'interviewer', text: 'How do you diagnose and fix it?', timestamp: t0, final: true });
+
+        await Promise.resolve();
+        await Promise.resolve();
+        expect(client.detect).toHaveBeenCalledTimes(1);
+        expect(chips).toHaveLength(1);
+        expect(chips[0].question).toBe('A SageMaker endpoint has p99 latency creeping up. How do you diagnose and fix it?');
+    });
 });

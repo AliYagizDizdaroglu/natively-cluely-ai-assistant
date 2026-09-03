@@ -202,6 +202,16 @@ interface ScreenshotCaptureSession {
   restoreWithoutFocus: boolean;
 }
 
+/** dispatchDetection()'s input — one shape for both the whisper→Groq and Live pipelines. */
+interface DetectionInput {
+  question: string;
+  intent: 'verbal' | 'coding' | 'behavioral';
+  source: 'live' | 'whisper';
+  anchor?: string;
+  verdict: 'match' | 'paraphrase' | 'replaced' | 'unverifiable';
+  chip?: any;
+}
+
 // Knowledge modules (open-source build)
 let KnowledgeOrchestratorClass: any = null;
 let KnowledgeDatabaseManagerClass: any = null;
@@ -221,6 +231,7 @@ import { OllamaManager } from './services/OllamaManager'
 import { normalizeLiveMode } from './services/liveMode'
 import { decideDispatch } from './services/detectionDispatch'
 import { reconcileLiveQuestion } from './services/questionReconcile'
+import { createLiveHold } from './services/liveHold'
 
 export class AppState {
   private static instance: AppState | null = null
@@ -879,6 +890,15 @@ export class AppState {
   /** Shared across whisper→Groq and Live so one question yields one chip. */
   private readonly chipDeduper = new ChipDeduper();
   /**
+   * Holds a Live detection whose verdict is 'unverifiable' (no interviewer STT
+   * to cross-check it against yet) instead of dispatching it blind — R37.
+   * Resolved by the next interviewer STT final or a 2500ms timeout.
+   */
+  private readonly liveHold = createLiveHold<DetectionInput>({
+    holdMs: 2500,
+    onResolve: (held) => this.reconcileAndDispatchLive(held.question, held.intent),
+  });
+  /**
    * Interviewer STT channel on/off. Only the INTERVIEWER channel — the user/mic
    * channel is untouched, since Live never hears the candidate and that
    * transcript is the only record of what they said. See SttChannel for why
@@ -1023,6 +1043,9 @@ export class AppState {
       // Feed final recruiter (system audio) transcripts to negotiation tracker
       if (segment.isFinal && speaker === 'interviewer') {
         this.knowledgeOrchestrator?.feedInterviewerUtterance?.(segment.text);
+        // An interviewer final just arrived — resolve any held unverifiable
+        // Live detection now instead of waiting out its timeout (R37).
+        this.liveHold.onInterviewerFinal();
       }
     });
 
@@ -1726,6 +1749,7 @@ export class AppState {
     // Fresh meeting, fresh dedup history — a question asked in a previous
     // meeting must not suppress the same question in this one.
     this.chipDeduper.reset();
+    this.liveHold.cancel();
 
     // Live mode used to live only in memory, so every restart forgot it and an
     // unattended relaunch came up deaf. Restore the stored mode when the
@@ -1831,6 +1855,7 @@ export class AppState {
     console.log(`[Main] Live Mode → ${next}`);
     if (next === 'off') {
       this.stopLiveRouter();
+      this.liveHold.cancel();
       this.broadcast('live-mode-status', { state: 'idle' });
     } else if (this.isMeetingActive && !wasRunning) {
       // off → suggest/auto during a meeting: bring the router up. suggest↔auto
@@ -1852,14 +1877,19 @@ export class AppState {
    * decides the action; Auto answers exactly once per question from whichever
    * detector fired first (the STT detector could never answer before this).
    */
-  private dispatchDetection(d: {
-    question: string;
-    intent: 'verbal' | 'coding' | 'behavioral';
-    source: 'live' | 'whisper';
-    anchor?: string;
-    verdict: 'match' | 'paraphrase' | 'replaced' | 'unverifiable';
-    chip?: any;
-  }): void {
+  private dispatchDetection(d: DetectionInput): void {
+    // An unverifiable Live claim (nothing heard from the interviewer STT in
+    // the last 15s to check it against) is held rather than dispatched blind
+    // — R37. Resolved by the next interviewer final or a timeout, whichever
+    // comes first; see liveHold.ts and resolveLiveHold's caller.
+    if (this.liveMode !== 'off' && d.source === 'live' && d.verdict === 'unverifiable') {
+      const previous = this.liveHold.offer(d);
+      if (previous) {
+        const prevAnchorLog = JSON.stringify((previous.anchor ?? previous.question).slice(0, 80));
+        console.log(`[Main] dispatch: drop source=live anchor=${prevAnchorLog} verdict=unverifiable duplicateOf=live answered=false`);
+      }
+      return;
+    }
     const verdict = this.chipDeduper.admit({ question: d.question, source: d.source, anchor: d.anchor });
     const action = this.liveMode === 'off' && d.source === 'whisper' ? (verdict.admitted ? 'chip' : 'drop') : decideDispatch(this.liveMode, verdict);
     const anchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
@@ -1884,7 +1914,7 @@ export class AppState {
       return;
     }
     // answer — mark first so a duplicate arriving during generation is dropped
-    this.chipDeduper.markAnswered(verdict.admitted ? d.question : (verdict.duplicateOfQuestion ?? d.question));
+    this.chipDeduper.markAnswered(verdict.id);
     this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source });
     void this.intelligenceManager
       .runWhatShouldISay(d.question, 1.0, undefined, { intentOverride: d.intent, bypassCooldown: true })
@@ -1904,20 +1934,31 @@ export class AppState {
     router.on('question', (q: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => {
       if (!this.isMeetingActive || this.liveMode === 'off') return;
       console.log(`[Main] Live question (${q.intent}, mode=${this.liveMode}): "${q.question.slice(0, 80)}"`);
-      const r = reconcileLiveQuestion(q.question, this.intelligenceManager.getRecentInterviewerSpeech(15_000));
-      if (r.verdict === 'replaced') {
-        console.log(`[Main] Live question replaced by transcript: live=${JSON.stringify(q.question.slice(0, 80))} said=${JSON.stringify(r.text.slice(0, 80))}`);
-      }
-      this.dispatchDetection({
-        question: r.text,
-        intent: r.verdict === 'replaced' ? 'verbal' : q.intent,
-        source: 'live',
-        anchor: r.anchor ?? undefined,
-        verdict: r.verdict,
-      });
+      this.reconcileAndDispatchLive(q.question, q.intent);
     });
     this.liveRouter = router;
     void router.start();
+  }
+
+  /**
+   * Reconcile a Live-claimed question against what the interviewer STT
+   * actually heard, then run it through dispatchDetection. Shared by the
+   * router's 'question' event and liveHold's onResolve — resolving a held
+   * detection re-reconciles with a fresh transcript window rather than
+   * reusing the (already known unverifiable) first verdict.
+   */
+  private reconcileAndDispatchLive(question: string, intent: 'verbal' | 'coding' | 'behavioral'): void {
+    const r = reconcileLiveQuestion(question, this.intelligenceManager.getRecentInterviewerSpeech(15_000));
+    if (r.verdict === 'replaced') {
+      console.log(`[Main] Live question replaced by transcript: live=${JSON.stringify(question.slice(0, 80))} said=${JSON.stringify(r.text.slice(0, 80))}`);
+    }
+    this.dispatchDetection({
+      question: r.text,
+      intent: r.verdict === 'replaced' ? 'verbal' : intent,
+      source: 'live',
+      anchor: r.anchor ?? undefined,
+      verdict: r.verdict,
+    });
   }
 
   /**
@@ -1965,6 +2006,7 @@ export class AppState {
     this.systemAudioCapture?.stop();
     this.microphoneCapture?.stop();
     this.stopLiveRouter();
+    this.liveHold.cancel();
     this.googleSTT?.finalize?.();
     this.googleSTT_User?.finalize?.();
     await new Promise(resolve => setTimeout(resolve, 250));

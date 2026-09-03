@@ -123,8 +123,14 @@ export class QuestionDetector {
         if (segment.speaker !== 'interviewer' || !segment.final) return;
         // Record before the fast-path check so a '?' final that triggers detection
         // immediately below is already in the list when runDetection() reads it.
-        this.recentFinals.push({ text: segment.text, refTime: segment.speechEndedAt ?? segment.timestamp });
-        if (this.recentFinals.length > 2) this.recentFinals.shift();
+        // Skip sub-3-word fragments ("Um.") — recentFinals holds only the last
+        // two, so a filler fragment would evict the real scenario statement
+        // mergeScenarioSentence needs (before-run bug: prev="Um." < 4 words, so
+        // the merge that depended on the statement never fired).
+        if (segment.text.trim().split(/\s+/).filter(Boolean).length >= 3) {
+            this.recentFinals.push({ text: segment.text, refTime: segment.speechEndedAt ?? segment.timestamp });
+            if (this.recentFinals.length > 2) this.recentFinals.shift();
+        }
         // Fast path: a final segment ending in '?' is a strong end-of-question
         // signal (Whisper punctuates reliably) — skip the silence debounce.
         // Guard against sub-3-word fragments ("ok?") that would waste a detect

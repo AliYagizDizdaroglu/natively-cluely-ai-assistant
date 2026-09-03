@@ -26,6 +26,13 @@ export interface DedupCandidate {
 
 export interface AdmitResult {
   admitted: boolean;
+  /**
+   * Identity of the cache entry this result concerns: the entry just created
+   * (admitted: true) or the entry it duplicates (admitted: false). Pass this
+   * straight to markAnswered() — undefined only for the blank-question no-op,
+   * where nothing was cached.
+   */
+  id?: number;
   /** Which pipeline already surfaced this question — set only when suppressed. */
   duplicateOfSource?: ChipSource;
   duplicateOfQuestion?: string;
@@ -34,11 +41,17 @@ export interface AdmitResult {
 }
 
 interface CacheEntry {
+  id: number;
   text: string;
   source: ChipSource;
   at: number;
   anchor?: string;
   answered: boolean;
+}
+
+/** Lower-case, collapse whitespace, strip trailing ?.!,;: — containment only. */
+function normalizeForContainment(text: string): string {
+  return text.toLowerCase().replace(/\s+/g, ' ').trim().replace(/[?.!,;:]+$/, '');
 }
 
 export interface ChipDeduperOptions {
@@ -55,6 +68,7 @@ export interface ChipDeduperOptions {
 
 export class ChipDeduper {
   private cache: CacheEntry[] = [];
+  private nextId = 1;
   private readonly windowMs: number;
   private readonly threshold: number;
   private readonly cacheSize: number;
@@ -82,34 +96,35 @@ export class ChipDeduper {
     if (match) {
       return {
         admitted: false,
+        id: match.id,
         duplicateOfSource: match.source,
         duplicateOfQuestion: match.text,
         alreadyAnswered: match.answered,
       };
     }
 
-    this.cache.push({ text, source: candidate.source, at: now, anchor: candidate.anchor, answered: false });
+    const entry: CacheEntry = { id: this.nextId++, text, source: candidate.source, at: now, anchor: candidate.anchor, answered: false };
+    this.cache.push(entry);
     if (this.cache.length > this.cacheSize) this.cache.shift();
-    return { admitted: true };
+    return { admitted: true, id: entry.id };
   }
 
   reset(): void {
     this.cache = [];
   }
 
-  /** Record that the question (or its near-duplicate already in the cache) has been answered. */
-  markAnswered(question: string): void {
-    const text = (question ?? '').trim();
-    if (!text) return;
-    const entry = this.findSimilar(text);
+  /** Record that the cache entry identified by admit()'s returned id has been answered. */
+  markAnswered(id: number | undefined): void {
+    if (id === undefined) return;
+    const entry = this.cache.find((e) => e.id === id);
     if (entry) entry.answered = true;
   }
 
   private findSimilar(text: string, anchor?: string): CacheEntry | null {
-    const normNew = text.toLowerCase().trim();
+    const normNew = normalizeForContainment(text);
     for (const entry of this.cache) {
       if (anchor && entry.anchor && sameAnchor(anchor, entry.anchor)) return entry;
-      const normExisting = entry.text.toLowerCase().trim();
+      const normExisting = normalizeForContainment(entry.text);
       // Containment catches STT fragmentation, where Jaccard is misleadingly
       // low: "architecture." vs "Can you explain Transformers? architecture."
       if (

@@ -86,9 +86,9 @@ describe('ChipDeduper', () => {
 describe('ChipDeduper — answered mark and anchors (2026-09-02)', () => {
   it('a suppressed duplicate says whether the original was already answered', () => {
     const d = new ChipDeduper();
-    d.admit({ question: 'What is a Pod?', source: 'whisper' });
+    const first = d.admit({ question: 'What is a Pod?', source: 'whisper' });
     expect(d.admit({ question: 'What is a Pod?', source: 'live' }).alreadyAnswered).toBe(false);
-    d.markAnswered('What is a Pod?');
+    d.markAnswered(first.id);
     expect(d.admit({ question: 'What is a Pod?', source: 'live' }).alreadyAnswered).toBe(true);
   });
 
@@ -109,5 +109,60 @@ describe('ChipDeduper — answered mark and anchors (2026-09-02)', () => {
     const d = new ChipDeduper();
     d.admit({ question: 'What is a Pod?', source: 'whisper', anchor: 'What is a Pod?' });
     expect(d.admit({ question: 'How do you keep base images patched?', source: 'live' }).admitted).toBe(true);
+  });
+});
+
+describe('ChipDeduper — markAnswered by identity, not a text re-search (R36 fix wave)', () => {
+  it('admit() returns the id of the entry it created; markAnswered(id) targets exactly that entry', () => {
+    const d = new ChipDeduper();
+    const first = d.admit({ question: 'What is a Pod in Kubernetes?', source: 'whisper' });
+    const second = d.admit({ question: 'How do Deployments handle a rollback?', source: 'live' });
+    expect(first.id).toBeDefined();
+    expect(second.id).toBeDefined();
+    expect(second.id).not.toBe(first.id);
+
+    // Mark the SECOND (more recently admitted) entry. The old implementation
+    // re-searched the cache by text and returned the first entry in insertion
+    // order that looked similar — i.e. it could mark the WRONG (earlier) one.
+    // Identity removes the re-search entirely.
+    d.markAnswered(second.id);
+
+    expect(d.admit({ question: 'What is a Pod in Kubernetes?', source: 'whisper' }).alreadyAnswered).toBe(false);
+    expect(d.admit({ question: 'How do Deployments handle a rollback?', source: 'live' }).alreadyAnswered).toBe(true);
+  });
+
+  it('a suppressed duplicate carries the id of the entry it duplicates, so markAnswered(verdict.id) marks the original', () => {
+    const d = new ChipDeduper();
+    const first = d.admit({ question: 'What is a Pod?', source: 'whisper' });
+    const dup = d.admit({ question: 'What is a Pod?', source: 'live' });
+    expect(dup.admitted).toBe(false);
+    expect(dup.id).toBe(first.id);
+    d.markAnswered(dup.id);
+    expect(d.admit({ question: 'What is a Pod?', source: 'whisper' }).alreadyAnswered).toBe(true);
+  });
+
+  it('markAnswered(undefined) — the blank-question no-op case — does nothing', () => {
+    const d = new ChipDeduper();
+    const blank = d.admit({ question: '   ', source: 'whisper' });
+    expect(blank.id).toBeUndefined();
+    expect(() => d.markAnswered(blank.id)).not.toThrow();
+  });
+});
+
+describe('ChipDeduper — containment ignores trailing punctuation (R36 fix wave)', () => {
+  it('a trailing "?" vs "," mismatch no longer escapes containment (Run 1: SageMaker endpoint pair)', () => {
+    // Run 1 evidence: "What is a SageMaker endpoint?" vs "What is a SageMaker
+    // Endpoint, and what d…" escaped containment only because of the "?" —
+    // the second question is extended here (vs. the brief's truncated example)
+    // so Jaccard (0.33) stays well under the 0.7 threshold and cannot also
+    // catch it — this test isolates the containment fix specifically.
+    const d = new ChipDeduper();
+    d.admit({ question: 'What is a SageMaker endpoint?', source: 'whisper' });
+    expect(
+      d.admit({
+        question: 'What is a SageMaker Endpoint, and what does it do differently from a plain REST API deployment',
+        source: 'live',
+      }).admitted
+    ).toBe(false);
   });
 });
