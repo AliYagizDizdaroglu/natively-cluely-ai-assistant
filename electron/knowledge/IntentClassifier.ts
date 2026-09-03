@@ -22,16 +22,13 @@ const COMPANY_KEYWORDS = [
     'benefits', 'perks', 'work life', 'remote', 'office', 'environment',
 ];
 
-// A strong term alone means negotiation. Weak terms are everyday technical
-// vocabulary ("base image", "expect", "range", "stock") and count only next to
-// a strong one — on 2026-09-02 they labelled 25 of 27 technical questions
-// "negotiation" and routed them through the coaching path.
+// A strong term alone means negotiation. On 2026-09-02, also matching on
+// everyday technical vocabulary ("base image", "expect", "range", "stock")
+// labelled 25 of 27 technical questions "negotiation" and routed them through
+// the coaching path — only strong terms are checked now.
 const STRONG_NEGOTIATION = [
     'salary', 'compensation', 'negotiate', 'negotiable', 'equity', 'rsu', 'rsus', 'signing bonus',
     'total comp', 'market rate', 'counteroffer', 'counter offer',
-];
-const WEAK_NEGOTIATION = [
-    'base', 'range', 'expect', 'expectations', 'pay', 'offer', 'package', 'budget', 'raise', 'stock', 'worth', 'requirement',
 ];
 
 const PROFILE_DETAIL_KEYWORDS = [

@@ -3182,10 +3182,12 @@ async function initializeApp() {
 
   // Dev-only: the interview60 harness relaunches the app unattended and needs a
   // meeting running without a click. Same env-gate pattern as
-  // NATIVELY_DETECTOR_CHAIN_TEST; production never sets either variable.
+  // NATIVELY_DETECTOR_CHAIN_TEST; production never sets either variable — also
+  // gated on !app.isPackaged so a packaged build can't be made to autostart by
+  // an environment variable regardless.
   // NATIVELY_LIVE_MODE seeds (and, via setLiveMode, persists) the Live mode so the
   // very first unattended launch comes up listening in Auto.
-  if (process.env.NATIVELY_AUTOSTART_MEETING === '1') {
+  if (!app.isPackaged && process.env.NATIVELY_AUTOSTART_MEETING === '1') {
     setTimeout(() => {
       const seeded = process.env.NATIVELY_LIVE_MODE;
       if (seeded) {

@@ -146,8 +146,9 @@ export class IntelligenceManager extends EventEmitter {
         // (not detectionClient directly) so the gate exercises the merge in
         // mergeScenarioSentence.ts, not just the prompt — the prompt alone is not
         // reliable for this (see questionDetection.ts). Delayed so credentials are
-        // loaded first. Never set in production.
-        if (process.env.NATIVELY_DETECTOR_CALIBRATE === '1') {
+        // loaded first. Never set in production — also gated on !app.isPackaged so a
+        // packaged build can't be made to run this by an environment variable.
+        if (!require('electron').app.isPackaged && process.env.NATIVELY_DETECTOR_CALIBRATE === '1') {
             setTimeout(async () => {
                 let pass = 0;
                 for (const c of DETECTOR_CALIBRATION_CASES) {
