@@ -4,7 +4,6 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { INTERVIEW } from './interview60.questions.mjs';
 import { overlap, logSince } from './interview60.lib.mjs';
 
 const CONTAMINATED = ['[2026-09-02T16:21:50'];
@@ -43,6 +42,11 @@ export function computeRun(dir) {
  * numbers two different ways.
  */
 export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPath }) {
+    // logSince() silently returns '' for a missing file (it's built to tolerate
+    // a not-yet-rotated-in log), which would otherwise turn a bad run dir into
+    // an all-zero table instead of an error naming what's missing.
+    if (!fs.existsSync(debugLog)) throw new Error(`missing ${debugLog}`);
+    if (!fs.existsSync(diagLog)) throw new Error(`missing ${diagLog}`);
     const timeline = JSON.parse(fs.readFileSync(timelinePath, 'utf8'));
     const dbg = logSince(debugLog, timeline.startDebug, timeline.endDebug);
     const diag = logSince(diagLog, timeline.startDiag, timeline.endDiag)
