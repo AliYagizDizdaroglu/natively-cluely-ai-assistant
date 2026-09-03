@@ -60,7 +60,7 @@ const before = beforeDirArg
 const after = afterDirArg ? computeRun(path.resolve(afterDirArg)) : null;
 
 const {
-    items, invented, surfacedMulti, stats, stt, routes, redirects, hardFails, liveQ, orphanLive, cues,
+    items, caught, surfacedMulti, stats, stt, routes, redirects, hardFails, liveQ, orphanLive, cues,
     answersPass: A, startedAt, endedAt, durationMin, detectP50, detectP90, heard, answered,
 } = before;
 const n = items.length;
@@ -166,7 +166,7 @@ const findings = [
     {
         sev: 'high', status: 'open',
         title: 'Live surfaced a question that was never asked, and Auto mode answered it',
-        symptom: `At 16:01:13 the Live detector emitted "Tell me about a time you handled a resource constraint problem in a deployment." No such sentence exists anywhere in the hour of audio. The STT partials from the same seconds carry the question actually being spoken — M04, "Why would you use CloudFormation instead of configuring things by hand in the console?" — word for word, so the audio was clean. The chip on screen was the invented question, and Auto mode answered it with a behavioural intent override. The answer that came back was about CloudFormation, because the answer prompt is built from the STT transcript rather than from Live's label — the reader saw the wrong question over the right answer. Over the hour ${invented} of ${liveQ.length} Live lines match${invented === 1 ? 'es' : ''} no played question${orphanLive.length - invented > 0 ? `, and ${orphanLive.length - invented} more ${orphanLive.length - invented === 1 ? 'is' : 'are'} a re-detection or a paraphrase that no single question can claim` : ''}. Related: ${surfacedMulti} question${surfacedMulti === 1 ? '' : 's'} reached the renderer from both detectors because the deduper compares text and Live had rewritten it (M25: "How would you handle a dataset that must be deleted on request for compliance?" became "How do you design a system where customer data must be deleted on request…", one chip marked coding, the other verbal); whether the chip list merged them on screen was not observed.`,
+        symptom: `At 16:01:13 the Live detector emitted "Tell me about a time you handled a resource constraint problem in a deployment." No such sentence exists anywhere in the hour of audio. The STT partials from the same seconds carry the question actually being spoken — M04, "Why would you use CloudFormation instead of configuring things by hand in the console?" — word for word, so the audio was clean. The chip on screen was the invented question, and Auto mode answered it with a behavioural intent override. The answer that came back was about CloudFormation, because the answer prompt is built from the STT transcript rather than from Live's label — the reader saw the wrong question over the right answer. Over the hour ${caught} of ${liveQ.length} Live lines match${caught === 1 ? 'es' : ''} no played question${orphanLive.length - caught > 0 ? `, and ${orphanLive.length - caught} more ${orphanLive.length - caught === 1 ? 'is' : 'are'} a re-detection or a paraphrase that no single question can claim` : ''}. Related: ${surfacedMulti} question${surfacedMulti === 1 ? '' : 's'} reached the renderer from both detectors because the deduper compares text and Live had rewritten it (M25: "How would you handle a dataset that must be deleted on request for compliance?" became "How do you design a system where customer data must be deleted on request…", one chip marked coding, the other verbal); whether the chip list merged them on screen was not observed.`,
         evidence: [
             '16:01:08.232  [DeepgramStreaming] Transcript event — isFinal=false, text="Why would you use CloudFormation instead of configuring things by"',
             '16:01:13.273  [Main] Live question (behavioral, mode=auto): "Tell me about a time you handled a resource constraint problem in a deployment."',
@@ -176,7 +176,7 @@ const findings = [
         cause: 'The Live detector\'s output is a model-written string — the question as Gemini Live chose to phrase it — and nothing compares it with what the STT heard before it becomes the chip text and the intent. Usually the rewrite is harmless ("Walk me through…" → "How…"); once this hour it was a different question, and its intent was used to choose the answer style.',
         fix: 'Not changed.',
         recommendation: 'Cross-check every Live question against the last few seconds of STT transcript (token overlap, the same measure this report uses). On a good match surface the transcript\'s wording; on a poor match surface the transcript sentence and treat Live\'s intent as advisory. The same check removes the double chips, since both detectors would then agree on the text.',
-        after: (m) => `${m.invented} invented, ${m.surfacedMulti} double${m.surfacedMulti === 1 ? '' : 's'}`,
+        after: (m) => `${m.caught} caught, ${m.surfacedMulti} double${m.surfacedMulti === 1 ? '' : 's'}`,
     },
     {
         sev: 'medium', status: 'open',
@@ -284,10 +284,19 @@ const gateSection = !after ? '' : (() => {
     const g = evaluateGate(after);
     const gateRows = g.rows.map((r, i) => `<tr><td>${esc(r.label)}</td><td class="num">${esc(GATE[i].before)}</td><td class="num">${esc(r.value)}</td><td class="num">${r.pass ? 'PASS' : 'FAIL'}</td></tr>`).join('');
     const afterLabel = `After · ${esc((after.startedAt ?? '').slice(0, 10) || 'this run')}`;
+    // Each folder computed independently — a folder missing a required log
+    // file (a partial or interrupted run) used to throw and take the whole
+    // iterations table (and this entire report) down with it.
     const iterations = exists(RUNS_DIR)
         ? fs.readdirSync(RUNS_DIR, { withFileTypes: true }).filter((e) => e.isDirectory())
-            .map((e) => computeRun(path.join(RUNS_DIR, e.name)))
-            .map((rm) => `<tr><td>${esc(path.basename(rm.dir))}</td><td class="num">${rm.answered}/${rm.items.length}</td><td class="num">${rm.heard}/${rm.items.length}</td><td class="num">${rm.sttCloses}</td></tr>`)
+            .map((e) => {
+                try {
+                    const rm = computeRun(path.join(RUNS_DIR, e.name));
+                    return `<tr><td>${esc(path.basename(rm.dir))}</td><td class="num">${rm.answered}/${rm.items.length}</td><td class="num">${rm.heard}/${rm.items.length}</td><td class="num">${rm.sttCloses}</td></tr>`;
+                } catch (err) {
+                    return `<tr><td>${esc(e.name)}</td><td colspan="3">incomplete: ${esc(err.message)}</td></tr>`;
+                }
+            })
             .join('')
         : '';
     return `

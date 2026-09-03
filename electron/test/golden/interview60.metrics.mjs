@@ -113,9 +113,35 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const hasDispatch = dispatches.length > 0;
     const spoken = timeline.items.filter((i) => i.kind === 'spoken');
     const claimedLive = new Set();
-    const claimedDispatches = new Set();
-    const items = spoken.map((it) => {
-        const spokeEnd = it.playedAt + Math.round(it.clipSecs * 1000);
+    const itemWindows = spoken.map((it) => ({ ...it, spokeEnd: it.playedAt + Math.round(it.clipSecs * 1000) }));
+
+    // Claim each dispatch line for exactly one item — the item with the
+    // highest anchor overlap (checked both directions), ties broken by the
+    // latest playedAt <= the dispatch's own time (Ruling R33). Before this,
+    // each item independently scanned every dispatch inside its own
+    // [playedAt-2s, spokeEnd+60s] window, so two items whose tails overlapped
+    // (a 45s gap between items, a 60s tail) could BOTH claim the same line —
+    // a false "double" (whole-branch review, Important #1).
+    const claimOf = new Map(); // dispatch -> item
+    if (hasDispatch) {
+        for (const d of dispatches) {
+            const candidates = itemWindows
+                .filter((it) => d.at >= it.playedAt - 2000 && d.at <= it.spokeEnd + 60000)
+                .map((it) => ({ it, score: Math.max(overlap(d.anchor, it.q), overlap(it.q, d.anchor)) }))
+                .filter((c) => c.score >= 0.15);
+            if (!candidates.length) continue;
+            candidates.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                const aPast = a.it.playedAt <= d.at, bPast = b.it.playedAt <= d.at;
+                if (aPast !== bPast) return aPast ? -1 : 1;
+                return b.it.playedAt - a.it.playedAt;
+            });
+            claimOf.set(d, candidates[0].it);
+        }
+    }
+
+    const items = itemWindows.map((it) => {
+        const spokeEnd = it.spokeEnd;
         const win = (ev) => ev.at >= it.playedAt - 2000 && ev.at <= spokeEnd + 60000;
         const best = (list, key = 'heard') => {
             const c = list.filter(win).map((e) => ({ e, ov: overlap(e[key], it.q) })).sort((a, b) => b.ov - a.ov);
@@ -124,14 +150,13 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
             return c.length === 1 && c[0].ov >= 0.15 ? c[0].e : null;
         };
         if (hasDispatch) {
-            const mine = dispatches.filter(win).filter((d) => overlap(d.anchor, it.q) >= 0.15 || overlap(it.q, d.anchor) >= 0.15);
-            mine.forEach((d) => claimedDispatches.add(d));
+            const mine = dispatches.filter((d) => claimOf.get(d) === it);
             const ans = mine.find((d) => d.action === 'answer') ?? null;
             const route = ans ? routes.find((r) => r.at >= ans.at && r.at <= ans.at + 4000) ?? null : null;
             const sources = new Set(mine.map((d) => d.source));
             const heardBy = sources.size === 2 ? 'both' : sources.size === 1 ? [...sources][0] : null;
             const surfaced = mine.filter((d) => d.action !== 'drop').length;
-            return { ...it, spokeEnd, heardBy, answered: !!(ans && route), answeredAt: ans?.at ?? null,
+            return { ...it, heardBy, answered: !!(ans && route), answeredAt: ans?.at ?? null,
                 detectMs: mine.length ? Math.min(...mine.map((d) => d.at)) - spokeEnd : null,
                 dispatches: surfaced, verdict: ans?.verdict ?? mine[0]?.verdict ?? null,
                 routeCoding: !!(route && /^CODING/.test(route.route)),
@@ -144,7 +169,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         const wf = best(whisperFwd);
         const route = live && !sup ? routes.find((r) => r.at >= live.at && r.at <= live.at + 4000) ?? null : null;
         const heardBy = live && wf ? 'both' : live ? 'live' : wf ? 'whisper' : null;
-        return { ...it, spokeEnd, heardBy, answered: !!route, answeredAt: live?.at ?? null,
+        return { ...it, heardBy, answered: !!route, answeredAt: live?.at ?? null,
             detectMs: live ? live.at - spokeEnd : wf ? wf.at - spokeEnd : null,
             dispatches: (live && !sup ? 1 : 0) + (wf ? 1 : 0), verdict: null,
             routeCoding: !!(route && /^CODING/.test(route.route)),
@@ -158,16 +183,43 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const orphanLive = hasDispatch ? [] : liveQ.filter((q) => !claimedLive.has(q) && !suppressed.some((s) => Math.abs(s.at - q.at) < 50))
         // compared against every item played, cues included — the cue sentences were spoken aloud too
         .map((q) => ({ ...q, bestOv: Math.max(0, ...timeline.items.map((i) => overlap(q.heard, i.q))) }));
-    const invented = hasDispatch ? dispatches.filter((d) => d.verdict === 'replaced').length : orphanLive.filter((q) => q.bestOv < 0.3).length;
+    // Formerly "invented": a verdict=replaced dispatch means the reconciler
+    // CAUGHT a mismatch between Live's claim and what the interviewer STT
+    // heard and substituted the real text — the reconciler working
+    // correctly, not a failure reaching the user (Ruling R34, spec §4.3).
+    // Informational only; no longer part of the "surfaced" gate row.
+    const caught = hasDispatch ? dispatches.filter((d) => d.verdict === 'replaced').length : orphanLive.filter((q) => q.bestOv < 0.3).length;
     // An answer produced for something that isn't one of the played questions:
-    // an orphan Live line (baseline) or an orphan dispatch (after) that still
-    // reached an answer/route — the "to nobody" count the gate wants at 0.
+    // an orphan Live line (baseline) or an unclaimed dispatch (after) that
+    // still reached an answer/route — the "to nobody" count the gate wants at 0.
     const answersToNobody = hasDispatch
-        ? dispatches.filter((d) => d.action === 'answer' && !claimedDispatches.has(d)).length
+        ? dispatches.filter((d) => d.action === 'answer' && !claimOf.has(d)).length
         : orphanLive.filter((q) => routes.some((r) => r.at >= q.at && r.at <= q.at + 4000)).length;
+    // Answers dispatched on an unverifiable Live claim that nonetheless had a
+    // real interviewer STT final nearby — informational: measures how often
+    // information was available that a pre-R37 run did not wait for (spec
+    // §4.3's "unverifiable only while STT is down"). [RestSTT] or
+    // DeepgramStreaming isFinal=true, whichever the run has; finals reuses the
+    // Deepgram matches already computed above.
+    const interviewerSttFinalAt = [
+        ...finals.map((f) => f.at),
+        ...[...dbg.matchAll(/^(\S+) \[LOG\] \[RestSTT\] Transcript: /gm)].map((m) => ts(m[1])),
+    ];
+    const unverifiableWithSttUp = hasDispatch
+        ? dispatches.filter((d) => d.action === 'answer' && d.verdict === 'unverifiable'
+            && interviewerSttFinalAt.some((t) => Math.abs(t - d.at) <= 10000)).length
+        : 0;
 
     const heard = items.filter((i) => i.heardBy !== null).length;
     const answered = items.filter((i) => i.answered).length;
+    // Ruling R31: a dispatched "answer" is not necessarily a delivered one —
+    // WhatToAnswerLLM can fail after the dispatch line was already logged
+    // (primary AND fallback both failing). delivered floors at 0 so a
+    // pathological run (more failures logged than answers this window
+    // attributes — a boundary/windowing artifact, not a real negative) never
+    // shows a negative number.
+    const answerFailures = count(/\[WhatToAnswerLLM\] Stream failed/g);
+    const delivered = Math.max(0, answered - answerFailures);
     const raceLosses = items.filter((i) => i.raceLoss).length;
     const codingForSpoken = items.filter((i) => i.answered && i.routeCoding).length;
     // both detectors independently surfacing a chip for the same question —
@@ -213,7 +265,8 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
 
     return {
         startedAt: timeline.startedAt, endedAt: timeline.endedAt, durationMin, items,
-        heard, answered, answersToNobody, surfacedMax, surfacedMulti, invented, raceLosses,
+        heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti,
+        caught, unverifiableWithSttUp, raceLosses,
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
         detectP50, ttftP90, ttftSource,
@@ -223,9 +276,9 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
 }
 
 export const GATE = [
-    { key: 'answered', label: 'Answered hands-free', before: '26/52', pass: (m) => m.answered >= 50 && m.answersToNobody === 0, show: (m) => `${m.answered}/${m.items.length}, ${m.answersToNobody} to nobody` },
+    { key: 'answered', label: 'Answered hands-free', before: '26/52', pass: (m) => m.delivered >= 50 && m.answersToNobody === 0, show: (m) => `${m.delivered}/${m.answered} dispatched, ${m.answersToNobody} to nobody` },
     { key: 'heard', label: 'Heard by either detector', before: '51/52', pass: (m) => m.heard >= 51, show: (m) => `${m.heard}/${m.items.length}` },
-    { key: 'surfaced', label: 'Surfaced detections per question', before: '12 doubles, 1 invented', pass: (m) => m.surfacedMulti === 0 && m.invented === 0, show: (m) => `${m.surfacedMulti} doubles, ${m.invented} invented` },
+    { key: 'surfaced', label: 'Surfaced detections per question', before: '12 doubles, 1 invented', pass: (m) => m.surfacedMulti === 0 && m.answersToNobody === 0, show: (m) => `${m.surfacedMulti} doubles, ${m.caught} caught, ${m.answersToNobody} unclaimed` },
     { key: 'stt', label: 'STT socket closes / lost utterances / fragment chips', before: '299 / 2 / 5', pass: (m) => m.sttCloses <= 5 && m.lostUtterances === 0 && m.fragmentChips === 0, show: (m) => `${m.sttCloses} / ${m.lostUtterances} / ${m.fragmentChips}` },
     { key: 'coaching', label: 'Technical questions answered via the coaching path', before: '25', pass: (m) => m.coachingAnswers === 0, show: (m) => String(m.coachingAnswers) },
     { key: 'coding', label: 'Spoken questions routed CODING', before: '4 routes (2 of them screenshot cues)', pass: (m) => m.codingForSpoken === 0, show: (m) => String(m.codingForSpoken) },

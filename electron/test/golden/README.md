@@ -160,7 +160,7 @@ routing, answering, and Live-session stability are all measured on the real app.
 | `interview60.run.mjs` | `preflight` / `app` / `report` / `gate` / `auto` — see below |
 | `interview60.answers.mjs` | answer-only pass over the same questions: scored quality + latency, no Live |
 | `interview60.chains.mjs` | chain-question continuity: follow-ups that lean on "it"/"that", asked with the app's transcript vs standalone |
-| `interview60.metrics.mjs` | `computeRun(dir) → RunMetrics` — the one analysis (attribution, STT, coaching, gate) shared by `gate` and the report, plus the spec §6 pass table (`GATE`, `evaluateGate`) |
+| `interview60.metrics.mjs` | `computeRun(dir) → RunMetrics` — the one analysis (attribution, STT, coaching, gate) shared by `gate` and the report, plus the spec §6 pass table (`GATE`, `evaluateGate`). Each dispatch line is claimed by exactly one item (highest anchor overlap, ties to the latest); `delivered` (= `answered` minus `[WhatToAnswerLLM] Stream failed` lines) is what the "Answered hands-free" row judges; a `verdict=replaced` line is `caught` (informational — the reconciler catching a mismatch, not an invented question reaching the user) |
 | `interview60.report-html.mjs` | builds the flight-test report page from the logs |
 
 ```bash

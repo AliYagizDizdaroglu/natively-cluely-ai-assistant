@@ -36,7 +36,15 @@ describe.skipIf(!have)(`computeRun on the 2026-09-02 baseline (regression: the n
         expect(m.codingForSpoken).toBeGreaterThanOrEqual(2);
         expect(m.codingForSpoken).toBeLessThanOrEqual(4);
         expect(m.expiryLoops).toBe(0);
-        expect(m.invented).toBe(1);
+        // Renamed from "invented" to "caught" (Ruling R34) — same formula, same
+        // value here: this fixture has zero dispatch: lines (hasDispatch is
+        // always false), so claim-once (Ruling R33) never runs against it and
+        // none of this describe block's OTHER pinned numbers change either —
+        // verified by running `gate` against this folder directly (quoted in
+        // the fix-wave report): heard 51/52, sttCloses/lostUtterances/
+        // fragmentChips 299/2/5, coachingAnswers 25, surfacedMulti 12,
+        // codingForSpoken 3 (inside the pinned 2–4 range) all matched exactly.
+        expect(m.caught).toBe(1);
         expect(m.surfacedMulti).toBe(12);
         expect(m.ttftSource).toBe('answer-only');
     });
@@ -82,10 +90,28 @@ describe.skipIf(!have)(`computeRun on the 2026-09-02 baseline (regression: the n
  * Plus three "phantom" dispatch lines timed and worded to match none of
  * Q1–Q4 (either by vocabulary or by falling outside every item's
  * [playedAt-2s, playedAt+60s] window, or both): two verdict=replaced drops
- * (→ invented = 2) and one unclaimed answer (→ answersToNobody = 1) — kept
- * as separate lines, not one line serving both roles, specifically so that a
- * bug that swapped the invented/answersToNobody formulas would change the
- * numbers rather than accidentally still matching.
+ * (→ caught = 2) and one unclaimed answer (→ contributes to answersToNobody)
+ * — kept as separate lines, not one line serving both roles, specifically so
+ * that a bug that swapped the caught/answersToNobody formulas would change
+ * the numbers rather than accidentally still matching.
+ *
+ * R36 fix wave additions (Rulings R30/R31/R33/R34):
+ *   W01/W02 — 45s apart, sharing vocabulary ("load balancer", "backend
+ *     server(s)") — the whole-branch reviewer's exact false-double case: each
+ *     has its own dispatch line whose anchor is an exact match for its OWN
+ *     item but which ALSO clears the 0.15 overlap floor against the OTHER
+ *     item (0.625/0.556, measured with the real overlap()). Before claim-once
+ *     each item independently scanned its whole window, so W01 and W02 would
+ *     EACH have claimed BOTH lines (dispatches=2 apiece — two false
+ *     "doubles"); claim-once assigns each line to its single
+ *     highest-overlap item, so each ends up with dispatches=1.
+ *   one [WhatToAnswerLLM] Stream failed line — answerFailures = 1.
+ *   two verdict=unverifiable answers, timed past every item's window (so
+ *     both are unclaimed, adding to answersToNobody): the first has an
+ *     interviewer [RestSTT] final within ±10s (counts toward
+ *     unverifiableWithSttUp), the second has no interviewer STT final
+ *     anywhere nearby (does not) — proving the metric is gated on "STT was
+ *     actually up nearby", not just a raw count of unverifiable answers.
  */
 describe('computeRun on a synthetic run (exercises the dispatch: branch and in-app TTFT, neither reachable from the 2026-09-02 baseline)', () => {
     const T0 = Date.parse('2026-01-01T00:00:00.000Z');
@@ -110,6 +136,8 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
                 { id: 'Q2', kind: 'spoken', q: 'Describe the tradeoffs between synchronous and asynchronous message queues.', playedAt: T0 + 120000, clipSecs: 0 },
                 { id: 'Q3', kind: 'spoken', q: 'What happens when a distributed database partition loses network connectivity.', playedAt: T0 + 240000, clipSecs: 0 },
                 { id: 'Q4', kind: 'spoken', q: 'How would you rotate credentials for a service without causing an outage.', playedAt: T0 + 360000, clipSecs: 0 },
+                { id: 'W01', kind: 'spoken', q: 'Explain how a load balancer distributes incoming traffic across backend servers.', playedAt: T0 + 600000, clipSecs: 0 },
+                { id: 'W02', kind: 'spoken', q: 'Explain how a load balancer performs health checks on backend servers.', playedAt: T0 + 645000, clipSecs: 0 },
             ],
         };
 
@@ -133,6 +161,21 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             `${iso(T0 + 500000)} [LOG] [Main] dispatch: drop source=live anchor="The weather forecast mentioned scattered thunderstorms across the valley." verdict=replaced`,
             `${iso(T0 + 510000)} [LOG] [Main] dispatch: drop source=whisper anchor="Grocery shopping list includes bread milk and seasonal vegetables." verdict=replaced`,
             `${iso(T0 + 520000)} [LOG] [Main] dispatch: answer source=live anchor="The museum exhibit featured paintings from the early impressionist period." verdict=match`,
+            // R36 fix wave (Ruling R33): W01's own dispatch — exact match for
+            // W01.q, but overlap(anchor, W02.q)=0.556/0.625 also clears 0.15.
+            `${iso(T0 + 601000)} [LOG] [Main] dispatch: answer source=live anchor="Explain how a load balancer distributes incoming traffic across backend servers." verdict=match`,
+            // W02's own dispatch — the mirror image, inside BOTH W01's window
+            // ([598000,660000]) and W02's window ([643000,705000]) — the 17s
+            // overlap (643000..660000) is exactly the false-double risk.
+            `${iso(T0 + 646500)} [LOG] [Main] dispatch: answer source=whisper anchor="Explain how a load balancer performs health checks on backend servers." verdict=match`,
+            // R36 fix wave (Ruling R31): one Stream-failed line -> answerFailures = 1.
+            `${iso(T0 + 700000)} [ERROR] [WhatToAnswerLLM] Stream failed: 429 exceeded your current quota`,
+            // R36 fix wave (Ruling R34): two unverifiable answers, timed past
+            // every item's window (unclaimed -> both add to answersToNobody).
+            // Only the first has an interviewer STT final within +/-10s.
+            `${iso(T0 + 800000)} [LOG] [Main] dispatch: answer source=live anchor="An unverifiable Live claim with a real interviewer final nearby." verdict=unverifiable`,
+            `${iso(T0 + 805000)} [LOG] [RestSTT] Transcript: "the actual thing the interviewer said" id=r1`,
+            `${iso(T0 + 900000)} [LOG] [Main] dispatch: answer source=live anchor="An unverifiable Live claim with no interviewer STT anywhere nearby." verdict=unverifiable`,
             // Two STT socket closes (code=1011) with a Connected before each.
             `${iso(T0 + 1000)} [LOG] [DeepgramStreaming] Connected`,
             `${iso(T0 + 11000)} [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)`,
@@ -246,26 +289,62 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(q4.dispatches).toBe(0); // the only dispatch is a drop, excluded from "surfaced".
     });
 
+    it('W01/W02 — 45s apart, sharing vocabulary, each claimed exactly once (Ruling R33, the whole-branch review finding)', () => {
+        const w01 = m.items.find((i: any) => i.id === 'W01');
+        const w02 = m.items.find((i: any) => i.id === 'W02');
+        // Before claim-once, both items independently scanned their own window
+        // and each would have found BOTH the +601000 and +646500 lines (each
+        // clears the 0.15 overlap floor against both items) — dispatches=2 on
+        // BOTH, two false "doubles". Claim-once assigns each line to its
+        // single highest-overlap item, so each ends up with exactly one.
+        expect(w01.dispatches).toBe(1);
+        expect(w02.dispatches).toBe(1);
+        // Not just "1", but the RIGHT one: W01 claims its own (source=live),
+        // W02 claims its own (source=whisper) — not each other's.
+        expect(w01.heardBy).toBe('live');
+        expect(w02.heardBy).toBe('whisper');
+        expect(w01.detectMs).toBe(1000); // (T0+601000) - (T0+600000).
+        expect(w02.detectMs).toBe(1500); // (T0+646500) - (T0+645000).
+    });
+
     it('top-level counts, each derived from the lines above', () => {
-        // heard = items with heardBy !== null: Q1(live), Q2(both), Q4(live) — not Q3.
-        expect(m.heard).toBe(3);
-        // answered = items with answered === true: Q1, Q2 only (Q3 and Q4 are not).
+        // heard = items with heardBy !== null: Q1(live), Q2(both), Q4(live),
+        // W01(live), W02(whisper) — not Q3. = 5.
+        expect(m.heard).toBe(5);
+        // answered = items with answered === true: Q1, Q2 only. W01/W02 have
+        // no matching route within 4000ms of their answer dispatch — by
+        // design, this fixture targets claim-once, not the answered/route path.
         expect(m.answered).toBe(2);
+        // answerFailures = count of "[WhatToAnswerLLM] Stream failed" lines = 1.
+        // delivered = max(0, answered - answerFailures) = max(0, 2 - 1) = 1.
+        expect(m.answerFailures).toBe(1);
+        expect(m.delivered).toBe(1);
         // answersToNobody: dispatches.filter(action==='answer' && unclaimed by
         // any item). Q1's and Q2's answer dispatches ARE claimed (they're in
-        // those items' `mine`); the one phantom `action=answer` line (+520000,
-        // "museum exhibit…") shares no vocabulary with Q1-Q4 and sits well past
-        // every item's window, so it is claimed by nobody. = 1.
-        expect(m.answersToNobody).toBe(1);
-        // surfacedMax = max(dispatches) across items = max(1, 2, 0, 0) = 2 (Q2).
+        // those items' `mine`); so are W01's and W02's (claimed by W01 and W02
+        // respectively, exactly once each — see the claim-once test above).
+        // Unclaimed: the phantom "museum exhibit" answer (+520000) plus the
+        // two unverifiable answers (+800000, +900000) — all timed past every
+        // item's window. = 3.
+        expect(m.answersToNobody).toBe(3);
+        // surfacedMax = max(dispatches) across items = max(1,2,0,0,1,1) = 2 (Q2).
         expect(m.surfacedMax).toBe(2);
         // surfacedMulti = count of items with dispatches > 1 = just Q2 = 1.
+        // Before claim-once this would have been 3 (Q2, W01 and W02 would each
+        // show dispatches=2) — the false-double bug the W01/W02 test above
+        // proves fixed.
         expect(m.surfacedMulti).toBe(1);
-        // invented = dispatches.filter(verdict==='replaced').length, counted
-        // over ALL dispatch lines regardless of claimed status — the two
-        // phantom drops at +500000/+510000 both have verdict=replaced; Q2's
-        // and Q4's drops are verdict=paraphrase, not replaced. = 2.
-        expect(m.invented).toBe(2);
+        // caught (formerly "invented") = dispatches.filter(verdict==='replaced')
+        // .length, counted over ALL dispatch lines regardless of claimed status
+        // — the two phantom drops at +500000/+510000 both have
+        // verdict=replaced; none of the new lines do. = 2.
+        expect(m.caught).toBe(2);
+        // unverifiableWithSttUp = answer dispatches with verdict=unverifiable
+        // that have an interviewer STT final ([RestSTT] or DeepgramStreaming
+        // isFinal=true) within ±10s. The +800000 answer has a [RestSTT] final
+        // at +805000 (5s away, inside the window) — counts. The +900000
+        // answer has no STT final anywhere nearby — does not. = 1.
+        expect(m.unverifiableWithSttUp).toBe(1);
         // raceLosses = items with raceLoss === true = just Q4 = 1.
         expect(m.raceLosses).toBe(1);
         // sttCloses = count of "Closed (code=1011" lines = 2.
@@ -277,11 +356,12 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(m.codingForSpoken).toBe(1);
         expect(m.expiryLoops).toBe(1);
         expect(m.liveReconnects).toBe(1);
-        // detectMs sorted = [1000 (Q4), 1500 (Q2), 2000 (Q1)] (Q3's null is
-        // filtered out). pct(a, p) = a[min(a.length-1, floor(a.length*p))].
-        // p50: floor(3*0.5)=1 → sorted[1] = 1500.
+        // detectMs sorted = [1000 (Q4), 1000 (W01), 1500 (Q2), 1500 (W02), 2000
+        // (Q1)] (Q3's null is filtered out). pct(a, p) =
+        // a[min(a.length-1, floor(a.length*p))].
+        // p50: floor(5*0.5)=2 → sorted[2] = 1500.
         expect(m.detectP50).toBe(1500);
-        // p90: floor(3*0.9)=2 → sorted[2] = 2000.
+        // p90: floor(5*0.9)=4 → sorted[4] = 2000.
         expect(m.detectP90).toBe(2000);
         // in-app TTFT: firstTokens present (3 lines) so ttftSource is 'in-app'
         // regardless of there being no answers.json.
@@ -294,11 +374,12 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         const g = evaluateGate(m);
         expect(g.pass).toBe(false);
         const rows = Object.fromEntries(g.rows.map((r) => [r.label, r.pass]));
-        // answered=2 is nowhere near >=50; answersToNobody=1 also fails it alone.
+        // delivered=1 is nowhere near >=50; answersToNobody=3 also fails it alone.
         expect(rows['Answered hands-free']).toBe(false);
-        // heard=3 is nowhere near >=51.
+        // heard=5 is nowhere near >=51.
         expect(rows['Heard by either detector']).toBe(false);
-        // surfacedMulti=1 and invented=2 are both nonzero.
+        // surfacedMulti=1 and answersToNobody=3 are both nonzero (caught is
+        // informational now — Ruling R34 — and no longer part of this row).
         expect(rows['Surfaced detections per question']).toBe(false);
         // lostUtterances=1 and fragmentChips=1 are both nonzero (sttCloses=2 alone would pass).
         expect(rows['STT socket closes / lost utterances / fragment chips']).toBe(false);
