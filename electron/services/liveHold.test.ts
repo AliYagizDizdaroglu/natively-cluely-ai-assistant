@@ -191,4 +191,21 @@ describe('createLiveHold', () => {
         vi.advanceTimersByTime(2500);
         expect(log).toEqual(['resolved:live3']);
     });
+
+    it('peek() shows the pending detection without touching the timer, and null once resolved or cancelled', () => {
+        vi.useFakeTimers();
+        const onResolve = vi.fn();
+        const hold = createLiveHold<{ id: string }>({ holdMs: 2500, onResolve });
+        expect(hold.peek()).toBeNull();
+        hold.offer({ id: 'a' });
+        expect(hold.peek()).toEqual({ id: 'a' });
+        vi.advanceTimersByTime(2499);
+        expect(hold.peek()).toEqual({ id: 'a' });
+        vi.advanceTimersByTime(1);
+        expect(onResolve).toHaveBeenCalledTimes(1);
+        expect(hold.peek()).toBeNull();
+        hold.offer({ id: 'b' });
+        hold.cancel();
+        expect(hold.peek()).toBeNull();
+    });
 });

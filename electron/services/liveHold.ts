@@ -28,6 +28,8 @@ export interface LiveHold<T> {
     offer(detection: T): T | null;
     /** An interviewer STT final arrived — resolve the pending hold now, if any. */
     onInterviewerFinal(): void;
+    /** The pending detection, if any — read-only; the timer is untouched. */
+    peek(): T | null;
     /** Drop any pending hold without resolving it (meeting stop, mode → off, dedup reset). */
     cancel(): void;
 }
@@ -60,6 +62,9 @@ export function createLiveHold<T>(opts: LiveHoldOptions<T>): LiveHold<T> {
         },
         onInterviewerFinal(): void {
             if (pending) resolveNow();
+        },
+        peek(): T | null {
+            return pending;
         },
         cancel(): void {
             pending = null;
