@@ -12,6 +12,7 @@ import {
     AssistantResponse as LLMAssistantResponse, classifyIntent
 } from './llm';
 import { getAnswerShapeGuidance, IntentResult } from './llm/IntentClassifier';
+import { pinSettledQuestion } from './llm/lastInterviewerTurn';
 
 // Mode types
 export type IntelligenceMode = 'idle' | 'assist' | 'what_to_say' | 'follow_up' | 'recap' | 'clarify' | 'manual' | 'follow_up_questions' | 'code_hint' | 'brainstorm';
@@ -290,8 +291,17 @@ export class IntelligenceEngine extends EventEmitter {
 
             const contextItems = this.session.getContext(180);
 
-            // Inject latest interim transcript if available
-            const lastInterim = this.session.getLastInterimInterviewer();
+            // The question this call was dispatched with — a Live sentence, a
+            // detector chip, a clicked chip, a typed question. Pinned as the last
+            // interviewer line of the prompt: on 2026-09-04 the prompt ended with
+            // the raw STT tail instead ("Serving.", "What do you do?") and four
+            // correctly dispatched questions were answered wrong (spec §1–2).
+            const settled = question?.trim() ? question.trim() : null;
+
+            // Inject latest interim transcript if available — never when a settled
+            // question is pinned: the pin owns the last line, and an interim would
+            // put a fragment back after it.
+            const lastInterim = settled ? null : this.session.getLastInterimInterviewer();
             if (lastInterim && lastInterim.text.trim().length > 0) {
                 const lastItem = contextItems[contextItems.length - 1];
                 const isDuplicate = lastItem &&
@@ -311,7 +321,7 @@ export class IntelligenceEngine extends EventEmitter {
             let preparedTranscript: string;
             let lastInterviewerTurn: string | null;
             if (options.contextOverride) {
-                preparedTranscript = options.contextOverride;
+                preparedTranscript = settled ? pinSettledQuestion(options.contextOverride, settled) : options.contextOverride;
                 lastInterviewerTurn = question ?? null;
                 console.log('[IntelligenceEngine] runWhatShouldISay: using contextOverride snapshot');
             } else {
@@ -322,8 +332,9 @@ export class IntelligenceEngine extends EventEmitter {
                 }));
 
                 preparedTranscript = prepareTranscriptForWhatToAnswer(transcriptTurns, 12);
+                if (settled) preparedTranscript = pinSettledQuestion(preparedTranscript, settled);
 
-                lastInterviewerTurn = (() => {
+                lastInterviewerTurn = settled ?? (() => {
                     for (let i = contextItems.length - 1; i >= 0; i--) {
                         if (contextItems[i].role === 'interviewer') {
                             return contextItems[i].text;
@@ -332,6 +343,9 @@ export class IntelligenceEngine extends EventEmitter {
                     return null;
                 })();
             }
+            // Full text, one line — the flight harness pairs it with the dispatch
+            // line to prove chip and answer carry one text (spec §2.3, §6.2).
+            if (settled) console.log(`[IntelligenceEngine] runWhatShouldISay: pinned question ${JSON.stringify(settled)}`);
 
             // temporalContext uses live state — this is a deliberate, accepted tradeoff
             // even when contextOverride is set (chip-click flow). Rationale:
