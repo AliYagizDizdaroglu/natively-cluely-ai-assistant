@@ -97,6 +97,6 @@ export function looksFragmentary(text: string): boolean {
     if (FRAGMENT_CONJUNCTIONS.test(trimmed)) return true;
     if (words.length > 6) return false;
     if (/[?？]["'”’)\]]*$/.test(trimmed)) return false;
-    const first = words[0].toLowerCase().replace(/[^a-z].*$/, '');
+    const first = words[0].toLowerCase().replace(/^[^a-z]+/, '').replace(/[^a-z].*$/, '');
     return !FRAGMENT_OPENERS.has(first);
 }

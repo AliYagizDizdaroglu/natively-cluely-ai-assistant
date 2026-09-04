@@ -99,4 +99,10 @@ describe('looksFragmentary', () => {
     it('a contraction opener keeps its word after the apostrophe is stripped', () => {
         expect(looksFragmentary("Who's on call tonight")).toBe(false);
     });
+    it('leading punctuation glued to the first word does not hide its opener', () => {
+        // A smart quote glued onto "What" as one token ('"What') must not
+        // erase the whole word: strip the leading punctuation run first,
+        // then cut at the first remaining non-letter.
+        expect(looksFragmentary('"What should we deploy')).toBe(false);
+    });
 });
