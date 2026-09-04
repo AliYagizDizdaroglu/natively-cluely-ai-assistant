@@ -12,7 +12,7 @@
 - PASS  Technical questions answered via the coaching path: 0   (before: 25)
 - PASS  Spoken questions routed CODING: 0, 3 cue answers   (before: 4 routes (2 of them screenshot cues))
 - PASS  Live expiry loops: 0   (before: 0)
-- FAIL  Interview-acceptable answers (Opus 5 judge): not run   (before: not graded)
+- FAIL  Interview-acceptable answers (Opus 5 judge): 44 acceptable, 6 weak, 5 wrong of 55   (before: not graded)
 - PASS  Answer TTFT p90 · detect p50: 3.2 s · 1.8 s   (before: 3.7 s (answer-only pass) · 4.1 s)
 - PASS  Answer prompt pinned to the dispatched question: 61/61 pinned, 0 missing, 0 mismatched   (before: not logged)
 - PASS  Spoken answers within the 80-word budget: 59 answers, 0 over 80 (0 by allowance), words p50 68 max 80   (before: 41 of 52 over 80)
