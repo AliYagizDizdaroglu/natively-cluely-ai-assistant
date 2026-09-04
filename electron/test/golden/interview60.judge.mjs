@@ -18,6 +18,11 @@
  *   node electron/test/golden/interview60.judge.mjs <run-dir> --export
  *   node electron/test/golden/interview60.judge.mjs <run-dir> --verdicts <run>/interview60.judge.verdicts.json
  *
+ * --answers <file> takes an answer-only pass file (interview60.answers.mjs
+ * --model X) instead of the hour's log — the model comparison — and suffixes
+ * every file it writes with that model: interview60.judge.<model>.json,
+ * interview60.judge.pairs.<model>.json, interview60.judge.verdicts.<model>.json.
+ *
  * Verdict rule (verdictOf): wrong when correctness or on_topic is 0;
  * acceptable when both are 2 and delivery is at least 1; weak otherwise. An
  * answer that was dispatched but never delivered is wrong — the candidate
@@ -72,6 +77,19 @@ export function pairAnswers(debugLog, timeline) {
             dispatchedAt: new Date(d.at).toISOString(), answer: full?.text ?? null,
         };
     });
+}
+
+/**
+ * Pairs from an answer-only pass file (interview60.answers.mjs --model X): the
+ * same questions answered outside the app, one arm of the model comparison.
+ * Items that ended in a transient error are left out, not scored — a 429 is
+ * not a model failure.
+ */
+export function pairsFromAnswers(store) {
+    return Object.values(store).filter((v) => v && typeof v === 'object' && v.spoken).map((v) => ({
+        id: v.id, kind: 'spoken', level: v.level ?? null, topic: v.topic ?? null, question: v.q, heard: v.q,
+        source: 'answers-pass', verdict: 'n/a', dispatchedAt: null, answer: v.spoken, model: v.model ?? null,
+    }));
 }
 
 /** The gate's verdict from the three 0-2 scores. */
@@ -187,21 +205,31 @@ async function main() {
     const keyName = ['CLAUDE_API_KEY', 'ANTHROPIC_API_KEY'].find((n) => process.env[n]);
     if (!exportOnly && !verdictsPath && !keyName) { console.error('no Claude key: set CLAUDE_API_KEY (or ANTHROPIC_API_KEY) in .env and run with --env-file=.env, or grade without one: --export, then --verdicts <file>'); process.exit(2); }
 
-    const timeline = JSON.parse(fs.readFileSync(path.join(dir, 'interview60.timeline.json'), 'utf8'));
-    const dbg = fs.readFileSync(path.join(dir, 'natively_debug.log'), 'utf8');
-    const pairs = pairAnswers(dbg, timeline).filter((p) => p.id !== '?');
-    const out = path.join(dir, 'interview60.judge.json');
+    const answersPath = opt('answers', null);
+    let pairs, tag = '';
+    if (answersPath) {
+        pairs = pairsFromAnswers(JSON.parse(fs.readFileSync(answersPath, 'utf8')));
+        const arm = pairs.find((p) => p.model)?.model;
+        if (!arm) { console.error(`${answersPath}: no model field on its items — re-run interview60.answers.mjs, which records the arm`); process.exit(2); }
+        tag = `.${arm}`;
+    } else {
+        const timeline = JSON.parse(fs.readFileSync(path.join(dir, 'interview60.timeline.json'), 'utf8'));
+        const dbg = fs.readFileSync(path.join(dir, 'natively_debug.log'), 'utf8');
+        pairs = pairAnswers(dbg, timeline).filter((p) => p.id !== '?');
+    }
+    const out = path.join(dir, `interview60.judge${tag}.json`);
     if (exportOnly) {
-        const pairsOut = path.join(dir, 'interview60.judge.pairs.json');
+        const pairsOut = path.join(dir, `interview60.judge.pairs${tag}.json`);
         const toGrade = keyPairs(pairs).filter(({ pair }) => pair.answer).map(({ key, pair }) => ({ key, ...pair }));
         fs.writeFileSync(pairsOut, JSON.stringify({ model: JUDGE_MODEL, rubric: RUBRIC, items: toGrade }, null, 1));
-        console.log(`EXPORT  ${path.basename(dir)}  ${toGrade.length} delivered answers to grade; ${pairs.length - toGrade.length} undelivered will be scored wrong at merge`);
+        console.log(`EXPORT  ${path.basename(dir)}  ${tag ? 'arm ' + tag.slice(1) + '   ' : ''}${toGrade.length} delivered answers to grade; ${pairs.length - toGrade.length} undelivered will be scored wrong at merge`);
         console.log(`written ${pairsOut}`);
-        console.log(`next: grade every item with the rubric in that file into ${path.join(dir, 'interview60.judge.verdicts.json')} as {<key>: {correctness, on_topic, delivery, reason}} with scores 0-2, then rerun with --verdicts <that file>`);
+        console.log(`next: grade every item with the rubric in that file into ${path.join(dir, `interview60.judge.verdicts${tag}.json`)} as {<key>: {correctness, on_topic, delivery, reason}} with scores 0-2, then rerun with --verdicts <that file>`);
         return;
     }
     if (verdictsPath) {
         const judged = mergeVerdicts(pairs, JSON.parse(fs.readFileSync(verdictsPath, 'utf8')), opt('model', JUDGE_MODEL));
+        if (tag) judged.arm = tag.slice(1);
         fs.writeFileSync(out, JSON.stringify(judged, null, 1));
         console.log(`JUDGE  ${path.basename(dir)}  ${pairs.length} dispatched answers merged from ${verdictsPath}  model=${judged.model}`);
         printSummary(judged, out);

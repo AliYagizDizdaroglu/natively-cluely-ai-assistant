@@ -13,6 +13,7 @@
  * would just make both measure quota contention instead of the app.
  *
  *   node electron/test/golden/interview60.answers.mjs
+ *   node electron/test/golden/interview60.answers.mjs --model gemma-4-31b-it   # another arm of the comparison → interview60.answers.<model>.json
  *
  * Resumable: results are written per question; transient errors (429/5xx)
  * are recorded as such and never scored as model failures.
@@ -32,8 +33,12 @@ const { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation } =
     require(path.join(PROJ, 'dist-electron/electron/llm/verbalStreamFilter.js'));
 
 const KEY = fs.readFileSync(path.join(PROJ, '.env'), 'utf8').match(/^GEMINI_API_KEY=(.+)$/m)[1].trim();
-const MODEL = 'gemini-3.1-flash-lite';   // the app default (LLMHelper.ts GEMINI_FLASH_MODEL)
-const OUT = path.join(HERE, 'interview60.answers.json');
+const DEFAULT_MODEL = 'gemini-3.1-flash-lite';   // the app default (LLMHelper.ts GEMINI_FLASH_MODEL)
+// --model <id>: the same pass on another arm (same questions, prompt, filters) for the
+// model comparison; written beside, never over, the default arm's file the report reads.
+const mi = process.argv.indexOf('--model');
+const MODEL = mi >= 0 && process.argv[mi + 1] ? process.argv[mi + 1] : DEFAULT_MODEL;
+const OUT = path.join(HERE, MODEL === DEFAULT_MODEL ? 'interview60.answers.json' : `interview60.answers.${MODEL}.json`);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const words = (s) => (s.trim().match(/\S+/g) || []).length;
 
@@ -94,12 +99,12 @@ for (const item of todo) {
         } catch (e) { lastErr = e.message; await sleep(4000 * (a + 1)); }
     }
     if (!r || r.transient) {
-        store[item.id] = { ...item, transientError: lastErr };
+        store[item.id] = { ...item, model: MODEL, transientError: lastErr };
         console.log(`  ${item.id.padEnd(4)} TRANSIENT ${lastErr}`);
     } else {
         const ctx = { spoken: r.spoken, offers: r.offers, sentinel: P.SUGGESTIONS_SENTINEL, budget: P.SPOKEN_WORD_BUDGET, wordCount: r.words };
         const checks = Object.fromEntries(Object.entries(VERBAL_CHECKS).map(([n, f]) => [n, f(ctx).ok]));
-        store[item.id] = { ...item, ...r, checks };
+        store[item.id] = { ...item, model: MODEL, ...r, checks };
         const bad = Object.entries(checks).filter(([, ok]) => !ok).map(([n]) => n);
         console.log(`  ${item.id.padEnd(4)} ${String(r.words).padStart(3)}w  ttft ${String(r.ttft).padStart(5)}ms  total ${String(r.total).padStart(5)}ms  ${bad.length ? 'FAIL ' + bad.join(',') : 'ok'}`);
     }

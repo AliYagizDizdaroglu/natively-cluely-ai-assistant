@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mergeVerdicts, pairAnswers, summarizeVerdicts, verdictOf } from './interview60.judge.mjs';
+import { mergeVerdicts, pairAnswers, pairsFromAnswers, summarizeVerdicts, verdictOf } from './interview60.judge.mjs';
 
 const t = (s: string) => Date.parse(`2026-09-04T08:00:${s}Z`);
 const timeline = {
@@ -83,5 +83,19 @@ describe('mergeVerdicts (graded outside the script — the no-key route)', () =>
         expect(merged.items.C01).toMatchObject({ kind: 'cue', verdict: 'error', reason: 'no verdict' });
         expect(merged.items['W01#2']).toMatchObject({ verdict: 'error', reason: 'verdict correctness=3' });
         expect(summarizeVerdicts(merged)).toEqual({ model: 'claude-opus-5', n: 3, acceptable: 1, weak: 0, wrong: 1, errors: 1 });
+    });
+});
+
+describe('pairsFromAnswers (an answer-only pass arm, for the model comparison)', () => {
+    it('maps answered items to spoken pairs carrying the arm model and leaves transient errors out', () => {
+        const store = {
+            W01: { id: 'W01', level: 'easy', topic: 'Docker', q: 'What is a Docker image?', model: 'gemma-4-31b-it', spoken: 'An image is a read-only template.', words: 6, ttft: 900 },
+            W02: { id: 'W02', level: 'easy', topic: 'Docker', q: 'Why do layers matter?', model: 'gemma-4-31b-it', transientError: 'HTTP 429' },
+        };
+        const pairs = pairsFromAnswers(store);
+        expect(pairs).toHaveLength(1);
+        expect(pairs[0]).toMatchObject({ id: 'W01', kind: 'spoken', question: 'What is a Docker image?', heard: 'What is a Docker image?', answer: 'An image is a read-only template.', model: 'gemma-4-31b-it', source: 'answers-pass' });
+        // A transient item is absent from the pairs, so the merge never scores it as wrong.
+        expect(Object.keys(mergeVerdicts(pairs, { W01: { correctness: 2, on_topic: 2, delivery: 2, reason: 'ok' } }).items)).toEqual(['W01']);
     });
 });
