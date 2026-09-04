@@ -2,7 +2,7 @@ import { LLMHelper, GEMINI_FLASH_FALLBACK_MODEL, GEMINI_FLASH_MODEL } from "../L
 import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
-import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, type Suggestion } from "./verbalStreamFilter";
+import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, type Suggestion } from "./verbalStreamFilter";
 import { lastInterviewerTurn } from "./lastInterviewerTurn";
 import { tapFirstToken } from "./streamTaps";
 import * as fs from "fs";
@@ -19,6 +19,15 @@ function diagLog(msg: string) {
         fs.appendFileSync(DIAG_LOG, `[${new Date().toISOString()}] ${msg}\n`);
     } catch { /* swallow — never break the stream on log failure */ }
 }
+
+/**
+ * Spoken word budget (spec 2026-09-04 §4): in-app answers ran 97 words median,
+ * 41 of 52 over 80 on 2026-09-04; cut at a sentence end inside 80 they measure
+ * 67 median, 0 over 80. A sentence that starts under FLOOR streams whole even
+ * past LIMIT, so an answer is never cut short of 40 words. Coding is exempt.
+ */
+const SPOKEN_WORD_LIMIT = 80;
+const SPOKEN_WORD_FLOOR = 40;
 
 export class WhatToAnswerLLM {
     private llmHelper: LLMHelper;
@@ -339,16 +348,29 @@ ANSWER SHAPE: ${intentResult.answerShape}
                     );
 
                 yield* tapFirstToken(
-                    this.withVerbalFallback(
-                        filtered(rawStream),
-                        () => filtered(
-                            this.llmHelper.streamVerbalWithGeminiFlash(
-                                fullMessage,
-                                VERBAL_WHAT_TO_ANSWER_PROMPT,
-                                undefined,
-                                GEMINI_FLASH_FALLBACK_MODEL,
+                    cutAtWordBudget(
+                        this.withVerbalFallback(
+                            filtered(rawStream),
+                            () => filtered(
+                                this.llmHelper.streamVerbalWithGeminiFlash(
+                                    fullMessage,
+                                    VERBAL_WHAT_TO_ANSWER_PROMPT,
+                                    undefined,
+                                    GEMINI_FLASH_FALLBACK_MODEL,
+                                ),
                             ),
                         ),
+                        {
+                            limit: SPOKEN_WORD_LIMIT,
+                            floor: SPOKEN_WORD_FLOOR,
+                            onDone: (r) => {
+                                // One line per completed spoken answer — the flight
+                                // harness's "budget" gate row reads it.
+                                const line = `words=${r.words} cut=${r.cut ? 'yes' : 'no'} allowance=${r.allowance ? 'yes' : 'no'}`;
+                                console.log(`[Answer] budget: ${line}`);
+                                diagLog(`word budget: ${line}`);
+                            },
+                        },
                     ),
                     (ms) => diagLog(`first token ${ms}ms`),
                     (head) => diagLog(`answer head: ${JSON.stringify(head)}`),
