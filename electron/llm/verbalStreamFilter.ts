@@ -381,8 +381,28 @@ export async function* stripSpokenNotation(
 
 // ── Spoken word budget ───────────────────────────────────────────────────────
 
-export interface WordBudgetResult { words: number; cut: boolean; allowance: boolean }
+export interface WordBudgetResult {
+    /** Words emitted downstream (the spoken answer as the user heard it). */
+    words: number;
+    /** The stream was ended early — a sentence or the tail was dropped, or the hard ceiling hit. */
+    cut: boolean;
+    /**
+     * The answer ended over `limit`. Only a sentence that STARTED under `floor`
+     * (the allowance — it streams whole, however long) or the hard-ceiling case
+     * can produce this; a sentence that starts at or past `floor` is buffered
+     * and dropped rather than allowed to cross the limit.
+     */
+    allowance: boolean;
+}
 export interface WordBudgetOptions { limit: number; floor: number; onDone?: (r: WordBudgetResult) => void }
+
+/**
+ * A whole chunk that is nothing but a `__model_source:X__` sentinel — the same
+ * shape `streamTaps.ts` skips. `withVerbalFallback` yields it INSIDE the chain
+ * this stage wraps, so without this it would be counted as two words of the
+ * spoken answer and would glue itself onto the first real word.
+ */
+const SENTINEL_CHUNK = /^__model_source:[^_]*__$/;
 
 /** A sentence end: terminator, optional closing quotes/brackets, then whitespace. */
 const SENTENCE_END = /[.!?]["'”’)\]]*(?=\s)/;
@@ -430,7 +450,15 @@ export async function* cutAtWordBudget(
     let cut = false;
     const finish = (): void => { opts.onDone?.({ words: emitted, cut, allowance: emitted > limit }); };
 
+    // Hard ceiling for stream mode: an answer with no [.!?] anywhere never
+    // leaves stream mode, so before this it streamed whole (200 words →
+    // words=200 cut=no). A 160-word sentence is not one a candidate says
+    // aloud; the measured max on the after4 corpus after the sentence cut is
+    // 92 words — this never fires on real answers, it bounds the pathological
+    // one. Checked after each yield, so one chunk cannot push past it unbounded.
+    const ceiling = 2 * limit;
     for await (const chunk of source) {
+        if (SENTINEL_CHUNK.test(chunk)) { yield chunk; continue; } // not words — leaves carry/inWord alone
         let text = carry + chunk;
         carry = '';
         while (text.length > 0) {
@@ -439,7 +467,12 @@ export async function* cutAtWordBudget(
                 if (!m) {
                     const hold = TRAILING_TERMINATOR.exec(text);
                     const keep = hold ? hold.index : text.length;
-                    if (keep > 0) { const piece = text.slice(0, keep); emitted += track(piece); yield piece; }
+                    if (keep > 0) {
+                        const piece = text.slice(0, keep);
+                        emitted += track(piece);
+                        yield piece;
+                        if (emitted >= ceiling) { cut = true; finish(); return; }
+                    }
                     carry = text.slice(keep);
                     text = '';
                 } else {
@@ -447,6 +480,7 @@ export async function* cutAtWordBudget(
                     const piece = text.slice(0, end);
                     emitted += track(piece);
                     yield piece;
+                    if (emitted >= ceiling) { cut = true; finish(); return; }
                     text = text.slice(end);
                     if (emitted >= floor) mode = 'buffer';
                 }

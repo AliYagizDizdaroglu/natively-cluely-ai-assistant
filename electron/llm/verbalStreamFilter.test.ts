@@ -263,4 +263,31 @@ describe('cutAtWordBudget (spec 2026-09-04 §4)', () => {
         for await (const _ of gen) break;
         expect(done).toEqual([]);
     });
+    it('an answer with no sentence terminator anywhere is stopped at the hard ceiling (2 × limit)', async () => {
+        // Stream mode is left only when a sentence end is emitted, so without a
+        // single [.!?] the whole answer used to stream through (probed: 200
+        // words → words=200 cut=no allowance=yes).
+        const text = Array.from({ length: 200 }, (_, k) => `w${k}`).join(' ');
+        const { out, done, ret } = await run(text);
+        // The ceiling is checked after each yielded piece, so the overshoot is
+        // bounded by the words in one chunk — never by the rest of the answer.
+        expect(words(out)).toBeGreaterThanOrEqual(160);
+        expect(words(out)).toBeLessThan(200);
+        expect(done).toEqual([{ words: words(out), cut: true, allowance: true }]);
+        expect(ret).toHaveBeenCalled();
+    });
+    it('a __model_source__ sentinel chunk passes through verbatim and is not counted as words', async () => {
+        // withVerbalFallback yields this INSIDE the chain this stage wraps.
+        const sentinel = '__model_source:gemini-3.5-flash-lite (fallback)__';
+        const answer = sentence(25, 1) + ' ' + sentence(30, 2);
+        async function* src(): AsyncGenerator<string> {
+            yield sentinel;
+            for (let i = 0; i < answer.length; i += 7) yield answer.slice(i, i + 7);
+        }
+        const done: any[] = [];
+        let out = '';
+        for await (const c of cutAtWordBudget(src(), { limit: 80, floor: 40, onDone: (r) => done.push(r) })) out += c;
+        expect(out).toBe(sentinel + answer);
+        expect(done).toEqual([{ words: 55, cut: false, allowance: false }]);
+    });
 });
