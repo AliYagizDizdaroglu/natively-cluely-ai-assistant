@@ -158,9 +158,11 @@ routing, answering, and Live-session stability are all measured on the real app.
 | `interview60.calibrate-audio.mjs` | proves the live detector hears the chosen voice BEFORE an hour is spent |
 | `interview60.calibrate-detector.mjs` | proves the STT detector returns two-clause questions whole — prompt plus the deterministic scenario-sentence merge in `mergeScenarioSentence.ts` — on the real Groq model, by relaunching the app with `NATIVELY_DETECTOR_CALIBRATE=1` and reading its `[DetectorCalibration]` lines |
 | `interview60.run.mjs` | `preflight` / `app` / `report` / `gate` / `auto` — see below |
-| `interview60.answers.mjs` | answer-only pass over the same questions: scored quality + latency, no Live |
+| `interview60.answers.mjs` | answer-only pass over the same questions: scored quality + latency, no Live. `--model <id>` runs the same pass on another arm into `interview60.answers.<id>.json` — the three-arm comparison (3.1 Flash Lite, 3.5 Flash Lite, Gemma 4 31B) — and every item records its `model` |
 | `interview60.chains.mjs` | chain-question continuity: follow-ups that lean on "it"/"that", asked with the app's transcript vs standalone |
-| `interview60.judge.mjs` | judge pass over the hour's OWN answers: Claude Opus 5 grades each delivered answer against the scripted question for correctness, on-topic-ness and spoken delivery (0-2 each); feeds the gate row "Interview-acceptable answers" (≥ 47 of 52 acceptable, 0 wrong). Reads `[Answer] full:` lines that SessionTracker logs once per answer. Needs `ANTHROPIC_API_KEY` (or `CLAUDE_API_KEY`) in `.env` — or no key at all: `--export` writes the pairs and the rubric to `interview60.judge.pairs.json`, an Opus subagent in Claude Code grades them into `interview60.judge.verdicts.json`, and `--verdicts <file>` writes the same judge file; resumable; run AFTER the hour, never during it |
+| `interview60.judge.mjs` | judge pass over the hour's OWN answers: Claude Opus 5 grades each delivered answer against the scripted question for correctness, on-topic-ness and spoken delivery (0-2 each); feeds the gate row "Interview-acceptable answers" (≥ 47 of 52 acceptable, 0 wrong). Reads `[Answer] full:` lines that SessionTracker logs once per answer. Needs `ANTHROPIC_API_KEY` (or `CLAUDE_API_KEY`) in `.env` — or no key at all: `--export` writes the pairs and the rubric to `interview60.judge.pairs.json`, an Opus subagent in Claude Code grades them into `interview60.judge.verdicts.json`, and `--verdicts <file>` writes the same judge file. `--answers <file>` grades an answers-pass arm instead of the hour's log, with every file suffixed `.<model>`; resumable; run AFTER the hour, never during it |
+| `interview60.live-probe.cjs` | one Live session with the app's exact config against the 34 s probe clip: exit 0 = tool call seen, 3 = connected but silent (the 3.x daily-allowance failure), 1 = could not connect, 2 = no key. A yes/no before a build and a launch |
+| `interview60.flight.mjs` | unattended flight for a scheduled task: live-probe → Live model for the hour (3.x, or 2.5 via `NATIVELY_LIVE_MODEL` when 3.x is silent) → `auto <label>` → the three answer arms + chains into the run folder → judge exports; `--dry-run` logs every command and runs none. Logs to `interview60.run.flight.log`, leaves `interview60.flight.done.json` in the run folder |
 | `interview60.metrics.mjs` | `computeRun(dir) → RunMetrics` — the one analysis (attribution, STT, coaching, gate) shared by `gate` and the report, plus the spec §6 pass table (`GATE`, `evaluateGate`). Each dispatch line is claimed by exactly one item (highest anchor overlap, ties to the latest); `delivered` (= `answered` minus `[WhatToAnswerLLM] Stream failed` lines) is what the "Answered hands-free" row judges; a `verdict=replaced` line is `caught` (informational — the reconciler catching a mismatch, not an invented question reaching the user) |
 | `interview60.report-html.mjs` | builds the flight-test report page from the logs |
 
@@ -223,3 +225,24 @@ Two failure modes it guards against:
   Before `taskkill /T /F` on it, `app:stop` reads that pid's own command line
   and only kills it if it still names an `electron`/`npm start` process; it
   logs what it skipped otherwise.
+
+### Unattended flight
+
+The free-tier day resets at 07:00 UTC, so the hour of record is scheduled, not started by hand.
+A Windows Task Scheduler task runs `interview60.flight.mjs` in the logged-on user's desktop session
+(the app needs a desktop and an output device; the task runs only while the user is logged on).
+Prove the plumbing with a `--dry-run` task first — it must reach the script with the repo as cwd
+and write `interview60.run.flight.log` — then register the real one:
+
+```powershell
+$repo = 'C:\path\to\natively-cluely-ai-assistant'
+$action = New-ScheduledTaskAction -Execute (Get-Command node).Source -Argument 'electron\test\golden\interview60.flight.mjs after4' -WorkingDirectory $repo
+$trigger = New-ScheduledTaskTrigger -Once -At '2026-09-04 10:05'   # 07:05 UTC in Europe/Istanbul
+$settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -WakeToRun -ExecutionTimeLimit (New-TimeSpan -Hours 5)
+Register-ScheduledTask -TaskName 'Natively-flight-after4' -Action $action -Trigger $trigger -Settings $settings
+# cancel: Unregister-ScheduledTask -TaskName 'Natively-flight-after4' -Confirm:$false
+```
+
+When it is done, `interview60.flight.done.json` in the run folder lists the four pairs files to grade
+(the hour's own answers and the three arms). Grading is the no-key judge route above; the gate reads
+the hour's `interview60.judge.json`, and the three `interview60.judge.<model>.json` files are the comparison.
