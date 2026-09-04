@@ -3189,10 +3189,11 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       temperature: 0.4,
     };
     if (systemInstruction) gemmaConfig.systemInstruction = systemInstruction;
+    const abort = new AbortController();
     const streamResult = await activeClient.models.generateContentStream({
       model: model,
       contents: contents,
-      config: gemmaConfig as any,
+      config: { ...gemmaConfig, abortSignal: abort.signal } as any,
     });
 
     // @ts-ignore
@@ -3215,7 +3216,26 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     const tokenSource = isGemma
       ? this.filterPlainTextLeaks(this.filterThinkingTokens(rawChunks()))
       : rawChunks();
-    yield* tokenSource;
+
+    // A consumer that stops early — the spoken word budget's sentence cut, a
+    // superseding generation, the first-token stall above — closes this
+    // generator at a `yield`. IteratorClose alone leaves the SDK's request
+    // open: measured 2026-09-05, the response stayed alive 4 minutes after the
+    // break, versus 170 ms when the request is aborted. The abort runs from
+    // the yield's own `finally`, i.e. before the for-await closes the SDK
+    // iterator, so its pending read rejects at once instead of blocking until
+    // the server finishes (the ~28 s stall streamVerbalWithGeminiFlash notes).
+    // On natural completion `delivered` is true for every token and nothing
+    // is aborted.
+    for await (const token of tokenSource) {
+      let delivered = false;
+      try {
+        yield token;
+        delivered = true;
+      } finally {
+        if (!delivered) abort.abort();
+      }
+    }
   }
 
   /**
