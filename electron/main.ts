@@ -211,8 +211,9 @@ interface DetectionInput {
   verdict: 'match' | 'paraphrase' | 'replaced' | 'unverifiable';
   chip?: any;
   /**
-   * Set only when this call is liveHold's own resolution of a previously held
-   * detection. Must skip the hold branch even if the fresh verdict is still
+   * Set only when this call is a hold's own resolution (liveHold or
+   * fragmentHold) of a previously held detection. Must skip the hold branch
+   * even if the fresh verdict is still
    * 'unverifiable' (R37: "else proceed with the fresh verdict") — otherwise a
    * still-empty STT window re-offers to the hold forever (previous is always
    * null by the time onResolve runs, since resolveNow() clears `pending`
@@ -1909,7 +1910,7 @@ export class AppState {
     // verdict is trusted, regardless of mode or resolving.
     if (d.source === 'live' && isFragment(d.question)) {
       const anchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
-      console.log(`[Main] dispatch: drop source=live anchor=${anchorLog} verdict=fragment`);
+      console.log(`[Main] dispatch: drop source=live anchor=${anchorLog} verdict=fragment question=${JSON.stringify(d.question)}`);
       return;
     }
     // An unverifiable Live claim (nothing heard from the interviewer STT in
@@ -1922,7 +1923,7 @@ export class AppState {
       const previous = this.liveHold.offer(d);
       if (previous) {
         const prevAnchorLog = JSON.stringify((previous.anchor ?? previous.question).slice(0, 80));
-        console.log(`[Main] dispatch: drop source=live anchor=${prevAnchorLog} verdict=unverifiable duplicateOf=live answered=false`);
+        console.log(`[Main] dispatch: drop source=live anchor=${prevAnchorLog} verdict=unverifiable duplicateOf=live answered=false question=${JSON.stringify(previous.question)}`);
       }
       return;
     }

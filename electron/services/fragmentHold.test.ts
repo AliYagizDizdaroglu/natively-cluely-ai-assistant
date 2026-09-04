@@ -20,7 +20,12 @@ function makeDispatcher(mode: Mode) {
     const hold = createLiveHold<D>({ holdMs: 2500, onResolve: (held) => dispatch({ ...held, resolving: true }) });
     function dispatch(d: D): void {
         if (d.source === 'live' && isFragment(d.question)) { log.push(`drop:fragment:${d.question}`); return; }
-        if (mode !== 'off' && !d.resolving && looksFragmentary(d.question)) { hold.offer(d); log.push(`hold:${d.source}:${d.question}`); return; }
+        if (mode !== 'off' && !d.resolving && looksFragmentary(d.question)) {
+            const previous = hold.offer(d);
+            if (previous) log.push(`drop:${previous.source}:${previous.question}`);
+            log.push(`hold:${d.source}:${d.question}`);
+            return;
+        }
         const verdict = deduper.admit({ question: d.question, source: d.source, anchor: d.anchor });
         const action = mode === 'off' && d.source === 'whisper' ? (verdict.admitted ? 'chip' : 'drop') : decideDispatch(mode, verdict);
         if (action === 'answer') deduper.markAnswered(verdict.id);
@@ -111,5 +116,17 @@ describe('fragment hold (spec 2026-09-04 §3)', () => {
         expect(log).toEqual([`hold:whisper:${TAIL}`]);
         vi.advanceTimersByTime(2500);
         expect(log).toEqual([`hold:whisper:${TAIL}`, `answer:whisper:${TAIL}`]);
+    });
+    it('a second fragmentary detection while one is held supersedes it; only the newer resolves', () => {
+        vi.useFakeTimers();
+        const { dispatch, log } = makeDispatcher('auto');
+        dispatch(whisperTail());
+        vi.advanceTimersByTime(500);
+        dispatch({ question: 'Cross many model services.', source: 'whisper', anchor: 'Cross many model services.', verdict: 'match', chip: { id: 'c2' } });
+        expect(log).toEqual([`hold:whisper:${TAIL}`, `drop:whisper:${TAIL}`, 'hold:whisper:Cross many model services.']);
+        vi.advanceTimersByTime(2499);
+        expect(log).toHaveLength(3);
+        vi.advanceTimersByTime(1);
+        expect(log).toEqual([`hold:whisper:${TAIL}`, `drop:whisper:${TAIL}`, 'hold:whisper:Cross many model services.', 'answer:whisper:Cross many model services.']);
     });
 });
