@@ -92,13 +92,17 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     // must be followed within 2 s by a pinned line with the identical text —
     // the chip-parity proof. Dispatch lines without a question field are
     // "legacy" (runs before the format change) and fail the row.
+    // Compared TRIMMED on both sides: IntelligenceEngine pins and logs
+    // question.trim(), main.ts logs d.question as it came, and the
+    // model-detector path can hand a chip text with a leading space — which is
+    // the same question, not a mismatch.
     const pinnedLines = [...dbg.matchAll(/^(\S+) \[LOG\] \[IntelligenceEngine\] runWhatShouldISay: pinned question ("(?:[^"\\]|\\.)*")$/gm)].map((m) => ({ at: ts(m[1]), question: JSON.parse(m[2]) }));
     const pinned = { answers: 0, legacy: 0, missing: 0, mismatched: 0 };
     for (const d of dispatches.filter((d) => d.action === 'answer')) {
         pinned.answers++;
         if (d.question == null) { pinned.legacy++; continue; }
         const p = pinnedLines.find((l) => l.at >= d.at && l.at - d.at <= 2000);
-        if (!p) pinned.missing++; else if (p.question !== d.question) pinned.mismatched++;
+        if (!p) pinned.missing++; else if (p.question.trim() !== d.question.trim()) pinned.mismatched++;
     }
     // budget: one line per completed spoken answer from WhatToAnswerLLM.
     const budgetLines = [...dbg.matchAll(/^(\S+) \[LOG\] \[Answer\] budget: words=(\d+) cut=(yes|no) allowance=(yes|no)/gm)].map((m) => ({ at: ts(m[1]), words: Number(m[2]), cut: m[3] === 'yes', allowance: m[4] === 'yes' }));
@@ -107,7 +111,6 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         n: budgetLines.length,
         over: budgetLines.filter((b) => b.words > 80).length,
         allowance: budgetLines.filter((b) => b.allowance).length,
-        overWithoutAllowance: budgetLines.filter((b) => b.words > 80 && !b.allowance).length,
         cut: budgetLines.filter((b) => b.cut).length,
         p50: pct(budgetWords, .5),
         max: budgetWords.length ? budgetWords[budgetWords.length - 1] : null,
@@ -345,7 +348,14 @@ export const GATE = [
     { key: 'quality', label: 'Interview-acceptable answers (Opus 5 judge)', before: 'not graded', pass: (m) => !!m.judge && m.judge.wrong === 0 && m.judge.acceptable >= 47, show: (m) => m.judge ? `${m.judge.acceptable} acceptable, ${m.judge.weak} weak, ${m.judge.wrong} wrong of ${m.judge.n}${m.judge.errors ? `, ${m.judge.errors} errors` : ''}` : 'not run' },
     { key: 'latency', label: 'Answer TTFT p90 · detect p50', before: '3.7 s (answer-only pass) · 4.1 s', pass: (m) => (m.ttftP90 ?? Infinity) <= 5000 && (m.detectP50 ?? Infinity) <= 5000, show: (m) => `${m.ttftP90 == null ? '—' : (m.ttftP90 / 1000).toFixed(1) + ' s'}${m.ttftSource === 'answer-only' ? ' (answer-only pass)' : ''} · ${m.detectP50 == null ? '—' : (m.detectP50 / 1000).toFixed(1) + ' s'}` },
     { key: 'pinned', label: 'Answer prompt pinned to the dispatched question', before: 'not logged', pass: (m) => m.pinned.answers > 0 && m.pinned.legacy === 0 && m.pinned.missing === 0 && m.pinned.mismatched === 0, show: (m) => m.pinned.answers === 0 ? 'no answers' : m.pinned.legacy === m.pinned.answers ? 'not logged' : `${m.pinned.answers - m.pinned.legacy - m.pinned.missing - m.pinned.mismatched}/${m.pinned.answers} pinned, ${m.pinned.missing} missing, ${m.pinned.mismatched} mismatched${m.pinned.legacy ? `, ${m.pinned.legacy} legacy` : ''}` },
-    { key: 'budget', label: 'Spoken answers within the 80-word budget', before: '41 of 52 over 80', pass: (m) => m.budget.n > 0 && m.budget.overWithoutAllowance === 0, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.over} over 80 (${m.budget.allowance} by allowance), words p50 ${m.budget.p50} max ${m.budget.max}` },
+    // The row used to pass on `overWithoutAllowance === 0`, which could not
+    // fail: the stage sets `allowance` to `words > limit`, so "over 80 without
+    // allowance" is empty by construction and one budget line anywhere in the
+    // run passed the row. It measures the distribution instead. `n` must cover
+    // the delivered answers — cue answers and coding routes emit no budget
+    // line, hence 0.9. Provenance for 120: the after4 corpus through the stage
+    // measures max 92.
+    { key: 'budget', label: 'Spoken answers within the 80-word budget', before: '41 of 52 over 80', pass: (m) => m.budget.n > 0 && m.budget.n >= Math.floor(m.delivered * 0.9) && m.budget.p50 <= 80 && m.budget.max <= 120, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.over} over 80 (${m.budget.allowance} by allowance), words p50 ${m.budget.p50} max ${m.budget.max}` },
 ];
 
 /** Counts over spoken items only — mirrors summarizeVerdicts in interview60.judge.mjs (kept dependency-free here). */

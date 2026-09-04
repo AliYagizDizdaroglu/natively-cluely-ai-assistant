@@ -233,17 +233,24 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             // dispatch carrying question="…", its pinned line 400 ms later with
             // the identical text, a second new-format answer whose pinned line
             // carries a DIFFERENT text (mismatch), a third with no pinned line
-            // within 2 s (missing), and three budget lines: one cut inside the
-            // limit, one over 80 by allowance, one over 80 without allowance.
+            // within 2 s (missing), a fourth whose dispatch text carries the
+            // leading/trailing spaces the model-detector path can produce while
+            // the engine pins question.trim() (proves the comparison trims both
+            // sides), and three budget lines: one cut inside the limit, two over
+            // 80 by allowance. The third budget line used to read
+            // `words=84 cut=no allowance=no` — a shape the emitter cannot
+            // produce, since allowance is by construction `words > limit`.
             `${iso(T0 + 1100000)} [LOG] [Main] dispatch: answer source=live anchor="Pinned one." verdict=match question="How would you shard a relational database by tenant?"`,
             `${iso(T0 + 1100400)} [LOG] [IntelligenceEngine] runWhatShouldISay: pinned question "How would you shard a relational database by tenant?"`,
             `${iso(T0 + 1110000)} [LOG] [Main] dispatch: answer source=whisper anchor="Pinned two." verdict=match question="What is a consumer group in Kafka?"`,
             `${iso(T0 + 1110300)} [LOG] [IntelligenceEngine] runWhatShouldISay: pinned question "Consumer group?"`,
             `${iso(T0 + 1120000)} [LOG] [Main] dispatch: answer source=live anchor="Pinned three." verdict=match question="Why would you choose gRPC over REST?"`,
             `${iso(T0 + 1123000)} [LOG] [IntelligenceEngine] runWhatShouldISay: pinned question "Why would you choose gRPC over REST?"`,
+            `${iso(T0 + 1130000)} [LOG] [Main] dispatch: answer source=live anchor="Pinned four." verdict=match question=" Why would you choose gRPC over REST? "`,
+            `${iso(T0 + 1130400)} [LOG] [IntelligenceEngine] runWhatShouldISay: pinned question "Why would you choose gRPC over REST?"`,
             `${iso(T0 + 1100900)} [LOG] [Answer] budget: words=67 cut=yes allowance=no`,
             `${iso(T0 + 1110900)} [LOG] [Answer] budget: words=90 cut=no allowance=yes`,
-            `${iso(T0 + 1120900)} [LOG] [Answer] budget: words=84 cut=no allowance=no`,
+            `${iso(T0 + 1120900)} [LOG] [Answer] budget: words=140 cut=no allowance=yes`,
         ];
 
         const diagLines = [
@@ -371,9 +378,9 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // Unchanged from the "top-level counts" test below: C01's answer is
         // now claimed (by the cue), so it was never a candidate to add a 4th
         // line to answersToNobody, and answered (spoken-only) never saw C01
-        // at all either way. plus the three answer-what-was-asked lines at
-        // +1100000/+1110000/+1120000, also past every window.
-        expect(m.answersToNobody).toBe(6);
+        // at all either way. plus the four answer-what-was-asked lines at
+        // +1100000/+1110000/+1120000/+1130000, also past every window.
+        expect(m.answersToNobody).toBe(7);
         expect(m.answered).toBe(2);
     });
 
@@ -397,9 +404,9 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // respectively, exactly once each — see the claim-once test above).
         // Unclaimed: the phantom "museum exhibit" answer (+520000) plus the
         // two unverifiable answers (+800000, +900000) — all timed past every
-        // item's window. = 3. plus the three answer-what-was-asked lines at
-        // +1100000/+1110000/+1120000, also past every window.
-        expect(m.answersToNobody).toBe(6);
+        // item's window. = 3. plus the four answer-what-was-asked lines at
+        // +1100000/+1110000/+1120000/+1130000, also past every window.
+        expect(m.answersToNobody).toBe(7);
         // surfacedMax = max(dispatches) across items = max(1,2,0,0,1,1) = 2 (Q2).
         expect(m.surfacedMax).toBe(2);
         // surfacedMulti = count of items with dispatches > 1 = just Q2 = 1.
@@ -445,19 +452,25 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(m.ttftP90).toBe(3000);
     });
 
-    it('pinned — pairs new-format answer dispatches with the pinned line inside 2 s, counts legacy lines separately', () => {
+    it('pinned — pairs new-format answer dispatches with the pinned line inside 2 s, on TRIMMED text, counts legacy lines separately', () => {
         // answers: Q1 (+2000), Q2 (+123000), phantom (+520000), W01, W02, two
-        // unverifiable, C01 = 8 legacy + 3 new-format = 11.
-        expect(m.pinned).toEqual({ answers: 11, legacy: 8, missing: 1, mismatched: 1 });
+        // unverifiable, C01 = 8 legacy + 4 new-format = 12. The fourth
+        // (+1130000) differs from its pinned line only by the surrounding
+        // spaces the engine trims off, so it counts as pinned, not mismatched:
+        // 12 - 8 legacy - 1 missing - 1 mismatched = 2.
+        expect(m.pinned).toEqual({ answers: 12, legacy: 8, missing: 1, mismatched: 1 });
         const row = evaluateGate(m).rows.find((r) => r.label === 'Answer prompt pinned to the dispatched question');
         expect(row.pass).toBe(false);
-        expect(row.value).toBe('1/11 pinned, 1 missing, 1 mismatched, 8 legacy');
+        expect(row.value).toBe('2/12 pinned, 1 missing, 1 mismatched, 8 legacy');
     });
-    it('budget — counts answers over 80 with and without the allowance', () => {
-        expect(m.budget).toEqual({ n: 3, over: 2, allowance: 1, overWithoutAllowance: 1, cut: 1, p50: 84, max: 90 });
+    it('budget — measures the distribution, so the row can actually fail', () => {
+        // sorted words [67, 90, 140]: n 3, over 2 (90, 140), allowance 2,
+        // cut 1, p50 = pct(a,.5) = a[floor(3*.5)] = a[1] = 90, max 140.
+        expect(m.budget).toEqual({ n: 3, over: 2, allowance: 2, cut: 1, p50: 90, max: 140 });
         const row = evaluateGate(m).rows.find((r) => r.label === 'Spoken answers within the 80-word budget');
+        // n 3 >= floor(delivered 1 * 0.9) = 0, but p50 90 > 80 and max 140 > 120.
         expect(row.pass).toBe(false);
-        expect(row.value).toBe('3 answers, 2 over 80 (1 by allowance), words p50 84 max 90');
+        expect(row.value).toBe('3 answers, 2 over 80 (2 by allowance), words p50 90 max 140');
     });
     it('the two new rows are the last two, so index-based rendering stays aligned', () => {
         expect(GATE.slice(-2).map((g) => g.key)).toEqual(['pinned', 'budget']);
@@ -467,11 +480,11 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         const g = evaluateGate(m);
         expect(g.pass).toBe(false);
         const rows = Object.fromEntries(g.rows.map((r) => [r.label, r.pass]));
-        // delivered=1 is nowhere near >=50; answersToNobody=6 also fails it alone.
+        // delivered=1 is nowhere near >=50; answersToNobody=7 also fails it alone.
         expect(rows['Answered hands-free']).toBe(false);
         // heard=5 is nowhere near >=51.
         expect(rows['Heard by either detector']).toBe(false);
-        // surfacedMulti=1 and answersToNobody=6 are both nonzero (caught is
+        // surfacedMulti=1 and answersToNobody=7 are both nonzero (caught is
         // informational now — Ruling R34 — and no longer part of this row).
         expect(rows['Surfaced detections per question']).toBe(false);
         // lostUtterances=1 and fragmentChips=1 are both nonzero (sttCloses=2 alone would pass).
@@ -482,8 +495,8 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // ttftP90=3000ms and detectP50=1500ms are both <= the 5000ms gate.
         expect(rows['Answer TTFT p90 · detect p50']).toBe(true);
         const failed = g.rows.filter((r) => !r.pass).map((r) => r.label);
-        // pinned (8 legacy dispatches) and budget (one over-80 line without the
-        // allowance) both fail here too — appended last, same as GATE itself.
+        // pinned (8 legacy dispatches) and budget (p50 90 > 80, max 140 > 120)
+        // both fail here too — appended last, same as GATE itself.
         expect(failed).toEqual([
             'Answered hands-free',
             'Heard by either detector',
