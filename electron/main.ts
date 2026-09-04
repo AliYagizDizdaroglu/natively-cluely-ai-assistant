@@ -2313,10 +2313,15 @@ export class AppState {
       // onto it) is re-dispatched with the new text: whole → admitted now,
       // still fragmentary → held again with a fresh timer. Before this an
       // update never reached dispatch at all.
+      //
+      // Only when the text actually CHANGED: QuestionDetector emits an update
+      // even when it did not, and cancel + re-dispatch restarts the 2.5 s
+      // timer, so a chip re-emitted unchanged pushed its own deadline out
+      // indefinitely. An unchanged update leaves the hold exactly as it is.
       const held = this.fragmentHold.peek();
-      if (held?.chip?.id && chip?.id === held.chip.id) {
+      const question = String(chip?.question ?? '');
+      if (held?.chip?.id && chip?.id === held.chip.id && question !== held.question) {
         this.fragmentHold.cancel();
-        const question = String(chip?.question ?? '');
         this.dispatchDetection({ ...held, question, anchor: question, chip });
       }
       const win = mainWindow()

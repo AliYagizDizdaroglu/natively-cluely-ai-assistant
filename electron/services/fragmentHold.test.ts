@@ -31,10 +31,11 @@ function makeDispatcher(mode: Mode) {
         if (action === 'answer') deduper.markAnswered(verdict.id);
         log.push(`${action}:${d.source}:${d.question}`);
     }
-    // the question-detected-update hook (main.ts): a held chip that grew is re-dispatched with the new text
+    // the question-detected-update hook (main.ts): a held chip that GREW is re-dispatched
+    // with the new text; an update whose text is unchanged leaves the hold's deadline alone
     function chipUpdate(id: string, question: string): void {
         const held = hold.peek();
-        if (held?.chip?.id === id) { hold.cancel(); dispatch({ ...held, question, anchor: question, chip: { id } }); }
+        if (held?.chip?.id === id && question !== held.question) { hold.cancel(); dispatch({ ...held, question, anchor: question, chip: { id } }); }
     }
     return { dispatch, chipUpdate, log };
 }
@@ -106,6 +107,19 @@ describe('fragment hold (spec 2026-09-04 §3)', () => {
         chipUpdate('c1', WHOLE);
         expect(log).toEqual([`hold:whisper:${TAIL}`, `answer:whisper:${WHOLE}`]);
         vi.advanceTimersByTime(5000);
+        expect(log).toHaveLength(2);
+    });
+    it('a chip update with unchanged text leaves the deadline alone — the tail resolves at the ORIGINAL 2500 ms', () => {
+        // QuestionDetector emits onChipUpdate even when the text did not change;
+        // cancelling and re-dispatching on that pushed the deadline out every time.
+        vi.useFakeTimers();
+        const { dispatch, chipUpdate, log } = makeDispatcher('auto');
+        dispatch(whisperTail());
+        vi.advanceTimersByTime(800);
+        chipUpdate('c1', TAIL);
+        expect(log).toEqual([`hold:whisper:${TAIL}`]);
+        vi.advanceTimersByTime(1700); // 2500 ms after the OFFER, not after the update
+        expect(log).toEqual([`hold:whisper:${TAIL}`, `answer:whisper:${TAIL}`]);
         expect(log).toHaveLength(2);
     });
     it('a chip update for a different chip leaves the hold alone', () => {
