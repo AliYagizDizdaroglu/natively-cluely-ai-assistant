@@ -70,7 +70,12 @@ export function pairAnswers(debugLog, timeline) {
             const ov = overlap(d.anchor, it.q);
             if (ov > bestOv || (ov === bestOv && best && it.playedAt > best.playedAt && it.playedAt <= d.at)) { best = it; bestOv = ov; }
         }
-        const item = best && bestOv >= 0.25 ? best : null;
+        // An anchor made only of stop words ("And when would you not?" — the tail of a
+        // question STT split in two) overlaps nothing; it is claimed by time alone, the
+        // latest item already playing when it was dispatched. Anchors WITH content words
+        // that still overlap nothing stay unclaimed: those are answers to nobody.
+        const byTime = items.filter((it) => it.playedAt <= d.at && d.at <= it.spokeEnd + 60_000).sort((a, b) => b.playedAt - a.playedAt)[0] ?? null;
+        const item = best && bestOv >= 0.25 ? best : contentWords(d.anchor).length === 0 ? byTime : null;
         return {
             id: item?.id ?? '?', kind: item?.kind ?? 'unknown', level: item?.level ?? null, topic: item?.topic ?? null,
             question: item?.q ?? null, heard: d.anchor, source: d.source, verdict: d.verdict,

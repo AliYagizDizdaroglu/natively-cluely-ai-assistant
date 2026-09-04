@@ -33,6 +33,19 @@ describe('pairAnswers', () => {
         expect(pairs[0].kind).toBe('spoken');
         expect(pairs[2].kind).toBe('cue');
     });
+
+    it('claims an anchor with no content words by time — the tail of a question STT split in two — instead of dropping it', () => {
+        // M27 in the 2026-09-04 hour: Deepgram's final was "And when would you not?", every word a stop word.
+        const split = [
+            '2026-09-04T08:00:44.000Z [LOG] [Main] dispatch: answer source=whisper anchor="And when would you not?" verdict=match',
+            '2026-09-04T08:00:46.000Z [LOG] [Answer] full: "I would not use it for a single service."',
+        ].join('\n');
+        const pairs = pairAnswers(split, timeline);
+        expect(pairs.map((p) => p.id)).toEqual(['W02']); // W02 played at 40 s; W01 ended long before
+        // An anchor WITH content words that matches nothing still stays unclaimed.
+        const noise = '2026-09-04T08:00:44.000Z [LOG] [Main] dispatch: answer source=whisper anchor="Configure the printer driver settings" verdict=match';
+        expect(pairAnswers(noise, timeline).map((p) => p.id)).toEqual(['?']);
+    });
 });
 
 describe('verdictOf', () => {
