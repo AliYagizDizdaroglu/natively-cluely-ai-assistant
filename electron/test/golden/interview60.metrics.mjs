@@ -61,8 +61,8 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const liveQ = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] Live question \((\w+), mode=(\w+)\): "([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), intent: m[2], mode: m[3], heard: m[4] }));
     const suppressed = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] suppressed duplicate live question \(already surfaced by (\w+)\): "([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), by: m[2], heard: m[3] }));
     const whisperFwd = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] forwarding detected-question → renderer \(win=\w+\) intent=(\w+) q="([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), intent: m[2], heard: m[3] }));
-    const dispatches = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|chip|drop) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)(?: duplicateOf=(\w+) answered=(true|false))?/gm)]
-        .map((m) => ({ at: ts(m[1]), action: m[2], source: m[3], anchor: JSON.parse(`"${m[4]}"`), verdict: m[5], duplicateOf: m[6] ?? null, answered: m[7] === 'true' }));
+    const dispatches = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|chip|drop) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)(?: duplicateOf=(\w+) answered=(true|false))?(?: question="((?:[^"\\]|\\.)*)")?/gm)]
+        .map((m) => ({ at: ts(m[1]), action: m[2], source: m[3], anchor: JSON.parse(`"${m[4]}"`), verdict: m[5], duplicateOf: m[6] ?? null, answered: m[7] === 'true', question: m[8] == null ? null : JSON.parse(`"${m[8]}"`) }));
     const routes = [...diag.matchAll(/^\[(\S+)\] route: ([^\n]+)/gm)].map((m) => ({ at: ts(m[1]), route: m[2].trim() }));
     const firstTokens = [...diag.matchAll(/^\[(\S+)\] first token (\d+)ms/gm)].map((m) => ({ at: ts(m[1]), ms: Number(m[2]) }));
     const redirects = [...diag.matchAll(/verbal primary FAILED pre-token: ([^\n]*)/g)].map((m) => m[1]);
@@ -84,6 +84,33 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         coachingBlobs: count(/__negotiationCoaching/g),
         classifiedNegotiation: count(/Intent classified: negotiation/g),
         classifiedTotal: count(/Intent classified:/g),
+    };
+
+    // — spec 2026-09-04 (answer what was asked) —
+    // pinned: the engine logs the question it pinned as the last interviewer
+    // line of the prompt; each answer dispatch in the new format (question="…")
+    // must be followed within 2 s by a pinned line with the identical text —
+    // the chip-parity proof. Dispatch lines without a question field are
+    // "legacy" (runs before the format change) and fail the row.
+    const pinnedLines = [...dbg.matchAll(/^(\S+) \[LOG\] \[IntelligenceEngine\] runWhatShouldISay: pinned question ("(?:[^"\\]|\\.)*")$/gm)].map((m) => ({ at: ts(m[1]), question: JSON.parse(m[2]) }));
+    const pinned = { answers: 0, legacy: 0, missing: 0, mismatched: 0 };
+    for (const d of dispatches.filter((d) => d.action === 'answer')) {
+        pinned.answers++;
+        if (d.question == null) { pinned.legacy++; continue; }
+        const p = pinnedLines.find((l) => l.at >= d.at && l.at - d.at <= 2000);
+        if (!p) pinned.missing++; else if (p.question !== d.question) pinned.mismatched++;
+    }
+    // budget: one line per completed spoken answer from WhatToAnswerLLM.
+    const budgetLines = [...dbg.matchAll(/^(\S+) \[LOG\] \[Answer\] budget: words=(\d+) cut=(yes|no) allowance=(yes|no)/gm)].map((m) => ({ at: ts(m[1]), words: Number(m[2]), cut: m[3] === 'yes', allowance: m[4] === 'yes' }));
+    const budgetWords = budgetLines.map((b) => b.words).sort((a, b) => a - b);
+    const budget = {
+        n: budgetLines.length,
+        over: budgetLines.filter((b) => b.words > 80).length,
+        allowance: budgetLines.filter((b) => b.allowance).length,
+        overWithoutAllowance: budgetLines.filter((b) => b.words > 80 && !b.allowance).length,
+        cut: budgetLines.filter((b) => b.cut).length,
+        p50: pct(budgetWords, .5),
+        max: budgetWords.length ? budgetWords[budgetWords.length - 1] : null,
     };
 
     // — the STT socket (Deepgram): closed by the server every ~12 s, all hour —
@@ -301,7 +328,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, heuristicChips, raceLosses,
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
-        detectP50, ttftP90, ttftSource, judge,
+        detectP50, ttftP90, ttftSource, judge, pinned, budget,
         // extra — feed the report's findings prose and tables; not part of the gate
         detectP90, stats, stt, routes, redirects, hardFails, liveQ, orphanLive, cues, answersPass,
     };
@@ -317,6 +344,8 @@ export const GATE = [
     { key: 'expiry', label: 'Live expiry loops', before: '0', pass: (m) => m.expiryLoops === 0, show: (m) => String(m.expiryLoops) },
     { key: 'quality', label: 'Interview-acceptable answers (Opus 5 judge)', before: 'not graded', pass: (m) => !!m.judge && m.judge.wrong === 0 && m.judge.acceptable >= 47, show: (m) => m.judge ? `${m.judge.acceptable} acceptable, ${m.judge.weak} weak, ${m.judge.wrong} wrong of ${m.judge.n}${m.judge.errors ? `, ${m.judge.errors} errors` : ''}` : 'not run' },
     { key: 'latency', label: 'Answer TTFT p90 · detect p50', before: '3.7 s (answer-only pass) · 4.1 s', pass: (m) => (m.ttftP90 ?? Infinity) <= 5000 && (m.detectP50 ?? Infinity) <= 5000, show: (m) => `${m.ttftP90 == null ? '—' : (m.ttftP90 / 1000).toFixed(1) + ' s'}${m.ttftSource === 'answer-only' ? ' (answer-only pass)' : ''} · ${m.detectP50 == null ? '—' : (m.detectP50 / 1000).toFixed(1) + ' s'}` },
+    { key: 'pinned', label: 'Answer prompt pinned to the dispatched question', before: 'not logged', pass: (m) => m.pinned.answers > 0 && m.pinned.legacy === 0 && m.pinned.missing === 0 && m.pinned.mismatched === 0, show: (m) => m.pinned.answers === 0 ? 'no answers' : m.pinned.legacy === m.pinned.answers ? 'not logged' : `${m.pinned.answers - m.pinned.legacy - m.pinned.missing - m.pinned.mismatched}/${m.pinned.answers} pinned, ${m.pinned.missing} missing, ${m.pinned.mismatched} mismatched${m.pinned.legacy ? `, ${m.pinned.legacy} legacy` : ''}` },
+    { key: 'budget', label: 'Spoken answers within the 80-word budget', before: '41 of 52 over 80', pass: (m) => m.budget.n > 0 && m.budget.overWithoutAllowance === 0, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.over} over 80 (${m.budget.allowance} by allowance), words p50 ${m.budget.p50} max ${m.budget.max}` },
 ];
 
 /** Counts over spoken items only — mirrors summarizeVerdicts in interview60.judge.mjs (kept dependency-free here). */
