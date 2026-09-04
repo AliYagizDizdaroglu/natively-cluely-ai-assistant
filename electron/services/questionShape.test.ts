@@ -84,4 +84,19 @@ describe('looksFragmentary', () => {
     it('every spoken script question is whole', () => {
         for (const item of SPOKEN) expect(looksFragmentary(item.q), item.q).toBe(false);
     });
+    it('the length rule is load-bearing: an opener word under 4 words is still fragmentary', () => {
+        // 'Serving.'/'Latency is up.' (above) also pass through the opener
+        // fallthrough with no length rule at all, so they don't isolate it.
+        // 'What now.' has an opener ("what") and no '?', so only the < 4
+        // words rule makes this true.
+        expect(looksFragmentary('What now.')).toBe(true);
+    });
+    it('the terminal "?" rule is load-bearing: a non-opener first word is still whole when it ends in "?"', () => {
+        // Every existing '?' example above also starts with an opener word,
+        // so none of them isolate this rule. "Running" is not an opener.
+        expect(looksFragmentary('Running the tests now?')).toBe(false);
+    });
+    it('a contraction opener keeps its word after the apostrophe is stripped', () => {
+        expect(looksFragmentary("Who's on call tonight")).toBe(false);
+    });
 });
