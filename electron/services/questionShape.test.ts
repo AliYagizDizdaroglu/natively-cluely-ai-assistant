@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { isFragment, looksLikeQuestion } from './questionShape';
+import { isFragment, looksLikeQuestion, looksFragmentary } from './questionShape';
+// @ts-ignore — untyped ESM harness module
+import { SPOKEN } from '../test/golden/interview60.questions.mjs';
 
 describe('isFragment', () => {
     it('fewer than 4 words is a fragment', () => {
@@ -55,5 +57,31 @@ describe('looksLikeQuestion', () => {
 
     it('round 8: the terminal "?" rule is unaffected by the narrower opener list', () => {
         expect(looksLikeQuestion('Is a Pod the same as a container?')).toBe(true);
+    });
+});
+
+describe('looksFragmentary', () => {
+    it('the two texts the 2026-09-04 hour would have held, both real fragments', () => {
+        expect(looksFragmentary('And when would you not?')).toBe(true); // M27: Deepgram lost the head
+        expect(looksFragmentary('but the input schema is unchanged How do you debug this?')).toBe(true); // heuristic chip, conjunction opener
+    });
+    it('fewer than four words is fragmentary, as isFragment', () => {
+        expect(looksFragmentary('Serving.')).toBe(true);
+        expect(looksFragmentary('Latency is up.')).toBe(true);
+    });
+    it('a short statement without a question mark or a question opener is fragmentary', () => {
+        expect(looksFragmentary('Cross many model services.')).toBe(true); // M26's STT tail
+        expect(looksFragmentary('Latency is creeping up.')).toBe(true);
+    });
+    it('a short imperative or question is whole', () => {
+        expect(looksFragmentary('Tell me about yourself.')).toBe(false);
+        expect(looksFragmentary('What is a Pod?')).toBe(false);
+        expect(looksFragmentary('Is that clear enough?')).toBe(false);
+    });
+    it('long text is whole even without punctuation (the degraded detector strips it)', () => {
+        expect(looksFragmentary('Someone changed the resource by hand and now your stack will not update What do you do')).toBe(false);
+    });
+    it('every spoken script question is whole', () => {
+        for (const item of SPOKEN) expect(looksFragmentary(item.q), item.q).toBe(false);
     });
 });

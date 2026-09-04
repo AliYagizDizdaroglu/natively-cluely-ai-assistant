@@ -65,3 +65,38 @@ export function looksLikeQuestion(text: string): boolean {
     const firstWord = firstToken.toLowerCase().replace(/[^a-z]/g, '');
     return QUESTION_WORDS.has(firstWord);
 }
+
+const FRAGMENT_CONJUNCTIONS = /^(and|so|but|or|then|because)\b/i;
+
+/**
+ * First words that make a short, unpunctuated text a plausible whole question
+ * or request. Wider than QUESTION_WORDS above on purpose: that list gates
+ * an outage-only chip (a false positive there gets answered), this one only
+ * decides whether to wait ≤ 2.5 s for the other ear (a false negative here
+ * costs nothing).
+ */
+const FRAGMENT_OPENERS = new Set([
+    'what', 'why', 'how', 'when', 'where', 'which', 'who', 'whom', 'whose',
+    'can', 'could', 'would', 'should', 'do', 'does', 'did', 'is', 'are', 'was', 'were', 'will', 'have', 'has',
+    'tell', 'walk', 'describe', 'explain', 'give', 'compare', 'imagine', 'suppose', 'say', 'let',
+]);
+
+/**
+ * Is this detection text not a whole question — an STT tail the other ear may
+ * still complete? True when it has fewer than 4 words, opens with a
+ * coordinating conjunction ("And when would you not?", 2026-09-04 M27), or is
+ * at most 6 words with no terminal '?' and no question/imperative opener
+ * ("Cross many model services."). Measured over 317 chip and Live texts from
+ * four flight hours: 2 flagged, both real fragments, 0 whole questions
+ * (spec 2026-09-04 §3.1).
+ */
+export function looksFragmentary(text: string): boolean {
+    const trimmed = text.trim();
+    const words = trimmed.split(/\s+/).filter(Boolean);
+    if (words.length < 4) return true;
+    if (FRAGMENT_CONJUNCTIONS.test(trimmed)) return true;
+    if (words.length > 6) return false;
+    if (/[?？]["'”’)\]]*$/.test(trimmed)) return false;
+    const first = words[0].toLowerCase().replace(/[^a-z]/g, '');
+    return !FRAGMENT_OPENERS.has(first);
+}
