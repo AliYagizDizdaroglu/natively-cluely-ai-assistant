@@ -241,7 +241,7 @@ import { normalizeLiveMode } from './services/liveMode'
 import { decideDispatch } from './services/detectionDispatch'
 import { reconcileLiveQuestion } from './services/questionReconcile'
 import { createLiveHold } from './services/liveHold'
-import { isFragment } from './services/questionShape'
+import { isFragment, looksFragmentary } from './services/questionShape'
 
 export class AppState {
   private static instance: AppState | null = null
@@ -907,6 +907,20 @@ export class AppState {
   private readonly liveHold = createLiveHold<DetectionInput>({
     holdMs: 2500,
     onResolve: (held) => this.reconcileAndDispatchLive(held.question, held.intent, true),
+  });
+  /**
+   * Holds a detection whose text is not a whole question — an STT tail such as
+   * "And when would you not?" (2026-09-04 M27: Deepgram lost the head, the tail
+   * was answered, Live's whole sentence arrived 1.3 s later and was dropped as a
+   * duplicate) — so the other ear can supply the whole sentence. Live trailed
+   * the fragment final by 1.0–1.5 s in the three measured cases; 2500 matches
+   * liveHold and leaves ~1 s of margin. Resolved by the timeout only: a whole
+   * text for the same utterance arriving earlier is answered on arrival, and
+   * the resolved fragment is then a deduper duplicate (spec 2026-09-04 §3).
+   */
+  private readonly fragmentHold = createLiveHold<DetectionInput>({
+    holdMs: 2500,
+    onResolve: (held) => this.dispatchDetection({ ...held, resolving: true }),
   });
   /**
    * Interviewer STT channel on/off. Only the INTERVIEWER channel — the user/mic
@@ -1760,6 +1774,7 @@ export class AppState {
     // meeting must not suppress the same question in this one.
     this.chipDeduper.reset();
     this.liveHold.cancel();
+    this.fragmentHold.cancel();
 
     // Live mode used to live only in memory, so every restart forgot it and an
     // unattended relaunch came up deaf. Restore the stored mode when the
@@ -1866,6 +1881,7 @@ export class AppState {
     if (next === 'off') {
       this.stopLiveRouter();
       this.liveHold.cancel();
+      this.fragmentHold.cancel();
       this.broadcast('live-mode-status', { state: 'idle' });
     } else if (this.isMeetingActive && !wasRunning) {
       // off → suggest/auto during a meeting: bring the router up. suggest↔auto
@@ -1910,14 +1926,28 @@ export class AppState {
       }
       return;
     }
+    // Not a whole question ("And when would you not?"): hold for the other ear
+    // instead of answering the tail — spec 2026-09-04 §3. Text shape only,
+    // either source; never when Live is off (no other ear), never for a hold's
+    // own resolution.
+    if (this.liveMode !== 'off' && !d.resolving && looksFragmentary(d.question)) {
+      const previous = this.fragmentHold.offer(d);
+      if (previous) {
+        const prevAnchorLog = JSON.stringify((previous.anchor ?? previous.question).slice(0, 80));
+        console.log(`[Main] dispatch: drop source=${previous.source} anchor=${prevAnchorLog} verdict=${previous.verdict} duplicateOf=${d.source} answered=false question=${JSON.stringify(previous.question)}`);
+      }
+      const heldAnchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
+      console.log(`[Main] dispatch: hold source=${d.source} anchor=${heldAnchorLog} verdict=${d.verdict} reason=fragmentary question=${JSON.stringify(d.question)}`);
+      return;
+    }
     const verdict = this.chipDeduper.admit({ question: d.question, source: d.source, anchor: d.anchor });
     const action = this.liveMode === 'off' && d.source === 'whisper' ? (verdict.admitted ? 'chip' : 'drop') : decideDispatch(this.liveMode, verdict);
     const anchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
     if (action === 'drop') {
-      console.log(`[Main] dispatch: drop source=${d.source} anchor=${anchorLog} verdict=${d.verdict} duplicateOf=${verdict.duplicateOfSource ?? 'none'} answered=${verdict.alreadyAnswered === true}`);
+      console.log(`[Main] dispatch: drop source=${d.source} anchor=${anchorLog} verdict=${d.verdict} duplicateOf=${verdict.duplicateOfSource ?? 'none'} answered=${verdict.alreadyAnswered === true} question=${JSON.stringify(d.question)}`);
       return;
     }
-    console.log(`[Main] dispatch: ${action} source=${d.source} anchor=${anchorLog} verdict=${d.verdict}`);
+    console.log(`[Main] dispatch: ${action} source=${d.source} anchor=${anchorLog} verdict=${d.verdict} question=${JSON.stringify(d.question)}`);
     if (action === 'chip') {
       let contextSnapshot = '';
       try { contextSnapshot = this.intelligenceManager.getFormattedContext(60) ?? ''; } catch { /* chip still works */ }
@@ -2038,6 +2068,7 @@ export class AppState {
     this.microphoneCapture?.stop();
     this.stopLiveRouter();
     this.liveHold.cancel();
+    this.fragmentHold.cancel();
     this.googleSTT?.finalize?.();
     this.googleSTT_User?.finalize?.();
     await new Promise(resolve => setTimeout(resolve, 250));
@@ -2277,6 +2308,16 @@ export class AppState {
     })
 
     this.intelligenceManager.on('question-detected-update', (chip: any) => {
+      // A held fragment whose chip just grew (the detector joined more speech
+      // onto it) is re-dispatched with the new text: whole → admitted now,
+      // still fragmentary → held again with a fresh timer. Before this an
+      // update never reached dispatch at all.
+      const held = this.fragmentHold.peek();
+      if (held?.chip?.id && chip?.id === held.chip.id) {
+        this.fragmentHold.cancel();
+        const question = String(chip?.question ?? '');
+        this.dispatchDetection({ ...held, question, anchor: question, chip });
+      }
       const win = mainWindow()
       if (win) {
         win.webContents.send('detected-question-update', chip)
