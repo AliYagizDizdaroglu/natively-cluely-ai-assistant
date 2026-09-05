@@ -16,16 +16,23 @@ export interface PromptAssemblyResult {
 const INTRO_PATTERNS = [
     'introduce yourself',
     'tell me about yourself',
-    'who are you',
-    'what do you do',
     'describe yourself',
     'about yourself',
     'tell me who you are',
     'give me your introduction',
     'walk me through your background',
     'brief introduction',
-    'self introduction'
+    'self introduction',
 ];
+// Dropped 2026-09-05: 'what do you do' and 'who are you'. Both occur inside ordinary
+// interview questions ("…now your stack will not update. What do you do?", "Who are you
+// reporting to?") — the after5 hour's H09 was answered with a self-introduction because
+// of the first — and neither is asked on its own in an interview.
+
+/** Sentence boundaries inside one question. */
+const SENTENCE_BREAK = /[.!?？]+\s+/;
+/** A sentence this short ahead of the request is a pleasantry ("Thanks for joining."), not a scenario. */
+const PLEASANTRY_MAX_WORDS = 4;
 
 const GREETING_PATTERNS = [
     'hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening',
@@ -33,10 +40,19 @@ const GREETING_PATTERNS = [
 ];
 
 /**
- * Checks if the user is asking an intro question.
+ * Is the interviewer asking for a self-introduction? The intro phrase must sit
+ * in the first substantive sentence: a scenario sentence ahead of it means the
+ * question is about the scenario, whatever its last clause says. A missed
+ * intro is still answered from the résumé context by the normal path (its
+ * system prompt introduces only when asked); a false intro is a
+ * self-introduction spoken in place of the real answer (spec 2026-09-05 §4).
+ * Exported for its tests; assemblePromptContext passes the lower-cased question.
  */
-function isIntroQuestion(questionLower: string): boolean {
-    return INTRO_PATTERNS.some(pattern => questionLower.includes(pattern));
+export function isIntroQuestion(questionLower: string): boolean {
+    const sentences = questionLower.split(SENTENCE_BREAK).map((s) => s.trim()).filter(Boolean);
+    const at = sentences.findIndex((s) => INTRO_PATTERNS.some((pattern) => s.includes(pattern)));
+    if (at < 0) return false;
+    return sentences.slice(0, at).every((s) => s.split(/\s+/).length <= PLEASANTRY_MAX_WORDS);
 }
 
 /**
