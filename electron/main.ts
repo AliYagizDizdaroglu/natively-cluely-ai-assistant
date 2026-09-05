@@ -243,6 +243,7 @@ import { decideDispatch } from './services/detectionDispatch'
 import { reconcileLiveQuestion } from './services/questionReconcile'
 import { createLiveHold } from './services/liveHold'
 import { isFragment, looksFragmentary } from './services/questionShape'
+import { resolveSttProvider } from './services/sttProviderOverride'
 
 export class AppState {
   private static instance: AppState | null = null
@@ -937,7 +938,11 @@ export class AppState {
 
   private createSTTProvider(speaker: 'interviewer' | 'user'): STTProvider | null {
     const { CredentialsManager } = require('./services/CredentialsManager');
-    const sttProvider = CredentialsManager.getInstance().getSttProvider();
+    const savedSttProvider = CredentialsManager.getInstance().getSttProvider();
+    // Dev-only: the flight harness selects the ear for one launch without editing the
+    // credential store (electron/services/sttProviderOverride.ts). Throws on a bad value.
+    const { provider: sttProvider, overridden } = resolveSttProvider(savedSttProvider, process.env.NATIVELY_STT_PROVIDER, app.isPackaged);
+    if (overridden) console.log(`[Main] NATIVELY_STT_PROVIDER=${sttProvider} overrides the saved STT provider (${savedSttProvider}) for this launch`);
     const sttLanguage = CredentialsManager.getInstance().getSttLanguage();
 
     // 'none' means the user has explicitly disabled STT (no provider selected).

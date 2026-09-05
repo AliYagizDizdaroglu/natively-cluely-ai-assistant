@@ -18,6 +18,8 @@
  * start) and NATIVELY_AUTOSTART_MEETING=1 starts a meeting on launch, so `auto`
  * can stop, rebuild and relaunch the app itself. Preflight still runs right
  * before the hour because the audio chain is what fails silently.
+ * NATIVELY_STT_PROVIDER=<name> makes the app run its STT on that provider for
+ * the launch (dev builds only) and makes preflight verify it.
  */
 import fs from 'fs';
 import path from 'path';
@@ -253,6 +255,19 @@ async function preflight() {
     ok('app heard the clip via Live', !!heard, heard ? `"${heard.slice(0, 60)}"` : 'no [Main] Live question line appeared');
     ok('Live mode is AUTO (answers hands-free)', mode === 'auto',
         mode ? `mode=${mode}` : 'unknown — set Live to Auto, suggest mode will not answer unattended');
+
+    // Which STT ear the hour runs on. NATIVELY_STT_PROVIDER (dev-only, see
+    // electron/services/sttProviderOverride.ts) selects it for this launch and the
+    // app logs "[Main] Using <Class> for interviewer" when a streaming provider
+    // starts. Require the last such line to name the requested provider: a missing
+    // Deepgram key falls back to GoogleSTT with only a warning, which would silently
+    // run the hour on the wrong ear. Proved for deepgram (DeepgramStreamingSTT).
+    const wantedStt = process.env.NATIVELY_STT_PROVIDER;
+    if (wantedStt) {
+        const using = [...logSince(DEBUG_LOG, 0).matchAll(/\[Main\] Using (\w+) for interviewer/g)].pop();
+        ok('STT provider is the one requested', !!using && using[1].toLowerCase().includes(wantedStt.toLowerCase()),
+            using ? `${using[1]} (NATIVELY_STT_PROVIDER=${wantedStt})` : `no [Main] Using <Class> for interviewer line for NATIVELY_STT_PROVIDER=${wantedStt}`);
+    }
 
     console.log(`\n  ${fail.length ? 'NOT READY — ' + fail.join('; ') : 'READY — safe to start the hour'}`);
     process.exit(fail.length ? 1 : 0);

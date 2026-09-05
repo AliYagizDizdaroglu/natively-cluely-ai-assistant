@@ -16,6 +16,9 @@
  *   2. auto <label>: stop → build → start → probe → preflight → hour →
  *      snapshot → gate. auto's own preflight still refuses the hour when the
  *      chosen ear is silent; a 429 wall postpones it (45 min deadline).
+ *      NATIVELY_STT_PROVIDER=deepgram (set in the environment that launches this
+ *      script) runs the hour on Deepgram; auto's preflight refuses the hour if
+ *      the app did not start that ear.
  *   3. answer passes on gemini-3.1-flash-lite, gemini-3.5-flash-lite and
  *      gemma-4-31b-it — the same 52 questions, prompt and filters — plus the
  *      chains pass, all copied into the run folder. Earlier answers/chains
@@ -121,6 +124,7 @@ async function main() {
     const liveModel = dry ? LIVE_DEFAULT : chooseLiveModel(probeExit);
     if (!liveModel) { log(`ABORT live probe exit ${probeExit}: no Gemini key reached the probe; nothing spent`); return 2; }
     log(`LIVE  ${liveModel}${liveModel === LIVE_FALLBACK ? `   (probe exit ${probeExit}: 3.x never called the tool — its daily allowance is spent, or the session died)` : ''}`);
+    log(`STT   ${process.env.NATIVELY_STT_PROVIDER ?? "the app's saved provider"}${process.env.NATIVELY_STT_PROVIDER ? '   (NATIVELY_STT_PROVIDER, verified by preflight)' : ''}`);
     const liveEnv = liveModel === LIVE_DEFAULT ? {} : { NATIVELY_LIVE_MODEL: liveModel };
 
     // 2. The hour.
