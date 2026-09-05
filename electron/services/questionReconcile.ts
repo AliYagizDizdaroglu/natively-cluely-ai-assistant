@@ -10,7 +10,7 @@
  * to the transcript sentence it came from.
  */
 export interface RecentSpeech { text: string; at: number; final: boolean }
-import { isFragment } from './questionShape';
+import { looksFragmentary } from './questionShape';
 
 export type ReconcileVerdict = 'match' | 'paraphrase' | 'replaced' | 'unverifiable';
 export interface Reconciled { text: string; anchor: string | null; verdict: ReconcileVerdict; score: number }
@@ -49,8 +49,14 @@ export function reconcileLiveQuestion(liveText: string, recent: RecentSpeech[]):
     // Below the floor while the window holds speech: Live's text is not what was said.
     // Surface the most recent thing the interviewer actually said instead.
     const latest = spoken.reduce((a, b) => (b.at > a.at ? b : a));
-    // A fragment ("?", "Um.") is no evidence of what was said: it must not replace a
-    // substantive Live question (2026-09-03 Live-only hour, W04 lost that way).
-    if (isFragment(latest.text)) return { text: liveText, anchor: null, verdict: 'unverifiable', score: bestScore };
+    // A fragment is no evidence of what was said: it must not replace a substantive Live
+    // question. The first guard was isFragment (< 4 words; 2026-09-03 Live-only hour, W04
+    // lost to "?"). The 2026-09-04 after5 hour had Whisper hallucinating exactly four words
+    // ("I'm going to go.") on a channel that never went silent; that passed the guard and
+    // replaced correct Live claims three times (W02 and M19 were answered as phantoms).
+    // looksFragmentary — the fragment hold's own predicate — refuses those too, and over
+    // the nine replaced verdicts in eight flight hours it changes only the phantom cases
+    // (spec 2026-09-05 §2).
+    if (looksFragmentary(latest.text)) return { text: liveText, anchor: null, verdict: 'unverifiable', score: bestScore };
     return { text: latest.text, anchor: latest.text, verdict: 'replaced', score: bestScore };
 }
