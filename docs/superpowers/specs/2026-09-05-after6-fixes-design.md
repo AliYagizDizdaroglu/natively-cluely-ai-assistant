@@ -87,7 +87,14 @@ Harness row `budget` (`interview60.metrics.mjs`) states the new policy:
   (100 ≈ the pre-budget raw median: the cut must still exist; 130 = a 50-word sentence
   in progress at 80, pathological);
 - label "Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)";
-  `before` "40 of 57 cut at 40–79 words (after6)"; show adds `${cutShort} cut under 80`.
+  `before` "36 of 55 cut under 80 words (after6)" — the metrics window the log to the hour
+  (55 budget lines, not the file's 57) and four of the 40 cut answers were cut at exactly 80;
+  show adds `${cutShort} cut under 80`.
+
+Expected lengths under the new policy, reconstructed from after6's raw streams (final review,
+42 answers re-cut at floor 80): p50 88, p90 96, max 114, 0 under 80, 0 over 130 — the row
+passes its own policy with margin. The `p50 ≤ 100` clause cannot by itself detect a cut that
+stopped cutting (the uncut median is 89); `max ≤ 130` can, through the longest answers.
 
 ## 4. Fix G — first character (`electron/llm/WhatToAnswerLLM.ts` `filterCodeFences`)
 
@@ -112,6 +119,18 @@ acceptable and 0 wrong, `stt` row PASS (closes ≤ 5, lost utterances 0, fragmen
 answers whose first character is a lowercase letter or an apostrophe. Graded by Opus
 subagents exactly as after5 and after6 were; the report of record and the flight artifact are
 republished and committed.
+
+Grading note (final review, finding 1): delivered answers now run about 80–115 words by
+design, while the judge rubric (unchanged, for comparability with after5/after6) bands
+delivery = 2 at "roughly 40–80 words". Delivery sub-scores will drift 2 → 1 and are not
+comparable with after6; `verdictOf` gates on delivery ≥ 1, so the quality row is unaffected
+unless a grader reaches for 0 on a long, correct answer — read those cases individually.
+
+Report-time checks with no gate row: `grep -c 'Stale socket closed' natively_debug.log`
+(expect ≤ 2, one per config restart; the `stt` row does not count these lines);
+`grep -oE '\[Answer\] full: "."' natively_debug.log | sed 's/.*"//' | grep -cE '[a-z’]'`
+(expect 0; after6 baseline 14); and expect no `socket #N lived` summary line at all when the
+hour's one socket is closed by `stop()` — that is the stale branch, not a missing socket.
 
 ## 6. Not in this spec
 
