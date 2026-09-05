@@ -112,6 +112,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         over: budgetLines.filter((b) => b.words > 80).length,
         allowance: budgetLines.filter((b) => b.allowance).length,
         cut: budgetLines.filter((b) => b.cut).length,
+        cutShort: budgetLines.filter((b) => b.cut && b.words < 80).length,
         p50: pct(budgetWords, .5),
         max: budgetWords.length ? budgetWords[budgetWords.length - 1] : null,
     };
@@ -348,14 +349,14 @@ export const GATE = [
     { key: 'quality', label: 'Interview-acceptable answers (Opus 5 judge)', before: 'not graded', pass: (m) => !!m.judge && m.judge.wrong === 0 && m.judge.acceptable >= 47, show: (m) => m.judge ? `${m.judge.acceptable} acceptable, ${m.judge.weak} weak, ${m.judge.wrong} wrong of ${m.judge.n}${m.judge.errors ? `, ${m.judge.errors} errors` : ''}` : 'not run' },
     { key: 'latency', label: 'Answer TTFT p90 · detect p50', before: '3.7 s (answer-only pass) · 4.1 s', pass: (m) => (m.ttftP90 ?? Infinity) <= 5000 && (m.detectP50 ?? Infinity) <= 5000, show: (m) => `${m.ttftP90 == null ? '—' : (m.ttftP90 / 1000).toFixed(1) + ' s'}${m.ttftSource === 'answer-only' ? ' (answer-only pass)' : ''} · ${m.detectP50 == null ? '—' : (m.detectP50 / 1000).toFixed(1) + ' s'}` },
     { key: 'pinned', label: 'Answer prompt pinned to the dispatched question', before: 'not logged', pass: (m) => m.pinned.answers > 0 && m.pinned.legacy === 0 && m.pinned.missing === 0 && m.pinned.mismatched === 0, show: (m) => m.pinned.answers === 0 ? 'no answers' : m.pinned.legacy === m.pinned.answers ? 'not logged' : `${m.pinned.answers - m.pinned.legacy - m.pinned.missing - m.pinned.mismatched}/${m.pinned.answers} pinned, ${m.pinned.missing} missing, ${m.pinned.mismatched} mismatched${m.pinned.legacy ? `, ${m.pinned.legacy} legacy` : ''}` },
-    // The row used to pass on `overWithoutAllowance === 0`, which could not
-    // fail: the stage sets `allowance` to `words > limit`, so "over 80 without
-    // allowance" is empty by construction and one budget line anywhere in the
-    // run passed the row. It measures the distribution instead. `n` must cover
-    // the delivered answers — cue answers and coding routes emit no budget
-    // line, hence 0.9. Provenance for 120: the after4 corpus through the stage
-    // measures max 92.
-    { key: 'budget', label: 'Spoken answers within the 80-word budget', before: '41 of 52 over 80', pass: (m) => m.budget.n > 0 && m.budget.n >= Math.floor(m.delivered * 0.9) && m.budget.p50 <= 80 && m.budget.max <= 120, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.over} over 80 (${m.budget.allowance} by allowance), words p50 ${m.budget.p50} max ${m.budget.max}` },
+    // Spec 2026-09-05 §3: the floor equals the limit, so a cut answer always has
+    // at least 80 words — `cutShort` is 0 by construction and non-zero only if
+    // the old 40-word floor is somehow back. `n` must cover the delivered answers
+    // (cue answers and coding routes emit no budget line, hence 0.9). p50 ≤ 100:
+    // the pre-budget raw median was 97, so the cut must still exist. max ≤ 130:
+    // a 50-word sentence in progress at 80 — pathological, and the 160 ceiling
+    // only bounds a terminator-free answer.
+    { key: 'budget', label: 'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)', before: '40 of 57 cut at 40–79 words (after6)', pass: (m) => m.budget.n > 0 && m.budget.n >= Math.floor(m.delivered * 0.9) && m.budget.cutShort === 0 && m.budget.p50 <= 100 && m.budget.max <= 130, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.over} over 80, ${m.budget.cutShort} cut under 80, words p50 ${m.budget.p50} max ${m.budget.max}` },
 ];
 
 /** Counts over spoken items only — mirrors summarizeVerdicts in interview60.judge.mjs (kept dependency-free here). */

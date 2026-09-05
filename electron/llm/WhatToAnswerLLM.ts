@@ -21,13 +21,18 @@ function diagLog(msg: string) {
 }
 
 /**
- * Spoken word budget (spec 2026-09-04 §4): in-app answers ran 97 words median,
- * 41 of 52 over 80 on 2026-09-04; cut at a sentence end inside 80 they measure
- * 67 median, 0 over 80. A sentence that starts under FLOOR streams whole even
- * past LIMIT, so an answer is never cut short of 40 words. Coding is exempt.
+ * Spoken word budget (spec 2026-09-04 §4, floor revised by spec 2026-09-05 §3):
+ * in-app answers ran 97 words median, 41 of 52 over 80 on 2026-09-04; cut at a
+ * sentence end inside 80 they measure 67 median. With a 40-word floor the
+ * sentence that would cross 80 was dropped whole, and on after6 that removed
+ * the "fix" half of every non-acceptable answer (all six cut at 40–72 words,
+ * five acceptable uncut). FLOOR equals LIMIT: every sentence that starts under
+ * 80 streams whole, the sentence in progress at 80 finishes, and the answer
+ * ends at the next sentence boundary; the hard ceiling (2 × LIMIT) bounds a
+ * terminator-free answer. Coding is exempt.
  */
 const SPOKEN_WORD_LIMIT = 80;
-const SPOKEN_WORD_FLOOR = 40;
+const SPOKEN_WORD_FLOOR = 80;
 
 export class WhatToAnswerLLM {
     private llmHelper: LLMHelper;

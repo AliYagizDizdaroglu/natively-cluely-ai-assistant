@@ -223,6 +223,17 @@ describe('cutAtWordBudget (spec 2026-09-04 §4)', () => {
         expect(words(out)).toBe(90);
         expect(done).toEqual([{ words: 90, cut: false, allowance: true }]);
     });
+    it('floor equal to the limit (spec 2026-09-05 §3): the sentence in progress at 80 finishes; the next one is dropped', async () => {
+        const text = [1, 2, 3, 4].map((i) => sentence(30, i)).join(' ');   // ends at 30, 60, 90, 120
+        const { out, done, ret } = await run(text, 7, { floor: 80 });
+        expect(words(out)).toBe(90);          // the third sentence started at 60 < 80 and streams whole past 80
+        expect(done).toEqual([{ words: 90, cut: true, allowance: true }]);
+        // The fourth sentence is also the last in the source, so its terminator
+        // is never confirmed (no chunk ever supplies whitespace after the final
+        // "."); the cut is decided only once the source ends naturally, so there
+        // is nothing left on it to close early.
+        expect(ret).not.toHaveBeenCalled();
+    });
     it('a single 95-word sentence is never cut inside; the next sentence is dropped', async () => {
         const text = sentence(95, 1) + ' ' + sentence(10, 2);
         const { out, done } = await run(text);

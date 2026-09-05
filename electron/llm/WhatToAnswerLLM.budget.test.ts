@@ -5,6 +5,7 @@ import { WhatToAnswerLLM } from './WhatToAnswerLLM';
 const sentence = (n: number, i: number) => Array.from({ length: n }, (_, k) => `w${i}x${k}`).join(' ') + '.';
 const words = (s: string) => (s.match(/\S+/g) ?? []).length;
 const SIX = [1, 2, 3, 4, 5, 6].map((i) => sentence(20, i)).join(' ');
+const FOUR = [1, 2, 3, 4].map((i) => sentence(30, i)).join(' ');   // sentence ends at 30, 60, 90, 120 words
 
 function makeHelper(text: string) {
     let consumed = 0;
@@ -54,5 +55,13 @@ describe('WhatToAnswerLLM word budget', () => {
         const out = await drain(new WhatToAnswerLLM(helper).generateStream('[INTERVIEWER]: Write it.', undefined, CODING));
         expect(words(out)).toBe(120);
         expect(logs.some((l) => l.startsWith('[Answer] budget:'))).toBe(false);
+    });
+    it('verbal: the sentence in progress at 80 finishes (floor 80): four 30-word sentences come out as 90', async () => {
+        const logs: string[] = [];
+        vi.spyOn(console, 'log').mockImplementation((...a: any[]) => { logs.push(a.map(String).join(' ')); });
+        const { helper } = makeHelper(FOUR);
+        const out = await drain(new WhatToAnswerLLM(helper).generateStream('[INTERVIEWER]: Walk me through it.', undefined, VERBAL));
+        expect(words(out)).toBe(90);
+        expect(logs).toContain('[Answer] budget: words=90 cut=yes allowance=yes');
     });
 });

@@ -464,13 +464,14 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(row.value).toBe('2/12 pinned, 1 missing, 1 mismatched, 8 legacy');
     });
     it('budget — measures the distribution, so the row can actually fail', () => {
-        // sorted words [67, 90, 140]: n 3, over 2 (90, 140), allowance 2,
-        // cut 1, p50 = pct(a,.5) = a[floor(3*.5)] = a[1] = 90, max 140.
-        expect(m.budget).toEqual({ n: 3, over: 2, allowance: 2, cut: 1, p50: 90, max: 140 });
-        const row = evaluateGate(m).rows.find((r) => r.label === 'Spoken answers within the 80-word budget');
-        // n 3 >= floor(delivered 1 * 0.9) = 0, but p50 90 > 80 and max 140 > 120.
+        // sorted words [67, 90, 140]: n 3, over 2 (90, 140), allowance 2, cut 1,
+        // cutShort 1 (67 is the only cut line under 80), p50 = pct(a,.5) =
+        // a[floor(3*.5)] = a[1] = 90, max 140.
+        expect(m.budget).toEqual({ n: 3, over: 2, allowance: 2, cut: 1, cutShort: 1, p50: 90, max: 140 });
+        const row = evaluateGate(m).rows.find((r) => r.label === 'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)');
+        // n 3 >= floor(delivered 1 * 0.9) = 0, but cutShort 1 !== 0 and max 140 > 130.
         expect(row.pass).toBe(false);
-        expect(row.value).toBe('3 answers, 2 over 80 (2 by allowance), words p50 90 max 140');
+        expect(row.value).toBe('3 answers, 2 over 80, 1 cut under 80, words p50 90 max 140');
     });
     it('the two new rows are the last two, so index-based rendering stays aligned', () => {
         expect(GATE.slice(-2).map((g) => g.key)).toEqual(['pinned', 'budget']);
@@ -495,7 +496,7 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // ttftP90=3000ms and detectP50=1500ms are both <= the 5000ms gate.
         expect(rows['Answer TTFT p90 · detect p50']).toBe(true);
         const failed = g.rows.filter((r) => !r.pass).map((r) => r.label);
-        // pinned (8 legacy dispatches) and budget (p50 90 > 80, max 140 > 120)
+        // pinned (8 legacy dispatches) and budget (cutShort 1, max 140 > 130)
         // both fail here too — appended last, same as GATE itself.
         expect(failed).toEqual([
             'Answered hands-free',
@@ -507,7 +508,7 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             'Live expiry loops',
             'Interview-acceptable answers (Opus 5 judge)',
             'Answer prompt pinned to the dispatched question',
-            'Spoken answers within the 80-word budget',
+            'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)',
         ]);
     });
 
@@ -567,7 +568,7 @@ describe('GATE', () => {
             'Answer TTFT p90 · detect p50',
             // Spec 2026-09-04 §2/§4 (answer-what-was-asked) — appended last.
             'Answer prompt pinned to the dispatched question',
-            'Spoken answers within the 80-word budget',
+            'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)',
         ]);
     });
 });

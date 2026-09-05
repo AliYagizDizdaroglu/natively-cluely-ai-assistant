@@ -420,12 +420,14 @@ const countWords = (s: string): number => (s.match(/\S+/g) ?? []).length;
  * with fewer than `floor` words emitted streams through token by token, whole,
  * even past `limit` — the allowance, which also means the first sentence is
  * never cut inside. A sentence that starts at or past `floor` is buffered and
- * emitted only if it fits; otherwise the stream is cut there — returning out
- * of the for-await closes the source (IteratorClose), which the SDK stream
- * honours by stopping the request. A terminator at the end of a
- * chunk waits for the next chunk, so "3.5" or "e.g." split across chunks
- * cannot end a sentence. onDone fires once, on natural end or on a cut —
- * never when the consumer stops early.
+ * emitted only if it fits; otherwise the stream is cut there. With `floor`
+ * equal to `limit` (the app's setting since spec 2026-09-05 §3) this reads:
+ * the sentence in progress at `limit` finishes and the answer ends at the
+ * next sentence boundary. A cut returns out of the for-await, which closes
+ * the source (IteratorClose); the SDK stream honours it by stopping the
+ * request. A terminator at the end of a chunk waits for the next chunk, so
+ * "3.5" or "e.g." split across chunks cannot end a sentence. onDone fires
+ * once, on natural end or on a cut — never when the consumer stops early.
  */
 export async function* cutAtWordBudget(
     source: AsyncGenerator<string>,
