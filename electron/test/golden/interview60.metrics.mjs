@@ -356,7 +356,7 @@ export const GATE = [
     // the pre-budget raw median was 97, so the cut must still exist. max ≤ 130:
     // a 50-word sentence in progress at 80 — pathological, and the 160 ceiling
     // only bounds a terminator-free answer.
-    { key: 'budget', label: 'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)', before: '40 of 57 cut at 40–79 words (after6)', pass: (m) => m.budget.n > 0 && m.budget.n >= Math.floor(m.delivered * 0.9) && m.budget.cutShort === 0 && m.budget.p50 <= 100 && m.budget.max <= 130, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.over} over 80, ${m.budget.cutShort} cut under 80, words p50 ${m.budget.p50} max ${m.budget.max}` },
+    { key: 'budget', label: 'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)', before: '36 of 55 cut under 80 words (after6)', pass: (m) => m.budget.n > 0 && m.budget.n >= Math.floor(m.delivered * 0.9) && m.budget.cutShort === 0 && m.budget.p50 <= 100 && m.budget.max <= 130, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.over} over 80, ${m.budget.cutShort} cut under 80, words p50 ${m.budget.p50} max ${m.budget.max}` },
 ];
 
 /** Counts over spoken items only — mirrors summarizeVerdicts in interview60.judge.mjs (kept dependency-free here). */
