@@ -140,4 +140,30 @@ describe('DeepgramStreamingSTT: events from a replaced socket never touch the cu
         vi.advanceTimersByTime(1000);
         expect(lives).toHaveLength(3);                       // the current socket's failure still reconnects
     });
+
+    it('an error on a replaced socket is not surfaced as the instance error', () => {
+        const stt = new DeepgramStreamingSTT('key');
+        const errors: Error[] = [];
+        stt.on('error', (e: Error) => errors.push(e));
+        stt.start();
+        lives[0].fire('open');
+        stt.setSampleRate(48000);
+        lives[1].fire('open');
+        lives[0].fire('error', new Error('socket gone'));    // the replaced socket's late error
+        expect(errors).toHaveLength(0);
+        lives[1].fire('error', new Error('real'));           // the current socket's error still surfaces
+        expect(errors).toHaveLength(1);
+    });
+
+    it('a late final transcript from the replaced socket still reaches the listener (audio the new socket never gets)', () => {
+        const stt = new DeepgramStreamingSTT('key');
+        const transcripts: any[] = [];
+        stt.on('transcript', (t: any) => transcripts.push(t));
+        stt.start();
+        lives[0].fire('open');                                // registers the Transcript handler on socket #1
+        stt.setSampleRate(48000);
+        lives[1].fire('open');
+        lives[0].fire('Results', { is_final: true, channel: { alternatives: [{ transcript: 'tail of the last utterance', confidence: 0.9 }] } });
+        expect(transcripts).toEqual([{ text: 'tail of the last utterance', isFinal: true, confidence: 0.9 }]);
+    });
 });

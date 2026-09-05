@@ -414,7 +414,7 @@ const countWords = (s: string): number => (s.match(/\S+/g) ?? []).length;
  * Cut a spoken answer at a sentence end inside `limit` words (spec 2026-09-04
  * §4). In-app answers ran 97 words median, 41 of 52 over 80, on 2026-09-04;
  * a sentence cut at 80 measured 67 median, 0 over 80, 2 under 40 — hence the
- * floor.
+ * original 40-word floor, raised to equal the limit by spec 2026-09-05 §3.
  *
  * The decision is taken at the start of each sentence. A sentence that starts
  * with fewer than `floor` words emitted streams through token by token, whole,
