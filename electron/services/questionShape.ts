@@ -81,20 +81,49 @@ const FRAGMENT_OPENERS = new Set([
     'tell', 'walk', 'describe', 'explain', 'give', 'compare', 'imagine', 'suppose', 'say', 'let',
 ]);
 
+/** Terminal punctuation a whole sentence ends on (closing quotes/brackets allowed after it). */
+const TERMINAL_PUNCTUATION = /[.!?？…]["'”’)\]]*$/;
+
 /**
- * Is this detection text not a whole question — an STT tail the other ear may
- * still complete? True when it has fewer than 4 words, opens with a
- * coordinating conjunction ("And when would you not?", 2026-09-04 M27), or is
- * at most 6 words with no terminal '?' and no question/imperative opener
- * ("Cross many model services."). Measured over 317 chip and Live texts from
- * four flight hours: 2 flagged, both real fragments, 0 whole questions
- * (spec 2026-09-04 §3.1).
+ * Last words no English sentence ends on — determiners, prepositions,
+ * conjunctions, possessives — plus "that", which the corpus shows ending
+ * Whisper heads six times ("…a pipeline that", "…a model that") and whole
+ * questions never. A text with no terminal punctuation that ends on one of
+ * these was cut mid-clause: Groq REST's six-second chunks did that to seven
+ * of the 2026-09-04 after5 hour's questions. Verbs and pronouns that can end
+ * a question (do, is, not, …) are deliberately absent, so a degraded-detector
+ * chip that only lost its punctuation ("…will not update What do you do")
+ * is not held (spec 2026-09-05 §3).
+ */
+const TRAILING_FUNCTION_WORDS = new Set([
+    'that', 'the', 'a', 'an', 'and', 'or', 'of', 'for', 'to', 'in', 'into', 'on', 'at', 'with', 'without',
+    'from', 'by', 'as', 'like', 'than', 'because', 'if', 'while', 'your', 'our', 'their', 'its', 'my', 'his', 'her',
+]);
+
+/**
+ * Is this detection text not a whole question — an STT tail or head the other
+ * ear may still complete? True when it has fewer than 4 words, opens with a
+ * coordinating conjunction ("And when would you not?", 2026-09-04 M27), has no
+ * terminal punctuation and is either at most 6 words ("What problem does
+ * infrastructure", after5 W09) or ends on a word no sentence ends on ("How
+ * would you design a pipeline that", after5 H03), or is at most 6 words with
+ * no terminal '?' and no question/imperative opener ("Cross many model
+ * services."). Measured: 317 chip and Live texts from four Deepgram hours → 2
+ * flagged, both real fragments (parent spec §3.1); the after5 Groq REST hour's
+ * 58 full chip texts → 6 more flagged, all six real heads, 0 of the 55 scripted
+ * questions (spec 2026-09-05 §1). A whole question that lost its punctuation
+ * and ends on one of those words waits at most 2.5 s for the other ear.
  */
 export function looksFragmentary(text: string): boolean {
     const trimmed = text.trim();
     const words = trimmed.split(/\s+/).filter(Boolean);
     if (words.length < 4) return true;
     if (FRAGMENT_CONJUNCTIONS.test(trimmed)) return true;
+    if (!TERMINAL_PUNCTUATION.test(trimmed)) {
+        if (words.length <= 6) return true;
+        const last = words[words.length - 1].toLowerCase().replace(/[^a-z']+/g, '');
+        if (TRAILING_FUNCTION_WORDS.has(last)) return true;
+    }
     if (words.length > 6) return false;
     if (/[?？]["'”’)\]]*$/.test(trimmed)) return false;
     const first = words[0].toLowerCase().replace(/^[^a-z]+/, '').replace(/[^a-z].*$/, '');

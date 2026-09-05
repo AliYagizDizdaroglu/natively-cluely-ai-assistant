@@ -97,12 +97,33 @@ describe('looksFragmentary', () => {
         expect(looksFragmentary('Running the tests now?')).toBe(false);
     });
     it('a contraction opener keeps its word after the apostrophe is stripped', () => {
-        expect(looksFragmentary("Who's on call tonight")).toBe(false);
+        // With a period the terminal-punctuation rule does not fire, so only the opener
+        // rule decides — which is what this test pins.
+        expect(looksFragmentary("Who's on call tonight.")).toBe(false);
     });
     it('leading punctuation glued to the first word does not hide its opener', () => {
         // A smart quote glued onto "What" as one token ('"What') must not
         // erase the whole word: strip the leading punctuation run first,
         // then cut at the first remaining non-letter.
-        expect(looksFragmentary('"What should we deploy')).toBe(false);
+        expect(looksFragmentary('"What should we deploy.')).toBe(false);
+    });
+    it('after5 heads: a Whisper chunk cut mid-sentence is fragmentary past six words when it ends on a function word', () => {
+        expect(looksFragmentary('How would you design a pipeline that')).toBe(true); // H03, 7 words
+        expect(looksFragmentary('How would you roll back a model that')).toBe(true); // H10
+        expect(looksFragmentary('How would you backfill a year of data without')).toBe(true); // M24
+        expect(looksFragmentary('How would you handle a task in airflow that intermittently fails because')).toBe(true); // M07
+    });
+    it('after5 heads: a short chunk with no terminal punctuation is fragmentary even with a question opener', () => {
+        expect(looksFragmentary('What problem does infrastructure')).toBe(true); // W09, 4 words
+        expect(looksFragmentary('Why would you use CloudFormation in')).toBe(true); // M04
+    });
+    it('the terminal-punctuation rule is load-bearing: the same short opener text with a period is whole', () => {
+        expect(looksFragmentary('What problem does infrastructure.')).toBe(false);
+    });
+    it('the function-word rule is load-bearing: a long unpunctuated text ending on a content word stays whole', () => {
+        expect(looksFragmentary('How would you shrink an eight gigabyte training image')).toBe(false);
+    });
+    it('a sentence-final verb is not a function word: the degraded-detector chip stays whole', () => {
+        expect(looksFragmentary('How would you handle a task that intermittently fails and what would you do')).toBe(false);
     });
 });

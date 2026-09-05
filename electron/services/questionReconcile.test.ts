@@ -17,14 +17,21 @@ describe('overlap / sameAnchor', () => {
 });
 
 describe('reconcileLiveQuestion — fixtures from the 2026-09-02 log', () => {
-    it('M04: Live invented a question; the interim transcript carried the real one → replaced', () => {
-        const r = reconcileLiveQuestion(
-            'Tell me about a time you handled a resource constraint problem in a deployment.',
-            [sp('Why would you use CloudFormation instead of configuring things by', -5000, false)],
-        );
-        expect(r.verdict).toBe('replaced');
-        expect(r.text).toBe('Why would you use CloudFormation instead of configuring things by');
-        expect(r.anchor).toBe('Why would you use CloudFormation instead of configuring things by');
+    it('M04: Live invented a question; the interim transcript carried the real one → unverifiable while the interim is mid-sentence, replaced by the final', () => {
+        const live = 'Tell me about a time you handled a resource constraint problem in a deployment.';
+        // The interim at that instant ended mid-clause ("…configuring things by"): a head, not
+        // evidence of the whole question (head-fragment rule, spec 2026-09-05 §3). Live's wording
+        // is kept for the Live hold, which re-reconciles on the next interviewer final.
+        const interim = reconcileLiveQuestion(live, [sp('Why would you use CloudFormation instead of configuring things by', -5000, false)]);
+        expect(interim.verdict).toBe('unverifiable');
+        expect(interim.text).toBe(live);
+        expect(interim.anchor).toBeNull();
+        // The final is a whole sentence: it replaces the invented question, as the 2026-09-02 log needed.
+        const said = 'Why would you use CloudFormation instead of configuring things by hand in the console?';
+        const final = reconcileLiveQuestion(live, [sp(said, -3000, true)]);
+        expect(final.verdict).toBe('replaced');
+        expect(final.text).toBe(said);
+        expect(final.anchor).toBe(said);
     });
     it('M25: Live rewrote the question → paraphrase, anchored to the transcript sentence', () => {
         const r = reconcileLiveQuestion(
