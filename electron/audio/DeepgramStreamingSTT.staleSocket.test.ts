@@ -126,4 +126,18 @@ describe('DeepgramStreamingSTT: events from a replaced socket never touch the cu
         vi.advanceTimersByTime(1000);
         expect(lives).toHaveLength(2);
     });
+
+    it('a socket that closes before it opens after a restart prints no summary borrowed from the replaced socket', () => {
+        const stt = new DeepgramStreamingSTT('key');
+        stt.start();
+        lives[0].fire('open');
+        stt.write(CHUNK);
+        vi.advanceTimersByTime(3000);
+        stt.setSampleRate(48000);                            // replaces the open socket
+        const second = lives[1];
+        second.fire('close', { code: 1006, reason: '' });    // handshake failed: closes before it ever opened
+        expect(log.some((l) => l.includes(' lived '))).toBe(false);
+        vi.advanceTimersByTime(1000);
+        expect(lives).toHaveLength(3);                       // the current socket's failure still reconnects
+    });
 });

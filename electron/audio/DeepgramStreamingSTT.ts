@@ -112,6 +112,9 @@ export class DeepgramStreamingSTT extends EventEmitter {
         this.isActive = false;
         this.isConnecting = false;
         this.isOpen = false;
+        // The replaced socket's Close is ignored (stale), so its accounting must
+        // not leak into the next socket's summary line.
+        this.sockOpenedAt = 0;
         this.buffer = [];
         console.log('[DeepgramStreaming] Stopped');
     }
