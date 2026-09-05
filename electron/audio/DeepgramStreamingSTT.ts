@@ -163,7 +163,7 @@ export class DeepgramStreamingSTT extends EventEmitter {
 
             const deepgram = createClient(this.apiKey);
 
-            this.live = deepgram.listen.live({
+            const live = deepgram.listen.live({
                 model: 'nova-3',
                 language: this.languageCode,
                 smart_format: true,
@@ -175,8 +175,23 @@ export class DeepgramStreamingSTT extends EventEmitter {
                 utterance_end_ms: 1000,
                 vad_events: true,
             });
+            this.live = live;
+            // Every handler below belongs to THIS socket. stop() and restartStream()
+            // replace `this.live` but cannot detach handlers already attached, so a
+            // replaced socket's Open/Close/Error must not touch the instance. Measured
+            // 2026-09-05 (after6): the first sample-rate restart left socket A's
+            // handlers live; A's close marked the live socket B closed, cleared B's
+            // keepalive and reconnected, orphaning B — which the server closed 12 s
+            // later with 1011, and that close orphaned C: one 1011 every 12.1 s for
+            // the whole hour (308 closes), each dropping the audio the orphan held.
+            const stale = (): boolean => this.live !== live;
 
-            this.live.on(LiveTranscriptionEvents.Open, () => {
+            live.on(LiveTranscriptionEvents.Open, () => {
+                if (stale()) {
+                    console.log('[DeepgramStreaming] Stale socket opened after a restart — closing it');
+                    try { live.requestClose(); } catch { }
+                    return;
+                }
                 this.isConnecting = false;
                 this.isOpen = true;
                 console.log('[DeepgramStreaming] Connected');
@@ -186,7 +201,7 @@ export class DeepgramStreamingSTT extends EventEmitter {
                 this.sockLastSendAt = this.sockOpenedAt; this.sockLastReadyState = 'n/a'; this.sockNotOpenWrites = 0;
 
                 // Register Transcript inside Open per SDK README pattern
-                this.live.on(LiveTranscriptionEvents.Transcript, (data: any) => {
+                live.on(LiveTranscriptionEvents.Transcript, (data: any) => {
                     try {
                         const alt = data.channel?.alternatives?.[0];
                         const transcript = alt?.transcript;
@@ -206,7 +221,7 @@ export class DeepgramStreamingSTT extends EventEmitter {
                 // Flush buffered audio
                 const buffered = this.buffer.splice(0);
                 for (const chunk of buffered) {
-                    try { this.live?.send(chunk); } catch { }
+                    try { live.send(chunk); } catch { }
                 }
                 if (buffered.length > 0) {
                     console.log(`[DeepgramStreaming] Flushed ${buffered.length} buffered chunks`);
@@ -226,14 +241,19 @@ export class DeepgramStreamingSTT extends EventEmitter {
                 }, 5000);
             });
 
-            this.live.on(LiveTranscriptionEvents.Error, (err: any) => {
+            live.on(LiveTranscriptionEvents.Error, (err: any) => {
+                if (stale()) return;
                 console.error('[DeepgramStreaming] Error:', err);
                 this.emit('error', err instanceof Error ? err : new Error(String(err)));
             });
 
-            this.live.on(LiveTranscriptionEvents.Close, (event: any) => {
+            live.on(LiveTranscriptionEvents.Close, (event: any) => {
                 const code = event?.code ?? 'unknown';
                 const reason = event?.reason || '(empty)';
+                if (stale()) {
+                    console.log(`[DeepgramStreaming] Stale socket closed (code=${code}) — ignored`);
+                    return;
+                }
                 console.log(`[DeepgramStreaming] Closed (code=${code}, reason=${reason})`);
                 if (this.sockOpenedAt) {
                     const now = Date.now();
