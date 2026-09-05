@@ -1245,7 +1245,7 @@ export class AppState {
       // 2. Initialize STT Services if missing
       if (!this.googleSTT) {
         const { CredentialsManager } = require('./services/CredentialsManager');
-        const sttProv = CredentialsManager.getInstance().getSttProvider();
+        const sttProv = resolveSttProvider(CredentialsManager.getInstance().getSttProvider(), process.env.NATIVELY_STT_PROVIDER, app.isPackaged).provider;
         console.log(`[Main] Creating interviewer STT provider: ${sttProv}`);
         this.googleSTT = this.createSTTProvider('interviewer');
       }

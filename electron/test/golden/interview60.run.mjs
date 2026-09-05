@@ -261,10 +261,11 @@ async function preflight() {
     // app logs "[Main] Using <Class> for interviewer" when a streaming provider
     // starts. Require the last such line to name the requested provider: a missing
     // Deepgram key falls back to GoogleSTT with only a warning, which would silently
-    // run the hour on the wrong ear. Proved for deepgram (DeepgramStreamingSTT).
+    // run the hour on the wrong ear. Proved for deepgram (DeepgramStreamingSTT); groq logs
+    // "RestSTT (groq)" and matches too; natively logs no Using line and cannot pass this row.
     const wantedStt = process.env.NATIVELY_STT_PROVIDER;
     if (wantedStt) {
-        const using = [...logSince(DEBUG_LOG, 0).matchAll(/\[Main\] Using (\w+) for interviewer/g)].pop();
+        const using = [...logSince(DEBUG_LOG, 0).matchAll(/\[Main\] Using ([^\n]+?) for interviewer/g)].pop();
         ok('STT provider is the one requested', !!using && using[1].toLowerCase().includes(wantedStt.toLowerCase()),
             using ? `${using[1]} (NATIVELY_STT_PROVIDER=${wantedStt})` : `no [Main] Using <Class> for interviewer line for NATIVELY_STT_PROVIDER=${wantedStt}`);
     }

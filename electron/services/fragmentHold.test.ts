@@ -61,6 +61,20 @@ describe('fragment hold (spec 2026-09-04 §3)', () => {
         expect(log).toEqual([`hold:whisper:${TAIL}`, `answer:live:${WHOLE}`, `drop:whisper:${TAIL}`]);
         expect(log.filter((l) => l.startsWith('answer:'))).toHaveLength(1);
     });
+    it('H03 in Auto (after5 head): the unpunctuated head is held, Live’s whole sentence is answered on arrival, the head resolves as a duplicate', () => {
+        vi.useFakeTimers();
+        const { dispatch, log } = makeDispatcher('auto');
+        const HEAD = 'How would you design a pipeline that';
+        const WHOLE = 'How would you design a pipeline that retrains, validates, and deploys with no human in the loop, and what guardrails would you put in?';
+        dispatch({ question: HEAD, source: 'whisper', anchor: HEAD, verdict: 'match', chip: { id: 'c1' } });
+        expect(log).toEqual([`hold:whisper:${HEAD}`]);
+        vi.advanceTimersByTime(1300);
+        dispatch({ question: WHOLE, source: 'live', anchor: HEAD, verdict: 'paraphrase' });
+        expect(log).toEqual([`hold:whisper:${HEAD}`, `answer:live:${WHOLE}`]);
+        vi.advanceTimersByTime(1200);
+        expect(log).toEqual([`hold:whisper:${HEAD}`, `answer:live:${WHOLE}`, `drop:whisper:${HEAD}`]);
+        expect(log.filter((l) => l.startsWith('answer:'))).toHaveLength(1);
+    });
     it('expiry with nothing better answers the fragment — hold briefly, then answer', () => {
         vi.useFakeTimers();
         const { dispatch, log } = makeDispatcher('auto');

@@ -108,11 +108,14 @@ const TRAILING_FUNCTION_WORDS = new Set([
  * infrastructure", after5 W09) or ends on a word no sentence ends on ("How
  * would you design a pipeline that", after5 H03), or is at most 6 words with
  * no terminal '?' and no question/imperative opener ("Cross many model
- * services."). Measured: 317 chip and Live texts from four Deepgram hours → 2
- * flagged, both real fragments (parent spec §3.1); the after5 Groq REST hour's
- * 58 full chip texts → 6 more flagged, all six real heads, 0 of the 55 scripted
- * questions (spec 2026-09-05 §1). A whole question that lost its punctuation
- * and ends on one of those words waits at most 2.5 s for the other ear.
+ * services."). Measured: the older rules over 317 chip and Live texts from four
+ * mixed flight hours (two Groq REST, one Deepgram, one Live-only) → 2 flagged,
+ * both real fragments (parent spec §3.1); the head rule over the after5 Groq
+ * REST hour's 58 full chip texts → 6 more flagged, all six real heads, and over
+ * 155 Deepgram finals from two hours → 4 flagged, all four mid-sentence cuts;
+ * 0 of the 55 scripted questions in either (spec 2026-09-05 §1, final review).
+ * A whole question that lost its punctuation and ends on one of those words
+ * waits at most 2.5 s for the other ear.
  */
 export function looksFragmentary(text: string): boolean {
     const trimmed = text.trim();

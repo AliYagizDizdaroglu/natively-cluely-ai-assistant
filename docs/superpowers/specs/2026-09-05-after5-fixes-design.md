@@ -124,3 +124,6 @@ republished and committed.
 - Two-part questions split at a comma (W05), answered in halves.
 - The noise source on the machine's system audio channel between clips (0 silence skips in
   after5 against 42 in after3). Not observable from the logs; the user checks the machine.
+- Head/tail splits whose head ends on a content word (after5 W11: "…Dockerfile for a Python"
+  was answered whole, the tail "model server and why" held then answered at expiry). A
+  REST-chunking class; the head rule cannot see it without punctuation evidence.
