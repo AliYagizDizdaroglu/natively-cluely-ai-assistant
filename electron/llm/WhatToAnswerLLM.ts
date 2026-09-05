@@ -148,7 +148,11 @@ export class WhatToAnswerLLM {
                 i++;
             }
 
-            carry = combined.slice(combined.length - CARRY_LEN);
+            // A chunk shorter than the carry is carried whole. Slicing from a
+            // negative index dropped the first character of a two-character opening
+            // chunk — Gemini opens with "I’", "So", "To" routinely, so 14 of 57
+            // delivered after6 answers began "’d start by…" (spec 2026-09-05 §4).
+            carry = combined.slice(Math.max(0, combined.length - CARRY_LEN));
             if (output) yield output;
         }
 
