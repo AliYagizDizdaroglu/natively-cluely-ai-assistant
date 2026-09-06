@@ -236,6 +236,7 @@ import { CredentialsManager } from "./services/CredentialsManager"
 import { SettingsManager } from "./services/SettingsManager"
 import { PhoneMirrorService } from "./services/PhoneMirrorService"
 import { setVerboseLoggingFlag } from "./verboseLog"
+import { pickIntelligenceSurface } from "./services/intelligenceSurface"
 import { ReleaseNotesManager } from "./update/ReleaseNotesManager"
 import { OllamaManager } from './services/OllamaManager'
 import { normalizeLiveMode } from './services/liveMode'
@@ -2180,7 +2181,11 @@ export class AppState {
   }
 
   private setupIntelligenceEvents(): void {
-    const mainWindow = this.getMainWindow.bind(this)
+    // The meeting UI is the overlay: while a meeting is active the events go there even when
+    // currentWindowMode names the launcher (autostart never switches the mode; the launcher's
+    // ready-to-show and the overlay's logo click switch back to it). See intelligenceSurface.ts.
+    const mainWindow = (): BrowserWindow | null => pickIntelligenceSurface(
+      this.isMeetingActive, this.windowHelper.getOverlayWindow(), this.getMainWindow())
 
     // Forward intelligence events to renderer
     this.intelligenceManager.on('assist_update', (insight: string) => {
