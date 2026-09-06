@@ -38,6 +38,8 @@ export interface AdmitResult {
   duplicateOfQuestion?: string;
   /** Set only when suppressed: whether the original detection has already been answered. */
   alreadyAnswered?: boolean;
+  /** Set only when suppressed: how long ago the original detection was admitted. */
+  duplicateAgeMs?: number;
 }
 
 interface CacheEntry {
@@ -106,20 +108,39 @@ export interface ChipDeduperOptions {
    * short enough that a genuine re-ask later still surfaces.
    */
   windowMs?: number;
+  /**
+   * How long an ANSWERED question stays authoritative. Live 3.1 re-fires a
+   * question it already had answered 20-26 s later (after7, 2026-09-06: M04 at
+   * 20.0 s, M27 at 26 s), past windowMs, so the hour got two answers. Replayed
+   * over after5-7 with 60 s: exactly those two doubles removed, and the one
+   * false suppression (after5 W02→W03 at 48 s, by an answered one-content-word
+   * fragment) is what the content-word floor in findSimilar guards against.
+   */
+  answeredWindowMs?: number;
   /** Jaccard threshold — same 0.7 the whisper detector already uses. */
   threshold?: number;
   cacheSize?: number;
 }
 
+/**
+ * Past windowMs only answered entries remain, and there a short text must not
+ * suppress by containment/Jaccard: after5's answered "I'm going to go." (one
+ * content word) would have swallowed the next real question at +48 s. Four is
+ * contentWordSimilar's floor for the same reason.
+ */
+const TAIL_MIN_CONTENT_WORDS = 4;
+
 export class ChipDeduper {
   private cache: CacheEntry[] = [];
   private nextId = 1;
   private readonly windowMs: number;
+  private readonly answeredWindowMs: number;
   private readonly threshold: number;
   private readonly cacheSize: number;
 
   constructor(opts: ChipDeduperOptions = {}) {
     this.windowMs = opts.windowMs ?? 20_000;
+    this.answeredWindowMs = opts.answeredWindowMs ?? 60_000;
     this.threshold = opts.threshold ?? 0.7;
     this.cacheSize = opts.cacheSize ?? 10;
   }
@@ -135,7 +156,7 @@ export class ChipDeduper {
     if (!text) return { admitted: true };
 
     const now = Date.now();
-    this.cache = this.cache.filter((e) => now - e.at < this.windowMs);
+    this.cache = this.cache.filter((e) => now - e.at < (e.answered ? this.answeredWindowMs : this.windowMs));
 
     const match = this.findSimilar(text, candidate.anchor, candidate.source, now);
     if (match) {
@@ -145,6 +166,7 @@ export class ChipDeduper {
         duplicateOfSource: match.source,
         duplicateOfQuestion: match.text,
         alreadyAnswered: match.answered,
+        duplicateAgeMs: now - match.at,
       };
     }
 
@@ -165,10 +187,25 @@ export class ChipDeduper {
     if (entry) entry.answered = true;
   }
 
+  /**
+   * The answered entry now stands for the fuller sentence it was extended to
+   * (main.ts extend dispatch): a later re-fire of that sentence is a plain
+   * duplicate with nothing added, not a second extension.
+   */
+  extend(id: number | undefined, question: string): void {
+    if (id === undefined) return;
+    const entry = this.cache.find((e) => e.id === id);
+    if (entry) entry.text = question.trim();
+  }
+
   private findSimilar(text: string, anchor: string | undefined, source: ChipSource, now: number): CacheEntry | null {
     const normNew = normalizeForContainment(text);
+    const newContentWords = contentWords(text).size;
     for (const entry of this.cache) {
       if (anchor && entry.anchor && sameAnchor(anchor, entry.anchor)) return entry;
+      // Past windowMs only answered entries survive (answeredWindowMs); there a
+      // short text on either side must not match by containment/Jaccard.
+      if (now - entry.at >= this.windowMs && Math.min(newContentWords, contentWords(entry.text).size) < TAIL_MIN_CONTENT_WORDS) continue;
       // Content-word overlap only ever applies across the two detectors,
       // within CROSS_DETECTOR_MS of each other (Ruling R45): it exists to
       // catch one question the STT split into two finals that whisper and

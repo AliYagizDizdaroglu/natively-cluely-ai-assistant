@@ -34,6 +34,22 @@ describe('pairAnswers', () => {
         expect(pairs[2].kind).toBe('cue');
     });
 
+    it('an extend dispatch (the fuller sentence of an answered head) appends its answer to the head pair instead of making a second pair', () => {
+        // The extend is dispatched while the head is still streaming, so its own full
+        // line is the second one after it — the head keeps the first.
+        const extended = [
+            '2026-09-04T08:00:16.000Z [LOG] [Main] dispatch: answer source=whisper anchor="What is the difference between a docker image" verdict=match',
+            '2026-09-04T08:00:16.400Z [LOG] [Main] dispatch: extend source=live anchor="What is the difference between a docker image and a container, and when does it matter?" verdict=match extends="What is the difference between a docker image" question="What is the difference between a docker image and a container, and when does it matter?"',
+            '2026-09-04T08:00:19.500Z [LOG] [Answer] full: "An image is the read-only blueprint."',
+            '2026-09-04T08:00:22.000Z [LOG] [Answer] full: "A container is a running instance of it; it matters when you scale."',
+        ].join('\n');
+        const pairs = pairAnswers(extended, timeline);
+        expect(pairs.map((p) => p.id)).toEqual(['W01']);
+        expect(pairs[0].answer).toBe('An image is the read-only blueprint.\n\nA container is a running instance of it; it matters when you scale.');
+        expect(pairs[0].extended).toBe(true);
+        expect(pairs[0].heardExtended).toBe('What is the difference between a docker image and a container, and when does it matter?');
+    });
+
     it('claims an anchor with no content words by time — the tail of a question STT split in two — instead of dropping it', () => {
         // M27 in the 2026-09-04 hour: Deepgram's final was "And when would you not?", every word a stop word.
         const split = [

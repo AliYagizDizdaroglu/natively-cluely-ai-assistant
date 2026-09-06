@@ -34,7 +34,7 @@ export function computeRun(dir) {
  *
  * Returns the RunMetrics contract used by `gate` and the headline numbers
  * (dir, startedAt, endedAt, durationMin, items, heard, answered, delivered,
- * answerFailures, answersToNobody, surfacedMax, surfacedMulti, caught,
+ * answerFailures, answersToNobody, surfacedMax, surfacedMulti, extendsTotal, caught,
  * unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, heuristicChips, raceLosses, sttCloses,
  * lostUtterances, fragmentChips, coachingAnswers, codingForSpoken,
  * expiryLoops, liveReconnects, detectP50, ttftP90, ttftSource) plus a few
@@ -61,7 +61,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const liveQ = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] Live question \((\w+), mode=(\w+)\): "([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), intent: m[2], mode: m[3], heard: m[4] }));
     const suppressed = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] suppressed duplicate live question \(already surfaced by (\w+)\): "([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), by: m[2], heard: m[3] }));
     const whisperFwd = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] forwarding detected-question → renderer \(win=\w+\) intent=(\w+) q="([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), intent: m[2], heard: m[3] }));
-    const dispatches = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|chip|drop) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)(?: duplicateOf=(\w+) answered=(true|false))?(?: question="((?:[^"\\]|\\.)*)")?/gm)]
+    const dispatches = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|chip|drop|extend) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)(?: duplicateOf=(\w+) answered=(true|false))?(?: extends="(?:[^"\\]|\\.)*")?(?: question="((?:[^"\\]|\\.)*)")?/gm)]
         .map((m) => ({ at: ts(m[1]), action: m[2], source: m[3], anchor: JSON.parse(`"${m[4]}"`), verdict: m[5], duplicateOf: m[6] ?? null, answered: m[7] === 'true', question: m[8] == null ? null : JSON.parse(`"${m[8]}"`) }));
     const routes = [...diag.matchAll(/^\[(\S+)\] route: ([^\n]+)/gm)].map((m) => ({ at: ts(m[1]), route: m[2].trim() }));
     const firstTokens = [...diag.matchAll(/^\[(\S+)\] first token (\d+)ms/gm)].map((m) => ({ at: ts(m[1]), ms: Number(m[2]) }));
@@ -199,10 +199,13 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
             const route = ans ? routes.find((r) => r.at >= ans.at && r.at <= ans.at + 4000) ?? null : null;
             const sources = new Set(mine.map((d) => d.source));
             const heardBy = sources.size === 2 ? 'both' : sources.size === 1 ? [...sources][0] : null;
-            const surfaced = mine.filter((d) => d.action !== 'drop').length;
+            // An extend is the same question answered again for its fuller sentence
+            // (main.ts extend dispatch) — one surface, not a second chip/double.
+            const surfaced = mine.filter((d) => d.action !== 'drop' && d.action !== 'extend').length;
+            const extended = mine.filter((d) => d.action === 'extend').length;
             return { ...it, heardBy, answered: !!(ans && route), answeredAt: ans?.at ?? null,
                 detectMs: mine.length ? Math.min(...mine.map((d) => d.at)) - spokeEnd : null,
-                dispatches: surfaced, verdict: ans?.verdict ?? mine[0]?.verdict ?? null,
+                dispatches: surfaced, extended, verdict: ans?.verdict ?? mine[0]?.verdict ?? null,
                 routeCoding: !!(route && /^CODING/.test(route.route)),
                 // verdict=fragment drops are R36-round-3 noise (a Live claim
                 // too short to be anything), not a real race loss signal.
@@ -290,6 +293,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     // doesn't add to the count), so >1 here is exactly "two chips on screen".
     const surfacedMulti = items.filter((i) => i.dispatches > 1).length;
     const surfacedMax = items.length ? Math.max(...items.map((i) => i.dispatches)) : 0;
+    const extendsTotal = items.reduce((s, i) => s + (i.extended ?? 0), 0);
 
     const complete = !!timeline.endedAt;
     const durationMin = complete ? ((ts(timeline.endedAt) - timeline.startedMs) / 60000).toFixed(1) : null;
@@ -328,7 +332,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
 
     return {
         startedAt: timeline.startedAt, endedAt: timeline.endedAt, durationMin, items,
-        heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti,
+        heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti, extendsTotal,
         caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, heuristicChips, raceLosses,
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
@@ -341,7 +345,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
 export const GATE = [
     { key: 'answered', label: 'Answered hands-free', before: '26/52', pass: (m) => m.delivered >= 50 && m.answersToNobody === 0, show: (m) => `${m.delivered}/${m.answered} dispatched, ${m.answersToNobody} to nobody` },
     { key: 'heard', label: 'Heard by either detector', before: '51/52', pass: (m) => m.heard >= 51, show: (m) => `${m.heard}/${m.items.length}` },
-    { key: 'surfaced', label: 'Surfaced detections per question', before: '12 doubles, 1 invented', pass: (m) => m.surfacedMulti === 0 && m.answersToNobody === 0, show: (m) => `${m.surfacedMulti} doubles, ${m.caught} caught, ${m.answersToNobody} unclaimed` },
+    { key: 'surfaced', label: 'Surfaced detections per question', before: '12 doubles, 1 invented', pass: (m) => m.surfacedMulti === 0 && m.answersToNobody === 0, show: (m) => `${m.surfacedMulti} doubles, ${m.extendsTotal} extended, ${m.caught} caught, ${m.answersToNobody} unclaimed` },
     { key: 'stt', label: 'STT socket closes / lost utterances / fragment chips', before: '299 / 2 / 5', pass: (m) => m.sttCloses <= 5 && m.lostUtterances === 0 && m.fragmentChips === 0, show: (m) => `${m.sttCloses} / ${m.lostUtterances} / ${m.fragmentChips}` },
     { key: 'coaching', label: 'Technical questions answered via the coaching path', before: '25', pass: (m) => m.coachingAnswers === 0, show: (m) => String(m.coachingAnswers) },
     { key: 'coding', label: 'Spoken questions routed CODING', before: '4 routes (2 of them screenshot cues)', pass: (m) => m.codingForSpoken === 0, show: (m) => `${m.codingForSpoken}, ${m.cueAnswers} cue answers` },

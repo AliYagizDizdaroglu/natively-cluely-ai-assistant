@@ -57,13 +57,22 @@ const overlap = (a, b) => {
  */
 export function pairAnswers(debugLog, timeline) {
     const items = timeline.items.map((i) => ({ ...i, spokeEnd: i.playedAt + Math.round((i.clipSecs ?? 0) * 1000) }));
-    const dispatches = [...debugLog.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: answer source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)/gm)]
-        .map((m) => ({ at: Date.parse(m[1]), source: m[2], anchor: JSON.parse(`"${m[3]}"`), verdict: m[4] }));
+    const all = [...debugLog.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|extend) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)/gm)]
+        .map((m) => ({ at: Date.parse(m[1]), action: m[2], source: m[3], anchor: JSON.parse(`"${m[4]}"`), verdict: m[5] }));
+    const dispatches = all.filter((d) => d.action === 'answer');
+    const extendsList = all.filter((d) => d.action === 'extend');
     const fulls = [...debugLog.matchAll(/^(\S+) \[LOG\] \[Answer\] full: (".*")$/gm)]
         .map((m) => ({ at: Date.parse(m[1]), text: JSON.parse(m[2]) }));
-    return dispatches.map((d, i) => {
+    // Answers pair with the first full line in their window (bounded by the next
+    // answer dispatch). An extend (main.ts: the fuller sentence of a question
+    // already answered from its head) then takes the first full line after it
+    // that no answer claimed, and its text is appended to the head's answer —
+    // the candidate says both, so the judge sees both.
+    const taken = new Set();
+    const pairs = dispatches.map((d, i) => {
         const end = Math.min(dispatches[i + 1]?.at ?? Infinity, d.at + 60_000);
         const full = fulls.find((f) => f.at >= d.at && f.at < end) ?? null;
+        if (full) taken.add(full);
         let best = null, bestOv = 0;
         for (const it of items) {
             if (d.at < it.playedAt - 2000 || d.at > it.spokeEnd + 60_000) continue;
@@ -80,8 +89,20 @@ export function pairAnswers(debugLog, timeline) {
             id: item?.id ?? '?', kind: item?.kind ?? 'unknown', level: item?.level ?? null, topic: item?.topic ?? null,
             question: item?.q ?? null, heard: d.anchor, source: d.source, verdict: d.verdict,
             dispatchedAt: new Date(d.at).toISOString(), answer: full?.text ?? null,
+            extended: false, heardExtended: null,
         };
     });
+    for (const e of extendsList) {
+        const full = fulls.find((f) => !taken.has(f) && f.at >= e.at && f.at < e.at + 60_000) ?? null;
+        if (!full) continue;
+        taken.add(full);
+        const head = [...pairs].reverse().find((p) => Date.parse(p.dispatchedAt) <= e.at);
+        if (!head) continue;
+        head.answer = head.answer ? `${head.answer}\n\n${full.text}` : full.text;
+        head.extended = true;
+        head.heardExtended = e.anchor;
+    }
+    return pairs;
 }
 
 /**

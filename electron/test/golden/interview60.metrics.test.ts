@@ -187,6 +187,10 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             // R36 fix wave (Ruling R33): W01's own dispatch — exact match for
             // W01.q, but overlap(anchor, W02.q)=0.556/0.625 also clears 0.15.
             `${iso(T0 + 601000)} [LOG] [Main] dispatch: answer source=live anchor="Explain how a load balancer distributes incoming traffic across backend servers." verdict=match`,
+            // Extend on an added clause (main.ts extend dispatch): W01's fuller
+            // sentence answered again 2 s after its head — one surface, not a
+            // double; counted in extended/extendsTotal only.
+            `${iso(T0 + 603000)} [LOG] [Main] dispatch: extend source=live anchor="Explain how a load balancer distributes incoming traffic across backend servers, and how it notices one is down." verdict=match extends="Explain how a load balancer distributes incoming traffic across backend servers." question="Explain how a load balancer distributes incoming traffic across backend servers, and how it notices one is down."`,
             // W02's own dispatch — the mirror image, inside BOTH W01's window
             // ([598000,660000]) and W02's window ([643000,705000]) — the 17s
             // overlap (643000..660000) is exactly the false-double risk.
@@ -362,6 +366,10 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // with exactly one.
         expect(w01.dispatches).toBe(1);
         expect(w02.dispatches).toBe(1);
+        // The extend line is W01's (its anchor contains all of W01.q), adds no surface, counts as extended.
+        expect(w01.extended).toBe(1);
+        expect(w02.extended).toBe(0);
+        expect(m.extendsTotal).toBe(1);
         // Not just "1", but the RIGHT one: W01 claims its own (source=live),
         // W02 claims its own (source=whisper) — not each other's.
         expect(w01.heardBy).toBe('live');

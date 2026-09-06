@@ -237,6 +237,7 @@ import { SettingsManager } from "./services/SettingsManager"
 import { PhoneMirrorService } from "./services/PhoneMirrorService"
 import { setVerboseLoggingFlag } from "./verboseLog"
 import { pickIntelligenceSurface } from "./services/intelligenceSurface"
+import { shouldExtend } from "./services/extendOnClause"
 import { ReleaseNotesManager } from "./update/ReleaseNotesManager"
 import { OllamaManager } from './services/OllamaManager'
 import { normalizeLiveMode } from './services/liveMode'
@@ -1951,6 +1952,21 @@ export class AppState {
     const action = this.liveMode === 'off' && d.source === 'whisper' ? (verdict.admitted ? 'chip' : 'drop') : decideDispatch(this.liveMode, verdict);
     const anchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
     if (action === 'drop') {
+      // The fuller sentence of a question already answered from its head (the STT
+      // closed a final at a mid-question pause): answer the whole question instead
+      // of dropping its second clause. Hands-free only. See extendOnClause.ts.
+      if (
+        this.liveMode === 'auto' && verdict.alreadyAnswered === true && verdict.duplicateOfQuestion !== undefined &&
+        verdict.duplicateAgeMs !== undefined && shouldExtend(verdict.duplicateOfQuestion, d.question, verdict.duplicateAgeMs)
+      ) {
+        console.log(`[Main] dispatch: extend source=${d.source} anchor=${anchorLog} verdict=${d.verdict} extends=${JSON.stringify(verdict.duplicateOfQuestion)} question=${JSON.stringify(d.question)}`);
+        this.chipDeduper.extend(verdict.id, d.question);
+        this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source });
+        void this.intelligenceManager
+          .runWhatShouldISay(d.question, 1.0, undefined, { intentOverride: d.intent, bypassCooldown: true })
+          .catch((err: any) => console.error('[Main] extend-answer failed:', err?.message ?? err));
+        return;
+      }
       console.log(`[Main] dispatch: drop source=${d.source} anchor=${anchorLog} verdict=${d.verdict} duplicateOf=${verdict.duplicateOfSource ?? 'none'} answered=${verdict.alreadyAnswered === true} question=${JSON.stringify(d.question)}`);
       return;
     }
