@@ -14,6 +14,8 @@ import {
   resolveGemmaSystemPrompt,
   resolveStyleSuffix
 } from "./llm/prompts"
+import { userContextBlock } from "./llm/userContext"
+import { keepSpokenBudget } from "./llm/knowledgePromptBudget"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
 import curl2Json from "@bany/curl-to-json";
 import { CustomProvider, CurlProvider } from './services/CredentialsManager';
@@ -980,9 +982,7 @@ CRITICAL RULES:
       : context;
 
     // Inject custom user notes into every suggestion when present
-    const customNotesBlock = this.customNotes?.trim()
-      ? `\n\n<user_context>\n${this.customNotes.trim()}\n</user_context>\nUse this context naturally if relevant. Never quote it verbatim.`
-      : '';
+    const customNotesBlock = userContextBlock(this.customNotes);
 
     const basePrompt = activeModePrompt
       ? `${HARD_SYSTEM_PROMPT}\n\n## ACTIVE MODE\n${activeModePrompt}${customNotesBlock}`
@@ -2450,7 +2450,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
           }
           // Inject knowledge system prompt
           if (knowledgeResult.systemPromptInjection) {
-            systemPromptOverride = knowledgeResult.systemPromptInjection;
+            // The verbal caller's counted word budget survives the swap — see knowledgePromptBudget.ts.
+            systemPromptOverride = keepSpokenBudget(callerSystemPromptOverride, knowledgeResult.systemPromptInjection);
           }
           // Inject knowledge context
           if (knowledgeResult.contextBlock) {
@@ -2500,9 +2501,19 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     // Preparation
     const isMultimodal = !!(imagePaths?.length);
 
+    // Custom notes reach every answer here, hands-free ones included — before, only
+    // generateSuggestion carried them. Appended after the knowledge/mode injection so a
+    // swapped-in knowledge prompt keeps them. Providers without an override keep their own
+    // prompts (unchanged); the verbal path always passes one. See llm/userContext.ts.
+    const notesBlock = userContextBlock(this.customNotes);
+    if (notesBlock) {
+      if (systemPromptOverride) systemPromptOverride = `${systemPromptOverride}${notesBlock}`;
+      console.log(`[LLMHelper] <user_context> appended to the system prompt (${this.customNotes.trim().length} chars)`);
+    }
+
     // Determine the system prompt to use
     // logic: if override provided, use it. otherwise use HARD_SYSTEM_PROMPT (which is the universal base)
-    const baseSystemPrompt = systemPromptOverride || HARD_SYSTEM_PROMPT;
+    const baseSystemPrompt = systemPromptOverride || `${HARD_SYSTEM_PROMPT}${notesBlock}`;
     const finalSystemPrompt = this.injectLanguageInstruction(baseSystemPrompt);
 
     // Helper to build combined user message.
@@ -3259,7 +3270,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     if (!this.client) {
       throw new Error("Gemini client not initialized — cannot route verbal answer to Flash");
     }
-    const systemWithLanguage = this.injectLanguageInstruction(systemPrompt);
+    // Custom notes ride along on the fast path too (this path never enters streamChat).
+    const notesBlock = userContextBlock(this.customNotes);
+    if (notesBlock) console.log(`[LLMHelper] <user_context> appended to the system prompt (${this.customNotes.trim().length} chars)`);
+    const systemWithLanguage = this.injectLanguageInstruction(`${systemPrompt}${notesBlock}`);
     // Stall safety net: recover to a fast alternative that differs from the primary.
     // Was gemma-4-31b-it when the primary was Flash Lite; now Flash Lite 3.5, which
     // shares Gemini's plumbing (so an auth/quota fault that killed the primary is
