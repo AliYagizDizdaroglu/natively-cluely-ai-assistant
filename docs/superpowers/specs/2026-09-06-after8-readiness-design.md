@@ -41,7 +41,7 @@ Preconditions: 3.1-flash-lite quota reset (07:00 UTC); Context toggle **ON** wit
 4. Length with Context ON: p50 60–70 words uncut, 0 cut under 80, delivery-2 ≥ 45 of 52, level shape not flat (after7 89 / 42 over 80 / 32).
 5. Context reaching answers: `<user_context> appended` on every hands-free answer; no invented experience.
 6. Primary model: 0 fallbacks to 3.5; Live on 3.1.
-7. Pipeline health: STT closes ≤ 5, lost utterances 0 under the 5-s resolution rule, fragment chips 0, first-character loss 0, pinned = dispatched.
+7. Pipeline health: STT closes ≤ 5, lost utterances 0 under the 5-s resolution rule (in the harness since 2026-09-06 evening: after7 27 → 0 resolved, after6 keeps 12 real losses), fragment chips 0, first-character loss 0, pinned = dispatched.
 8. Latency: TTFT p90 ≤ 3 s, detect p50 ≈ 1.4 s (the notes block adds ~2.3k chars of prompt).
 9. Overlay rendering: DevTools probe at the start of the hour asserts the first answers are in the overlay DOM.
 10. Coverage: ≥ 51 of 52 heard.
@@ -51,4 +51,4 @@ Report-time rules: the rubric's delivery band (40–80 words) stays; extends app
 
 ## 4. Residual risks
 
-Extends add ≈ 7 answers per hour (quota, latency) and a second bubble under an already-answered question; the 60-s answered window can suppress a genuinely repeated question inside a minute (the interviewer re-asking verbatim); the notes block is unbounded text in every prompt (the box caps at 4000 chars); the harness lost-utterance metric still needs the 5-s resolution rule before row 7 can pass.
+Extends add ≈ 7 answers per hour (quota, latency) and a second bubble under an already-answered question; the 60-s answered window can suppress a genuinely repeated question inside a minute (the interviewer re-asking verbatim); the notes block is unbounded text in every prompt (the box caps at 4000 chars); in an autostarted meeting the overlay window stays an 80 px strip until a mode switch expands it (answers are in the DOM, clipped) — not the manual flow, not fixed.
