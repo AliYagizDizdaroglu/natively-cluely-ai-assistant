@@ -220,6 +220,12 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             // came back empty when Deepgram had just been transcribing something.
             `${iso(T0 + 30000)} [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="partial words here"`,
             `${iso(T0 + 32000)} [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text=""`,
+            // The same shape RESOLVED: a healthy socket closes a silent segment with an
+            // empty final and finalizes the speech within 5 s (after7: all 27 such
+            // finals). Counted in resolvedEmptyFinals, not lostUtterances.
+            `${iso(T0 + 35000)} [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="explain the eviction policy tradeoffs"`,
+            `${iso(T0 + 36000)} [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text=""`,
+            `${iso(T0 + 38500)} [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text="Explain the eviction policy tradeoffs please."`,
             // A DeepgramStreaming reconnect, then a non-empty final 1000ms later
             // (inside the 0-3000ms window finalsAfterReconnect checks): fragmentChips.
             `${iso(T0 + 40000)} [LOG] [DeepgramStreaming] Reconnecting in 1000ms (attempt 1/10)...`,
@@ -440,6 +446,7 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // sttCloses = count of "Closed (code=1011" lines = 2.
         expect(m.sttCloses).toBe(2);
         expect(m.lostUtterances).toBe(1);
+        expect(m.resolvedEmptyFinals).toBe(1); // the +36000 empty final, finalized at +38500
         expect(m.fragmentChips).toBe(1);
         expect(m.coachingAnswers).toBe(1);
         // codingForSpoken = items with answered && routeCoding = just Q1 = 1.

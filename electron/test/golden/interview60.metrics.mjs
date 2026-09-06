@@ -128,11 +128,26 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const partials = [...dbg.matchAll(/^(\S+) \[LOG\] \[DeepgramStreaming\] Transcript event — isFinal=false, text="([^"]+)"/gm)].map((m) => ({ at: ts(m[1]), text: m[2] }));
     // an empty final whose most recent partial (inside 12 s, and after the last real
     // final) had words: Deepgram had the utterance and then dropped it
-    const lostUtterances = finals.filter((f) => !f.text).map((f) => {
+    const emptyAfterPartial = finals.filter((f) => !f.text).map((f) => {
         const lastPartial = partials.filter((p) => p.at < f.at && f.at - p.at < 12000).pop();
         const lastFinal = finals.filter((g) => g.at < f.at && g.text).pop();
         return lastPartial && (!lastFinal || lastPartial.at > lastFinal.at) ? { at: f.at, text: lastPartial.text } : null;
     }).filter(Boolean);
+    // …unless a non-empty final within 5 s carries the partial's words: a healthy,
+    // long-lived Deepgram socket closes a silent segment with an empty final and
+    // finalizes the speech in the next one (after7, 2026-09-06: all 27 "lost"
+    // utterances resolved this way; under the after6 flap they were real losses).
+    const normWords = (s) => s.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter((w) => w.length > 2);
+    const resolvedBy = (lost) => {
+        const words = normWords(lost.text);
+        const probe = words.slice(0, 3).join(' ');
+        const later = finals.filter((g) => g.text && g.at > lost.at && g.at - lost.at <= 5000);
+        return later.find((g) => probe && normWords(g.text).join(' ').includes(probe))
+            ?? later.find((g) => { const t = normWords(g.text).join(' '); return words.filter((w) => t.includes(w)).length >= Math.min(3, words.length); })
+            ?? null;
+    };
+    const lostUtterances = emptyAfterPartial.filter((lost) => !resolvedBy(lost));
+    const resolvedEmptyFinals = emptyAfterPartial.length - lostUtterances.length;
     const stt = {
         closes: sttClosedAt.length,
         gapMedianS: q10(sttGaps, .5),
@@ -142,6 +157,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         emptyFinals: finals.filter((f) => !f.text).length,
         finalsAfterReconnect: finals.filter((f) => f.text && sttReconnectAt.some((r) => f.at - r >= 0 && f.at - r <= 3000)),
         lostUtterances,
+        resolvedEmptyFinals,
     };
 
     // — attribute detections to the questions that were played —
@@ -334,7 +350,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         startedAt: timeline.startedAt, endedAt: timeline.endedAt, durationMin, items,
         heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti, extendsTotal,
         caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, heuristicChips, raceLosses,
-        sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, fragmentChips: stt.finalsAfterReconnect.length,
+        sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, resolvedEmptyFinals: stt.resolvedEmptyFinals, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
         detectP50, ttftP90, ttftSource, judge, pinned, budget,
         // extra — feed the report's findings prose and tables; not part of the gate
@@ -346,7 +362,7 @@ export const GATE = [
     { key: 'answered', label: 'Answered hands-free', before: '26/52', pass: (m) => m.delivered >= 50 && m.answersToNobody === 0, show: (m) => `${m.delivered}/${m.answered} dispatched, ${m.answersToNobody} to nobody` },
     { key: 'heard', label: 'Heard by either detector', before: '51/52', pass: (m) => m.heard >= 51, show: (m) => `${m.heard}/${m.items.length}` },
     { key: 'surfaced', label: 'Surfaced detections per question', before: '12 doubles, 1 invented', pass: (m) => m.surfacedMulti === 0 && m.answersToNobody === 0, show: (m) => `${m.surfacedMulti} doubles, ${m.extendsTotal} extended, ${m.caught} caught, ${m.answersToNobody} unclaimed` },
-    { key: 'stt', label: 'STT socket closes / lost utterances / fragment chips', before: '299 / 2 / 5', pass: (m) => m.sttCloses <= 5 && m.lostUtterances === 0 && m.fragmentChips === 0, show: (m) => `${m.sttCloses} / ${m.lostUtterances} / ${m.fragmentChips}` },
+    { key: 'stt', label: 'STT socket closes / lost utterances / fragment chips', before: '299 / 2 / 5', pass: (m) => m.sttCloses <= 5 && m.lostUtterances === 0 && m.fragmentChips === 0, show: (m) => `${m.sttCloses} / ${m.lostUtterances} (${m.resolvedEmptyFinals} resolved within 5 s) / ${m.fragmentChips}` },
     { key: 'coaching', label: 'Technical questions answered via the coaching path', before: '25', pass: (m) => m.coachingAnswers === 0, show: (m) => String(m.coachingAnswers) },
     { key: 'coding', label: 'Spoken questions routed CODING', before: '4 routes (2 of them screenshot cues)', pass: (m) => m.codingForSpoken === 0, show: (m) => `${m.codingForSpoken}, ${m.cueAnswers} cue answers` },
     { key: 'expiry', label: 'Live expiry loops', before: '0', pass: (m) => m.expiryLoops === 0, show: (m) => String(m.expiryLoops) },
