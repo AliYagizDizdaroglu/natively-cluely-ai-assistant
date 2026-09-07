@@ -652,4 +652,40 @@ describe('QuestionDetector', () => {
             logSpy.mockRestore();
         });
     });
+
+    describe('difficulty (2026-09-08: logged per detection, carried on the chip, routes nothing)', () => {
+        it('copies the client\'s difficulty onto the chip and prints it in the detect-returned line', async () => {
+            const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+            const client = makeClientWith([
+                { detected: true, question: 'Design the nightly training pipeline for a recommender.', intent: 'verbal', confidence: 0.9, difficulty: 'hard' },
+            ]);
+            const chips: DetectedQuestionChip[] = [];
+            const det = new QuestionDetector({
+                client,
+                snapshotProvider: stubSnapshotProvider('[interviewer]: design the nightly training pipeline', 'ctx'),
+                onChip: c => chips.push(c),
+            });
+            det.onTranscriptFinal({ speaker: 'interviewer', text: 'design the nightly training pipeline for a recommender', timestamp: 0, final: true });
+            await vi.advanceTimersByTimeAsync(1500);
+            await vi.runAllTimersAsync();
+            expect(chips).toHaveLength(1);
+            expect(chips[0].difficulty).toBe('hard');
+            const logged = logSpy.mock.calls.map((c) => String(c[0])).join('\n');
+            expect(logged).toMatch(/\[QD-timing\] detect returned .* difficulty=hard/);
+            logSpy.mockRestore();
+        });
+
+        it('a client that does not report difficulty leaves it undefined on the chip', async () => {
+            const client = makeClientWith([
+                { detected: true, question: 'What is X?', intent: 'verbal', confidence: 0.9 },
+            ]);
+            const chips: DetectedQuestionChip[] = [];
+            const det = new QuestionDetector({ client, snapshotProvider: stubSnapshotProvider('[interviewer]: what is X', 'ctx'), onChip: c => chips.push(c) });
+            det.onTranscriptFinal({ speaker: 'interviewer', text: 'explain the architecture of X', timestamp: 0, final: true });
+            await vi.advanceTimersByTimeAsync(1500);
+            await vi.runAllTimersAsync();
+            expect(chips).toHaveLength(1);
+            expect(chips[0].difficulty).toBeUndefined();
+        });
+    });
 });

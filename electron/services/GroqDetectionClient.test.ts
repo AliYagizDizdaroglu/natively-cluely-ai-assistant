@@ -53,9 +53,12 @@ describe('GroqDetectionClient request shape', () => {
         expect(body.response_format.type).toBe('json_schema');
         expect(body.response_format.json_schema.strict).toBe(true);
         const schema = body.response_format.json_schema.schema;
-        expect(schema.required).toEqual(['detected', 'question', 'intent', 'confidence']);
+        expect(schema.required).toEqual(['detected', 'question', 'intent', 'confidence', 'difficulty']);
         expect(schema.additionalProperties).toBe(false);
         expect(schema.properties.intent.enum).toEqual(['verbal', 'coding', 'behavioral']);
+        // 2026-09-08: difficulty is asked for and logged (per-question routing evidence
+        // for after9); nothing routes on it yet.
+        expect(schema.properties.difficulty.enum).toEqual(['easy', 'medium', 'hard']);
     });
 
     it('non-gpt-oss override model: keeps json_object and omits reasoning_effort', async () => {
@@ -69,5 +72,15 @@ describe('GroqDetectionClient request shape', () => {
         expect(body.model).toBe('llama-3.1-8b-instant');
         expect(body.reasoning_effort).toBeUndefined();
         expect(body.response_format).toEqual({ type: 'json_object' });
+    });
+
+    it('passes the model\'s difficulty through on the validated response', async () => {
+        vi.stubGlobal('fetch', vi.fn(async () => ({
+            ok: true, status: 200, headers: { get: (): string | null => null }, text: async () => '',
+            json: async () => ({ choices: [{ message: { content: JSON.stringify({ detected: true, question: 'Design the training pipeline.', intent: 'verbal', confidence: 0.9, difficulty: 'hard' }) } }], usage: { total_tokens: 100 } }),
+        })));
+        const client = new GroqDetectionClient({ getApiKey: () => 'k' });
+        const result = await client.detect(input);
+        expect(result?.difficulty).toBe('hard');
     });
 });

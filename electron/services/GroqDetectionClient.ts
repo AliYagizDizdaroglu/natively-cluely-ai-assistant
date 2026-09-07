@@ -52,8 +52,9 @@ const DETECTION_JSON_SCHEMA = {
             question: { type: 'string' },
             intent: { type: 'string', enum: ['verbal', 'coding', 'behavioral'] },
             confidence: { type: 'number' },
+            difficulty: { type: 'string', enum: ['easy', 'medium', 'hard'] },
         },
-        required: ['detected', 'question', 'intent', 'confidence'],
+        required: ['detected', 'question', 'intent', 'confidence', 'difficulty'],
         additionalProperties: false,
     },
 } as const;

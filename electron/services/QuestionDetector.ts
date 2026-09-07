@@ -28,6 +28,8 @@ export interface DetectedQuestionChip {
     question: string;
     intent: 'verbal' | 'coding' | 'behavioral';
     confidence: number;
+    /** From the detector model when it reports one (Groq); logged, never routed on (2026-09-08). */
+    difficulty?: 'easy' | 'medium' | 'hard';
     contextSnapshot: string;
     detectedAt: number;
 }
@@ -265,7 +267,7 @@ export class QuestionDetector {
         const detectElapsed = Date.now() - detectIssuedAt;
         const resultShape = result === null
             ? 'null'
-            : `detected=${result.detected} conf=${result.confidence.toFixed(2)} q.len=${result.question?.length ?? 0}`;
+            : `detected=${result.detected} conf=${result.confidence.toFixed(2)} q.len=${result.question?.length ?? 0}${result.difficulty ? ` difficulty=${result.difficulty}` : ''}`;
         console.log(`[QD-timing] detect returned +${detectElapsed}ms result=${resultShape}`);
 
         // Generation guard: clear() was called while we were awaiting detect().
@@ -312,6 +314,7 @@ export class QuestionDetector {
                 question: mergedQuestion,
                 intent: result.intent,
                 confidence: result.confidence,
+                ...(result.difficulty ? { difficulty: result.difficulty } : {}),
                 contextSnapshot: fullContext,
                 detectedAt,
             };
@@ -327,6 +330,7 @@ export class QuestionDetector {
             question: mergedQuestion,
             intent: result.intent,
             confidence: result.confidence,
+            ...(result.difficulty ? { difficulty: result.difficulty } : {}),
             contextSnapshot: fullContext,
             detectedAt,
         };
