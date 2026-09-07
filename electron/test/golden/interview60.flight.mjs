@@ -41,8 +41,11 @@ import { fileURLToPath } from 'node:url';
 export const LIVE_DEFAULT = 'gemini-3.1-flash-live-preview';
 export const LIVE_FALLBACK = 'gemini-2.5-flash-native-audio-latest';
 // The first is the app's answer model; the rest are comparison arms. Ids with a "/" run
-// on Groq (answers.mjs), the Gemma ids on the Gemini API.
-export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'gemma-4-31b-it', 'gemma-4-26b-a4b-it', 'qwen/qwen3.8-27b', 'openai/gpt-oss-120b'];
+// on Groq (answers.mjs; with a placeholder GROQ_API_KEY the pass exits 3 in seconds and
+// the flight goes on without that file). gemma-4-26b-a4b-it is deliberately absent: the
+// 2026-09-08 probe leaked its planning text into the spoken answer and one answer ran
+// 11 min to MAX_TOKENS — 52 of those would hold the judge exports for hours.
+export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'gemma-4-31b-it', 'qwen/qwen3.8-27b', 'openai/gpt-oss-120b'];
 
 /**
  * The Live model for the hour, from the probe's exit code: 0 (tool call seen)
