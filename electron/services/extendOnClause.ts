@@ -12,14 +12,16 @@
  * weak head in that hour this rule reaches. A blanket "any longer overlapping text" rule was
  * 29 firings for 7 rescues and is not used.
  */
+import { normalizeForContainment } from './containment';
+
 export const EXTEND_WINDOW_MS = 30_000;
 
-const normalize = (t: string): string => t.toLowerCase().replace(/\s+/g, ' ').trim().replace(/[?.!,;:]+$/, '');
-const words = (t: string): string[] => t.toLowerCase().match(/[a-z0-9']+/g) ?? [];
+/** Counted on the containment-normalized text, so "p 99" and "P99" weigh the same. */
+const words = (t: string): string[] => t.match(/[a-z0-9']+/g) ?? [];
 
 export function shouldExtend(answered: string, later: string, ageMs: number): boolean {
     if (ageMs > EXTEND_WINDOW_MS) return false;
-    const head = normalize(answered), full = normalize(later);
+    const head = normalizeForContainment(answered), full = normalizeForContainment(later);
     if (!head || head === full || !full.includes(head)) return false;
     return words(full).length - words(head).length >= 3;
 }

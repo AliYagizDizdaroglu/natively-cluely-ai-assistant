@@ -11,6 +11,13 @@ describe('shouldExtend — the fuller sentence of an answered head', () => {
             25_700,
         )).toBe(true);
     });
+    it('fires across the ears\' punctuation and number-spacing differences (after8 H02: "p 99." vs "P99,")', () => {
+        expect(shouldExtend(
+            'has p 99 latency creeping up. How do you diagnose and fix it?',
+            'A SageMaker endpoint serving ten thousand requests per second has P99 latency creeping up, how do you diagnose and fix it?',
+            1_100,
+        )).toBe(true);
+    });
     it('does not fire on the same question re-heard, or on one or two added words', () => {
         expect(shouldExtend('What is a DAG?', 'What is a DAG', 2_000)).toBe(false);
         expect(shouldExtend('What is a DAG?', 'What is a DAG then?', 2_000)).toBe(false);

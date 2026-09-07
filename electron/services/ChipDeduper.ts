@@ -1,5 +1,6 @@
 import { jaccardSimilarity } from './jaccardSimilarity';
 import { sameAnchor } from './questionReconcile';
+import { normalizeForContainment } from './containment';
 
 /**
  * Cross-pipeline chip dedup.
@@ -49,11 +50,6 @@ interface CacheEntry {
   at: number;
   anchor?: string;
   answered: boolean;
-}
-
-/** Lower-case, collapse whitespace, strip trailing ?.!,;: — containment only. */
-function normalizeForContainment(text: string): string {
-  return text.toLowerCase().replace(/\s+/g, ' ').trim().replace(/[?.!,;:]+$/, '');
 }
 
 /** Lower-cased words longer than 3 letters — same definition questionReconcile's overlap() uses. */
@@ -202,7 +198,13 @@ export class ChipDeduper {
     const normNew = normalizeForContainment(text);
     const newContentWords = contentWords(text).size;
     for (const entry of this.cache) {
-      if (anchor && entry.anchor && sameAnchor(anchor, entry.anchor)) return entry;
+      // Anchors identify one utterance heard twice, so they only speak inside the
+      // base window. Past it only answered entries survive, and two DIFFERENT
+      // questions sharing a frame clear sameAnchor on the frame words alone
+      // (after8 W08 at +49 s: "what is the difference between a pod and a
+      // deployment" vs "…between data drift and concept drift", overlap 0.75 —
+      // W08 was never answered).
+      if (anchor && entry.anchor && now - entry.at < this.windowMs && sameAnchor(anchor, entry.anchor)) return entry;
       // Past windowMs only answered entries survive (answeredWindowMs); there a
       // short text on either side must not match by containment/Jaccard.
       if (now - entry.at >= this.windowMs && Math.min(newContentWords, contentWords(entry.text).size) < TAIL_MIN_CONTENT_WORDS) continue;
