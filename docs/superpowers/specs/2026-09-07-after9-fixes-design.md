@@ -36,3 +36,13 @@ Preconditions: quota reset (07:00 UTC); Context ON, JD in the notes box; Live 3.
 4. Length p50 55–65, 0 cut, delivery-2 ≥ 45 of 52.
 5. Cues: 3 captures logged (`[Main] screen reference: captured`), 3 CODING routes with 1 image, judge correctness 2 on ≥ 2 of 3 against the on-screen problem (after8: 0 of 3).
 6. Everything else as after8: notes on every answer, 0 fallbacks, STT 0/0/0, TTFT p90 ≤ 3 s, heard ≥ 51, chains pass.
+
+### 4b. Added 2026-09-08 (roster 79 items, 92 min; arms; difficulty; Live prompt)
+
+Evidence behind each expectation: the silent recorder (scratchpad `record-long.mjs`, the 24 new clips written as PCM into the real Live router, three runs) and the after8 log.
+
+7. **Long questions answered whole** (new gate row): 6 of 6 at coverage ≥ 0.8. The Live listener prompt used to ask for "one clear sentence" and returned 23–35 of 69–84 words (coverage 0.23–0.47, 0 of 6); asking for the scenario sentences too gave 5 of 6 with one mid-clip double (L02); adding "do not call the tool while the interviewer is still setting up a scenario" gave 6 of 6, one event each, 0.24–1.35 s after the clip. A miss here in the flight means the Deepgram/detector path or the deduper differs from the standalone router — read the `dispatch:` lines for that item before touching the prompt again.
+8. **Follow-ups**: 18 of 18 heard (recorder: 18/18 detected once, 0.35–1.2 s after the clip). The five that open with "And …" are held 2.5 s by `looksFragmentary` (M27's real tail), so their detect latency reads +2.5 s; they must still be answered. Judge rows `long` and `followup` report beside the base 52; the 47/0 bar stays on the 52. Acceptable on follow-ups is the number to read, not a bar yet: the grader sees the parent question, and a follow-up answered as if fresh is `weak`.
+9. **Difficulty**: every `[QD-timing] detect returned` line carries `difficulty=`; a per-level table (easy/medium/hard vs the roster's W/M/H/long levels) goes in the report. No routing on it.
+10. **Arms**: 3.1-flash-lite, 3.5-flash-lite, gemma-4-31b, plus `qwen/qwen3.8-27b` and `openai/gpt-oss-120b` only if `.env` carries a real `GROQ_API_KEY` (the placeholder exits 3 and the flight goes on). gemma-4-26b is out (planning-text leak, 11-min answers).
+11. **Not done, on purpose**: the prompter strip (cue mode) — the spike says the answer's first sentence is the cue and keyword extraction is noise; the strip needs a design the user can see. Warm-up trimming — the idle-gated heartbeat is ~17 calls/h, not where the quota goes.
