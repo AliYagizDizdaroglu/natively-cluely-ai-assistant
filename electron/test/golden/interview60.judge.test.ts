@@ -20,6 +20,39 @@ const dbg = [
 ].join('\n');
 
 describe('pairAnswers', () => {
+    it('gives the grader the on-screen problem for a screenshot cue and the parent for a chained follow-up (2026-09-08 roster)', () => {
+        const chained = {
+            ...timeline,
+            items: [
+                { id: 'C01', kind: 'screenshot', level: 'easy', topic: 'coding', problem: 'PY4', q: 'Now take a look at this problem on screen and walk me through how you would solve it.', playedAt: t('10.000'), clipSecs: 4 },
+                { id: 'C01F1', kind: 'spoken', level: 'followup', topic: 'coding', chain: 'C01', q: 'What is the time complexity of what you just wrote, and can you do better?', playedAt: t('40.000'), clipSecs: 3 },
+                { id: 'L01', kind: 'spoken', level: 'long', topic: 'SageMaker', q: 'Walk me through the training pipeline for a nightly recommendation model.', playedAt: t('70.000'), clipSecs: 5 },
+                { id: 'L01F1', kind: 'spoken', level: 'followup', topic: 'SageMaker', chain: 'L01', q: 'What happens when the nightly training job finishes late?', playedAt: t('100.000'), clipSecs: 3 },
+            ],
+        };
+        const log = [
+            '2026-09-04T08:00:16.000Z [LOG] [Main] dispatch: answer source=live anchor="Take a look at this problem on screen and walk me through how you would solve it." verdict=match',
+            '2026-09-04T08:00:19.000Z [LOG] [Answer] full: "Count with a hash map, then a heap of size k."',
+            '2026-09-04T08:00:45.000Z [LOG] [Main] dispatch: answer source=live anchor="What is the time complexity of what you just wrote, and can you do better?" verdict=match',
+            '2026-09-04T08:00:48.000Z [LOG] [Answer] full: "O(n log k); bucket sort gets O(n)."',
+            '2026-09-04T08:01:17.000Z [LOG] [Main] dispatch: answer source=live anchor="Walk me through the training pipeline for a nightly recommendation model." verdict=match',
+            '2026-09-04T08:01:20.000Z [LOG] [Answer] full: "Ingest, validate, train, evaluate, register."',
+            '2026-09-04T08:01:45.000Z [LOG] [Main] dispatch: answer source=live anchor="What happens when the nightly training job finishes late?" verdict=match',
+            '2026-09-04T08:01:48.000Z [LOG] [Answer] full: "Serve yesterday\'s model and alert."',
+        ].join('\n');
+        const pairs = pairAnswers(log, chained);
+        expect(pairs.map((p) => p.id)).toEqual(['C01', 'C01F1', 'L01', 'L01F1']);
+        // The cue: the problem text rides along, so the grader knows what was on screen.
+        expect(pairs[0].question).toContain('[On screen: LeetCode 347 Top K Frequent Elements.');
+        // A follow-up on the cue: the SAME problem, named as the thing that was on screen.
+        expect(pairs[1].question).toBe(`${chained.items[1].q} [Follow-up on the problem that was on screen: ${pairs[0].question.slice(pairs[0].question.indexOf('LeetCode'), -1)}]`);
+        // Control: a long question with no chain gets no suffix at all.
+        expect(pairs[2].question).toBe(chained.items[2].q);
+        // A follow-up on a spoken question: the parent's text.
+        expect(pairs[3].question).toBe(`${chained.items[3].q} [Follow-up to: ${chained.items[2].q}]`);
+        expect(pairs[3].level).toBe('followup');
+    });
+
     it('pairs each answer dispatch with the full answer that follows it, claimed to the scripted item', () => {
         const pairs = pairAnswers(dbg, timeline);
         expect(pairs.map((p) => [p.id, p.answer !== null])).toEqual([

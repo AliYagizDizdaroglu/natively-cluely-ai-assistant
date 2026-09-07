@@ -8,6 +8,8 @@ import { overlap, logSince } from './interview60.lib.mjs';
 
 const CONTAMINATED = ['[2026-09-02T16:21:50'];
 const ts = (s) => Date.parse(s);
+// A long question is 'answered whole' at this content-word coverage (see the gate row).
+const LONG_WHOLE_COVERAGE = 0.8;
 const pct = (a, p) => (a.length ? a[Math.min(a.length - 1, Math.floor(a.length * p))] : null);
 // stt life/gap stats are seconds rounded to one decimal, distinct from pct()'s
 // unrounded pick — moved verbatim from the report generator.
@@ -219,9 +221,16 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
             // (main.ts extend dispatch) — one surface, not a second chip/double.
             const surfaced = mine.filter((d) => d.action !== 'drop' && d.action !== 'extend').length;
             const extended = mine.filter((d) => d.action === 'extend').length;
+            // How much of the scripted question the app actually answered: the best
+            // content-word coverage over the answer and extend dispatches (the
+            // engine answers `question`; older lines only carried the anchor). A long
+            // design question split by the STT into several finals shows up here as a
+            // low number — the "answered whole" gate row (2026-09-08 roster).
+            const coverage = Math.max(0, ...mine.filter((d) => d.action === 'answer' || d.action === 'extend')
+                .map((d) => overlap(it.q, d.question ?? d.anchor)));
             return { ...it, heardBy, answered: !!(ans && route), answeredAt: ans?.at ?? null,
                 detectMs: mine.length ? Math.min(...mine.map((d) => d.at)) - spokeEnd : null,
-                dispatches: surfaced, extended, verdict: ans?.verdict ?? mine[0]?.verdict ?? null,
+                dispatches: surfaced, extended, coverage, verdict: ans?.verdict ?? mine[0]?.verdict ?? null,
                 routeCoding: !!(route && /^CODING/.test(route.route)),
                 // verdict=fragment drops are R36-round-3 noise (a Live claim
                 // too short to be anything), not a real race loss signal.
@@ -314,6 +323,12 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const surfacedMulti = items.filter((i) => i.dispatches > 1).length;
     const surfacedMax = items.length ? Math.max(...items.map((i) => i.dispatches)) : 0;
     const extendsTotal = items.reduce((s, i) => s + (i.extended ?? 0), 0);
+    // Long design questions (level 'long'): answered whole when the dispatched text
+    // covers at least 80% of the scripted content words. The bar is 0.8 rather than
+    // 1.0 because the STT drops or respells a word or two even on a clean hearing.
+    const longItems = items.filter((i) => i.level === 'long');
+    const longs = longItems.length;
+    const longWhole = longItems.filter((i) => (i.coverage ?? 0) >= LONG_WHOLE_COVERAGE).length;
 
     const complete = !!timeline.endedAt;
     const durationMin = complete ? ((ts(timeline.endedAt) - timeline.startedMs) / 60000).toFixed(1) : null;
@@ -352,7 +367,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
 
     return {
         startedAt: timeline.startedAt, endedAt: timeline.endedAt, durationMin, items,
-        heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti, extendsTotal,
+        heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti, extendsTotal, longs, longWhole,
         caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, screenCaptures, heuristicChips, raceLosses,
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, resolvedEmptyFinals: stt.resolvedEmptyFinals, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
@@ -370,7 +385,10 @@ export const GATE = [
     { key: 'coaching', label: 'Technical questions answered via the coaching path', before: '25', pass: (m) => m.coachingAnswers === 0, show: (m) => String(m.coachingAnswers) },
     { key: 'coding', label: 'Spoken questions routed CODING', before: '4 routes (2 of them screenshot cues)', pass: (m) => m.codingForSpoken === 0, show: (m) => `${m.codingForSpoken}, ${m.cueAnswers} cue answers, ${m.screenCaptures} captures` },
     { key: 'expiry', label: 'Live expiry loops', before: '0', pass: (m) => m.expiryLoops === 0, show: (m) => String(m.expiryLoops) },
-    { key: 'quality', label: 'Interview-acceptable answers (Opus 5 judge)', before: 'not graded', pass: (m) => !!m.judge && m.judge.wrong === 0 && m.judge.acceptable >= 47, show: (m) => m.judge ? `${m.judge.acceptable} acceptable, ${m.judge.weak} weak, ${m.judge.wrong} wrong of ${m.judge.n}${m.judge.errors ? `, ${m.judge.errors} errors` : ''}` : 'not run' },
+    { key: 'quality', label: 'Interview-acceptable answers (Opus 5 judge)', before: 'not graded', pass: (m) => !!m.judge && m.judge.wrong === 0 && m.judge.acceptable >= 47, show: (m) => m.judge ? `${m.judge.acceptable} acceptable, ${m.judge.weak} weak, ${m.judge.wrong} wrong of ${m.judge.n}${m.judge.errors ? `, ${m.judge.errors} errors` : ''}${m.judge.long?.n ? `; long ${m.judge.long.acceptable} of ${m.judge.long.n}` : ''}${m.judge.followup?.n ? `, follow-ups ${m.judge.followup.acceptable} of ${m.judge.followup.n}` : ''}` : 'not run' },
+    // 2026-09-08 roster: a long design question counts as answered whole when the
+    // dispatched text (answer or extend) covers ≥ 80% of its scripted content words.
+    { key: 'long', label: 'Long questions answered whole', before: 'not in the roster', pass: (m) => m.longWhole === m.longs, show: (m) => m.longs ? `${m.longWhole} of ${m.longs} (dispatched text covers ≥ 80% of the question)` : 'none in the roster' },
     { key: 'latency', label: 'Answer TTFT p90 · detect p50', before: '3.7 s (answer-only pass) · 4.1 s', pass: (m) => (m.ttftP90 ?? Infinity) <= 5000 && (m.detectP50 ?? Infinity) <= 5000, show: (m) => `${m.ttftP90 == null ? '—' : (m.ttftP90 / 1000).toFixed(1) + ' s'}${m.ttftSource === 'answer-only' ? ' (answer-only pass)' : ''} · ${m.detectP50 == null ? '—' : (m.detectP50 / 1000).toFixed(1) + ' s'}` },
     { key: 'pinned', label: 'Answer prompt pinned to the dispatched question', before: 'not logged', pass: (m) => m.pinned.answers > 0 && m.pinned.legacy === 0 && m.pinned.missing === 0 && m.pinned.mismatched === 0, show: (m) => m.pinned.answers === 0 ? 'no answers' : m.pinned.legacy === m.pinned.answers ? 'not logged' : `${m.pinned.answers - m.pinned.legacy - m.pinned.missing - m.pinned.mismatched}/${m.pinned.answers} pinned, ${m.pinned.missing} missing, ${m.pinned.mismatched} mismatched${m.pinned.legacy ? `, ${m.pinned.legacy} legacy` : ''}` },
     // Spec 2026-09-05 §3: the floor equals the limit, so a cut answer always has
@@ -385,9 +403,19 @@ export const GATE = [
 
 /** Counts over spoken items only — mirrors summarizeVerdicts in interview60.judge.mjs (kept dependency-free here). */
 export function summarizeJudge(judged) {
-    const spoken = Object.values(judged.items ?? {}).filter((v) => v.kind === 'spoken');
+    const all = Object.values(judged.items ?? {}).filter((v) => v.kind === 'spoken');
+    // The long design questions and the follow-ups (2026-09-08 roster) are counted
+    // beside the base roster, not inside it, so the 52-question row stays comparable
+    // with after7/after8 (whose judge files carry no level field at all).
+    const extra = (level) => {
+        const of = all.filter((v) => v.level === level);
+        const count = (verdict) => of.filter((v) => v.verdict === verdict).length;
+        return { n: of.length, acceptable: count('acceptable'), weak: count('weak'), wrong: count('wrong') };
+    };
+    const spoken = all.filter((v) => v.level !== 'long' && v.level !== 'followup');
     const count = (verdict) => spoken.filter((v) => v.verdict === verdict).length;
-    return { model: judged.model ?? null, n: spoken.length, acceptable: count('acceptable'), weak: count('weak'), wrong: count('wrong'), errors: count('error') };
+    return { model: judged.model ?? null, n: spoken.length, acceptable: count('acceptable'), weak: count('weak'), wrong: count('wrong'), errors: count('error'),
+        long: extra('long'), followup: extra('followup') };
 }
 
 export function evaluateGate(m) {

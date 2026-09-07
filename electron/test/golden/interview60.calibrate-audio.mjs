@@ -31,7 +31,9 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // A deliberate spread: shortest, a mid-length design question, the longest hard
 // one, and a screenshot cue (which is NOT a question — it should ideally NOT fire).
-const SAMPLE = ['W02', 'M02', 'H03', 'C01'].map((id) => INTERVIEW.find((x) => x.id === id));
+// L01 and L04: the long multi-sentence design questions (2026-09-08) — the clips most
+// likely to be split into several finals, so the detector must be proven on them too.
+const SAMPLE = ['W02', 'M02', 'H03', 'C01', 'L01', 'L04'].map((id) => INTERVIEW.find((x) => x.id === id));
 
 function pcmOf(id) {
     const b = fs.readFileSync(path.join(TTS_DIR, `${id}.wav`));

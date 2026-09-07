@@ -155,6 +155,11 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
                 // (T0+1000000) so its window cannot accidentally overlap
                 // anything else.
                 { id: 'C01', kind: 'screenshot', q: 'Take a look at this problem on screen and walk me through your approach.', playedAt: T0 + 1000000, clipSecs: 5 },
+                // Long design questions (2026-09-08 roster): the STT closes them as several finals.
+                // L01 is answered on its first sentence only; L02's first sentence is answered and
+                // the full question then arrives as an extend. Far past everything else.
+                { id: 'L01', kind: 'spoken', level: 'long', q: 'Let us do a design question. We retrain a recommendation model nightly on two terabytes of click data. Walk me through the training pipeline, the validation of a candidate model, and a rollout where a bad model never reaches all of the traffic.', playedAt: T0 + 1200000, clipSecs: 20 },
+                { id: 'L02', kind: 'spoken', level: 'long', q: 'Imagine three models on GPUs in Kubernetes with spiky traffic, a strict latency budget, and a batch scoring job. Tell me how you would lay out the cluster, schedule and autoscale each workload, and keep the GPU bill under control.', playedAt: T0 + 1300000, clipSecs: 20 },
             ],
         };
 
@@ -212,6 +217,11 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             `${iso(T0 + 1002000)} [LOG] [Main] dispatch: answer source=live anchor="Take a look at this problem on screen and walk me through your approach." verdict=match`,
             // The screen reference was captured before the answer (main.ts answerDetection).
             `${iso(T0 + 1002900)} [LOG] [Main] screen reference: captured C:\\shots\\c01.png for "Take a look at this problem on screen and walk me through your"`,
+            // L01: only its first sentence was dispatched — a partitioned long question.
+            `${iso(T0 + 1224000)} [LOG] [Main] dispatch: answer source=whisper anchor="Let us do a design question. We retrain a recommendation model nightly on two terabytes of click data." verdict=match question="Let us do a design question. We retrain a recommendation model nightly on two terabytes of click data."`,
+            // L02: the first sentence answered, then the whole question arrives as an extend.
+            `${iso(T0 + 1324000)} [LOG] [Main] dispatch: answer source=whisper anchor="Imagine three models on GPUs in Kubernetes with spiky traffic, a strict latency budget, and a batch scoring job." verdict=match question="Imagine three models on GPUs in Kubernetes with spiky traffic, a strict latency budget, and a batch scoring job."`,
+            `${iso(T0 + 1329000)} [LOG] [Main] dispatch: extend source=live anchor="Imagine three models on GPUs in Kubernetes" verdict=match extends="Imagine three models on GPUs in Kubernetes with spiky traffic, a strict latency budget, and a batch scoring job." question="Imagine three models on GPUs in Kubernetes with spiky traffic, a strict latency budget, and a batch scoring job. Tell me how you would lay out the cluster, schedule and autoscale each workload, and keep the GPU bill under control."`,
             // Two STT socket closes (code=1011) with a Connected before each.
             `${iso(T0 + 1000)} [LOG] [DeepgramStreaming] Connected`,
             `${iso(T0 + 11000)} [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)`,
@@ -377,7 +387,7 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // The extend line is W01's (its anchor contains all of W01.q), adds no surface, counts as extended.
         expect(w01.extended).toBe(1);
         expect(w02.extended).toBe(0);
-        expect(m.extendsTotal).toBe(1);
+        expect(m.extendsTotal).toBe(2); // W01 + L02 (the long question fixture)
         // Not just "1", but the RIGHT one: W01 claims its own (source=live),
         // W02 claims its own (source=whisper) — not each other's.
         expect(w01.heardBy).toBe('live');
@@ -393,6 +403,18 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(m.cueAnswers).toBe(1);
         // and the one screen capture the cue triggered is counted for the CODING row
         expect(m.screenCaptures).toBe(1);
+    });
+
+    it('long questions: answered whole only when the dispatched text (answer or extend) covers ≥ 80% of the scripted words', () => {
+        const l01 = m.items.find((i: any) => i.id === 'L01');
+        const l02 = m.items.find((i: any) => i.id === 'L02');
+        expect(l01.coverage).toBeLessThan(0.8);          // first sentence only
+        expect(l02.coverage).toBeGreaterThanOrEqual(0.8); // the extend carried the whole question
+        expect(m.longs).toBe(2);
+        expect(m.longWhole).toBe(1);
+        const row = evaluateGate(m).rows.find((r) => r.label === 'Long questions answered whole');
+        expect(row.value).toBe('1 of 2 (dispatched text covers ≥ 80% of the question)');
+        expect(row.pass).toBe(false);
         // Unchanged from the "top-level counts" test below: C01's answer is
         // now claimed (by the cue), so it was never a candidate to add a 4th
         // line to answersToNobody, and answered (spoken-only) never saw C01
@@ -404,8 +426,8 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
 
     it('top-level counts, each derived from the lines above', () => {
         // heard = items with heardBy !== null: Q1(live), Q2(both), Q4(live),
-        // W01(live), W02(whisper) — not Q3. = 5.
-        expect(m.heard).toBe(5);
+        // W01(live), W02(whisper), L01(whisper), L02(whisper) — not Q3. = 7.
+        expect(m.heard).toBe(7);
         // answered = items with answered === true: Q1, Q2 only. W01/W02 have
         // no matching route within 4000ms of their answer dispatch — by
         // design, this fixture targets claim-once, not the answered/route path.
@@ -458,12 +480,12 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(m.expiryLoops).toBe(1);
         expect(m.liveReconnects).toBe(1);
         // detectMs sorted = [1000 (Q4), 1000 (W01), 1500 (Q2), 1500 (W02), 2000
-        // (Q1)] (Q3's null is filtered out). pct(a, p) =
+        // (Q1), 4000 (L01), 4000 (L02)] (Q3's null is filtered out). pct(a, p) =
         // a[min(a.length-1, floor(a.length*p))].
-        // p50: floor(5*0.5)=2 → sorted[2] = 1500.
+        // p50: floor(7*0.5)=3 → sorted[3] = 1500.
         expect(m.detectP50).toBe(1500);
-        // p90: floor(5*0.9)=4 → sorted[4] = 2000.
-        expect(m.detectP90).toBe(2000);
+        // p90: floor(7*0.9)=6 → sorted[6] = 4000.
+        expect(m.detectP90).toBe(4000);
         // in-app TTFT: firstTokens present (3 lines) so ttftSource is 'in-app'
         // regardless of there being no answers.json.
         expect(m.ttftSource).toBe('in-app');
@@ -476,11 +498,12 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // unverifiable, C01 = 8 legacy + 4 new-format = 12. The fourth
         // (+1130000) differs from its pinned line only by the surrounding
         // spaces the engine trims off, so it counts as pinned, not mismatched:
-        // 12 - 8 legacy - 1 missing - 1 mismatched = 2.
-        expect(m.pinned).toEqual({ answers: 12, legacy: 8, missing: 1, mismatched: 1 });
+        // 14 - 8 legacy - 3 missing - 1 mismatched = 2 (the two long-question
+        // answer dispatches L01/L02 carry no pinned line, so they count as missing).
+        expect(m.pinned).toEqual({ answers: 14, legacy: 8, missing: 3, mismatched: 1 });
         const row = evaluateGate(m).rows.find((r) => r.label === 'Answer prompt pinned to the dispatched question');
         expect(row.pass).toBe(false);
-        expect(row.value).toBe('2/12 pinned, 1 missing, 1 mismatched, 8 legacy');
+        expect(row.value).toBe('2/14 pinned, 3 missing, 1 mismatched, 8 legacy');
     });
     it('budget — measures the distribution, so the row can actually fail', () => {
         // sorted words [67, 90, 140]: n 3, over 2 (90, 140), allowance 2, cut 1,
@@ -526,21 +549,28 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             'Spoken questions routed CODING',
             'Live expiry loops',
             'Interview-acceptable answers (Opus 5 judge)',
+            'Long questions answered whole',
             'Answer prompt pinned to the dispatched question',
             'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)',
         ]);
     });
 
     it('reads the judge pass: spoken verdicts only, and the row fails below 47 acceptable or on any wrong', () => {
-        // Fixture: 2 acceptable + 1 weak + 1 wrong spoken, 1 acceptable cue (ignored).
+        // Fixture: 2 acceptable + 1 weak + 1 wrong spoken, 1 acceptable cue (ignored), plus a
+        // long design question and its follow-up (2026-09-08 roster): those report beside the
+        // base count, never inside it, so the 52-question row stays comparable across flights.
         fs.writeFileSync(path.join(dir, 'interview60.judge.json'), JSON.stringify({ model: 'claude-opus-5', items: {
             W01: { kind: 'spoken', verdict: 'acceptable' }, W02: { kind: 'spoken', verdict: 'acceptable' },
             W03: { kind: 'spoken', verdict: 'weak' }, W04: { kind: 'spoken', verdict: 'wrong' }, C01: { kind: 'cue', verdict: 'acceptable' },
+            L01: { kind: 'spoken', level: 'long', verdict: 'weak' }, L01F1: { kind: 'spoken', level: 'followup', verdict: 'acceptable' },
         } }));
         const mj = computeRun(dir);
-        expect(mj.judge).toEqual({ model: 'claude-opus-5', n: 4, acceptable: 2, weak: 1, wrong: 1, errors: 0 });
+        expect(mj.judge).toEqual({
+            model: 'claude-opus-5', n: 4, acceptable: 2, weak: 1, wrong: 1, errors: 0,
+            long: { n: 1, acceptable: 0, weak: 1, wrong: 0 }, followup: { n: 1, acceptable: 1, weak: 0, wrong: 0 },
+        });
         const row = evaluateGate(mj).rows.find((r) => r.label === 'Interview-acceptable answers (Opus 5 judge)');
-        expect(row.value).toBe('2 acceptable, 1 weak, 1 wrong of 4');
+        expect(row.value).toBe('2 acceptable, 1 weak, 1 wrong of 4; long 0 of 1, follow-ups 1 of 1');
         expect(row.pass).toBe(false);
         // Without the file the row reads 'not run' and fails — the pass is part of the gate, not optional.
         expect(evaluateGate(m).rows.find((r) => r.label === 'Interview-acceptable answers (Opus 5 judge)').value).toBe('not run');
@@ -584,6 +614,7 @@ describe('GATE', () => {
             'Spoken questions routed CODING',
             'Live expiry loops',
             'Interview-acceptable answers (Opus 5 judge)',
+            'Long questions answered whole',
             'Answer TTFT p90 · detect p50',
             // Spec 2026-09-04 §2/§4 (answer-what-was-asked) — appended last.
             'Answer prompt pinned to the dispatched question',

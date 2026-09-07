@@ -81,8 +81,18 @@ describe('looksFragmentary', () => {
     it('long text is whole even without punctuation (the degraded detector strips it)', () => {
         expect(looksFragmentary('Someone changed the resource by hand and now your stack will not update What do you do')).toBe(false);
     });
-    it('every spoken script question is whole', () => {
-        for (const item of SPOKEN) expect(looksFragmentary(item.q), item.q).toBe(false);
+    it('every base and long script question is whole', () => {
+        for (const item of SPOKEN.filter((i: any) => i.level !== 'followup')) expect(looksFragmentary(item.q), item.q).toBe(false);
+    });
+    it('follow-ups that open with a conjunction are held (2.5 s), not answered on arrival — the rest are whole', () => {
+        // 2026-09-08 roster: five follow-ups start with "And …", the way a real interviewer
+        // chains on the previous answer. By text shape alone they are indistinguishable
+        // from a Deepgram tail (M27: "And when would you not?"), so main.ts holds them for
+        // the other ear and answers on the hold's expiry — a +2.5 s cost the after9 detect
+        // latency will show, not a lost question.
+        const followups = SPOKEN.filter((i: any) => i.level === 'followup');
+        expect(followups.length).toBe(18);
+        for (const item of followups) expect(looksFragmentary(item.q), item.q).toBe(/^(and|so|but|or|then|because)\b/i.test(item.q));
     });
     it('the length rule is load-bearing: an opener word under 4 words is still fragmentary', () => {
         // 'Serving.'/'Latency is up.' (above) also pass through the opener

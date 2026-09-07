@@ -70,7 +70,7 @@ function playWav(wav) {
     if (!fs.existsSync(wav)) throw new Error(`missing wav ${wav}`);
     execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
         `(New-Object Media.SoundPlayer ${JSON.stringify(wav)}).PlaySync()`],
-        { stdio: 'pipe', timeout: 75 * 60 * 1000 });
+        { stdio: 'pipe', timeout: 120 * 60 * 1000 }); // the roster runs ~90 min since the long questions
 }
 
 /** Byte offset of each item inside interview60.wav, so log events can be attributed. */
@@ -83,7 +83,7 @@ function computeOffsets() {
         const clipSecs = b.readUInt32LE(i + 4) / BYTES_PER_SEC;
         const startSec = t;
         t += clipSecs + item.gapMs / 1000;
-        return { id: item.id, level: item.level, topic: item.topic, kind: item.kind ?? 'spoken', q: item.q, startSec, clipSecs, ...(item.problem ? { problem: item.problem } : {}) };
+        return { id: item.id, level: item.level, topic: item.topic, kind: item.kind ?? 'spoken', q: item.q, startSec, clipSecs, ...(item.problem ? { problem: item.problem } : {}), ...(item.chain ? { chain: item.chain } : {}) };
     });
 }
 

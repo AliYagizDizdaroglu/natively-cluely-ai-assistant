@@ -7,9 +7,10 @@ import { IntentType } from './types';
 import { INTERVIEW } from '../test/golden/interview60.questions.mjs';
 
 describe('classifyIntent — negotiation must need a negotiation word', () => {
-    it('classifies none of the 52 interview questions as negotiation', () => {
+    it('classifies none of the 76 spoken interview questions as negotiation', () => {
+        // 52 base + 6 long design questions + 18 follow-ups (2026-09-08 roster).
         const spoken = (INTERVIEW as any[]).filter((i) => i.kind !== 'screenshot');
-        expect(spoken.length).toBe(52);
+        expect(spoken.length).toBe(76);
         const wrong = spoken.filter((i) => classifyIntent(i.q) === IntentType.NEGOTIATION).map((i) => i.id);
         expect(wrong).toEqual([]);
     });

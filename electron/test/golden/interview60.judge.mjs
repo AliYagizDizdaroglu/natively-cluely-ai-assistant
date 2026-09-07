@@ -39,15 +39,25 @@ import { fileURLToPath } from 'node:url';
 import { CODING } from './problems.coding.mjs';
 
 /**
- * A screenshot cue's scripted question carries what was on screen (interview60.cues.mjs
- * showed the problem page), so the grader judges the answer against that problem.
+ * The scripted question as the grader must read it. A screenshot cue carries what was on
+ * screen (interview60.cues.mjs showed the problem page); a follow-up (`chain` in the
+ * question bank) carries the question it leans on — the on-screen problem again for a
+ * coding follow-up, the long design question for a design follow-up.
  */
-function onScreenQuestion(item) {
-    if (item.kind !== 'screenshot' || !item.problem) return item.q;
-    const p = CODING.find((c) => c.id === item.problem);
-    if (!p) return item.q;
-    const text = p.shots.map((s) => [s.title, ...s.lines].filter(Boolean).join(' ')).join(' / ');
-    return `${item.q} [On screen: LeetCode ${p.leetcode} ${p.name}. ${text}]`;
+const problemOf = (item) => (item?.kind === 'screenshot' && item.problem ? CODING.find((c) => c.id === item.problem) ?? null : null);
+const problemText = (p) => `LeetCode ${p.leetcode} ${p.name}. ${p.shots.map((s) => [s.title, ...s.lines].filter(Boolean).join(' ')).join(' / ')}`;
+function questionForGrader(item, items) {
+    let q = item.q;
+    const p = problemOf(item);
+    if (p) q += ` [On screen: ${problemText(p)}]`;
+    if (item.chain) {
+        const parent = items.find((it) => it.id === item.chain);
+        if (parent) {
+            const pp = problemOf(parent);
+            q += pp ? ` [Follow-up on the problem that was on screen: ${problemText(pp)}]` : ` [Follow-up to: ${parent.q}]`;
+        }
+    }
+    return q;
 }
 
 export const JUDGE_MODEL = 'claude-opus-5';
@@ -100,7 +110,7 @@ export function pairAnswers(debugLog, timeline) {
         const item = best && bestOv >= 0.25 ? best : contentWords(d.anchor).length === 0 ? byTime : null;
         return {
             id: item?.id ?? '?', kind: item?.kind ?? 'unknown', level: item?.level ?? null, topic: item?.topic ?? null,
-            question: item ? onScreenQuestion(item) : null, heard: d.anchor, source: d.source, verdict: d.verdict,
+            question: item ? questionForGrader(item, items) : null, heard: d.anchor, source: d.source, verdict: d.verdict,
             dispatchedAt: new Date(d.at).toISOString(), answer: full?.text ?? null,
             extended: false, heardExtended: null,
         };
@@ -250,7 +260,7 @@ async function main() {
         pairs = pairsFromAnswers(JSON.parse(fs.readFileSync(answersPath, 'utf8')));
         const arm = pairs.find((p) => p.model)?.model;
         if (!arm) { console.error(`${answersPath}: no model field on its items — re-run interview60.answers.mjs, which records the arm`); process.exit(2); }
-        tag = `.${arm}`;
+        tag = `.${arm.replace(/\//g, '_')}`; // Groq ids carry a "/" — same file tag as answers.mjs
     } else {
         const timeline = JSON.parse(fs.readFileSync(path.join(dir, 'interview60.timeline.json'), 'utf8'));
         const dbg = fs.readFileSync(path.join(dir, 'natively_debug.log'), 'utf8');
