@@ -238,6 +238,7 @@ import { PhoneMirrorService } from "./services/PhoneMirrorService"
 import { setVerboseLoggingFlag } from "./verboseLog"
 import { pickIntelligenceSurface } from "./services/intelligenceSurface"
 import { shouldExtend } from "./services/extendOnClause"
+import { mentionsScreen } from "./services/screenReference"
 import { ReleaseNotesManager } from "./update/ReleaseNotesManager"
 import { OllamaManager } from './services/OllamaManager'
 import { normalizeLiveMode } from './services/liveMode'
@@ -1963,7 +1964,7 @@ export class AppState {
         this.chipDeduper.extend(verdict.id, d.question);
         this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source });
         void this.intelligenceManager
-          .runWhatShouldISay(d.question, 1.0, undefined, { intentOverride: d.intent, bypassCooldown: true })
+          .runWhatShouldISay(d.question, 1.0, undefined, { intentOverride: d.intent, bypassCooldown: true, extendOf: verdict.duplicateOfQuestion })
           .catch((err: any) => console.error('[Main] extend-answer failed:', err?.message ?? err));
         return;
       }
@@ -1989,9 +1990,30 @@ export class AppState {
     // answer — mark first so a duplicate arriving during generation is dropped
     this.chipDeduper.markAnswered(verdict.id);
     this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source });
-    void this.intelligenceManager
-      .runWhatShouldISay(d.question, 1.0, undefined, { intentOverride: d.intent, bypassCooldown: true })
+    void this.answerDetection(d)
       .catch((err: any) => console.error('[Main] auto-answer failed:', err?.message ?? err));
+  }
+
+  /**
+   * Hands-free answer for an admitted detection. When the interviewer points at the
+   * screen ("take a look at this problem on screen"), capture it first and answer on
+   * the coding path with the image — after8 (2026-09-07) answered all three screenshot
+   * cues from the transcript, one of them with the previous question's answer. A
+   * failed capture answers from the transcript as before, and says so in the log.
+   */
+  private async answerDetection(d: DetectionInput): Promise<void> {
+    let imagePaths: string[] | undefined;
+    let intent = d.intent;
+    if (this.liveMode === 'auto' && mentionsScreen(d.question)) {
+      try {
+        imagePaths = [await this.takeScreenshot(false)];
+        intent = 'coding';
+        console.log(`[Main] screen reference: captured ${imagePaths[0]} for ${JSON.stringify(d.question.slice(0, 60))}`);
+      } catch (err: any) {
+        console.warn(`[Main] screen reference: capture failed (${err?.message ?? err}); answering from the transcript`);
+      }
+    }
+    await this.intelligenceManager.runWhatShouldISay(d.question, 1.0, imagePaths, { intentOverride: intent, bypassCooldown: true });
   }
 
   private startLiveRouter(): void {

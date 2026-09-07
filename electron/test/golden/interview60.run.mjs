@@ -80,7 +80,7 @@ function computeOffsets() {
         const clipSecs = b.readUInt32LE(i + 4) / BYTES_PER_SEC;
         const startSec = t;
         t += clipSecs + item.gapMs / 1000;
-        return { id: item.id, level: item.level, topic: item.topic, kind: item.kind ?? 'spoken', q: item.q, startSec, clipSecs };
+        return { id: item.id, level: item.level, topic: item.topic, kind: item.kind ?? 'spoken', q: item.q, startSec, clipSecs, ...(item.problem ? { problem: item.problem } : {}) };
     });
 }
 
@@ -282,6 +282,9 @@ async function appPass() {
     const items = computeOffsets().map((o) => ({ ...o, playedAt: t0 + Math.round(o.startSec * 1000) }));
     const timeline = { startedAt: now(), startedMs: t0, startDebug, startDiag, items };
     fs.writeFileSync(TIMELINE, JSON.stringify(timeline, null, 1));
+    // Screenshot cues: a detached scheduler shows each cue's problem page on the
+    // primary display while the cue plays (interview60.cues.mjs).
+    spawn(process.execPath, [path.join(HERE, 'interview60.cues.mjs'), 'schedule', TIMELINE], { detached: true, stdio: 'ignore' }).unref();
 
     console.log(`APP PASS  ${now()}   ${INTERVIEW.length} items as ONE continuous file, ~60 min`);
     console.log('  (single PlaySync — do not interrupt; the machine must stay audible)\n');

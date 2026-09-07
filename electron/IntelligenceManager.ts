@@ -112,7 +112,19 @@ export class IntelligenceManager extends EventEmitter {
         // whole path is verifiable without live interviewer audio. Watch the log
         // for: [Engine-timing] segment-final → detect ok → chip emitted →
         // [Main] forwarding detected-question.
-        if (process.env.NATIVELY_DETECTOR_CHAIN_TEST === '1') {
+        // NATIVELY_DETECTOR_CHAIN_TEST_QUESTIONS (JSON array of strings) replaces the
+        // two built-in questions, one every 8 s from +6 s — the interview60 harness
+        // uses it to push a screenshot cue through the real pipeline with a problem
+        // shown on screen.
+        const customChain = process.env.NATIVELY_DETECTOR_CHAIN_TEST_QUESTIONS;
+        if (process.env.NATIVELY_DETECTOR_CHAIN_TEST === '1' && customChain) {
+            let questions: string[] = [];
+            try { questions = JSON.parse(customChain); } catch { console.warn('[ChainTest] NATIVELY_DETECTOR_CHAIN_TEST_QUESTIONS is not a JSON array; ignored'); }
+            questions.forEach((text, i) => setTimeout(() => {
+                console.log(`[ChainTest] injecting custom interviewer transcript ${i + 1}/${questions.length}: ${JSON.stringify(text)}`);
+                this.addTranscript({ speaker: 'interviewer', text, timestamp: Date.now(), final: true, confidence: 1 }, false);
+            }, 6000 + i * 8000));
+        } else if (process.env.NATIVELY_DETECTOR_CHAIN_TEST === '1') {
             setTimeout(() => {
                 console.log('[ChainTest] injecting synthetic interviewer transcript (final, ends with "?") into the real pipeline...');
                 this.addTranscript({
@@ -314,6 +326,7 @@ export class IntelligenceManager extends EventEmitter {
             contextOverride?: string;
             bypassCooldown?: boolean;
             forceFastModel?: boolean;
+            extendOf?: string;
         } = {}
     ): Promise<string | null> {
         return this.engine.runWhatShouldISay(question, confidence, imagePaths, options);

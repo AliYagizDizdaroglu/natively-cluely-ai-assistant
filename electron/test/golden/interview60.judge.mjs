@@ -36,6 +36,19 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { CODING } from './problems.coding.mjs';
+
+/**
+ * A screenshot cue's scripted question carries what was on screen (interview60.cues.mjs
+ * showed the problem page), so the grader judges the answer against that problem.
+ */
+function onScreenQuestion(item) {
+    if (item.kind !== 'screenshot' || !item.problem) return item.q;
+    const p = CODING.find((c) => c.id === item.problem);
+    if (!p) return item.q;
+    const text = p.shots.map((s) => [s.title, ...s.lines].filter(Boolean).join(' ')).join(' / ');
+    return `${item.q} [On screen: LeetCode ${p.leetcode} ${p.name}. ${text}]`;
+}
 
 export const JUDGE_MODEL = 'claude-opus-5';
 export const ACCEPTABLE_FLOOR = 47; // of 52 spoken questions (90 %); wrong must be 0
@@ -87,7 +100,7 @@ export function pairAnswers(debugLog, timeline) {
         const item = best && bestOv >= 0.25 ? best : contentWords(d.anchor).length === 0 ? byTime : null;
         return {
             id: item?.id ?? '?', kind: item?.kind ?? 'unknown', level: item?.level ?? null, topic: item?.topic ?? null,
-            question: item?.q ?? null, heard: d.anchor, source: d.source, verdict: d.verdict,
+            question: item ? onScreenQuestion(item) : null, heard: d.anchor, source: d.source, verdict: d.verdict,
             dispatchedAt: new Date(d.at).toISOString(), answer: full?.text ?? null,
             extended: false, heardExtended: null,
         };

@@ -13,6 +13,7 @@ import {
 } from './llm';
 import { getAnswerShapeGuidance, IntentResult } from './llm/IntentClassifier';
 import { pinSettledQuestion } from './llm/lastInterviewerTurn';
+import { extensionAnswerShape } from './llm/extensionShape';
 
 // Mode types
 export type IntelligenceMode = 'idle' | 'assist' | 'what_to_say' | 'follow_up' | 'recap' | 'clarify' | 'manual' | 'follow_up_questions' | 'code_hint' | 'brainstorm';
@@ -249,6 +250,11 @@ export class IntelligenceEngine extends EventEmitter {
             bypassCooldown?: boolean;
             /** "Answer now with Flash Lite" — skip the deep model, answer fast. */
             forceFastModel?: boolean;
+            /**
+             * The already-answered head of this question (main.ts dispatch: extend):
+             * the answer covers only what the fuller sentence adds.
+             */
+            extendOf?: string;
         } = {}
     ): Promise<string | null> {
         const now = Date.now();
@@ -379,7 +385,7 @@ export class IntelligenceEngine extends EventEmitter {
                 intentResult = {
                     intent: mapped,
                     confidence: 1.0,
-                    answerShape: getAnswerShapeGuidance(mapped),
+                    answerShape: options.extendOf ? extensionAnswerShape(options.extendOf) : getAnswerShapeGuidance(mapped),
                 };
                 if (advisoryCoding) console.log('[IntelligenceEngine] runWhatShouldISay: intent override coding → general (spoken question, no screenshot)');
                 else console.log(`[IntelligenceEngine] runWhatShouldISay: intent override → ${mapped}`);

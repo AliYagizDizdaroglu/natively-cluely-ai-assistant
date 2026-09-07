@@ -256,6 +256,7 @@ electron/test/golden/interview60.run.err
 
 # interview60 run snapshots (logs + JSON per run; the report page is the deliverable)
 electron/test/golden/interview60.runs/
+electron/test/golden/interview60.cues/
 
 # interview60 flight launcher outputs: the extra answer arms and the files it moves aside
 electron/test/golden/interview60.answers.*.json

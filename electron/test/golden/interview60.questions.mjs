@@ -44,7 +44,7 @@ export const INTERVIEW = [
     { id: 'M04', level: 'medium', topic: 'CloudFormation/IaC', q: "Why would you use CloudFormation instead of configuring things by hand in the console?", gapMs: 50000 },
     { id: 'M05', level: 'medium', topic: 'S3', q: "How do you secure training data in S3 that contains customer information?", gapMs: 55000 },
 
-    { id: 'C01', level: 'coding', topic: 'Coding', kind: 'screenshot', q: "Now take a look at this problem on screen and walk me through how you would solve it.", gapMs: 150000 },
+    { id: 'C01', level: 'coding', topic: 'Coding', kind: 'screenshot', problem: 'PY4', q: "Now take a look at this problem on screen and walk me through how you would solve it.", gapMs: 150000 },
 
     { id: 'M06', level: 'medium', topic: 'CI/CD for ML', q: "What does a good CI pipeline for a machine learning repository actually test?", gapMs: 55000 },
     { id: 'M07', level: 'medium', topic: 'Airflow', q: "How would you handle a task in Airflow that intermittently fails because of an upstream API?", gapMs: 55000 },
@@ -60,7 +60,7 @@ export const INTERVIEW = [
     { id: 'M17', level: 'medium', topic: 'Monitoring/drift', q: "How would you monitor a model where ground truth labels arrive weeks late?", gapMs: 60000 },
     { id: 'M18', level: 'medium', topic: 'Docker', q: "How do you handle CUDA and driver compatibility in containers for GPU training?", gapMs: 55000 },
 
-    { id: 'C02', level: 'coding', topic: 'Coding', kind: 'screenshot', q: "Here is another one on screen. Take a look and talk me through your approach.", gapMs: 150000 },
+    { id: 'C02', level: 'coding', topic: 'Coding', kind: 'screenshot', problem: 'PY5', q: "Here is another one on screen. Take a look and talk me through your approach.", gapMs: 150000 },
 
     { id: 'M19', level: 'medium', topic: 'Kubernetes', q: "What is your approach to health checks for a model serving container?", gapMs: 55000 },
     { id: 'M20', level: 'medium', topic: 'CI/CD for ML', q: "How would you test a data pipeline, given the data itself keeps changing?", gapMs: 55000 },
@@ -78,7 +78,7 @@ export const INTERVIEW = [
     { id: 'H02', level: 'hard', topic: 'SageMaker', q: "A SageMaker endpoint serving ten thousand requests per second has p99 latency creeping up. How do you diagnose and fix it?", gapMs: 65000 },
     { id: 'H03', level: 'hard', topic: 'CI/CD for ML', q: "How would you design a pipeline that retrains, validates, and deploys with no human in the loop, and what guardrails would you put in?", gapMs: 70000 },
 
-    { id: 'C03', level: 'coding', topic: 'Coding', kind: 'screenshot', q: "Last one on screen. Walk me through it, and mention the time complexity.", gapMs: 150000 },
+    { id: 'C03', level: 'coding', topic: 'Coding', kind: 'screenshot', problem: 'PY2', q: "Last one on screen. Walk me through it, and mention the time complexity.", gapMs: 150000 },
 
     { id: 'H04', level: 'hard', topic: 'Kubernetes', q: "Inference pods are being evicted under load and you cannot reproduce it in staging. How do you approach that?", gapMs: 65000 },
     { id: 'H05', level: 'hard', topic: 'Airflow', q: "A DAG that ran fine for months now misses its SLA every night. Where do you start?", gapMs: 65000 },
