@@ -2004,7 +2004,8 @@ export class AppState {
   private async answerDetection(d: DetectionInput): Promise<void> {
     let imagePaths: string[] | undefined;
     let intent = d.intent;
-    if (this.liveMode === 'auto' && mentionsScreen(d.question)) {
+    // Only decideDispatch's 'answer' (Live auto) reaches here.
+    if (mentionsScreen(d.question)) {
       try {
         imagePaths = [await this.takeScreenshot(false)];
         intent = 'coding';

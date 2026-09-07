@@ -9,8 +9,9 @@
 export function normalizeForContainment(text: string): string {
   return text
     .toLowerCase()
-    .replace(/\b([a-z]{1,3}) (\d+)\b/g, '$1$2')
     .replace(/[^a-z0-9' ]+/g, ' ')
     .replace(/\s+/g, ' ')
+    // after the punctuation pass, so "p. 99" and "p 99" both become "p99"
+    .replace(/\b([a-z]{1,3}) (\d+)\b/g, '$1$2')
     .trim();
 }

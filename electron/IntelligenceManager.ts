@@ -119,7 +119,11 @@ export class IntelligenceManager extends EventEmitter {
         const customChain = process.env.NATIVELY_DETECTOR_CHAIN_TEST_QUESTIONS;
         if (process.env.NATIVELY_DETECTOR_CHAIN_TEST === '1' && customChain) {
             let questions: string[] = [];
-            try { questions = JSON.parse(customChain); } catch { console.warn('[ChainTest] NATIVELY_DETECTOR_CHAIN_TEST_QUESTIONS is not a JSON array; ignored'); }
+            try {
+                const parsed = JSON.parse(customChain);
+                questions = Array.isArray(parsed) ? parsed.filter((t) => typeof t === 'string') : [];
+            } catch { /* not JSON */ }
+            if (!questions.length) console.warn('[ChainTest] NATIVELY_DETECTOR_CHAIN_TEST_QUESTIONS is not a JSON array of strings; nothing injected');
             questions.forEach((text, i) => setTimeout(() => {
                 console.log(`[ChainTest] injecting custom interviewer transcript ${i + 1}/${questions.length}: ${JSON.stringify(text)}`);
                 this.addTranscript({ speaker: 'interviewer', text, timestamp: Date.now(), final: true, confidence: 1 }, false);

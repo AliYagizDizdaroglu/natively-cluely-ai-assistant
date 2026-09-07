@@ -41,6 +41,9 @@ const RUNS_DIR = path.join(HERE, 'interview60.runs');
 const PID_FILE = path.join(RUNS_DIR, 'app.pid');
 const ANSWERS = path.join(HERE, 'interview60.answers.json');
 const CHAINS = path.join(HERE, 'interview60.chains.json');
+// Written by interview60.cues.mjs next to the timeline: the pages shown and whether each image loaded.
+const CUES_LOG = path.join(HERE, 'interview60.cues.log');
+const CUES_PID = path.join(HERE, 'interview60.cues.pid');
 const HTML = path.join(HERE, 'interview60.report.html');
 
 const KEY = fs.readFileSync(path.join(PROJ, '.env'), 'utf8').match(/^GEMINI_API_KEY=(.+)$/m)[1].trim();
@@ -152,6 +155,18 @@ function appStop() {
         try { execFileSync('taskkill', ['/PID', pid, '/T', '/F'], { stdio: 'pipe' }); } catch { /* raced */ }
     }
     console.log(`APP STOP  killed ${pids.length} process(es) of this checkout`);
+    // The detached cue scheduler (interview60.cues.mjs schedule) outlives an
+    // aborted flight and would later put its pages on screen; its display
+    // windows are electron.exe of this checkout and died just above.
+    if (fs.existsSync(CUES_PID)) {
+        const pid = Number(fs.readFileSync(CUES_PID, 'utf8').trim());
+        const cmdLine = commandLineOf(pid);
+        if (/interview60\.cues\.mjs/.test(cmdLine)) {
+            console.log(`APP STOP  taskkill cue scheduler pid=${pid}`);
+            try { execFileSync('taskkill', ['/PID', String(pid), '/T', '/F'], { stdio: 'pipe' }); } catch { /* already gone */ }
+        }
+        fs.unlinkSync(CUES_PID);
+    }
 }
 
 /** Spawn `npm start` with the autostart flag; wait for the two log lines that prove it is listening in Auto. */
@@ -409,7 +424,7 @@ async function auto(label = 'after') {
     const startedMs = JSON.parse(fs.readFileSync(TIMELINE, 'utf8')).startedMs;
     const STALE_CHECKED = new Set([ANSWERS, CHAINS, HTML, REPORT]);
     const skipped = [];
-    const files = [DEBUG_LOG, DIAG_LOG, TIMELINE, REPORT, ANSWERS, CHAINS, HTML].filter((f) => {
+    const files = [DEBUG_LOG, DIAG_LOG, TIMELINE, REPORT, ANSWERS, CHAINS, HTML, CUES_LOG].filter((f) => {
         if (!STALE_CHECKED.has(f) || !fs.existsSync(f)) return true;
         if (fs.statSync(f).mtimeMs < startedMs) { skipped.push(path.basename(f)); return false; }
         return true;

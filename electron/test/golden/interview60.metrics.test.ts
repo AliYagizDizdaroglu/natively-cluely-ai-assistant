@@ -210,6 +210,8 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             // C01's own answer, inside C01's window — claimed by the cue, so
             // it must NOT add a 4th line to answersToNobody.
             `${iso(T0 + 1002000)} [LOG] [Main] dispatch: answer source=live anchor="Take a look at this problem on screen and walk me through your approach." verdict=match`,
+            // The screen reference was captured before the answer (main.ts answerDetection).
+            `${iso(T0 + 1002900)} [LOG] [Main] screen reference: captured C:\\shots\\c01.png for "Take a look at this problem on screen and walk me through your"`,
             // Two STT socket closes (code=1011) with a Connected before each.
             `${iso(T0 + 1000)} [LOG] [DeepgramStreaming] Connected`,
             `${iso(T0 + 11000)} [LOG] [DeepgramStreaming] Closed (code=1011, reason=Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001)`,
@@ -389,6 +391,8 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // sees it, via cueAnswers.
         expect(m.items.find((i: any) => i.id === 'C01')).toBeUndefined();
         expect(m.cueAnswers).toBe(1);
+        // and the one screen capture the cue triggered is counted for the CODING row
+        expect(m.screenCaptures).toBe(1);
         // Unchanged from the "top-level counts" test below: C01's answer is
         // now claimed (by the cue), so it was never a candidate to add a 4th
         // line to answersToNobody, and answered (spoken-only) never saw C01

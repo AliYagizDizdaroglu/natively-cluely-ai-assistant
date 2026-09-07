@@ -35,7 +35,7 @@ export function computeRun(dir) {
  * Returns the RunMetrics contract used by `gate` and the headline numbers
  * (dir, startedAt, endedAt, durationMin, items, heard, answered, delivered,
  * answerFailures, answersToNobody, surfacedMax, surfacedMulti, extendsTotal, caught,
- * unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, heuristicChips, raceLosses, sttCloses,
+ * unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, screenCaptures, heuristicChips, raceLosses, sttCloses,
  * lostUtterances, fragmentChips, coachingAnswers, codingForSpoken,
  * expiryLoops, liveReconnects, detectP50, ttftP90, ttftSource) plus a few
  * extra fields (stats, stt, routes, redirects, hardFails, liveQ, orphanLive,
@@ -286,6 +286,10 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const cueAnswers = hasDispatch
         ? dispatches.filter((d) => d.action === 'answer' && claimOf.get(d) && claimOf.get(d).kind !== 'spoken').length
         : 0;
+    // Screen captures taken because the interviewer pointed at the screen (main.ts
+    // answerDetection) — informational on the CODING row; a flight with the cue
+    // pages shown expects one per cue (after8 had none: nothing was on screen).
+    const screenCaptures = count(/\[Main\] screen reference: captured /g);
     // Chips built by the degraded-detection heuristic when Groq's detect()
     // call returns null (free-tier daily token limit — run 3: 64 of 85
     // calls). Informational: the fallback firing is the fix working (round
@@ -349,7 +353,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     return {
         startedAt: timeline.startedAt, endedAt: timeline.endedAt, durationMin, items,
         heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti, extendsTotal,
-        caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, heuristicChips, raceLosses,
+        caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, screenCaptures, heuristicChips, raceLosses,
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, resolvedEmptyFinals: stt.resolvedEmptyFinals, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
         detectP50, ttftP90, ttftSource, judge, pinned, budget,
@@ -364,7 +368,7 @@ export const GATE = [
     { key: 'surfaced', label: 'Surfaced detections per question', before: '12 doubles, 1 invented', pass: (m) => m.surfacedMulti === 0 && m.answersToNobody === 0, show: (m) => `${m.surfacedMulti} doubles, ${m.extendsTotal} extended, ${m.caught} caught, ${m.answersToNobody} unclaimed` },
     { key: 'stt', label: 'STT socket closes / lost utterances / fragment chips', before: '299 / 2 / 5', pass: (m) => m.sttCloses <= 5 && m.lostUtterances === 0 && m.fragmentChips === 0, show: (m) => `${m.sttCloses} / ${m.lostUtterances} (${m.resolvedEmptyFinals} resolved within 5 s) / ${m.fragmentChips}` },
     { key: 'coaching', label: 'Technical questions answered via the coaching path', before: '25', pass: (m) => m.coachingAnswers === 0, show: (m) => String(m.coachingAnswers) },
-    { key: 'coding', label: 'Spoken questions routed CODING', before: '4 routes (2 of them screenshot cues)', pass: (m) => m.codingForSpoken === 0, show: (m) => `${m.codingForSpoken}, ${m.cueAnswers} cue answers` },
+    { key: 'coding', label: 'Spoken questions routed CODING', before: '4 routes (2 of them screenshot cues)', pass: (m) => m.codingForSpoken === 0, show: (m) => `${m.codingForSpoken}, ${m.cueAnswers} cue answers, ${m.screenCaptures} captures` },
     { key: 'expiry', label: 'Live expiry loops', before: '0', pass: (m) => m.expiryLoops === 0, show: (m) => String(m.expiryLoops) },
     { key: 'quality', label: 'Interview-acceptable answers (Opus 5 judge)', before: 'not graded', pass: (m) => !!m.judge && m.judge.wrong === 0 && m.judge.acceptable >= 47, show: (m) => m.judge ? `${m.judge.acceptable} acceptable, ${m.judge.weak} weak, ${m.judge.wrong} wrong of ${m.judge.n}${m.judge.errors ? `, ${m.judge.errors} errors` : ''}` : 'not run' },
     { key: 'latency', label: 'Answer TTFT p90 · detect p50', before: '3.7 s (answer-only pass) · 4.1 s', pass: (m) => (m.ttftP90 ?? Infinity) <= 5000 && (m.detectP50 ?? Infinity) <= 5000, show: (m) => `${m.ttftP90 == null ? '—' : (m.ttftP90 / 1000).toFixed(1) + ' s'}${m.ttftSource === 'answer-only' ? ' (answer-only pass)' : ''} · ${m.detectP50 == null ? '—' : (m.detectP50 / 1000).toFixed(1) + ' s'}` },
