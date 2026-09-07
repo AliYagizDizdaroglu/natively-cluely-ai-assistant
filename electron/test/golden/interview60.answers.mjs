@@ -96,8 +96,20 @@ async function answerStreamedGemini(question) {
 }
 
 // Groq, OpenAI-compatible SSE: same system prompt, same user text, same filter chain,
-// same record shape. The free tier meters 8K tokens per minute per model and answers a
-// 429 with retry-after seconds, which the retry loop honours.
+// same record shape. The free tier meters 8K tokens per minute per model (read off the
+// x-ratelimit headers, 2026-09-08) and each request carries the ~2.9K-token verbal
+// prompt, so at most two answers a minute: the pass paces itself on the headers
+// (below) instead of paying a 429 round-trip plus the blind 8 s backoff each time —
+// measured unpaced: 10 answers in 8 min; the floor is ~26 min for 52.
+export function parseGroqReset(s) {
+    // "585ms" | "1.5s" | "4m19.2s" | "1h2m3s" → milliseconds; unknown → 0
+    if (!s) return 0;
+    let ms = 0;
+    for (const [, n, unit] of s.matchAll(/([\d.]+)(ms|h|m|s)/g)) ms += Number(n) * ({ ms: 1, s: 1000, m: 60_000, h: 3_600_000 })[unit];
+    return Math.round(ms);
+}
+let groqLimits = null; // { remainingTokens, resetTokensMs, lastRequestTokens } from the last response
+
 async function answerStreamedGroq(question) {
     const key = groqKey();
     if (!key) throw new Error('GROQ_API_KEY missing in .env');
@@ -112,7 +124,8 @@ async function answerStreamedGroq(question) {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` }, body: JSON.stringify(body),
     });
-    if (res.status === 429 || res.status >= 500) return { transient: `HTTP ${res.status}`, retryAfterMs: Number(res.headers.get('retry-after') ?? 0) * 1000 };
+    const resetTokensMs = parseGroqReset(res.headers.get('x-ratelimit-reset-tokens'));
+    if (res.status === 429 || res.status >= 500) return { transient: `HTTP ${res.status}`, retryAfterMs: Math.max(Number(res.headers.get('retry-after') ?? 0) * 1000, resetTokensMs) };
     if (res.status === 401 || res.status === 403) {
         // Retrying a rejected key only burns time: stop the arm and say which variable to fix.
         console.error(`\nGroq rejected GROQ_API_KEY from .env (HTTP ${res.status}). Refresh the key and re-run; nothing was written.`);
@@ -138,6 +151,8 @@ async function answerStreamedGroq(question) {
             const choice = j.choices?.[0];
             const piece = choice?.delta?.content ?? '';
             if (piece) { if (ttft === null) ttft = Date.now() - t0; raw += piece; }
+            // The last chunk carries the request's token usage — what the next one will cost.
+            if (j.x_groq?.usage?.total_tokens) groqLimits = { remainingTokens: Number(res.headers.get('x-ratelimit-remaining-tokens') ?? 0), resetTokensMs, lastRequestTokens: j.x_groq.usage.total_tokens };
             if (choice?.finish_reason) finish = choice.finish_reason;
         }
     }
@@ -176,7 +191,13 @@ for (const item of todo) {
         console.log(`  ${item.id.padEnd(4)} ${String(r.words).padStart(3)}w  ttft ${String(r.ttft).padStart(5)}ms  total ${String(r.total).padStart(5)}ms  ${bad.length ? 'FAIL ' + bad.join(',') : 'ok'}`);
     }
     fs.writeFileSync(OUT, JSON.stringify(store, null, 1));
-    await sleep(1500);
+    // Groq: the remaining-tokens header is what was left AFTER this request; when the
+    // next one would not fit, wait for the window to refill instead of collecting a 429.
+    if (IS_GROQ && groqLimits && groqLimits.remainingTokens < groqLimits.lastRequestTokens * 1.1) {
+        await sleep(groqLimits.resetTokensMs + 300);
+    } else {
+        await sleep(1500);
+    }
 }
 
 // ── summary ────────────────────────────────────────────────────────────────
