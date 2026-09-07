@@ -35,10 +35,13 @@ const DISPLAY = path.join(HERE, 'interview60.cue-display.cjs');
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 /**
- * One page with every shot of the problem in TWO columns (the golden renderer's look,
- * harness.mjs renderShot, at page scale): a single tall column shrinks to ~60 % on a
- * 1040 px work area and the vision model reads ~12 px text; two 1100 px columns fit
- * the work area's aspect and keep the text near native size.
+ * One page with every shot of the problem, in two 1100 px columns when it has more
+ * than one shot (the golden renderer's look, harness.mjs renderShot, at page scale).
+ * Shown fitted to the work area, so what matters is the page's aspect: a single
+ * column is 1100 wide and 1200–1690 tall (PY2 fits a 1040 px work area at ×0.62);
+ * two columns are 2310 wide and 760–940 tall (×0.83 on a 1920 px work area for all
+ * three cue problems — a gain for PY2 and PY5, a wash for PY4). Lines are not
+ * wrapped: the longest golden line is ~660 px, well inside a column.
  */
 export async function renderProblemPage(problemId) {
     const sharp = require('sharp');
@@ -46,7 +49,8 @@ export async function renderProblemPage(problemId) {
     if (!p) throw new Error(`unknown problem ${problemId}`);
     fs.mkdirSync(OUT, { recursive: true });
     const colWidth = 1100, colGap = 60, lh = 30, gap = 26, top = 40;
-    const columns = [p.shots.slice(0, Math.ceil(p.shots.length / 2)), p.shots.slice(Math.ceil(p.shots.length / 2))];
+    const half = Math.ceil(p.shots.length / 2);
+    const columns = p.shots.length > 1 ? [p.shots.slice(0, half), p.shots.slice(half)] : [p.shots];
     const blocks = [];
     let pageH = 0;
     columns.forEach((shots, ci) => {
@@ -90,11 +94,13 @@ if (cmd === 'render') {
 } else if (cmd === 'schedule') {
     const dir = path.dirname(a);
     const logFile = path.join(dir, 'interview60.cues.log');
-    fs.writeFileSync(logFile, ''); // one run per log: run.mjs snapshots it by mtime
+    // One run per log; run.mjs auto() skips it in the snapshot when it is older than the run.
+    fs.writeFileSync(logFile, '');
     const log = (m) => fs.appendFileSync(logFile, `${new Date().toISOString()} ${m}\n`);
     fs.writeFileSync(path.join(dir, 'interview60.cues.pid'), String(process.pid));
-    const timeline = JSON.parse(fs.readFileSync(a, 'utf8'));
-    const cues = timeline.items.filter((i) => i.kind === 'screenshot' && i.problem);
+    let timeline;
+    try { timeline = JSON.parse(fs.readFileSync(a, 'utf8')); } catch (e) { log(`TIMELINE UNREADABLE: ${e.message} — nothing will be shown`); process.exit(1); }
+    const cues = (timeline.items ?? []).filter((i) => i.kind === 'screenshot' && i.problem);
     log(`scheduler pid ${process.pid}: ${cues.length} cues ${cues.map((x) => `${x.id}=${x.problem}@${new Date(x.playedAt).toISOString().slice(11, 19)}`).join(' ')}`);
     const pages = {};
     try {
@@ -108,7 +114,11 @@ if (cmd === 'render') {
     for (const x of cues) {
         const item = INTERVIEW.find((i) => i.id === x.id);
         const ms = Math.round(x.clipSecs * 1000) + (item?.gapMs ?? 150000) - 5000;
-        setTimeout(() => { showPage(pages[x.problem], ms, log, logFile); if (--pending === 0) setTimeout(() => process.exit(0), 1000); }, Math.max(0, x.playedAt - Date.now()));
+        setTimeout(() => {
+            if (pages[x.problem]) showPage(pages[x.problem], ms, log, logFile);
+            else log(`NO PAGE for ${x.id}: problem ${x.problem} is not a cue problem of the question bank`);
+            if (--pending === 0) setTimeout(() => process.exit(0), 1000);
+        }, Math.max(0, x.playedAt - Date.now()));
     }
 } else {
     console.error('usage: interview60.cues.mjs render | schedule <timeline.json> | show <PYn> <ms> [log]');

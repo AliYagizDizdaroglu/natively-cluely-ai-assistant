@@ -39,7 +39,15 @@ app.whenReady().then(async () => {
     const html = `<!doctype html><meta charset="utf-8"><title>cue</title>
 <style>html,body{margin:0;background:#fff;height:100%;overflow:hidden}img{display:block;max-width:100%;max-height:100%;margin:0 auto}</style>
 <img src="${src}">`;
-    await win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+    // Quit is scheduled before anything can fail: a rejected load must not leave
+    // a white always-on-top window covering the desktop until the next app:stop.
+    setTimeout(() => app.quit(), ms);
+    try {
+        await win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+    } catch (e) {
+        log(`LOAD FAILED: ${e.message}`);
+        return;
+    }
     win.show(); win.moveTop(); win.focus();
     try {
         const size = await win.webContents.executeJavaScript(`new Promise((resolve) => {
@@ -51,6 +59,5 @@ app.whenReady().then(async () => {
         })`);
         log(size ? `image ${size} loaded, window ${area.width}x${area.height} at ${area.x},${area.y}, showing ${Math.round(ms / 1000)} s` : 'IMAGE FAILED to load');
     } catch (e) { log(`IMAGE CHECK FAILED: ${e.message}`); }
-    setTimeout(() => app.quit(), ms);
 });
 app.on('window-all-closed', () => app.quit());

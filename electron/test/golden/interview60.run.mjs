@@ -299,7 +299,9 @@ async function appPass() {
     fs.writeFileSync(TIMELINE, JSON.stringify(timeline, null, 1));
     // Screenshot cues: a detached scheduler shows each cue's problem page on the
     // primary display while the cue plays (interview60.cues.mjs).
-    spawn(process.execPath, [path.join(HERE, 'interview60.cues.mjs'), 'schedule', TIMELINE], { detached: true, stdio: 'ignore' }).unref();
+    const cues = spawn(process.execPath, [path.join(HERE, 'interview60.cues.mjs'), 'schedule', TIMELINE], { detached: true, stdio: 'ignore' });
+    cues.on('error', (e) => console.warn(`  cue scheduler failed to spawn: ${e.message} — the screenshot cues will have nothing on screen`));
+    cues.unref();
 
     console.log(`APP PASS  ${now()}   ${INTERVIEW.length} items as ONE continuous file, ~60 min`);
     console.log('  (single PlaySync — do not interrupt; the machine must stay audible)\n');
@@ -422,7 +424,7 @@ async function auto(label = 'after') {
     // would silently mislabel stale data as belonging to THIS run. Skip any
     // of them older than this run's own start.
     const startedMs = JSON.parse(fs.readFileSync(TIMELINE, 'utf8')).startedMs;
-    const STALE_CHECKED = new Set([ANSWERS, CHAINS, HTML, REPORT]);
+    const STALE_CHECKED = new Set([ANSWERS, CHAINS, HTML, REPORT, CUES_LOG]);
     const skipped = [];
     const files = [DEBUG_LOG, DIAG_LOG, TIMELINE, REPORT, ANSWERS, CHAINS, HTML, CUES_LOG].filter((f) => {
         if (!STALE_CHECKED.has(f) || !fs.existsSync(f)) return true;
