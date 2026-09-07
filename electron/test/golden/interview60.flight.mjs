@@ -40,7 +40,9 @@ import { fileURLToPath } from 'node:url';
 
 export const LIVE_DEFAULT = 'gemini-3.1-flash-live-preview';
 export const LIVE_FALLBACK = 'gemini-2.5-flash-native-audio-latest';
-export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'gemma-4-31b-it'];
+// The first is the app's answer model; the rest are comparison arms. Ids with a "/" run
+// on Groq (answers.mjs), the Gemma ids on the Gemini API.
+export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'gemma-4-31b-it', 'gemma-4-26b-a4b-it', 'qwen/qwen3.8-27b', 'openai/gpt-oss-120b'];
 
 /**
  * The Live model for the hour, from the probe's exit code: 0 (tool call seen)
@@ -69,7 +71,7 @@ export function newestRunDir(names, label, startedAtIso) {
 
 /** The answers pass writes the default arm to the plain file and every other arm to a model-suffixed one. */
 export function answersFileFor(model) {
-    return model === ANSWER_MODELS[0] ? 'interview60.answers.json' : `interview60.answers.${model}.json`;
+    return model === ANSWER_MODELS[0] ? 'interview60.answers.json' : `interview60.answers.${model.replace(/\//g, '_')}.json`;
 }
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
