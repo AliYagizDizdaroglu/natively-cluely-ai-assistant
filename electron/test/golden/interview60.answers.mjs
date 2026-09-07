@@ -167,7 +167,10 @@ async function answerStreamedGroq(question) {
 const answerStreamed = (question) => (IS_GROQ ? answerStreamedGroq(question) : answerStreamedGemini(question));
 
 const store = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : {};
-const todo = INTERVIEW.filter((i) => (i.kind ?? 'spoken') === 'spoken').slice(0, LIMIT);
+// Base roster plus the long design questions. Follow-ups are left out: answered
+// standalone they have no parent to follow up on, so they would measure nothing and
+// cost every arm 18 requests (2026-09-08 roster).
+const todo = INTERVIEW.filter((i) => (i.kind ?? 'spoken') === 'spoken' && i.level !== 'followup').slice(0, LIMIT);
 console.log(`ANSWER-ONLY PASS  model=${MODEL}  ${todo.length} spoken questions\n`);
 
 for (const item of todo) {
