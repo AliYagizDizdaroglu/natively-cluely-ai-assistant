@@ -262,4 +262,12 @@ electron/test/golden/interview60.cues.pid
 
 # interview60 flight launcher outputs: the extra answer arms and the files it moves aside
 electron/test/golden/interview60.answers.*.json
+
+# scenario50 roster — generated audio only (rebuild: NATIVELY_ROSTER=scenario50
+# interview60.build-audio-local.mjs). The .questions.mjs and .source.md are the
+# deliverable and stay tracked; the .txt stamps beside each clip are what make the
+# builder notice an edited question, and they live with the clips.
+electron/test/golden/scenario50.wav
+electron/test/golden/scenario50-tts/
+electron/test/golden/scenario50-tts-local/
 electron/test/golden/*.stale-*.json

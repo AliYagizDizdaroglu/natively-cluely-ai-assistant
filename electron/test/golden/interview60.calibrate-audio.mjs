@@ -16,7 +16,7 @@ import fs from 'fs';
 import path from 'path';
 import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
-import { INTERVIEW } from './interview60.questions.mjs';
+import { calibrationSample, TTS_LOCAL_DIR, rosterLabel } from './roster.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
@@ -25,7 +25,7 @@ const { GeminiLiveRouter, LIVE_ROUTER_MODEL } =
     require(path.join(PROJ, 'dist-electron/electron/audio/GeminiLiveRouter.js'));
 
 const KEY = fs.readFileSync(path.join(PROJ, '.env'), 'utf8').match(/^GEMINI_API_KEY=(.+)$/m)[1].trim();
-const TTS_DIR = path.join(HERE, 'interview60-tts-local');
+const TTS_DIR = path.join(HERE, TTS_LOCAL_DIR);
 const SR = 24000, FRAME_MS = 20, FRAME_BYTES = (SR / 1000) * FRAME_MS * 2;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -33,7 +33,9 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // one, and a screenshot cue (which is NOT a question — it should ideally NOT fire).
 // L01 and L04: the long multi-sentence design questions (2026-09-08) — the clips most
 // likely to be split into several finals, so the detector must be proven on them too.
-const SAMPLE = ['W02', 'M02', 'H03', 'C01', 'L01', 'L04'].map((id) => INTERVIEW.find((x) => x.id === id));
+// Roster-specific and risk-chosen; see SAMPLES in roster.mjs. Throws rather than
+// quietly sampling fewer clips than it names.
+const SAMPLE = calibrationSample();
 
 function pcmOf(id) {
     const b = fs.readFileSync(path.join(TTS_DIR, `${id}.wav`));
@@ -51,7 +53,7 @@ function overlap(a, b) {
     return hit / A.size;
 }
 
-console.log(`listener: ${LIVE_ROUTER_MODEL}\nvoice: Windows SAPI (local)\n`);
+console.log(`listener: ${LIVE_ROUTER_MODEL}\nvoice: Windows SAPI (local)\nroster: ${rosterLabel()}\nsample: ${SAMPLE.map((s) => s.id).join(', ')}\n`);
 
 const router = new GeminiLiveRouter(() => KEY);
 let state = 'idle';
@@ -75,7 +77,7 @@ for (const item of SAMPLE) {
     for (let t = 0; t < 5000; t += FRAME_MS) { router.write(silence, SR); await sleep(FRAME_MS); }
     const fired = events.slice(before);
     const isCue = item.kind === 'screenshot';
-    const isLong = item.level === 'long';
+    const isLong = item.level === 'long' || !!item.long;
     // Best hearing over every fire: a long question sometimes fires once mid-clip on the
     // scenario alone and again, whole, after the ask (2 of 18 long plays, 2026-09-08) —
     // that is a pipeline question for the hour's own 'answered whole' row, not a voice

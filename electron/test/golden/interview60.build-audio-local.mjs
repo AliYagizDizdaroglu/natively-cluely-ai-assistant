@@ -14,18 +14,19 @@
  *
  *   node electron/test/golden/interview60.build-audio-local.mjs
  *
- * Output: electron/test/golden/interview60.wav  (24 kHz mono 16-bit)
+ * Output: electron/test/golden/<roster>.wav  (24 kHz mono 16-bit); the roster and
+ * its audio directory come from roster.mjs (NATIVELY_ROSTER).
  */
 import fs from 'fs';
 import path from 'path';
 import { execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
-import { INTERVIEW } from './interview60.questions.mjs';
+import { INTERVIEW, TTS_LOCAL_DIR, WAV_NAME, rosterLabel } from './roster.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
-const TTS_DIR = path.join(HERE, 'interview60-tts-local');
-const OUT_WAV = path.join(HERE, 'interview60.wav');
+const TTS_DIR = path.join(HERE, TTS_LOCAL_DIR);
+const OUT_WAV = path.join(HERE, WAV_NAME);
 const SR = 24000;
 const BYTES_PER_SEC = SR * 2;
 const VOICE = process.env.SAPI_VOICE || 'Microsoft David Desktop';
@@ -34,10 +35,22 @@ const RATE = Number(process.env.SAPI_RATE || 0);   // -10..10, 0 = normal
 fs.mkdirSync(TTS_DIR, { recursive: true });
 const words = (s) => (s.trim().match(/\S+/g) || []).length;
 
-/** Render one question to a 24 kHz mono 16-bit WAV via System.Speech. */
+/**
+ * Render one question to a 24 kHz mono 16-bit WAV via System.Speech.
+ *
+ * Clips are cached by id, so EDITING A QUESTION would otherwise keep speaking the old
+ * wording for a whole hour with nothing to show for it — the run log, the timeline and
+ * the judge would all carry the new text while the audio said the old. The rendered
+ * text is written beside each clip and re-rendered whenever it differs. (Measured
+ * 2026-09-08: merging the opening sentence of 44 scenario50 questions changed their
+ * text without changing a single id.)
+ */
 function speak(item) {
     const out = path.join(TTS_DIR, `${item.id}.wav`);
-    if (fs.existsSync(out)) return out;
+    const stamp = path.join(TTS_DIR, `${item.id}.txt`);
+    const cachedText = fs.existsSync(stamp) ? fs.readFileSync(stamp, 'utf8') : null;
+    if (fs.existsSync(out) && cachedText === item.q) return out;
+    if (fs.existsSync(out)) console.log(`  ${item.id.padEnd(6)} text changed — re-rendering`);
     const ps = `
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Speech
@@ -51,6 +64,7 @@ $s.SetOutputToNull()
 $s.Dispose()
 `;
     execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps], { stdio: 'pipe' });
+    fs.writeFileSync(stamp, item.q);
     return out;
 }
 
@@ -74,7 +88,7 @@ function wavHeader(dataBytes) {
 
 const parts = [];
 const suspect = [];
-console.log(`voice: ${VOICE}   rate: ${RATE}\nBuilding ${INTERVIEW.length} items -> ${path.relative(PROJ, OUT_WAV)}\n`);
+console.log(`voice: ${VOICE}   rate: ${RATE}\nroster: ${rosterLabel()}\nBuilding ${INTERVIEW.length} items -> ${path.relative(PROJ, OUT_WAV)}\n`);
 
 for (const item of INTERVIEW) {
     const pcm = pcmOf(speak(item));

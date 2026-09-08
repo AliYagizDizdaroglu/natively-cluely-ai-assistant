@@ -15,12 +15,12 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { INTERVIEW } from './interview60.questions.mjs';
+import { INTERVIEW, TTS_GEMINI_DIR, WAV_NAME } from './roster.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
-const TTS_DIR = path.join(HERE, 'interview60-tts');
-const OUT_WAV = path.join(HERE, 'interview60.wav');
+const TTS_DIR = path.join(HERE, TTS_GEMINI_DIR);
+const OUT_WAV = path.join(HERE, WAV_NAME);
 const SR = 24000;                 // Gemini TTS returns 24 kHz mono s16le
 const BYTES_PER_SEC = SR * 2;
 

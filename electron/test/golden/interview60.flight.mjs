@@ -37,6 +37,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { rosterLabel, ROSTER_NAME } from './roster.mjs';
 
 export const LIVE_DEFAULT = 'gemini-3.1-flash-live-preview';
 export const LIVE_FALLBACK = 'gemini-2.5-flash-native-audio-latest';
@@ -125,6 +126,9 @@ async function main() {
     const startedAt = new Date().toISOString();
     const stamp = startedAt.replace(/[:.]/g, '-').slice(0, 19);
     log(`FLIGHT ${label} start${dry ? ' — DRY RUN, nothing is executed' : ''}   node ${process.version}   cwd ${PROJ}`);
+    // Which stimulus produced this folder. Without it a run folder is uninterpretable
+    // the moment a second roster exists.
+    log(`ROSTER ${rosterLabel()}`);
     if (!fs.existsSync(path.join(PROJ, '.env'))) { log('ABORT no .env beside package.json — the probe and the passes read the Gemini key from it'); return 2; }
 
     // 1. Which Live ear.
@@ -168,7 +172,7 @@ async function main() {
     for (const f of answersFiles) await run([judge, runDir, '--answers', f, '--export'], { dry });
 
     const done = {
-        label, startedAt, finishedAt: new Date().toISOString(), liveModel, autoExit, runDir, answersFiles,
+        label, roster: ROSTER_NAME, rosterLabel: rosterLabel(), startedAt, finishedAt: new Date().toISOString(), liveModel, autoExit, runDir, answersFiles,
         toGrade: ['interview60.judge.pairs.json', ...ANSWER_MODELS.map((m) => `interview60.judge.pairs.${m}.json`)],
         next: 'grade each pairs file with its rubric into interview60.judge.verdicts[.<model>].json, then interview60.judge.mjs <run> [--answers <file>] --verdicts <that file>',
     };

@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { CODING } from './problems.coding.mjs';
-import { INTERVIEW } from './interview60.questions.mjs';
+import { INTERVIEW } from './roster.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 // Resolved from the project root like harness.mjs does, so this can live anywhere in the tree.

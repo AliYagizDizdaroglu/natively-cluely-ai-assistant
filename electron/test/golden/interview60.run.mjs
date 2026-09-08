@@ -26,13 +26,13 @@ import path from 'path';
 import { execFileSync } from 'child_process';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
-import { INTERVIEW } from './interview60.questions.mjs';
+import { INTERVIEW, TTS_LOCAL_DIR, WAV_NAME, rosterLabel } from './roster.mjs';
 import { logSize as libLogSize, logSince as libLogSince, waitForLogLines, snapshotRun, sleep as libSleep } from './interview60.lib.mjs';
 import { computeRun, computeRunFromFiles, evaluateGate } from './interview60.metrics.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
-const TTS_DIR = path.join(HERE, 'interview60-tts-local');
+const TTS_DIR = path.join(HERE, TTS_LOCAL_DIR);
 const DEBUG_LOG = path.join(PROJ, 'natively_debug.log');
 const DIAG_LOG = path.join(PROJ, 'verbal-diag.log');
 const TIMELINE = path.join(HERE, 'interview60.timeline.json');
@@ -73,7 +73,7 @@ function playWav(wav) {
         { stdio: 'pipe', timeout: 120 * 60 * 1000 }); // the roster runs ~90 min since the long questions
 }
 
-/** Byte offset of each item inside interview60.wav, so log events can be attributed. */
+/** Byte offset of each item inside the roster WAV, so log events can be attributed. */
 function computeOffsets() {
     const BYTES_PER_SEC = 24000 * 2;
     let t = 0;
@@ -83,7 +83,7 @@ function computeOffsets() {
         const clipSecs = b.readUInt32LE(i + 4) / BYTES_PER_SEC;
         const startSec = t;
         t += clipSecs + item.gapMs / 1000;
-        return { id: item.id, level: item.level, topic: item.topic, kind: item.kind ?? 'spoken', q: item.q, startSec, clipSecs, ...(item.problem ? { problem: item.problem } : {}), ...(item.chain ? { chain: item.chain } : {}) };
+        return { id: item.id, level: item.level, topic: item.topic, kind: item.kind ?? 'spoken', q: item.q, startSec, clipSecs, ...(item.problem ? { problem: item.problem } : {}), ...(item.chain ? { chain: item.chain } : {}), ...(item.long ? { long: true } : {}) };
     });
 }
 
@@ -240,7 +240,7 @@ async function preflight() {
     console.log(`PREFLIGHT  ${now()}\n`);
 
     const clips = INTERVIEW.filter((i) => fs.existsSync(path.join(TTS_DIR, `${i.id}.wav`))).length;
-    ok('all 55 clips present', clips === INTERVIEW.length, `${clips}/${INTERVIEW.length}`);
+    ok('all clips present', clips === INTERVIEW.length, `${clips}/${INTERVIEW.length}`);
 
     const s1 = await modelAlive('gemini-3.1-flash-lite');
     ok('gemini-3.1-flash-lite answering', s1 === 200, `HTTP ${s1}`);
@@ -249,7 +249,7 @@ async function preflight() {
 
     ok('Electron app running', electronRunning());
 
-    ok('interview60.wav built', fs.existsSync(path.join(HERE, 'interview60.wav')));
+    ok(`${WAV_NAME} built`, fs.existsSync(path.join(HERE, WAV_NAME)));
 
     // The real check: play a CONTINUOUS probe aloud and require the app's OWN
     // log to show it heard a question. A single clip is not enough — it proves
@@ -303,9 +303,9 @@ async function appPass() {
     cues.on('error', (e) => console.warn(`  cue scheduler failed to spawn: ${e.message} — the screenshot cues will have nothing on screen`));
     cues.unref();
 
-    console.log(`APP PASS  ${now()}   ${INTERVIEW.length} items as ONE continuous file, ~60 min`);
+    console.log(`APP PASS  ${now()}   ${rosterLabel()} as ONE continuous file`);
     console.log('  (single PlaySync — do not interrupt; the machine must stay audible)\n');
-    playWav(path.join(HERE, 'interview60.wav'));
+    playWav(path.join(HERE, WAV_NAME));
 
     timeline.endedAt = now();
     timeline.endDebug = logSize(DEBUG_LOG);

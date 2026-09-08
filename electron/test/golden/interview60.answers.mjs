@@ -22,7 +22,7 @@ import fs from 'fs';
 import path from 'path';
 import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
-import { INTERVIEW } from './interview60.questions.mjs';
+import { INTERVIEW, ROSTER_ITEMS, ROSTER_NAME } from './roster.mjs';
 import { VERBAL_CHECKS } from './problems.verbal.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -167,6 +167,19 @@ async function answerStreamedGroq(question) {
 const answerStreamed = (question) => (IS_GROQ ? answerStreamedGroq(question) : answerStreamedGemini(question));
 
 const store = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : {};
+// A resumed store must belong to THIS roster. It is keyed by item id, so an
+// interview60 file resumed under scenario50 would keep every foreign answer and
+// hand the judge a mixed export that looks like one run. Checked against the whole
+// roster, not the scenario subset, so building a set scenario by scenario still
+// accumulates. The flight moves old files aside, so reaching this means a manual
+// run against a stale one.
+const knownIds = new Set(ROSTER_ITEMS.map((i) => i.id));
+const foreign = Object.keys(store).filter((id) => !knownIds.has(id));
+if (foreign.length) {
+    console.error(`\n${path.basename(OUT)} holds ${foreign.length} answer(s) that are not in roster ${ROSTER_NAME} (${foreign.slice(0, 3).join(', ')}${foreign.length > 3 ? ', ...' : ''}).`);
+    console.error('Move it aside before resuming — otherwise it is exported as if it were this roster.');
+    process.exit(3);
+}
 // Base roster plus the long design questions. Follow-ups are left out: answered
 // standalone they have no parent to follow up on, so they would measure nothing and
 // cost every arm 18 requests (2026-09-08 roster).

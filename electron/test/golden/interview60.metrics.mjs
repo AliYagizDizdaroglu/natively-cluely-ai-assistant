@@ -326,7 +326,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     // Long design questions (level 'long'): answered whole when the dispatched text
     // covers at least 80% of the scripted content words. The bar is 0.8 rather than
     // 1.0 because the STT drops or respells a word or two even on a clean hearing.
-    const longItems = items.filter((i) => i.level === 'long');
+    const longItems = items.filter((i) => i.level === 'long' || i.long);
     const longs = longItems.length;
     const longWhole = longItems.filter((i) => (i.coverage ?? 0) >= LONG_WHOLE_COVERAGE).length;
 
