@@ -19,8 +19,8 @@
  *      NATIVELY_STT_PROVIDER=deepgram (set in the environment that launches this
  *      script) runs the hour on Deepgram; auto's preflight refuses the hour if
  *      the app did not start that ear.
- *   3. answer passes on gemini-3.1-flash-lite, gemini-3.5-flash-lite and
- *      gemma-4-31b-it — the same 52 questions, prompt and filters — plus the
+ *   3. answer passes on gemini-3.1-flash-lite, gemini-3.5-flash-lite and the
+ *      Groq arms, the same 52 questions, prompt and filters, plus the
  *      chains pass, all copied into the run folder. Earlier answers/chains
  *      files are moved aside first: the passes resume from an existing file,
  *      and resuming from yesterday's answers would score yesterday's model.
@@ -42,10 +42,13 @@ export const LIVE_DEFAULT = 'gemini-3.1-flash-live-preview';
 export const LIVE_FALLBACK = 'gemini-2.5-flash-native-audio-latest';
 // The first is the app's answer model; the rest are comparison arms. Ids with a "/" run
 // on Groq (answers.mjs; with a placeholder GROQ_API_KEY the pass exits 3 in seconds and
-// the flight goes on without that file). gemma-4-26b-a4b-it is deliberately absent: the
-// 2026-09-08 probe leaked its planning text into the spoken answer and one answer ran
-// 11 min to MAX_TOKENS — 52 of those would hold the judge exports for hours.
-export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'gemma-4-31b-it', 'qwen/qwen3.8-27b', 'openai/gpt-oss-120b'];
+// the flight goes on without that file). Both Gemma arms are deliberately absent.
+// gemma-4-26b-a4b-it: the 2026-09-08 probe leaked its planning text into the spoken
+// answer and one answer ran 11 min to MAX_TOKENS. gemma-4-31b-it: 49, then 37, then 35
+// acceptable of 52 across after7/8/9 under the frozen grader, with 4 answers degenerating
+// into repeated tokens and 16 truncating mid-word, at 19.4s to first token. Re-measuring
+// a model already ruled out costs an hour of flight time and holds the judge exports.
+export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'qwen/qwen3.8-27b', 'openai/gpt-oss-120b'];
 
 /**
  * The Live model for the hour, from the probe's exit code: 0 (tool call seen)
