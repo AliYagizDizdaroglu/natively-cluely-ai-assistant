@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mergeVerdicts, pairAnswers, pairsFromAnswers, summarizeVerdicts, verdictOf } from './interview60.judge.mjs';
+import { summarizeJudge } from './interview60.metrics.mjs';
 
 const t = (s: string) => Date.parse(`2026-09-04T08:00:${s}Z`);
 const timeline = {
@@ -145,6 +146,37 @@ describe('mergeVerdicts (graded outside the script — the no-key route)', () =>
         expect(merged.items.C01).toMatchObject({ kind: 'cue', verdict: 'error', reason: 'no verdict' });
         expect(merged.items['W01#2']).toMatchObject({ verdict: 'error', reason: 'verdict correctness=3' });
         expect(summarizeVerdicts(merged)).toEqual({ model: 'claude-opus-5', n: 3, acceptable: 1, weak: 0, wrong: 1, errors: 1 });
+    });
+
+    it('keeps each item id and roster level, so the summary can report long questions and follow-ups beside the base roster', () => {
+        // Without these two fields the merged file cannot be split by level, and every
+        // long question and follow-up silently lands in the base count instead — which
+        // is what happened to the after9 arms (2026-09-08).
+        const tl = {
+            ...timeline,
+            items: [
+                { id: 'L01', kind: 'spoken', level: 'long', topic: 'SageMaker', q: 'Walk me through the training pipeline for a nightly recommendation model.', playedAt: t('10.000'), clipSecs: 4 },
+                { id: 'L01F1', kind: 'spoken', level: 'followup', topic: 'SageMaker', chain: 'L01', q: 'What happens when that job finishes late?', playedAt: t('40.000'), clipSecs: 3 },
+            ],
+        };
+        const log = [
+            '2026-09-04T08:00:16.000Z [LOG] [Main] dispatch: answer source=live anchor="Walk me through the training pipeline for a nightly recommendation model." verdict=match',
+            '2026-09-04T08:00:19.000Z [LOG] [Answer] full: "Ingest, validate, train, evaluate, register."',
+            '2026-09-04T08:00:45.000Z [LOG] [Main] dispatch: answer source=live anchor="What happens when that job finishes late?" verdict=match',
+            '2026-09-04T08:00:48.000Z [LOG] [Answer] full: "Serve yesterday\'s model and alert."',
+        ].join('\n');
+        const merged = mergeVerdicts(pairAnswers(log, tl), {
+            L01: { correctness: 2, on_topic: 2, delivery: 2, reason: 'covers the pipeline' },
+            L01F1: { correctness: 1, on_topic: 2, delivery: 2, reason: 'vague on the alert path' },
+        });
+        expect(merged.items.L01).toMatchObject({ id: 'L01', level: 'long', verdict: 'acceptable' });
+        expect(merged.items.L01F1).toMatchObject({ id: 'L01F1', level: 'followup', verdict: 'weak' });
+        // The base roster count excludes both, which is what keeps it comparable across flights.
+        expect(summarizeJudge(merged)).toMatchObject({
+            n: 0,
+            long: { n: 1, acceptable: 1, weak: 0, wrong: 0 },
+            followup: { n: 1, acceptable: 0, weak: 1, wrong: 0 },
+        });
     });
 });
 

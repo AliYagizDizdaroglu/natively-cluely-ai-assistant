@@ -163,7 +163,10 @@ export function keyPairs(pairs) {
     return pairs.map((p) => { seen[p.id] = (seen[p.id] ?? 0) + 1; return { key: seen[p.id] > 1 ? `${p.id}#${seen[p.id]}` : p.id, pair: p }; });
 }
 
-const baseOf = (pair) => ({ kind: pair.kind, question: pair.question, heard: pair.heard, source: pair.source, dispatchedAt: pair.dispatchedAt, answer: pair.answer });
+// id and level ride along so a merged file can be split by roster level: the long
+// design questions and the follow-ups are reported beside the base roster, never
+// inside it (interview60.metrics.mjs summarizeJudge).
+const baseOf = (pair) => ({ id: pair.id, kind: pair.kind, level: pair.level ?? null, question: pair.question, heard: pair.heard, source: pair.source, dispatchedAt: pair.dispatchedAt, answer: pair.answer });
 const undelivered = (pair) => ({ ...baseOf(pair), correctness: 0, on_topic: 0, delivery: 0, verdict: 'wrong', reason: 'no answer was delivered' });
 
 /**
