@@ -117,7 +117,13 @@ describe('reconcileWindowMs — how far back the transcript must be read to cove
     // reconciler fell back to once Live's whole question scored below the floor.
     it('keeps the 15s floor for a short claim, so nothing changes for ordinary questions', () => {
         expect(reconcileWindowMs('What is a DAG?')).toBe(15_000);
-        expect(reconcileWindowMs('How would you detect data drift in a model that is already in production?')).toBe(15_000);
+        // The floor covers claims up to 11 words. It reached 16 words while WORDS_PER_SEC was
+        // 2.24; lowering that to 1.6 (see the constant's comment) moved the boundary down, so a
+        // 14-word question now gets a window sized to itself rather than the flat floor. That is
+        // the intended direction — the floor exists so SHORT claims are unaffected, and a longer
+        // window on a mid-length question is the thing the sizing is for.
+        expect(reconcileWindowMs('What is the difference between a pod and a deployment?')).toBe(15_000);
+        expect(reconcileWindowMs('How would you detect data drift in a model that is already in production?')).toBeGreaterThan(15_000);
     });
     it('covers L03: 69 words spoken in 25.9s, reported 5.3s after the clip ended', () => {
         const L03 = 'Let\'s talk about monitoring. Say you have twenty models in production, owned by four different teams, '
@@ -132,6 +138,20 @@ describe('reconcileWindowMs — how far back the transcript must be read to cove
     });
     it('caps a runaway claim so the window cannot swallow the previous question', () => {
         expect(reconcileWindowMs(new Array(500).fill('word').join(' '))).toBeLessThanOrEqual(60_000);
+    });
+
+    // WORDS_PER_SEC is a LOWER BOUND on speaking rate, and 2.24 (interview60's p10) is not
+    // one: rendering the scenario50 roster produced clips down to 1.55 w/s, because its
+    // questions are comma-heavy lists the voice pauses through. Measured over all 179
+    // rendered clips of both rosters, 12 of scenario50's fell OUTSIDE the window at 2.24 —
+    // the window stopping short of the question's start is precisely the L03 defect.
+    // Replaying the 195 live dispatches of after7/8/9 at rates down to 1.4 produced zero
+    // new corroborations, and the closest uncorroborated claim held at 0.474, under MATCH.
+    it('covers the slowest clip ever rendered: 26 words in 16.8s (1.55 w/s), reported 5.3s later', () => {
+        expect(reconcileWindowMs(new Array(26).fill('pipeline').join(' '))).toBeGreaterThan(16_800 + 5_300);
+    });
+    it('covers a 43-word question read at 1.89 w/s (scenario50 S2Q07, 22.7s)', () => {
+        expect(reconcileWindowMs(new Array(43).fill('pipeline').join(' '))).toBeGreaterThan(22_700 + 5_300);
     });
 });
 
