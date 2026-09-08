@@ -238,7 +238,7 @@ import { PhoneMirrorService } from "./services/PhoneMirrorService"
 import { setVerboseLoggingFlag } from "./verboseLog"
 import { pickIntelligenceSurface } from "./services/intelligenceSurface"
 import { shouldExtend } from "./services/extendOnClause"
-import { mentionsScreen } from "./services/screenReference"
+import { mentionsScreen, extendOfAfterCapture } from "./services/screenReference"
 import { ReleaseNotesManager } from "./update/ReleaseNotesManager"
 import { OllamaManager } from './services/OllamaManager'
 import { normalizeLiveMode } from './services/liveMode'
@@ -2018,7 +2018,10 @@ export class AppState {
         console.warn(`[Main] screen reference: capture failed (${err?.message ?? err}); answering from the transcript`);
       }
     }
-    await this.intelligenceManager.runWhatShouldISay(d.question, 1.0, imagePaths, { intentOverride: intent, bypassCooldown: true, ...(extendOf === undefined ? {} : { extendOf }) });
+    // A capture is knowledge the earlier answer never had, so it is not a foundation to
+    // build on — see extendOfAfterCapture.
+    const buildOn = extendOfAfterCapture(extendOf, imagePaths !== undefined);
+    await this.intelligenceManager.runWhatShouldISay(d.question, 1.0, imagePaths, { intentOverride: intent, bypassCooldown: true, ...(buildOn === undefined ? {} : { extendOf: buildOn }) });
   }
 
   private startLiveRouter(): void {

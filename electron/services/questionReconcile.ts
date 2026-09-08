@@ -53,11 +53,11 @@ export function sameAnchor(a: string, b: string): boolean {
 const WORDS_PER_SEC = 2.24;
 const LAG_MS = 8_000;
 const MIN_WINDOW_MS = 15_000;
-const MAX_WINDOW_MS = 60_000;
+export const RECONCILE_MAX_WINDOW_MS = 60_000;
 
 export function reconcileWindowMs(liveText: string): number {
     const spoken = ((liveText.match(/[A-Za-z0-9']+/g) ?? []).length / WORDS_PER_SEC) * 1000;
-    return Math.min(MAX_WINDOW_MS, Math.max(MIN_WINDOW_MS, Math.round(spoken + LAG_MS)));
+    return Math.min(RECONCILE_MAX_WINDOW_MS, Math.max(MIN_WINDOW_MS, Math.round(spoken + LAG_MS)));
 }
 
 const MATCH = 0.5;

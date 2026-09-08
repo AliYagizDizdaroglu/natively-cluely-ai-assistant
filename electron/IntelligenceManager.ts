@@ -16,6 +16,7 @@ import { QuestionDetector, DetectedQuestionChip } from './services/QuestionDetec
 import { GroqDetectionClient } from './services/GroqDetectionClient';
 import { CredentialsManager } from './services/CredentialsManager';
 import { DETECTOR_CALIBRATION_CASES, judgeDetection } from './services/detectorCalibration';
+import { RECONCILE_MAX_WINDOW_MS } from './services/questionReconcile';
 
 // Re-export types for backward compatibility
 export type { TranscriptSegment, SuggestionTrigger, ContextItem } from './SessionTracker';
@@ -298,7 +299,15 @@ export class IntelligenceManager extends EventEmitter {
             // Interims included: on 2026-09-02 the only record of a question the
             // STT socket dropped mid-sentence was its last interim.
             this.recentInterviewerSpeech.push({ text: segment.text, at: segment.timestamp, final: segment.final });
-            if (this.recentInterviewerSpeech.length > 40) this.recentInterviewerSpeech.shift();
+            // Trimmed by AGE, not by a count. The old 40-entry cap was sized for the fixed 15s
+            // window; reconcileWindowMs now asks for up to RECONCILE_MAX_WINDOW_MS, and the
+            // busiest 60s of the 2026-09-08 hour held 53 lines. Past a count cap the buffer
+            // returns a TRUNCATED utterance, the joined-window score drops, and the reconciler
+            // silently falls back to replacing the question with a transcript tail — the exact
+            // failure it was just fixed for, with nothing to see. Age cannot truncate what the
+            // window is entitled to ask for.
+            const cutoff = segment.timestamp - RECONCILE_MAX_WINDOW_MS;
+            while (this.recentInterviewerSpeech.length && this.recentInterviewerSpeech[0].at < cutoff) this.recentInterviewerSpeech.shift();
         }
         this.engine.handleTranscript(segment);
     }
