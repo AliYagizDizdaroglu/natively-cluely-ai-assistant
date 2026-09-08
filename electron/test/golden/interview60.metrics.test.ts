@@ -519,14 +519,18 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(GATE.slice(-2).map((g) => g.key)).toEqual(['pinned', 'budget']);
     });
 
-    it('evaluates the gate: everything fails except the (generously-thresholded) latency row', () => {
+    it('evaluates the gate: everything fails except the latency row and the roster-proportional heard row', () => {
         const g = evaluateGate(m);
         expect(g.pass).toBe(false);
         const rows = Object.fromEntries(g.rows.map((r) => [r.label, r.pass]));
         // delivered=1 is nowhere near >=50; answersToNobody=7 also fails it alone.
         expect(rows['Answered hands-free']).toBe(false);
-        // heard=5 is nowhere near >=51.
-        expect(rows['Heard by either detector']).toBe(false);
+        // heard PASSES here, and that is correct: the row is now a proportion of the roster
+        // rather than a flat >=51, and this synthetic fixture heard everything it had. The
+        // old assertion was pinning the constant, not the behaviour. A truncated real flight
+        // still fails it — computeOffsets builds a timeline item per ROSTER entry, so items
+        // stays the full roster however early the hour died.
+        expect(rows['Heard by either detector']).toBe(true);
         // surfacedMulti=1 and answersToNobody=7 are both nonzero (caught is
         // informational now — Ruling R34 — and no longer part of this row).
         expect(rows['Surfaced detections per question']).toBe(false);
@@ -542,7 +546,8 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // both fail here too — appended last, same as GATE itself.
         expect(failed).toEqual([
             'Answered hands-free',
-            'Heard by either detector',
+            // 'Heard by either detector' is absent: see above — the row is proportional now
+            // and this fixture heard everything it had.
             'Surfaced detections per question',
             'STT socket closes / lost utterances / fragment chips',
             'Technical questions answered via the coaching path',
@@ -620,5 +625,54 @@ describe('GATE', () => {
             'Answer prompt pinned to the dispatched question',
             'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)',
         ]);
+    });
+});
+
+
+/**
+ * The three counting rows carried absolute thresholds tuned to interview60's 52 items
+ * (delivered >= 50, heard >= 51, acceptable >= 47). A roster of any other size cannot
+ * reach them: a FLAWLESS scenario50 S1+S2 hour — 40 items, all heard, all answered, all
+ * graded acceptable — failed those three rows on arithmetic alone, which would have
+ * reported "gate failed" for a perfect run and buried any real failure beside it.
+ */
+describe('gate thresholds scale with the roster', () => {
+    /** A run with nothing wrong in it, at whatever roster size is asked for. */
+    const flawless = (items: number, gradeable: number) => ({
+        items: new Array(items).fill({}), delivered: items, answered: items, answersToNobody: 0, heard: items,
+        surfacedMulti: 0, extendsTotal: 0, caught: 0, sttCloses: 0, lostUtterances: 0, resolvedEmptyFinals: 0,
+        fragmentChips: 0, coachingAnswers: 0, codingForSpoken: 0, cueAnswers: 0, screenCaptures: 0, expiryLoops: 0,
+        judge: { n: gradeable, acceptable: gradeable, weak: 0, wrong: 0, errors: 0, long: { n: 0 }, followup: { n: 0 } },
+        longs: 0, longWhole: 0, ttftP90: 3000, detectP50: 4000,
+        pinned: { answers: items, legacy: 0, missing: 0, mismatched: 0 },
+        budget: { n: items, over: 0, cutShort: 0, p50: 90, max: 120 },
+    }) as any;
+
+    it('passes a flawless hour whatever the roster size', () => {
+        for (const [items, gradeable] of [[52, 52], [40, 20], [100, 50], [20, 10]]) {
+            const g = evaluateGate(flawless(items, gradeable));
+            expect(g.rows.filter((r) => !r.pass).map((r) => r.label), `roster of ${items}`).toEqual([]);
+        }
+    });
+
+    // interview60's own numbers must not move, or after7/8/9 stop being comparable.
+    it('keeps interview60 at exactly 50 delivered, 51 heard, 47 acceptable', () => {
+        const near = flawless(52, 52);
+        expect(evaluateGate({ ...near, delivered: 50 }).rows.find((r) => r.label === 'Answered hands-free')!.pass).toBe(true);
+        expect(evaluateGate({ ...near, delivered: 49 }).rows.find((r) => r.label === 'Answered hands-free')!.pass).toBe(false);
+        expect(evaluateGate({ ...near, heard: 51 }).rows.find((r) => r.label === 'Heard by either detector')!.pass).toBe(true);
+        expect(evaluateGate({ ...near, heard: 50 }).rows.find((r) => r.label === 'Heard by either detector')!.pass).toBe(false);
+        const q = (acceptable: number) => evaluateGate({ ...near, judge: { ...near.judge, acceptable, weak: 52 - acceptable } })
+            .rows.find((r) => r.label === 'Interview-acceptable answers (Opus 5 judge)')!.pass;
+        expect(q(47)).toBe(true);
+        expect(q(46)).toBe(false);
+    });
+
+    // Scaling must not become "anything passes": the same proportions still bite.
+    it('still fails a 40-item roster that misses too much', () => {
+        const g = evaluateGate({ ...flawless(40, 20), delivered: 30, heard: 30 });
+        const failed = g.rows.filter((r) => !r.pass).map((r) => r.label);
+        expect(failed).toContain('Answered hands-free');
+        expect(failed).toContain('Heard by either detector');
     });
 });
