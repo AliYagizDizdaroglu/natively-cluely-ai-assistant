@@ -33,6 +33,33 @@ export function sameAnchor(a: string, b: string): boolean {
     return overlap(a, b) >= 0.5 || overlap(b, a) >= 0.5;
 }
 
+/**
+ * How far back the interviewer transcript must be read to corroborate a Live claim.
+ *
+ * reconcileLiveQuestion scores Live's text against the lines in this window and REPLACES it
+ * with the latest line when nothing clears PARAPHRASE. A fixed 15s window is shorter than a
+ * long question: after9's six long questions ran 24.6-28.5s and Live reported each 3.3-5.3s
+ * after the clip ended, so the window held only the tail, Live's whole question scored below
+ * the floor, and L03 was answered as "that people do not start ignoring it."
+ *
+ * Sized from the claim's own spoken length. WORDS_PER_SEC is the p10 of the 79 clips measured
+ * in that hour (median 2.66, min 1.71), so the window over-covers median-rate speech by ~19%.
+ * LAG_MS covers the gap between the interviewer finishing and Live reporting it (3.3-5.3s
+ * measured) plus the STT's own finalisation. The floor is the 15s this used to be, so a claim
+ * under 16 words keeps exactly today's behaviour. The cap stops a runaway claim from reaching
+ * back into the previous question, where an unrelated line could win the anchor — the same
+ * failure sameAnchor's window guard exists for (after8 W08).
+ */
+const WORDS_PER_SEC = 2.24;
+const LAG_MS = 8_000;
+const MIN_WINDOW_MS = 15_000;
+const MAX_WINDOW_MS = 60_000;
+
+export function reconcileWindowMs(liveText: string): number {
+    const spoken = ((liveText.match(/[A-Za-z0-9']+/g) ?? []).length / WORDS_PER_SEC) * 1000;
+    return Math.min(MAX_WINDOW_MS, Math.max(MIN_WINDOW_MS, Math.round(spoken + LAG_MS)));
+}
+
 const MATCH = 0.5;
 const PARAPHRASE = 0.25;
 
@@ -45,6 +72,20 @@ export function reconcileLiveQuestion(liveText: string, recent: RecentSpeech[]):
         if (s > bestScore) { best = r; bestScore = s; }
     }
     if (bestScore >= MATCH) return { text: liveText, anchor: best.text, verdict: 'match', score: bestScore };
+    // A question longer than one transcript line can never match any single line. after9's six
+    // long questions ran 24.6-28.5s and scored 0.20-0.31 against their best line — under the
+    // floor — so L03 was answered as "that people do not start ignoring it.", the last thing
+    // the interviewer had said. Deepgram emits interims as cumulative prefixes, so the window's
+    // lines JOINED reconstruct the utterance: the same six score 0.95-1.00 that way (0.35-0.72
+    // under the old fixed 15s window, which is why reconcileWindowMs sizes it to the claim).
+    //
+    // Held to MATCH, not PARAPHRASE: a union of unrelated speech reaches the paraphrase floor on
+    // generic words alone. after8 07:36:26 had Live claim a question nobody asked, sharing only
+    // "multiple" and "cluster" with the real one for a joined 0.25 exactly — corroborating there
+    // would keep the invented question, the failure this reconciler exists to prevent. The anchor
+    // stays the best single line, so dedup still compares one utterance against one utterance.
+    const joinScore = overlap(liveText, spoken.map((r) => r.text).join(' '));
+    if (joinScore >= MATCH) return { text: liveText, anchor: best.text, verdict: 'match', score: joinScore };
     if (bestScore >= PARAPHRASE) return { text: liveText, anchor: best.text, verdict: 'paraphrase', score: bestScore };
     // Below the floor while the window holds speech: Live's text is not what was said.
     // Surface the most recent thing the interviewer actually said instead.

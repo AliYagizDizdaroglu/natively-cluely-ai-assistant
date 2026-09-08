@@ -243,7 +243,7 @@ import { ReleaseNotesManager } from "./update/ReleaseNotesManager"
 import { OllamaManager } from './services/OllamaManager'
 import { normalizeLiveMode } from './services/liveMode'
 import { decideDispatch } from './services/detectionDispatch'
-import { reconcileLiveQuestion } from './services/questionReconcile'
+import { reconcileLiveQuestion, reconcileWindowMs } from './services/questionReconcile'
 import { createLiveHold } from './services/liveHold'
 import { isFragment, looksFragmentary } from './services/questionShape'
 import { resolveSttProvider } from './services/sttProviderOverride'
@@ -1963,8 +1963,7 @@ export class AppState {
         console.log(`[Main] dispatch: extend source=${d.source} anchor=${anchorLog} verdict=${d.verdict} extends=${JSON.stringify(verdict.duplicateOfQuestion)} question=${JSON.stringify(d.question)}`);
         this.chipDeduper.extend(verdict.id, d.question);
         this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source });
-        void this.intelligenceManager
-          .runWhatShouldISay(d.question, 1.0, undefined, { intentOverride: d.intent, bypassCooldown: true, extendOf: verdict.duplicateOfQuestion })
+        void this.answerDetection(d, verdict.duplicateOfQuestion)
           .catch((err: any) => console.error('[Main] extend-answer failed:', err?.message ?? err));
         return;
       }
@@ -2000,11 +1999,16 @@ export class AppState {
    * the coding path with the image — after8 (2026-09-07) answered all three screenshot
    * cues from the transcript, one of them with the previous question's answer. A
    * failed capture answers from the transcript as before, and says so in the log.
+   *
+   * Both hands-free paths come through here: decideDispatch's 'answer' and the extend
+   * branch. The extend branch used to call runWhatShouldISay directly and so never
+   * captured — after9 (2026-09-08) lost cue C03 that way: its full text arrived as an
+   * extend and was answered blind, about drift and retraining instead of the ring buffer
+   * on screen. extendOf is the answered text this one adds to; absent on the plain path.
    */
-  private async answerDetection(d: DetectionInput): Promise<void> {
+  private async answerDetection(d: DetectionInput, extendOf?: string): Promise<void> {
     let imagePaths: string[] | undefined;
     let intent = d.intent;
-    // Only decideDispatch's 'answer' (Live auto) reaches here.
     if (mentionsScreen(d.question)) {
       try {
         imagePaths = [await this.takeScreenshot(false)];
@@ -2014,7 +2018,7 @@ export class AppState {
         console.warn(`[Main] screen reference: capture failed (${err?.message ?? err}); answering from the transcript`);
       }
     }
-    await this.intelligenceManager.runWhatShouldISay(d.question, 1.0, imagePaths, { intentOverride: intent, bypassCooldown: true });
+    await this.intelligenceManager.runWhatShouldISay(d.question, 1.0, imagePaths, { intentOverride: intent, bypassCooldown: true, ...(extendOf === undefined ? {} : { extendOf }) });
   }
 
   private startLiveRouter(): void {
@@ -2054,7 +2058,7 @@ export class AppState {
    * rather than re-held (see DetectionInput.resolving).
    */
   private reconcileAndDispatchLive(question: string, intent: 'verbal' | 'coding' | 'behavioral', resolving = false): void {
-    const r = reconcileLiveQuestion(question, this.intelligenceManager.getRecentInterviewerSpeech(15_000));
+    const r = reconcileLiveQuestion(question, this.intelligenceManager.getRecentInterviewerSpeech(reconcileWindowMs(question)));
     if (r.verdict === 'replaced') {
       console.log(`[Main] Live question replaced by transcript: live=${JSON.stringify(question.slice(0, 80))} said=${JSON.stringify(r.text.slice(0, 80))}`);
     }

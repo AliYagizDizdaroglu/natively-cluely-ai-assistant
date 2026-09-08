@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { overlap, sameAnchor, reconcileLiveQuestion, type RecentSpeech } from './questionReconcile';
+import { overlap, sameAnchor, reconcileLiveQuestion, reconcileWindowMs, type RecentSpeech } from './questionReconcile';
 
 const t0 = 1_000_000;
 const sp = (text: string, dt: number, final = true): RecentSpeech => ({ text, at: t0 + dt, final });
@@ -106,5 +106,70 @@ describe('reconcileLiveQuestion — phantom guard (2026-09-04 after5 hour, Groq 
         expect(r.verdict).toBe('replaced');
         expect(r.text).toBe('What is a DAG?');
         expect(r.anchor).toBe('What is a DAG?');
+    });
+});
+
+describe('reconcileWindowMs — how far back the transcript must be read to cover a claim', () => {
+    // after9 measured 79 spoken clips: 2.66 words/sec median, 2.24 at p10, 1.71 min. The six
+    // long questions ran 24.6-28.5s and Live reported them 3.3-5.3s after the clip ended.
+    // A fixed 15s window therefore covered only the tail of a long question, and L03 was
+    // answered as "that people do not start ignoring it." — the transcript line the
+    // reconciler fell back to once Live's whole question scored below the floor.
+    it('keeps the 15s floor for a short claim, so nothing changes for ordinary questions', () => {
+        expect(reconcileWindowMs('What is a DAG?')).toBe(15_000);
+        expect(reconcileWindowMs('How would you detect data drift in a model that is already in production?')).toBe(15_000);
+    });
+    it('covers L03: 69 words spoken in 25.9s, reported 5.3s after the clip ended', () => {
+        const L03 = 'Let\'s talk about monitoring. Say you have twenty models in production, owned by four different teams, '
+            + 'and today each team watches its own dashboards by hand. Design me a monitoring setup that catches data '
+            + 'drift, prediction drift, and plain infrastructure problems, tells you which team owns the alert, and '
+            + 'keeps the false alarm rate low enough that people do not start ignoring it.';
+        expect(reconcileWindowMs(L03)).toBeGreaterThan(25_900 + 5_300);
+    });
+    it('covers L04, the longest in the roster: 84 words in 28.5s, reported 4.5s later', () => {
+        const claim = new Array(84).fill('feature').join(' ');
+        expect(reconcileWindowMs(claim)).toBeGreaterThan(28_500 + 4_500);
+    });
+    it('caps a runaway claim so the window cannot swallow the previous question', () => {
+        expect(reconcileWindowMs(new Array(500).fill('word').join(' '))).toBeLessThanOrEqual(60_000);
+    });
+});
+
+describe('reconcileLiveQuestion — a question longer than any single transcript line', () => {
+    // after9 L03, verbatim: the Deepgram finals of the hour, offsets from the moment Live
+    // reported the question. The question took 25.9s to ask and Live reported it 5.3s later,
+    // so it is spread over seven lines and covers at most 0.19 of any one of them — below the
+    // floor, and the hour answered the last line instead: "that people do not start ignoring it."
+    const L03_WINDOW: RecentSpeech[] = [
+        sp("Let's talk about monitoring.", -27562),
+        sp('Say you have 20 models in production owned by four different teams,', -22383),
+        sp('and today each team watches its own dashboards by hand.', -19005),
+        sp('Design me a monitoring setup that catches data drift,', -13794),
+        sp('prediction drift, and plain infrastructure failures across all of them,', -10522),
+        sp('and explain who gets paged for what, and how you would keep the false alarms low enough', -6199),
+        sp('that people do not start ignoring it.', -4005),
+    ];
+    const L03_CLAIM = 'Say you have twenty models in production, owned by four different teams, and today each team '
+        + 'watches its own dashboards by hand. Design me a monitoring setup that catches data drift, prediction '
+        + 'drift, and plain infrastructure problems, tells you which team owns the alert, and keeps the false '
+        + 'alarm rate low enough that people do not start ignoring it.';
+
+    it('is corroborated by the window as a whole, not by any one line of it', () => {
+        const r = reconcileLiveQuestion(L03_CLAIM, L03_WINDOW);
+        expect(r.verdict).toBe('match');
+        expect(r.text).toBe(L03_CLAIM);
+    });
+
+    // after8 07:36:26, verbatim: Live claimed a question nobody asked. It shares exactly two
+    // content words with the real one ("multiple", "cluster"), which puts the JOINED window at
+    // 0.25 — the paraphrase floor. Corroborating on the join at that floor would keep the
+    // invented question, the failure this whole reconciler exists to prevent (2026-09-02 M04),
+    // so the join is held to MATCH instead. The genuine long questions clear it at 0.95-1.00.
+    it('does not let a union of unrelated speech corroborate an invented question', () => {
+        const r = reconcileLiveQuestion('How would you approach deploying multiple versions of the same model in one cluster?', [
+            sp('How do you manage GPU resources across multiple teams', -8090),
+            sp('sharing one cluster?', -6695),
+        ]);
+        expect(r.verdict).toBe('unverifiable');
     });
 });
