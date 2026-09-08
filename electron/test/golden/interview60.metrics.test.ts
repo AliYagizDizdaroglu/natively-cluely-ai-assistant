@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 // @ts-ignore — untyped ESM harness module
-import { computeRun, computeRunFromFiles, evaluateGate, GATE } from './interview60.metrics.mjs';
+import { computeRun, computeRunFromFiles, evaluateGate, GATE, spokenCodingRoutes } from './interview60.metrics.mjs';
 
 // @ts-ignore — import.meta is ESM-only; this file runs under vitest's ESM
 // transform regardless of electron/tsconfig.json's CommonJS module target
@@ -674,5 +674,28 @@ describe('gate thresholds scale with the roster', () => {
         const failed = g.rows.filter((r) => !r.pass).map((r) => r.label);
         expect(failed).toContain('Answered hands-free');
         expect(failed).toContain('Heard by either detector');
+    });
+});
+
+/**
+ * The 'Spoken questions routed CODING' row counted EVERY coding route on a spoken item as a
+ * misroute. That was right for interview60, where all coding lived on screenshot cues, but
+ * scenario50 asks 15 of its 50 mains as spoken coding/SQL — routing those CODING is correct
+ * and the row would have failed a perfect hour on them.
+ */
+describe('spokenCodingRoutes counts coding routes only on questions that are NOT coding questions', () => {
+    const item = (level: string, routeCoding = true) => ({ level, answered: true, routeCoding } as any);
+    it('excludes coding, codingHeavy and sql questions — routing those CODING is correct', () => {
+        expect(spokenCodingRoutes([item('coding'), item('codingHeavy'), item('sql')])).toBe(0);
+    });
+    it('still counts a verbal question routed CODING as the misroute it is', () => {
+        expect(spokenCodingRoutes([item('medium'), item('verbal'), item('design')])).toBe(3);
+    });
+    it('ignores unanswered items and non-coding routes, as before', () => {
+        expect(spokenCodingRoutes([{ level: 'medium', answered: false, routeCoding: true } as any, item('medium', false)])).toBe(0);
+    });
+    // interview60 has no spoken item with a coding level, so its count is unchanged.
+    it('leaves an interview60-shaped item set untouched', () => {
+        expect(spokenCodingRoutes([item('easy'), item('hard'), item('long'), item('followup')])).toBe(4);
     });
 });

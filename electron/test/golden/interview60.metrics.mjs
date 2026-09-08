@@ -316,7 +316,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const answerFailures = count(/\[WhatToAnswerLLM\] Stream failed/g);
     const delivered = Math.max(0, answered - answerFailures);
     const raceLosses = items.filter((i) => i.raceLoss).length;
-    const codingForSpoken = items.filter((i) => i.answered && i.routeCoding).length;
+    const codingForSpoken = spokenCodingRoutes(items);
     // both detectors independently surfacing a chip for the same question —
     // dispatches already folds in the dedupe (a suppressed/dropped source
     // doesn't add to the count), so >1 here is exactly "two chips on screen".
@@ -390,6 +390,20 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
  */
 const ROSTER = 52;
 const scaled = (n, of) => Math.floor((of * n) / ROSTER);
+
+/**
+ * Roster levels whose questions ARE coding questions, so a CODING route on them is correct.
+ * interview60 has none of these on a spoken item (its coding lives on screenshot cues);
+ * scenario50 asks 15 of its 50 mains as spoken coding or SQL.
+ */
+export const CODING_LEVELS = new Set(['coding', 'codingHeavy', 'sql']);
+
+/**
+ * Answered spoken questions routed CODING that are NOT coding questions — the misroutes.
+ * The earlier count took every coding route as a misroute, which would have failed a
+ * perfect scenario50 hour on its six S1+S2 coding/SQL questions.
+ */
+export const spokenCodingRoutes = (items) => items.filter((i) => i.answered && i.routeCoding && !CODING_LEVELS.has(i.level)).length;
 
 export const GATE = [
     { key: 'answered', label: 'Answered hands-free', before: '26/52', pass: (m) => m.delivered >= scaled(50, m.items.length) && m.answersToNobody === 0, show: (m) => `${m.delivered}/${m.answered} dispatched, ${m.answersToNobody} to nobody` },
