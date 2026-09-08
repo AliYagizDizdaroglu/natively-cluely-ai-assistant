@@ -148,6 +148,18 @@ describe('mergeVerdicts (graded outside the script — the no-key route)', () =>
         expect(summarizeVerdicts(merged)).toEqual({ model: 'claude-opus-5', n: 3, acceptable: 1, weak: 0, wrong: 1, errors: 1 });
     });
 
+    it('stamps the grader-prompt version, so two judge files are only compared when the instrument matches', () => {
+        // The wording of the grading prompt IS the instrument: after8's identical answers
+        // scored 50 under one wording and 46 under another (2026-09-08). Without a stamp
+        // there is no way to tell which files are comparable.
+        const merged = mergeVerdicts(pairAnswers(dbg, timeline), {
+            W01: { correctness: 2, on_topic: 2, delivery: 2, reason: 'ok' },
+        }, 'claude-opus-5', 'a1b2c3d4e5f6');
+        expect(merged.graderPrompt).toBe('a1b2c3d4e5f6');
+        // Absent when the caller does not supply one — a pre-freeze file, explicitly marked.
+        expect(mergeVerdicts(pairAnswers(dbg, timeline), {}).graderPrompt).toBeNull();
+    });
+
     it('keeps each item id and roster level, so the summary can report long questions and follow-ups beside the base roster', () => {
         // Without these two fields the merged file cannot be split by level, and every
         // long question and follow-up silently lands in the base count instead — which

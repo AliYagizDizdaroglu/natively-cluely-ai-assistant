@@ -36,6 +36,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 import { CODING } from './problems.coding.mjs';
 
 /**
@@ -175,7 +176,7 @@ const undelivered = (pair) => ({ ...baseOf(pair), correctness: 0, on_topic: 0, d
  * file the gate reads. A missing or out-of-range verdict is an error, so a
  * half-graded file cannot pass the gate.
  */
-export function mergeVerdicts(pairs, verdicts, model = JUDGE_MODEL) {
+export function mergeVerdicts(pairs, verdicts, model = JUDGE_MODEL, graderPrompt = null) {
     /** @type {Record<string, Record<string, unknown>>} */
     const items = {};
     for (const { key, pair } of keyPairs(pairs)) {
@@ -186,7 +187,18 @@ export function mergeVerdicts(pairs, verdicts, model = JUDGE_MODEL) {
         if (bad) { items[key] = { ...baseOf(pair), verdict: 'error', reason: `verdict ${bad}=${v[bad]}` }; continue; }
         items[key] = { ...baseOf(pair), correctness: v.correctness, on_topic: v.on_topic, delivery: v.delivery, verdict: verdictOf(v), reason: String(v.reason ?? '') };
     }
-    return { model, effort: null, items, usage: { input: 0, output: 0 } };
+    // graderPrompt: first 12 hex of the SHA-256 of interview60.grader-prompt.md, the wording
+    // the grading agent was given. Scores from two different wordings are not comparable
+    // (after8's identical answers: 50 under one, 46 under another), so a file without a
+    // matching stamp must not be read as a trend against one that has it.
+    return { model, effort: null, graderPrompt, items, usage: { input: 0, output: 0 } };
+}
+
+/** The frozen grader prompt's path, and the first 12 hex of its SHA-256 (null if missing). */
+export const GRADER_PROMPT_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), 'interview60.grader-prompt.md');
+export function graderPromptVersion() {
+    if (!fs.existsSync(GRADER_PROMPT_PATH)) return null;
+    return createHash('sha256').update(fs.readFileSync(GRADER_PROMPT_PATH)).digest('hex').slice(0, 12);
 }
 
 const RUBRIC = `You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.
@@ -276,11 +288,11 @@ async function main() {
         fs.writeFileSync(pairsOut, JSON.stringify({ model: JUDGE_MODEL, rubric: RUBRIC, items: toGrade }, null, 1));
         console.log(`EXPORT  ${path.basename(dir)}  ${tag ? 'arm ' + tag.slice(1) + '   ' : ''}${toGrade.length} delivered answers to grade; ${pairs.length - toGrade.length} undelivered will be scored wrong at merge`);
         console.log(`written ${pairsOut}`);
-        console.log(`next: grade every item with the rubric in that file into ${path.join(dir, `interview60.judge.verdicts${tag}.json`)} as {<key>: {correctness, on_topic, delivery, reason}} with scores 0-2, then rerun with --verdicts <that file>`);
+        console.log(`next: hand ${GRADER_PROMPT_PATH} to the grading agent verbatim, with <PAIRS_FILE>=${pairsOut} and <VERDICTS_FILE>=${path.join(dir, `interview60.judge.verdicts${tag}.json`)}, then rerun with --verdicts <that file>. Instrument version ${graderPromptVersion()} — do not reword the prompt per run.`);
         return;
     }
     if (verdictsPath) {
-        const judged = mergeVerdicts(pairs, JSON.parse(fs.readFileSync(verdictsPath, 'utf8')), opt('model', JUDGE_MODEL));
+        const judged = mergeVerdicts(pairs, JSON.parse(fs.readFileSync(verdictsPath, 'utf8')), opt('model', JUDGE_MODEL), graderPromptVersion());
         if (tag) judged.arm = tag.slice(1);
         fs.writeFileSync(out, JSON.stringify(judged, null, 1));
         console.log(`JUDGE  ${path.basename(dir)}  ${pairs.length} dispatched answers merged from ${verdictsPath}  model=${judged.model}`);
