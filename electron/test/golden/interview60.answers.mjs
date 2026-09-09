@@ -45,8 +45,20 @@ const MODEL = mi >= 0 && process.argv[mi + 1] ? process.argv[mi + 1] : DEFAULT_M
 const IS_GROQ = MODEL.includes('/');
 // The arm's file name cannot carry the "/" — flight.mjs answersFileFor and the judge's
 // tag apply the same substitution.
-const FILE_TAG = MODEL.replace(/\//g, '_');
-const OUT = path.join(HERE, MODEL === DEFAULT_MODEL ? 'interview60.answers.json' : `interview60.answers.${FILE_TAG}.json`);
+// --prompt-suffix <file> appends the file's text to the system prompt: ONE prompt variable
+// changed, everything else (model, questions, filters, temperature) identical, so an answer-
+// shape change can be measured against the same questions with the same grader. --tag <name>
+// names such an arm <model>_<name> in the file, the store and the judge, so it never
+// overwrites the plain arm.
+const pi = process.argv.indexOf('--prompt-suffix');
+const PROMPT_SUFFIX = pi >= 0 && process.argv[pi + 1] ? fs.readFileSync(process.argv[pi + 1], 'utf8').trim() : '';
+const ti = process.argv.indexOf('--tag');
+const TAG = ti >= 0 && process.argv[ti + 1] ? process.argv[ti + 1] : '';
+if (PROMPT_SUFFIX && !TAG) { console.error('--prompt-suffix needs --tag <name>, or the variant would overwrite the plain arm'); process.exit(2); }
+const ARM = TAG ? `${MODEL}_${TAG}` : MODEL;
+const SYSTEM_PROMPT = PROMPT_SUFFIX ? `${P.VERBAL_WHAT_TO_ANSWER_PROMPT}\n\n${PROMPT_SUFFIX}` : P.VERBAL_WHAT_TO_ANSWER_PROMPT;
+const FILE_TAG = ARM.replace(/\//g, '_');
+const OUT = path.join(HERE, ARM === DEFAULT_MODEL ? 'interview60.answers.json' : `interview60.answers.${FILE_TAG}.json`);
 // --limit <n>: first n questions only — a probe of a new model before the full arm.
 const li = process.argv.indexOf('--limit');
 const LIMIT = li >= 0 && process.argv[li + 1] ? Number(process.argv[li + 1]) : Infinity;
@@ -56,7 +68,7 @@ const words = (s) => (s.trim().match(/\S+/g) || []).length;
 async function answerStreamedGemini(question) {
     const body = {
         contents: [{ role: 'user', parts: [{ text: `The interviewer just asked: "${question}"\n\nWhat should I say?` }] }],
-        systemInstruction: { parts: [{ text: P.VERBAL_WHAT_TO_ANSWER_PROMPT }] },
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
         generationConfig: { temperature: 0.4, maxOutputTokens: 65536 },
     };
     const url = `https://generativelanguage.googleapis.com/v1alpha/models/${MODEL}:streamGenerateContent?alt=sse`;
@@ -116,7 +128,7 @@ async function answerStreamedGroq(question) {
     const body = {
         model: MODEL, stream: true, temperature: 0.4,
         messages: [
-            { role: 'system', content: P.VERBAL_WHAT_TO_ANSWER_PROMPT },
+            { role: 'system', content: SYSTEM_PROMPT },
             { role: 'user', content: `The interviewer just asked: "${question}"\n\nWhat should I say?` },
         ],
     };
@@ -184,7 +196,7 @@ if (foreign.length) {
 // standalone they have no parent to follow up on, so they would measure nothing and
 // cost every arm 18 requests (2026-09-08 roster).
 const todo = INTERVIEW.filter((i) => (i.kind ?? 'spoken') === 'spoken' && i.level !== 'followup').slice(0, LIMIT);
-console.log(`ANSWER-ONLY PASS  model=${MODEL}  ${todo.length} spoken questions\n`);
+console.log(`ANSWER-ONLY PASS  model=${MODEL}${TAG ? `  variant=${TAG} (prompt suffix ${PROMPT_SUFFIX.length} chars)` : ''}  ${todo.length} spoken questions\n`);
 
 for (const item of todo) {
     if (store[item.id]?.spoken) { continue; }
@@ -197,12 +209,12 @@ for (const item of todo) {
         } catch (e) { lastErr = e.message; await sleep(4000 * (a + 1)); }
     }
     if (!r || r.transient) {
-        store[item.id] = { ...item, model: MODEL, transientError: lastErr };
+        store[item.id] = { ...item, model: ARM, transientError: lastErr };
         console.log(`  ${item.id.padEnd(4)} TRANSIENT ${lastErr}`);
     } else {
         const ctx = { spoken: r.spoken, offers: r.offers, sentinel: P.SUGGESTIONS_SENTINEL, budget: P.SPOKEN_WORD_BUDGET, wordCount: r.words };
         const checks = Object.fromEntries(Object.entries(VERBAL_CHECKS).map(([n, f]) => [n, f(ctx).ok]));
-        store[item.id] = { ...item, model: MODEL, ...r, checks };
+        store[item.id] = { ...item, model: ARM, ...r, checks };
         const bad = Object.entries(checks).filter(([, ok]) => !ok).map(([n]) => n);
         console.log(`  ${item.id.padEnd(4)} ${String(r.words).padStart(3)}w  ttft ${String(r.ttft).padStart(5)}ms  total ${String(r.total).padStart(5)}ms  ${bad.length ? 'FAIL ' + bad.join(',') : 'ok'}`);
     }
