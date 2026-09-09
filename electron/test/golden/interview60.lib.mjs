@@ -52,6 +52,20 @@ export async function waitForLogLines(file, fromOffset, patterns, { timeoutMs = 
     }
 }
 
+/**
+ * The player process prints these two lines itself, right before and right after
+ * SoundPlayer.PlaySync(): "PLAYSTART <epoch ms>" and "PLAYEND <epoch ms>". They are
+ * the timeline's clock. Unanchored on purpose — PowerShell may prefix a BOM.
+ */
+export function playStartFromStdout(text) {
+    const m = /PLAYSTART (\d+)/.exec(text);
+    return m ? Number(m[1]) : null;
+}
+export function playEndFromStdout(text) {
+    const m = /PLAYEND (\d+)/.exec(text);
+    return m ? Number(m[1]) : null;
+}
+
 /** Copy the named files into destDir (created), skipping ones that do not exist. Returns the copied names. */
 export function snapshotRun(destDir, files) {
     fs.mkdirSync(destDir, { recursive: true });

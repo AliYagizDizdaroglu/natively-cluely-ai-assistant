@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 // @ts-ignore — untyped ESM harness module; vitest resolves it, tsc has no declaration for it
-import { waitForLogLines, logSince, overlap } from './interview60.lib.mjs';
+import { waitForLogLines, logSince, overlap, playStartFromStdout, playEndFromStdout } from './interview60.lib.mjs';
 
 const tmp = () => path.join(os.tmpdir(), `i60-lib-${Date.now()}-${Math.random().toString(36).slice(2)}.log`);
 
@@ -46,5 +46,18 @@ describe('logSince / overlap', () => {
     it('overlap is the fraction of the first text’s content words found in the second', () => {
         expect(overlap('Why do Docker layers matter for build times?', 'why do docker layer\'s matter for build')).toBeCloseTo(3 / 5, 5);
         expect(overlap('', 'anything')).toBe(0);
+    });
+});
+
+describe('player stdout stamps (interview60.run.mjs playWav)', () => {
+    it('reads the PLAYSTART / PLAYEND epoch-ms lines wherever they sit in the output', () => {
+        const out = '\ufeffPLAYSTART 1788961933084\r\nPLAYEND 1788966000123\r\n';
+        expect(playStartFromStdout(out)).toBe(1788961933084);
+        expect(playEndFromStdout(out)).toBe(1788966000123);
+    });
+    it('is null until the line has arrived (stdout comes in pieces)', () => {
+        expect(playStartFromStdout('')).toBeNull();
+        expect(playStartFromStdout('PLAYST')).toBeNull();
+        expect(playEndFromStdout('PLAYSTART 1788961933084\r\n')).toBeNull();
     });
 });

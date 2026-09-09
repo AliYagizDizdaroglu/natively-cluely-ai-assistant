@@ -27,7 +27,7 @@ import { execFileSync } from 'child_process';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { INTERVIEW, TTS_LOCAL_DIR, WAV_NAME, rosterLabel } from './roster.mjs';
-import { logSize as libLogSize, logSince as libLogSince, waitForLogLines, snapshotRun, sleep as libSleep } from './interview60.lib.mjs';
+import { logSize as libLogSize, logSince as libLogSince, waitForLogLines, snapshotRun, sleep as libSleep, playStartFromStdout, playEndFromStdout } from './interview60.lib.mjs';
 import { computeRun, computeRunFromFiles, evaluateGate } from './interview60.metrics.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -66,11 +66,35 @@ const now = () => new Date().toISOString();
  * capture hot. Verified: discrete clips -> 0 detections; same clips inside one
  * continuous file -> 3/3 detected.
  */
-function playWav(wav) {
+/**
+ * Plays the WAV as ONE continuous file (see the note above) and resolves when
+ * playback ends. `onStart(t0)` fires with the player's own clock at PlaySync():
+ * that is the timeline's zero. Measured 2026-09-09: stamping Date.now() before
+ * the spawn put every after9/s50a timeline ~1.15 s early (PowerShell start-up
+ * 0.67–0.89 s + SoundPlayer onset ~0.3 s). The residual is now the waveOut
+ * onset after Load(), tens of milliseconds.
+ */
+function playWav(wav, onStart) {
     if (!fs.existsSync(wav)) throw new Error(`missing wav ${wav}`);
-    execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
-        `(New-Object Media.SoundPlayer ${JSON.stringify(wav)}).PlaySync()`],
-        { stdio: 'pipe', timeout: 120 * 60 * 1000 }); // the roster runs ~90 min since the long questions
+    const script = `$p = New-Object Media.SoundPlayer ${JSON.stringify(wav)}; $p.Load(); Write-Output ('PLAYSTART ' + [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()); $p.PlaySync(); Write-Output ('PLAYEND ' + [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds())`;
+    return new Promise((resolve, reject) => {
+        const child = spawn('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', script], { stdio: ['ignore', 'pipe', 'pipe'] });
+        let out = '', err = '', started = false;
+        const timer = setTimeout(() => { child.kill(); reject(new Error('playback exceeded 120 min')); }, 120 * 60 * 1000); // the roster runs ~90 min since the long questions
+        child.stdout.on('data', (b) => {
+            out += b.toString();
+            const t0 = playStartFromStdout(out);
+            if (t0 !== null && !started) { started = true; onStart(t0); }
+        });
+        child.stderr.on('data', (b) => { err += b.toString(); });
+        child.on('error', (e) => { clearTimeout(timer); reject(e); });
+        child.on('close', (code) => {
+            clearTimeout(timer);
+            if (!started) return reject(new Error(`player printed no PLAYSTART line (exit ${code}): ${(err || out).slice(0, 200)}`));
+            if (code !== 0) return reject(new Error(`player exited ${code}: ${err.slice(0, 200)}`));
+            resolve(playEndFromStdout(out));
+        });
+    });
 }
 
 /** Byte offset of each item inside the roster WAV, so log events can be attributed. */
@@ -284,7 +308,7 @@ async function preflight() {
     const before = logSize(DEBUG_LOG);
     console.log('\n  playing a 34s continuous probe to prove the audio chain...');
     let playErr = null;
-    try { playWav(probe); } catch (e) { playErr = e.message; }
+    try { await playWav(probe, () => {}); } catch (e) { playErr = e.message; }
     ok('probe played through the output device', !playErr, playErr ?? '');
     let heard = null, mode = null;
     for (let t = 0; t < 20000 && !heard; t += 1000) {
@@ -320,21 +344,26 @@ async function appPass() {
     if (wavProblem) throw new Error(wavProblem);
     const startDebug = logSize(DEBUG_LOG);
     const startDiag = logSize(DIAG_LOG);
-    const t0 = Date.now();
-    const items = computeOffsets().map((o) => ({ ...o, playedAt: t0 + Math.round(o.startSec * 1000) }));
-    const timeline = { startedAt: now(), startedMs: t0, startDebug, startDiag, items };
-    fs.writeFileSync(TIMELINE, JSON.stringify(timeline, null, 1));
-    // Screenshot cues: a detached scheduler shows each cue's problem page on the
-    // primary display while the cue plays (interview60.cues.mjs).
-    const cues = spawn(process.execPath, [path.join(HERE, 'interview60.cues.mjs'), 'schedule', TIMELINE], { detached: true, stdio: 'ignore' });
-    cues.on('error', (e) => console.warn(`  cue scheduler failed to spawn: ${e.message} — the screenshot cues will have nothing on screen`));
-    cues.unref();
-
     console.log(`APP PASS  ${now()}   ${rosterLabel()} as ONE continuous file`);
     console.log('  (single PlaySync — do not interrupt; the machine must stay audible)\n');
-    playWav(path.join(HERE, WAV_NAME));
-
+    let timeline = null;
+    const endedMs = await playWav(path.join(HERE, WAV_NAME), (t0) => {
+        // t0 is the player's clock at PlaySync(). The timeline is written here, not
+        // before the spawn, so every item sits on the real audio; the cue scheduler
+        // starts from the same stamp.
+        const items = computeOffsets().map((o) => ({ ...o, playedAt: t0 + Math.round(o.startSec * 1000) }));
+        timeline = { startedAt: new Date(t0).toISOString(), startedMs: t0, clock: 'playsync', startDebug, startDiag, items };
+        fs.writeFileSync(TIMELINE, JSON.stringify(timeline, null, 1));
+        // Screenshot cues: a detached scheduler shows each cue's problem page on the
+        // primary display while the cue plays (interview60.cues.mjs).
+        const cues = spawn(process.execPath, [path.join(HERE, 'interview60.cues.mjs'), 'schedule', TIMELINE], { detached: true, stdio: 'ignore' });
+        cues.on('error', (e) => console.warn(`  cue scheduler failed to spawn: ${e.message} — the screenshot cues will have nothing on screen`));
+        cues.unref();
+        console.log(`  playback started ${timeline.startedAt} (player clock)`);
+    });
+    if (!timeline) throw new Error('playback ended without a start stamp');
     timeline.endedAt = now();
+    timeline.endedMs = endedMs;
     timeline.endDebug = logSize(DEBUG_LOG);
     timeline.endDiag = logSize(DIAG_LOG);
     fs.writeFileSync(TIMELINE, JSON.stringify(timeline, null, 1));

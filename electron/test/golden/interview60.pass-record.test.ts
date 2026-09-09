@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { collectPass, renderPassRecord, renderPassIndex, passRow } from './interview60.pass-record.mjs';
@@ -110,7 +110,8 @@ describe('renderPassIndex — the trend line across passes', () => {
 });
 
 describe.skipIf(!fs.existsSync(path.join(S50A, 'interview60.judge.json')))('collectPass on the real s50a run (skipped where the run folder is absent)', () => {
-    const p = collectPass(S50A);
+    let p: any;
+    beforeAll(() => { p = collectPass(S50A); });
 
     it('reads the run as flown', () => {
         expect(p.meta.rosterLabel).toContain('scenario50');
