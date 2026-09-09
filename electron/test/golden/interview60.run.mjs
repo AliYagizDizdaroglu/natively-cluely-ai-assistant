@@ -87,6 +87,30 @@ function computeOffsets() {
     });
 }
 
+/**
+ * Does the roster WAV hold the CURRENT selection? Its length must equal every clip plus
+ * its gap, exactly as both builders concatenate them (build-audio-local.mjs, build-audio.mjs).
+ * WAV_NAME does not vary with NATIVELY_SCENARIOS, so a full-roster build and a subset build
+ * write the same file and only the length tells them apart — the wrong one would play for
+ * hours against a timeline that ended long before, caught only by playWav's 120-minute cap.
+ * Returns null when it matches, otherwise the reason.
+ */
+function wavMismatch() {
+    const wav = path.join(HERE, WAV_NAME);
+    if (!fs.existsSync(wav)) return `${WAV_NAME} missing — build the audio first`;
+    const BYTES_PER_SEC = 24000 * 2;
+    const head = Buffer.alloc(4096);
+    const fd = fs.openSync(wav, 'r');
+    const n = fs.readSync(fd, head, 0, head.length, 0);
+    fs.closeSync(fd);
+    const i = head.subarray(0, n).indexOf(Buffer.from('data', 'ascii'), 12);
+    if (i < 0) return `${WAV_NAME} has no data chunk in its header`;
+    const actual = head.readUInt32LE(i + 4) / BYTES_PER_SEC;
+    const expected = computeOffsets().reduce((s, o, k) => s + o.clipSecs + INTERVIEW[k].gapMs / 1000, 0);
+    if (Math.abs(actual - expected) <= 1) return null;
+    return `${WAV_NAME} holds ${(actual / 60).toFixed(1)} min but ${rosterLabel()} needs ${(expected / 60).toFixed(1)} min — rebuild the audio with the same NATIVELY_ROSTER / NATIVELY_SCENARIOS`;
+}
+
 async function modelAlive(model) {
     try {
         const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
@@ -249,7 +273,8 @@ async function preflight() {
 
     ok('Electron app running', electronRunning());
 
-    ok(`${WAV_NAME} built`, fs.existsSync(path.join(HERE, WAV_NAME)));
+    const wavProblem = wavMismatch();
+    ok(`${WAV_NAME} matches ${rosterLabel()}`, !wavProblem, wavProblem ?? '');
 
     // The real check: play a CONTINUOUS probe aloud and require the app's OWN
     // log to show it heard a question. A single clip is not enough — it proves
@@ -291,6 +316,8 @@ async function preflight() {
 
 // ── APP PASS ───────────────────────────────────────────────────────────────
 async function appPass() {
+    const wavProblem = wavMismatch();
+    if (wavProblem) throw new Error(wavProblem);
     const startDebug = logSize(DEBUG_LOG);
     const startDiag = logSize(DIAG_LOG);
     const t0 = Date.now();
@@ -445,5 +472,6 @@ else if (cmd === 'app:start') await appStart();
 else if (cmd === 'app:stop') appStop();
 else if (cmd === 'probe') { const p = await probe(); console.log(p.ready ? 'PROBE READY' : `PROBE NOT READY — ${p.reason}`); process.exit(p.ready ? 0 : 1); }
 else if (cmd === 'gate') gate(path.resolve(process.argv[3]));
+else if (cmd === 'wav:check') { const p = wavMismatch(); console.log(p ?? `${WAV_NAME} matches ${rosterLabel()}`); process.exit(p ? 1 : 0); }
 else if (cmd === 'auto') await auto(process.argv[3]);   // label defaults to "after"
-else { console.log('usage: interview60.run.mjs preflight|app|report|app:start|app:stop|probe|gate <dir>|auto [label]'); process.exit(2); }
+else { console.log('usage: interview60.run.mjs preflight|app|report|app:start|app:stop|probe|gate <dir>|wav:check|auto [label]'); process.exit(2); }

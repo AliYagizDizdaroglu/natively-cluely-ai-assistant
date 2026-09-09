@@ -639,7 +639,10 @@ describe('GATE', () => {
 describe('gate thresholds scale with the roster', () => {
     /** A run with nothing wrong in it, at whatever roster size is asked for. */
     const flawless = (items: number, gradeable: number) => ({
-        items: new Array(items).fill({}), delivered: items, answered: items, answersToNobody: 0, heard: items,
+        // The judge grades the base mains only; the rest of the roster are follow-ups
+        // (scenario50 asks one after every main), counted beside them — see summarizeJudge.
+        items: [...new Array(gradeable).fill({ level: 'medium' }), ...new Array(items - gradeable).fill({ level: 'followup' })],
+        delivered: items, answered: items, answersToNobody: 0, heard: items,
         surfacedMulti: 0, extendsTotal: 0, caught: 0, sttCloses: 0, lostUtterances: 0, resolvedEmptyFinals: 0,
         fragmentChips: 0, coachingAnswers: 0, codingForSpoken: 0, cueAnswers: 0, screenCaptures: 0, expiryLoops: 0,
         judge: { n: gradeable, acceptable: gradeable, weak: 0, wrong: 0, errors: 0, long: { n: 0 }, followup: { n: 0 } },
@@ -675,6 +678,24 @@ describe('gate thresholds scale with the roster', () => {
         expect(failed).toContain('Answered hands-free');
         expect(failed).toContain('Heard by either detector');
     });
+
+    // The quality bar is a share of the ROSTER's gradeable mains, never of how many the
+    // judge happened to grade: `judge.n` counts graded pairs, which rises with doubles
+    // (after7 graded 54 pairs over 52 questions) and falls with a half-dead hour.
+    const quality = (m: any) => evaluateGate(m).rows.find((r) => r.label === 'Interview-acceptable answers (Opus 5 judge)')!.pass;
+    it('holds after7 to 47 of its 52 mains even though the judge graded 54 pairs', () => {
+        expect(quality({ ...flawless(52, 52), judge: { n: 54, acceptable: 47, weak: 7, wrong: 0, errors: 0, long: { n: 0 }, followup: { n: 0 } } })).toBe(true);
+    });
+    it('fails a half-dead scenario50 hour whose few graded answers were all fine', () => {
+        // 20 mains, only 12 reached the judge, 10 acceptable: 10 of 12 reads as 83 %,
+        // but it is 10 of the 20 the roster asked.
+        expect(quality({ ...flawless(40, 20), judge: { n: 12, acceptable: 10, weak: 2, wrong: 0, errors: 0, long: { n: 0 }, followup: { n: 0 } } })).toBe(false);
+    });
+    it("asks 18 acceptable of scenario50 S1+S2's 20 mains (47/52 of them)", () => {
+        const at = (acceptable: number) => quality({ ...flawless(40, 20), judge: { n: 20, acceptable, weak: 20 - acceptable, wrong: 0, errors: 0, long: { n: 0 }, followup: { n: 0 } } });
+        expect(at(18)).toBe(true);
+        expect(at(17)).toBe(false);
+    });
 });
 
 /**
@@ -697,5 +718,23 @@ describe('spokenCodingRoutes counts coding routes only on questions that are NOT
     // interview60 has no spoken item with a coding level, so its count is unchanged.
     it('leaves an interview60-shaped item set untouched', () => {
         expect(spokenCodingRoutes([item('easy'), item('hard'), item('long'), item('followup')])).toBe(4);
+    });
+    // A follow-up carries level 'followup' whatever it follows: S1Q04F follows the coding
+    // question S1Q04, and a CODING route on it is no misroute.
+    it('judges a follow-up by its parent question', () => {
+        const parent = { id: 'S1Q04', level: 'coding', answered: true, routeCoding: true } as any;
+        const child = { id: 'S1Q04F', level: 'followup', chain: 'S1Q04', answered: true, routeCoding: true } as any;
+        expect(spokenCodingRoutes([parent, child])).toBe(0);
+        const verbalParent = { id: 'S1Q01', level: 'verbal', answered: true, routeCoding: false } as any;
+        const verbalChild = { id: 'S1Q01F', level: 'followup', chain: 'S1Q01', answered: true, routeCoding: true } as any;
+        expect(spokenCodingRoutes([verbalParent, verbalChild])).toBe(1);
+    });
+    // The parent may be a screenshot cue (interview60's C01F1 follows the C01 cue), which
+    // is not among the spoken items — the lookup runs over the whole timeline.
+    it('resolves the parent across the whole timeline, cues included', () => {
+        const cue = { id: 'C01', level: 'coding', kind: 'screenshot' } as any;
+        const child = { id: 'C01F1', level: 'followup', chain: 'C01', answered: true, routeCoding: true } as any;
+        expect(spokenCodingRoutes([child], [cue, child])).toBe(0);
+        expect(spokenCodingRoutes([child])).toBe(1); // parent unknown: the follow-up's own level stands
     });
 });

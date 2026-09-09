@@ -316,7 +316,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const answerFailures = count(/\[WhatToAnswerLLM\] Stream failed/g);
     const delivered = Math.max(0, answered - answerFailures);
     const raceLosses = items.filter((i) => i.raceLoss).length;
-    const codingForSpoken = spokenCodingRoutes(items);
+    const codingForSpoken = spokenCodingRoutes(items, timeline.items);
     // both detectors independently surfacing a chip for the same question —
     // dispatches already folds in the dedupe (a suppressed/dropped source
     // doesn't add to the count), so >1 here is exactly "two chips on screen".
@@ -383,13 +383,22 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
  * 40-item scenario50 hour failed all three — which would report "gate failed" for a
  * perfect run and bury a real failure beside it.
  *
- * They are now the same PROPORTIONS of whatever roster ran, calibrated so interview60 is
- * unchanged to the unit: 52 items still needs exactly 50, 51 and 47, so after7/8/9 stay
- * comparable. `floor` rather than `ceil`, so the allowance ("at most one unheard") scales
- * as an allowance rather than rounding up into a demand for perfection.
+ * They are now the same PROPORTIONS of whatever roster ran, calibrated on interview60's
+ * 52: a 52-item run still needs exactly 50, 51 and 47 (after7/after8 unchanged), and the
+ * 76-spoken after9 timeline is held to the same share — 73 and 74, which it meets at 76/76.
+ * `floor` rather than `ceil`, so the allowance ("at most one unheard") scales as an
+ * allowance rather than rounding up into a demand for perfection.
+ *
+ * Each row scales by a ROSTER count, never by what the run produced: the quality bar
+ * first divided by `judge.n`, which counts graded PAIRS — up with doubles (after7 graded
+ * 54 over 52 questions, re-scoring its 47 acceptable from PASS to FAIL) and down with a
+ * half-dead hour (10 acceptable of 12 graded would have passed a roster of 20).
  */
 const ROSTER = 52;
 const scaled = (n, of) => Math.floor((of * n) / ROSTER);
+/** The spoken items the judge grades inside its base row — the long design questions and
+ *  the follow-ups are counted beside it (summarizeJudge), so they are not in the bar. */
+export const gradeable = (items) => items.filter((i) => i.level !== 'long' && i.level !== 'followup').length;
 
 /**
  * Roster levels whose questions ARE coding questions, so a CODING route on them is correct.
@@ -401,9 +410,17 @@ export const CODING_LEVELS = new Set(['coding', 'codingHeavy', 'sql']);
 /**
  * Answered spoken questions routed CODING that are NOT coding questions — the misroutes.
  * The earlier count took every coding route as a misroute, which would have failed a
- * perfect scenario50 hour on its six S1+S2 coding/SQL questions.
+ * perfect scenario50 hour on its six S1+S2 coding/SQL questions. A follow-up carries
+ * level 'followup' whatever it follows, so its parent's level decides (S1Q04F follows the
+ * coding question S1Q04); the parent may be a screenshot cue, hence the lookup over `all`
+ * — the whole timeline — rather than the spoken items alone. An unknown parent leaves the
+ * follow-up's own level standing.
  */
-export const spokenCodingRoutes = (items) => items.filter((i) => i.answered && i.routeCoding && !CODING_LEVELS.has(i.level)).length;
+export const spokenCodingRoutes = (items, all = items) => {
+    const levelOf = new Map(all.map((i) => [i.id, i.level]));
+    const effective = (i) => (i.level === 'followup' && levelOf.has(i.chain) ? levelOf.get(i.chain) : i.level);
+    return items.filter((i) => i.answered && i.routeCoding && !CODING_LEVELS.has(effective(i))).length;
+};
 
 export const GATE = [
     { key: 'answered', label: 'Answered hands-free', before: '26/52', pass: (m) => m.delivered >= scaled(50, m.items.length) && m.answersToNobody === 0, show: (m) => `${m.delivered}/${m.answered} dispatched, ${m.answersToNobody} to nobody` },
@@ -413,7 +430,7 @@ export const GATE = [
     { key: 'coaching', label: 'Technical questions answered via the coaching path', before: '25', pass: (m) => m.coachingAnswers === 0, show: (m) => String(m.coachingAnswers) },
     { key: 'coding', label: 'Spoken questions routed CODING', before: '4 routes (2 of them screenshot cues)', pass: (m) => m.codingForSpoken === 0, show: (m) => `${m.codingForSpoken}, ${m.cueAnswers} cue answers, ${m.screenCaptures} captures` },
     { key: 'expiry', label: 'Live expiry loops', before: '0', pass: (m) => m.expiryLoops === 0, show: (m) => String(m.expiryLoops) },
-    { key: 'quality', label: 'Interview-acceptable answers (Opus 5 judge)', before: 'not graded', pass: (m) => !!m.judge && m.judge.wrong === 0 && m.judge.acceptable >= scaled(47, m.judge.n), show: (m) => m.judge ? `${m.judge.acceptable} acceptable, ${m.judge.weak} weak, ${m.judge.wrong} wrong of ${m.judge.n}${m.judge.errors ? `, ${m.judge.errors} errors` : ''}${m.judge.long?.n ? `; long ${m.judge.long.acceptable} of ${m.judge.long.n}` : ''}${m.judge.followup?.n ? `, follow-ups ${m.judge.followup.acceptable} of ${m.judge.followup.n}` : ''}` : 'not run' },
+    { key: 'quality', label: 'Interview-acceptable answers (Opus 5 judge)', before: 'not graded', pass: (m) => !!m.judge && m.judge.wrong === 0 && m.judge.acceptable >= scaled(47, gradeable(m.items)), show: (m) => m.judge ? `${m.judge.acceptable} acceptable, ${m.judge.weak} weak, ${m.judge.wrong} wrong of ${m.judge.n}${m.judge.errors ? `, ${m.judge.errors} errors` : ''}${m.judge.long?.n ? `; long ${m.judge.long.acceptable} of ${m.judge.long.n}` : ''}${m.judge.followup?.n ? `, follow-ups ${m.judge.followup.acceptable} of ${m.judge.followup.n}` : ''}` : 'not run' },
     // 2026-09-08 roster: a long design question counts as answered whole when the
     // dispatched text (answer or extend) covers ≥ 80% of its scripted content words.
     { key: 'long', label: 'Long questions answered whole', before: 'not in the roster', pass: (m) => m.longWhole === m.longs, show: (m) => m.longs ? `${m.longWhole} of ${m.longs} (dispatched text covers ≥ 80% of the question)` : 'none in the roster' },
