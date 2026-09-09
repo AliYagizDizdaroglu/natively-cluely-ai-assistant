@@ -35,7 +35,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { spawn } from 'node:child_process';
+import { spawn, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { rosterLabel, ROSTER_NAME } from './roster.mjs';
 
@@ -119,11 +119,17 @@ function moveAside(file, stamp) {
     log(`ASIDE ${path.basename(file)} → ${path.basename(aside)}`);
 }
 
+/** The commit that flew — recorded in done.json so the pass record names the code it measured. */
+function gitHead() {
+    try { return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: PROJ, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch { return null; }
+}
+
 async function main() {
     const args = process.argv.slice(2);
     const dry = args.includes('--dry-run');
     const label = args.find((a) => !a.startsWith('--')) ?? 'after';
     const startedAt = new Date().toISOString();
+    const commit = gitHead();
     const stamp = startedAt.replace(/[:.]/g, '-').slice(0, 19);
     log(`FLIGHT ${label} start${dry ? ' — DRY RUN, nothing is executed' : ''}   node ${process.version}   cwd ${PROJ}`);
     // Which stimulus produced this folder. Without it a run folder is uninterpretable
@@ -173,10 +179,14 @@ async function main() {
 
     const done = {
         label, roster: ROSTER_NAME, rosterLabel: rosterLabel(), startedAt, finishedAt: new Date().toISOString(), liveModel, autoExit, runDir, answersFiles,
+        commit, stt: process.env.NATIVELY_STT_PROVIDER ?? null,
         toGrade: ['interview60.judge.pairs.json', ...ANSWER_MODELS.map((m) => `interview60.judge.pairs.${m}.json`)],
         next: 'grade each pairs file with its rubric into interview60.judge.verdicts[.<model>].json, then interview60.judge.mjs <run> [--answers <file>] --verdicts <that file>',
     };
     if (!dry) fs.writeFileSync(path.join(runDir, 'interview60.flight.done.json'), JSON.stringify(done, null, 1));
+    // 5. The pass record: passes/<run>.md and passes/INDEX.md, ungraded until the judge
+    //    files are merged (interview60.judge.mjs regenerates it then).
+    await run([path.join(HERE, 'interview60.pass-record.mjs'), runDir], { dry });
     log(`DONE  ${label}   ${dry ? 'dry run complete' : 'wrote ' + path.join(runDir, 'interview60.flight.done.json')}`);
     return 0;
 }

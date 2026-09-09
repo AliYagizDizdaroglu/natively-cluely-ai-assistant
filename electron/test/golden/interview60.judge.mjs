@@ -37,6 +37,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 import { CODING } from './problems.coding.mjs';
 
 /**
@@ -256,6 +257,17 @@ function printSummary(judged, out) {
     console.log(`\nwritten ${out}`);
 }
 
+/**
+ * Regenerates passes/<run>.md and passes/INDEX.md after a judge file lands, so grades reach
+ * the pass record on their own (interview60.pass-record.mjs). A failure is reported, never
+ * fatal: the judge file is already written.
+ */
+function recordPass(dir) {
+    const script = path.join(path.dirname(fileURLToPath(import.meta.url)), 'interview60.pass-record.mjs');
+    const r = spawnSync(process.execPath, [script, dir], { stdio: 'inherit' });
+    if (r.status !== 0) console.error(`pass record NOT written (${r.error?.message ?? 'exit ' + r.status}) — rerun: node ${script} ${dir}`);
+}
+
 async function main() {
     const args = process.argv.slice(2);
     const dir = args.find((a) => !a.startsWith('--'));
@@ -297,6 +309,7 @@ async function main() {
         fs.writeFileSync(out, JSON.stringify(judged, null, 1));
         console.log(`JUDGE  ${path.basename(dir)}  ${pairs.length} dispatched answers merged from ${verdictsPath}  model=${judged.model}`);
         printSummary(judged, out);
+        recordPass(dir);
         return;
     }
     const judged = !force && fs.existsSync(out) ? JSON.parse(fs.readFileSync(out, 'utf8')) : { model: JUDGE_MODEL, effort, items: {}, usage: { input: 0, output: 0 } };
@@ -335,6 +348,7 @@ async function main() {
     await Promise.all(Array.from({ length: Math.max(1, concurrency) }, worker));
 
     printSummary(judged, out);
+    recordPass(dir);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
