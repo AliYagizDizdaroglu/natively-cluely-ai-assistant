@@ -149,6 +149,20 @@ describe('interviewerTurn — unfinished text, classification, fail-safe', () =>
         expect(turn.tick(T + 7000)).toMatchObject({ kind: 'dispatch', text: 'What is the CAP theorem?' });
     });
 
+    it('fail-safe restarts on every transcript final: a long question with the VAD never quiet dispatches 6 s after the LAST final, not after the first detection', () => {
+        const turn = createInterviewerTurn();
+        turn.speech(true, T);
+        turn.final('Tell me about a time', T + 3000);
+        turn.detected('whisper', T + 3100);
+        turn.final('you had to choose between two designs', T + 6000);
+        turn.final('and how you decided?', T + 9000);
+        expect(turn.tick(T + 9100)).toEqual({ kind: 'hold', reason: 'speaking' });
+        expect(turn.nextTimerAt(T + 9500)).toBe(T + 15000);
+        expect(turn.tick(T + 14999)).toEqual({ kind: 'hold', reason: 'speaking' });
+        const d = turn.tick(T + 15000);
+        expect(d).toMatchObject({ kind: 'dispatch', finals: 3, text: 'Tell me about a time you had to choose between two designs and how you decided?', fromLive: false });
+    });
+
     it('without a VAD, the finals themselves clock the gate', () => {
         const turn = createInterviewerTurn();
         turn.final('What is the CAP theorem?', T);
@@ -210,6 +224,22 @@ describe('interviewerTurn — continuation, supersede, close', () => {
         const out = drain(turn, T + 4400 + C.continuationMs + 300, T + 20000);
         expect(out.map((o) => o.d.kind)).toEqual(['dispatch']);
         expect((out[0].d as any).text).toBe('What is a DAG?');
+    });
+
+    it('a Live claim arriving CONTINUATION_MS after both the dispatch and the last final starts a new turn that keeps the claim (stuck VAD)', () => {
+        const turn = createInterviewerTurn();
+        turn.speech(true, T);
+        turn.final('What is a pod?', T + 500);
+        turn.detected('whisper', T + 600);
+        turn.speech(false, T + 700);
+        expect(turn.tick(T + 1900).kind).toBe('dispatch'); // gate 1200 ms after the voice stopped; the text reads finished
+        turn.speech(true, T + 2000); // the VAD sticks on — no more finals, so the continuation close cannot fire
+        turn.liveClaim('How does a deployment differ from a pod?', T + 25000);
+        turn.detected('live', T + 25000);
+        expect(turn.snapshot()).toMatchObject({ open: true, live: 1, dispatched: false });
+        // the new turn has seen no VAD, so its lastSpeechAt is the claim time
+        const d = turn.tick(T + 28700);
+        expect(d).toMatchObject({ kind: 'dispatch', fromLive: true, text: 'How does a deployment differ from a pod?', finals: 0 });
     });
 
     it('the candidate speaking closes the turn, before or after a dispatch', () => {

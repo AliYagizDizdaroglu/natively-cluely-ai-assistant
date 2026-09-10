@@ -16,7 +16,7 @@ export interface TurnConstants {
     unfinishedHoldMs: number;
     /** Speech resuming within this after a dispatch continues the same turn — human pauses over 3 s: 2 of 544. */
     continuationMs: number;
-    /** Fail-safe: a detected question never waits on the VAD longer than this. */
+    /** Fail-safe: a detected question waits no longer than this past the LATER of its detection and its last transcript final (R11). */
     maxHoldMs: number;
 }
 
@@ -136,6 +136,9 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
 
     const quiet = (t: OpenTurn, now: number): boolean => !t.speaking && silenceMs(t, now) >= c.gateMs && settled(t, now);
 
+    /** R11: the fail-safe clock runs from the LATER of the turn's first detection and its last transcript final — a VAD that keeps reporting speech while finals keep arriving is a long question, not stuck. */
+    const failSafeAt = (t: OpenTurn): number | null => t.detectedAt === null ? null : Math.max(t.detectedAt, t.lastFinalAt) + c.maxHoldMs;
+
     /** Why quiet() is false right now, in the same order quiet() checks — the catch-all is reached only when quiet() would otherwise be true. */
     const holdReason = (t: OpenTurn, now: number): 'speaking' | 'gate' | 'settle' | 'unfinished' => {
         if (t.speaking) return 'speaking';
@@ -163,6 +166,7 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
         },
 
         liveClaim(text: string, at: number): void {
+            reopenIfStale(at);
             const t = open(at);
             t.live.push(text.trim());
             if (!t.vadSeen) t.lastSpeechAt = at;
@@ -214,7 +218,8 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
 
             const hasText = t.finals.length > 0 || t.live.length > 0;
             if (!hasText) {
-                if (t.detectedAt !== null && now - t.detectedAt >= c.maxHoldMs) {
+                const fs = failSafeAt(t);
+                if (fs !== null && now >= fs) {
                     turn = null;
                     return { kind: 'close', reason: 'nothing-heard' };
                 }
@@ -235,7 +240,8 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
             // A Live-only text (no finals) never dispatches at the plain gate — only on the unfinished-hold or fail-safe branches below.
             const atGate = t.finals.length > 0 && quiet(t, now) && isFinished;
             const unfinishedHoldElapsed = !t.speaking && silenceMs(t, now) >= c.gateMs + c.unfinishedHoldMs && settled(t, now);
-            const failSafe = t.detectedAt !== null && now - t.detectedAt >= c.maxHoldMs;
+            const fs = failSafeAt(t);
+            const failSafe = fs !== null && now >= fs;
             if (atGate || unfinishedHoldElapsed || failSafe) {
                 t.dispatched = { at: now, text };
                 return { kind: 'dispatch', text, live: [...t.live], finished: isFinished, gateMs: c.gateMs, finals: t.finals.length, fromLive };
@@ -254,7 +260,7 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
                 candidates.push(t.lastSpeechAt + c.gateMs + c.unfinishedHoldMs);
             }
             if (t.finals.length > 0) candidates.push(t.lastFinalAt + c.settleMs);
-            if (!t.dispatched && t.detectedAt !== null) candidates.push(t.detectedAt + c.maxHoldMs);
+            if (!t.dispatched) { const fs = failSafeAt(t); if (fs !== null) candidates.push(fs); }
             if (t.dispatched && !t.pendingAfterDispatch) candidates.push(Math.max(t.lastSpeechAt, t.dispatched.at) + c.continuationMs);
 
             const future = candidates.filter((at) => at > now);
