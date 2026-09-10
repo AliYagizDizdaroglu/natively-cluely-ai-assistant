@@ -4,7 +4,9 @@
  * calls tick(now) at the moments nextTimerAt() names.
  * Spec: docs/superpowers/specs/2026-09-09-whole-turn-structured-answers-design.md §3.1.
  * Replayed against the s50a and after9 runs (interviewerTurn.replay.test.ts):
- * 116/116 questions answered once, 0 before the voice stopped, 0 supersedes.
+ * 116/116 questions answered once, 1 before the voice stopped, 1 supersede (S1Q03 on s50a: a
+ * single ~7.1 s VAD segment with no internal off-transition, and a final gap inside it also
+ * past maxHoldMs — the fail-safe has no transition to hold through it; see task-4-fix2-report.md).
  */
 
 export interface TurnConstants {
@@ -16,7 +18,7 @@ export interface TurnConstants {
     unfinishedHoldMs: number;
     /** Speech resuming within this after a dispatch continues the same turn — human pauses over 3 s: 2 of 544. */
     continuationMs: number;
-    /** Fail-safe: a detected question waits no longer than this past the LATER of its detection and its last transcript final (R11). */
+    /** Fail-safe: a detected question waits no longer than this past the LATEST of its detection, its last transcript final, and its last VAD off-transition (R14). */
     maxHoldMs: number;
 }
 
@@ -115,9 +117,9 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
         return turn;
     };
 
-    /** A stuck VAD must not glue two questions together: a final/detected long after both the dispatch and the last final starts a new turn silently. */
+    /** R15: text on a dispatched turn is stale — and starts a new turn silently — only once it arrives CONTINUATION_MS past the LATEST of the dispatch, the last final, and the last VAD off-transition (the same staleness rule the continuation close uses). */
     const reopenIfStale = (at: number): void => {
-        if (turn && turn.dispatched && at - turn.dispatched.at >= c.continuationMs && at - turn.lastFinalAt >= c.continuationMs) {
+        if (turn && turn.dispatched && at - Math.max(turn.dispatched.at, turn.lastFinalAt, turn.lastSpeechAt) >= c.continuationMs) {
             turn = null;
         }
     };
@@ -136,8 +138,8 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
 
     const quiet = (t: OpenTurn, now: number): boolean => !t.speaking && silenceMs(t, now) >= c.gateMs && settled(t, now);
 
-    /** R11: the fail-safe clock runs from the LATER of the turn's first detection and its last transcript final — a VAD that keeps reporting speech while finals keep arriving is a long question, not stuck. */
-    const failSafeAt = (t: OpenTurn): number | null => t.detectedAt === null ? null : Math.max(t.detectedAt, t.lastFinalAt) + c.maxHoldMs;
+    /** R14: the fail-safe clock runs from the LATEST of the turn's last detection, its last transcript final, and its last VAD off-transition — a VAD that produced an off-transition within maxHoldMs is working, and a working VAD reporting speech means the interviewer is still talking, however slowly the transcript finalizes; only a VAD with no transition for maxHoldMs is stuck. */
+    const failSafeAt = (t: OpenTurn): number | null => t.detectedAt === null ? null : Math.max(t.detectedAt, t.lastFinalAt, t.lastSpeechAt) + c.maxHoldMs;
 
     /** Why quiet() is false right now, in the same order quiet() checks — the catch-all is reached only when quiet() would otherwise be true. */
     const holdReason = (t: OpenTurn, now: number): 'speaking' | 'gate' | 'settle' | 'unfinished' => {
@@ -200,7 +202,10 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
 
             if (t.dispatched) {
                 if (t.pendingAfterDispatch) {
-                    if (quiet(t, now)) {
+                    // R14: a pending supersede never waits on a stuck VAD either — it goes out once
+                    // maxHoldMs has passed since the LATER of the last final and the last VAD
+                    // off-transition, same as the plain fail-safe above.
+                    if (quiet(t, now) || now >= Math.max(t.lastFinalAt, t.lastSpeechAt) + c.maxHoldMs) {
                         const { text } = textOf(t);
                         const replaces = t.dispatched.text;
                         t.dispatched = { at: now, text }; // the dispatch time moves to now
@@ -261,6 +266,7 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
             }
             if (t.finals.length > 0) candidates.push(t.lastFinalAt + c.settleMs);
             if (!t.dispatched) { const fs = failSafeAt(t); if (fs !== null) candidates.push(fs); }
+            if (t.dispatched && t.pendingAfterDispatch) candidates.push(Math.max(t.lastFinalAt, t.lastSpeechAt) + c.maxHoldMs);
             if (t.dispatched && !t.pendingAfterDispatch) candidates.push(Math.max(t.lastSpeechAt, t.dispatched.at) + c.continuationMs);
 
             const future = candidates.filter((at) => at > now);

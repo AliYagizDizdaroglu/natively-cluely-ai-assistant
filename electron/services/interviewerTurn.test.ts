@@ -163,6 +163,35 @@ describe('interviewerTurn — unfinished text, classification, fail-safe', () =>
         expect(d).toMatchObject({ kind: 'dispatch', finals: 3, text: 'Tell me about a time you had to choose between two designs and how you decided?', fromLive: false });
     });
 
+    it('a detector re-fire after the last final does not restart the fail-safe while the VAD keeps transitioning', () => {
+        const turn = createInterviewerTurn();
+        turn.speech(true, T);
+        turn.final('Defend the improvements reported on your CV,', T + 3000);
+        turn.detected('whisper', T + 3100);
+        turn.speech(false, T + 4000);
+        turn.speech(true, T + 4400);
+        turn.detected('whisper', T + 5000); // the re-fire
+        turn.speech(false, T + 8000);
+        turn.speech(true, T + 8300);
+        // no final until later
+        expect(turn.tick(T + 11000)).toEqual({ kind: 'hold', reason: 'speaking' });
+        expect(turn.nextTimerAt(T + 11000)).toBe(T + 14000); // last off-transition T+8000 + 6000
+        turn.final('you report extraction F1 rising from 72 to 95 percent, and hallucinations falling by 84 percent?', T + 13000);
+        turn.speech(false, T + 13500);
+        const d = turn.tick(T + 14700); // the gate: 13500 + 1200; the fail-safe would now be T+19500
+        expect(d).toMatchObject({ kind: 'dispatch', finals: 2 });
+    });
+
+    it('a stuck VAD after a detection and a final: the fail-safe fires 6 s after the later of them', () => {
+        const turn = createInterviewerTurn();
+        turn.speech(true, T);
+        turn.final('What is a pod?', T + 500);
+        turn.detected('whisper', T + 600);
+        // no transition ever
+        expect(turn.tick(T + 6599)).toEqual({ kind: 'hold', reason: 'speaking' });
+        expect(turn.tick(T + 6600).kind).toBe('dispatch');
+    });
+
     it('without a VAD, the finals themselves clock the gate', () => {
         const turn = createInterviewerTurn();
         turn.final('What is the CAP theorem?', T);
@@ -209,6 +238,22 @@ describe('interviewerTurn — continuation, supersede, close', () => {
         expect(turn.tick(T + 7700)).toEqual({ kind: 'idle' });
     });
 
+    it('a pending supersede never waits on a stuck VAD: it goes out 6 s after the later of its last final and last VAD transition', () => {
+        const turn = createInterviewerTurn();
+        turn.speech(true, T);
+        turn.final('What is a pod?', T + 500);
+        turn.detected('whisper', T + 600);
+        turn.speech(false, T + 700);
+        expect(turn.tick(T + 1900).kind).toBe('dispatch');
+        turn.speech(true, T + 2500);
+        turn.final('and how does it differ from a deployment?', T + 4000);
+        // the VAD stays on
+        expect(turn.nextTimerAt(T + 5000)).toBe(T + 10000);
+        expect(turn.tick(T + 9999)).toEqual({ kind: 'hold', reason: 'speaking' });
+        const d = turn.tick(T + 10000);
+        expect(d).toMatchObject({ kind: 'supersede', text: 'What is a pod? and how does it differ from a deployment?', replaces: 'What is a pod?' });
+    });
+
     it('closes after CONTINUATION_MS of silence following the dispatch', () => {
         const turn = dispatched();
         expect(turn.tick(T + 11399)).toEqual({ kind: 'idle' });
@@ -224,6 +269,23 @@ describe('interviewerTurn — continuation, supersede, close', () => {
         const out = drain(turn, T + 4400 + C.continuationMs + 300, T + 20000);
         expect(out.map((o) => o.d.kind)).toEqual(['dispatch']);
         expect((out[0].d as any).text).toBe('What is a DAG?');
+    });
+
+    it('a continuation final arriving 9 s after the previous final joins the turn when the voice resumed inside the window', () => {
+        const turn = createInterviewerTurn();
+        turn.speech(true, T);
+        turn.final('Can you reconcile the metrics on your CV?', T + 500);
+        turn.detected('whisper', T + 600);
+        turn.speech(false, T + 700);
+        expect(turn.tick(T + 1900).kind).toBe('dispatch');
+        turn.speech(true, T + 3000);
+        turn.speech(false, T + 6000);
+        turn.speech(true, T + 6400);
+        turn.speech(false, T + 9500);
+        turn.final('Your CV reports a nine percent churn rate and sixty percent precision; are those consistent?', T + 10000);
+        expect(turn.snapshot()).toMatchObject({ finals: 2, dispatched: true });
+        const d = turn.tick(T + 10700);
+        expect(d).toMatchObject({ kind: 'supersede', text: 'Can you reconcile the metrics on your CV? Your CV reports a nine percent churn rate and sixty percent precision; are those consistent?', replaces: 'Can you reconcile the metrics on your CV?' });
     });
 
     it('a Live claim arriving CONTINUATION_MS after both the dispatch and the last final starts a new turn that keeps the claim (stuck VAD)', () => {
