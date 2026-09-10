@@ -94,6 +94,15 @@ describe('renderPassRecord — one file holds the whole pass', () => {
         expect(q).toMatch(/\*\*In-app answer 1\*\*[^\n]*superseded/);
     });
 
+    it('prints the superseding text, symmetric with "extended with:" (fix round 1, R28)', () => {
+        const p = pass();
+        (p.questions[0].inApp[0] as any).superseded = true;
+        (p.questions[0].inApp[0] as any).heardSuperseded = 'And what about a service mesh instead?';
+        const md2 = renderPassRecord(p);
+        const q = md2.slice(md2.indexOf('S1Q02'));
+        expect(q).toContain('superseded with: "And what about a service mesh instead?"');
+    });
+
     it('says plainly when a pass has not been graded yet, and still shows the answers', () => {
         const ungraded = pass({ meta: { ...pass().meta, graded: false, graderPrompt: null, judgeModel: null }, summary: { ...pass().summary, inApp: null, inAppPairs: null, followups: null, arms: [{ model: 'qwen/qwen3.8-27b', n: 20, acceptable: 0, weak: 0, wrong: 0, error: 0, ttftP50: 512, ttftP90: 681, graded: false }] } });
         ungraded.questions[0].inApp.forEach((a: any) => { a.grade = null; });

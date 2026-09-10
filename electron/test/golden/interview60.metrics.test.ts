@@ -277,9 +277,15 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             `${iso(T0 + 1100900)} [LOG] [Answer] budget: words=67 cut=yes allowance=no`,
             `${iso(T0 + 1110900)} [LOG] [Answer] budget: words=90 cut=no allowance=yes`,
             `${iso(T0 + 1120900)} [LOG] [Answer] budget: words=140 cut=no allowance=yes`,
-            // 2026-09-09 whole-turn (Task 8): mark (detection only) -> answer -> supersede
-            // (replaces the answer already given). M27's own answer dispatch carries
-            // question=, so it also feeds the pinned-question tracking above.
+            // 2026-09-09 whole-turn (Task 8): hold (a fragmentary head, held for the other
+            // ear) -> mark (detection only) -> answer -> supersede (replaces the answer
+            // already given). The hold fires 100ms before the mark, at spokeEnd-900 — the
+            // deliberately-earliest detection (fix round 1, R27): it must count toward
+            // detectMs like any other detection, but never toward surfaced/supersedes, and
+            // its `question` must PARSE despite the real `reason=fragmentary` token main.ts
+            // puts between `verdict=` and `question=` on a real hold line. M27's own answer
+            // dispatch carries question=, so it also feeds the pinned-question tracking above.
+            `${iso(T0 + 1504600)} [LOG] [Main] dispatch: hold source=whisper anchor="When would you reach for a service" verdict=match reason=fragmentary question="When would you reach for a service"`,
             `${iso(T0 + 1504700)} [LOG] [Main] dispatch: mark source=whisper anchor="When would you reach for a service mesh in an ML serving stack?" verdict=match question="When would you reach for a service mesh in an ML serving stack?"`,
             `${iso(T0 + 1506000)} [LOG] [Main] turn: gate=1210 finals=1 live=0 finished=true`,
             `${iso(T0 + 1506000)} [LOG] [Main] dispatch: answer source=whisper anchor="When would you reach for a service mesh in an ML serving stack?" verdict=match question="When would you reach for a service mesh in an ML serving stack?"`,
@@ -433,12 +439,33 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // alone already covers every content word here, since "and when would you
         // not?" adds only stop words; see the dedicated capture-index test below.)
         expect(m27.coverage).toBeGreaterThanOrEqual(0.9);
-        // detectMs = earliest dispatch (the mark, at +1504700) - spokeEnd (+1505500) =
-        // -800: the mark IS the first detection, ahead of the clip actually finishing.
-        expect(m27.detectMs).toBe(-800);
+        // detectMs = earliest dispatch (the hold, at +1504600, fix round 1) - spokeEnd
+        // (+1505500) = -900: the HOLD is now the first detection (100ms ahead of the
+        // mark), ahead of the clip actually finishing — see the dedicated hold test below.
+        expect(m27.detectMs).toBe(-900);
         expect(m.supersedesTotal).toBe(1);
         const row = evaluateGate(m).rows.find((r) => r.label === 'Surfaced detections per question');
         expect(row.value).toContain('1 superseded');
+    });
+
+    it('a held detection is a detection, never a surface (fix round 1, R27): its question PARSES despite reason=fragmentary, and it only moves detectMs', () => {
+        const m27 = m.items.find((i: any) => i.id === 'M27');
+        // Excluded from surfaced/coverage/supersedes exactly like mark/supersede already
+        // were — the hold adds a 4th line to `mine` but changes none of these.
+        expect(m27.dispatches).toBe(1);
+        expect(m27.supersedes).toBe(1);
+        expect(m.surfacedMulti).toBe(1); // unchanged: still just Q2 (see 'top-level counts' below)
+        // The real hold line puts `reason=fragmentary` between `verdict=` and `question=`
+        // (main.ts:2107) — a token the pre-fix-round-1 regex had no group for, so `question`
+        // fell through to null on every real hold line. `dispatches` is exported (extra,
+        // not part of the gate) specifically so this parse is independently checkable —
+        // nothing else derived from `m` would ever notice a silently-null hold question.
+        const held = m.dispatches.find((d: any) => d.action === 'hold' && d.anchor === 'When would you reach for a service');
+        expect(held).toBeTruthy();
+        expect(held.question).toBe('When would you reach for a service');
+        // detectMs = earliest dispatch across ALL of `mine`, unfiltered by action — the hold
+        // at +1504600 is 100ms earlier than the mark at +1504700, so it now sets detectMs.
+        expect(m27.detectMs).toBe(-900);
     });
 
     it('long questions: answered whole only when the dispatched text (answer or extend) covers ≥ 80% of the scripted words', () => {
@@ -465,7 +492,9 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
     it('top-level counts, each derived from the lines above', () => {
         // heard = items with heardBy !== null: Q1(live), Q2(both), Q4(live),
         // W01(live), W02(whisper), L01(whisper), L02(whisper), M27(whisper) —
-        // not Q3. = 8.
+        // not Q3. = 8. M27's fix-round-1 hold line is source=whisper too — same
+        // as its mark/answer/supersede — so it doesn't flip M27 to 'both' and
+        // this count is unchanged by it.
         expect(m.heard).toBe(8);
         // answered = items with answered === true: Q1, Q2, and now M27 (its
         // answer dispatch matches the route added within 4 s of it). W01/W02
@@ -520,12 +549,14 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(m.codingForSpoken).toBe(1);
         expect(m.expiryLoops).toBe(1);
         expect(m.liveReconnects).toBe(1);
-        // detectMs sorted = [-800 (M27), 1000 (Q4), 1000 (W01), 1500 (Q2), 1500
+        // detectMs sorted = [-900 (M27), 1000 (Q4), 1000 (W01), 1500 (Q2), 1500
         // (W02), 2000 (Q1), 4000 (L01), 4000 (L02)] (Q3's null is filtered out;
-        // -800 clears the `> -5000` floor). pct(a, p) =
-        // a[min(a.length-1, floor(a.length*p))].
-        // p50: floor(8*0.5)=4 → sorted[4] = 1500 — unchanged: M27's -800 lands at
-        // the front, pushing every later index up by exactly one slot.
+        // -900 clears the `> -5000` floor). pct(a, p) =
+        // a[min(a.length-1, floor(a.length*p))]. Still 8 values, not 9: M27's
+        // fix-round-1 hold line doesn't add a new item, only pulls M27's own
+        // (single) detectMs earlier, from -800 (the mark) to -900 (the hold).
+        // p50: floor(8*0.5)=4 → sorted[4] = 1500 — unchanged: M27's value still
+        // lands at the front (still the smallest), pushing nothing else's index.
         expect(m.detectP50).toBe(1500);
         // p90: floor(8*0.9)=7 → sorted[7] = 4000 — unchanged for the same reason.
         expect(m.detectP90).toBe(4000);
@@ -547,6 +578,8 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // L02, the third answer-what-was-asked line (its pinned line arrives 3 s
         // later, outside the 2 s window) — same three as before — plus M27,
         // which carries no pinned line at all (2026-09-09 whole-turn fixture).
+        // Unchanged by M27's fix-round-1 hold line: pinned only ever iterates
+        // action==='answer' dispatches, and hold is never one.
         expect(m.pinned).toEqual({ answers: 15, legacy: 8, missing: 4, mismatched: 1 });
         const row = evaluateGate(m).rows.find((r) => r.label === 'Answer prompt pinned to the dispatched question');
         expect(row.pass).toBe(false);

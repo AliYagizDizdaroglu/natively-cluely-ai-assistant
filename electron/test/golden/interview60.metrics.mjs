@@ -41,9 +41,10 @@ export function computeRun(dir) {
  * lostUtterances, fragmentChips, coachingAnswers, codingForSpoken,
  * expiryLoops, liveReconnects, detectP50, ttftP90, ttftSource) plus a few
  * extra fields (stats, stt, routes, redirects, hardFails, liveQ, orphanLive,
- * cues, answersPass, detectP90) that only the report's findings/tables prose
- * needs — kept here so that prose and the gate never re-derive the same
- * numbers two different ways.
+ * cues, answersPass, detectP90, dispatches) that only the report's
+ * findings/tables prose (or a test wanting a raw per-dispatch parse) needs —
+ * kept here so that prose and the gate never re-derive the same numbers two
+ * different ways.
  */
 export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPath, judgePath = null }) {
     // logSince() silently returns '' for a missing file (it's built to tolerate
@@ -63,7 +64,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const liveQ = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] Live question \((\w+), mode=(\w+)\): "([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), intent: m[2], mode: m[3], heard: m[4] }));
     const suppressed = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] suppressed duplicate live question \(already surfaced by (\w+)\): "([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), by: m[2], heard: m[3] }));
     const whisperFwd = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] forwarding detected-question → renderer \(win=\w+\) intent=(\w+) q="([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), intent: m[2], heard: m[3] }));
-    const dispatches = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|chip|drop|extend|hold|mark|supersede) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)(?: duplicateOf=(\w+) answered=(true|false))?(?: extends="(?:[^"\\]|\\.)*")?(?: replaces="(?:[^"\\]|\\.)*")?(?: question="((?:[^"\\]|\\.)*)")?/gm)]
+    const dispatches = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|chip|drop|extend|hold|mark|supersede) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)(?: duplicateOf=(\w+) answered=(true|false))?(?: extends="(?:[^"\\]|\\.)*")?(?: replaces="(?:[^"\\]|\\.)*")?(?: reason=\w+)?(?: question="((?:[^"\\]|\\.)*)")?/gm)]
         .map((m) => ({ at: ts(m[1]), action: m[2], source: m[3], anchor: JSON.parse(`"${m[4]}"`), verdict: m[5], duplicateOf: m[6] ?? null, answered: m[7] === 'true', question: m[8] == null ? null : JSON.parse(`"${m[8]}"`) }));
     const routes = [...diag.matchAll(/^\[(\S+)\] route: ([^\n]+)/gm)].map((m) => ({ at: ts(m[1]), route: m[2].trim() }));
     const firstTokens = [...diag.matchAll(/^\[(\S+)\] first token (\d+)ms/gm)].map((m) => ({ at: ts(m[1]), ms: Number(m[2]) }));
@@ -378,8 +379,12 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, resolvedEmptyFinals: stt.resolvedEmptyFinals, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
         detectP50, ttftP90, ttftSource, judge, pinned, budget,
-        // extra — feed the report's findings prose and tables; not part of the gate
-        detectP90, stats, stt, routes, redirects, hardFails, liveQ, orphanLive, cues, answersPass,
+        // extra — feed the report's findings prose and tables; not part of the gate.
+        // `dispatches` is the raw parsed dispatch list (narrowest export needed to make a
+        // per-dispatch parse — e.g. a held detection's `question` — independently testable;
+        // fix round 1, R27), not otherwise reachable once claim-once folds each line into
+        // its item's aggregated fields.
+        detectP90, stats, stt, routes, redirects, hardFails, liveQ, orphanLive, cues, answersPass, dispatches,
     };
 }
 

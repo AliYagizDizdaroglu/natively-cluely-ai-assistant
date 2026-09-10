@@ -187,7 +187,7 @@ export function renderPassRecord(p) {
         if (!q.inApp.length) out.push('_No in-app answer was dispatched for this question._', '');
         for (const a of q.inApp) {
             out.push(`**In-app answer ${a.n}** — ${a.source}, ${signed(a.offsetS)}${a.extended ? ', extended' : ''}${a.superseded ? ', superseded' : ''} → ${renderGrade(a.grade)}`, '');
-            out.push(`heard: "${a.heard ?? ''}"${a.heardExtended ? `\nextended with: "${a.heardExtended}"` : ''}`, '');
+            out.push(`heard: "${a.heard ?? ''}"${a.heardExtended ? `\nextended with: "${a.heardExtended}"` : ''}${a.heardSuperseded ? `\nsuperseded with: "${a.heardSuperseded}"` : ''}`, '');
             out.push(a.answer ? quote(a.answer) : '_no answer was delivered_', '');
         }
         for (const a of q.arms) {
