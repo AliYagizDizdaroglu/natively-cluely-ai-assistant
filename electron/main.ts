@@ -941,6 +941,8 @@ export class AppState {
   private turnTimer: NodeJS.Timeout | null = null;
   private turnDetection: DetectionInput | null = null;
   private turnDedupId: number | undefined;
+  /** R26: the machine turn id this class last synced its per-turn state to. */
+  private turnSeenId: number | null = null;
   private interviewerVad: EnergyVad | null = null;
   /** R22: the moment the VAD last saw the voice stop, for the `gate=` log's measured silence. */
   private lastVoiceOffAt: number | null = null;
@@ -960,6 +962,7 @@ export class AppState {
   /** Run the turn's decisions now, then arm its next timer. Re-entrant-safe: decisions never call back into it synchronously. */
   private turnTick(): void {
     if (this.turnTimer) { clearTimeout(this.turnTimer); this.turnTimer = null; }
+    this.syncTurnIdentity();
     for (let guard = 0; guard < 8; guard++) {
       const d = this.turn.tick(Date.now());
       if (d.kind === 'idle' || d.kind === 'hold') break;
@@ -1016,8 +1019,23 @@ export class AppState {
         console.log(`[Main] turn: close reason=${d.reason}`);
         this.turnDetection = null;
         this.turnDedupId = undefined;
+        this.turnSeenId = null;
         return;
     }
+  }
+
+  /**
+   * The machine can replace a stale turn without emitting `close` (interviewerTurn's
+   * reopenIfStale). Per-turn state here must follow the machine's turn: a `turnDedupId`
+   * left over from the previous turn would extend the wrong dedup entry and replace the
+   * wrong answer on a later supersede.
+   */
+  private syncTurnIdentity(): void {
+    const id = this.turn.snapshot().id;
+    if (id === this.turnSeenId) return;
+    this.turnSeenId = id;
+    this.turnDetection = null;
+    this.turnDedupId = undefined;
   }
 
   private resetTurn(): void {
@@ -1025,6 +1043,7 @@ export class AppState {
     this.turn.reset();
     this.turnDetection = null;
     this.turnDedupId = undefined;
+    this.turnSeenId = null;
     this.interviewerVad = null;
     this.lastVoiceOffAt = null;
   }
@@ -2051,6 +2070,10 @@ export class AppState {
       const now = Date.now();
       if (d.source === 'live') this.turn.liveClaim(d.liveText ?? d.question, now);
       this.turn.detected(d.source, now);
+      // R26: liveClaim/detected may have silently replaced a stale turn (reopenIfStale) —
+      // sync before merging this detection in, so a fresh turn's state is not carried
+      // over from the one it replaced.
+      this.syncTurnIdentity();
       this.turnDetection = pickTurnDetection(this.turnDetection, d);
       console.log(`[Main] dispatch: mark source=${d.source} anchor=${JSON.stringify((d.anchor ?? d.question).slice(0, 80))} verdict=${d.verdict} question=${JSON.stringify(d.question)}`);
       this.turnTick();
