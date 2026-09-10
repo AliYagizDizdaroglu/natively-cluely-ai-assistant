@@ -16,6 +16,7 @@ async function drain(gen: AsyncGenerator<string>): Promise<void> {
     for await (const _ of gen) { /* drain */ }
 }
 const VERBAL = { intent: 'general', confidence: 1, answerShape: '' } as any;
+const CODING = { intent: 'coding', confidence: 1, answerShape: '' } as any;
 
 describe('both ears in the verbal prompt (spec 2026-09-09 §3.4)', () => {
     afterEach(() => vi.restoreAllMocks());
@@ -48,5 +49,23 @@ describe('both ears in the verbal prompt (spec 2026-09-09 §3.4)', () => {
             VERBAL,
         ));
         expect(calls2[0]).not.toContain('THE LIVE LISTENER');
+    });
+
+    it('never appends the Live block on the coding-framing path', async () => {
+        vi.spyOn(console, 'log').mockImplementation(() => { });
+        const { helper, calls } = makeHelper();
+        await drain(new WhatToAnswerLLM(helper).generateStream(
+            '[INTERVIEWER]: Implement an LRU cache with O(1) get and put.',
+            undefined,
+            CODING,
+            undefined,
+            false,
+            undefined,
+            ['Implement an LRU cache with O(1) get and put.'],
+        ));
+
+        const message = calls[0];
+        expect(message).not.toContain('THE LIVE LISTENER HEARD');
+        expect(message).toContain('CONVERSATION:');
     });
 });
