@@ -897,6 +897,10 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                         ...streaming,
                         text: data.answer, // Ensure final consistency
                         isStreaming: false,
+                        // R23: a plain answer replacing a finished coaching answer must not
+                        // inherit its card — clear both fields rather than leave them spread in.
+                        isNegotiationCoaching: undefined,
+                        negotiationCoachingData: undefined,
                         metrics: finalMetrics,
                     })
                 : (isCoaching
@@ -914,6 +918,8 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                         role: 'system',
                         text: data.answer,  // Plain text, no markdown - ready to speak
                         intent: 'what_to_answer',
+                        isNegotiationCoaching: undefined,
+                        negotiationCoachingData: undefined,
                         metrics: finalMetrics,
                     }))) as Message[]);
         }));

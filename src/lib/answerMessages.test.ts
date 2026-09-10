@@ -83,6 +83,28 @@ describe('applyAnswerToken', () => {
         expect(result[0]).toBe(question);
         expect(result[1]).toMatchObject({ id: 'id-0', role: 'system', text: 'Sure, ', intent: 'what_to_answer', isStreaming: true });
     });
+
+    // R23: a restart is a NEW answer under the same id — it must not inherit
+    // the coaching card or stream metrics of the finished answer it replaces.
+    it('a replace restart over a finished coaching answer carries no coaching fields or metrics', () => {
+        const question: AnswerMessage = { id: 'q1', role: 'user', text: '🎙 tell me about a time you led' };
+        const coachingAnswer: AnswerMessage = {
+            id: 'a1',
+            role: 'system',
+            intent: 'what_to_answer',
+            text: '',
+            isStreaming: false,
+            isNegotiationCoaching: true,
+            negotiationCoachingData: { any: 'thing' },
+            metrics: { ttftMs: 1 },
+        };
+        const prev: AnswerMessage[] = [question, coachingAnswer];
+
+        const result = applyAnswerToken(prev, 'First', true, makeNewId());
+
+        expect(result[0]).toBe(question);
+        expect(result[1]).toEqual({ id: 'a1', role: 'system', intent: 'what_to_answer', text: 'First', isStreaming: true });
+    });
 });
 
 describe('applyFinalAnswer', () => {
@@ -199,5 +221,37 @@ describe('applyLiveQuestion', () => {
         expect(result).toHaveLength(2);
         expect(result[0]).toBe(question);
         expect(result[1]).toEqual({ id: 'id-0', role: 'user', text: '🎙 second question' });
+    });
+});
+
+describe('replace targets the LAST what_to_answer message, not an earlier one', () => {
+    it('applyAnswerToken restarts the last answer and leaves an earlier one untouched', () => {
+        const answerA: AnswerMessage = { id: 'a1', role: 'system', intent: 'what_to_answer', text: 'Answer A.', isStreaming: false };
+        const question: AnswerMessage = { id: 'q1', role: 'user', text: '🎙 second question' };
+        const answerB: AnswerMessage = { id: 'a2', role: 'system', intent: 'what_to_answer', text: 'Answer B.', isStreaming: false };
+        const prev: AnswerMessage[] = [answerA, question, answerB];
+
+        const result = applyAnswerToken(prev, 'x', true, makeNewId());
+
+        expect(result).toHaveLength(3);
+        expect(result[0]).toBe(answerA);
+        expect(result[1]).toBe(question);
+        expect(result[2]).toMatchObject({ id: 'a2', text: 'x', isStreaming: true });
+    });
+
+    it('applyFinalAnswer replaces the last answer and leaves an earlier one untouched', () => {
+        const answerA: AnswerMessage = { id: 'a1', role: 'system', intent: 'what_to_answer', text: 'Answer A.', isStreaming: false };
+        const question: AnswerMessage = { id: 'q1', role: 'user', text: '🎙 second question' };
+        const answerB: AnswerMessage = { id: 'a2', role: 'system', intent: 'what_to_answer', text: 'Answer B.', isStreaming: false };
+        const prev: AnswerMessage[] = [answerA, question, answerB];
+        const finalize = vi.fn((msg: AnswerMessage | null) => ({ ...msg!, text: 'New B.', isStreaming: false }));
+
+        const result = applyFinalAnswer(prev, true, finalize);
+
+        expect(finalize).toHaveBeenCalledWith(answerB);
+        expect(result).toHaveLength(3);
+        expect(result[0]).toBe(answerA);
+        expect(result[1]).toBe(question);
+        expect(result[2]).toEqual({ id: 'a2', role: 'system', intent: 'what_to_answer', text: 'New B.', isStreaming: false });
     });
 });

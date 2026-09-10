@@ -47,7 +47,10 @@ export function applyAnswerToken(
         const i = lastIndexWhere(prev, (m) => m.intent === 'what_to_answer');
         if (i !== -1) {
             const updated = [...prev];
-            updated[i] = { ...prev[i], text: token, isStreaming: true, metrics: undefined };
+            // A restart is a NEW answer under the same id (R23) — build it fresh
+            // rather than spreading the old message, so a finished coaching
+            // answer's card fields and metrics never survive onto the restart.
+            updated[i] = { id: prev[i].id, role: prev[i].role, intent: 'what_to_answer', text: token, isStreaming: true };
             return updated;
         }
     }
