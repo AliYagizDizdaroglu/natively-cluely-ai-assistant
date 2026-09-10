@@ -116,6 +116,8 @@ export interface ChipDeduperOptions {
   /** Jaccard threshold — same 0.7 the whisper detector already uses. */
   threshold?: number;
   cacheSize?: number;
+  /** Clock for the windows; tests and the golden replay inject the fixture's epoch. */
+  now?: () => number;
 }
 
 /**
@@ -133,12 +135,14 @@ export class ChipDeduper {
   private readonly answeredWindowMs: number;
   private readonly threshold: number;
   private readonly cacheSize: number;
+  private readonly now: () => number;
 
   constructor(opts: ChipDeduperOptions = {}) {
     this.windowMs = opts.windowMs ?? 20_000;
     this.answeredWindowMs = opts.answeredWindowMs ?? 60_000;
     this.threshold = opts.threshold ?? 0.7;
     this.cacheSize = opts.cacheSize ?? 10;
+    this.now = opts.now ?? Date.now;
   }
 
   /**
@@ -151,7 +155,7 @@ export class ChipDeduper {
     const text = (candidate.question ?? '').trim();
     if (!text) return { admitted: true };
 
-    const now = Date.now();
+    const now = this.now();
     this.cache = this.cache.filter((e) => now - e.at < (e.answered ? this.answeredWindowMs : this.windowMs));
 
     const match = this.findSimilar(text, candidate.anchor, candidate.source, now);

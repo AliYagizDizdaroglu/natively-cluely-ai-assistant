@@ -270,3 +270,17 @@ describe('ChipDeduper — content-word overlap catches an anchor-split STT doubl
     ).toBe(true); // past 5s — no longer merged
   });
 });
+
+describe('ChipDeduper — injected clock (fix round 1, R12: the golden replay drives the windows from the fixture epoch)', () => {
+  it('the windows run on the injected clock', () => {
+    let clock = 1_000_000;
+    const d = new ChipDeduper({ now: () => clock });
+    expect(
+      d.admit({ question: 'What is a pod in Kubernetes, and how does it differ from a container?', source: 'whisper' }).admitted
+    ).toBe(true);
+    clock += 21_000; // past the 20s windowMs; the entry is not answered
+    expect(
+      d.admit({ question: 'What is a pod in Kubernetes, and how does it differ from a container?', source: 'whisper' }).admitted
+    ).toBe(true); // expired
+  });
+});
