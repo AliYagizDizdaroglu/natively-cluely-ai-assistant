@@ -2,7 +2,7 @@ import { LLMHelper, GEMINI_FLASH_FALLBACK_MODEL, GEMINI_FLASH_MODEL } from "../L
 import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
-import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, type Suggestion } from "./verbalStreamFilter";
+import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, spokenWordBudget, type Suggestion } from "./verbalStreamFilter";
 import { lastInterviewerTurn } from "./lastInterviewerTurn";
 import { tapFirstToken } from "./streamTaps";
 import * as fs from "fs";
@@ -20,19 +20,8 @@ function diagLog(msg: string) {
     } catch { /* swallow — never break the stream on log failure */ }
 }
 
-/**
- * Spoken word budget (spec 2026-09-04 §4, floor revised by spec 2026-09-05 §3):
- * in-app answers ran 97 words median, 41 of 52 over 80 on 2026-09-04; cut at a
- * sentence end inside 80 they measure 67 median. With a 40-word floor the
- * sentence that would cross 80 was dropped whole, and on after6 that removed
- * the "fix" half of every non-acceptable answer (all six cut at 40–72 words,
- * five acceptable uncut). FLOOR equals LIMIT: every sentence that starts under
- * 80 streams whole, the sentence in progress at 80 finishes, and the answer
- * ends at the next sentence boundary; the hard ceiling (2 × LIMIT) bounds a
- * terminator-free answer. Coding is exempt.
- */
-const SPOKEN_WORD_LIMIT = 80;
-const SPOKEN_WORD_FLOOR = 80;
+// Spoken word budget: see verbalStreamFilter.spokenWordBudget, which scales
+// the limit with the question's length (spec 2026-09-09 §3.5). Coding is exempt.
 
 export class WhatToAnswerLLM {
     private llmHelper: LLMHelper;
@@ -191,6 +180,8 @@ export class WhatToAnswerLLM {
         // none, and always empty on the coding path. The spoken text yielded by
         // this generator never contains the block — see stripSuggestionBlock.
         onSuggestions?: (suggestions: Suggestion[]) => void,
+        // The Live ear's texts for the same turn — appended to the verbal message, spec 2026-09-09 §3.4.
+        liveTexts?: string[],
     ): AsyncGenerator<string> {
         try {
             // Build a rich message context
@@ -220,9 +211,12 @@ ANSWER SHAPE: ${intentResult.answerShape}
             const isCodingForFraming = intentResult?.intent === 'coding';
             const transcriptLabel = isCodingForFraming ? 'CONVERSATION' : 'INTERVIEWER JUST SAID';
             const trailer = isCodingForFraming ? '' : '\n\nYOUR RESPONSE AS THE CANDIDATE (spoken aloud, first person, no clarifying questions back):';
+            const liveBlock = !isCodingForFraming && liveTexts?.length
+                ? `\n\nTHE LIVE LISTENER HEARD THE SAME QUESTION AS (use both; where they differ, the transcript's numbers and names are the ones spoken):\n${liveTexts.join('\n')}`
+                : '';
             const fullMessage = extraContext
-                ? `${extraContext}\n\n${transcriptLabel}:\n${cleanedTranscript}${trailer}`
-                : `${transcriptLabel}:\n${cleanedTranscript}${trailer}`;
+                ? `${extraContext}\n\n${transcriptLabel}:\n${cleanedTranscript}${liveBlock}${trailer}`
+                : `${transcriptLabel}:\n${cleanedTranscript}${liveBlock}${trailer}`;
             const knowledgeQuestion = lastInterviewerTurn(cleanedTranscript);
 
             // Use Universal Prompt
@@ -356,6 +350,10 @@ ANSWER SHAPE: ${intentResult.answerShape}
                         ),
                     );
 
+                const questionWords = (knowledgeQuestion.match(/\S+/g) ?? []).length;
+                const budget = spokenWordBudget(questionWords);
+                diagLog(`word budget limit=${budget.limit} for a ${questionWords}-word question`);
+
                 yield* tapFirstToken(
                     cutAtWordBudget(
                         this.withVerbalFallback(
@@ -370,8 +368,9 @@ ANSWER SHAPE: ${intentResult.answerShape}
                             ),
                         ),
                         {
-                            limit: SPOKEN_WORD_LIMIT,
-                            floor: SPOKEN_WORD_FLOOR,
+                            limit: budget.limit,
+                            floor: budget.floor,
+                            ceiling: budget.ceiling,
                             onDone: (r) => {
                                 // One line per completed spoken answer — the flight
                                 // harness's "budget" gate row reads it.

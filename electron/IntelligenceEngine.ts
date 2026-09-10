@@ -255,6 +255,8 @@ export class IntelligenceEngine extends EventEmitter {
              * the answer covers only what the fuller sentence adds.
              */
             extendOf?: string;
+            /** The Live ear's texts of the dispatched turn (main.ts turn dispatch). */
+            liveTexts?: string[];
         } = {}
     ): Promise<string | null> {
         const now = Date.now();
@@ -403,7 +405,7 @@ export class IntelligenceEngine extends EventEmitter {
             let fullAnswer = "";
             // RC-03 fix: hold a reference to the generator so we can call .return()
             // to properly terminate the network request when a new generation starts.
-            const stream = this.whatToAnswerLLM.generateStream(preparedTranscript, temporalContext, intentResult, imagePaths, options.forceFastModel);
+            const stream = this.whatToAnswerLLM.generateStream(preparedTranscript, temporalContext, intentResult, imagePaths, options.forceFastModel, undefined, options.liveTexts);
             let streamAborted = false;
 
             for await (const token of stream) {

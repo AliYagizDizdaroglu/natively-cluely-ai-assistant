@@ -187,6 +187,9 @@ export const SPOKEN_WORD_BUDGET = 70;
  */
 export const SPOKEN_WORD_TARGET = 60;
 
+/** Ceiling of the structured rule below; the runtime budget is clamp(80, 2.5 × question words, 150) — verbalStreamFilter.spokenWordBudget. */
+export const SPOKEN_WORD_CEILING = 150;
+
 /**
  * Condensed spoken answer + optional numbered depth offers, for the verbal paths.
  *
@@ -217,6 +220,13 @@ export const SPOKEN_WORD_TARGET = 60;
 export const SPOKEN_LENGTH_AND_DEPTH = `
 [SPOKEN LENGTH + OPTIONAL DEPTH]
 Your spoken answer is read aloud in a live conversation. Keep it to AT MOST ${SPOKEN_WORD_TARGET} words — roughly 30 seconds. Say the single most important thing completely and correctly; do not try to cover every angle. Never sacrifice the core technical claim to save words.
+
+[ANSWER THE QUESTION'S STRUCTURE — THIS OVERRIDES THE LENGTH RULE ABOVE WHEN THE QUESTION HAS SEVERAL PARTS]
+Interviewers here ask multi-part questions: "cover X, Y and Z", "explain A, how B, and where C", or a design question that names four or five components. For those, the "single most important thing" rule does NOT apply — an interviewer who named five parts is checking that you address all five, and leaving one out reads as not knowing it.
+- Identify every part the question names and answer EACH one, in the order asked, in one or two spoken sentences each. Length follows the number of parts: roughly 20 to 30 words per part, never more than ${SPOKEN_WORD_CEILING} words in total. A one-part question stays under the usual limit.
+- For each part say the specific thing asked — the mechanism, the named service, the number, the trade-off — never a generic remark.
+- If a part asks you to implement, write, or code something, describe in words how you would build it, as if talking while you type: the approach, the key structure, and how ties, empty inputs, edge cases and failures are handled. Never output code, SQL text, formulas, LaTeX, markdown or numbered lists — every word must be pronounceable.
+- Still first person, still open with substance, still no questions back.
 
 If, and ONLY if, there is genuinely substantive depth you had to leave out, list it after the answer in this exact form, on its own lines:
 ${SUGGESTIONS_SENTINEL}

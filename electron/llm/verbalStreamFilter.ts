@@ -394,7 +394,7 @@ export interface WordBudgetResult {
      */
     allowance: boolean;
 }
-export interface WordBudgetOptions { limit: number; floor: number; onDone?: (r: WordBudgetResult) => void }
+export interface WordBudgetOptions { limit: number; floor: number; ceiling?: number; onDone?: (r: WordBudgetResult) => void }
 
 /**
  * A whole chunk that is nothing but a `__model_source:X__` sentinel — the same
@@ -458,7 +458,8 @@ export async function* cutAtWordBudget(
     // aloud; the measured max on the after4 corpus after the sentence cut is
     // 92 words — this never fires on real answers, it bounds the pathological
     // one. Checked after each yield, so one chunk cannot push past it unbounded.
-    const ceiling = 2 * limit;
+    // The app passes min(2 × limit, 200) since 2026-09-09 — see spokenWordBudget.
+    const ceiling = opts.ceiling ?? 2 * limit;
     for await (const chunk of source) {
         if (SENTINEL_CHUNK.test(chunk)) { yield chunk; continue; } // not words — leaves carry/inWord alone
         let text = carry + chunk;
@@ -510,4 +511,16 @@ export async function* cutAtWordBudget(
         }
     }
     finish();
+}
+
+/**
+ * The spoken budget follows the question (spec 2026-09-09 §3.5): the structured
+ * arms answered 60–159 words for 31–71-word questions. 2.5 words per question
+ * word, never under 80 (the floor that measured best on after6) nor over 150;
+ * the sentence in progress at the limit finishes; the ceiling bounds a
+ * terminator-free answer at 200 words.
+ */
+export function spokenWordBudget(questionWords: number): { limit: number; floor: number; ceiling: number } {
+    const limit = Math.min(150, Math.max(80, Math.round(2.5 * questionWords)));
+    return { limit, floor: limit, ceiling: Math.min(2 * limit, 200) };
 }

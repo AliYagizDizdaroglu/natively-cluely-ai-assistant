@@ -12,6 +12,7 @@ import {
     CODE_MUST_RUN_RULE,
     SPOKEN_WORD_BUDGET,
     SPOKEN_WORD_TARGET,
+    SPOKEN_WORD_CEILING,
     resolveGemmaSystemPrompt,
     resolveStyleSuffix,
 } from './prompts';
@@ -219,5 +220,14 @@ describe('spoken word budget', () => {
         expect(SPOKEN_WORD_BUDGET).toBe(70);
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain(`AT MOST ${SPOKEN_WORD_TARGET} words`);
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT).not.toContain(`AT MOST ${SPOKEN_WORD_BUDGET} words`);
+    });
+
+    it('carries the structured multi-part rule (bare arms: 8→13 and 10→14 acceptable of 20, 0 wrong, 2026-09-09)', () => {
+        expect(SPOKEN_WORD_CEILING).toBe(150);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain('[ANSWER THE QUESTION\'S STRUCTURE — THIS OVERRIDES THE LENGTH RULE ABOVE WHEN THE QUESTION HAS SEVERAL PARTS]');
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain(`never more than ${SPOKEN_WORD_CEILING} words in total`);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain('Never output code, SQL text, formulas, LaTeX, markdown or numbered lists');
+        // the suggestions block still follows it
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT.indexOf('[ANSWER THE QUESTION\'S STRUCTURE')).toBeLessThan(VERBAL_WHAT_TO_ANSWER_PROMPT.indexOf('Rules for that block:'));
     });
 });

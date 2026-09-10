@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, cutAtWordBudget, type Suggestion } from './verbalStreamFilter';
+import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, cutAtWordBudget, spokenWordBudget, type Suggestion } from './verbalStreamFilter';
 
 /** Feed `text` through the filter in fixed-size chunks; return concatenated output. */
 async function runFilter(text: string, chunkSize = 6): Promise<string> {
@@ -300,5 +300,24 @@ describe('cutAtWordBudget (spec 2026-09-04 §4)', () => {
         for await (const c of cutAtWordBudget(src(), { limit: 80, floor: 40, onDone: (r) => done.push(r) })) out += c;
         expect(out).toBe(sentinel + answer);
         expect(done).toEqual([{ words: 55, cut: false, allowance: false }]);
+    });
+});
+
+describe('spokenWordBudget — the budget follows the question (spec 2026-09-09 §3.5)', () => {
+    it('clamps 2.5 words per question word to 80–150, floor = limit, ceiling min(2×limit, 200)', () => {
+        expect(spokenWordBudget(10)).toEqual({ limit: 80, floor: 80, ceiling: 160 });
+        expect(spokenWordBudget(32)).toEqual({ limit: 80, floor: 80, ceiling: 160 });
+        expect(spokenWordBudget(40)).toEqual({ limit: 100, floor: 100, ceiling: 200 });
+        expect(spokenWordBudget(71)).toEqual({ limit: 150, floor: 150, ceiling: 200 });
+        expect(spokenWordBudget(0)).toEqual({ limit: 80, floor: 80, ceiling: 160 });
+    });
+    it('cutAtWordBudget honours an explicit ceiling below 2 × limit', async () => {
+        // 250 words, no terminator anywhere: stops at the ceiling
+        const src = (async function* () { for (let i = 0; i < 250; i++) yield `w${i} `; })();
+        let done: any = null;
+        const out: string[] = [];
+        for await (const c of cutAtWordBudget(src, { limit: 150, floor: 150, ceiling: 200, onDone: (r) => { done = r; } })) out.push(c);
+        expect(out.join('').trim().split(/\s+/)).toHaveLength(200);
+        expect(done).toMatchObject({ cut: true, words: 200 });
     });
 });
