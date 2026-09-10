@@ -207,7 +207,7 @@ export class IntelligenceManager extends EventEmitter {
     }
 
     /** The interviewer turn's classification at the gate (main.ts turn: classify). */
-    public detectQuestionNow(text: string): Promise<'question' | 'not-a-question'> {
+    detectQuestionNow(text: string): Promise<'question' | 'not-a-question'> {
         return this.questionDetector.detectNow(text);
     }
 

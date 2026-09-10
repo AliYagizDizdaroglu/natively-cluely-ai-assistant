@@ -200,15 +200,16 @@ export class QuestionDetector {
      * Classify caller-supplied text now — the interviewer turn asks this at its
      * gate (spec 2026-09-09 §3.3) instead of waiting for the silence debounce.
      * Same detection as the debounce path, on `text` alone; resolves 'question'
-     * when a chip was emitted or updated. Never rejects.
+     * when a chip was emitted or updated. Never rejects. The dedup cache is
+     * shared with the debounce path on purpose — a question the turn classified
+     * must not chip again when the debounce path sees the same finals.
      */
-    public async detectNow(text: string): Promise<'question' | 'not-a-question'> {
+    async detectNow(text: string): Promise<'question' | 'not-a-question'> {
         if (!this.enabled) return 'not-a-question';
-        if (this.inflightDetection) { try { await this.inflightDetection; } catch { /* its own logs */ } }
-        let produced = false;
-        this.inflightDetection = this.runDetection(text).then((p) => { produced = p; }).finally(() => { this.inflightDetection = null; });
-        try { await this.inflightDetection; } catch { produced = false; }
-        return produced ? 'question' : 'not-a-question';
+        // Wait out whatever is in flight — including a queued detection the drain
+        // just started — so ours is THE in-flight one when it starts.
+        while (this.inflightDetection) { try { await this.inflightDetection; } catch { /* its own logs */ } }
+        try { return (await this.startDetection(text)) ? 'question' : 'not-a-question'; } catch { return 'not-a-question'; }
     }
 
     private resetSilenceTimer(speechEndedAt?: number): void {
@@ -239,13 +240,26 @@ export class QuestionDetector {
             this.queuedTrigger = true;
             return;
         }
-        this.inflightDetection = this.runDetection().finally(() => {
-            this.inflightDetection = null;
+        void this.startDetection();
+    }
+
+    /**
+     * Starts one detection as THE in-flight one. Its settle clears the slot only
+     * if the slot still holds this detection (detectNow and the debounce path
+     * share it), then drains the trigger queued behind it — the single-flight
+     * rule both paths rely on.
+     */
+    private startDetection(override?: string): Promise<boolean> {
+        const run = this.runDetection(override);
+        const slot: Promise<unknown> = run.finally(() => {
+            if (this.inflightDetection === slot) this.inflightDetection = null;
             if (this.queuedTrigger) {
                 this.queuedTrigger = false;
                 this.triggerDetection();
             }
         });
+        this.inflightDetection = slot;
+        return run;
     }
 
     private async runDetection(override?: string): Promise<boolean> {
