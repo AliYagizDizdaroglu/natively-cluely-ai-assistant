@@ -216,17 +216,21 @@ export const SPOKEN_WORD_CEILING = 150;
  *  - "zero is correct": without an explicit permission to stay silent, this kind of
  *    rule over-fires. It is the same failure the stdlib framing rule had. Measured
  *    0/24 spurious on trivial questions with this wording.
+ *
+ * THE STRUCTURE RULE GOES LAST, and that position is load-bearing — it is measured,
+ * not stylistic. The arms that justify the rule appended it to the END of the whole
+ * verbal prompt (interview60.answers.mjs: `${VERBAL_WHAT_TO_ANSWER_PROMPT}\n\n${suffix}`)
+ * and scored 13/20 acceptable against 8/20 without it, on the same 20 questions and
+ * the same frozen grader. Shipped mid-block instead — directly after the length
+ * paragraph — the identical text scored 9/20 (2026-09-10 pre-flight arm), i.e. it
+ * behaved like no rule at all: same four delivery-0 items as the plain arm (code
+ * blocks and raw LaTeX on the coding and SQL questions, which this rule forbids in
+ * its own third bullet). Only the position differed. Do not move it back up, and do
+ * not insert anything after it.
  */
 export const SPOKEN_LENGTH_AND_DEPTH = `
 [SPOKEN LENGTH + OPTIONAL DEPTH]
 Your spoken answer is read aloud in a live conversation. Keep it to AT MOST ${SPOKEN_WORD_TARGET} words — roughly 30 seconds. Say the single most important thing completely and correctly; do not try to cover every angle. Never sacrifice the core technical claim to save words.
-
-[ANSWER THE QUESTION'S STRUCTURE — THIS OVERRIDES THE LENGTH RULE ABOVE WHEN THE QUESTION HAS SEVERAL PARTS]
-Interviewers here ask multi-part questions: "cover X, Y and Z", "explain A, how B, and where C", or a design question that names four or five components. For those, the "single most important thing" rule does NOT apply — an interviewer who named five parts is checking that you address all five, and leaving one out reads as not knowing it.
-- Identify every part the question names and answer EACH one, in the order asked, in one or two spoken sentences each. Length follows the number of parts: roughly 20 to 30 words per part, never more than ${SPOKEN_WORD_CEILING} words in total. A one-part question stays under the usual limit.
-- For each part say the specific thing asked — the mechanism, the named service, the number, the trade-off — never a generic remark.
-- If a part asks you to implement, write, or code something, describe in words how you would build it, as if talking while you type: the approach, the key structure, and how ties, empty inputs, edge cases and failures are handled. Never output code, SQL text, formulas, LaTeX, markdown or numbered lists — every word must be pronounceable.
-- Still first person, still open with substance, still no questions back.
 
 If, and ONLY if, there is genuinely substantive depth you had to leave out, list it after the answer in this exact form, on its own lines:
 ${SUGGESTIONS_SENTINEL}
@@ -237,7 +241,14 @@ Rules for that block:
 - At most 3 entries. Fewer is better. Zero is correct whenever the answer already covers what matters.
 - Each entry must name something SUBSTANTIVE that is NOT already stated in your answer. Restating a point you just made is a failure.
 - They are LABELS, not questions. Write "trade-offs of vnode count", never "Would you like me to explain vnodes?". Never address the listener.
-- If the question is simple enough to answer completely in a sentence or two, output NO ${SUGGESTIONS_SENTINEL} block at all.`;
+- If the question is simple enough to answer completely in a sentence or two, output NO ${SUGGESTIONS_SENTINEL} block at all.
+
+[ANSWER THE QUESTION'S STRUCTURE — THIS OVERRIDES THE LENGTH RULE ABOVE WHEN THE QUESTION HAS SEVERAL PARTS]
+Interviewers here ask multi-part questions: "cover X, Y and Z", "explain A, how B, and where C", or a design question that names four or five components. For those, the "single most important thing" rule does NOT apply — an interviewer who named five parts is checking that you address all five, and leaving one out reads as not knowing it.
+- Identify every part the question names and answer EACH one, in the order asked, in one or two spoken sentences each. Length follows the number of parts: roughly 20 to 30 words per part, never more than ${SPOKEN_WORD_CEILING} words in total. A one-part question stays under the usual limit.
+- For each part say the specific thing asked — the mechanism, the named service, the number, the trade-off — never a generic remark.
+- If a part asks you to implement, write, or code something, describe in words how you would build it, as if talking while you type: the approach, the key structure, and how ties, empty inputs, edge cases and failures are handled. Never output code, SQL text, formulas, LaTeX, markdown or numbered lists — every word must be pronounceable.
+- Still first person, still open with substance, still no questions back.`;
 
 export const CODE_MUST_RUN_RULE =`Whatever you say about the standard library, the code you write must run exactly as pasted: every module, class and function it references must be imported or defined. Declining to use a stdlib shortcut as the ANSWER never means dropping an import for a tool you still use internally — if your code says collections.defaultdict anywhere, it needs \`import collections\` (or \`from collections import defaultdict\`) at the top. Code that raises NameError is a total failure regardless of how good the approach was.`;
 
