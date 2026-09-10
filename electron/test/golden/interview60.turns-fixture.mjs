@@ -54,14 +54,19 @@ const finals = [...dbg.matchAll(/^(\S+) \[LOG\] \[DeepgramStreaming\] Transcript
     .map((m) => ({ at: ts(m[1]), text: unq(m[2]).trim() })).filter((f) => f.text && f.at >= since);
 const dispatchRe = /^(\S+) \[LOG\] \[Main\] dispatch: (answer|chip|drop|extend|hold|mark|supersede) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)(?:[^\n]*? question="((?:[^"\\]|\\.)*)")?/gm;
 const actual = [...dbg.matchAll(dispatchRe)].map((m) => ({ at: ts(m[1]), action: m[2], source: m[3], anchor: unq(m[4]), verdict: m[5], question: m[6] ? unq(m[6]) : '' })).filter((d) => d.at >= since);
-// A "hold" dispatch is the old pipeline explicitly withholding on a fragmentary anchor
-// (reason=fragmentary) — matched but not yet confirmed, like the new machine's own `hold`
-// decision, not a fired detection — so it is not fed to the replay as a detector fire.
-// `actual` keeps the full historical record (every action); only `detections` excludes it.
-// `action` rides along so the replay can tell a fresh "answer" from an "extend"/"drop" —
-// the old pipeline's own bookkeeping around content it already attributed to a turn it had
-// already handled, not a fresh independent detection (interviewerTurn.replay.test.ts).
-const detections = actual.filter((d) => d.action !== 'hold').map((d) => ({ at: d.at, source: d.source, text: d.anchor, action: d.action }));
+// A "hold" dispatch was the OLD pipeline explicitly withholding on a fragmentary anchor
+// (reason=fragmentary) — that pipeline never dispatched it, so earlier extractions dropped
+// it as unconfirmed, like the new machine's own `hold` decision, not a fired detection.
+// Ruling R17: the NEW app is different — Task 8 put the turn's mark block immediately after
+// the short-Live-claim isFragment drop and BEFORE both the liveHold and fragmentHold blocks,
+// so in hands-free mode a fragmentary detection now MARKS the open turn and no
+// `dispatch: hold` line is even emitted by the new app. These old-log `hold` fires are
+// therefore detections the new app would have seen; excluding them made the replay feed
+// detections later than reality, so they are kept alongside the rest. `action` rides along
+// so the replay can tell a fresh "answer" from an "extend"/"drop"/"hold" — bookkeeping the
+// pipeline did around content it may have already attributed to a turn it had already
+// handled, not necessarily a fresh independent detection (interviewerTurn.replay.test.ts).
+const detections = actual.map((d) => ({ at: d.at, source: d.source, text: d.anchor, action: d.action }));
 
 const fixture = { run: path.basename(runDir), roster: tl.rosterLabel ?? 'unknown', offsetMs: OFFSET, extractedAt: new Date().toISOString(), items, finals, detections, actual };
 const out = arg('--out', path.join(HERE, 'fixtures', `${path.basename(runDir)}-turns.json`));
