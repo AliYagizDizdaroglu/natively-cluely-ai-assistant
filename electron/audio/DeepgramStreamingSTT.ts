@@ -3,7 +3,8 @@
  *
  * Uses @deepgram/sdk v3 (listen.live) instead of raw WebSocket.
  * Implements the same EventEmitter interface as GoogleSTT:
- *   Events: 'transcript' ({ text, isFinal, confidence }), 'error' (Error)
+ *   Events: 'transcript' ({ text, isFinal, confidence }), 'error' (Error),
+ *     'speech-started' ({ at }), 'utterance-end' ({ at })
  *   Methods: start(), stop(), write(chunk), setSampleRate(), setAudioChannelCount()
  */
 
@@ -220,6 +221,12 @@ export class DeepgramStreamingSTT extends EventEmitter {
                         console.error('[DeepgramStreaming] Parse error:', err);
                     }
                 });
+
+                // vad_events / utterance_end_ms are requested in the connect options
+                // above; until 2026-09-09 nobody listened. The interviewer turn logs
+                // them beside its own VAD (a calibration signal, not a decision input).
+                live.on(LiveTranscriptionEvents.SpeechStarted, () => { if (!stale()) this.emit('speech-started', { at: Date.now() }); });
+                live.on(LiveTranscriptionEvents.UtteranceEnd, () => { if (!stale()) this.emit('utterance-end', { at: Date.now() }); });
 
                 // Flush buffered audio
                 const buffered = this.buffer.splice(0);
