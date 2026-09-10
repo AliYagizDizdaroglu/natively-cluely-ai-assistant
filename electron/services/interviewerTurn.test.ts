@@ -20,8 +20,14 @@ function drain(turn: ReturnType<typeof createInterviewerTurn>, from: number, unt
 
 describe('turnConstantsFromEnv', () => {
     it('defaults to the spec table and takes positive numeric overrides only', () => {
-        expect(turnConstantsFromEnv({})).toEqual({ gateMs: 1200, settleMs: 400, unfinishedHoldMs: 2500, continuationMs: 8000, maxHoldMs: 6000 });
-        expect(turnConstantsFromEnv({ NATIVELY_TURN_GATE_MS: '1500', NATIVELY_TURN_MAX_HOLD_MS: 'x' })).toMatchObject({ gateMs: 1500, maxHoldMs: 6000 });
+        expect(turnConstantsFromEnv({})).toEqual({ gateMs: 1200, settleMs: 400, unfinishedHoldMs: 2500, continuationMs: 8000, maxHoldMs: 8000 });
+        expect(turnConstantsFromEnv({ NATIVELY_TURN_GATE_MS: '1500', NATIVELY_TURN_MAX_HOLD_MS: 'x' })).toMatchObject({ gateMs: 1500, maxHoldMs: 8000 });
+    });
+});
+
+describe('DEFAULT_TURN_CONSTANTS.maxHoldMs (R16)', () => {
+    it('MAX_HOLD_MS is 8 s: the longest pause-free, final-free span on the 116 golden questions is 7.1 s (s50a S1Q03)', () => {
+        expect(DEFAULT_TURN_CONSTANTS.maxHoldMs).toBe(8000);
     });
 });
 
@@ -145,11 +151,11 @@ describe('interviewerTurn — unfinished text, classification, fail-safe', () =>
         turn.speech(true, T);
         turn.final('What is the CAP theorem?', T + 800);
         turn.detected('whisper', T + 1000);
-        expect(turn.tick(T + 6999)).toEqual({ kind: 'hold', reason: 'speaking' });
-        expect(turn.tick(T + 7000)).toMatchObject({ kind: 'dispatch', text: 'What is the CAP theorem?' });
+        expect(turn.tick(T + 8999)).toEqual({ kind: 'hold', reason: 'speaking' });
+        expect(turn.tick(T + 9000)).toMatchObject({ kind: 'dispatch', text: 'What is the CAP theorem?' });
     });
 
-    it('fail-safe restarts on every transcript final: a long question with the VAD never quiet dispatches 6 s after the LAST final, not after the first detection', () => {
+    it('fail-safe restarts on every transcript final: a long question with the VAD never quiet dispatches 8 s after the LAST final, not after the first detection', () => {
         const turn = createInterviewerTurn();
         turn.speech(true, T);
         turn.final('Tell me about a time', T + 3000);
@@ -157,9 +163,9 @@ describe('interviewerTurn — unfinished text, classification, fail-safe', () =>
         turn.final('you had to choose between two designs', T + 6000);
         turn.final('and how you decided?', T + 9000);
         expect(turn.tick(T + 9100)).toEqual({ kind: 'hold', reason: 'speaking' });
-        expect(turn.nextTimerAt(T + 9500)).toBe(T + 15000);
-        expect(turn.tick(T + 14999)).toEqual({ kind: 'hold', reason: 'speaking' });
-        const d = turn.tick(T + 15000);
+        expect(turn.nextTimerAt(T + 9500)).toBe(T + 17000);
+        expect(turn.tick(T + 16999)).toEqual({ kind: 'hold', reason: 'speaking' });
+        const d = turn.tick(T + 17000);
         expect(d).toMatchObject({ kind: 'dispatch', finals: 3, text: 'Tell me about a time you had to choose between two designs and how you decided?', fromLive: false });
     });
 
@@ -175,21 +181,21 @@ describe('interviewerTurn — unfinished text, classification, fail-safe', () =>
         turn.speech(true, T + 8300);
         // no final until later
         expect(turn.tick(T + 11000)).toEqual({ kind: 'hold', reason: 'speaking' });
-        expect(turn.nextTimerAt(T + 11000)).toBe(T + 14000); // last off-transition T+8000 + 6000
+        expect(turn.nextTimerAt(T + 11000)).toBe(T + 16000); // last off-transition T+8000 + 8000
         turn.final('you report extraction F1 rising from 72 to 95 percent, and hallucinations falling by 84 percent?', T + 13000);
         turn.speech(false, T + 13500);
-        const d = turn.tick(T + 14700); // the gate: 13500 + 1200; the fail-safe would now be T+19500
+        const d = turn.tick(T + 14700); // the gate: 13500 + 1200; the fail-safe would now be T+21500
         expect(d).toMatchObject({ kind: 'dispatch', finals: 2 });
     });
 
-    it('a stuck VAD after a detection and a final: the fail-safe fires 6 s after the later of them', () => {
+    it('a stuck VAD after a detection and a final: the fail-safe fires 8 s after the later of them', () => {
         const turn = createInterviewerTurn();
         turn.speech(true, T);
         turn.final('What is a pod?', T + 500);
         turn.detected('whisper', T + 600);
         // no transition ever
-        expect(turn.tick(T + 6599)).toEqual({ kind: 'hold', reason: 'speaking' });
-        expect(turn.tick(T + 6600).kind).toBe('dispatch');
+        expect(turn.tick(T + 8599)).toEqual({ kind: 'hold', reason: 'speaking' });
+        expect(turn.tick(T + 8600).kind).toBe('dispatch');
     });
 
     it('without a VAD, the finals themselves clock the gate', () => {
@@ -211,8 +217,8 @@ describe('interviewerTurn — unfinished text, classification, fail-safe', () =>
     it('closes a turn that has a detection but never any text after MAX_HOLD_MS', () => {
         const turn = createInterviewerTurn();
         turn.detected('live', T);
-        expect(turn.tick(T + 5999)).toEqual({ kind: 'hold', reason: 'undetected' });
-        expect(turn.tick(T + 6000)).toEqual({ kind: 'close', reason: 'nothing-heard' });
+        expect(turn.tick(T + 7999)).toEqual({ kind: 'hold', reason: 'undetected' });
+        expect(turn.tick(T + 8000)).toEqual({ kind: 'close', reason: 'nothing-heard' });
     });
 });
 
@@ -238,7 +244,7 @@ describe('interviewerTurn — continuation, supersede, close', () => {
         expect(turn.tick(T + 7700)).toEqual({ kind: 'idle' });
     });
 
-    it('a pending supersede never waits on a stuck VAD: it goes out 6 s after the later of its last final and last VAD transition', () => {
+    it('a pending supersede never waits on a stuck VAD: it goes out 8 s after the later of its last final and last VAD transition', () => {
         const turn = createInterviewerTurn();
         turn.speech(true, T);
         turn.final('What is a pod?', T + 500);
@@ -248,9 +254,9 @@ describe('interviewerTurn — continuation, supersede, close', () => {
         turn.speech(true, T + 2500);
         turn.final('and how does it differ from a deployment?', T + 4000);
         // the VAD stays on
-        expect(turn.nextTimerAt(T + 5000)).toBe(T + 10000);
-        expect(turn.tick(T + 9999)).toEqual({ kind: 'hold', reason: 'speaking' });
-        const d = turn.tick(T + 10000);
+        expect(turn.nextTimerAt(T + 5000)).toBe(T + 12000);
+        expect(turn.tick(T + 11999)).toEqual({ kind: 'hold', reason: 'speaking' });
+        const d = turn.tick(T + 12000);
         expect(d).toMatchObject({ kind: 'supersede', text: 'What is a pod? and how does it differ from a deployment?', replaces: 'What is a pod?' });
     });
 

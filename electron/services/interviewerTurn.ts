@@ -4,9 +4,7 @@
  * calls tick(now) at the moments nextTimerAt() names.
  * Spec: docs/superpowers/specs/2026-09-09-whole-turn-structured-answers-design.md §3.1.
  * Replayed against the s50a and after9 runs (interviewerTurn.replay.test.ts):
- * 116/116 questions answered once, 1 before the voice stopped, 1 supersede (S1Q03 on s50a: a
- * single ~7.1 s VAD segment with no internal off-transition, and a final gap inside it also
- * past maxHoldMs — the fail-safe has no transition to hold through it; see task-4-fix2-report.md).
+ * 116/116 questions answered once, 0 before the voice stopped, 0 supersedes.
  */
 
 export interface TurnConstants {
@@ -18,11 +16,11 @@ export interface TurnConstants {
     unfinishedHoldMs: number;
     /** Speech resuming within this after a dispatch continues the same turn — human pauses over 3 s: 2 of 544. */
     continuationMs: number;
-    /** Fail-safe: a detected question waits no longer than this past the LATEST of its detection, its last transcript final, and its last VAD off-transition (R14). */
+    /** Fail-safe: waits no longer than this past the LATEST of the turn's detection, last final, and last VAD off-transition (R14) — 8 s: the longest pause-free, final-free span across the 116 golden questions (s50a 40 + after9 76) is 7.1 s (s50a S1Q03), plus a margin of about 1 s (R16). */
     maxHoldMs: number;
 }
 
-export const DEFAULT_TURN_CONSTANTS: TurnConstants = { gateMs: 1200, settleMs: 400, unfinishedHoldMs: 2500, continuationMs: 8000, maxHoldMs: 6000 };
+export const DEFAULT_TURN_CONSTANTS: TurnConstants = { gateMs: 1200, settleMs: 400, unfinishedHoldMs: 2500, continuationMs: 8000, maxHoldMs: 8000 };
 
 export function turnConstantsFromEnv(env: Record<string, string | undefined> = process.env): TurnConstants {
     const num = (name: string, fallback: number): number => {
