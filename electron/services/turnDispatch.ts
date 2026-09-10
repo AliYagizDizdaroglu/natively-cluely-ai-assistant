@@ -4,7 +4,7 @@ import type { TurnDecision } from './interviewerTurn';
 export interface MarkedDetection { question: string; intent: 'verbal' | 'coding' | 'behavioral'; source: 'live' | 'whisper'; anchor?: string; verdict: 'match' | 'paraphrase' | 'replaced' | 'unverifiable' }
 
 /** A verified transcript match beats an unverifiable Live claim; otherwise the first detection stands. */
-export function pickTurnDetection(current: MarkedDetection | null, incoming: MarkedDetection): MarkedDetection {
+export function pickTurnDetection<T extends MarkedDetection>(current: T | null, incoming: T): T {
     if (!current) return incoming;
     const verified = (v: MarkedDetection['verdict']) => v === 'match' || v === 'paraphrase';
     return !verified(current.verdict) && verified(incoming.verdict) ? incoming : current;

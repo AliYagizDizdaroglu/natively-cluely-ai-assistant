@@ -942,13 +942,19 @@ export class AppState {
   private turnDetection: DetectionInput | null = null;
   private turnDedupId: number | undefined;
   private interviewerVad: EnergyVad | null = null;
+  /** R22: the moment the VAD last saw the voice stop, for the `gate=` log's measured silence. */
+  private lastVoiceOffAt: number | null = null;
 
   /** Interviewer PCM → the energy VAD → the turn (Auto mode only). */
   private onInterviewerAudio(chunk: Buffer): void {
     if (this.liveMode !== 'auto' || !this.isMeetingActive) return;
     if (!this.interviewerVad) this.interviewerVad = createEnergyVad({ sampleRate: this.systemAudioCapture?.getSampleRate() ?? 48000 });
     const u = this.interviewerVad.push(chunk, Date.now());
-    if (u.changed) { this.turn.speech(u.speaking, u.at); this.turnTick(); }
+    if (u.changed) {
+      if (!u.speaking) this.lastVoiceOffAt = u.at;
+      this.turn.speech(u.speaking, u.at);
+      this.turnTick();
+    }
   }
 
   /** Run the turn's decisions now, then arm its next timer. Re-entrant-safe: decisions never call back into it synchronously. */
@@ -971,19 +977,32 @@ export class AppState {
           .then((v) => {
             // The meeting may have ended (resetTurn) while this classification was
             // in flight — feeding a stale verdict to `turn` would open a stray turn.
+            // R20: `d.turn` scopes the verdict to the turn that asked for it — the
+            // machine itself ignores it if that turn already closed or was replaced.
             if (!this.isMeetingActive) return;
-            this.turn.detected('whisper', Date.now(), v);
+            this.turn.detected('whisper', Date.now(), v, d.turn);
             this.turnTick();
           });
         return;
       case 'dispatch': {
         if (!this.turnDetection) return;
-        console.log(`[Main] turn: gate=${d.gateMs} finals=${d.finals} live=${d.live.length} finished=${d.finished}`);
+        const gate = this.lastVoiceOffAt === null ? d.gateMs : Date.now() - this.lastVoiceOffAt;
+        console.log(`[Main] turn: gate=${gate} finals=${d.finals} live=${d.live.length} finished=${d.finished}`);
         this.dispatchDetection(turnDispatchInput(this.turnDetection, d));
         return;
       }
       case 'supersede': {
         if (!this.turnDetection) return;
+        // R21: the turn thinks it dispatched, but if `turnDedupId` was never set, the
+        // head dispatch never reached the answer branch (dispatchDetection dropped it
+        // as a duplicate of an already-answered question, or it never got that far) —
+        // there is nothing on screen for this turn to replace. Route the continuation
+        // through dispatchDetection exactly like a fresh dispatch: the deduper decides
+        // again, dropping it if it's still a duplicate or answering it as a new bubble.
+        if (this.turnDedupId === undefined) {
+          this.dispatchDetection(turnDispatchInput(this.turnDetection, d));
+          return;
+        }
         const input = turnDispatchInput(this.turnDetection, d);
         const anchorLog = JSON.stringify(d.text.slice(0, 80));
         console.log(`[Main] dispatch: supersede source=${input.source} anchor=${anchorLog} verdict=${input.verdict} replaces=${JSON.stringify(d.replaces)} question=${JSON.stringify(d.text)}`);
@@ -1007,6 +1026,7 @@ export class AppState {
     this.turnDetection = null;
     this.turnDedupId = undefined;
     this.interviewerVad = null;
+    this.lastVoiceOffAt = null;
   }
   /**
    * Interviewer STT channel on/off. Only the INTERVIEWER channel — the user/mic
@@ -1985,11 +2005,15 @@ export class AppState {
     const { CredentialsManager } = require('./services/CredentialsManager');
     CredentialsManager.getInstance().setLiveMode(next);
     console.log(`[Main] Live Mode → ${next}`);
+    // M2: leaving 'auto' — any switch away from it, not only to 'off' — drops
+    // whatever turn state was accumulating. Its VAD/final feeds stop the instant
+    // the mode isn't 'auto', but an already-armed timer would otherwise still
+    // fire into a mode that no longer wants the answer.
+    if (next !== 'auto') this.resetTurn();
     if (next === 'off') {
       this.stopLiveRouter();
       this.liveHold.cancel();
       this.fragmentHold.cancel();
-      this.resetTurn();
       this.broadcast('live-mode-status', { state: 'idle' });
     } else if (this.isMeetingActive && !wasRunning) {
       // off → suggest/auto during a meeting: bring the router up. suggest↔auto
@@ -2027,7 +2051,7 @@ export class AppState {
       const now = Date.now();
       if (d.source === 'live') this.turn.liveClaim(d.liveText ?? d.question, now);
       this.turn.detected(d.source, now);
-      this.turnDetection = pickTurnDetection(this.turnDetection, d) as DetectionInput;
+      this.turnDetection = pickTurnDetection(this.turnDetection, d);
       console.log(`[Main] dispatch: mark source=${d.source} anchor=${JSON.stringify((d.anchor ?? d.question).slice(0, 80))} verdict=${d.verdict} question=${JSON.stringify(d.question)}`);
       this.turnTick();
       return;

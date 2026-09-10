@@ -130,7 +130,7 @@ describe('interviewerTurn — unfinished text, classification, fail-safe', () =>
         turn.final('How would you shard a Postgres table by tenant?', T + 1000);
         turn.speech(false, T + 1500);
         expect(turn.tick(T + 2000)).toEqual({ kind: 'hold', reason: 'undetected' });
-        expect(turn.tick(T + 2700)).toEqual({ kind: 'classify', text: 'How would you shard a Postgres table by tenant?', finals: 1 });
+        expect(turn.tick(T + 2700)).toEqual({ kind: 'classify', text: 'How would you shard a Postgres table by tenant?', finals: 1, turn: expect.any(Number) });
         expect(turn.tick(T + 2700)).toEqual({ kind: 'hold', reason: 'undetected' });
         turn.detected('whisper', T + 3200, 'question');
         expect(turn.tick(T + 3200).kind).toBe('dispatch');
@@ -144,6 +144,58 @@ describe('interviewerTurn — unfinished text, classification, fail-safe', () =>
         expect(turn.tick(T + 1700)).toEqual({ kind: 'close', reason: 'not-a-question' });
         expect(turn.tick(T + 1700)).toEqual({ kind: 'idle' });
         expect(turn.nextTimerAt(T + 1700)).toBeNull();
+    });
+
+    it('T-C1: a classify decision carries the turn id, and a verdict for that id lands', () => {
+        const turn = createInterviewerTurn();
+        turn.speech(true, T);
+        turn.final('How would you shard a Postgres table by tenant?', T + 1000);
+        turn.speech(false, T + 1500);
+        const decision = turn.tick(T + 2700);
+        expect(decision.kind).toBe('classify');
+        const forTurn = (decision as any).turn;
+        expect(typeof forTurn).toBe('number');
+        turn.detected('whisper', T + 3200, 'question', forTurn);
+        expect(turn.tick(T + 3200).kind).toBe('dispatch');
+    });
+
+    it('T-C2: a verdict for a closed turn is ignored — it neither marks nor opens a turn', () => {
+        const turn = createInterviewerTurn();
+        turn.speech(true, T);
+        turn.final('How would you shard a Postgres table by tenant?', T + 1000);
+        turn.speech(false, T + 1500);
+        const decision = turn.tick(T + 2700);
+        const staleId = (decision as any).turn;
+        turn.candidateSpoke(T + 2800);
+        expect(turn.tick(T + 2800)).toEqual({ kind: 'close', reason: 'candidate' });
+        // The classify verdict for the now-closed turn resolves late.
+        turn.detected('whisper', T + 3200, 'not-a-question', staleId);
+        expect(turn.snapshot().open).toBe(false);
+    });
+
+    it('T-C3: a verdict for an earlier turn does not close the turn that replaced it', () => {
+        const turn = createInterviewerTurn();
+        turn.speech(true, T);
+        turn.final('How would you shard a Postgres table by tenant?', T + 1000);
+        turn.speech(false, T + 1500);
+        const decisionA = turn.tick(T + 2700);
+        const idA = (decisionA as any).turn;
+        // Turn A closes (the candidate interjects) before its classify verdict arrives.
+        turn.candidateSpoke(T + 2800);
+        expect(turn.tick(T + 2800)).toEqual({ kind: 'close', reason: 'candidate' });
+        // Turn B opens with genuinely new content.
+        turn.speech(true, T + 3000);
+        turn.final('What is a DAG?', T + 3500);
+        turn.speech(false, T + 4000);
+        const idB = turn.snapshot().id;
+        expect(idB).not.toBe(idA);
+        // Turn A's stale classify verdict resolves late and must not touch B.
+        turn.detected('whisper', T + 4100, 'not-a-question', idA);
+        expect(turn.tick(T + 4100)).toEqual({ kind: 'hold', reason: 'undetected' });
+        expect(turn.snapshot()).toMatchObject({ open: true, id: idB });
+        // B's own flow continues normally: a detected() call without forTurn still marks it.
+        turn.detected('whisper', T + 4200);
+        expect(turn.snapshot()).toMatchObject({ open: true, id: idB, detected: true });
     });
 
     it('fail-safe: a detected question never waits on a VAD that never goes quiet for more than MAX_HOLD_MS', () => {

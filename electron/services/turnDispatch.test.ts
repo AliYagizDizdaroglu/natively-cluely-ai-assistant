@@ -27,6 +27,18 @@ describe('pickTurnDetection — which of the turn\'s marking detections wins', (
         const unverifiable = detection({ source: 'live', verdict: 'unverifiable' });
         expect(pickTurnDetection(match, unverifiable)).toBe(match);
     });
+
+    it('two unverified detections in a row: the first (current) stands', () => {
+        const first = detection({ source: 'live', verdict: 'unverifiable' });
+        const second = detection({ source: 'live', verdict: 'unverifiable' });
+        expect(pickTurnDetection(first, second)).toBe(first);
+    });
+
+    it('two verified detections in a row: the first (current) stands', () => {
+        const first = detection({ source: 'whisper', verdict: 'match' });
+        const second = detection({ source: 'live', verdict: 'paraphrase' });
+        expect(pickTurnDetection(first, second)).toBe(first);
+    });
 });
 
 describe('turnDispatchInput — the DetectionInput a turn dispatch/supersede sends through dispatchDetection', () => {

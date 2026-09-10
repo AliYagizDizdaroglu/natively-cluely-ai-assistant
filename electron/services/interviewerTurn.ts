@@ -55,7 +55,7 @@ export function readsFinished(text: string): boolean {
 export type TurnDecision =
     | { kind: 'idle' }
     | { kind: 'hold'; reason: 'speaking' | 'gate' | 'settle' | 'unfinished' | 'undetected' }
-    | { kind: 'classify'; text: string; finals: number }
+    | { kind: 'classify'; text: string; finals: number; turn: number }
     | { kind: 'dispatch'; text: string; live: string[]; finished: boolean; gateMs: number; finals: number; fromLive: boolean }
     | { kind: 'supersede'; text: string; live: string[]; replaces: string; finals: number }
     | { kind: 'close'; reason: 'candidate' | 'continuation-expired' | 'not-a-question' | 'nothing-heard' };
@@ -64,15 +64,23 @@ export interface InterviewerTurn {
     speech(active: boolean, at: number): void;
     final(text: string, at: number): void;
     liveClaim(text: string, at: number): void;
-    detected(source: 'live' | 'whisper', at: number, verdict?: 'question' | 'not-a-question'): void;
+    /**
+     * `forTurn`, when given, is the id a `classify` decision carried (R20): a verdict
+     * for any turn other than the one currently open — including no turn open at all,
+     * e.g. it closed while the classification was in flight — is ignored outright: it
+     * neither marks nor (re)opens a turn. Omit it for a live/whisper detector's own
+     * fresh detection, which always applies to whatever turn is open.
+     */
+    detected(source: 'live' | 'whisper', at: number, verdict?: 'question' | 'not-a-question', forTurn?: number): void;
     candidateSpoke(at: number): void;
     tick(now: number): TurnDecision;
     nextTimerAt(now: number): number | null;
     reset(): void;
-    snapshot(): { open: boolean; finals: number; live: number; detected: boolean; dispatched: boolean; speaking: boolean };
+    snapshot(): { open: boolean; finals: number; live: number; detected: boolean; dispatched: boolean; speaking: boolean; id: number | null };
 }
 
 interface OpenTurn {
+    id: number;
     startedAt: number;
     finals: { text: string; at: number }[];
     live: string[];
@@ -91,11 +99,16 @@ interface OpenTurn {
 
 export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS, finished: (text: string) => boolean = readsFinished): InterviewerTurn {
     let turn: OpenTurn | null = null;
+    // R20: every turn gets its own id, scoped to this machine instance, so a classify
+    // verdict that resolves after its turn closed (a candidate interjection, a stale
+    // classification racing a fresh turn) can be told apart from the turn that replaced it.
+    let nextTurnId = 1;
 
     /** Ensures a turn is open, opening a fresh one (no VAD seen yet) if none is. */
     const open = (at: number): OpenTurn => {
         if (!turn) {
             turn = {
+                id: nextTurnId++,
                 startedAt: at,
                 finals: [],
                 live: [],
@@ -172,7 +185,11 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
             if (!t.vadSeen) t.lastSpeechAt = at;
         },
 
-        detected(_source: 'live' | 'whisper', at: number, verdict?: 'question' | 'not-a-question'): void {
+        detected(_source: 'live' | 'whisper', at: number, verdict?: 'question' | 'not-a-question', forTurn?: number): void {
+            // R20: a verdict scoped to a specific turn (forTurn given) that isn't the
+            // currently open one is stale — ignore it before reopenIfStale/open, so it
+            // can neither mark the turn that replaced it nor silently open a new one.
+            if (forTurn !== undefined && (!turn || turn.id !== forTurn)) return;
             reopenIfStale(at);
             const t = open(at);
             t.detected = true;
@@ -233,7 +250,7 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
                 if (quiet(t, now) && !t.classifyAsked) {
                     t.classifyAsked = true;
                     const { text } = textOf(t);
-                    return { kind: 'classify', text, finals: t.finals.length };
+                    return { kind: 'classify', text, finals: t.finals.length, turn: t.id };
                 }
                 return { kind: 'hold', reason: 'undetected' };
             }
@@ -276,7 +293,7 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
         },
 
         snapshot() {
-            if (!turn) return { open: false, finals: 0, live: 0, detected: false, dispatched: false, speaking: false };
+            if (!turn) return { open: false, finals: 0, live: 0, detected: false, dispatched: false, speaking: false, id: null };
             return {
                 open: true,
                 finals: turn.finals.length,
@@ -284,6 +301,7 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
                 detected: turn.detected,
                 dispatched: turn.dispatched !== null,
                 speaking: turn.speaking,
+                id: turn.id,
             };
         },
     };
