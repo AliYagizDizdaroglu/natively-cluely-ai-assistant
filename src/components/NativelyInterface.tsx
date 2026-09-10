@@ -45,6 +45,7 @@ import { analytics, detectProviderType } from '../lib/analytics/analytics.servic
 import { useShortcuts } from '../hooks/useShortcuts';
 import { useResolvedTheme } from '../hooks/useResolvedTheme';
 import { getOverlayAppearance, OVERLAY_OPACITY_DEFAULT } from '../lib/overlayAppearance';
+import { applyAnswerToken, applyFinalAnswer, applyLiveQuestion, type AnswerMessage } from '../lib/answerMessages';
 import { useStreamMetrics, type StreamMetrics } from '../hooks/useStreamMetrics';
 import { MessageMetricsBar } from './MessageMetricsBar';
 import { DetectedQuestionsPanel } from './DetectedQuestionsPanel';
@@ -816,11 +817,7 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                 setIsProcessing(true);
                 setIsExpanded(true);
                 setInFlightQuestion({ question: data.question, intent: data.intent });
-                setMessages(prev => [...prev, {
-                    id: `live-${Date.now()}`,
-                    role: 'user',
-                    text: `🎙 ${data.question}`
-                }]);
+                setMessages(prev => applyLiveQuestion(prev as AnswerMessage[], data.question, data.replace === true, () => `live-${Date.now()}`) as Message[]);
             }));
         }
 
@@ -858,28 +855,7 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                 // Not JSON — normal token, fall through.
             }
 
-            setMessages(prev => {
-                const lastMsg = prev[prev.length - 1];
-
-                // If we already have a streaming message for this intent, append
-                if (lastMsg && lastMsg.isStreaming && lastMsg.intent === 'what_to_answer') {
-                    const updated = [...prev];
-                    updated[prev.length - 1] = {
-                        ...lastMsg,
-                        text: lastMsg.text + data.token
-                    };
-                    return updated;
-                }
-
-                // Otherwise, start a new one (First token)
-                return [...prev, {
-                    id: Date.now().toString(),
-                    role: 'system',
-                    text: data.token,
-                    intent: 'what_to_answer',
-                    isStreaming: true
-                }];
-            });
+            setMessages(prev => applyAnswerToken(prev as AnswerMessage[], data.token, data.replace === true, () => Date.now().toString()) as Message[]);
         }));
 
         cleanups.push(window.electronAPI.onIntelligenceSuggestedAnswer((data) => {
@@ -905,33 +881,26 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                 // Not JSON — normal answer.
             }
 
-            setMessages(prev => {
-                const lastMsg = prev[prev.length - 1];
-
-                // If we were streaming, finalize it
-                if (lastMsg && lastMsg.isStreaming && lastMsg.intent === 'what_to_answer') {
-                    const updated = [...prev];
-                    updated[prev.length - 1] = isCoaching
-                        ? {
-                            ...lastMsg,
-                            isStreaming: false,
-                            isNegotiationCoaching: true,
-                            negotiationCoachingData: coachingData,
-                            text: '',
-                            metrics: finalMetrics,
-                        }
-                        : {
-                            ...lastMsg,
-                            text: data.answer, // Ensure final consistency
-                            isStreaming: false,
-                            metrics: finalMetrics,
-                        };
-                    return updated;
-                }
-
-                // If we missed the stream (or not streaming), append fresh
-                if (isCoaching) {
-                    return [...prev, {
+            // finalize(streaming) builds the finished message from the streaming one being
+            // replaced/finished, or from scratch (streaming === null) when we missed the stream.
+            setMessages(prev => applyFinalAnswer(prev as AnswerMessage[], data.replace === true, (streaming) => (streaming
+                ? (isCoaching
+                    ? {
+                        ...streaming,
+                        isStreaming: false,
+                        isNegotiationCoaching: true,
+                        negotiationCoachingData: coachingData,
+                        text: '',
+                        metrics: finalMetrics,
+                    }
+                    : {
+                        ...streaming,
+                        text: data.answer, // Ensure final consistency
+                        isStreaming: false,
+                        metrics: finalMetrics,
+                    })
+                : (isCoaching
+                    ? {
                         id: Date.now().toString(),
                         role: 'system',
                         text: '',
@@ -939,16 +908,14 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                         isNegotiationCoaching: true,
                         negotiationCoachingData: coachingData,
                         metrics: finalMetrics,
-                    }];
-                }
-                return [...prev, {
-                    id: Date.now().toString(),
-                    role: 'system',
-                    text: data.answer,  // Plain text, no markdown - ready to speak
-                    intent: 'what_to_answer',
-                    metrics: finalMetrics,
-                }];
-            });
+                    }
+                    : {
+                        id: Date.now().toString(),
+                        role: 'system',
+                        text: data.answer,  // Plain text, no markdown - ready to speak
+                        intent: 'what_to_answer',
+                        metrics: finalMetrics,
+                    }))) as Message[]);
         }));
 
         // STREAMING: Refinement

@@ -194,8 +194,8 @@ export interface ElectronAPI {
 
   // Intelligence Mode Events
   onIntelligenceAssistUpdate: (callback: (data: { insight: string }) => void) => () => void
-  onIntelligenceSuggestedAnswerToken: (callback: (data: { token: string; question: string; confidence: number }) => void) => () => void
-  onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number }) => void) => () => void
+  onIntelligenceSuggestedAnswerToken: (callback: (data: { token: string; question: string; confidence: number; replace?: boolean }) => void) => () => void
+  onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number; replace?: boolean }) => void) => () => void
   onIntelligenceSuggestedAnswerSource: (callback: (label: string) => void) => () => void
   onDetectedQuestion: (callback: (chip: {
     id: string;
@@ -229,7 +229,7 @@ export interface ElectronAPI {
   setLiveMode: (mode: 'off' | 'suggest' | 'auto') => Promise<{ mode: 'off' | 'suggest' | 'auto'; state: string }>
   getLiveMode: () => Promise<{ mode: 'off' | 'suggest' | 'auto'; state: string }>
   onLiveModeStatus: (callback: (data: { state: string; reason?: string }) => void) => () => void
-  onLiveQuestion: (callback: (data: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => void) => () => void
+  onLiveQuestion: (callback: (data: { question: string; intent: 'verbal' | 'coding' | 'behavioral'; replace?: boolean }) => void) => () => void
   // Whisper→chip detection pipeline (independent on/off)
   setDetectionEnabled: (enabled: boolean) => Promise<{ enabled: boolean }>
   getDetectionEnabled: () => Promise<{ enabled: boolean }>

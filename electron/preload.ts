@@ -141,7 +141,7 @@ interface ElectronAPI {
 
   // Intelligence Mode Events
   onIntelligenceAssistUpdate: (callback: (data: { insight: string }) => void) => () => void
-  onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number }) => void) => () => void
+  onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number; replace?: boolean }) => void) => () => void
   onIntelligenceSuggestedAnswerSource: (callback: (label: string) => void) => () => void
   onIntelligenceRefinedAnswer: (callback: (data: { answer: string; intent: string }) => void) => () => void
   onIntelligenceRecap: (callback: (data: { summary: string }) => void) => () => void
@@ -777,7 +777,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
       ipcRenderer.removeListener("intelligence-assist-update", subscription)
     }
   },
-  onIntelligenceSuggestedAnswerToken: (callback: (data: { token: string; question: string; confidence: number }) => void) => {
+  onIntelligenceSuggestedAnswerToken: (callback: (data: { token: string; question: string; confidence: number; replace?: boolean }) => void) => {
     const subscription = (_: any, data: any) => callback(data)
     ipcRenderer.on("intelligence-suggested-answer-token", subscription)
     return () => {
@@ -791,7 +791,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
       ipcRenderer.removeListener("intelligence-suggested-answer-source", subscription)
     }
   },
-  onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number }) => void) => {
+  onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number; replace?: boolean }) => void) => {
     const subscription = (_: any, data: any) => callback(data)
     ipcRenderer.on("intelligence-suggested-answer", subscription)
     return () => {
@@ -852,7 +852,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
       ipcRenderer.removeListener("live-mode-status", subscription)
     }
   },
-  onLiveQuestion: (callback: (data: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => void) => {
+  onLiveQuestion: (callback: (data: { question: string; intent: 'verbal' | 'coding' | 'behavioral'; replace?: boolean }) => void) => {
     const subscription = (_: any, data: any) => callback(data)
     ipcRenderer.on("live-question", subscription)
     return () => {
