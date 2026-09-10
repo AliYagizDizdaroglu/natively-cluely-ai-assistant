@@ -36,7 +36,7 @@ export function computeRun(dir) {
  *
  * Returns the RunMetrics contract used by `gate` and the headline numbers
  * (dir, startedAt, endedAt, durationMin, items, heard, answered, delivered,
- * answerFailures, answersToNobody, surfacedMax, surfacedMulti, extendsTotal, caught,
+ * answerFailures, answersToNobody, surfacedMax, surfacedMulti, extendsTotal, supersedesTotal, caught,
  * unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, screenCaptures, heuristicChips, raceLosses, sttCloses,
  * lostUtterances, fragmentChips, coachingAnswers, codingForSpoken,
  * expiryLoops, liveReconnects, detectP50, ttftP90, ttftSource) plus a few
@@ -63,7 +63,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const liveQ = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] Live question \((\w+), mode=(\w+)\): "([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), intent: m[2], mode: m[3], heard: m[4] }));
     const suppressed = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] suppressed duplicate live question \(already surfaced by (\w+)\): "([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), by: m[2], heard: m[3] }));
     const whisperFwd = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] forwarding detected-question → renderer \(win=\w+\) intent=(\w+) q="([^"]*)"/gm)].map((m) => ({ at: ts(m[1]), intent: m[2], heard: m[3] }));
-    const dispatches = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|chip|drop|extend) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)(?: duplicateOf=(\w+) answered=(true|false))?(?: extends="(?:[^"\\]|\\.)*")?(?: question="((?:[^"\\]|\\.)*)")?/gm)]
+    const dispatches = [...dbg.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|chip|drop|extend|hold|mark|supersede) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)(?: duplicateOf=(\w+) answered=(true|false))?(?: extends="(?:[^"\\]|\\.)*")?(?: replaces="(?:[^"\\]|\\.)*")?(?: question="((?:[^"\\]|\\.)*)")?/gm)]
         .map((m) => ({ at: ts(m[1]), action: m[2], source: m[3], anchor: JSON.parse(`"${m[4]}"`), verdict: m[5], duplicateOf: m[6] ?? null, answered: m[7] === 'true', question: m[8] == null ? null : JSON.parse(`"${m[8]}"`) }));
     const routes = [...diag.matchAll(/^\[(\S+)\] route: ([^\n]+)/gm)].map((m) => ({ at: ts(m[1]), route: m[2].trim() }));
     const firstTokens = [...diag.matchAll(/^\[(\S+)\] first token (\d+)ms/gm)].map((m) => ({ at: ts(m[1]), ms: Number(m[2]) }));
@@ -218,19 +218,24 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
             const sources = new Set(mine.map((d) => d.source));
             const heardBy = sources.size === 2 ? 'both' : sources.size === 1 ? [...sources][0] : null;
             // An extend is the same question answered again for its fuller sentence
-            // (main.ts extend dispatch) — one surface, not a second chip/double.
-            const surfaced = mine.filter((d) => d.action !== 'drop' && d.action !== 'extend').length;
+            // (main.ts extend dispatch) — one surface, not a second chip/double. A mark
+            // is a detection only (attribution/coverage), never a surface (main.ts marks
+            // the open interviewer turn without dispatching); a supersede replaces the
+            // answer already given, not a second one (counted separately in
+            // `supersedes`, below); a hold never reaches the user either.
+            const surfaced = mine.filter((d) => !['drop', 'extend', 'hold', 'mark', 'supersede'].includes(d.action)).length;
             const extended = mine.filter((d) => d.action === 'extend').length;
+            const supersedes = mine.filter((d) => d.action === 'supersede').length;
             // How much of the scripted question the app actually answered: the best
-            // content-word coverage over the answer and extend dispatches (the
-            // engine answers `question`; older lines only carried the anchor). A long
-            // design question split by the STT into several finals shows up here as a
-            // low number — the "answered whole" gate row (2026-09-08 roster).
-            const coverage = Math.max(0, ...mine.filter((d) => d.action === 'answer' || d.action === 'extend')
+            // content-word coverage over the answer, extend and supersede dispatches
+            // (the engine answers `question`; older lines only carried the anchor). A
+            // long design question split by the STT into several finals shows up here
+            // as a low number — the "answered whole" gate row (2026-09-08 roster).
+            const coverage = Math.max(0, ...mine.filter((d) => d.action === 'answer' || d.action === 'extend' || d.action === 'supersede')
                 .map((d) => overlap(it.q, d.question ?? d.anchor)));
             return { ...it, heardBy, answered: !!(ans && route), answeredAt: ans?.at ?? null,
                 detectMs: mine.length ? Math.min(...mine.map((d) => d.at)) - spokeEnd : null,
-                dispatches: surfaced, extended, coverage, verdict: ans?.verdict ?? mine[0]?.verdict ?? null,
+                dispatches: surfaced, extended, supersedes, coverage, verdict: ans?.verdict ?? mine[0]?.verdict ?? null,
                 routeCoding: !!(route && /^CODING/.test(route.route)),
                 // verdict=fragment drops are R36-round-3 noise (a Live claim
                 // too short to be anything), not a real race loss signal.
@@ -323,6 +328,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const surfacedMulti = items.filter((i) => i.dispatches > 1).length;
     const surfacedMax = items.length ? Math.max(...items.map((i) => i.dispatches)) : 0;
     const extendsTotal = items.reduce((s, i) => s + (i.extended ?? 0), 0);
+    const supersedesTotal = items.reduce((s, i) => s + (i.supersedes ?? 0), 0);
     // Long design questions (level 'long'): answered whole when the dispatched text
     // covers at least 80% of the scripted content words. The bar is 0.8 rather than
     // 1.0 because the STT drops or respells a word or two even on a clean hearing.
@@ -367,7 +373,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
 
     return {
         startedAt: timeline.startedAt, endedAt: timeline.endedAt, durationMin, items,
-        heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti, extendsTotal, longs, longWhole,
+        heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti, extendsTotal, supersedesTotal, longs, longWhole,
         caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, screenCaptures, heuristicChips, raceLosses,
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, resolvedEmptyFinals: stt.resolvedEmptyFinals, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
@@ -425,7 +431,7 @@ export const spokenCodingRoutes = (items, all = items) => {
 export const GATE = [
     { key: 'answered', label: 'Answered hands-free', before: '26/52', pass: (m) => m.delivered >= scaled(50, m.items.length) && m.answersToNobody === 0, show: (m) => `${m.delivered}/${m.answered} dispatched, ${m.answersToNobody} to nobody` },
     { key: 'heard', label: 'Heard by either detector', before: '51/52', pass: (m) => m.heard >= scaled(51, m.items.length), show: (m) => `${m.heard}/${m.items.length}` },
-    { key: 'surfaced', label: 'Surfaced detections per question', before: '12 doubles, 1 invented', pass: (m) => m.surfacedMulti === 0 && m.answersToNobody === 0, show: (m) => `${m.surfacedMulti} doubles, ${m.extendsTotal} extended, ${m.caught} caught, ${m.answersToNobody} unclaimed` },
+    { key: 'surfaced', label: 'Surfaced detections per question', before: '12 doubles, 1 invented', pass: (m) => m.surfacedMulti === 0 && m.answersToNobody === 0, show: (m) => `${m.surfacedMulti} doubles, ${m.extendsTotal} extended, ${m.supersedesTotal} superseded, ${m.caught} caught, ${m.answersToNobody} unclaimed` },
     { key: 'stt', label: 'STT socket closes / lost utterances / fragment chips', before: '299 / 2 / 5', pass: (m) => m.sttCloses <= 5 && m.lostUtterances === 0 && m.fragmentChips === 0, show: (m) => `${m.sttCloses} / ${m.lostUtterances} (${m.resolvedEmptyFinals} resolved within 5 s) / ${m.fragmentChips}` },
     { key: 'coaching', label: 'Technical questions answered via the coaching path', before: '25', pass: (m) => m.coachingAnswers === 0, show: (m) => String(m.coachingAnswers) },
     { key: 'coding', label: 'Spoken questions routed CODING', before: '4 routes (2 of them screenshot cues)', pass: (m) => m.codingForSpoken === 0, show: (m) => `${m.codingForSpoken}, ${m.cueAnswers} cue answers, ${m.screenCaptures} captures` },
@@ -436,14 +442,15 @@ export const GATE = [
     { key: 'long', label: 'Long questions answered whole', before: 'not in the roster', pass: (m) => m.longWhole === m.longs, show: (m) => m.longs ? `${m.longWhole} of ${m.longs} (dispatched text covers ≥ 80% of the question)` : 'none in the roster' },
     { key: 'latency', label: 'Answer TTFT p90 · detect p50', before: '3.7 s (answer-only pass) · 4.1 s', pass: (m) => (m.ttftP90 ?? Infinity) <= 5000 && (m.detectP50 ?? Infinity) <= 5000, show: (m) => `${m.ttftP90 == null ? '—' : (m.ttftP90 / 1000).toFixed(1) + ' s'}${m.ttftSource === 'answer-only' ? ' (answer-only pass)' : ''} · ${m.detectP50 == null ? '—' : (m.detectP50 / 1000).toFixed(1) + ' s'}` },
     { key: 'pinned', label: 'Answer prompt pinned to the dispatched question', before: 'not logged', pass: (m) => m.pinned.answers > 0 && m.pinned.legacy === 0 && m.pinned.missing === 0 && m.pinned.mismatched === 0, show: (m) => m.pinned.answers === 0 ? 'no answers' : m.pinned.legacy === m.pinned.answers ? 'not logged' : `${m.pinned.answers - m.pinned.legacy - m.pinned.missing - m.pinned.mismatched}/${m.pinned.answers} pinned, ${m.pinned.missing} missing, ${m.pinned.mismatched} mismatched${m.pinned.legacy ? `, ${m.pinned.legacy} legacy` : ''}` },
-    // Spec 2026-09-05 §3: the floor equals the limit, so a cut answer always has
-    // at least 80 words — `cutShort` is 0 by construction and non-zero only if
-    // the old 40-word floor is somehow back. `n` must cover the delivered answers
-    // (cue answers and coding routes emit no budget line, hence 0.9). p50 ≤ 100:
-    // the pre-budget raw median was 97, so the cut must still exist. max ≤ 130:
-    // a 50-word sentence in progress at 80 — pathological, and the 160 ceiling
-    // only bounds a terminator-free answer.
-    { key: 'budget', label: 'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)', before: '36 of 55 cut under 80 words (after6)', pass: (m) => m.budget.n > 0 && m.budget.n >= Math.floor(m.delivered * 0.9) && m.budget.cutShort === 0 && m.budget.p50 <= 100 && m.budget.max <= 130, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.over} over 80, ${m.budget.cutShort} cut under 80, words p50 ${m.budget.p50} max ${m.budget.max}` },
+    // Spec 2026-09-09 §3.5: the budget now follows the question — floor equals
+    // limit equals clamp(80, 2.5 × question words, 150), so a cut answer always
+    // finishes the sentence in progress at whatever that question's limit is;
+    // `cutShort` is still 0 by construction. `n` must cover the delivered
+    // answers (cue answers and coding routes emit no budget line, hence 0.9).
+    // p50 is no longer bounded — a longer question legitimately buys a longer
+    // limit — only `max` is: the ceiling is min(2 × limit, 200), so 200 bounds
+    // every answer regardless of question length.
+    { key: 'budget', label: 'Spoken answers: budget follows the question (80–150 words, ceiling 200)', before: '36 of 55 cut under 80 words (after6)', pass: (m) => m.budget.n > 0 && m.budget.n >= Math.floor(m.delivered * 0.9) && m.budget.cutShort === 0 && m.budget.max <= 200, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.over} over 80, ${m.budget.cutShort} cut under 80, words p50 ${m.budget.p50} max ${m.budget.max}` },
 ];
 
 /** Counts over spoken items only — mirrors summarizeVerdicts in interview60.judge.mjs (kept dependency-free here). */

@@ -160,6 +160,10 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
                 // the full question then arrives as an extend. Far past everything else.
                 { id: 'L01', kind: 'spoken', level: 'long', q: 'Let us do a design question. We retrain a recommendation model nightly on two terabytes of click data. Walk me through the training pipeline, the validation of a candidate model, and a rollout where a bad model never reaches all of the traffic.', playedAt: T0 + 1200000, clipSecs: 20 },
                 { id: 'L02', kind: 'spoken', level: 'long', q: 'Imagine three models on GPUs in Kubernetes with spiky traffic, a strict latency budget, and a batch scoring job. Tell me how you would lay out the cluster, schedule and autoscale each workload, and keep the GPU bill under control.', playedAt: T0 + 1300000, clipSecs: 20 },
+                // 2026-09-09 whole-turn (Task 8): a question answered once at the gate, then
+                // superseded by its own continuation (main.ts dispatch: supersede) — a mark
+                // (detection only, never a surface) precedes the answer. Far past everything else.
+                { id: 'M27', kind: 'spoken', level: 'medium', q: 'When would you reach for a service mesh in an ML serving stack, and when would you not?', playedAt: T0 + 1500000, clipSecs: 5.5 },
             ],
         };
 
@@ -273,6 +277,13 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             `${iso(T0 + 1100900)} [LOG] [Answer] budget: words=67 cut=yes allowance=no`,
             `${iso(T0 + 1110900)} [LOG] [Answer] budget: words=90 cut=no allowance=yes`,
             `${iso(T0 + 1120900)} [LOG] [Answer] budget: words=140 cut=no allowance=yes`,
+            // 2026-09-09 whole-turn (Task 8): mark (detection only) -> answer -> supersede
+            // (replaces the answer already given). M27's own answer dispatch carries
+            // question=, so it also feeds the pinned-question tracking above.
+            `${iso(T0 + 1504700)} [LOG] [Main] dispatch: mark source=whisper anchor="When would you reach for a service mesh in an ML serving stack?" verdict=match question="When would you reach for a service mesh in an ML serving stack?"`,
+            `${iso(T0 + 1506000)} [LOG] [Main] turn: gate=1210 finals=1 live=0 finished=true`,
+            `${iso(T0 + 1506000)} [LOG] [Main] dispatch: answer source=whisper anchor="When would you reach for a service mesh in an ML serving stack?" verdict=match question="When would you reach for a service mesh in an ML serving stack?"`,
+            `${iso(T0 + 1509000)} [LOG] [Main] dispatch: supersede source=whisper anchor="When would you reach for a service mesh in an ML serving stack? And when would you not?" verdict=match replaces="When would you reach for a service mesh in an ML serving stack?" question="When would you reach for a service mesh in an ML serving stack? And when would you not?"`,
         ];
 
         const diagLines = [
@@ -280,6 +291,8 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             `[${iso(T0 + 2500)}] route: CODING (selected model, no filter)`,
             // Q2's route, within 4000ms of ITS answer dispatch (+123000..+127000) — not CODING.
             `[${iso(T0 + 123500)}] route: VERBAL-TECHNICAL (selected model, filtered)`,
+            // M27's route, within 4000ms of ITS answer dispatch (+1506000..+1510000) — not CODING.
+            `[${iso(T0 + 1506100)}] route: VERBAL-TECHNICAL (selected model, filtered)`,
             // Three in-app first-token times — presence alone makes ttftSource
             // 'in-app' (it only falls back to the answer-only pass when there are
             // NO first-token lines at all).
@@ -405,6 +418,29 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(m.screenCaptures).toBe(1);
     });
 
+    it('M27 — a mark before the answer is the first detection; a later supersede replaces it, not a second surface (2026-09-09 whole-turn)', () => {
+        const m27 = m.items.find((i: any) => i.id === 'M27');
+        // surfaced excludes drop/extend/hold/mark/supersede — only the answer counts as
+        // a surface. The mark and the supersede are each a dispatch line in `mine`, but
+        // tracked separately (supersedes), never doubling `dispatches`.
+        expect(m27.dispatches).toBe(1);
+        expect(m27.supersedes).toBe(1);
+        expect(m27.extended).toBe(0);
+        expect(m27.answered).toBe(true);
+        // coverage is the best content-word overlap over the answer's and the
+        // supersede's question= text. (This alone cannot prove the supersede's
+        // question= field survived the inserted replaces= group — M27's answer
+        // alone already covers every content word here, since "and when would you
+        // not?" adds only stop words; see the dedicated capture-index test below.)
+        expect(m27.coverage).toBeGreaterThanOrEqual(0.9);
+        // detectMs = earliest dispatch (the mark, at +1504700) - spokeEnd (+1505500) =
+        // -800: the mark IS the first detection, ahead of the clip actually finishing.
+        expect(m27.detectMs).toBe(-800);
+        expect(m.supersedesTotal).toBe(1);
+        const row = evaluateGate(m).rows.find((r) => r.label === 'Surfaced detections per question');
+        expect(row.value).toContain('1 superseded');
+    });
+
     it('long questions: answered whole only when the dispatched text (answer or extend) covers ≥ 80% of the scripted words', () => {
         const l01 = m.items.find((i: any) => i.id === 'L01');
         const l02 = m.items.find((i: any) => i.id === 'L02');
@@ -421,27 +457,32 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // at all either way. plus the four answer-what-was-asked lines at
         // +1100000/+1110000/+1120000/+1130000, also past every window.
         expect(m.answersToNobody).toBe(7);
-        expect(m.answered).toBe(2);
+        // Q1, Q2, and now M27 (its answer dispatch has a matching route within
+        // 4 s — 2026-09-09 whole-turn fixture).
+        expect(m.answered).toBe(3);
     });
 
     it('top-level counts, each derived from the lines above', () => {
         // heard = items with heardBy !== null: Q1(live), Q2(both), Q4(live),
-        // W01(live), W02(whisper), L01(whisper), L02(whisper) — not Q3. = 7.
-        expect(m.heard).toBe(7);
-        // answered = items with answered === true: Q1, Q2 only. W01/W02 have
-        // no matching route within 4000ms of their answer dispatch — by
+        // W01(live), W02(whisper), L01(whisper), L02(whisper), M27(whisper) —
+        // not Q3. = 8.
+        expect(m.heard).toBe(8);
+        // answered = items with answered === true: Q1, Q2, and now M27 (its
+        // answer dispatch matches the route added within 4 s of it). W01/W02
+        // have no matching route within 4000ms of their answer dispatch — by
         // design, this fixture targets claim-once, not the answered/route path.
-        expect(m.answered).toBe(2);
+        expect(m.answered).toBe(3);
         // answerFailures = count of "[WhatToAnswerLLM] Stream failed" lines = 1.
-        // delivered = max(0, answered - answerFailures) = max(0, 2 - 1) = 1.
+        // delivered = max(0, answered - answerFailures) = max(0, 3 - 1) = 2.
         expect(m.answerFailures).toBe(1);
-        expect(m.delivered).toBe(1);
+        expect(m.delivered).toBe(2);
         // heuristicChips = count of "[QuestionDetector] degraded: chip" lines = 1.
         expect(m.heuristicChips).toBe(1);
         // answersToNobody: dispatches.filter(action==='answer' && unclaimed by
         // any item). Q1's and Q2's answer dispatches ARE claimed (they're in
         // those items' `mine`); so are W01's and W02's (claimed by W01 and W02
-        // respectively, exactly once each — see the claim-once test above).
+        // respectively, exactly once each — see the claim-once test above), and
+        // so is M27's (claimed by M27 — see the M27 test above).
         // Unclaimed: the phantom "museum exhibit" answer (+520000) plus the
         // two unverifiable answers (+800000, +900000) — all timed past every
         // item's window. = 3. plus the four answer-what-was-asked lines at
@@ -479,12 +520,14 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(m.codingForSpoken).toBe(1);
         expect(m.expiryLoops).toBe(1);
         expect(m.liveReconnects).toBe(1);
-        // detectMs sorted = [1000 (Q4), 1000 (W01), 1500 (Q2), 1500 (W02), 2000
-        // (Q1), 4000 (L01), 4000 (L02)] (Q3's null is filtered out). pct(a, p) =
+        // detectMs sorted = [-800 (M27), 1000 (Q4), 1000 (W01), 1500 (Q2), 1500
+        // (W02), 2000 (Q1), 4000 (L01), 4000 (L02)] (Q3's null is filtered out;
+        // -800 clears the `> -5000` floor). pct(a, p) =
         // a[min(a.length-1, floor(a.length*p))].
-        // p50: floor(7*0.5)=3 → sorted[3] = 1500.
+        // p50: floor(8*0.5)=4 → sorted[4] = 1500 — unchanged: M27's -800 lands at
+        // the front, pushing every later index up by exactly one slot.
         expect(m.detectP50).toBe(1500);
-        // p90: floor(7*0.9)=6 → sorted[6] = 4000.
+        // p90: floor(8*0.9)=7 → sorted[7] = 4000 — unchanged for the same reason.
         expect(m.detectP90).toBe(4000);
         // in-app TTFT: firstTokens present (3 lines) so ttftSource is 'in-app'
         // regardless of there being no answers.json.
@@ -495,23 +538,28 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
 
     it('pinned — pairs new-format answer dispatches with the pinned line inside 2 s, on TRIMMED text, counts legacy lines separately', () => {
         // answers: Q1 (+2000), Q2 (+123000), phantom (+520000), W01, W02, two
-        // unverifiable, C01 = 8 legacy + 4 new-format = 12. The fourth
-        // (+1130000) differs from its pinned line only by the surrounding
-        // spaces the engine trims off, so it counts as pinned, not mismatched:
-        // 14 - 8 legacy - 3 missing - 1 mismatched = 2 (the two long-question
-        // answer dispatches L01/L02 carry no pinned line, so they count as missing).
-        expect(m.pinned).toEqual({ answers: 14, legacy: 8, missing: 3, mismatched: 1 });
+        // unverifiable, C01 = 8 legacy + 6 new-format (L01, L02, the four
+        // answer-what-was-asked lines) + M27 (+1506000, also new-format: its
+        // answer dispatch carries question=) = 15. The fourth answer-what-was-
+        // asked line (+1130000) differs from its pinned line only by the
+        // surrounding spaces the engine trims off, so it counts as pinned, not
+        // mismatched: 15 - 8 legacy - 4 missing - 1 mismatched = 2. Missing: L01,
+        // L02, the third answer-what-was-asked line (its pinned line arrives 3 s
+        // later, outside the 2 s window) — same three as before — plus M27,
+        // which carries no pinned line at all (2026-09-09 whole-turn fixture).
+        expect(m.pinned).toEqual({ answers: 15, legacy: 8, missing: 4, mismatched: 1 });
         const row = evaluateGate(m).rows.find((r) => r.label === 'Answer prompt pinned to the dispatched question');
         expect(row.pass).toBe(false);
-        expect(row.value).toBe('2/14 pinned, 3 missing, 1 mismatched, 8 legacy');
+        expect(row.value).toBe('2/15 pinned, 4 missing, 1 mismatched, 8 legacy');
     });
     it('budget — measures the distribution, so the row can actually fail', () => {
         // sorted words [67, 90, 140]: n 3, over 2 (90, 140), allowance 2, cut 1,
         // cutShort 1 (67 is the only cut line under 80), p50 = pct(a,.5) =
         // a[floor(3*.5)] = a[1] = 90, max 140.
         expect(m.budget).toEqual({ n: 3, over: 2, allowance: 2, cut: 1, cutShort: 1, p50: 90, max: 140 });
-        const row = evaluateGate(m).rows.find((r) => r.label === 'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)');
-        // n 3 >= floor(delivered 1 * 0.9) = 0, but cutShort 1 !== 0 and max 140 > 130.
+        const row = evaluateGate(m).rows.find((r) => r.label === 'Spoken answers: budget follows the question (80–150 words, ceiling 200)');
+        // n 3 >= floor(delivered 2 * 0.9) = 1, and max 140 <= 200 (the row no longer
+        // bounds p50 or a fixed 130 ceiling) — but cutShort 1 !== 0 alone still fails it.
         expect(row.pass).toBe(false);
         expect(row.value).toBe('3 answers, 2 over 80, 1 cut under 80, words p50 90 max 140');
     });
@@ -519,11 +567,22 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(GATE.slice(-2).map((g) => g.key)).toEqual(['pinned', 'budget']);
     });
 
+    it('budget gate row pass rule: bounds only the ceiling, not the median (spec 2026-09-09 §3.5)', () => {
+        const row = GATE.find((g) => g.key === 'budget')!;
+        const base = { budget: { n: 10, over: 0, cutShort: 0, p50: 90, max: 120 }, delivered: 10 } as any;
+        expect(row.pass(base)).toBe(true);
+        // max 205 > the 200 ceiling — fails, even though everything else is fine.
+        expect(row.pass({ ...base, budget: { ...base.budget, max: 205 } })).toBe(false);
+        // p50 130 — no longer bounded at all; a longer question legitimately buys a
+        // longer limit, so the row does not penalise a higher median on its own.
+        expect(row.pass({ ...base, budget: { ...base.budget, p50: 130 } })).toBe(true);
+    });
+
     it('evaluates the gate: everything fails except the latency row and the roster-proportional heard row', () => {
         const g = evaluateGate(m);
         expect(g.pass).toBe(false);
         const rows = Object.fromEntries(g.rows.map((r) => [r.label, r.pass]));
-        // delivered=1 is nowhere near >=50; answersToNobody=7 also fails it alone.
+        // delivered=2 is nowhere near >=50 (scaled); answersToNobody=7 also fails it alone.
         expect(rows['Answered hands-free']).toBe(false);
         // heard PASSES here, and that is correct: the row is now a proportion of the roster
         // rather than a flat >=51, and this synthetic fixture heard everything it had. The
@@ -542,8 +601,8 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // ttftP90=3000ms and detectP50=1500ms are both <= the 5000ms gate.
         expect(rows['Answer TTFT p90 · detect p50']).toBe(true);
         const failed = g.rows.filter((r) => !r.pass).map((r) => r.label);
-        // pinned (8 legacy dispatches) and budget (cutShort 1, max 140 > 130)
-        // both fail here too — appended last, same as GATE itself.
+        // pinned (8 legacy dispatches) and budget (cutShort 1 !== 0) both fail
+        // here too — appended last, same as GATE itself.
         expect(failed).toEqual([
             'Answered hands-free',
             // 'Heard by either detector' is absent: see above — the row is proportional now
@@ -556,7 +615,7 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             'Interview-acceptable answers (Opus 5 judge)',
             'Long questions answered whole',
             'Answer prompt pinned to the dispatched question',
-            'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)',
+            'Spoken answers: budget follows the question (80–150 words, ceiling 200)',
         ]);
     });
 
@@ -579,6 +638,61 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(row.pass).toBe(false);
         // Without the file the row reads 'not run' and fails — the pass is part of the gate, not optional.
         expect(evaluateGate(m).rows.find((r) => r.label === 'Interview-acceptable answers (Opus 5 judge)').value).toBe('not run');
+    });
+});
+
+/**
+ * The M27 fixture above cannot, on its own, prove the supersede's `question=`
+ * field survived the `replaces=` group inserted ahead of it in the regex — its
+ * answer dispatch's own question= already covers every content word of the
+ * scripted question, so coverage reads high even if the supersede's question
+ * were lost entirely (see the comment on that test). This isolates the claim:
+ * an item whose scripted text is covered by the supersede's `question=` but
+ * NOT by its (short, unrelated) `anchor=` — a lost capture (the replaces=
+ * group shifting the question capture index) would read the anchor instead
+ * and coverage would fall to a small fraction; a correct capture reads ~1.0.
+ */
+describe("supersede question capture — the replaces= group must not shift the question capture index", () => {
+    const T0 = Date.parse('2026-01-01T00:00:00.000Z');
+    const iso = (ms: number) => new Date(ms).toISOString();
+    let dir = '';
+    let m: any;
+
+    beforeAll(() => {
+        dir = fs.mkdtempSync(path.join(os.tmpdir(), 'i60-supersede-question-'));
+        const timeline = {
+            startedAt: iso(T0 - 1000), startedMs: T0 - 1000,
+            startDebug: 0, endDebug: 1e9, startDiag: 0, endDiag: 1e9,
+            endedAt: iso(T0 + 60000),
+            items: [
+                { id: 'S1', kind: 'spoken', q: 'Describe your approach to caching frequently accessed inventory records including eviction policy.', playedAt: T0, clipSecs: 0 },
+            ],
+        };
+        const dbgLines = [
+            // anchor is a short prefix of S1.q — enough overlap to be claimed (score
+            // well above the 0.15 floor) but far short of S1.q's full content-word
+            // set; question= carries the whole scripted text. If the capture index
+            // were wrong, coverage would fall back to the anchor's 4-of-11 words.
+            `${iso(T0 + 2000)} [LOG] [Main] dispatch: supersede source=whisper anchor="Describe your approach to caching." verdict=match replaces="something replaced" question="Describe your approach to caching frequently accessed inventory records including eviction policy."`,
+        ];
+        fs.writeFileSync(path.join(dir, 'interview60.timeline.json'), JSON.stringify(timeline, null, 1));
+        fs.writeFileSync(path.join(dir, 'natively_debug.log'), dbgLines.join('\n') + '\n');
+        fs.writeFileSync(path.join(dir, 'verbal-diag.log'), '');
+        m = computeRunFromFiles({
+            debugLog: path.join(dir, 'natively_debug.log'),
+            diagLog: path.join(dir, 'verbal-diag.log'),
+            timelinePath: path.join(dir, 'interview60.timeline.json'),
+            answersPath: path.join(dir, 'interview60.answers.json'), // deliberately never written
+        });
+    });
+    afterAll(() => { if (dir) fs.rmSync(dir, { recursive: true, force: true }); });
+
+    it("reads the supersede's question= field, not its anchor=, for coverage", () => {
+        const s1 = m.items.find((i: any) => i.id === 'S1');
+        expect(s1.supersedes).toBe(1);
+        // 4 of S1.q's 11 content words ("describe your approach caching") are in the
+        // anchor — a lost question= capture would read ~0.36, not >= 0.9.
+        expect(s1.coverage).toBeGreaterThanOrEqual(0.9);
     });
 });
 
@@ -623,7 +737,7 @@ describe('GATE', () => {
             'Answer TTFT p90 · detect p50',
             // Spec 2026-09-04 §2/§4 (answer-what-was-asked) — appended last.
             'Answer prompt pinned to the dispatched question',
-            'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)',
+            'Spoken answers: budget follows the question (80–150 words, ceiling 200)',
         ]);
     });
 });
@@ -643,7 +757,7 @@ describe('gate thresholds scale with the roster', () => {
         // (scenario50 asks one after every main), counted beside them — see summarizeJudge.
         items: [...new Array(gradeable).fill({ level: 'medium' }), ...new Array(items - gradeable).fill({ level: 'followup' })],
         delivered: items, answered: items, answersToNobody: 0, heard: items,
-        surfacedMulti: 0, extendsTotal: 0, caught: 0, sttCloses: 0, lostUtterances: 0, resolvedEmptyFinals: 0,
+        surfacedMulti: 0, extendsTotal: 0, supersedesTotal: 0, caught: 0, sttCloses: 0, lostUtterances: 0, resolvedEmptyFinals: 0,
         fragmentChips: 0, coachingAnswers: 0, codingForSpoken: 0, cueAnswers: 0, screenCaptures: 0, expiryLoops: 0,
         judge: { n: gradeable, acceptable: gradeable, weak: 0, wrong: 0, errors: 0, long: { n: 0 }, followup: { n: 0 } },
         longs: 0, longWhole: 0, ttftP90: 3000, detectP50: 4000,

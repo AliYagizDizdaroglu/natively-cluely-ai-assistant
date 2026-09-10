@@ -82,10 +82,11 @@ const overlap = (a, b) => {
  */
 export function pairAnswers(debugLog, timeline) {
     const items = timeline.items.map((i) => ({ ...i, spokeEnd: i.playedAt + Math.round((i.clipSecs ?? 0) * 1000) }));
-    const all = [...debugLog.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|extend) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)/gm)]
+    const all = [...debugLog.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|extend|supersede) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)/gm)]
         .map((m) => ({ at: Date.parse(m[1]), action: m[2], source: m[3], anchor: JSON.parse(`"${m[4]}"`), verdict: m[5] }));
     const dispatches = all.filter((d) => d.action === 'answer');
     const extendsList = all.filter((d) => d.action === 'extend');
+    const supersedeList = all.filter((d) => d.action === 'supersede');
     const fulls = [...debugLog.matchAll(/^(\S+) \[LOG\] \[Answer\] full: (".*")$/gm)]
         .map((m) => ({ at: Date.parse(m[1]), text: JSON.parse(m[2]) }));
     // Answers pair with the first full line in their window (bounded by the next
@@ -114,7 +115,7 @@ export function pairAnswers(debugLog, timeline) {
             id: item?.id ?? '?', kind: item?.kind ?? 'unknown', level: item?.level ?? null, topic: item?.topic ?? null,
             question: item ? questionForGrader(item, items) : null, heard: d.anchor, source: d.source, verdict: d.verdict,
             dispatchedAt: new Date(d.at).toISOString(), answer: full?.text ?? null,
-            extended: false, heardExtended: null,
+            extended: false, heardExtended: null, superseded: false, heardSuperseded: null,
         };
     });
     for (const e of extendsList) {
@@ -126,6 +127,19 @@ export function pairAnswers(debugLog, timeline) {
         head.answer = head.answer ? `${head.answer}\n\n${full.text}` : full.text;
         head.extended = true;
         head.heardExtended = e.anchor;
+    }
+    // A supersede is a continuation that REPLACES the answer already given (main.ts
+    // dispatch: supersede), not a fuller sentence appended beside it (that's extend,
+    // above) — the candidate only ever said the superseding text.
+    for (const e of supersedeList) {
+        const full = fulls.find((f) => !taken.has(f) && f.at >= e.at && f.at < e.at + 60_000) ?? null;
+        if (!full) continue;
+        taken.add(full);
+        const head = [...pairs].reverse().find((p) => Date.parse(p.dispatchedAt) <= e.at);
+        if (!head) continue;
+        head.answer = full.text;
+        head.superseded = true;
+        head.heardSuperseded = e.anchor;
     }
     return pairs;
 }

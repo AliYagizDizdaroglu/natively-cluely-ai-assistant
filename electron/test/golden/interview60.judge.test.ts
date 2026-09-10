@@ -84,6 +84,24 @@ describe('pairAnswers', () => {
         expect(pairs[0].heardExtended).toBe('What is the difference between a docker image and a container, and when does it matter?');
     });
 
+    it('a supersede dispatch (a continuation that replaces the answer already given) REPLACES the head pair\'s answer instead of appending', () => {
+        const superseded = [
+            '2026-09-04T08:00:16.000Z [LOG] [Main] dispatch: answer source=whisper anchor="What is the difference between a docker image" verdict=match',
+            '2026-09-04T08:00:19.500Z [LOG] [Answer] full: "An image is the read-only blueprint."',
+            '2026-09-04T08:00:22.000Z [LOG] [Main] dispatch: supersede source=whisper anchor="What is the difference between a docker image and a container, and when does it matter?" verdict=match replaces="What is the difference between a docker image" question="What is the difference between a docker image and a container, and when does it matter?"',
+            '2026-09-04T08:00:25.000Z [LOG] [Answer] full: "A container is a running instance of an image; it matters once you need more than one."',
+        ].join('\n');
+        const pairs = pairAnswers(superseded, timeline);
+        expect(pairs.map((p) => p.id)).toEqual(['W01']);
+        // Replaced, not appended: the head's answer is the SECOND full line only.
+        expect(pairs[0].answer).toBe('A container is a running instance of an image; it matters once you need more than one.');
+        expect(pairs[0].superseded).toBe(true);
+        expect(pairs[0].heardSuperseded).toBe('What is the difference between a docker image and a container, and when does it matter?');
+        // The extend branch above stays live and untouched by this one.
+        expect(pairs[0].extended).toBe(false);
+        expect(pairs[0].heardExtended).toBe(null);
+    });
+
     it('claims an anchor with no content words by time — the tail of a question STT split in two — instead of dropping it', () => {
         // M27 in the 2026-09-04 hour: Deepgram's final was "And when would you not?", every word a stop word.
         const split = [

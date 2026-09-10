@@ -25,7 +25,7 @@ const pass = (overrides: Record<string, unknown> = {}) => ({
     },
     gate: { pass: false, rows: [{ label: 'Heard by either detector', value: '40/40', pass: true }, { label: 'Long questions answered whole', value: '12 of 15', pass: false }] },
     summary: {
-        items: 40, heard: 40, answered: 40, delivered: 39, doubles: 13, extends: 22, longs: 15, longWhole: 12, ttftP90: 12113, detectP50: 1714, liveReconnects: 25, lostUtterances: 1,
+        items: 40, heard: 40, answered: 40, delivered: 39, doubles: 13, extends: 22, supersedes: 0, longs: 15, longWhole: 12, ttftP90: 12113, detectP50: 1714, liveReconnects: 25, lostUtterances: 1,
         inApp: { questions: 20, acceptable: 5, weak: 14, wrong: 1, error: 0 }, inAppPairs: { n: 36, acceptable: 6, weak: 24, wrong: 6, error: 0 },
         followups: { n: 20, acceptable: 11, weak: 9, wrong: 0, error: 0 },
         arms: [{ model: 'qwen/qwen3.8-27b', n: 20, acceptable: 10, weak: 10, wrong: 0, error: 0, ttftP50: 512, ttftP90: 681, graded: true }],
@@ -81,6 +81,19 @@ describe('renderPassRecord — one file holds the whole pass', () => {
         expect(md).toMatch(/12\.1 s/); // ttft p90
     });
 
+    it('shows supersedes in the summary line, beside extends (spec 2026-09-09 whole-turn)', () => {
+        const md2 = renderPassRecord(pass({ summary: { ...pass().summary, supersedes: 1 } }));
+        expect(md2).toContain('· 1 supersedes ·');
+    });
+
+    it('marks a superseded in-app answer inline, the same place "extended" is printed', () => {
+        const p = pass();
+        (p.questions[0].inApp[0] as any).superseded = true;
+        const md2 = renderPassRecord(p);
+        const q = md2.slice(md2.indexOf('S1Q02'));
+        expect(q).toMatch(/\*\*In-app answer 1\*\*[^\n]*superseded/);
+    });
+
     it('says plainly when a pass has not been graded yet, and still shows the answers', () => {
         const ungraded = pass({ meta: { ...pass().meta, graded: false, graderPrompt: null, judgeModel: null }, summary: { ...pass().summary, inApp: null, inAppPairs: null, followups: null, arms: [{ model: 'qwen/qwen3.8-27b', n: 20, acceptable: 0, weak: 0, wrong: 0, error: 0, ttftP50: 512, ttftP90: 681, graded: false }] } });
         ungraded.questions[0].inApp.forEach((a: any) => { a.grade = null; });
@@ -106,6 +119,13 @@ describe('renderPassIndex — the trend line across passes', () => {
         expect(rows[0]).toMatch(/13/);         // doubles
         expect(rows[0]).toContain('249e643');
         expect(rows[1]).toContain('not graded');
+    });
+
+    it('carries supersedes in the header and each row', () => {
+        const md2 = renderPassIndex([passRow(pass({ summary: { ...pass().summary, supersedes: 4 } }))]);
+        expect(md2).toContain('| supersedes |');
+        const row = md2.split('\n').find((l) => l.startsWith('| 2026-'));
+        expect(row).toMatch(/\| 4 \|/);
     });
 });
 

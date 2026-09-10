@@ -87,7 +87,8 @@ export function collectPass(runDir) {
             inApp: (byId.get(it.id) ?? []).map(({ key, pair }, i) => ({
                 n: i + 1, key, source: pair.source, dispatchedAt: pair.dispatchedAt,
                 offsetS: pair.dispatchedAt ? Math.round((Date.parse(pair.dispatchedAt) - spokeEnd) / 100) / 10 : null,
-                heard: pair.heard, heardExtended: pair.heardExtended ?? null, extended: !!pair.extended, answer: pair.answer ?? null,
+                heard: pair.heard, heardExtended: pair.heardExtended ?? null, extended: !!pair.extended,
+                heardSuperseded: pair.heardSuperseded ?? null, superseded: !!pair.superseded, answer: pair.answer ?? null,
                 grade: gradeOf(judge?.items?.[key]),
             })),
             arms: [],
@@ -123,7 +124,7 @@ export function collectPass(runDir) {
     const best = mains.map((q) => q.inApp.map((a) => a.grade).filter(Boolean).sort((a, b) => (RANK[b.verdict] ?? -1) - (RANK[a.verdict] ?? -1))[0] ?? null);
     const inApp = judge ? { questions: mains.length, ...countVerdicts(best) } : null;
     const summary = {
-        items: m.items.length, heard: m.heard, answered: m.answered, delivered: m.delivered, doubles: m.surfacedMulti, extends: m.extendsTotal,
+        items: m.items.length, heard: m.heard, answered: m.answered, delivered: m.delivered, doubles: m.surfacedMulti, extends: m.extendsTotal, supersedes: m.supersedesTotal,
         longs: m.longs, longWhole: m.longWhole, ttftP90: m.ttftP90 ?? null, detectP50: m.detectP50 ?? null, liveReconnects: m.liveReconnects ?? null, lostUtterances: m.lostUtterances ?? null,
         inApp,
         inAppPairs: m.judge ? { n: m.judge.n, acceptable: m.judge.acceptable, weak: m.judge.weak, wrong: m.judge.wrong, error: m.judge.errors ?? 0 } : null,
@@ -163,7 +164,7 @@ export function renderPassRecord(p) {
     out.push(`| run folder | ${t.runDir} |`, '');
 
     out.push('## Summary', '');
-    out.push(`- Heard ${s.heard}/${s.items} · answered ${s.answered} · delivered ${s.delivered} · ${s.doubles} doubles · ${s.extends} extends · long whole ${s.longWhole} of ${s.longs} · TTFT p90 ${secs(s.ttftP90)} · detect p50 ${secs(s.detectP50)} · Live reconnects ${s.liveReconnects ?? '—'} · lost utterances ${s.lostUtterances ?? '—'}`);
+    out.push(`- Heard ${s.heard}/${s.items} · answered ${s.answered} · delivered ${s.delivered} · ${s.doubles} doubles · ${s.extends} extends · ${s.supersedes} supersedes · long whole ${s.longWhole} of ${s.longs} · TTFT p90 ${secs(s.ttftP90)} · detect p50 ${secs(s.detectP50)} · Live reconnects ${s.liveReconnects ?? '—'} · lost utterances ${s.lostUtterances ?? '—'}`);
     if (s.inApp) {
         const unanswered = s.inApp.questions - (s.inApp.acceptable + s.inApp.weak + s.inApp.wrong + s.inApp.error);
         out.push(`- In-app, best answer per question: **${counts(s.inApp)} of ${s.inApp.questions} mains**${unanswered > 0 ? ` (${unanswered} unanswered)` : ''}${s.inAppPairs ? ` — per pair: ${counts(s.inAppPairs)} of ${s.inAppPairs.n}` : ''}${s.followups ? `; follow-ups ${s.followups.acceptable} acceptable of ${s.followups.n}` : ''}`);
@@ -185,7 +186,7 @@ export function renderPassRecord(p) {
         out.push(`### ${q.id} · ${tags.join(' · ')}`, '', quote(q.q), '');
         if (!q.inApp.length) out.push('_No in-app answer was dispatched for this question._', '');
         for (const a of q.inApp) {
-            out.push(`**In-app answer ${a.n}** — ${a.source}, ${signed(a.offsetS)}${a.extended ? ', extended' : ''} → ${renderGrade(a.grade)}`, '');
+            out.push(`**In-app answer ${a.n}** — ${a.source}, ${signed(a.offsetS)}${a.extended ? ', extended' : ''}${a.superseded ? ', superseded' : ''} → ${renderGrade(a.grade)}`, '');
             out.push(`heard: "${a.heard ?? ''}"${a.heardExtended ? `\nextended with: "${a.heardExtended}"` : ''}`, '');
             out.push(a.answer ? quote(a.answer) : '_no answer was delivered_', '');
         }
@@ -202,7 +203,7 @@ export function passRow(p) {
     const { meta: t, summary: s } = p;
     return {
         dirName: t.dirName, file: `${t.dirName}.md`, startedAt: t.startedAt, label: t.label, rosterLabel: t.rosterLabel ?? t.roster ?? null, commit: t.commit,
-        items: s.items, heard: s.heard, delivered: s.delivered, doubles: s.doubles, longWhole: s.longWhole, longs: s.longs, ttftP90: s.ttftP90, detectP50: s.detectP50,
+        items: s.items, heard: s.heard, delivered: s.delivered, doubles: s.doubles, supersedes: s.supersedes, longWhole: s.longWhole, longs: s.longs, ttftP90: s.ttftP90, detectP50: s.detectP50,
         graded: t.graded, inApp: s.inApp, arms: s.arms.map((a) => ({ model: a.model, acceptable: a.acceptable, n: a.n, graded: a.graded })),
     };
 }
@@ -211,12 +212,12 @@ export function passRow(p) {
 export function renderPassIndex(rows) {
     const sorted = [...rows].sort((a, b) => String(a.startedAt ?? a.dirName).localeCompare(String(b.startedAt ?? b.dirName)));
     const out = ['# Passes', '', 'One row per pass over the golden questions, oldest first. "in-app" is the best answer per main question under the frozen grader; arms are the bare-prompt models on the same mains.', '',
-        '| pass | record | roster | commit | heard | delivered | doubles | long whole | TTFT p90 | in-app | arms |', '|---|---|---|---|---|---|---|---|---|---|---|'];
+        '| pass | record | roster | commit | heard | delivered | doubles | supersedes | long whole | TTFT p90 | in-app | arms |', '|---|---|---|---|---|---|---|---|---|---|---|---|'];
     for (const r of sorted) {
-        if (r.error) { out.push(`| ${r.dirName} | — | — | — | — | — | — | — | — | unreadable: ${cell(r.error)} | — |`); continue; }
+        if (r.error) { out.push(`| ${r.dirName} | — | — | — | — | — | — | — | — | — | unreadable: ${cell(r.error)} | — |`); continue; }
         const inApp = r.inApp ? `${r.inApp.acceptable}/${r.inApp.questions} (${r.inApp.weak} weak, ${r.inApp.wrong} wrong)` : 'not graded';
         const arms = r.arms.length ? r.arms.map((a) => `${a.model.split('/').pop()} ${a.graded ? `${a.acceptable}/${a.n}` : 'not graded'}`).join(' · ') : '—';
-        out.push(`| ${r.dirName} | [record](${r.file}) | ${cell(r.rosterLabel ?? 'unknown')} | ${short(r.commit)} | ${r.heard}/${r.items} | ${r.delivered} | ${r.doubles} | ${r.longs ? `${r.longWhole}/${r.longs}` : '—'} | ${secs(r.ttftP90)} | ${inApp} | ${arms} |`);
+        out.push(`| ${r.dirName} | [record](${r.file}) | ${cell(r.rosterLabel ?? 'unknown')} | ${short(r.commit)} | ${r.heard}/${r.items} | ${r.delivered} | ${r.doubles} | ${r.supersedes} | ${r.longs ? `${r.longWhole}/${r.longs}` : '—'} | ${secs(r.ttftP90)} | ${inApp} | ${arms} |`);
     }
     return out.join('\n') + '\n';
 }
