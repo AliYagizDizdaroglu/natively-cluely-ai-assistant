@@ -13,7 +13,6 @@ import {
 } from './llm';
 import { getAnswerShapeGuidance, IntentResult } from './llm/IntentClassifier';
 import { pinSettledQuestion } from './llm/lastInterviewerTurn';
-import { extensionAnswerShape } from './llm/extensionShape';
 
 // Mode types
 export type IntelligenceMode = 'idle' | 'assist' | 'what_to_say' | 'follow_up' | 'recap' | 'clarify' | 'manual' | 'follow_up_questions' | 'code_hint' | 'brainstorm';
@@ -250,13 +249,10 @@ export class IntelligenceEngine extends EventEmitter {
             bypassCooldown?: boolean;
             /** "Answer now with Flash Lite" — skip the deep model, answer fast. */
             forceFastModel?: boolean;
-            /**
-             * The already-answered head of this question (main.ts dispatch: extend):
-             * the answer covers only what the fuller sentence adds.
-             */
-            extendOf?: string;
             /** The Live ear's texts of the dispatched turn (main.ts turn dispatch). */
             liveTexts?: string[];
+            /** This answer replaces the one shown for the same turn — main.ts supersede. */
+            replaceAnswer?: boolean;
         } = {}
     ): Promise<string | null> {
         const now = Date.now();
@@ -291,7 +287,7 @@ export class IntelligenceEngine extends EventEmitter {
                 const answer = await this.answerLLM.generate(question || '', context);
                 if (answer) {
                     this.session.addAssistantMessage(answer);
-                    this.emit('suggested_answer', answer, question || 'inferred', confidence);
+                    this.emit('suggested_answer', answer, question || 'inferred', confidence, options.replaceAnswer === true);
                 }
                 this.setMode('idle');
                 return answer || "Could you repeat that? I want to make sure I address your question properly.";
@@ -387,7 +383,7 @@ export class IntelligenceEngine extends EventEmitter {
                 intentResult = {
                     intent: mapped,
                     confidence: 1.0,
-                    answerShape: options.extendOf ? extensionAnswerShape(options.extendOf) : getAnswerShapeGuidance(mapped),
+                    answerShape: getAnswerShapeGuidance(mapped),
                 };
                 if (advisoryCoding) console.log('[IntelligenceEngine] runWhatShouldISay: intent override coding → general (spoken question, no screenshot)');
                 else console.log(`[IntelligenceEngine] runWhatShouldISay: intent override → ${mapped}`);
@@ -424,11 +420,11 @@ export class IntelligenceEngine extends EventEmitter {
                     if (match) this.emit('suggested_answer_source', match[1]);
                     const stripped = token.replace(/__model_source:[^_]*__/, '').trimStart();
                     if (!stripped) continue;
-                    this.emit('suggested_answer_token', stripped, question || 'inferred', confidence);
+                    this.emit('suggested_answer_token', stripped, question || 'inferred', confidence, options.replaceAnswer === true);
                     fullAnswer += stripped;
                     continue;
                 }
-                this.emit('suggested_answer_token', token, question || 'inferred', confidence);
+                this.emit('suggested_answer_token', token, question || 'inferred', confidence, options.replaceAnswer === true);
                 fullAnswer += token;
             }
 
@@ -453,7 +449,7 @@ export class IntelligenceEngine extends EventEmitter {
 
             // CQ-05 fix: only emit the "complete" event after a non-aborted stream.
             // The renderer already has all tokens — this is for metadata only (e.g. copying, history).
-            this.emit('suggested_answer', fullAnswer, question || 'What to Answer', confidence);
+            this.emit('suggested_answer', fullAnswer, question || 'What to Answer', confidence, options.replaceAnswer === true);
 
             this.setMode('idle');
             return fullAnswer;

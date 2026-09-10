@@ -220,6 +220,12 @@ interface DetectionInput {
    * first), so the detection is never dispatched.
    */
   resolving?: boolean;
+  /** The raw Live text, before reconciliation — the turn's liveClaim wants the ear's own words. */
+  liveText?: string;
+  /** Set on a turn dispatch/supersede: the joined Live texts of the turn, for the answer prompt's Live ear. */
+  liveTexts?: string[];
+  /** The turn's own dispatch/supersede, arriving through actOnTurn — skips dispatchDetection's marking block. */
+  turnDispatch?: true;
 }
 
 // Knowledge modules (open-source build)
@@ -237,8 +243,7 @@ import { SettingsManager } from "./services/SettingsManager"
 import { PhoneMirrorService } from "./services/PhoneMirrorService"
 import { setVerboseLoggingFlag } from "./verboseLog"
 import { pickIntelligenceSurface } from "./services/intelligenceSurface"
-import { shouldExtend } from "./services/extendOnClause"
-import { mentionsScreen, extendOfAfterCapture } from "./services/screenReference"
+import { mentionsScreen } from "./services/screenReference"
 import { ReleaseNotesManager } from "./update/ReleaseNotesManager"
 import { OllamaManager } from './services/OllamaManager'
 import { normalizeLiveMode } from './services/liveMode'
@@ -247,6 +252,9 @@ import { reconcileLiveQuestion, reconcileWindowMs } from './services/questionRec
 import { createLiveHold } from './services/liveHold'
 import { isFragment, looksFragmentary } from './services/questionShape'
 import { resolveSttProvider } from './services/sttProviderOverride'
+import { createEnergyVad, EnergyVad } from './audio/energyVad'
+import { createInterviewerTurn, turnConstantsFromEnv, InterviewerTurn, TurnDecision } from './services/interviewerTurn'
+import { pickTurnDetection, turnDispatchInput } from './services/turnDispatch'
 
 export class AppState {
   private static instance: AppState | null = null
@@ -927,6 +935,79 @@ export class AppState {
     holdMs: 2500,
     onResolve: (held) => this.dispatchDetection({ ...held, resolving: true }),
   });
+  // The interviewer turn (spec 2026-09-09 §3): decides WHEN a hands-free answer goes
+  // out. Detections mark it; the energy VAD and the transcript finals clock it.
+  private readonly turn: InterviewerTurn = createInterviewerTurn(turnConstantsFromEnv());
+  private turnTimer: NodeJS.Timeout | null = null;
+  private turnDetection: DetectionInput | null = null;
+  private turnDedupId: number | undefined;
+  private interviewerVad: EnergyVad | null = null;
+
+  /** Interviewer PCM → the energy VAD → the turn (Auto mode only). */
+  private onInterviewerAudio(chunk: Buffer): void {
+    if (this.liveMode !== 'auto' || !this.isMeetingActive) return;
+    if (!this.interviewerVad) this.interviewerVad = createEnergyVad({ sampleRate: this.systemAudioCapture?.getSampleRate() ?? 48000 });
+    const u = this.interviewerVad.push(chunk, Date.now());
+    if (u.changed) { this.turn.speech(u.speaking, u.at); this.turnTick(); }
+  }
+
+  /** Run the turn's decisions now, then arm its next timer. Re-entrant-safe: decisions never call back into it synchronously. */
+  private turnTick(): void {
+    if (this.turnTimer) { clearTimeout(this.turnTimer); this.turnTimer = null; }
+    for (let guard = 0; guard < 8; guard++) {
+      const d = this.turn.tick(Date.now());
+      if (d.kind === 'idle' || d.kind === 'hold') break;
+      this.actOnTurn(d);
+    }
+    const next = this.turn.nextTimerAt(Date.now());
+    if (next !== null) this.turnTimer = setTimeout(() => this.turnTick(), Math.max(0, next - Date.now()));
+  }
+
+  private actOnTurn(d: TurnDecision): void {
+    switch (d.kind) {
+      case 'classify':
+        console.log(`[Main] turn: classify finals=${d.finals} question=${JSON.stringify(d.text.slice(0, 80))}`);
+        void this.intelligenceManager.detectQuestionNow(d.text)
+          .then((v) => {
+            // The meeting may have ended (resetTurn) while this classification was
+            // in flight — feeding a stale verdict to `turn` would open a stray turn.
+            if (!this.isMeetingActive) return;
+            this.turn.detected('whisper', Date.now(), v);
+            this.turnTick();
+          });
+        return;
+      case 'dispatch': {
+        if (!this.turnDetection) return;
+        console.log(`[Main] turn: gate=${d.gateMs} finals=${d.finals} live=${d.live.length} finished=${d.finished}`);
+        this.dispatchDetection(turnDispatchInput(this.turnDetection, d));
+        return;
+      }
+      case 'supersede': {
+        if (!this.turnDetection) return;
+        const input = turnDispatchInput(this.turnDetection, d);
+        const anchorLog = JSON.stringify(d.text.slice(0, 80));
+        console.log(`[Main] dispatch: supersede source=${input.source} anchor=${anchorLog} verdict=${input.verdict} replaces=${JSON.stringify(d.replaces)} question=${JSON.stringify(d.text)}`);
+        this.chipDeduper.extend(this.turnDedupId, d.text);
+        this.broadcast('live-question', { question: d.text, intent: input.intent, source: input.source, replace: true });
+        void this.answerDetection(input, { replace: true })
+          .catch((err: any) => console.error('[Main] supersede-answer failed:', err?.message ?? err));
+        return;
+      }
+      case 'close':
+        console.log(`[Main] turn: close reason=${d.reason}`);
+        this.turnDetection = null;
+        this.turnDedupId = undefined;
+        return;
+    }
+  }
+
+  private resetTurn(): void {
+    if (this.turnTimer) { clearTimeout(this.turnTimer); this.turnTimer = null; }
+    this.turn.reset();
+    this.turnDetection = null;
+    this.turnDedupId = undefined;
+    this.interviewerVad = null;
+  }
   /**
    * Interviewer STT channel on/off. Only the INTERVIEWER channel — the user/mic
    * channel is untouched, since Live never hears the candidate and that
@@ -1079,7 +1160,9 @@ export class AppState {
         // An interviewer final just arrived — resolve any held unverifiable
         // Live detection now instead of waiting out its timeout (R37).
         this.liveHold.onInterviewerFinal();
+        if (this.liveMode === 'auto') { this.turn.final(segment.text, Date.now()); this.turnTick(); }
       }
+      if (segment.isFinal && speaker === 'user' && this.liveMode === 'auto') { this.turn.candidateSpoke(Date.now()); this.turnTick(); }
     });
 
     // Consecutive failure counter — reset on any successful final transcript
@@ -1087,6 +1170,14 @@ export class AppState {
 
     // Track state so we broadcast 'connected' on recovery from failed/reconnecting
     let _lastState: 'connected' | 'reconnecting' | 'failed' = 'reconnecting';
+
+    if (speaker === 'interviewer') {
+      // The turn's own VAD signal (energyVad over the desktop-audio PCM) is the
+      // primary clock; Deepgram's endpointing events are logged alongside it so
+      // the golden harness can see whether the two agree (main.ts turn: … lines).
+      (stt as NodeJS.EventEmitter).on('speech-started', () => console.log(`[Main] turn: deepgram speech-started vad=${this.interviewerVad?.speaking() ?? 'n/a'}`));
+      (stt as NodeJS.EventEmitter).on('utterance-end', () => console.log(`[Main] turn: deepgram utterance-end vad=${this.interviewerVad?.speaking() ?? 'n/a'}`));
+    }
 
     stt.on('error', (err: Error) => {
       console.error(`[Main] STT (${speaker}) Error:`, err);
@@ -1212,6 +1303,7 @@ export class AppState {
             console.log(`[Main] SystemAudio->STT: chunk #${_sysChunkCount}, ${chunk.length}B, googleSTT=${this.googleSTT ? 'active' : 'NULL'}`);
           }
           this.writeInterviewerStt(chunk);
+          this.onInterviewerAudio(chunk);
           // Live Mode tee — no-ops unless the live router is connected.
           this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
         });
@@ -1219,6 +1311,7 @@ export class AppState {
           console.log(`[Main] SystemAudioCapture rate updated dynamically to ${rate}Hz`);
           // Forward to ALL active STT providers — STTProvider union includes setSampleRate
           this.googleSTT?.setSampleRate(rate);
+          this.interviewerVad = null;
         });
         this.systemAudioCapture.on('speech_ended', () => {
           this.googleSTT?.notifySpeechEnded?.();
@@ -1327,12 +1420,14 @@ export class AppState {
           console.log(`[Main] (Reconfigured) SystemAudio->STT: chunk #${_rcfgSysChunkCount}, ${chunk.length}B, googleSTT=${this.googleSTT ? 'active' : 'NULL'}`);
         }
         this.writeInterviewerStt(chunk);
+        this.onInterviewerAudio(chunk);
         // Live Mode tee — no-ops unless the live router is connected.
         this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
       });
       this.systemAudioCapture.on('sample_rate_changed', (rate: number) => {
         console.log(`[Main] (Reconfigured) SystemAudioCapture rate updated dynamically to ${rate}Hz`);
         this.googleSTT?.setSampleRate(rate);
+        this.interviewerVad = null;
       });
       this.systemAudioCapture.on('speech_ended', () => {
         this.googleSTT?.notifySpeechEnded?.();
@@ -1367,12 +1462,14 @@ export class AppState {
             console.log(`[Main] (Default) SystemAudio->STT: chunk #${_dfltSysChunkCount}, ${chunk.length}B, googleSTT=${this.googleSTT ? 'active' : 'NULL'}`);
           }
           this.writeInterviewerStt(chunk);
+          this.onInterviewerAudio(chunk);
           // Live Mode tee — no-ops unless the live router is connected.
           this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
         });
         this.systemAudioCapture.on('sample_rate_changed', (rate: number) => {
           console.log(`[Main] (Reconfigured Default) SystemAudioCapture rate updated dynamically to ${rate}Hz`);
           this.googleSTT?.setSampleRate(rate);
+          this.interviewerVad = null;
         });
         this.systemAudioCapture.on('speech_ended', () => {
           this.googleSTT?.notifySpeechEnded?.();
@@ -1784,6 +1881,7 @@ export class AppState {
     this.chipDeduper.reset();
     this.liveHold.cancel();
     this.fragmentHold.cancel();
+    this.resetTurn();
 
     // Live mode used to live only in memory, so every restart forgot it and an
     // unattended relaunch came up deaf. Restore the stored mode when the
@@ -1891,6 +1989,7 @@ export class AppState {
       this.stopLiveRouter();
       this.liveHold.cancel();
       this.fragmentHold.cancel();
+      this.resetTurn();
       this.broadcast('live-mode-status', { state: 'idle' });
     } else if (this.isMeetingActive && !wasRunning) {
       // off → suggest/auto during a meeting: bring the router up. suggest↔auto
@@ -1919,6 +2018,18 @@ export class AppState {
     if (d.source === 'live' && isFragment(d.question)) {
       const anchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
       console.log(`[Main] dispatch: drop source=live anchor=${anchorLog} verdict=fragment question=${JSON.stringify(d.question)}`);
+      return;
+    }
+    // Hands-free: the interviewer turn decides WHEN to answer (spec 2026-09-09 §3.3).
+    // A detection from either ear only marks the open turn; the turn dispatches the
+    // joined transcript once the voice has stopped, through the tail of this method.
+    if (this.liveMode === 'auto' && !d.turnDispatch) {
+      const now = Date.now();
+      if (d.source === 'live') this.turn.liveClaim(d.liveText ?? d.question, now);
+      this.turn.detected(d.source, now);
+      this.turnDetection = pickTurnDetection(this.turnDetection, d) as DetectionInput;
+      console.log(`[Main] dispatch: mark source=${d.source} anchor=${JSON.stringify((d.anchor ?? d.question).slice(0, 80))} verdict=${d.verdict} question=${JSON.stringify(d.question)}`);
+      this.turnTick();
       return;
     }
     // An unverifiable Live claim (nothing heard from the interviewer STT in
@@ -1953,20 +2064,6 @@ export class AppState {
     const action = this.liveMode === 'off' && d.source === 'whisper' ? (verdict.admitted ? 'chip' : 'drop') : decideDispatch(this.liveMode, verdict);
     const anchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
     if (action === 'drop') {
-      // The fuller sentence of a question already answered from its head (the STT
-      // closed a final at a mid-question pause): answer the whole question instead
-      // of dropping its second clause. Hands-free only. See extendOnClause.ts.
-      if (
-        this.liveMode === 'auto' && verdict.alreadyAnswered === true && verdict.duplicateOfQuestion !== undefined &&
-        verdict.duplicateAgeMs !== undefined && shouldExtend(verdict.duplicateOfQuestion, d.question, verdict.duplicateAgeMs)
-      ) {
-        console.log(`[Main] dispatch: extend source=${d.source} anchor=${anchorLog} verdict=${d.verdict} extends=${JSON.stringify(verdict.duplicateOfQuestion)} question=${JSON.stringify(d.question)}`);
-        this.chipDeduper.extend(verdict.id, d.question);
-        this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source });
-        void this.answerDetection(d, verdict.duplicateOfQuestion)
-          .catch((err: any) => console.error('[Main] extend-answer failed:', err?.message ?? err));
-        return;
-      }
       console.log(`[Main] dispatch: drop source=${d.source} anchor=${anchorLog} verdict=${d.verdict} duplicateOf=${verdict.duplicateOfSource ?? 'none'} answered=${verdict.alreadyAnswered === true} question=${JSON.stringify(d.question)}`);
       return;
     }
@@ -1987,8 +2084,9 @@ export class AppState {
       return;
     }
     // answer — mark first so a duplicate arriving during generation is dropped
+    this.turnDedupId = verdict.id;
     this.chipDeduper.markAnswered(verdict.id);
-    this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source });
+    this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source, replace: false });
     void this.answerDetection(d)
       .catch((err: any) => console.error('[Main] auto-answer failed:', err?.message ?? err));
   }
@@ -2000,13 +2098,13 @@ export class AppState {
    * cues from the transcript, one of them with the previous question's answer. A
    * failed capture answers from the transcript as before, and says so in the log.
    *
-   * Both hands-free paths come through here: decideDispatch's 'answer' and the extend
-   * branch. The extend branch used to call runWhatShouldISay directly and so never
-   * captured — after9 (2026-09-08) lost cue C03 that way: its full text arrived as an
-   * extend and was answered blind, about drift and retraining instead of the ring buffer
-   * on screen. extendOf is the answered text this one adds to; absent on the plain path.
+   * `opts.replace` is set only by the turn's own supersede (main.ts turn: supersede):
+   * the answer already on screen for this turn is replaced in place rather than
+   * appended as a second bubble — the flag rides the suggested_answer* events to the
+   * renderer (Task 9). `d.liveTexts`, when the turn set them, are the Live ear's texts
+   * for the same turn, passed through to the answer prompt's both-ears block.
    */
-  private async answerDetection(d: DetectionInput, extendOf?: string): Promise<void> {
+  private async answerDetection(d: DetectionInput, opts: { replace?: boolean } = {}): Promise<void> {
     let imagePaths: string[] | undefined;
     let intent = d.intent;
     if (mentionsScreen(d.question)) {
@@ -2018,10 +2116,7 @@ export class AppState {
         console.warn(`[Main] screen reference: capture failed (${err?.message ?? err}); answering from the transcript`);
       }
     }
-    // A capture is knowledge the earlier answer never had, so it is not a foundation to
-    // build on — see extendOfAfterCapture.
-    const buildOn = extendOfAfterCapture(extendOf, imagePaths !== undefined);
-    await this.intelligenceManager.runWhatShouldISay(d.question, 1.0, imagePaths, { intentOverride: intent, bypassCooldown: true, ...(buildOn === undefined ? {} : { extendOf: buildOn }) });
+    await this.intelligenceManager.runWhatShouldISay(d.question, 1.0, imagePaths, { intentOverride: intent, bypassCooldown: true, ...(d.liveTexts?.length ? { liveTexts: d.liveTexts } : {}), ...(opts.replace ? { replaceAnswer: true } : {}) });
   }
 
   private startLiveRouter(): void {
@@ -2072,6 +2167,7 @@ export class AppState {
       anchor: r.anchor ?? undefined,
       verdict: r.verdict,
       resolving,
+      liveText: question,
     });
   }
 
@@ -2122,6 +2218,7 @@ export class AppState {
     this.stopLiveRouter();
     this.liveHold.cancel();
     this.fragmentHold.cancel();
+    this.resetTurn();
     this.googleSTT?.finalize?.();
     this.googleSTT_User?.finalize?.();
     await new Promise(resolve => setTimeout(resolve, 250));
@@ -2241,18 +2338,18 @@ export class AppState {
       helper.getOverlayWindow()?.webContents.send('intelligence-assist-update', { insight });
     })
 
-    this.intelligenceManager.on('suggested_answer', (answer: string, question: string, confidence: number) => {
+    this.intelligenceManager.on('suggested_answer', (answer: string, question: string, confidence: number, replace?: boolean) => {
       const win = mainWindow()
       if (win) {
-        win.webContents.send('intelligence-suggested-answer', { answer, question, confidence })
+        win.webContents.send('intelligence-suggested-answer', { answer, question, confidence, replace: replace === true })
       }
 
     })
 
-    this.intelligenceManager.on('suggested_answer_token', (token: string, question: string, confidence: number) => {
+    this.intelligenceManager.on('suggested_answer_token', (token: string, question: string, confidence: number, replace?: boolean) => {
       const win = mainWindow()
       if (win) {
-        win.webContents.send('intelligence-suggested-answer-token', { token, question, confidence })
+        win.webContents.send('intelligence-suggested-answer-token', { token, question, confidence, replace: replace === true })
       }
     })
 

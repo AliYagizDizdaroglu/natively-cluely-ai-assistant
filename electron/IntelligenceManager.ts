@@ -344,7 +344,8 @@ export class IntelligenceManager extends EventEmitter {
             contextOverride?: string;
             bypassCooldown?: boolean;
             forceFastModel?: boolean;
-            extendOf?: string;
+            liveTexts?: string[];
+            replaceAnswer?: boolean;
         } = {}
     ): Promise<string | null> {
         return this.engine.runWhatShouldISay(question, confidence, imagePaths, options);
