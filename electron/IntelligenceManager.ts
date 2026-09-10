@@ -206,6 +206,11 @@ export class IntelligenceManager extends EventEmitter {
         return this.questionDetector.isEnabled();
     }
 
+    /** The interviewer turn's classification at the gate (main.ts turn: classify). */
+    public detectQuestionNow(text: string): Promise<'question' | 'not-a-question'> {
+        return this.questionDetector.detectNow(text);
+    }
+
     /** Clear detector state — call on meeting boundary. */
     clearDetectedQuestions(): void {
         this.questionDetector.clear();

@@ -69,7 +69,7 @@ const DEFAULTS = {
 export class QuestionDetector {
     private readonly opts: Required<QuestionDetectorOptions>;
     private silenceTimer: NodeJS.Timeout | null = null;
-    private inflightDetection: Promise<void> | null = null;
+    private inflightDetection: Promise<unknown> | null = null;
     private queuedTrigger = false;
     private dedupCache: { id: string; text: string }[] = [];
     // Last TWO interviewer finals, for the deterministic scenario-sentence merge
@@ -196,6 +196,21 @@ export class QuestionDetector {
         this.generation++;
     }
 
+    /**
+     * Classify caller-supplied text now — the interviewer turn asks this at its
+     * gate (spec 2026-09-09 §3.3) instead of waiting for the silence debounce.
+     * Same detection as the debounce path, on `text` alone; resolves 'question'
+     * when a chip was emitted or updated. Never rejects.
+     */
+    public async detectNow(text: string): Promise<'question' | 'not-a-question'> {
+        if (!this.enabled) return 'not-a-question';
+        if (this.inflightDetection) { try { await this.inflightDetection; } catch { /* its own logs */ } }
+        let produced = false;
+        this.inflightDetection = this.runDetection(text).then((p) => { produced = p; }).finally(() => { this.inflightDetection = null; });
+        try { await this.inflightDetection; } catch { produced = false; }
+        return produced ? 'question' : 'not-a-question';
+    }
+
     private resetSilenceTimer(speechEndedAt?: number): void {
         const now = Date.now();
         const sincePrev = this.lastResetAtMs === null ? null : now - this.lastResetAtMs;
@@ -233,11 +248,16 @@ export class QuestionDetector {
         });
     }
 
-    private async runDetection(): Promise<void> {
+    private async runDetection(override?: string): Promise<boolean> {
         const myGeneration = this.generation;
+        // detectNow's override: caller-supplied text classified alone, right
+        // now, with no debounce. It is not a new interviewer final — never
+        // pushed into recentFinals/recentFinalsUnfiltered below — so it
+        // stands in as `cur` with no `prev` to merge against.
+        const overrideFinal = override !== undefined ? { text: override, refTime: Date.now() } : undefined;
         // Captured before the await below so a final arriving during the detect()
         // call cannot shift which two finals this detection's merge is based on.
-        const [prev, cur] = this.recentFinals.slice(-2);
+        const [prev, cur] = overrideFinal ? [undefined, overrideFinal] : this.recentFinals.slice(-2);
         // NOT the same `slice(-2)` destructuring as above: with exactly one
         // entry, `[a, b] = [x].slice(-2)` puts x in `a` (prev) and leaves `b`
         // (cur) undefined — harmless above, since mergeScenarioSentence
@@ -245,9 +265,9 @@ export class QuestionDetector {
         // wrong here, where a single final must still become `cur` (the
         // thing to build a degraded chip from), not silently vanish.
         const unfilteredLen = this.recentFinalsUnfiltered.length;
-        const degradedCur = unfilteredLen >= 1 ? this.recentFinalsUnfiltered[unfilteredLen - 1] : undefined;
-        const degradedPrev = unfilteredLen >= 2 ? this.recentFinalsUnfiltered[unfilteredLen - 2] : undefined;
-        const recentInterviewerTranscript = this.opts.snapshotProvider.getRecentInterviewerTranscript();
+        const degradedCur = overrideFinal ?? (unfilteredLen >= 1 ? this.recentFinalsUnfiltered[unfilteredLen - 1] : undefined);
+        const degradedPrev = overrideFinal ? undefined : (unfilteredLen >= 2 ? this.recentFinalsUnfiltered[unfilteredLen - 2] : undefined);
+        const recentInterviewerTranscript = overrideFinal ? overrideFinal.text : this.opts.snapshotProvider.getRecentInterviewerTranscript();
         const fullContext = this.opts.snapshotProvider.getContextSnapshot();
         const detectedAt = Date.now();
 
@@ -262,7 +282,7 @@ export class QuestionDetector {
         } catch (e) {
             // OllamaDetectionClient never throws, but defensive
             console.warn('[QuestionDetector] detect() threw unexpectedly', e);
-            return;
+            return false;
         }
         const detectElapsed = Date.now() - detectIssuedAt;
         const resultShape = result === null
@@ -272,7 +292,7 @@ export class QuestionDetector {
 
         // Generation guard: clear() was called while we were awaiting detect().
         // Drop the result — it belongs to a previous session.
-        if (myGeneration !== this.generation) return;
+        if (myGeneration !== this.generation) return false;
 
         // null = rate-limited/unavailable/timeout (GroqDetectionClient never
         // throws for this — see the catch above, which is for other clients).
@@ -280,12 +300,11 @@ export class QuestionDetector {
         // detect() calls returned null. Falls back to a text-shape heuristic
         // on the finals themselves rather than surfacing nothing at all.
         if (result === null) {
-            this.runDegradedDetection(degradedPrev, degradedCur, fullContext, detectedAt);
-            return;
+            return this.runDegradedDetection(degradedPrev, degradedCur, fullContext, detectedAt);
         }
-        if (!result.detected) return;
-        if (result.confidence < this.opts.confidenceThreshold) return;
-        if (result.question.trim().length === 0) return;
+        if (!result.detected) return false;
+        if (result.confidence < this.opts.confidenceThreshold) return false;
+        if (result.question.trim().length === 0) return false;
         // Reject fragments that aren't substantive enough to be standalone questions.
         // STT often chunks interviewer speech into pieces; llama can mark a 1-2 word
         // fragment as "detected: true" even though it's just the tail of a real question.
@@ -294,7 +313,7 @@ export class QuestionDetector {
         const wordCount = result.question.trim().split(/\s+/).length;
         if (wordCount < 3) {
             console.log(`[QuestionDetector] dropping fragment (${wordCount} words): ${JSON.stringify(result.question)}`);
-            return;
+            return false;
         }
 
         // Deterministic scenario-sentence merge (mergeScenarioSentence.ts): the
@@ -322,7 +341,7 @@ export class QuestionDetector {
             const cacheEntry = this.dedupCache.find(e => e.id === match.id);
             if (cacheEntry) cacheEntry.text = mergedQuestion;
             this.opts.onChipUpdate(updated);
-            return;
+            return true;
         }
 
         const chip: DetectedQuestionChip = {
@@ -340,6 +359,7 @@ export class QuestionDetector {
             this.dedupCache.shift();
         }
         this.opts.onChip(chip);
+        return true;
     }
 
     /**
@@ -359,15 +379,15 @@ export class QuestionDetector {
         cur: { text: string; refTime: number } | undefined,
         fullContext: string,
         detectedAt: number,
-    ): void {
-        if (!cur) return;
+    ): boolean {
+        if (!cur) return false;
         const usePrev = prev !== undefined && cur.refTime - prev.refTime <= 6000;
         const joined = (usePrev ? prev!.text + ' ' : '') + cur.text;
         const text = normalizeQuestionText(joined);
 
         if (isFragment(text) || !looksLikeQuestion(text)) {
             console.log(`[QuestionDetector] degraded: no chip (not question-shaped): ${JSON.stringify(text)}`);
-            return;
+            return false;
         }
 
         console.log(`[QuestionDetector] degraded: chip from heuristic (detector unavailable): ${JSON.stringify(text)}`);
@@ -385,7 +405,7 @@ export class QuestionDetector {
             const cacheEntry = this.dedupCache.find(e => e.id === match.id);
             if (cacheEntry) cacheEntry.text = text;
             this.opts.onChipUpdate(updated);
-            return;
+            return true;
         }
 
         const chip: DetectedQuestionChip = {
@@ -401,6 +421,7 @@ export class QuestionDetector {
             this.dedupCache.shift();
         }
         this.opts.onChip(chip);
+        return true;
     }
 
     private findSimilarChip(text: string): { id: string; text: string } | null {
