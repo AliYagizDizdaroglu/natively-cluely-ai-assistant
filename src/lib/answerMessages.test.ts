@@ -48,14 +48,28 @@ describe('applyAnswerToken', () => {
         expect(result[0]).toEqual({ ...streaming, text: 'I have ' });
     });
 
-    it('replace still appends to the streaming message instead of restarting it (a live stream is never torn down mid-token)', () => {
-        const streaming: AnswerMessage = { id: 'a1', role: 'system', text: 'I ', intent: 'what_to_answer', isStreaming: true };
+    // R30 (final review I2): the head's generation is aborted synchronously before the
+    // supersede's first token can arrive, so a message still marked isStreaming here is
+    // never actually being concurrently written to — there is no live stream to tear
+    // down, and the flag means "restart", not "append".
+    it('a supersede\'s first token restarts an answer that is still streaming', () => {
+        const streaming: AnswerMessage = { id: 'a1', role: 'system', text: 'I have partial', intent: 'what_to_answer', isStreaming: true };
         const prev: AnswerMessage[] = [streaming];
 
-        const result = applyAnswerToken(prev, 'have ', true, makeNewId());
+        const result = applyAnswerToken(prev, 'New', true, makeNewId());
 
         expect(result).toHaveLength(1);
-        expect(result[0]).toMatchObject({ id: 'a1', text: 'I have ', isStreaming: true });
+        expect(result[0]).toMatchObject({ id: 'a1', text: 'New', isStreaming: true });
+    });
+
+    it('the rest of a replacing stream appends, same as any other stream', () => {
+        const restarted: AnswerMessage = { id: 'a1', role: 'system', text: 'New', intent: 'what_to_answer', isStreaming: true };
+        const prev: AnswerMessage[] = [restarted];
+
+        const result = applyAnswerToken(prev, ' answer', false, makeNewId());
+
+        expect(result).toHaveLength(1);
+        expect(result[0]).toMatchObject({ id: 'a1', text: 'New answer', isStreaming: true });
     });
 
     it('replace restarts the last what_to_answer message in place, leaving other messages untouched', () => {

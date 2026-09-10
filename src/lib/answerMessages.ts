@@ -26,23 +26,21 @@ function lastIndexWhere<T>(items: T[], predicate: (item: T) => boolean): number 
     return -1;
 }
 
-/** A token of a what_to_answer stream. replace=true restarts the last what_to_answer bubble instead of appending a new one. */
+/**
+ * A token of a what_to_answer stream. `replace` is true only on the FIRST token of a
+ * replacing stream (IntelligenceEngine emits it that way — R30): that token restarts the
+ * last what_to_answer bubble in place, whether or not it is still marked streaming (the
+ * head's generation is aborted synchronously before this token can arrive, so its message
+ * is never actually being written to concurrently — there is no live stream to tear down).
+ * Every following token of the same replacing stream carries replace=false and appends
+ * normally, same as an ordinary (non-replacing) stream.
+ */
 export function applyAnswerToken(
     prev: AnswerMessage[],
     token: string,
     replace: boolean,
     newId: () => string
 ): AnswerMessage[] {
-    const lastMsg = prev[prev.length - 1];
-
-    // Already streaming: this token belongs to that bubble regardless of
-    // `replace` — a live stream is never torn down mid-token.
-    if (lastMsg && lastMsg.isStreaming && lastMsg.intent === 'what_to_answer') {
-        const updated = [...prev];
-        updated[updated.length - 1] = { ...lastMsg, text: lastMsg.text + token };
-        return updated;
-    }
-
     if (replace) {
         const i = lastIndexWhere(prev, (m) => m.intent === 'what_to_answer');
         if (i !== -1) {
@@ -53,6 +51,15 @@ export function applyAnswerToken(
             updated[i] = { id: prev[i].id, role: prev[i].role, intent: 'what_to_answer', text: token, isStreaming: true };
             return updated;
         }
+    }
+
+    const lastMsg = prev[prev.length - 1];
+
+    // Already streaming and not a restart: this token belongs to that bubble.
+    if (lastMsg && lastMsg.isStreaming && lastMsg.intent === 'what_to_answer') {
+        const updated = [...prev];
+        updated[updated.length - 1] = { ...lastMsg, text: lastMsg.text + token };
+        return updated;
     }
 
     return [...prev, { id: newId(), role: 'system', text: token, intent: 'what_to_answer', isStreaming: true }];

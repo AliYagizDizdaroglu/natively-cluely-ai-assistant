@@ -403,6 +403,11 @@ export class IntelligenceEngine extends EventEmitter {
             // to properly terminate the network request when a new generation starts.
             const stream = this.whatToAnswerLLM.generateStream(preparedTranscript, temporalContext, intentResult, imagePaths, options.forceFastModel, undefined, options.liveTexts);
             let streamAborted = false;
+            // R30 (final review I2): every token used to carry `replaceAnswer` as-is, which
+            // left the renderer unable to tell "this streaming message IS the head being
+            // replaced" from "this streaming message is the replacement I already started" —
+            // only the FIRST token of a replacing stream may say so.
+            let firstReplaceToken = options.replaceAnswer === true;
 
             for await (const token of stream) {
                 if (this.currentGenerationId !== generationId) {
@@ -420,11 +425,15 @@ export class IntelligenceEngine extends EventEmitter {
                     if (match) this.emit('suggested_answer_source', match[1]);
                     const stripped = token.replace(/__model_source:[^_]*__/, '').trimStart();
                     if (!stripped) continue;
-                    this.emit('suggested_answer_token', stripped, question || 'inferred', confidence, options.replaceAnswer === true);
+                    const replace = firstReplaceToken;
+                    firstReplaceToken = false;
+                    this.emit('suggested_answer_token', stripped, question || 'inferred', confidence, replace);
                     fullAnswer += stripped;
                     continue;
                 }
-                this.emit('suggested_answer_token', token, question || 'inferred', confidence, options.replaceAnswer === true);
+                const replace = firstReplaceToken;
+                firstReplaceToken = false;
+                this.emit('suggested_answer_token', token, question || 'inferred', confidence, replace);
                 fullAnswer += token;
             }
 

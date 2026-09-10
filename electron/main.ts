@@ -950,7 +950,14 @@ export class AppState {
   /** Interviewer PCM → the energy VAD → the turn (Auto mode only). */
   private onInterviewerAudio(chunk: Buffer): void {
     if (this.liveMode !== 'auto' || !this.isMeetingActive) return;
-    if (!this.interviewerVad) this.interviewerVad = createEnergyVad({ sampleRate: this.systemAudioCapture?.getSampleRate() ?? 48000 });
+    if (!this.interviewerVad) {
+      // R31/m5: the sample rate the VAD was built at is the first thing to check if
+      // `turn: gate=` ever reads far from ~1200 ms (a rate mismatch stretches the
+      // hangover) — log it once, at construction, never per chunk.
+      const rate = this.systemAudioCapture?.getSampleRate() ?? 48000;
+      console.log(`[Main] turn: vad sampleRate=${rate} source=${this.systemAudioCapture ? 'capture' : 'default'}`);
+      this.interviewerVad = createEnergyVad({ sampleRate: rate });
+    }
     const u = this.interviewerVad.push(chunk, Date.now());
     if (u.changed) {
       if (!u.speaking) this.lastVoiceOffAt = u.at;
@@ -962,6 +969,8 @@ export class AppState {
   /** Run the turn's decisions now, then arm its next timer. Re-entrant-safe: decisions never call back into it synchronously. */
   private turnTick(): void {
     if (this.turnTimer) { clearTimeout(this.turnTimer); this.turnTimer = null; }
+    // R32: a timer armed before teardown must not act into a meeting that has ended.
+    if (!this.isMeetingActive) return;
     this.syncTurnIdentity();
     for (let guard = 0; guard < 8; guard++) {
       const d = this.turn.tick(Date.now());
@@ -988,14 +997,14 @@ export class AppState {
           });
         return;
       case 'dispatch': {
-        if (!this.turnDetection) return;
+        const base = this.turnDetectionOr(d);
         const gate = this.lastVoiceOffAt === null ? d.gateMs : Date.now() - this.lastVoiceOffAt;
         console.log(`[Main] turn: gate=${gate} finals=${d.finals} live=${d.live.length} finished=${d.finished}`);
-        this.dispatchDetection(turnDispatchInput(this.turnDetection, d));
+        this.dispatchDetection(turnDispatchInput(base, d));
         return;
       }
       case 'supersede': {
-        if (!this.turnDetection) return;
+        const base = this.turnDetectionOr(d);
         // R21: the turn thinks it dispatched, but if `turnDedupId` was never set, the
         // head dispatch never reached the answer branch (dispatchDetection dropped it
         // as a duplicate of an already-answered question, or it never got that far) —
@@ -1003,11 +1012,16 @@ export class AppState {
         // through dispatchDetection exactly like a fresh dispatch: the deduper decides
         // again, dropping it if it's still a duplicate or answering it as a new bubble.
         if (this.turnDedupId === undefined) {
-          this.dispatchDetection(turnDispatchInput(this.turnDetection, d));
+          this.dispatchDetection(turnDispatchInput(base, d));
           return;
         }
-        const input = turnDispatchInput(this.turnDetection, d);
+        const input = turnDispatchInput(base, d);
         const anchorLog = JSON.stringify(d.text.slice(0, 80));
+        // R31/m4: a supersede only ever fires at the same quiet a dispatch does — log the
+        // same `turn: gate=` line dispatch already does, so the flight log always carries
+        // one turn line per action (spec §3.8), not only on the head.
+        const gate = this.lastVoiceOffAt === null ? turnConstantsFromEnv().gateMs : Date.now() - this.lastVoiceOffAt;
+        console.log(`[Main] turn: gate=${gate} finals=${d.finals} live=${d.live.length} finished=true`);
         console.log(`[Main] dispatch: supersede source=${input.source} anchor=${anchorLog} verdict=${input.verdict} replaces=${JSON.stringify(d.replaces)} question=${JSON.stringify(d.text)}`);
         this.chipDeduper.extend(this.turnDedupId, d.text);
         this.broadcast('live-question', { question: d.text, intent: input.intent, source: input.source, replace: true });
@@ -1022,6 +1036,18 @@ export class AppState {
         this.turnSeenId = null;
         return;
     }
+  }
+
+  /**
+   * The classify path proves a question without ever producing a DetectionInput
+   * (the detector's chip reaches the mark block only when it travels the
+   * onChip side channel). The turn's own text is the question; answering it
+   * verbally beats dropping it silently — final review I1.
+   */
+  private turnDetectionOr(d: Extract<TurnDecision, { kind: 'dispatch' | 'supersede' }>): DetectionInput {
+    if (this.turnDetection) return this.turnDetection;
+    console.log(`[Main] turn: detection-fallback source=whisper question=${JSON.stringify(d.text.slice(0, 80))}`);
+    return { question: d.text, intent: 'verbal', source: 'whisper', anchor: d.text, verdict: 'match' };
   }
 
   /**
@@ -2509,6 +2535,17 @@ export class AppState {
     })
 
     this.intelligenceManager.on('question-detected-update', (chip: any) => {
+      const question = String(chip?.question ?? '');
+      // R29 (final review I1): in Auto the detector's own re-fire (a growing chip, or the
+      // dedup branch's onChipUpdate) is a real detection with a real intent — route it into
+      // the turn's mark block the same way question-detected does. Auto's mark block returns
+      // before the fragmentHold branch below ever runs, so a fragmentHold can never be
+      // pending there — an update that only reached dispatch through that branch was
+      // silently dropped in Auto until now.
+      if (this.liveMode === 'auto' && question) {
+        this.dispatchDetection({ question, intent: chip?.intent ?? 'verbal', source: 'whisper', anchor: question, verdict: 'match', chip });
+        return;
+      }
       // A held fragment whose chip just grew (the detector joined more speech
       // onto it) is re-dispatched with the new text: whole → admitted now,
       // still fragmentary → held again with a fresh timer. Before this an
@@ -2519,7 +2556,6 @@ export class AppState {
       // timer, so a chip re-emitted unchanged pushed its own deadline out
       // indefinitely. An unchanged update leaves the hold exactly as it is.
       const held = this.fragmentHold.peek();
-      const question = String(chip?.question ?? '');
       if (held?.chip?.id && chip?.id === held.chip.id && question !== held.question) {
         this.fragmentHold.cancel();
         this.dispatchDetection({ ...held, question, anchor: question, chip });
