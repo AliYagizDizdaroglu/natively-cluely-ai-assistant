@@ -55,8 +55,26 @@ const PROMPT_SUFFIX = pi >= 0 && process.argv[pi + 1] ? fs.readFileSync(process.
 const ti = process.argv.indexOf('--tag');
 const TAG = ti >= 0 && process.argv[ti + 1] ? process.argv[ti + 1] : '';
 if (PROMPT_SUFFIX && !TAG) { console.error('--prompt-suffix needs --tag <name>, or the variant would overwrite the plain arm'); process.exit(2); }
+// --system-file <file> REPLACES the system prompt with the file's text (also needs --tag):
+// the arm for "what the app actually sent" — e.g. the knowledge engine's swapped-in rules
+// plus the profile notes, rebuilt offline — against the shipped verbal prompt.
+const si = process.argv.indexOf('--system-file');
+const SYSTEM_FILE = si >= 0 && process.argv[si + 1] ? fs.readFileSync(process.argv[si + 1], 'utf8').trim() : '';
+if (SYSTEM_FILE && !TAG) { console.error('--system-file needs --tag <name>, or the variant would overwrite the plain arm'); process.exit(2); }
+if (SYSTEM_FILE && PROMPT_SUFFIX) { console.error('--system-file and --prompt-suffix are exclusive: one prompt variable per arm'); process.exit(2); }
+// --user-file <file> replaces the user text with the file's template, "{{question}}" standing
+// for the question (also needs --tag): the app frames the question inside a context block
+// and an intent header, and an arm that reproduces the app must send that framing.
+const ui = process.argv.indexOf('--user-file');
+const USER_TEMPLATE = ui >= 0 && process.argv[ui + 1] ? fs.readFileSync(process.argv[ui + 1], 'utf8') : '';
+if (USER_TEMPLATE && !TAG) { console.error('--user-file needs --tag <name>'); process.exit(2); }
+const userText = (question) => (USER_TEMPLATE ? USER_TEMPLATE.split('{{question}}').join(question) : `The interviewer just asked: "${question}"\n\nWhat should I say?`);
+// --inline-system sends the system prompt INSIDE the user turn (`${system}\n\n${user}`, no
+// systemInstruction) — how LLMHelper.streamChat talks to non-Gemma Gemini models.
+const INLINE_SYSTEM = process.argv.includes('--inline-system');
+if (INLINE_SYSTEM && !TAG) { console.error('--inline-system needs --tag <name>'); process.exit(2); }
 const ARM = TAG ? `${MODEL}_${TAG}` : MODEL;
-const SYSTEM_PROMPT = PROMPT_SUFFIX ? `${P.VERBAL_WHAT_TO_ANSWER_PROMPT}\n\n${PROMPT_SUFFIX}` : P.VERBAL_WHAT_TO_ANSWER_PROMPT;
+const SYSTEM_PROMPT = SYSTEM_FILE ? SYSTEM_FILE : PROMPT_SUFFIX ? `${P.VERBAL_WHAT_TO_ANSWER_PROMPT}\n\n${PROMPT_SUFFIX}` : P.VERBAL_WHAT_TO_ANSWER_PROMPT;
 const FILE_TAG = ARM.replace(/\//g, '_');
 const OUT = path.join(HERE, ARM === DEFAULT_MODEL ? 'interview60.answers.json' : `interview60.answers.${FILE_TAG}.json`);
 // --limit <n>: first n questions only — a probe of a new model before the full arm.
@@ -66,11 +84,13 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const words = (s) => (s.trim().match(/\S+/g) || []).length;
 
 async function answerStreamedGemini(question) {
-    const body = {
-        contents: [{ role: 'user', parts: [{ text: `The interviewer just asked: "${question}"\n\nWhat should I say?` }] }],
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        generationConfig: { temperature: 0.4, maxOutputTokens: 65536 },
-    };
+    const body = INLINE_SYSTEM
+        ? { contents: [{ role: 'user', parts: [{ text: `${SYSTEM_PROMPT}\n\n${userText(question)}` }] }], generationConfig: { temperature: 0.4, maxOutputTokens: 65536 } }
+        : {
+            contents: [{ role: 'user', parts: [{ text: userText(question) }] }],
+            systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+            generationConfig: { temperature: 0.4, maxOutputTokens: 65536 },
+        };
     const url = `https://generativelanguage.googleapis.com/v1alpha/models/${MODEL}:streamGenerateContent?alt=sse`;
     const t0 = Date.now();
     const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': KEY }, body: JSON.stringify(body) });
@@ -104,7 +124,9 @@ async function answerStreamedGemini(question) {
     let spoken = '', offers = null;
     for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(gen()), (o) => { offers = o; }))) spoken += p;
     spoken = spoken.trim();
-    return { spoken, offers, words: words(spoken), ttft, total, finish, rawLen: raw.length };
+    // raw: what the model wrote before the filter chain — the only way to see what the
+    // filter removed (lists, notation) when an arm is diagnosing the prompt, not the filter.
+    return { spoken, offers, words: words(spoken), ttft, total, finish, rawLen: raw.length, raw };
 }
 
 // Groq, OpenAI-compatible SSE: same system prompt, same user text, same filter chain,
@@ -129,7 +151,7 @@ async function answerStreamedGroq(question) {
         model: MODEL, stream: true, temperature: 0.4,
         messages: [
             { role: 'system', content: SYSTEM_PROMPT },
-            { role: 'user', content: `The interviewer just asked: "${question}"\n\nWhat should I say?` },
+            { role: 'user', content: userText(question) },
         ],
     };
     const t0 = Date.now();
@@ -173,7 +195,9 @@ async function answerStreamedGroq(question) {
     let spoken = '', offers = null;
     for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(gen()), (o) => { offers = o; }))) spoken += p;
     spoken = spoken.trim();
-    return { spoken, offers, words: words(spoken), ttft, total, finish, rawLen: raw.length };
+    // raw: what the model wrote before the filter chain — the only way to see what the
+    // filter removed (lists, notation) when an arm is diagnosing the prompt, not the filter.
+    return { spoken, offers, words: words(spoken), ttft, total, finish, rawLen: raw.length, raw };
 }
 
 const answerStreamed = (question) => (IS_GROQ ? answerStreamedGroq(question) : answerStreamedGemini(question));

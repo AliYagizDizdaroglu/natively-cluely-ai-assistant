@@ -217,16 +217,15 @@ export const SPOKEN_WORD_CEILING = 150;
  *    rule over-fires. It is the same failure the stdlib framing rule had. Measured
  *    0/24 spurious on trivial questions with this wording.
  *
- * THE STRUCTURE RULE GOES LAST, and that position is load-bearing — it is measured,
- * not stylistic. The arms that justify the rule appended it to the END of the whole
- * verbal prompt (interview60.answers.mjs: `${VERBAL_WHAT_TO_ANSWER_PROMPT}\n\n${suffix}`)
- * and scored 13/20 acceptable against 8/20 without it, on the same 20 questions and
- * the same frozen grader. Shipped mid-block instead — directly after the length
- * paragraph — the identical text scored 9/20 (2026-09-10 pre-flight arm), i.e. it
- * behaved like no rule at all: same four delivery-0 items as the plain arm (code
- * blocks and raw LaTeX on the coding and SQL questions, which this rule forbids in
- * its own third bullet). Only the position differed. Do not move it back up, and do
- * not insert anything after it.
+ * THE STRUCTURE RULE GOES LAST because that is the configuration that was measured:
+ * the arms that justify the rule appended it to the END of the whole verbal prompt
+ * (interview60.answers.mjs: `${VERBAL_WHAT_TO_ANSWER_PROMPT}\n\n${suffix}`) and scored
+ * 13/20 acceptable against 8/20 without it, on the same 20 questions and the same
+ * frozen grader. A 2026-09-10 comparison that seemed to show the mid-block position
+ * scoring 9/20 was a stale-build artifact (both arms had read the same old
+ * dist-electron), and two runs of one identical prompt later scored 9/20 and 14/20 —
+ * the n=20 arm's noise is about ±5, so no single run proves a position. Keep the
+ * measured configuration; a move needs repeated arms, not one.
  */
 export const SPOKEN_LENGTH_AND_DEPTH = `
 [SPOKEN LENGTH + OPTIONAL DEPTH]

@@ -227,12 +227,11 @@ describe('spoken word budget', () => {
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain('[ANSWER THE QUESTION\'S STRUCTURE — THIS OVERRIDES THE LENGTH RULE ABOVE WHEN THE QUESTION HAS SEVERAL PARTS]');
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain(`never more than ${SPOKEN_WORD_CEILING} words in total`);
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain('Never output code, SQL text, formulas, LaTeX, markdown or numbered lists');
-        // The rule goes LAST, and that is measured, not stylistic. The arms that justify it
-        // appended it to the end of this whole prompt and scored 13/20 acceptable against
-        // 8/20 without it. Shipped directly after the length paragraph instead, the identical
-        // text scored 9/20 — no better than no rule, with the same four delivery failures
-        // (code blocks and raw LaTeX) that its own third bullet forbids. Only the position
-        // differed, so the position is the assertion.
+        // The rule goes LAST because that is the configuration the arms measured (they
+        // appended it to the end of this whole prompt: 13/20 acceptable against 8/20 without
+        // it). The 2026-09-10 "mid-block scores 9/20" comparison was a stale-build artifact,
+        // and the n=20 arm's run-to-run noise is about ±5, so the position is asserted to
+        // keep the measured configuration, not because a move was shown to hurt.
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT.indexOf('[ANSWER THE QUESTION\'S STRUCTURE')).toBeGreaterThan(VERBAL_WHAT_TO_ANSWER_PROMPT.indexOf('Rules for that block:'));
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT.trimEnd().endsWith('- Still first person, still open with substance, still no questions back.')).toBe(true);
     });
