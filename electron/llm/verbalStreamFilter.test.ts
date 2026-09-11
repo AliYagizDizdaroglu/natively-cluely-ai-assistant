@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, cutAtWordBudget, spokenWordBudget, type Suggestion } from './verbalStreamFilter';
+import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, spokenWordBudget, type Suggestion } from './verbalStreamFilter';
 
 /** Feed `text` through the filter in fixed-size chunks; return concatenated output. */
 async function runFilter(text: string, chunkSize = 6): Promise<string> {
@@ -114,6 +114,65 @@ async function runStrip(text: string, chunkSize: number): Promise<{ out: string;
     for await (const c of stripSuggestionBlock(source(), s => { sugg = s; })) out += c;
     return { out, sugg };
 }
+
+// Flight s50b (2026-09-11): 5 of 20 in-app answers reached the candidate as "1. … 2. … 3. …"
+// lists and one carried "$1 / (c + \text{rank})" — six delivery-0 grades on answers whose
+// content was right. The list marker is a line-prefix decision like HARD_DROP; the rest of
+// the line is ordinary speech.
+describe('filterVerbalLines — list markers are unspeakable, the sentence after them is not', () => {
+    const LIST = 'I validate the inputs first.\n\n1. I sort by score, breaking ties by row order.\n2. I slice the top k.\n3. I divide precision by prevalence for the lift.\n';
+    it('strips "1. " / "2. " numbered markers and keeps the sentences', async () => {
+        const out = await runFilter(LIST);
+        expect(out).not.toMatch(/(^|\n)\s*\d+[.)]\s/);
+        expect(out).toContain('I sort by score, breaking ties by row order.');
+        expect(out).toContain('I divide precision by prevalence for the lift.');
+    });
+    it('strips "-", "*" and "•" bullet markers too', async () => {
+        const out = await runFilter('- first point\n* second point\n• third point\n');
+        expect(out).toBe('first point\nsecond point\nthird point\n');
+    });
+    it('a marker followed by a meta-preamble still gets the preamble rewrite', async () => {
+        const out = await runFilter("1. I'll explain the retry logic as a budget of attempts.\n");
+        expect(out).toBe('The retry logic as a budget of attempts.\n');
+    });
+    it('does not touch a sentence that merely starts with a number', async () => {
+        expect(await runFilter('2.5 words per question word is the budget.\n')).toBe('2.5 words per question word is the budget.\n');
+        expect(await runFilter('30 days of history is enough.\n')).toBe('30 days of history is enough.\n');
+        expect(await runFilter('2024 was the year we moved to Kubernetes.\n')).toBe('2024 was the year we moved to Kubernetes.\n');
+    });
+    it('is identical for every chunk size (the marker can straddle a boundary)', async () => {
+        const ref = await runFilter(LIST, 1000);
+        for (const size of [1, 2, 3, 5, 7, 11]) expect(await runFilter(LIST, size)).toBe(ref);
+    });
+});
+
+/** Feed `text` through the notation stripper in fixed-size chunks; return concatenated output. */
+async function runNotation(text: string, chunkSize = 6): Promise<string> {
+    async function* source() {
+        for (let i = 0; i < text.length; i += chunkSize) yield text.slice(i, i + chunkSize);
+    }
+    let out = '';
+    for await (const c of stripSpokenNotation(source())) out += c;
+    return out;
+}
+
+describe('stripSpokenNotation — formulas that start with a number are not currency', () => {
+    const RRF = 'the reciprocal rank as $1 / (c + \\text{rank})$ for each list.';
+    it('strips a $…$ span whose number is followed by an operator, and unwraps \\text{}', async () => {
+        expect(await runNotation(RRF)).toBe('the reciprocal rank as 1 / (c + rank) for each list.');
+    });
+    it('keeps money: "$5 million", "$1.5M", "$5-10 million"', async () => {
+        const money = 'It cost $5 million, about $1.5M a year, or $5-10 million over the term.';
+        expect(await runNotation(money)).toBe(money);
+    });
+    it('still strips the measured cases: backticks, bold, $O(\\log n)$', async () => {
+        expect(await runNotation('Use `map.get(key)` in **O(1)**, not $O(\\log n)$.')).toBe('Use map.get(key) in O(1), not O(log n).');
+    });
+    it('is identical for every chunk size (the number and its operator can straddle a boundary)', async () => {
+        const ref = await runNotation(RRF, 1000);
+        for (const size of [1, 2, 3, 4, 5, 7, 11]) expect(await runNotation(RRF, size)).toBe(ref);
+    });
+});
 
 describe('extractSuggestions — splitting the spoken answer from its expansion offers', () => {
     const ANSWER = 'Consistent hashing keeps key movement small when a node joins.';

@@ -78,6 +78,8 @@ export const VERBAL_CHECKS = {
     if (/\\[a-z]+/.test(spoken)) hits.push('backslash-command');
     if (/[*_]{2}/.test(spoken)) hits.push('markdown bold');
     if (/`/.test(spoken)) hits.push('backtick');
+    // Flight s50b 2026-09-11: 5 of 20 in-app answers were "1. … 2. … 3. …" lists.
+    if (/(^|\n)\s*(\d{1,2}[.)]|[-*•])\s/.test(spoken)) hits.push('list marker');
     return { ok: hits.length === 0, detail: hits.length ? hits.join(', ') : 'clean' };
   },
 
@@ -97,8 +99,12 @@ export const NOTATION_CALIBRATION = {
     'This runs in $O(\\log n)$ time.',
     'Use the **fastest** path here.',
     'Call `map.get(key)` first.',
+    'I validate k first.\n\n1. I sort by score.\n2. I slice the top k.',
+    '- first point\n- second point',
+    'the reciprocal rank as $1 / (c + rank) for each list.',
   ],
   mustPass: [
     'This runs in logarithmic time, so it stays fast as the table grows.',
+    '2.5 words per question word is the budget, and 30 days of history is enough.',
   ],
 };

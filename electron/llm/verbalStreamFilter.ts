@@ -48,6 +48,22 @@ const shouldHardDrop = (line: string) => {
     return HARD_DROP.some(p => trimmed.startsWith(p));
 };
 
+// A list marker at the start of a line — "1. ", "2) ", "- ", "* ", "• " — is read aloud
+// as "one dot"; the sentence after it is ordinary speech. Flight s50b (2026-09-11): 5 of 20
+// answers reached the candidate as numbered lists and lost their delivery grade on that
+// alone. A number needs the dot AND the space ("2.5 words" is prose) and at most two digits.
+const LIST_MARKER = /^(?:\d{1,2}[.)]|[-*•])\s+/;
+// A line prefix that may still grow into a marker once more characters arrive.
+const LIST_MARKER_PREFIX = /^(?:\d{1,2}[.)]?|[-*•])$/;
+
+/** The line without its leading list marker, or null when it has none. */
+const stripListMarker = (line: string): string | null => {
+    const trimmed = line.trimStart();
+    const m = trimmed.match(LIST_MARKER);
+    if (!m) return null;
+    return line.slice(0, line.length - trimmed.length) + trimmed.slice(m[0].length);
+};
+
 // Returns rewritten line, OR the original (if rewriting would break grammar),
 // OR null if no preamble matched at all.
 const rewritePreamble = (line: string): string | null => {
@@ -84,6 +100,11 @@ const REWRITE_STARTERS = ["i'll ", 'i will ', 'i am ', "i'm ", 'let me ', "let's
 
 /** Full-line decision — the original non-streaming semantics, used at '\n' / EOF. */
 function decideFullLine(line: string): string | null {
+    const unmarked = stripListMarker(line);
+    if (unmarked !== null) {
+        diagLog(`LIST_MARKER: ${JSON.stringify(line.slice(0, 40))}`);
+        return decideFullLine(unmarked);
+    }
     if (shouldHardDrop(line)) {
         diagLog(`HARD_DROP: ${JSON.stringify(line.slice(0, 80))}`);
         return null;
@@ -105,6 +126,11 @@ function decidePartialLine(buf: string): PartialDecision {
     const trimmed = buf.trimStart();
     const leading = buf.slice(0, buf.length - trimmed.length);
     if (trimmed.length === 0) return { t: 'wait' };
+
+    // "1", "1.", "-": a marker may still be forming — the next character decides.
+    if (LIST_MARKER_PREFIX.test(trimmed)) return { t: 'wait' };
+    const unmarked = stripListMarker(buf);
+    if (unmarked !== null) return decidePartialLine(unmarked);
 
     if (HARD_DROP.some(p => trimmed.startsWith(p))) return { t: 'drop' };
 
@@ -319,14 +345,18 @@ export async function* filterVerbalLines(
 /** Remove screen-only notation from a fully-assembled span of spoken text. */
 function cleanNotation(s: string): string {
     return s
+        // "\text{rank}" -> "rank": the wrapper is typography, the word inside is speech
+        .replace(/\\(?:text|mathrm|mathit|operatorname)\{([^}]*)\}/g, '$1')
         // backticks: never spoken, never meaningful aloud
         .replace(/`+/g, '')
         // markdown emphasis markers
         .replace(/\*\*/g, '')
-        // LaTeX delimiters: an OPENING '$' is followed by something non-numeric
-        // ("$O("), a CLOSING '$' follows a non-space ("n)$"). A currency '$' is
-        // preceded by a space and followed by a digit, so "$5 million" survives.
-        .replace(/\$(?=[^\d\s])|(?<=\S)\$/g, '')
+        // LaTeX delimiters: an OPENING '$' is followed by something non-numeric ("$O(")
+        // or by a number that an operator follows ("$1 / (c" — the rank-fusion formula
+        // flight s50b spoke as "dollar one"); a CLOSING '$' follows a non-space ("n)$").
+        // Money is a number followed by a word, a unit letter, a comma or a range dash,
+        // so "$5 million", "$1.5M" and "$5-10 million" survive.
+        .replace(/\$(?=[^\d\s])|\$(?=\d+(?:\.\d+)?\s*[/^*+](?:\s|\w|\())|(?<=\S)\$/g, '')
         // backslash commands: "\log n" -> "log n", "\(" -> "("
         .replace(/\\(?=[A-Za-z(){}[\]])/g, '');
 }
@@ -347,6 +377,11 @@ export async function* stripSpokenNotation(
     // break was. Decided once, on the first non-blank character.
     let decided = false;
     let passthrough = false;
+    // The last character already spoken: a span that opens with "$" right after a
+    // non-space ("n)" | "$ for") is a CLOSING delimiter, which cleanNotation alone
+    // cannot see once the ")" has left in an earlier span.
+    let lastOut = '';
+    const closingDollarFirst = (s: string) => (s.startsWith('$') && /\S/.test(lastOut) ? s.slice(1) : s);
     for await (const chunk of source) {
         if (!decided) {
             const probe = (carry + chunk).trimStart();
@@ -361,20 +396,23 @@ export async function* stripSpokenNotation(
         // Defer judgement on a trailing lookahead-sensitive character. A trailing
         // "**" is held as a pair: holding only one star split the pair so that a
         // stream ENDING in bold ("…and **p99**") leaked "**" — the first star was
-        // emitted as a lone survivor and the held one flushed after it.
-        const held = s.match(/(\*\*|[*$\\])$/);
+        // emitted as a lone survivor and the held one flushed after it. A "$" plus
+        // a number (and the operator that may follow) is held until the next
+        // character says money or formula; a backslash command with an open brace
+        // is held until the brace closes, so "\text{rank}" is judged whole.
+        const held = s.match(/(\*\*|[*\\]|\$\d{0,6}(?:\.\d*)?\s?[/^*+]?\s?|\\[a-z]*(?:\{[^}]*)?)$/);
         if (held) {
             carry = held[0];
             s = s.slice(0, -carry.length);
         }
         if (s) {
-            const out = cleanNotation(s);
-            if (out) yield out;
+            const out = cleanNotation(closingDollarFirst(s));
+            if (out) { lastOut = out.slice(-1); yield out; }
         }
     }
     // Stream ended while holding a character — surface it rather than swallow it.
     if (carry) {
-        const out = passthrough ? carry : cleanNotation(carry);
+        const out = passthrough ? carry : cleanNotation(closingDollarFirst(carry));
         if (out) yield out;
     }
 }
