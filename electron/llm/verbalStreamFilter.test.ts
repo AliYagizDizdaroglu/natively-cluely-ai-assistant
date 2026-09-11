@@ -144,6 +144,11 @@ describe('filterVerbalLines — list markers are unspeakable, the sentence after
         const ref = await runFilter(LIST, 1000);
         for (const size of [1, 2, 3, 5, 7, 11]) expect(await runFilter(LIST, size)).toBe(ref);
     });
+    it('leaves the __MORE__ offer lines ("1| label") alone — stripSuggestionBlock runs after this filter', async () => {
+        const text = 'The answer.\n__MORE__\n1| trade-offs of vnode count\n2| hot-key handling\n';
+        expect(await runFilter(text)).toBe(text);
+        expect(await runFilter(text, 1)).toBe(text);
+    });
 });
 
 /** Feed `text` through the notation stripper in fixed-size chunks; return concatenated output. */
