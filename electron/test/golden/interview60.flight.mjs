@@ -52,6 +52,17 @@ export const LIVE_FALLBACK = 'gemini-2.5-flash-native-audio-latest';
 export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'qwen/qwen3.8-27b', 'openai/gpt-oss-120b'];
 
 /**
+ * Focused arms: the non-lite Flash models, whose free tier allows a handful of calls a day,
+ * on the questions the default model fails most — every other part of the call (prompt,
+ * user text, filters, temperature) identical to the lite arm above. The five ids are
+ * 3.1-lite's worst across eight graded arms on 2026-09-11: S1Q06 failed 8 of 8, S1Q02 6,
+ * S1Q08 5, S2Q02 3, S2Q03 2, all on content. If a Flash model clears them, the model is the
+ * next lever; if it does not, the misses are the questions', not the model's.
+ */
+export const FOCUSED_ONLY = 'S1Q06,S1Q02,S1Q08,S2Q02,S2Q03';
+export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
+
+/**
  * The Live model for the hour, from the probe's exit code: 0 (tool call seen)
  * → the default 3.x; 2 (no Gemini key in the env) → null, abort; anything
  * else → the 2.5 fallback. 3 is the silent case, but a 3.x session that dies
@@ -156,11 +167,12 @@ async function main() {
     }
     log(`RUN-DIR ${runDir}   (auto exit ${autoExit}; 1 means the gate failed — its table is above)`);
 
-    // 3. Three answer arms + chains, into the run folder.
-    if (!dry) for (const f of [...ANSWER_MODELS.map(answersFileFor), 'interview60.chains.json']) moveAside(path.join(HERE, f), stamp);
+    // 3. Answer arms (full, then the focused Flash arms) + chains, into the run folder.
+    if (!dry) for (const f of [...ANSWER_MODELS.map(answersFileFor), ...FOCUSED_MODELS.map(answersFileFor), 'interview60.chains.json']) moveAside(path.join(HERE, f), stamp);
     const answersFiles = [];
-    for (const model of ANSWER_MODELS) {
-        await run([path.join(HERE, 'interview60.answers.mjs'), '--model', model], { dry });
+    const arms = [...ANSWER_MODELS.map((model) => ({ model, args: [] })), ...FOCUSED_MODELS.map((model) => ({ model, args: ['--only', FOCUSED_ONLY] }))];
+    for (const { model, args } of arms) {
+        await run([path.join(HERE, 'interview60.answers.mjs'), '--model', model, ...args], { dry });
         const src = path.join(HERE, answersFileFor(model));
         const dest = path.join(runDir, answersFileFor(model));
         if (dry) { answersFiles.push(dest); continue; }

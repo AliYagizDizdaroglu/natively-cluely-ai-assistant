@@ -81,6 +81,11 @@ const OUT = path.join(HERE, ARM === DEFAULT_MODEL ? 'interview60.answers.json' :
 // --limit <n>: first n questions only — a probe of a new model before the full arm.
 const li = process.argv.indexOf('--limit');
 const LIMIT = li >= 0 && process.argv[li + 1] ? Number(process.argv[li + 1]) : Infinity;
+// --only <id,id,...>: just these questions — an arm of a model with a handful of free calls a
+// day, pointed at the questions the default model fails most (flight s50c: the non-lite Flash
+// models on 3.1-lite's five worst). Everything else about the call stays identical.
+const oi = process.argv.indexOf('--only');
+const ONLY = oi >= 0 && process.argv[oi + 1] ? new Set(process.argv[oi + 1].split(',').map((s) => s.trim()).filter(Boolean)) : null;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const words = (s) => (s.trim().match(/\S+/g) || []).length;
 
@@ -220,7 +225,12 @@ if (foreign.length) {
 // Base roster plus the long design questions. Follow-ups are left out: answered
 // standalone they have no parent to follow up on, so they would measure nothing and
 // cost every arm 18 requests (2026-09-08 roster).
-const todo = INTERVIEW.filter((i) => (i.kind ?? 'spoken') === 'spoken' && i.level !== 'followup').slice(0, LIMIT);
+const mains = INTERVIEW.filter((i) => (i.kind ?? 'spoken') === 'spoken' && i.level !== 'followup');
+if (ONLY) {
+    const missing = [...ONLY].filter((id) => !mains.some((i) => i.id === id));
+    if (missing.length) { console.error(`--only names questions not in roster ${ROSTER_NAME} (or follow-ups/screenshots): ${missing.join(', ')}`); process.exit(2); }
+}
+const todo = mains.filter((i) => !ONLY || ONLY.has(i.id)).slice(0, LIMIT);
 console.log(`ANSWER-ONLY PASS  model=${MODEL}${TAG ? `  variant=${TAG} (prompt suffix ${PROMPT_SUFFIX.length} chars)` : ''}  ${todo.length} spoken questions\n`);
 
 for (const item of todo) {
