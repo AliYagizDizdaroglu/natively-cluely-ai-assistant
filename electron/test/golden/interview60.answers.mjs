@@ -235,10 +235,16 @@ console.log(`ANSWER-ONLY PASS  model=${MODEL}${TAG ? `  variant=${TAG} (prompt s
 
 for (const item of todo) {
     if (store[item.id]?.spoken) { continue; }
-    let r, lastErr;
+    let r, lastErr, dropRetried = false;
     for (let a = 0; a < 4; a++) {
         try {
             r = await answerStreamed(item.q);
+            // A stream that ends with no finish reason was cut by the provider mid-answer
+            // (2026-09-11: gemini-3.8-flash free tier, three of eight answers cut after 1-3
+            // minutes). One more try; a second cut is kept as the truncated answer it is.
+            if (!r.transient && r.finish === null && r.spoken && !dropRetried) {
+                dropRetried = true; lastErr = 'stream cut (no finishReason)'; await sleep(5000); continue;
+            }
             if (!r.transient) break;
             lastErr = r.transient; await sleep(Math.max(r.retryAfterMs ?? 0, 8000 * (a + 1)));
         } catch (e) { lastErr = e.message; await sleep(4000 * (a + 1)); }
