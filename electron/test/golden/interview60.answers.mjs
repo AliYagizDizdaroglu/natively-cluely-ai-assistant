@@ -73,6 +73,7 @@ const userText = (question) => (USER_TEMPLATE ? USER_TEMPLATE.split('{{question}
 // systemInstruction) — how LLMHelper.streamChat talks to non-Gemma Gemini models.
 const INLINE_SYSTEM = process.argv.includes('--inline-system');
 if (INLINE_SYSTEM && !TAG) { console.error('--inline-system needs --tag <name>'); process.exit(2); }
+if (INLINE_SYSTEM && IS_GROQ) { console.error('--inline-system reproduces the Gemini request shape; the Groq arm always sends a system message'); process.exit(2); }
 const ARM = TAG ? `${MODEL}_${TAG}` : MODEL;
 const SYSTEM_PROMPT = SYSTEM_FILE ? SYSTEM_FILE : PROMPT_SUFFIX ? `${P.VERBAL_WHAT_TO_ANSWER_PROMPT}\n\n${PROMPT_SUFFIX}` : P.VERBAL_WHAT_TO_ANSWER_PROMPT;
 const FILE_TAG = ARM.replace(/\//g, '_');

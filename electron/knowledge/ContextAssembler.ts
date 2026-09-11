@@ -7,6 +7,8 @@ import { escapeXml } from './NegotiationConversationTracker';
 
 export interface PromptAssemblyResult {
     systemPromptInjection: string;
+    /** The first line of the injection on its own — name, role, target job — for callers that keep their own rules. */
+    identityHeader?: string;
     contextBlock: string;
     isIntroQuestion: boolean;
     introResponse?: string;
@@ -263,6 +265,7 @@ export async function assemblePromptContext(
 
     return {
         systemPromptInjection,
+        identityHeader,
         contextBlock,
         isIntroQuestion: false
     };

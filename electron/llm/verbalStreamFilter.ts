@@ -52,6 +52,8 @@ const shouldHardDrop = (line: string) => {
 // as "one dot"; the sentence after it is ordinary speech. Flight s50b (2026-09-11): 5 of 20
 // answers reached the candidate as numbered lists and lost their delivery grade on that
 // alone. A number needs the dot AND the space ("2.5 words" is prose) and at most two digits.
+// This filter runs BEFORE stripSuggestionBlock, so it also sees the __MORE__ offer lines;
+// their "1| label" shape is not a marker and must stay one (extractSuggestions parses it).
 const LIST_MARKER = /^(?:\d{1,2}[.)]|[-*•])\s+/;
 // A line prefix that may still grow into a marker once more characters arrive.
 const LIST_MARKER_PREFIX = /^(?:\d{1,2}[.)]?|[-*•])$/;
@@ -352,11 +354,13 @@ function cleanNotation(s: string): string {
         // markdown emphasis markers
         .replace(/\*\*/g, '')
         // LaTeX delimiters: an OPENING '$' is followed by something non-numeric ("$O(")
-        // or by a number that an operator follows ("$1 / (c" — the rank-fusion formula
-        // flight s50b spoke as "dollar one"); a CLOSING '$' follows a non-space ("n)$").
-        // Money is a number followed by a word, a unit letter, a comma or a range dash,
-        // so "$5 million", "$1.5M" and "$5-10 million" survive.
-        .replace(/\$(?=[^\d\s])|\$(?=\d+(?:\.\d+)?\s*[/^*+](?:\s|\w|\())|(?<=\S)\$/g, '')
+        // or by a number that a power or a division sign follows ("$1 / (c" — the
+        // rank-fusion formula flight s50b spoke as "dollar one"; "$2^n"); a CLOSING '$'
+        // follows a non-space ("n)$"). Money is a number followed by a word, a unit, a
+        // comma, a range dash, a rate or a sum, so "$5 million", "$1.5M", "$5-10 million",
+        // "$50/hour", "$0.09/GB" and "$120 + equity" survive: a slash only reads as
+        // division when a space or a bracket follows it.
+        .replace(/\$(?=[^\d\s])|\$(?=\d+(?:\.\d+)?\s*(?:\^|\/(?:\s|\()))|(?<=\S)\$/g, '')
         // backslash commands: "\log n" -> "log n", "\(" -> "("
         .replace(/\\(?=[A-Za-z(){}[\]])/g, '');
 }
@@ -399,8 +403,11 @@ export async function* stripSpokenNotation(
         // emitted as a lone survivor and the held one flushed after it. A "$" plus
         // a number (and the operator that may follow) is held until the next
         // character says money or formula; a backslash command with an open brace
-        // is held until the brace closes, so "\text{rank}" is judged whole.
-        const held = s.match(/(\*\*|[*\\]|\$\d{0,6}(?:\.\d*)?\s?[/^*+]?\s?|\\[a-z]*(?:\{[^}]*)?)$/);
+        // is held until the brace closes (or 40 characters, so a stray brace cannot
+        // hold the rest of the answer), so "\text{rank}" is judged whole. The hold
+        // must accept at least what cleanNotation's rule can match, or the same text
+        // splits differently across chunk sizes.
+        const held = s.match(/(\*\*|[*\\]|\$\d*(?:\.\d*)?\s*[/^]?\s*|\\[a-z]*(?:\{[^}]{0,40})?)$/);
         if (held) {
             carry = held[0];
             s = s.slice(0, -carry.length);

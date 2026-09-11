@@ -166,16 +166,24 @@ describe('stripSpokenNotation — formulas that start with a number are not curr
     it('strips a $…$ span whose number is followed by an operator, and unwraps \\text{}', async () => {
         expect(await runNotation(RRF)).toBe('the reciprocal rank as 1 / (c + rank) for each list.');
     });
-    it('keeps money: "$5 million", "$1.5M", "$5-10 million"', async () => {
+    it('keeps money: "$5 million", "$1.5M", "$5-10 million", "$50/hour", "$0.09/GB", "$120 + equity"', async () => {
         const money = 'It cost $5 million, about $1.5M a year, or $5-10 million over the term.';
         expect(await runNotation(money)).toBe(money);
+        const rates = 'We paid $50/hour, S3 egress is $0.09/GB, and the offer was $120 + equity.';
+        expect(await runNotation(rates)).toBe(rates);
+        for (const size of [1, 3, 7]) expect(await runNotation(rates, size)).toBe(rates);
+    });
+    it('still treats a slash before a space or a bracket, and a power, as notation', async () => {
+        expect(await runNotation('score $1/(c+rank)$ and cost $2^n$ here.')).toBe('score 1/(c+rank) and cost 2^n here.');
     });
     it('still strips the measured cases: backticks, bold, $O(\\log n)$', async () => {
         expect(await runNotation('Use `map.get(key)` in **O(1)**, not $O(\\log n)$.')).toBe('Use map.get(key) in O(1), not O(log n).');
     });
     it('is identical for every chunk size (the number and its operator can straddle a boundary)', async () => {
-        const ref = await runNotation(RRF, 1000);
-        for (const size of [1, 2, 3, 4, 5, 7, 11]) expect(await runNotation(RRF, size)).toBe(ref);
+        for (const text of [RRF, 'the value $1234567 / 2 is large.', 'the value $1   / (c) is large.', 'ends in \\text{rank}$']) {
+            const ref = await runNotation(text, 1000);
+            for (const size of [1, 2, 3, 4, 5, 7, 11]) expect(await runNotation(text, size)).toBe(ref);
+        }
     });
 });
 

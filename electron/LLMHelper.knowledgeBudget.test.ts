@@ -42,7 +42,7 @@ const KNOWLEDGE_PROMPT = 'You generate interview-ready speech for the candidate.
 const fakeOrchestrator = () => ({
     isKnowledgeMode: () => true,
     feedForDepthScoring: () => { /* no-op */ },
-    processQuestion: async () => ({ systemPromptInjection: KNOWLEDGE_PROMPT, contextBlock: '<candidate_skills>Python, Airflow</candidate_skills>', isIntroQuestion: false }),
+    processQuestion: async () => ({ systemPromptInjection: KNOWLEDGE_PROMPT, identityHeader: 'You generate interview-ready speech for Ada, who works as an MLOps engineer.', contextBlock: '<candidate_skills>Python, Airflow</candidate_skills>', isIntroQuestion: false }),
 });
 
 describe('Context toggle on: the verbal path keeps its own prompt; the résumé arrives as context', () => {
@@ -62,6 +62,7 @@ describe('Context toggle on: the verbal path keeps its own prompt; the résumé 
         expect(system).toContain('[SPOKEN LENGTH + OPTIONAL DEPTH]');
         expect(system).toContain('<user_context>');
         expect(system).not.toContain('<knowledge_engine_rules>');
+        expect(system).toContain('interview-ready speech for Ada, who works as an MLOps engineer');
         expect(JSON.stringify(contents)).toContain('<candidate_skills>Python, Airflow</candidate_skills>');
     });
 

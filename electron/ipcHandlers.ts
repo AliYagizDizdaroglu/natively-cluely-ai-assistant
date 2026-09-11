@@ -551,6 +551,9 @@ export function initializeIpcHandlers(appState: AppState): void {
                     const kr = await ko.processQuestion(message);
                     if (kr) {
                       if (kr.systemPromptInjection) {
+                        // Typed follow-ups PREPEND the knowledge rules and keep the verbal prompt whole —
+                        // not the swap the hands-free path had (knowledgePromptBudget.ts now keeps only the
+                        // verbal prompt plus the identity line there). This shape is unmeasured; left as is.
                         verbalSystemPrompt = `${kr.systemPromptInjection}\n\n${VERBAL_WHAT_TO_ANSWER_PROMPT}`;
                       }
                       if (kr.contextBlock) {

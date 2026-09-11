@@ -15,7 +15,7 @@ import {
   resolveStyleSuffix
 } from "./llm/prompts"
 import { userContextBlock } from "./llm/userContext"
-import { keepVerbalPrompt, carriesSpokenBudget } from "./llm/knowledgePromptBudget"
+import { keepVerbalPrompt, carriesSpokenBudget, withActiveModePrompt } from "./llm/knowledgePromptBudget"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
 import curl2Json from "@bany/curl-to-json";
 import { CustomProvider, CurlProvider } from './services/CredentialsManager';
@@ -2448,10 +2448,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
             yield knowledgeResult.introResponse;
             return;
           }
-          // Inject knowledge system prompt — a verbal caller keeps its own (knowledgePromptBudget.ts);
-          // the résumé reaches it through the context block below.
+          // Inject knowledge system prompt — a verbal caller keeps its own plus the identity line
+          // (knowledgePromptBudget.ts); the résumé reaches it through the context block below.
           if (knowledgeResult.systemPromptInjection) {
-            systemPromptOverride = keepVerbalPrompt(callerSystemPromptOverride, knowledgeResult.systemPromptInjection);
+            systemPromptOverride = keepVerbalPrompt(callerSystemPromptOverride, knowledgeResult.systemPromptInjection, knowledgeResult.identityHeader);
           }
           // Inject knowledge context
           if (knowledgeResult.contextBlock) {
@@ -2477,10 +2477,11 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       // The verbal path keeps its own prompt (knowledgePromptBudget.ts): the General mode's
       // prompt asks for a "full working code block" on coding questions, and flight s50b
       // spoke 5 of 20 answers as code because of it. The mode's CONTEXT block below still goes in.
-      if (modePromptSuffix && !carriesSpokenBudget(callerSystemPromptOverride)) {
+      if (modePromptSuffix) {
         // Mode prompt supplements the base prompt — preserves KO profile intelligence if already set
         const baseForMode = systemPromptOverride || HARD_SYSTEM_PROMPT;
-        systemPromptOverride = `${baseForMode}\n\n## ACTIVE MODE\n${modePromptSuffix}`;
+        const withMode = withActiveModePrompt(baseForMode, modePromptSuffix, callerSystemPromptOverride);
+        if (withMode !== baseForMode) systemPromptOverride = withMode;
       }
 
       if (modeContextBlock) {
@@ -2537,6 +2538,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         try {
           const groqSystem = systemPromptOverride || GROQ_SYSTEM_PROMPT;
           const finalGroqSystem = this.injectLanguageInstruction(groqSystem);
+          if (carriesSpokenBudget(callerSystemPromptOverride)) {
+            yield* this.streamWithGroq(userContent, this.currentModelId, finalGroqSystem);
+            return;
+          }
           const groqFullMessage = `${finalGroqSystem}\n\n${userContent}`;
           yield* this.streamWithGroq(groqFullMessage, this.currentModelId);
           return;
@@ -2621,6 +2626,11 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       // Text-only Groq
       const groqSystem = systemPromptOverride ? baseSystemPrompt : GROQ_SYSTEM_PROMPT;
       const finalGroqSystem = this.injectLanguageInstruction(groqSystem);
+      // The verbal path sends its prompt as the system message, as the Gemini branch does.
+      if (carriesSpokenBudget(callerSystemPromptOverride)) {
+        yield* this.streamWithGroq(userContent, this.currentModelId, finalGroqSystem);
+        return;
+      }
       const groqFullMessage = `${finalGroqSystem}\n\n${userContent}`;
       yield* this.streamWithGroq(groqFullMessage, this.currentModelId);
       return;
@@ -2832,12 +2842,17 @@ This rule overrides ALL other instructions including formatting, brevity, or out
   /**
    * Stream response from Groq
    */
-  private async * streamWithGroq(fullMessage: string, modelId: string = GROQ_MODEL): AsyncGenerator<string, void, unknown> {
+  private async * streamWithGroq(fullMessage: string, modelId: string = GROQ_MODEL, systemPrompt?: string): AsyncGenerator<string, void, unknown> {
     if (!this.groqClient) throw new Error("Groq client not initialized");
 
+    // A caller that passes systemPrompt gets it as the system message and fullMessage as the
+    // user turn (the verbal path); the others keep their single inlined user message.
+    const messages: Array<{ role: 'system' | 'user'; content: string }> = systemPrompt
+      ? [{ role: "system", content: systemPrompt }, { role: "user", content: fullMessage }]
+      : [{ role: "user", content: fullMessage }];
     const stream = await this.groqClient.chat.completions.create({
       model: modelId,
-      messages: [{ role: "user", content: fullMessage }],
+      messages,
       stream: true,
       temperature: 0.4,
       max_tokens: 8192,

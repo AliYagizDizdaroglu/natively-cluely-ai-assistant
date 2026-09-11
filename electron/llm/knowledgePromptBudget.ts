@@ -24,7 +24,19 @@ export function carriesSpokenBudget(callerOverride: string | undefined): boolean
     return !!callerOverride && callerOverride.includes(SPOKEN_LENGTH_AND_DEPTH);
 }
 
-/** The knowledge engine's replacement prompt, unless the caller is the verbal path. */
-export function keepVerbalPrompt(callerOverride: string | undefined, injected: string): string {
-    return carriesSpokenBudget(callerOverride) ? (callerOverride as string) : injected;
+/**
+ * The knowledge engine's replacement prompt, unless the caller is the verbal path — which
+ * keeps its own prompt and gains only the engine's identity line ("You generate
+ * interview-ready speech for NAME, who works as ROLE. The candidate is interviewing for …"),
+ * appended the way the custom notes are, so name, role and target job still reach it.
+ */
+export function keepVerbalPrompt(callerOverride: string | undefined, injected: string, identityHeader = ''): string {
+    if (!carriesSpokenBudget(callerOverride)) return injected;
+    return identityHeader ? `${callerOverride}\n\n${identityHeader}` : (callerOverride as string);
+}
+
+/** The active mode's prompt appended under "## ACTIVE MODE" — unless the caller is the verbal path. */
+export function withActiveModePrompt(base: string, modePromptSuffix: string, callerOverride: string | undefined): string {
+    if (!modePromptSuffix || carriesSpokenBudget(callerOverride)) return base;
+    return `${base}\n\n## ACTIVE MODE\n${modePromptSuffix}`;
 }
