@@ -15,7 +15,7 @@ import {
   resolveStyleSuffix
 } from "./llm/prompts"
 import { userContextBlock } from "./llm/userContext"
-import { keepSpokenBudget } from "./llm/knowledgePromptBudget"
+import { keepVerbalPrompt, carriesSpokenBudget } from "./llm/knowledgePromptBudget"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
 import curl2Json from "@bany/curl-to-json";
 import { CustomProvider, CurlProvider } from './services/CredentialsManager';
@@ -2448,10 +2448,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
             yield knowledgeResult.introResponse;
             return;
           }
-          // Inject knowledge system prompt
+          // Inject knowledge system prompt — a verbal caller keeps its own (knowledgePromptBudget.ts);
+          // the résumé reaches it through the context block below.
           if (knowledgeResult.systemPromptInjection) {
-            // The verbal caller's counted word budget survives the swap — see knowledgePromptBudget.ts.
-            systemPromptOverride = keepSpokenBudget(callerSystemPromptOverride, knowledgeResult.systemPromptInjection);
+            systemPromptOverride = keepVerbalPrompt(callerSystemPromptOverride, knowledgeResult.systemPromptInjection);
           }
           // Inject knowledge context
           if (knowledgeResult.contextBlock) {
@@ -2474,7 +2474,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       const modePromptSuffix = modesMgr.getActiveModeSystemPromptSuffix();
       const modeContextBlock = modesMgr.buildActiveModeContextBlock();
 
-      if (modePromptSuffix) {
+      // The verbal path keeps its own prompt (knowledgePromptBudget.ts): the General mode's
+      // prompt asks for a "full working code block" on coding questions, and flight s50b
+      // spoke 5 of 20 answers as code because of it. The mode's CONTEXT block below still goes in.
+      if (modePromptSuffix && !carriesSpokenBudget(callerSystemPromptOverride)) {
         // Mode prompt supplements the base prompt — preserves KO profile intelligence if already set
         const baseForMode = systemPromptOverride || HARD_SYSTEM_PROMPT;
         systemPromptOverride = `${baseForMode}\n\n## ACTIVE MODE\n${modePromptSuffix}`;
@@ -2691,6 +2694,16 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       // 13/15 executable vs 15/15 once the suffix is applied. See CODING_STYLE_SUFFIX.
       if (this.isGeminiModel(activeModelId)) {
         const styleSuffix = resolveStyleSuffix(callerSystemPromptOverride);
+        // The verbal path sends its prompt as systemInstruction, as the Gemma branch does.
+        // Measured 2026-09-11 (20 scenario50 questions, gemini-3.1-flash-lite, the app's
+        // own prompt and résumé context): 17 of 20 acceptable as systemInstruction, 11 of
+        // 20 with the same text pasted into the user turn — inlined, the résumé's AWS facts
+        // leaked into Azure answers. Other callers (coding, typed chat) keep the inlined
+        // form they were measured with.
+        if (carriesSpokenBudget(callerSystemPromptOverride)) {
+          yield* this.streamWithGeminiModel(userContent, activeModelId, imagePaths, `${finalSystemPrompt}${styleSuffix}`);
+          return;
+        }
         const geminiMsg = styleSuffix ? `${finalSystemPrompt}${styleSuffix}\n\n${userContent}` : fullMsg;
         yield* this.streamWithGeminiModel(geminiMsg, activeModelId, imagePaths);
         return;

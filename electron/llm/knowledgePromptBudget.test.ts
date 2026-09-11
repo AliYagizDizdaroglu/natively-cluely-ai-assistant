@@ -1,16 +1,27 @@
 import { describe, it, expect } from 'vitest';
-import { keepSpokenBudget } from './knowledgePromptBudget';
-import { SPOKEN_LENGTH_AND_DEPTH, VERBAL_WHAT_TO_ANSWER_PROMPT, CODE_HINT_PROMPT } from './prompts';
+import { keepVerbalPrompt, carriesSpokenBudget } from './knowledgePromptBudget';
+import { VERBAL_WHAT_TO_ANSWER_PROMPT, CODE_HINT_PROMPT, UNIVERSAL_WHAT_TO_ANSWER_PROMPT, MODE_GENERAL_PROMPT } from './prompts';
 
-describe('keepSpokenBudget', () => {
-    it('a verbal caller keeps its counted word budget when the knowledge prompt replaces it', () => {
-        const out = keepSpokenBudget(VERBAL_WHAT_TO_ANSWER_PROMPT, 'KNOWLEDGE PROMPT');
-        expect(out.startsWith('KNOWLEDGE PROMPT')).toBe(true);
-        expect(out).toContain(SPOKEN_LENGTH_AND_DEPTH);
-        expect(out.indexOf(SPOKEN_LENGTH_AND_DEPTH)).toBeGreaterThan(out.indexOf('KNOWLEDGE PROMPT'));
+describe('carriesSpokenBudget — which callers keep their prompt free of injected personas', () => {
+    it('the hands-free verbal prompt does', () => {
+        expect(carriesSpokenBudget(VERBAL_WHAT_TO_ANSWER_PROMPT)).toBe(true);
+    });
+    it('typed chat, code hints, the coding prompt and the mode prompt itself do not', () => {
+        expect(carriesSpokenBudget(undefined)).toBe(false);
+        expect(carriesSpokenBudget(CODE_HINT_PROMPT)).toBe(false);
+        expect(carriesSpokenBudget(UNIVERSAL_WHAT_TO_ANSWER_PROMPT)).toBe(false);
+        expect(carriesSpokenBudget(MODE_GENERAL_PROMPT)).toBe(false);
+    });
+});
+
+describe('keepVerbalPrompt', () => {
+    it('a verbal caller keeps its whole prompt: the knowledge rules never replace it', () => {
+        const out = keepVerbalPrompt(VERBAL_WHAT_TO_ANSWER_PROMPT, 'KNOWLEDGE PROMPT');
+        expect(out).toBe(VERBAL_WHAT_TO_ANSWER_PROMPT);
+        expect(out).not.toContain('KNOWLEDGE PROMPT');
     });
     it('a caller without the budget block (typed chat, code hints) gets the knowledge prompt unchanged', () => {
-        expect(keepSpokenBudget(undefined, 'KNOWLEDGE PROMPT')).toBe('KNOWLEDGE PROMPT');
-        expect(keepSpokenBudget(CODE_HINT_PROMPT, 'KNOWLEDGE PROMPT')).toBe('KNOWLEDGE PROMPT');
+        expect(keepVerbalPrompt(undefined, 'KNOWLEDGE PROMPT')).toBe('KNOWLEDGE PROMPT');
+        expect(keepVerbalPrompt(CODE_HINT_PROMPT, 'KNOWLEDGE PROMPT')).toBe('KNOWLEDGE PROMPT');
     });
 });

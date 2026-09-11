@@ -1,19 +1,30 @@
 import { SPOKEN_LENGTH_AND_DEPTH } from './prompts';
 
 /**
- * When the Context toggle's knowledge engine replaces the caller's system prompt, keep the
- * caller's counted word budget.
+ * A caller whose system prompt carries the spoken budget block is the hands-free verbal
+ * path (VERBAL_WHAT_TO_ANSWER_PROMPT). That prompt is complete and measured: nothing in
+ * streamChat replaces it or appends another persona to it — not the Context toggle's
+ * knowledge rules, not the active mode's prompt. Typed chat and code hints never carried
+ * the block and keep both injections as before.
  *
- * Why: the verbal answer prompt ends with SPOKEN_LENGTH_AND_DEPTH ("AT MOST 60 words"), the
- * knowledge prompt only says "~20-30 seconds", which a model cannot count (see the comment on
- * SPOKEN_LENGTH_AND_DEPTH). Measured 2026-09-06 (52 questions, gemini-3.1-flash-lite, uncut):
- * knowledge prompt alone p50 100 words, 48 of 52 over 80; knowledge prompt + this block p50 57,
- * none over 80, 51 of 52 acceptable. In the app the overflow was the flat 87/89/90-word hour
- * (after7) and the tail sentences lost to the 80-word cut.
- *
- * Only callers that carried the block get it back — typed chat and code hints never had one.
+ * Why (flight s50b, 2026-09-11, 20 scenario50 questions, gemini-3.1-flash-lite, same hour):
+ * the app answered 8 of 20 acceptably where the bare verbal prompt answered 18 of 20. Its
+ * system prompt was the knowledge rules plus this budget block (the swap the previous
+ * version of this file performed) followed by the General mode's prompt under
+ * "## ACTIVE MODE" — which tells the model that a coding question gets a "full working
+ * code block". Five of the twenty spoken answers came back as code with a numbered
+ * walkthrough (the app logged five suppressed code fences, one per such answer) and lost
+ * their delivery grade; the verbal prompt forbids exactly that. Rebuilt offline with the
+ * same prompt as a system instruction, the swap alone scored 14 and produced no list; with
+ * the mode prompt appended it reproduced the code answers. The 2026-09-06 measurement that
+ * justified the swap (knowledge prompt + budget block, p50 57 words, 51 of 52 acceptable)
+ * was on the short interview60 roster, where 57 words is a whole answer.
  */
-export function keepSpokenBudget(callerOverride: string | undefined, injected: string): string {
-    if (!callerOverride || !callerOverride.includes(SPOKEN_LENGTH_AND_DEPTH)) return injected;
-    return `${injected}\n${SPOKEN_LENGTH_AND_DEPTH}`;
+export function carriesSpokenBudget(callerOverride: string | undefined): boolean {
+    return !!callerOverride && callerOverride.includes(SPOKEN_LENGTH_AND_DEPTH);
+}
+
+/** The knowledge engine's replacement prompt, unless the caller is the verbal path. */
+export function keepVerbalPrompt(callerOverride: string | undefined, injected: string): string {
+    return carriesSpokenBudget(callerOverride) ? (callerOverride as string) : injected;
 }

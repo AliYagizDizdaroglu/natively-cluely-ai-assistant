@@ -45,23 +45,24 @@ const fakeOrchestrator = () => ({
     processQuestion: async () => ({ systemPromptInjection: KNOWLEDGE_PROMPT, contextBlock: '<candidate_skills>Python, Airflow</candidate_skills>', isIntroQuestion: false }),
 });
 
-describe('Context toggle on: the knowledge prompt keeps the verbal path\'s counted word budget', () => {
+describe('Context toggle on: the verbal path keeps its own prompt; the résumé arrives as context', () => {
     beforeEach(() => {
         generateContentStream.mockClear();
     });
 
-    it('verbal answer → knowledge prompt + [SPOKEN LENGTH + OPTIONAL DEPTH] + the custom notes', async () => {
+    it('verbal answer → the verbal prompt itself + the custom notes; the knowledge rules stay out, the résumé block goes in the message', async () => {
         const helper = new LLMHelper('fake-gemini-key');
         helper.setKnowledgeOrchestrator(fakeOrchestrator());
         helper.setCustomNotes('Interviewing for a staff MLOps role.');
         await drain(helper.streamChat('how do you shrink an 8 GB training image', undefined, undefined, VERBAL_WHAT_TO_ANSWER_PROMPT, false, 'gemma-4-31b-it'));
         expect(generateContentStream).toHaveBeenCalledTimes(1);
-        const { config } = generateContentStream.mock.calls[0][0];
+        const { config, contents } = generateContentStream.mock.calls[0][0];
         const system = config?.systemInstruction ?? '';
-        expect(system).toContain('<knowledge_engine_rules>');
+        expect(system).toContain('INTERVIEW FRAMING');
         expect(system).toContain('[SPOKEN LENGTH + OPTIONAL DEPTH]');
         expect(system).toContain('<user_context>');
-        expect(system.indexOf('[SPOKEN LENGTH + OPTIONAL DEPTH]')).toBeGreaterThan(system.indexOf('<knowledge_engine_rules>'));
+        expect(system).not.toContain('<knowledge_engine_rules>');
+        expect(JSON.stringify(contents)).toContain('<candidate_skills>Python, Airflow</candidate_skills>');
     });
 
     it('typed chat (no verbal override) → knowledge prompt without the spoken budget block', async () => {
