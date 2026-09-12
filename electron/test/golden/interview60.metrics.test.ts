@@ -590,25 +590,27 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // cutShort 1 (67 is the only cut line under 80), p50 = pct(a,.5) =
         // a[floor(3*.5)] = a[1] = 90, max 140.
         expect(m.budget).toEqual({ n: 3, over: 2, allowance: 2, cut: 1, cutShort: 1, p50: 90, max: 140 });
-        const row = evaluateGate(m).rows.find((r) => r.label === 'Spoken answers: budget follows the question (80–150 words, ceiling 200)');
-        // n 3 >= floor(delivered 2 * 0.9) = 1, and max 140 <= 200 (the row no longer
-        // bounds p50 or a fixed 130 ceiling) — but cutShort 1 !== 0 alone still fails it.
+        const row = evaluateGate(m).rows.find((r) => r.label === 'Spoken answers: streamed whole under the 200-word guard');
+        // n 3 >= floor(delivered 2 * 0.9) = 1, and max 140 <= 200 — but one answer was
+        // cut, and since flight s50c (2026-09-12) any cut is a runaway the row must surface.
         expect(row.pass).toBe(false);
-        expect(row.value).toBe('3 answers, 2 over 80, 1 cut under 80, words p50 90 max 140');
+        expect(row.value).toBe('3 answers, 1 cut by the guard, words p50 90 max 140');
     });
     it('the two new rows are the last two, so index-based rendering stays aligned', () => {
         expect(GATE.slice(-2).map((g) => g.key)).toEqual(['pinned', 'budget']);
     });
 
-    it('budget gate row pass rule: bounds only the ceiling, not the median (spec 2026-09-09 §3.5)', () => {
+    it('budget gate row pass rule: no cut at all, max under the 200-word guard, median unbounded (flight s50c, 2026-09-12)', () => {
         const row = GATE.find((g) => g.key === 'budget')!;
-        const base = { budget: { n: 10, over: 0, cutShort: 0, p50: 90, max: 120 }, delivered: 10 } as any;
+        const base = { budget: { n: 10, over: 0, cut: 0, cutShort: 0, p50: 90, max: 120 }, delivered: 10 } as any;
         expect(row.pass(base)).toBe(true);
-        // max 205 > the 200 ceiling — fails, even though everything else is fine.
+        // max 205 > the 200 guard — fails, even though everything else is fine.
         expect(row.pass({ ...base, budget: { ...base.budget, max: 205 } })).toBe(false);
-        // p50 130 — no longer bounded at all; a longer question legitimately buys a
-        // longer limit, so the row does not penalise a higher median on its own.
-        expect(row.pass({ ...base, budget: { ...base.budget, p50: 130 } })).toBe(true);
+        // One cut anywhere — a runaway the guard clamped — fails the row: the app no
+        // longer cuts by design, so a cut is a finding.
+        expect(row.pass({ ...base, budget: { ...base.budget, cut: 1 } })).toBe(false);
+        // p50 170 — unbounded; the model's own stop governs length now.
+        expect(row.pass({ ...base, budget: { ...base.budget, p50: 170, max: 190 } })).toBe(true);
     });
 
     it('evaluates the gate: everything fails except the latency row and the roster-proportional heard row', () => {
@@ -634,7 +636,7 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // ttftP90=3000ms and detectP50=1500ms are both <= the 5000ms gate.
         expect(rows['Answer TTFT p90 · detect p50']).toBe(true);
         const failed = g.rows.filter((r) => !r.pass).map((r) => r.label);
-        // pinned (8 legacy dispatches) and budget (cutShort 1 !== 0) both fail
+        // pinned (8 legacy dispatches) and budget (cut 1 !== 0) both fail
         // here too — appended last, same as GATE itself.
         expect(failed).toEqual([
             'Answered hands-free',
@@ -648,7 +650,7 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             'Interview-acceptable answers (Opus 5 judge)',
             'Long questions answered whole',
             'Answer prompt pinned to the dispatched question',
-            'Spoken answers: budget follows the question (80–150 words, ceiling 200)',
+            'Spoken answers: streamed whole under the 200-word guard',
         ]);
     });
 
@@ -770,7 +772,7 @@ describe('GATE', () => {
             'Answer TTFT p90 · detect p50',
             // Spec 2026-09-04 §2/§4 (answer-what-was-asked) — appended last.
             'Answer prompt pinned to the dispatched question',
-            'Spoken answers: budget follows the question (80–150 words, ceiling 200)',
+            'Spoken answers: streamed whole under the 200-word guard',
         ]);
     });
 });
@@ -795,7 +797,7 @@ describe('gate thresholds scale with the roster', () => {
         judge: { n: gradeable, acceptable: gradeable, weak: 0, wrong: 0, errors: 0, long: { n: 0 }, followup: { n: 0 } },
         longs: 0, longWhole: 0, ttftP90: 3000, detectP50: 4000,
         pinned: { answers: items, legacy: 0, missing: 0, mismatched: 0 },
-        budget: { n: items, over: 0, cutShort: 0, p50: 90, max: 120 },
+        budget: { n: items, over: 0, cut: 0, cutShort: 0, p50: 90, max: 120 },
     }) as any;
 
     it('passes a flawless hour whatever the roster size', () => {

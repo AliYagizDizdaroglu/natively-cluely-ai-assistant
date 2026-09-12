@@ -187,7 +187,7 @@ export const SPOKEN_WORD_BUDGET = 70;
  */
 export const SPOKEN_WORD_TARGET = 60;
 
-/** Ceiling of the structured rule below; the runtime budget is clamp(80, 2.5 × question words, 150) — verbalStreamFilter.spokenWordBudget. */
+/** Ceiling of the structured rule below; the runtime only clamps the stream at 200 — verbalStreamFilter.SPOKEN_WORD_GUARD. */
 export const SPOKEN_WORD_CEILING = 150;
 
 /**

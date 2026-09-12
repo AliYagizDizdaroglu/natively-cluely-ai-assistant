@@ -2,7 +2,7 @@ import { LLMHelper, GEMINI_FLASH_FALLBACK_MODEL, GEMINI_FLASH_MODEL } from "../L
 import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
-import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, spokenWordBudget, type Suggestion } from "./verbalStreamFilter";
+import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, SPOKEN_WORD_GUARD, type Suggestion } from "./verbalStreamFilter";
 import { lastInterviewerTurn } from "./lastInterviewerTurn";
 import { tapFirstToken } from "./streamTaps";
 import * as fs from "fs";
@@ -20,8 +20,8 @@ function diagLog(msg: string) {
     } catch { /* swallow — never break the stream on log failure */ }
 }
 
-// Spoken word budget: see verbalStreamFilter.spokenWordBudget, which scales
-// the limit with the question's length (spec 2026-09-09 §3.5). Coding is exempt.
+// Spoken word guard: see verbalStreamFilter.SPOKEN_WORD_GUARD — a 200-word
+// clamp, never a cut under it (flight s50c, 2026-09-12). Coding is exempt.
 
 export class WhatToAnswerLLM {
     private llmHelper: LLMHelper;
@@ -350,10 +350,6 @@ ANSWER SHAPE: ${intentResult.answerShape}
                         ),
                     );
 
-                const questionWords = (knowledgeQuestion.match(/\S+/g) ?? []).length;
-                const budget = spokenWordBudget(questionWords);
-                diagLog(`word budget limit=${budget.limit} for a ${questionWords}-word question`);
-
                 yield* tapFirstToken(
                     cutAtWordBudget(
                         this.withVerbalFallback(
@@ -368,9 +364,7 @@ ANSWER SHAPE: ${intentResult.answerShape}
                             ),
                         ),
                         {
-                            limit: budget.limit,
-                            floor: budget.floor,
-                            ceiling: budget.ceiling,
+                            ...SPOKEN_WORD_GUARD,
                             onDone: (r) => {
                                 // One line per completed spoken answer — the flight
                                 // harness's "budget" gate row reads it.

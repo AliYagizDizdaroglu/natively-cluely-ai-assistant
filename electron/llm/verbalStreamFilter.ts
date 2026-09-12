@@ -359,10 +359,12 @@ function cleanNotation(s: string): string {
         // follows a non-space ("n)$"). Money is a number followed by a word, a unit, a
         // comma, a range dash, a rate or a sum, so "$5 million", "$1.5M", "$5-10 million",
         // "$50/hour", "$0.09/GB" and "$120 + equity" survive: a slash only reads as
-        // division when a space or a bracket follows it.
-        .replace(/\$(?=[^\d\s])|\$(?=\d+(?:\.\d+)?\s*(?:\^|\/(?:\s|\()))|(?<=\S)\$/g, '')
-        // backslash commands: "\log n" -> "log n", "\(" -> "("
-        .replace(/\\(?=[A-Za-z(){}[\]])/g, '');
+        // division when a space or a bracket follows it. A number followed by a
+        // (LaTeX-escaped) percent sign is a percentage, not money: "$9.5\%$" — 3.5
+        // Flash, flight s50c — is "9.5%".
+        .replace(/\$(?=[^\d\s])|\$(?=\d+(?:\.\d+)?\s*(?:\^|\/(?:\s|\()|\\?%))|(?<=\S)\$/g, '')
+        // backslash commands: "\log n" -> "log n", "\(" -> "(", "\%" -> "%"
+        .replace(/\\(?=[A-Za-z(){}[\]%])/g, '');
 }
 
 /**
@@ -401,13 +403,13 @@ export async function* stripSpokenNotation(
         // "**" is held as a pair: holding only one star split the pair so that a
         // stream ENDING in bold ("…and **p99**") leaked "**" — the first star was
         // emitted as a lone survivor and the held one flushed after it. A "$" plus
-        // a number (and the operator that may follow) is held until the next
-        // character says money or formula; a backslash command with an open brace
+        // a number (and the operator or backslash that may follow) is held until the
+        // next character says money or formula; a backslash command with an open brace
         // is held until the brace closes (or 40 characters, so a stray brace cannot
         // hold the rest of the answer), so "\text{rank}" is judged whole. The hold
         // must accept at least what cleanNotation's rule can match, or the same text
         // splits differently across chunk sizes.
-        const held = s.match(/(\*\*|[*\\]|\$\d*(?:\.\d*)?\s*[/^]?\s*|\\[a-z]*(?:\{[^}]{0,40})?)$/);
+        const held = s.match(/(\*\*|[*\\]|\$\d*(?:\.\d*)?\s*[/^\\]?\s*|\\[a-z]*(?:\{[^}]{0,40})?)$/);
         if (held) {
             carry = held[0];
             s = s.slice(0, -carry.length);
@@ -503,7 +505,7 @@ export async function* cutAtWordBudget(
     // aloud; the measured max on the after4 corpus after the sentence cut is
     // 92 words — this never fires on real answers, it bounds the pathological
     // one. Checked after each yield, so one chunk cannot push past it unbounded.
-    // The app passes min(2 × limit, 200) since 2026-09-09 — see spokenWordBudget.
+    // The app passes 200 — limit, floor and ceiling alike — see SPOKEN_WORD_GUARD.
     const ceiling = opts.ceiling ?? 2 * limit;
     for await (const chunk of source) {
         if (SENTINEL_CHUNK.test(chunk)) { yield chunk; continue; } // not words — leaves carry/inWord alone
@@ -559,13 +561,18 @@ export async function* cutAtWordBudget(
 }
 
 /**
- * The spoken budget follows the question (spec 2026-09-09 §3.5): the structured
- * arms answered 60–159 words for 31–71-word questions. 2.5 words per question
- * word, never under 80 (the floor that measured best on after6) nor over 150;
- * the sentence in progress at the limit finishes; the ceiling bounds a
- * terminator-free answer at 200 words.
+ * The runaway guard the verbal path streams under since flight s50c (2026-09-12).
+ *
+ * It replaces the question-scaled sentence cut of spec 2026-09-09 §3.5 —
+ * clamp(80, 2.5 × question words, 150) — which fired on 13 of 42 in-app
+ * answers that flight and removed the LAST asked part from 4 of the 8 in-app
+ * failures (S2Q01, S2Q02, S2Q07, S2Q08). The same-hour bare arm — same model,
+ * same prompt, no cut — scored 18/20 with a 117-word median and a 170-word
+ * maximum; the app's cut applied offline to those 20 answers would have
+ * truncated 7. The prompt still asks for 80–150 words; the model's own stop is
+ * what earns 18/20, so the stream is only clamped at the 200 the gate row
+ * already bounds (`max <= 200`). Limit, floor and ceiling coincide, so this is
+ * a hard stop — mid-sentence if it comes to that: a 200-word spoken answer is
+ * already a runaway, and the gate row reports every cut as a finding.
  */
-export function spokenWordBudget(questionWords: number): { limit: number; floor: number; ceiling: number } {
-    const limit = Math.min(150, Math.max(80, Math.round(2.5 * questionWords)));
-    return { limit, floor: limit, ceiling: Math.min(2 * limit, 200) };
-}
+export const SPOKEN_WORD_GUARD: Readonly<Pick<WordBudgetOptions, 'limit' | 'floor' | 'ceiling'>> = { limit: 200, floor: 200, ceiling: 200 };

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, spokenWordBudget, type Suggestion } from './verbalStreamFilter';
+import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, SPOKEN_WORD_GUARD, type Suggestion } from './verbalStreamFilter';
 
 /** Feed `text` through the filter in fixed-size chunks; return concatenated output. */
 async function runFilter(text: string, chunkSize = 6): Promise<string> {
@@ -179,8 +179,13 @@ describe('stripSpokenNotation — formulas that start with a number are not curr
     it('still strips the measured cases: backticks, bold, $O(\\log n)$', async () => {
         expect(await runNotation('Use `map.get(key)` in **O(1)**, not $O(\\log n)$.')).toBe('Use map.get(key) in O(1), not O(log n).');
     });
+    it('strips a $…$ percentage ("$9.5\\%$" — 3.5 Flash, flight s50c) to "9.5%", keeping "$9.5" as money elsewhere', async () => {
+        expect(await runNotation('the p99 improved by $9.5\\%$ after the change.')).toBe('the p99 improved by 9.5% after the change.');
+        expect(await runNotation('the p99 improved by $9.5\\% after the change.')).toBe('the p99 improved by 9.5% after the change.');
+        expect(await runNotation('it cost $9.5 per user.')).toBe('it cost $9.5 per user.');
+    });
     it('is identical for every chunk size (the number and its operator can straddle a boundary)', async () => {
-        for (const text of [RRF, 'the value $1234567 / 2 is large.', 'the value $1   / (c) is large.', 'ends in \\text{rank}$']) {
+        for (const text of [RRF, 'the value $1234567 / 2 is large.', 'the value $1   / (c) is large.', 'ends in \\text{rank}$', 'improved by $9.5\\%$ after.', 'improved by $9.5\\% after.']) {
             const ref = await runNotation(text, 1000);
             for (const size of [1, 2, 3, 4, 5, 7, 11]) expect(await runNotation(text, size)).toBe(ref);
         }
@@ -375,13 +380,39 @@ describe('cutAtWordBudget (spec 2026-09-04 §4)', () => {
     });
 });
 
-describe('spokenWordBudget — the budget follows the question (spec 2026-09-09 §3.5)', () => {
-    it('clamps 2.5 words per question word to 80–150, floor = limit, ceiling min(2×limit, 200)', () => {
-        expect(spokenWordBudget(10)).toEqual({ limit: 80, floor: 80, ceiling: 160 });
-        expect(spokenWordBudget(32)).toEqual({ limit: 80, floor: 80, ceiling: 160 });
-        expect(spokenWordBudget(40)).toEqual({ limit: 100, floor: 100, ceiling: 200 });
-        expect(spokenWordBudget(71)).toEqual({ limit: 150, floor: 150, ceiling: 200 });
-        expect(spokenWordBudget(0)).toEqual({ limit: 80, floor: 80, ceiling: 160 });
+describe('SPOKEN_WORD_GUARD — the verbal stream is clamped at 200 words and never cut under it (flight s50c, 2026-09-12)', () => {
+    const sentence = (n: number, i: number) => Array.from({ length: n }, (_, k) => `w${i}x${k}`).join(' ') + '.';
+    const words = (s: string) => (s.match(/\S+/g) ?? []).length;
+    async function run(text: string) {
+        const src = (async function* () { for (let i = 0; i < text.length; i += 9) yield text.slice(i, i + 9); })();
+        let done: any = null;
+        let out = '';
+        for await (const c of cutAtWordBudget(src, { ...SPOKEN_WORD_GUARD, onDone: (r) => { done = r; } })) out += c;
+        return { out, done };
+    }
+    it('is a single hard clamp at 200: limit, floor and ceiling all 200', () => {
+        expect(SPOKEN_WORD_GUARD).toEqual({ limit: 200, floor: 200, ceiling: 200 });
+    });
+    it('a 170-word answer in four sentences — the longest the bare arm produced — streams whole, uncut', async () => {
+        const text = [1, 2, 3, 4].map((i) => sentence(i === 4 ? 50 : 40, i)).join(' ');
+        const { out, done } = await run(text);
+        expect(words(out)).toBe(170);
+        expect(out).toBe(text);
+        expect(done).toEqual({ words: 170, cut: false, allowance: false });
+    });
+    it('an 80-word answer to a short question is no longer cut at 80: the old question-scaled limit is gone', async () => {
+        const text = [1, 2, 3, 4, 5, 6].map((i) => sentence(20, i)).join(' ');   // 120 words
+        const { out, done } = await run(text);
+        expect(words(out)).toBe(120);
+        expect(done).toEqual({ words: 120, cut: false, allowance: false });
+    });
+    it('stops a 230-word runaway at 200 words and reports the cut', async () => {
+        const text = [1, 2, 3, 4, 5].map((i) => sentence(46, i)).join(' ');   // ends at 46, 92, 138, 184, 230
+        const { out, done } = await run(text);
+        // The clamp is checked after each yielded piece, so the overshoot is bounded by one chunk (9 chars).
+        expect(words(out)).toBeGreaterThanOrEqual(200);
+        expect(words(out)).toBeLessThanOrEqual(202);
+        expect(done).toMatchObject({ cut: true });
     });
     it('cutAtWordBudget honours an explicit ceiling below 2 × limit', async () => {
         // 250 words, no terminator anywhere: stops at the ceiling

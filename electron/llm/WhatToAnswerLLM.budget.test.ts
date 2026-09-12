@@ -1,12 +1,16 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { WhatToAnswerLLM } from './WhatToAnswerLLM';
 
-/** The verbal path's stream is cut at 80 words at a sentence end (spec 2026-09-04 §4.2); the coding path is exempt. */
+/**
+ * The verbal path streams under SPOKEN_WORD_GUARD (clamp at 200 words, flight
+ * s50c 2026-09-12) — never the old question-scaled sentence cut; the coding
+ * path is exempt.
+ */
 const sentence = (n: number, i: number) => Array.from({ length: n }, (_, k) => `w${i}x${k}`).join(' ') + '.';
 const words = (s: string) => (s.match(/\S+/g) ?? []).length;
-const SIX = [1, 2, 3, 4, 5, 6].map((i) => sentence(20, i)).join(' ');
-const FOUR = [1, 2, 3, 4].map((i) => sentence(30, i)).join(' ');   // sentence ends at 30, 60, 90, 120 words
-const FIVE = [1, 2, 3, 4, 5].map((i) => sentence(40, i)).join(' ');   // sentence ends at 40, 80, 120, 160, 200 words
+const SIX = [1, 2, 3, 4, 5, 6].map((i) => sentence(20, i)).join(' ');        // 120 words
+const FOUR = [1, 2, 3, 4].map((i) => sentence(i === 4 ? 50 : 40, i)).join(' ');   // 170 words — the bare arm's longest (S2Q02)
+const FIVE = [1, 2, 3, 4, 5].map((i) => sentence(46, i)).join(' ');         // 230 words — a runaway
 
 function makeHelper(text: string) {
     let consumed = 0;
@@ -29,27 +33,27 @@ async function drain(gen: AsyncGenerator<string>): Promise<string> {
 const VERBAL = { intent: 'general', confidence: 0.9, answerShape: '' } as any;
 const CODING = { intent: 'coding', confidence: 0.9, answerShape: '' } as any;
 
-describe('WhatToAnswerLLM word budget', () => {
+describe('WhatToAnswerLLM word guard', () => {
     afterEach(() => vi.restoreAllMocks());
 
-    it('verbal: 120 words in six sentences come out as 80, the source is not drained, the budget line is logged', async () => {
+    it('verbal: 120 words in six sentences to a short question come out whole (the 80-word cut is gone), the budget line is logged', async () => {
         const logs: string[] = [];
         vi.spyOn(console, 'log').mockImplementation((...a: any[]) => { logs.push(a.map(String).join(' ')); });
         const { helper, consumed, total } = makeHelper(SIX);
         const out = await drain(new WhatToAnswerLLM(helper).generateStream('[INTERVIEWER]: Walk me through it.', undefined, VERBAL));
-        expect(words(out)).toBe(80);
-        expect(consumed()).toBeLessThan(total);
-        expect(logs).toContain('[Answer] budget: words=80 cut=yes allowance=no');
+        expect(words(out)).toBe(120);
+        expect(consumed()).toBe(total);
+        expect(logs).toContain('[Answer] budget: words=120 cut=no allowance=no');
     });
-    it('behavioral (fast path) is under the same budget', async () => {
+    it('behavioral (fast path) streams under the same guard', async () => {
         const logs: string[] = [];
         vi.spyOn(console, 'log').mockImplementation((...a: any[]) => { logs.push(a.map(String).join(' ')); });
         const { helper } = makeHelper(SIX);
         const out = await drain(new WhatToAnswerLLM(helper).generateStream('[INTERVIEWER]: Tell me about a time.', undefined, { ...VERBAL, intent: 'behavioral' }));
-        expect(words(out)).toBe(80);
-        expect(logs.some((l) => l.startsWith('[Answer] budget: words=80'))).toBe(true);
+        expect(words(out)).toBe(120);
+        expect(logs).toContain('[Answer] budget: words=120 cut=no allowance=no');
     });
-    it('coding is exempt: no cut, no budget line', async () => {
+    it('coding is exempt: no guard, no budget line', async () => {
         const logs: string[] = [];
         vi.spyOn(console, 'log').mockImplementation((...a: any[]) => { logs.push(a.map(String).join(' ')); });
         const { helper } = makeHelper(SIX);
@@ -57,21 +61,24 @@ describe('WhatToAnswerLLM word budget', () => {
         expect(words(out)).toBe(120);
         expect(logs.some((l) => l.startsWith('[Answer] budget:'))).toBe(false);
     });
-    it('verbal: the sentence in progress at 80 finishes (floor 80): four 30-word sentences come out as 90', async () => {
+    it('verbal: a 170-word answer streams whole whether the question is 5 or 60 words — the guard does not scale with the question', async () => {
         const logs: string[] = [];
         vi.spyOn(console, 'log').mockImplementation((...a: any[]) => { logs.push(a.map(String).join(' ')); });
-        const { helper } = makeHelper(FOUR);
-        const out = await drain(new WhatToAnswerLLM(helper).generateStream('[INTERVIEWER]: Walk me through it.', undefined, VERBAL));
-        expect(words(out)).toBe(90);
-        expect(logs).toContain('[Answer] budget: words=90 cut=yes allowance=yes');
+        for (const question of ['Walk me through it.', sentence(60, 9)]) {
+            const { helper } = makeHelper(FOUR);
+            const out = await drain(new WhatToAnswerLLM(helper).generateStream(`[INTERVIEWER]: ${question}`, undefined, VERBAL));
+            expect(words(out)).toBe(170);
+        }
+        expect(logs.filter((l) => l === '[Answer] budget: words=170 cut=no allowance=no')).toHaveLength(2);
     });
-    it('a 60-word question gets a 150-word limit: four 40-word sentences come out as 160 (the sentence in progress at 150 finishes)', async () => {
+    it('verbal: a 230-word runaway is clamped at 200 and the source is not drained', async () => {
         const logs: string[] = [];
         vi.spyOn(console, 'log').mockImplementation((...a: any[]) => { logs.push(a.map(String).join(' ')); });
-        const { helper } = makeHelper(FIVE);
-        const question = sentence(60, 9);
-        const out = await drain(new WhatToAnswerLLM(helper).generateStream(`[INTERVIEWER]: ${question}`, undefined, VERBAL));
-        expect(words(out)).toBe(160);
-        expect(logs).toContain('[Answer] budget: words=160 cut=yes allowance=yes');
+        const { helper, consumed, total } = makeHelper(FIVE);
+        const out = await drain(new WhatToAnswerLLM(helper).generateStream('[INTERVIEWER]: Walk me through it.', undefined, VERBAL));
+        expect(words(out)).toBeGreaterThanOrEqual(200);
+        expect(words(out)).toBeLessThanOrEqual(202);
+        expect(consumed()).toBeLessThan(total);
+        expect(logs.some((l) => /^\[Answer\] budget: words=20[0-2] cut=yes/.test(l))).toBe(true);
     });
 });

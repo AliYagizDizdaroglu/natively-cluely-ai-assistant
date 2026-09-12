@@ -447,15 +447,15 @@ export const GATE = [
     { key: 'long', label: 'Long questions answered whole', before: 'not in the roster', pass: (m) => m.longWhole === m.longs, show: (m) => m.longs ? `${m.longWhole} of ${m.longs} (dispatched text covers ≥ 80% of the question)` : 'none in the roster' },
     { key: 'latency', label: 'Answer TTFT p90 · detect p50', before: '3.7 s (answer-only pass) · 4.1 s', pass: (m) => (m.ttftP90 ?? Infinity) <= 5000 && (m.detectP50 ?? Infinity) <= 5000, show: (m) => `${m.ttftP90 == null ? '—' : (m.ttftP90 / 1000).toFixed(1) + ' s'}${m.ttftSource === 'answer-only' ? ' (answer-only pass)' : ''} · ${m.detectP50 == null ? '—' : (m.detectP50 / 1000).toFixed(1) + ' s'}` },
     { key: 'pinned', label: 'Answer prompt pinned to the dispatched question', before: 'not logged', pass: (m) => m.pinned.answers > 0 && m.pinned.legacy === 0 && m.pinned.missing === 0 && m.pinned.mismatched === 0, show: (m) => m.pinned.answers === 0 ? 'no answers' : m.pinned.legacy === m.pinned.answers ? 'not logged' : `${m.pinned.answers - m.pinned.legacy - m.pinned.missing - m.pinned.mismatched}/${m.pinned.answers} pinned, ${m.pinned.missing} missing, ${m.pinned.mismatched} mismatched${m.pinned.legacy ? `, ${m.pinned.legacy} legacy` : ''}` },
-    // Spec 2026-09-09 §3.5: the budget now follows the question — floor equals
-    // limit equals clamp(80, 2.5 × question words, 150), so a cut answer always
-    // finishes the sentence in progress at whatever that question's limit is;
-    // `cutShort` is still 0 by construction. `n` must cover the delivered
-    // answers (cue answers and coding routes emit no budget line, hence 0.9).
-    // p50 is no longer bounded — a longer question legitimately buys a longer
-    // limit — only `max` is: the ceiling is min(2 × limit, 200), so 200 bounds
-    // every answer regardless of question length.
-    { key: 'budget', label: 'Spoken answers: budget follows the question (80–150 words, ceiling 200)', before: '36 of 55 cut under 80 words (after6)', pass: (m) => m.budget.n > 0 && m.budget.n >= Math.floor(m.delivered * 0.9) && m.budget.cutShort === 0 && m.budget.max <= 200, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.over} over 80, ${m.budget.cutShort} cut under 80, words p50 ${m.budget.p50} max ${m.budget.max}` },
+    // Flight s50c (2026-09-12): the app no longer cuts under 200 words — the
+    // question-scaled cut of spec 2026-09-09 §3.5 fired on 13 of 42 answers and
+    // removed the last asked part of 4 of the 8 in-app failures. The stream is
+    // clamped at 200 only (verbalStreamFilter.SPOKEN_WORD_GUARD), so any cut is a
+    // runaway the row must surface, and `max` must stay at or under the guard.
+    // `n` must cover the delivered answers (cue answers and coding routes emit
+    // no budget line, hence 0.9). p50 is unbounded: the model's own stop
+    // governs length now.
+    { key: 'budget', label: 'Spoken answers: streamed whole under the 200-word guard', before: '13 of 42 cut by the question-scaled budget (s50c)', pass: (m) => m.budget.n > 0 && m.budget.n >= Math.floor(m.delivered * 0.9) && m.budget.cut === 0 && m.budget.max <= 200, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.cut} cut by the guard, words p50 ${m.budget.p50} max ${m.budget.max}` },
 ];
 
 /** Counts over spoken items only — mirrors summarizeVerdicts in interview60.judge.mjs (kept dependency-free here). */
