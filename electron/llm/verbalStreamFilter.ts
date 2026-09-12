@@ -360,9 +360,10 @@ function cleanNotation(s: string): string {
         // comma, a range dash, a rate or a sum, so "$5 million", "$1.5M", "$5-10 million",
         // "$50/hour", "$0.09/GB" and "$120 + equity" survive: a slash only reads as
         // division when a space or a bracket follows it. A number followed by a
-        // (LaTeX-escaped) percent sign is a percentage, not money: "$9.5\%$" — 3.5
-        // Flash, flight s50c — is "9.5%".
-        .replace(/\$(?=[^\d\s])|\$(?=\d+(?:\.\d+)?\s*(?:\^|\/(?:\s|\()|\\?%))|(?<=\S)\$/g, '')
+        // LaTeX-ESCAPED percent sign is a percentage, not money: "$9.5\%$" — 3.5
+        // Flash, flight s50c — is "9.5%". A bare "%" does not count, so "$5% better"
+        // keeps its dollar: no measured answer has ever written that as a formula.
+        .replace(/\$(?=[^\d\s])|\$(?=\d+(?:\.\d+)?\s*(?:\^|\/(?:\s|\()|\\%))|(?<=\S)\$/g, '')
         // backslash commands: "\log n" -> "log n", "\(" -> "(", "\%" -> "%"
         .replace(/\\(?=[A-Za-z(){}[\]%])/g, '');
 }
@@ -494,18 +495,40 @@ export async function* cutAtWordBudget(
         }
         return n;
     };
+    /**
+     * The longest prefix of `s` that keeps the running count at or under `ceiling`,
+     * cut where the first word that would exceed it BEGINS — so the spoken answer
+     * never ends on half a word. A word split across chunks was counted when its
+     * first character was emitted (`inWord`), so its continuation costs nothing.
+     * Returns the whole string when it fits, which is how the caller tells a
+     * natural end (no cut) from a clamp.
+     */
+    const fitToCeiling = (s: string, room: number): string => {
+        let n = 0;
+        let wasIn = inWord;
+        for (let i = 0; i < s.length; i++) {
+            const space = /\s/.test(s[i]);
+            if (!space && !wasIn) {
+                if (n === room) return s.slice(0, i);
+                n++;
+            }
+            wasIn = !space;
+        }
+        return s;
+    };
     let mode: 'stream' | 'buffer' = 'stream';
     let carry = '';
     let cut = false;
     const finish = (): void => { opts.onDone?.({ words: emitted, cut, allowance: emitted > limit }); };
 
-    // Hard ceiling for stream mode: an answer with no [.!?] anywhere never
-    // leaves stream mode, so before this it streamed whole (200 words →
-    // words=200 cut=no). A 160-word sentence is not one a candidate says
-    // aloud; the measured max on the after4 corpus after the sentence cut is
-    // 92 words — this never fires on real answers, it bounds the pathological
-    // one. Checked after each yield, so one chunk cannot push past it unbounded.
-    // The app passes 200 — limit, floor and ceiling alike — see SPOKEN_WORD_GUARD.
+    // Hard ceiling for stream mode: an answer with no [.!?] anywhere never leaves
+    // stream mode, so before this it streamed whole (200 words → words=200 cut=no).
+    // The app passes 200 — limit, floor and ceiling alike — see SPOKEN_WORD_GUARD,
+    // which makes this the ONLY stop on the verbal path: a 200-word spoken answer
+    // is already a runaway (the bare arm's longest real answer is 170). The piece
+    // is trimmed to the last whole word that fits, so `words` never exceeds the
+    // ceiling however the provider chunks the stream, and an answer that ENDS at
+    // exactly the ceiling is not reported as cut — nothing was dropped.
     const ceiling = opts.ceiling ?? 2 * limit;
     for await (const chunk of source) {
         if (SENTINEL_CHUNK.test(chunk)) { yield chunk; continue; } // not words — leaves carry/inWord alone
@@ -519,18 +542,20 @@ export async function* cutAtWordBudget(
                     const keep = hold ? hold.index : text.length;
                     if (keep > 0) {
                         const piece = text.slice(0, keep);
-                        emitted += track(piece);
-                        yield piece;
-                        if (emitted >= ceiling) { cut = true; finish(); return; }
+                        const fitted = fitToCeiling(piece, ceiling - emitted);
+                        emitted += track(fitted);
+                        if (fitted) yield fitted;
+                        if (fitted.length < piece.length) { cut = true; finish(); return; }
                     }
                     carry = text.slice(keep);
                     text = '';
                 } else {
                     const end = m.index + m[0].length;
                     const piece = text.slice(0, end);
-                    emitted += track(piece);
-                    yield piece;
-                    if (emitted >= ceiling) { cut = true; finish(); return; }
+                    const fitted = fitToCeiling(piece, ceiling - emitted);
+                    emitted += track(fitted);
+                    if (fitted) yield fitted;
+                    if (fitted.length < piece.length) { cut = true; finish(); return; }
                     text = text.slice(end);
                     if (emitted >= floor) mode = 'buffer';
                 }
@@ -550,7 +575,13 @@ export async function* cutAtWordBudget(
         }
     }
     if (carry) {
-        if (mode === 'stream' || emitted + countWords(carry) <= limit) {
+        if (mode === 'stream') {
+            // Same trim as the loop: the held tail cannot push the answer past the ceiling.
+            const fitted = fitToCeiling(carry, ceiling - emitted);
+            emitted += track(fitted);
+            if (fitted) yield fitted;
+            if (fitted.length < carry.length) cut = true;
+        } else if (emitted + countWords(carry) <= limit) {
             emitted += track(carry);
             yield carry;
         } else if (carry.trim()) {

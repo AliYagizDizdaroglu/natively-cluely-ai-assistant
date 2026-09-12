@@ -112,10 +112,10 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const budgetWords = budgetLines.map((b) => b.words).sort((a, b) => a - b);
     const budget = {
         n: budgetLines.length,
-        over: budgetLines.filter((b) => b.words > 80).length,
-        allowance: budgetLines.filter((b) => b.allowance).length,
+        // `cut` is the row's only failure mode since the 200-word guard replaced the
+        // question-scaled cut (2026-09-12): the app does not shorten answers any more,
+        // so a cut line means an answer ran past 200 words and was clamped.
         cut: budgetLines.filter((b) => b.cut).length,
-        cutShort: budgetLines.filter((b) => b.cut && b.words < 80).length,
         p50: pct(budgetWords, .5),
         max: budgetWords.length ? budgetWords[budgetWords.length - 1] : null,
     };

@@ -586,10 +586,9 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(row.value).toBe('2/15 pinned, 4 missing, 1 mismatched, 8 legacy');
     });
     it('budget — measures the distribution, so the row can actually fail', () => {
-        // sorted words [67, 90, 140]: n 3, over 2 (90, 140), allowance 2, cut 1,
-        // cutShort 1 (67 is the only cut line under 80), p50 = pct(a,.5) =
-        // a[floor(3*.5)] = a[1] = 90, max 140.
-        expect(m.budget).toEqual({ n: 3, over: 2, allowance: 2, cut: 1, cutShort: 1, p50: 90, max: 140 });
+        // sorted words [67, 90, 140]: n 3, cut 1, p50 = pct(a,.5) = a[floor(3*.5)]
+        // = a[1] = 90, max 140.
+        expect(m.budget).toEqual({ n: 3, cut: 1, p50: 90, max: 140 });
         const row = evaluateGate(m).rows.find((r) => r.label === 'Spoken answers: streamed whole under the 200-word guard');
         // n 3 >= floor(delivered 2 * 0.9) = 1, and max 140 <= 200 — but one answer was
         // cut, and since flight s50c (2026-09-12) any cut is a runaway the row must surface.
@@ -602,7 +601,7 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
 
     it('budget gate row pass rule: no cut at all, max under the 200-word guard, median unbounded (flight s50c, 2026-09-12)', () => {
         const row = GATE.find((g) => g.key === 'budget')!;
-        const base = { budget: { n: 10, over: 0, cut: 0, cutShort: 0, p50: 90, max: 120 }, delivered: 10 } as any;
+        const base = { budget: { n: 10, cut: 0, p50: 90, max: 120 }, delivered: 10 } as any;
         expect(row.pass(base)).toBe(true);
         // max 205 > the 200 guard — fails, even though everything else is fine.
         expect(row.pass({ ...base, budget: { ...base.budget, max: 205 } })).toBe(false);
@@ -797,7 +796,7 @@ describe('gate thresholds scale with the roster', () => {
         judge: { n: gradeable, acceptable: gradeable, weak: 0, wrong: 0, errors: 0, long: { n: 0 }, followup: { n: 0 } },
         longs: 0, longWhole: 0, ttftP90: 3000, detectP50: 4000,
         pinned: { answers: items, legacy: 0, missing: 0, mismatched: 0 },
-        budget: { n: items, over: 0, cut: 0, cutShort: 0, p50: 90, max: 120 },
+        budget: { n: items, cut: 0, p50: 90, max: 120 },
     }) as any;
 
     it('passes a flawless hour whatever the roster size', () => {

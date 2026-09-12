@@ -183,6 +183,9 @@ describe('stripSpokenNotation — formulas that start with a number are not curr
         expect(await runNotation('the p99 improved by $9.5\\%$ after the change.')).toBe('the p99 improved by 9.5% after the change.');
         expect(await runNotation('the p99 improved by $9.5\\% after the change.')).toBe('the p99 improved by 9.5% after the change.');
         expect(await runNotation('it cost $9.5 per user.')).toBe('it cost $9.5 per user.');
+        // Only the LaTeX form is notation: a plain percent sign after money keeps its dollar,
+        // since nothing measured has ever produced "$5%" as a formula.
+        expect(await runNotation('margins are $5% better.')).toBe('margins are $5% better.');
     });
     it('is identical for every chunk size (the number and its operator can straddle a boundary)', async () => {
         for (const text of [RRF, 'the value $1234567 / 2 is large.', 'the value $1   / (c) is large.', 'ends in \\text{rank}$', 'improved by $9.5\\%$ after.', 'improved by $9.5\\% after.']) {
@@ -357,11 +360,10 @@ describe('cutAtWordBudget (spec 2026-09-04 §4)', () => {
         // words → words=200 cut=no allowance=yes).
         const text = Array.from({ length: 200 }, (_, k) => `w${k}`).join(' ');
         const { out, done, ret } = await run(text);
-        // The ceiling is checked after each yielded piece, so the overshoot is
-        // bounded by the words in one chunk — never by the rest of the answer.
-        expect(words(out)).toBeGreaterThanOrEqual(160);
-        expect(words(out)).toBeLessThan(200);
-        expect(done).toEqual([{ words: words(out), cut: true, allowance: true }]);
+        // The ceiling trims the piece at a word boundary, so it stops at exactly
+        // 2 × 80 — the overshoot is not left to the chunk size.
+        expect(words(out)).toBe(160);
+        expect(done).toEqual([{ words: 160, cut: true, allowance: true }]);
         expect(ret).toHaveBeenCalled();
     });
     it('a __model_source__ sentinel chunk passes through verbatim and is not counted as words', async () => {
@@ -406,13 +408,27 @@ describe('SPOKEN_WORD_GUARD — the verbal stream is clamped at 200 words and ne
         expect(words(out)).toBe(120);
         expect(done).toEqual({ words: 120, cut: false, allowance: false });
     });
-    it('stops a 230-word runaway at 200 words and reports the cut', async () => {
-        const text = [1, 2, 3, 4, 5].map((i) => sentence(46, i)).join(' ');   // ends at 46, 92, 138, 184, 230
+    it('an answer of exactly 200 words is not cut and keeps its last word and full stop', async () => {
+        const text = [1, 2, 3, 4, 5].map((i) => sentence(40, i)).join(' ');   // exactly 200 words
         const { out, done } = await run(text);
-        // The clamp is checked after each yielded piece, so the overshoot is bounded by one chunk (9 chars).
-        expect(words(out)).toBeGreaterThanOrEqual(200);
-        expect(words(out)).toBeLessThanOrEqual(202);
-        expect(done).toMatchObject({ cut: true });
+        expect(out).toBe(text);
+        expect(done).toEqual({ words: 200, cut: false, allowance: false });
+    });
+    it('stops a 230-word runaway at exactly 200 whole words — never mid-word — for every chunk size', async () => {
+        const text = [1, 2, 3, 4, 5].map((i) => sentence(46, i)).join(' ');   // ends at 46, 92, 138, 184, 230
+        for (const size of [1, 3, 9, 40, 5000]) {
+            const src = (async function* () { for (let i = 0; i < text.length; i += size) yield text.slice(i, i + size); })();
+            let done: any = null;
+            let out = '';
+            for await (const c of cutAtWordBudget(src, { ...SPOKEN_WORD_GUARD, onDone: (r) => { done = r; } })) out += c;
+            expect(words(out)).toBe(200);
+            expect(done).toEqual({ words: 200, cut: true, allowance: false });
+            // The emitted text is a prefix of the answer that ends where word 201 begins:
+            // no fragment of "w5x15" is left dangling on the end of the spoken answer.
+            expect(text.startsWith(out)).toBe(true);
+            expect(text.slice(out.length)).toMatch(/^\S/);
+            expect(out).toMatch(/\s$/);
+        }
     });
     it('cutAtWordBudget honours an explicit ceiling below 2 × limit', async () => {
         // 250 words, no terminator anywhere: stops at the ceiling
