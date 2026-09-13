@@ -180,7 +180,18 @@ async function main() {
     // 3. Answer arms (full, then the focused Flash arms) + chains, into the run folder.
     if (!dry) for (const f of [...ANSWER_MODELS.map(answersFileFor), ...FOCUSED_MODELS.map(answersFileFor), 'interview60.chains.json']) moveAside(path.join(HERE, f), stamp);
     const answersFiles = [];
-    const arms = [...ANSWER_MODELS.map((model) => ({ model, args: [] })), ...FOCUSED_MODELS.map((model) => ({ model, args: ['--only', FOCUSED_ONLY] }))];
+    // The focused arms replay the app's OWN call for those questions — same system
+    // instruction, same user turn, same résumé context and transcript, only the model id
+    // differs — so a Flash win predicts what the app would do rather than what a bare prompt
+    // does. Built from the hour that just ran; if the capture is missing the arms fall back
+    // to their own framing, which is a DIFFERENT experiment, so the fallback is logged loudly
+    // and recorded in the done file.
+    const promptsFile = path.join(runDir, 'interview60.prompts.json');
+    const promptsExit = await run([path.join(HERE, 'interview60.prompts.mjs'), runDir], { dry });
+    const focusedCaptured = dry || (promptsExit === 0 && fs.existsSync(promptsFile));
+    if (!focusedCaptured) log('WARN  no captured prompts — the focused arms will send their own framing, NOT the app\'s call');
+    const focusedArgs = ['--only', FOCUSED_ONLY, ...(focusedCaptured ? ['--captured', promptsFile] : [])];
+    const arms = [...ANSWER_MODELS.map((model) => ({ model, args: [] })), ...FOCUSED_MODELS.map((model) => ({ model, args: focusedArgs }))];
     for (const { model, args } of arms) {
         await run([path.join(HERE, 'interview60.answers.mjs'), '--model', model, ...args], { dry });
         const src = path.join(HERE, answersFileFor(model));
@@ -202,6 +213,9 @@ async function main() {
     const done = {
         label, roster: ROSTER_NAME, rosterLabel: rosterLabel(), startedAt, finishedAt: new Date().toISOString(), liveModel, autoExit, runDir, answersFiles,
         commit, stt: process.env.NATIVELY_STT_PROVIDER ?? null,
+        // 'captured' = the focused arms replayed the app's own system + user turn; 'own-framing'
+        // = they sent the arm's bare question text, which is not the same experiment.
+        focusedPrompts: focusedCaptured ? 'captured' : 'own-framing', focusedOnly: FOCUSED_ONLY,
         toGrade: ['interview60.judge.pairs.json', ...ANSWER_MODELS.map((m) => `interview60.judge.pairs.${m}.json`)],
         next: 'grade each pairs file with its rubric into interview60.judge.verdicts[.<model>].json, then interview60.judge.mjs <run> [--answers <file>] --verdicts <that file>',
     };

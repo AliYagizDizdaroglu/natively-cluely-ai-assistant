@@ -16,6 +16,7 @@ import {
 } from "./llm/prompts"
 import { userContextBlock } from "./llm/userContext"
 import { keepVerbalPrompt, carriesSpokenBudget, withActiveModePrompt } from "./llm/knowledgePromptBudget"
+import { capturePrompt } from "./llm/promptCapture"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
 import curl2Json from "@bany/curl-to-json";
 import { CustomProvider, CurlProvider } from './services/CredentialsManager';
@@ -2711,7 +2712,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         // leaked into Azure answers. Other callers (coding, typed chat) keep the inlined
         // form they were measured with.
         if (carriesSpokenBudget(callerSystemPromptOverride)) {
-          yield* this.streamWithGeminiModel(userContent, activeModelId, imagePaths, `${finalSystemPrompt}${styleSuffix}`);
+          const verbalSystem = `${finalSystemPrompt}${styleSuffix}`;
+          // Off unless the flight harness asks for it — see promptCapture.
+          capturePrompt({ model: activeModelId, system: verbalSystem, user: userContent });
+          yield* this.streamWithGeminiModel(userContent, activeModelId, imagePaths, verbalSystem);
           return;
         }
         const geminiMsg = styleSuffix ? `${finalSystemPrompt}${styleSuffix}\n\n${userContent}` : fullMsg;

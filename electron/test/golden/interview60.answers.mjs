@@ -74,6 +74,18 @@ const userText = (question) => (USER_TEMPLATE ? USER_TEMPLATE.split('{{question}
 const INLINE_SYSTEM = process.argv.includes('--inline-system');
 if (INLINE_SYSTEM && !TAG) { console.error('--inline-system needs --tag <name>'); process.exit(2); }
 if (INLINE_SYSTEM && IS_GROQ) { console.error('--inline-system reproduces the Gemini request shape; the Groq arm always sends a system message'); process.exit(2); }
+// --captured <file>: replay the EXACT call the app made this hour — the system instruction
+// and the user turn as `capturePrompt` recorded them, per question id — instead of the arm's
+// own framing. Without it an arm sends `The interviewer just asked: "<scripted text>"` and no
+// context block, no transcript, no pinned question and no trailer, which is a different
+// experiment from the app's: s50d measured the app at 16 of 20 and that bare shape at 17 of
+// 20 on the same questions. A model swap is only predictive of the app when the bytes match.
+const ci = process.argv.indexOf('--captured');
+const CAPTURED = ci >= 0 && process.argv[ci + 1] ? JSON.parse(fs.readFileSync(process.argv[ci + 1], 'utf8')) : null;
+if (CAPTURED && (SYSTEM_FILE || USER_TEMPLATE || PROMPT_SUFFIX || INLINE_SYSTEM)) {
+    console.error('--captured replays the app\'s own prompt; it cannot be combined with --system-file, --user-file, --prompt-suffix or --inline-system');
+    process.exit(2);
+}
 const ARM = TAG ? `${MODEL}_${TAG}` : MODEL;
 const SYSTEM_PROMPT = SYSTEM_FILE ? SYSTEM_FILE : PROMPT_SUFFIX ? `${P.VERBAL_WHAT_TO_ANSWER_PROMPT}\n\n${PROMPT_SUFFIX}` : P.VERBAL_WHAT_TO_ANSWER_PROMPT;
 const FILE_TAG = ARM.replace(/\//g, '_');
@@ -89,8 +101,14 @@ const ONLY = oi >= 0 && process.argv[oi + 1] ? new Set(process.argv[oi + 1].spli
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const words = (s) => (s.trim().match(/\S+/g) || []).length;
 
-async function answerStreamedGemini(question) {
-    const body = INLINE_SYSTEM
+async function answerStreamedGemini(question, captured) {
+    const body = captured
+        ? {
+            contents: [{ role: 'user', parts: [{ text: captured.user }] }],
+            systemInstruction: { parts: [{ text: captured.system }] },
+            generationConfig: { temperature: 0.4, maxOutputTokens: 65536 },
+        }
+        : INLINE_SYSTEM
         ? { contents: [{ role: 'user', parts: [{ text: `${SYSTEM_PROMPT}\n\n${userText(question)}` }] }], generationConfig: { temperature: 0.4, maxOutputTokens: 65536 } }
         : {
             contents: [{ role: 'user', parts: [{ text: userText(question) }] }],
@@ -206,7 +224,7 @@ async function answerStreamedGroq(question) {
     return { spoken, offers, words: words(spoken), ttft, total, finish, rawLen: raw.length, raw };
 }
 
-const answerStreamed = (question) => (IS_GROQ ? answerStreamedGroq(question) : answerStreamedGemini(question));
+const answerStreamed = (question, captured) => (IS_GROQ ? answerStreamedGroq(question) : answerStreamedGemini(question, captured));
 
 const store = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : {};
 // A resumed store must belong to THIS roster. It is keyed by item id, so an
@@ -225,20 +243,30 @@ if (foreign.length) {
 // Base roster plus the long design questions. Follow-ups are left out: answered
 // standalone they have no parent to follow up on, so they would measure nothing and
 // cost every arm 18 requests (2026-09-08 roster).
-const mains = INTERVIEW.filter((i) => (i.kind ?? 'spoken') === 'spoken' && i.level !== 'followup');
+// A captured replay carries the parent turns inside the user text it replays, so a follow-up
+// HAS its parent there and is worth answering; without a capture it is not.
+const mains = INTERVIEW.filter((i) => (i.kind ?? 'spoken') === 'spoken' && (CAPTURED ? true : i.level !== 'followup'));
 if (ONLY) {
     const missing = [...ONLY].filter((id) => !mains.some((i) => i.id === id));
     if (missing.length) { console.error(`--only names questions not in roster ${ROSTER_NAME} (or follow-ups/screenshots): ${missing.join(', ')}`); process.exit(2); }
 }
+if (CAPTURED) {
+    // Refuse rather than silently fall back to the arm's own framing: an arm that replays the
+    // app for four questions and invents the fifth is not one experiment, and the difference
+    // would not show up anywhere in the graded output.
+    const ids = ONLY ? [...ONLY] : mains.map((i) => i.id);
+    const uncaptured = ids.filter((id) => !CAPTURED[id]?.system || !CAPTURED[id]?.user);
+    if (uncaptured.length) { console.error(`--captured has no prompt for: ${uncaptured.join(', ')} (the app answered ${Object.keys(CAPTURED).length} question(s) that hour)`); process.exit(2); }
+}
 const todo = mains.filter((i) => !ONLY || ONLY.has(i.id)).slice(0, LIMIT);
-console.log(`ANSWER-ONLY PASS  model=${MODEL}${TAG ? `  variant=${TAG} (prompt suffix ${PROMPT_SUFFIX.length} chars)` : ''}  ${todo.length} spoken questions\n`);
+console.log(`ANSWER-ONLY PASS  model=${MODEL}${TAG ? `  variant=${TAG} (prompt suffix ${PROMPT_SUFFIX.length} chars)` : ''}${CAPTURED ? '  prompts=captured (the app\'s own system + user turn, replayed)' : ''}  ${todo.length} spoken questions\n`);
 
 for (const item of todo) {
     if (store[item.id]?.spoken) { continue; }
     let r, lastErr, dropRetried = false;
     for (let a = 0; a < 4; a++) {
         try {
-            r = await answerStreamed(item.q);
+            r = await answerStreamed(item.q, CAPTURED?.[item.id] ?? null);
             // A stream that ends with no finish reason was cut by the provider mid-answer
             // (2026-09-11: gemini-3.8-flash free tier, three of eight answers cut after 1-3
             // minutes). One more try; a second cut is kept as the truncated answer it is.

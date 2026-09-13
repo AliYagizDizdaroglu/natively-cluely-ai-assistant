@@ -35,6 +35,9 @@ const PROJ = path.resolve(HERE, '../../..');
 const TTS_DIR = path.join(HERE, TTS_LOCAL_DIR);
 const DEBUG_LOG = path.join(PROJ, 'natively_debug.log');
 const DIAG_LOG = path.join(PROJ, 'verbal-diag.log');
+// The exact system + user turn per answer, when NATIVELY_CAPTURE_PROMPTS=1 (llm/promptCapture).
+// It is what lets the focused arms replay the app's own call rather than the arm's framing.
+const PROMPT_LOG = path.join(PROJ, 'verbal-prompts.log');
 const TIMELINE = path.join(HERE, 'interview60.timeline.json');
 const REPORT = path.join(HERE, 'interview60.report.md');
 const RUNS_DIR = path.join(HERE, 'interview60.runs');
@@ -230,7 +233,10 @@ async function appStart() {
     const deadline = Date.now() + 90_000;
     const child = spawn('cmd.exe', ['/c', 'npm', 'start'], {
         cwd: PROJ,
-        env: { ...process.env, NATIVELY_AUTOSTART_MEETING: '1', NATIVELY_LIVE_MODE: 'auto' },
+        // NATIVELY_CAPTURE_PROMPTS: record the exact system + user turn per answer, so the
+        // focused arms can replay the app's own call. Measured hours only — a normal session
+        // has no reason to write the résumé context and the transcript to disk.
+        env: { ...process.env, NATIVELY_AUTOSTART_MEETING: '1', NATIVELY_LIVE_MODE: 'auto', NATIVELY_CAPTURE_PROMPTS: '1' },
         detached: true,
         stdio: 'ignore',
         windowsHide: false,
@@ -482,7 +488,7 @@ async function auto(label = 'after') {
     const startedMs = JSON.parse(fs.readFileSync(TIMELINE, 'utf8')).startedMs;
     const STALE_CHECKED = new Set([ANSWERS, CHAINS, HTML, REPORT, CUES_LOG]);
     const skipped = [];
-    const files = [DEBUG_LOG, DIAG_LOG, TIMELINE, REPORT, ANSWERS, CHAINS, HTML, CUES_LOG].filter((f) => {
+    const files = [DEBUG_LOG, DIAG_LOG, PROMPT_LOG, TIMELINE, REPORT, ANSWERS, CHAINS, HTML, CUES_LOG].filter((f) => {
         if (!STALE_CHECKED.has(f) || !fs.existsSync(f)) return true;
         if (fs.statSync(f).mtimeMs < startedMs) { skipped.push(path.basename(f)); return false; }
         return true;
