@@ -15,9 +15,15 @@
  */
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { pairCapturesToDispatches } from '../../../dist-electron/electron/llm/promptCapture.js';
 
-const DISPATCH = /^(\S+) \[LOG\] \[Main\] dispatch: answer source=(?:live|whisper) anchor="(?:[^"\\]|\\.)*" verdict=\w+ question="((?:[^"\\]|\\.)*)"/gm;
+// answer AND supersede: a supersede regenerates the answer and replaces it on screen, so it
+// has a prompt behind it and is the answer that question ended up with — the judge pairs it
+// the same way. `mark` has no prompt (nothing was sent yet) and `extend` is a deleted path.
+// Miss this and a superseded question has no captured prompt, which makes the focused arm
+// refuse the whole set rather than replay four questions and invent the fifth.
+const DISPATCH = /^(\S+) \[LOG\] \[Main\] dispatch: (?:answer|supersede) source=(?:live|whisper) anchor="(?:[^"\\]|\\.)*" verdict=\w+ (?:replaces="(?:[^"\\]|\\.)*" )?question="((?:[^"\\]|\\.)*)"/gm;
 
 /** Dispatches in order, each with the question text the app pinned. */
 export function readDispatches(debugLog) {
@@ -40,6 +46,9 @@ export function idsForDispatches(dispatches, timeline) {
     }).filter(Boolean);
 }
 
+// Importable for tests: the CLI below runs only when this file IS the entry point, the same
+// guard interview60.judge.mjs uses.
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
 const dir = process.argv[2];
 if (!dir) { console.error('usage: interview60.prompts.mjs <run-dir>'); process.exit(1); }
 const capturePath = path.join(dir, 'verbal-prompts.log');
@@ -62,3 +71,4 @@ fs.writeFileSync(file, JSON.stringify(out, null, 1));
 const n = Object.keys(out).length;
 console.log(`PROMPTS  ${n} of ${dispatches.length} dispatched answers captured → ${file}`);
 if (n === 0) { console.error('PROMPTS  nothing paired — was NATIVELY_CAPTURE_PROMPTS=1 set for the hour?'); process.exit(1); }
+}

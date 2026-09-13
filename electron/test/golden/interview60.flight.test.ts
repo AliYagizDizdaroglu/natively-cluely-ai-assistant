@@ -34,7 +34,8 @@ describe('FOCUSED_ONLY', () => {
         // free calls for the day goes with it. Follow-ups are refused there too — answered
         // standalone they have no parent — so every id must be a main.
         const { SCENARIO50 } = await import('./scenario50.questions.mjs');
-        const mains = new Set(SCENARIO50.filter((i) => (i.kind ?? 'spoken') === 'spoken' && i.level !== 'followup').map((i) => i.id));
+        // scenario50 carries no screenshot cues, so level is the only filter needed here.
+        const mains = new Set(SCENARIO50.filter((i) => i.level !== 'followup').map((i) => i.id));
         const ids = FOCUSED_ONLY.split(',');
         expect(ids.length).toBeLessThanOrEqual(5);
         expect(new Set(ids).size).toBe(ids.length);
