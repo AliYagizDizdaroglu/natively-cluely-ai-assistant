@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ANSWER_MODELS, LIVE_DEFAULT, LIVE_FALLBACK, answersFileFor, chooseLiveModel, newestRunDir } from './interview60.flight.mjs';
+import { ANSWER_MODELS, FOCUSED_ONLY, LIVE_DEFAULT, LIVE_FALLBACK, answersFileFor, chooseLiveModel, newestRunDir } from './interview60.flight.mjs';
 
 describe('chooseLiveModel', () => {
     it('keeps 3.x on a tool call, aborts only when no key reached the probe, falls to 2.5 on silence or a dead session', () => {
@@ -24,6 +24,21 @@ describe('newestRunDir', () => {
         expect(newestRunDir(names, 'after3', '2026-09-04T07:05:00.000Z')).toBeNull();
         expect(newestRunDir(names, 'after3', '2026-09-03T00:00:00.000Z')).toBe('2026-09-03T10-08-22-after3');
         expect(newestRunDir([], 'after4', '2026-09-04T07:05:00.000Z')).toBeNull();
+    });
+});
+
+describe('FOCUSED_ONLY', () => {
+    it('names only scenario50 mains, and no more than the free tier allows per model', async () => {
+        // A typo here is expensive and silent until flight time: interview60.answers.mjs
+        // exits 2 on an unknown id, so that arm writes nothing and the model's handful of
+        // free calls for the day goes with it. Follow-ups are refused there too — answered
+        // standalone they have no parent — so every id must be a main.
+        const { SCENARIO50 } = await import('./scenario50.questions.mjs');
+        const mains = new Set(SCENARIO50.filter((i) => (i.kind ?? 'spoken') === 'spoken' && i.level !== 'followup').map((i) => i.id));
+        const ids = FOCUSED_ONLY.split(',');
+        expect(ids.length).toBeLessThanOrEqual(5);
+        expect(new Set(ids).size).toBe(ids.length);
+        for (const id of ids) expect(mains.has(id), `${id} is not a scenario50 main`).toBe(true);
     });
 });
 

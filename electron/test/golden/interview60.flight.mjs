@@ -53,13 +53,23 @@ export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 
 
 /**
  * Focused arms: the non-lite Flash models, whose free tier allows a handful of calls a day,
- * on the questions the default model fails most — every other part of the call (prompt,
- * user text, filters, temperature) identical to the lite arm above. The five ids are
- * 3.1-lite's worst across eight graded arms on 2026-09-11: S1Q06 failed 8 of 8, S1Q02 6,
- * S1Q08 5, S2Q02 3, S2Q03 2, all on content. If a Flash model clears them, the model is the
- * next lever; if it does not, the misses are the questions', not the model's.
+ * on the questions the app got wrong LAST flight — every other part of the call (prompt,
+ * user text, filters, temperature) identical to the lite arm above. If a Flash model clears
+ * them, the model is the next lever; if it does not, the misses are the questions', not the
+ * model's.
+ *
+ * Re-pointed at the s50d (2026-09-13) in-app failures, since the original five had been
+ * answered: S1Q08 and S2Q03 passed on 8 of 8 Flash attempts across s50c and s50d, so they
+ * measured nothing further.
+ *   S1Q02  weak in-app and in every arm both flights — 1 acceptable in 12 attempts
+ *   S2Q07  weak in-app: citations never covered, drifted into a latency SLA
+ *   S2Q10  weak in-app: misstated the outbox pattern as a cross-store transaction
+ *   S2Q09  no in-app answer at all — Groq detection was 403 all hour, so it has no grade
+ *   S1Q06  KEPT AS A CONTROL, not as a target: the one question where model size is proven
+ *          (big Flash 7 of 8, lite 1 of 4). A Flash arm that fails S1Q06 is a broken arm,
+ *          not a hard question, and that reading is what makes the other four trustworthy.
  */
-export const FOCUSED_ONLY = 'S1Q06,S1Q02,S1Q08,S2Q02,S2Q03';
+export const FOCUSED_ONLY = 'S1Q02,S2Q07,S2Q10,S2Q09,S1Q06';
 export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
 
 /**
