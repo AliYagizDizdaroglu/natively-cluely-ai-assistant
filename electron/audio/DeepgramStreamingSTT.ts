@@ -211,7 +211,10 @@ export class DeepgramStreamingSTT extends EventEmitter {
                         const transcript = alt?.transcript;
                         const isFinal = data.is_final ?? false;
                         console.log(`[DeepgramStreaming] Transcript event — isFinal=${isFinal}, text="${transcript ?? '(empty)'}"`);
-                        if (!transcript) return;
+                        // A final with no words is still a signal: the audio Deepgram just
+                        // segmented had nothing in it. The interviewer turn uses it to tell
+                        // a noise blip from the interviewer resuming (interviewerTurn.wordlessFinal).
+                        if (!transcript) { if (isFinal) this.emit('wordless-final', { at: Date.now() }); return; }
                         this.emit('transcript', {
                             text: transcript,
                             isFinal,

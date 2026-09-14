@@ -63,6 +63,13 @@ export type TurnDecision =
 export interface InterviewerTurn {
     speech(active: boolean, at: number): void;
     final(text: string, at: number): void;
+    /**
+     * The transcript closed a segment with no words in it. On an answered turn that is
+     * waiting to see whether the interviewer resumed, this says the voice activity since
+     * the dispatch was not speech — a chime, a notification, another participant's
+     * noise on the meeting audio — so it must not keep the continuation window open.
+     */
+    wordlessFinal(at: number): void;
     liveClaim(text: string, at: number): void;
     /**
      * `forTurn`, when given, is the id a `classify` decision carried (R20): a verdict
@@ -176,6 +183,21 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
             t.lastFinalAt = at;
             if (!t.vadSeen) t.lastSpeechAt = at; // no VAD on this turn yet: the transcript is the best evidence of when speech ended
             if (t.dispatched) t.pendingAfterDispatch = true;
+        },
+
+        wordlessFinal(_at: number): void {
+            // Only an answered turn with nothing pending is waiting on the VAD alone; a
+            // blip that finalized empty is discounted by putting the last voice stop back
+            // on the dispatch, so the continuation close runs from the dispatch again.
+            // While the voice is still on, the segment that matters has not ended yet.
+            // 2026-09-13 smoke: loopback energy between questions held an answered turn
+            // open through three further questions, each answered as a supersede of it.
+            // Trade-off: an empty final that Deepgram happens to close between a REAL
+            // resumption's off-transition and its worded final, more than 8 s after the
+            // dispatch, closes the turn and the words then open a new one (a second
+            // answer rather than a replacement) — not seen in any golden run.
+            if (!turn || !turn.dispatched || turn.pendingAfterDispatch || turn.speaking) return;
+            turn.lastSpeechAt = Math.min(turn.lastSpeechAt, turn.dispatched.at);
         },
 
         liveClaim(text: string, at: number): void {

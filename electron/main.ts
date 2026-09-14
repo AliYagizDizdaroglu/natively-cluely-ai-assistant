@@ -1242,6 +1242,13 @@ export class AppState {
       // the golden harness can see whether the two agree (main.ts turn: … lines).
       (stt as NodeJS.EventEmitter).on('speech-started', () => console.log(`[Main] turn: deepgram speech-started vad=${this.interviewerVad?.speaking() ?? 'n/a'}`));
       (stt as NodeJS.EventEmitter).on('utterance-end', () => console.log(`[Main] turn: deepgram utterance-end vad=${this.interviewerVad?.speaking() ?? 'n/a'}`));
+      // An empty final IS a decision input: it tells the turn that voice activity since
+      // its answer carried no words, so a chime or noise on the meeting audio cannot hold
+      // the answered turn open and swallow the next question as a continuation.
+      (stt as NodeJS.EventEmitter).on('wordless-final', () => {
+        console.log(`[Main] turn: deepgram wordless-final vad=${this.interviewerVad?.speaking() ?? 'n/a'}`);
+        if (this.liveMode === 'auto') { this.turn.wordlessFinal(Date.now()); this.turnTick(); }
+      });
     }
 
     stt.on('error', (err: Error) => {

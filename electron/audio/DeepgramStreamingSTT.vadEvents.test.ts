@@ -57,4 +57,22 @@ describe('DeepgramStreamingSTT VAD events', () => {
         fire('UtteranceEnd', { type: 'UtteranceEnd', last_word_end: 2.9 });
         expect(seen).toEqual(['start@number', 'end@number']);
     });
+
+    it('surfaces a final with no words as wordless-final instead of dropping it — the turn needs to know a voice blip carried nothing', () => {
+        // 2026-09-13 smoke: chime-like energy between two questions kept the energy VAD
+        // flapping, Deepgram answered each blip with is_final=true and an empty transcript,
+        // and because those were dropped here the turn machine never learned the "speech"
+        // it was waiting on had no words — it held the answered turn open and merged the
+        // next question into it as a continuation.
+        const stt = new DeepgramStreamingSTT('key');
+        const seen: string[] = [];
+        stt.on('wordless-final', (e: { at: number }) => seen.push(`wordless@${typeof e.at}`));
+        stt.on('transcript', (s: { text: string; isFinal: boolean }) => seen.push(`text:${s.text}:${s.isFinal}`));
+        stt.start();
+        fire('open');
+        fire('Results', { is_final: true, channel: { alternatives: [{ transcript: '' }] } });
+        fire('Results', { is_final: false, channel: { alternatives: [{ transcript: '' }] } });   // an empty interim is still nothing
+        fire('Results', { is_final: true, channel: { alternatives: [{ transcript: 'and when would you not', confidence: 0.9 }] } });
+        expect(seen).toEqual(['wordless@number', 'text:and when would you not:true']);
+    });
 });
