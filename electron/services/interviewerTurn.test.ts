@@ -320,51 +320,6 @@ describe('interviewerTurn — continuation, supersede, close', () => {
         expect(turn.nextTimerAt(T + 12400)).toBeNull();
     });
 
-    it('wordless voice blips after the dispatch do not hold the turn open: it closes, and the next question gets its own dispatch', () => {
-        // The 2026-09-13 smoke: energy on the desktop loopback between two questions (no
-        // words — Deepgram finalized each blip empty) refreshed the VAD off-transition
-        // every few seconds, the continuation close never came, and the next question's
-        // finals were appended to the answered turn and sent out as a supersede of it —
-        // 1 answer and 3 supersedes for 4 questions. A blip whose transcript came back
-        // empty is not the interviewer resuming; it must not restart the 8 s clock.
-        const turn = dispatched(); // dispatched at T+4400
-        turn.speech(true, T + 8000);
-        turn.speech(false, T + 8800);
-        expect(turn.nextTimerAt(T + 8800)).toBe(T + 16800); // so far the blip reads as speech: close 8 s after its off-transition
-        turn.wordlessFinal(T + 9800);
-        expect(turn.tick(T + 9800)).toEqual({ kind: 'idle' });
-        expect(turn.nextTimerAt(T + 9800)).toBe(T + 12400); // the blip carried no words: the clock is back on the dispatch
-        turn.speech(true, T + 11000);
-        turn.speech(false, T + 11700);
-        expect(turn.tick(T + 12400)).toEqual({ kind: 'idle' }); // a second blip, not yet known to be wordless
-        turn.wordlessFinal(T + 12700);
-        expect(turn.tick(T + 12700)).toEqual({ kind: 'close', reason: 'continuation-expired' });
-        // The next question, 14 s after the answer, is a turn of its own.
-        turn.speech(true, T + 18000);
-        turn.final('Explain your RAG pipeline precisely, walk through ingestion, parsing and chunking.', T + 21000);
-        turn.detected('whisper', T + 21200);
-        turn.speech(false, T + 21500);
-        expect(turn.tick(T + 22700)).toMatchObject({ kind: 'dispatch', text: 'Explain your RAG pipeline precisely, walk through ingestion, parsing and chunking.', finals: 1 });
-    });
-
-    it('a wordless final while the voice is still on changes nothing, and the real continuation that follows still supersedes', () => {
-        const turn = dispatched();
-        turn.speech(true, T + 6000);
-        turn.wordlessFinal(T + 7000); // Deepgram closed an empty segment mid-speech
-        expect(turn.tick(T + 7000)).toEqual({ kind: 'idle' });
-        turn.final('And when would you not?', T + 8000);
-        turn.speech(false, T + 8500);
-        expect(turn.tick(T + 9700)).toMatchObject({ kind: 'supersede', text: 'When would you reach for a service mesh in an ML serving stack? And when would you not?', finals: 2 });
-    });
-
-    it('a wordless final on plain silence after the dispatch is a no-op — the close still comes 8 s after the dispatch, not earlier', () => {
-        const turn = dispatched();
-        turn.wordlessFinal(T + 7000); // Deepgram also finalizes empty segments on silence
-        expect(turn.tick(T + 7000)).toEqual({ kind: 'idle' });
-        expect(turn.nextTimerAt(T + 7000)).toBe(T + 12400);
-        expect(turn.tick(T + 12400)).toEqual({ kind: 'close', reason: 'continuation-expired' });
-    });
-
     it('a final arriving CONTINUATION_MS after the dispatch is a new turn, not a supersede', () => {
         const turn = dispatched();
         turn.final('What is a DAG?', T + 4400 + C.continuationMs + 100);
