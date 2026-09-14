@@ -20,7 +20,7 @@ function drain(turn: ReturnType<typeof createInterviewerTurn>, from: number, unt
 
 describe('turnConstantsFromEnv', () => {
     it('defaults to the spec table and takes positive numeric overrides only', () => {
-        expect(turnConstantsFromEnv({})).toEqual({ gateMs: 1200, settleMs: 400, unfinishedHoldMs: 2500, continuationMs: 8000, maxHoldMs: 8000 });
+        expect(turnConstantsFromEnv({})).toEqual({ gateMs: 1200, settleMs: 400, unfinishedHoldMs: 2500, continuationMs: 8000, maxHoldMs: 8000, wordlessGraceMs: 3000 });
         expect(turnConstantsFromEnv({ NATIVELY_TURN_GATE_MS: '1500', NATIVELY_TURN_MAX_HOLD_MS: 'x' })).toMatchObject({ gateMs: 1500, maxHoldMs: 8000 });
     });
 });
@@ -318,6 +318,54 @@ describe('interviewerTurn — continuation, supersede, close', () => {
         expect(turn.nextTimerAt(T + 4400)).toBe(T + 4400 + C.continuationMs);
         expect(turn.tick(T + 12400)).toEqual({ kind: 'close', reason: 'continuation-expired' });
         expect(turn.nextTimerAt(T + 12400)).toBeNull();
+    });
+
+    it('a voice stop that no words follow within the grace is not the interviewer resuming: the turn closes 8 s after its dispatch, and the next question is its own', () => {
+        // The 2026-09-13 smoke, and the 2026-09-14 tone-in-the-gap smoke that reproduced it
+        // on demand: energy on the desktop loopback between two questions (a chime, another
+        // participant, a 1 s tone) trips the VAD, and each off-transition restarted the 8 s
+        // continuation clock. The next question then landed on the answered turn as a
+        // continuation and went out as a supersede of it. Golden runs 2026-09-08/09: the last
+        // final follows the last voice stop by max 1041 ms on 116/116 questions — a stop with
+        // nothing 3 s later carried no words. Timeline below is the 09-14 after-run's first gap.
+        const turn = dispatched(); // dispatched at T+4400
+        turn.speech(true, T + 9200);
+        turn.speech(false, T + 10400);                          // tone 1
+        expect(turn.nextTimerAt(T + 10400)).toBe(T + 12400);    // 8 s after the dispatch is still the earliest close
+        expect(turn.tick(T + 12400)).toEqual({ kind: 'idle' }); // but that stop is inside its 3 s grace: its words could still come
+        expect(turn.nextTimerAt(T + 12400)).toBe(T + 13400);    // so the next look is when the grace runs out
+        turn.speech(true, T + 12400);
+        turn.speech(false, T + 13600);                          // tone 2
+        expect(turn.tick(T + 13600)).toEqual({ kind: 'idle' });
+        expect(turn.nextTimerAt(T + 13600)).toBe(T + 16600);
+        expect(turn.tick(T + 16600)).toEqual({ kind: 'close', reason: 'continuation-expired' }); // no words followed either stop
+        turn.speech(true, T + 21900);
+        turn.final('Explain your RAG pipeline precisely, walk through ingestion, parsing and chunking.', T + 24900);
+        turn.detected('whisper', T + 25100);
+        turn.speech(false, T + 25400);
+        expect(turn.tick(T + 26600)).toMatchObject({ kind: 'dispatch', text: 'Explain your RAG pipeline precisely, walk through ingestion, parsing and chunking.', finals: 1 });
+    });
+
+    it('a question that starts right after a wordless blip is its own turn even when its first final lands under 8 s after the blip stopped', () => {
+        // The 2026-09-13 shape: the blip ended ~1.5 s before the next question began, so the
+        // old rule (8 s from ANY stop) appended the question to the answered turn.
+        const turn = dispatched(); // T+4400
+        turn.speech(true, T + 11000);
+        turn.speech(false, T + 12000);                          // a blip; nothing follows it
+        turn.speech(true, T + 13500);                           // the next question begins before the blip's grace is even over
+        turn.final('What is a DAG?', T + 17000);                // 5 s after the blip's stop, less than the 8 s continuation window
+        expect(turn.snapshot()).toMatchObject({ finals: 1, dispatched: false }); // a fresh turn, not the answered one
+        turn.detected('whisper', T + 17200);
+        turn.speech(false, T + 17500);
+        expect(turn.tick(T + 18700)).toMatchObject({ kind: 'dispatch', text: 'What is a DAG?', finals: 1 });
+    });
+
+    it('a short real continuation whose words land within the grace of its stop still supersedes', () => {
+        const turn = dispatched(); // T+4400
+        turn.speech(true, T + 6000);
+        turn.speech(false, T + 7500);
+        turn.final('And when would you not?', T + 8300);      // 0.8 s after the stop — golden max is 1.04 s
+        expect(turn.tick(T + 9700)).toMatchObject({ kind: 'supersede', text: 'When would you reach for a service mesh in an ML serving stack? And when would you not?', finals: 2 });
     });
 
     it('a final arriving CONTINUATION_MS after the dispatch is a new turn, not a supersede', () => {

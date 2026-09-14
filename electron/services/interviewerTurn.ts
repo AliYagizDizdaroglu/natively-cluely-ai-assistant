@@ -18,9 +18,11 @@ export interface TurnConstants {
     continuationMs: number;
     /** Fail-safe: waits no longer than this past the LATEST of the turn's detection, last final, and last VAD off-transition (R14) — 8 s: the longest pause-free, final-free span across the 116 golden questions (s50a 40 + after9 76) is 7.1 s (s50a S1Q03), plus a margin of about 1 s (R16). */
     maxHoldMs: number;
+    /** After an answer, a voice stop that no transcript words follow within this carried no words — a chime, a notification, another participant's noise on the meeting audio — and must not count as the interviewer resuming. Golden runs 2026-09-08/09: the last final follows the last voice stop by p50 708 ms, p99 1029 ms, max 1041 ms on 116/116 questions; 3 s is ~3× the max. */
+    wordlessGraceMs: number;
 }
 
-export const DEFAULT_TURN_CONSTANTS: TurnConstants = { gateMs: 1200, settleMs: 400, unfinishedHoldMs: 2500, continuationMs: 8000, maxHoldMs: 8000 };
+export const DEFAULT_TURN_CONSTANTS: TurnConstants = { gateMs: 1200, settleMs: 400, unfinishedHoldMs: 2500, continuationMs: 8000, maxHoldMs: 8000, wordlessGraceMs: 3000 };
 
 export function turnConstantsFromEnv(env: Record<string, string | undefined> = process.env): TurnConstants {
     const num = (name: string, fallback: number): number => {
@@ -33,6 +35,7 @@ export function turnConstantsFromEnv(env: Record<string, string | undefined> = p
         unfinishedHoldMs: num('NATIVELY_TURN_UNFINISHED_HOLD_MS', DEFAULT_TURN_CONSTANTS.unfinishedHoldMs),
         continuationMs: num('NATIVELY_TURN_CONTINUATION_MS', DEFAULT_TURN_CONSTANTS.continuationMs),
         maxHoldMs: num('NATIVELY_TURN_MAX_HOLD_MS', DEFAULT_TURN_CONSTANTS.maxHoldMs),
+        wordlessGraceMs: num('NATIVELY_TURN_WORDLESS_GRACE_MS', DEFAULT_TURN_CONSTANTS.wordlessGraceMs),
     };
 }
 
@@ -128,9 +131,20 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
         return turn;
     };
 
-    /** R15: text on a dispatched turn is stale — and starts a new turn silently — only once it arrives CONTINUATION_MS past the LATEST of the dispatch, the last final, and the last VAD off-transition (the same staleness rule the continuation close uses). */
+    /**
+     * The last voice stop as the continuation clocks see it after an answer: itself while its
+     * words could still be on the way, nothing at all once the grace has passed with none —
+     * that stop was not speech. Only consulted on a dispatched turn with nothing pending, and
+     * a worded final after the dispatch flips pendingAfterDispatch, so every stop seen here
+     * is, so far, a stop nobody's words followed. 2026-09-13 smoke: loopback energy between
+     * questions kept restarting the 8 s clock from each blip's stop; the next question then
+     * joined the answered turn and went out as a supersede of it.
+     */
+    const effectiveStopAt = (t: OpenTurn, now: number): number => now - t.lastSpeechAt < c.wordlessGraceMs ? t.lastSpeechAt : -Infinity;
+
+    /** R15: text on a dispatched turn is stale — and starts a new turn silently — only once it arrives CONTINUATION_MS past the LATEST of the dispatch, the last final, and the last VAD off-transition that words followed (the same staleness rule the continuation close uses). */
     const reopenIfStale = (at: number): void => {
-        if (turn && turn.dispatched && at - Math.max(turn.dispatched.at, turn.lastFinalAt, turn.lastSpeechAt) >= c.continuationMs) {
+        if (turn && turn.dispatched && at - Math.max(turn.dispatched.at, turn.lastFinalAt, effectiveStopAt(turn, at)) >= c.continuationMs) {
             turn = null;
         }
     };
@@ -229,7 +243,7 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
                     }
                     return { kind: 'hold', reason: holdReason(t, now) };
                 }
-                if (!t.speaking && now - Math.max(t.lastSpeechAt, t.dispatched.at) >= c.continuationMs) {
+                if (!t.speaking && now - Math.max(effectiveStopAt(t, now), t.dispatched.at) >= c.continuationMs) {
                     turn = null;
                     return { kind: 'close', reason: 'continuation-expired' };
                 }
@@ -282,7 +296,12 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
             if (t.finals.length > 0) candidates.push(t.lastFinalAt + c.settleMs);
             if (!t.dispatched) { const fs = failSafeAt(t); if (fs !== null) candidates.push(fs); }
             if (t.dispatched && t.pendingAfterDispatch) candidates.push(Math.max(t.lastFinalAt, t.lastSpeechAt) + c.maxHoldMs);
-            if (t.dispatched && !t.pendingAfterDispatch) candidates.push(Math.max(t.lastSpeechAt, t.dispatched.at) + c.continuationMs);
+            if (t.dispatched && !t.pendingAfterDispatch) {
+                // The close comes 8 s after the dispatch, or when the last stop's grace runs out
+                // with no words having followed it, whichever is later; tick() decides which.
+                candidates.push(t.dispatched.at + c.continuationMs);
+                if (t.lastSpeechAt > t.dispatched.at) candidates.push(t.lastSpeechAt + c.wordlessGraceMs);
+            }
 
             const future = candidates.filter((at) => at > now);
             return future.length > 0 ? Math.min(...future) : null;
