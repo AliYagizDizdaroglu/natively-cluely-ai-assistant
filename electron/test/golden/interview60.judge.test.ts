@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mergeVerdicts, pairAnswers, pairsFromAnswers, summarizeVerdicts, verdictOf } from './interview60.judge.mjs';
+import { RUBRIC, graderPromptVersion, mergeVerdicts, pairAnswers, pairsFromAnswers, summarizeVerdicts, verdictOf } from './interview60.judge.mjs';
 import { summarizeJudge } from './interview60.metrics.mjs';
 
 const t = (s: string) => Date.parse(`2026-09-04T08:00:${s}Z`);
@@ -221,5 +221,17 @@ describe('pairsFromAnswers (an answer-only pass arm, for the model comparison)',
         expect(pairs[0]).toMatchObject({ id: 'W01', kind: 'spoken', question: 'What is a Docker image?', heard: 'What is a Docker image?', answer: 'An image is a read-only template.', model: 'gemma-4-31b-it', source: 'answers-pass' });
         // A transient item is absent from the pairs, so the merge never scores it as wrong.
         expect(Object.keys(mergeVerdicts(pairs, { W01: { correctness: 2, on_topic: 2, delivery: 2, reason: 'ok' } }).items)).toEqual(['W01']);
+    });
+});
+
+describe('graderPromptVersion (the comparability stamp)', () => {
+    it('covers the RUBRIC too, not just the prompt file — a rubric edit must move the stamp', () => {
+        // The instrument is BOTH halves: the grader prompt the agent reads, and the RUBRIC the
+        // pairs file carries and that prompt tells it to follow literally. Hashing only the
+        // file lets a rubric edit ship judge files stamped identically to files graded under
+        // the old scoring — the silent re-baseline the prompt file's own header forbids.
+        expect(graderPromptVersion('delivery 0 = unspeakable text'))
+            .not.toBe(graderPromptVersion('delivery 0 = unspeakable text, or far too long'));
+        expect(graderPromptVersion()).toBe(graderPromptVersion(RUBRIC));
     });
 });

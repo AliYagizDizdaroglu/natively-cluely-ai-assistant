@@ -8,8 +8,10 @@ graders given different wordings disagreed on 8 of 110 answers. Any edit below c
 measurement, so it must land as its own commit, and every judge file graded before that
 commit becomes incomparable with every file graded after it.
 
-`interview60.judge.mjs` stamps the first 12 hex of this file's SHA-256 into each merged
-judge file as `graderPrompt`. Two judge files may only be compared when that stamp matches.
+`interview60.judge.mjs` stamps the first 12 hex of the SHA-256 of this file AND its own
+`RUBRIC` into each merged judge file as `graderPrompt`. Both are the instrument — this file
+tells the grader to follow that rubric literally — so editing either moves the stamp. Two
+judge files may only be compared when that stamp matches.
 
 ---
 

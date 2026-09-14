@@ -211,17 +211,21 @@ export function mergeVerdicts(pairs, verdicts, model = JUDGE_MODEL, graderPrompt
 
 /** The frozen grader prompt's path, and the first 12 hex of its SHA-256 (null if missing). */
 export const GRADER_PROMPT_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), 'interview60.grader-prompt.md');
-export function graderPromptVersion() {
+/** The instrument's version: BOTH halves of it — the prompt file the grading agent reads and
+ *  the RUBRIC the pairs file carries. Either one changing changes the measurement, so either
+ *  one must move this stamp; a rubric edit under a file-only hash would leave new judge files
+ *  claiming comparability with files graded under the old scoring. */
+export function graderPromptVersion(rubric = RUBRIC) {
     if (!fs.existsSync(GRADER_PROMPT_PATH)) return null;
-    return createHash('sha256').update(fs.readFileSync(GRADER_PROMPT_PATH)).digest('hex').slice(0, 12);
+    return createHash('sha256').update(fs.readFileSync(GRADER_PROMPT_PATH)).update(rubric).digest('hex').slice(0, 12);
 }
 
-const RUBRIC = `You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.
+export const RUBRIC = `You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.
 
 Score three things, each 0, 1 or 2:
 - correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.
 - on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.
-- delivery: 0 = unusable when spoken (markdown, bullet lists, code, "Time: O(n)" lines, offers like "would you like me to", questions back to the interviewer, or far too long); 1 = usable with small edits; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.
+- delivery: 0 = unusable when spoken (markdown, bullet lists, code, "Time: O(n)" lines, offers like "would you like me to", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.
 
 Grade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.`;
 
