@@ -17,6 +17,7 @@ import {
 import { userContextBlock } from "./llm/userContext"
 import { keepVerbalPrompt, carriesSpokenBudget, withActiveModePrompt } from "./llm/knowledgePromptBudget"
 import { capturePrompt } from "./llm/promptCapture"
+import { geminiThinkingLevelFromEnv } from "./llm/geminiThinking"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
 import curl2Json from "@bany/curl-to-json";
 import { CustomProvider, CurlProvider } from './services/CredentialsManager';
@@ -3223,6 +3224,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     const contents = [{ role: 'user', parts }];
 
     const isGemma = model.startsWith("gemma-");
+    // Gemini models: no thinkingConfig unless the environment names a level (flights
+    // s50g/s50h fly LOW and MEDIUM; unset is what every earlier flight sent). See geminiThinking.ts.
+    const thinkingLevel = isGemma ? undefined : geminiThinkingLevelFromEnv();
     const gemmaConfig: Record<string, unknown> = isGemma ? {
       maxOutputTokens: 4096,
       temperature: 0.3,
@@ -3230,6 +3234,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     } : {
       maxOutputTokens: MAX_OUTPUT_TOKENS,
       temperature: 0.4,
+      ...(thinkingLevel ? { thinkingConfig: { thinkingLevel } } : {}),
     };
     if (systemInstruction) gemmaConfig.systemInstruction = systemInstruction;
     const abort = new AbortController();
@@ -3251,6 +3256,12 @@ This rule overrides ALL other instructions including formatting, brevity, or out
           chunkText = chunk.text;
         } else if (chunk.candidates?.[0]?.content?.parts?.[0]?.text) {
           chunkText = chunk.candidates[0].content.parts[0].text;
+        }
+        // The last chunk carries usage; thoughtsTokenCount is absent when the model did not
+        // think, so this line is the per-answer proof of which thinking level actually ran.
+        const usage = chunk.usageMetadata;
+        if (usage && !isGemma) {
+          console.log(`[LLMHelper] ${model} usage: thinking=${thinkingLevel ?? 'default'} thoughts=${usage.thoughtsTokenCount ?? 0} out=${usage.candidatesTokenCount ?? '?'} in=${usage.promptTokenCount ?? '?'}`);
         }
         if (chunkText) yield chunkText;
       }
