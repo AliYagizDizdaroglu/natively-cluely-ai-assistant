@@ -24,3 +24,26 @@ export function geminiThinkingLevelFromEnv(env: NodeJS.ProcessEnv = process.env)
     }
     return level as GeminiThinkingLevel;
 }
+
+/**
+ * How long the verbal answer's stall race gives the primary model to produce its first
+ * token before the answer is taken from the other Flash Lite.
+ *
+ * 4000 ms was tuned on default-level hours (first token p90 1.6 s on s50e, 3.4 s on s50f).
+ * A thinking level moves the whole distribution — s50g at LOW: p50 5.1 s, p90 7.8 s — so
+ * the same 4 s would have replaced most thinking answers with the fallback's default-level
+ * ones, the opposite of what the level was set for; 10000 ms sits above that p90 with room.
+ * NATIVELY_FIRST_TOKEN_TIMEOUT_MS overrides both (a smoke forces the race with a value
+ * below any real first-token time); anything but a positive whole number is refused.
+ */
+export function firstTokenTimeoutMs(env: NodeJS.ProcessEnv = process.env): number {
+    const raw = env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS?.trim();
+    if (raw) {
+        if (!/^\d+$/.test(raw) || Number(raw) < 1) {
+            throw new Error(`NATIVELY_FIRST_TOKEN_TIMEOUT_MS="${raw}" is not a positive whole number of milliseconds; unset it for the default`);
+        }
+        return Number(raw);
+    }
+    const level = geminiThinkingLevelFromEnv(env);
+    return level && level !== 'MINIMAL' ? 10000 : 4000;
+}

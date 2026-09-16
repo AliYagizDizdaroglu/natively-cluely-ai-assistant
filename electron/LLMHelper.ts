@@ -17,7 +17,7 @@ import {
 import { userContextBlock } from "./llm/userContext"
 import { keepVerbalPrompt, carriesSpokenBudget, withActiveModePrompt } from "./llm/knowledgePromptBudget"
 import { capturePrompt } from "./llm/promptCapture"
-import { geminiThinkingLevelFromEnv } from "./llm/geminiThinking"
+import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs } from "./llm/geminiThinking"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
 import curl2Json from "@bany/curl-to-json";
 import { CustomProvider, CurlProvider } from './services/CredentialsManager';
@@ -2716,7 +2716,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
           const verbalSystem = `${finalSystemPrompt}${styleSuffix}`;
           // Off unless the flight harness asks for it — see promptCapture.
           capturePrompt({ model: activeModelId, system: verbalSystem, user: userContent });
-          yield* this.streamWithGeminiModel(userContent, activeModelId, imagePaths, verbalSystem);
+          // The technical verbal route: same stall race as the behavioral route, so a
+          // Google-side first-token stall (s50h: 44 s and 60 s) is answered by the other
+          // Flash Lite instead of waited out.
+          yield* this.streamGeminiWithStallFallback(userContent, activeModelId, imagePaths, verbalSystem);
           return;
         }
         const geminiMsg = styleSuffix ? `${finalSystemPrompt}${styleSuffix}\n\n${userContent}` : fullMsg;
@@ -3317,23 +3320,41 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     const notesBlock = userContextBlock(this.customNotes);
     if (notesBlock) console.log(`[LLMHelper] <user_context> appended to the system prompt (${this.customNotes.trim().length} chars)`);
     const systemWithLanguage = this.injectLanguageInstruction(`${systemPrompt}${notesBlock}`);
-    // Stall safety net: recover to a fast alternative that differs from the primary.
-    // Was gemma-4-31b-it when the primary was Flash Lite; now Flash Lite 3.5, which
-    // shares Gemini's plumbing (so an auth/quota fault that killed the primary is
-    // NOT independent — see the note on emitting the source sentinel below).
+    yield* this.streamGeminiWithStallFallback(userMessage, primaryModel, imagePaths, systemWithLanguage);
+  }
+
+  /**
+   * The verbal answer's stall safety net, shared by both verbal routes: the behavioral one
+   * above and the technical one inside streamChat. Until 2026-09-16 only the behavioral route
+   * raced; the technical route — 40 of an hour's 41 answers — streamed the primary with no
+   * clock, and flight s50h waited 44 s and 60 s for a first token twice with the fallback
+   * never firing (zero "stalled after" lines in the hour).
+   *
+   * Recover to a fast alternative that differs from the primary. Was gemma-4-31b-it when
+   * the primary was Flash Lite; now Flash Lite 3.5, which shares Gemini's plumbing (so an
+   * auth/quota fault that killed the primary is NOT independent — see the note on emitting
+   * the source sentinel below). Errors from the primary propagate as before; only silence
+   * is caught here.
+   */
+  private async * streamGeminiWithStallFallback(
+    userMessage: string,
+    primaryModel: string,
+    imagePaths: string[] | undefined,
+    systemInstruction: string,
+  ): AsyncGenerator<string, void, unknown> {
     const FALLBACK_MODEL = primaryModel === GEMINI_FLASH_FALLBACK_MODEL
       ? GEMINI_FLASH_MODEL
       : GEMINI_FLASH_FALLBACK_MODEL;
-    const FIRST_TOKEN_TIMEOUT_MS = 4000;
+    const timeoutMs = firstTokenTimeoutMs();
 
-    console.log(`[LLMHelper] streamVerbalWithGeminiFlash: trying ${primaryModel} (fallback=${FALLBACK_MODEL} after ${FIRST_TOKEN_TIMEOUT_MS}ms)`);
+    console.log(`[LLMHelper] verbal stall race: trying ${primaryModel} (fallback=${FALLBACK_MODEL} after ${timeoutMs}ms)`);
 
-    const primaryStream = this.streamWithGeminiModel(userMessage, primaryModel, imagePaths, systemWithLanguage);
+    const primaryStream = this.streamWithGeminiModel(userMessage, primaryModel, imagePaths, systemInstruction);
 
-    // Race first token against timeout — if primary stalls, fall back to 2.5-flash-lite
+    // Race first token against timeout — if primary stalls, fall back to the other Flash Lite
     let timeoutHandle!: NodeJS.Timeout;
     const timeoutPromise = new Promise<'timeout'>(resolve => {
-      timeoutHandle = setTimeout(() => resolve('timeout'), FIRST_TOKEN_TIMEOUT_MS);
+      timeoutHandle = setTimeout(() => resolve('timeout'), timeoutMs);
     });
 
     const firstResult = await Promise.race([
@@ -3343,7 +3364,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     clearTimeout(timeoutHandle);
 
     if (firstResult.kind === 'timeout') {
-      console.warn(`[LLMHelper] ${GEMINI_FLASH_MODEL} stalled after ${FIRST_TOKEN_TIMEOUT_MS}ms — falling back to ${FALLBACK_MODEL}`);
+      console.warn(`[LLMHelper] ${primaryModel} stalled after ${timeoutMs}ms — falling back to ${FALLBACK_MODEL}`);
       // Do NOT await .return() — the generator is blocked inside generateContentStream's HTTP
       // request and awaiting it would stall here until the server finally responds (~28s more).
       // Fire-and-forget: the request completes in the background and the generator self-cleans.
@@ -3352,7 +3373,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       // label and a silent downgrade is indistinguishable from a normal answer.
       // Label must contain no "_" — the consumer regex is /__model_source:([^_]+)__/.
       yield `__model_source:${FALLBACK_MODEL} (fallback)__`;
-      yield* this.streamWithGeminiModel(userMessage, FALLBACK_MODEL, imagePaths, systemWithLanguage);
+      yield* this.streamWithGeminiModel(userMessage, FALLBACK_MODEL, imagePaths, systemInstruction);
       return;
     }
 
