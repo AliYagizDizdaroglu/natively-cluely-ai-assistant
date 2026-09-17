@@ -71,7 +71,8 @@ describe('a stalled primary on the technical verbal route falls back to the othe
         if (savedTimeout === undefined) delete process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS; else process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS = savedTimeout;
     });
 
-    it('primary silent for 4 s → the answer streams from gemini-3.5-flash-lite, announced by the fallback sentinel', async () => {
+    it('at MINIMAL, primary silent for 4 s → the answer streams from gemini-3.5-flash-lite, announced by the fallback sentinel', async () => {
+        process.env.NATIVELY_GEMINI_THINKING_LEVEL = 'MINIMAL';
         plan.push('silent', ['I would key every message ', 'by document id.']);
         const helper = new LLMHelper('fake-gemini-key');
         const out = drain(technical(helper));
@@ -100,10 +101,9 @@ describe('a stalled primary on the technical verbal route falls back to the othe
         expect(chunks.join('')).not.toContain('(fallback)');
     });
 
-    it('with a thinking level set the stall budget is 10 s: 4 s of silence is thinking, 10 s is a stall', async () => {
+    it('with nothing set (LOW ships) the stall budget is 10 s: 4 s of silence is thinking, 10 s is a stall', async () => {
         // s50g (LOW): first token p50 5.1 s, p90 7.8 s — a 4 s race would have replaced most of
         // the hour's thinking answers with the fallback's default-level ones.
-        process.env.NATIVELY_GEMINI_THINKING_LEVEL = 'LOW';
         plan.push('silent', ['fallback answer']);
         const helper = new LLMHelper('fake-gemini-key');
         const out = drain(technical(helper));
@@ -131,7 +131,8 @@ describe('a stalled primary on the technical verbal route falls back to the othe
         }
     });
 
-    it('the behavioral route keeps its 4 s fallback (same race, one implementation)', async () => {
+    it('the behavioral route runs the same race with the same budget (one implementation): 4 s at MINIMAL', async () => {
+        process.env.NATIVELY_GEMINI_THINKING_LEVEL = 'MINIMAL';
         plan.push('silent', ['tell me about a time']);
         const helper = new LLMHelper('fake-gemini-key');
         const out = drain(helper.streamVerbalWithGeminiFlash('tell me about a conflict', VERBAL_WHAT_TO_ANSWER_PROMPT));

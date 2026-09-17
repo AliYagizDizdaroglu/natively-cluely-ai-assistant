@@ -445,7 +445,11 @@ export const GATE = [
     // 2026-09-08 roster: a long design question counts as answered whole when the
     // dispatched text (answer or extend) covers ≥ 80% of its scripted content words.
     { key: 'long', label: 'Long questions answered whole', before: 'not in the roster', pass: (m) => m.longWhole === m.longs, show: (m) => m.longs ? `${m.longWhole} of ${m.longs} (dispatched text covers ≥ 80% of the question)` : 'none in the roster' },
-    { key: 'latency', label: 'Answer TTFT p90 · detect p50', before: '3.7 s (answer-only pass) · 4.1 s', pass: (m) => (m.ttftP90 ?? Infinity) <= 5000 && (m.detectP50 ?? Infinity) <= 5000, show: (m) => `${m.ttftP90 == null ? '—' : (m.ttftP90 / 1000).toFixed(1) + ' s'}${m.ttftSource === 'answer-only' ? ' (answer-only pass)' : ''} · ${m.detectP50 == null ? '—' : (m.detectP50 / 1000).toFixed(1) + ' s'}` },
+    // TTFT p90 bar is the app's own stall budget under the shipped thinking level (LOW since
+    // the 2026-09-17 bench): 10 s, above which the fallback replaces the answer anyway. It
+    // was 5 s while the answer ran at MINIMAL (s50e 1.6 s, s50f 3.4 s); LOW measured p90
+    // 7.8 s on s50g and 7.1 s on the bench, so 5 s would fail every LOW hour by design.
+    { key: 'latency', label: 'Answer TTFT p90 · detect p50', before: '3.7 s (answer-only pass) · 4.1 s', pass: (m) => (m.ttftP90 ?? Infinity) <= 10000 && (m.detectP50 ?? Infinity) <= 5000, show: (m) => `${m.ttftP90 == null ? '—' : (m.ttftP90 / 1000).toFixed(1) + ' s'}${m.ttftSource === 'answer-only' ? ' (answer-only pass)' : ''} · ${m.detectP50 == null ? '—' : (m.detectP50 / 1000).toFixed(1) + ' s'}` },
     { key: 'pinned', label: 'Answer prompt pinned to the dispatched question', before: 'not logged', pass: (m) => m.pinned.answers > 0 && m.pinned.legacy === 0 && m.pinned.missing === 0 && m.pinned.mismatched === 0, show: (m) => m.pinned.answers === 0 ? 'no answers' : m.pinned.legacy === m.pinned.answers ? 'not logged' : `${m.pinned.answers - m.pinned.legacy - m.pinned.missing - m.pinned.mismatched}/${m.pinned.answers} pinned, ${m.pinned.missing} missing, ${m.pinned.mismatched} mismatched${m.pinned.legacy ? `, ${m.pinned.legacy} legacy` : ''}` },
     // Flight s50c (2026-09-12): the app no longer cuts under 200 words — the
     // question-scaled cut of spec 2026-09-09 §3.5 fired on 13 of 42 answers and

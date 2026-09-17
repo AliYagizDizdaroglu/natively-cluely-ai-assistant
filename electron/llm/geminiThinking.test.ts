@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs, GEMINI_THINKING_LEVELS } from './geminiThinking';
+import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs, GEMINI_THINKING_LEVELS, DEFAULT_GEMINI_THINKING_LEVEL } from './geminiThinking';
 
 /**
  * The stall race gives the primary this long to produce a first token before the answer is
@@ -9,20 +9,20 @@ import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs, GEMINI_THINKING_LEVELS
  * fallback's default-level ones, which is the opposite of what the level was set for.
  */
 describe('firstTokenTimeoutMs', () => {
-    it('4000 ms with no thinking level, and at MINIMAL (what every default-level flight ran)', () => {
-        expect(firstTokenTimeoutMs({})).toBe(4000);
+    it('4000 ms at MINIMAL (what every default-level flight through s50f ran)', () => {
         expect(firstTokenTimeoutMs({ NATIVELY_GEMINI_THINKING_LEVEL: 'MINIMAL' })).toBe(4000);
     });
 
-    it('10000 ms once a thinking level above MINIMAL is set (s50g LOW p90 7.8 s fits under it)', () => {
+    it('10000 ms at a thinking level above MINIMAL (s50g LOW p90 7.8 s fits under it), so also with nothing set now that LOW ships', () => {
         expect(firstTokenTimeoutMs({ NATIVELY_GEMINI_THINKING_LEVEL: 'LOW' })).toBe(10000);
         expect(firstTokenTimeoutMs({ NATIVELY_GEMINI_THINKING_LEVEL: 'high' })).toBe(10000);
+        expect(firstTokenTimeoutMs({})).toBe(10000);
     });
 
     it('NATIVELY_FIRST_TOKEN_TIMEOUT_MS overrides both, as a positive whole number of milliseconds', () => {
         expect(firstTokenTimeoutMs({ NATIVELY_FIRST_TOKEN_TIMEOUT_MS: '300' })).toBe(300);
         expect(firstTokenTimeoutMs({ NATIVELY_FIRST_TOKEN_TIMEOUT_MS: '300', NATIVELY_GEMINI_THINKING_LEVEL: 'LOW' })).toBe(300);
-        expect(firstTokenTimeoutMs({ NATIVELY_FIRST_TOKEN_TIMEOUT_MS: '' })).toBe(4000);
+        expect(firstTokenTimeoutMs({ NATIVELY_FIRST_TOKEN_TIMEOUT_MS: '', NATIVELY_GEMINI_THINKING_LEVEL: 'MINIMAL' })).toBe(4000);
     });
 
     it('refuses a value that is not a positive whole number, naming the variable', () => {
@@ -34,18 +34,20 @@ describe('firstTokenTimeoutMs', () => {
 });
 
 /**
- * Every flight to date ran gemini-3.1-flash-lite at the provider default, which the probes
+ * Flights through s50f ran gemini-3.1-flash-lite at the provider default, which the probes
  * (2026-09-15) showed is MINIMAL: no thought tokens, and the CV-numbers question wrong
- * 10 of 10 times. With thinkingLevel LOW the same call spent 143–782 thought tokens and
- * derived the numbers. The level is a flight variable now, set from the environment like
- * the turn constants, and refused loudly when misspelt so a flight never runs at a level
- * nobody asked for.
+ * 10 of 10 times. The paired bench of 2026-09-17 (39 captured prompts x 3 reps, blind
+ * grading) put LOW at +21 acceptable on 117 pairs, 24 improvements to 3 regressions, and
+ * zero wrong answers across three hours — so LOW is the shipped default. The environment
+ * still overrides it (MINIMAL is the old behaviour, HIGH the ceiling probe), and a misspelt
+ * level is refused loudly so a flight never runs at a level nobody asked for.
  */
 describe('geminiThinkingLevelFromEnv', () => {
-    it('unset or empty → undefined, so the request carries no thinkingConfig (provider default)', () => {
-        expect(geminiThinkingLevelFromEnv({})).toBeUndefined();
-        expect(geminiThinkingLevelFromEnv({ NATIVELY_GEMINI_THINKING_LEVEL: '' })).toBeUndefined();
-        expect(geminiThinkingLevelFromEnv({ NATIVELY_GEMINI_THINKING_LEVEL: '  ' })).toBeUndefined();
+    it('unset or empty → LOW, the shipped default, so every verbal request carries it', () => {
+        expect(DEFAULT_GEMINI_THINKING_LEVEL).toBe('LOW');
+        expect(geminiThinkingLevelFromEnv({})).toBe('LOW');
+        expect(geminiThinkingLevelFromEnv({ NATIVELY_GEMINI_THINKING_LEVEL: '' })).toBe('LOW');
+        expect(geminiThinkingLevelFromEnv({ NATIVELY_GEMINI_THINKING_LEVEL: '  ' })).toBe('LOW');
     });
 
     it('accepts the four documented levels, case-insensitively, and returns them upper-case', () => {

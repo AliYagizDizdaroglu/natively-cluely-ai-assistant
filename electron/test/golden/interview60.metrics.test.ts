@@ -612,6 +612,16 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(row.pass({ ...base, budget: { ...base.budget, p50: 170, max: 190 } })).toBe(true);
     });
 
+    it('latency row: TTFT p90 bar is the 10 s stall budget under the shipped LOW level, detect p50 stays 5 s', () => {
+        // s50g at LOW measured TTFT p90 7.8 s and the 2026-09-17 bench 7.1 s; the old 5 s bar
+        // (tuned on MINIMAL hours) would fail every LOW hour by design.
+        const latency = (over: Partial<typeof m>) => evaluateGate({ ...m, ...over }).rows.find((r) => r.label === 'Answer TTFT p90 · detect p50')!.pass;
+        expect(latency({ ttftP90: 7800 })).toBe(true);
+        expect(latency({ ttftP90: 10000 })).toBe(true);
+        expect(latency({ ttftP90: 10100 })).toBe(false);
+        expect(latency({ ttftP90: 7800, detectP50: 5100 })).toBe(false);
+    });
+
     it('evaluates the gate: everything fails except the latency row and the roster-proportional heard row', () => {
         const g = evaluateGate(m);
         expect(g.pass).toBe(false);
@@ -632,7 +642,7 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(rows['Technical questions answered via the coaching path']).toBe(false);
         expect(rows['Spoken questions routed CODING']).toBe(false);
         expect(rows['Live expiry loops']).toBe(false);
-        // ttftP90=3000ms and detectP50=1500ms are both <= the 5000ms gate.
+        // ttftP90=3000ms and detectP50=1500ms are both under their bars (10 s TTFT, 5 s detect).
         expect(rows['Answer TTFT p90 · detect p50']).toBe(true);
         const failed = g.rows.filter((r) => !r.pass).map((r) => r.label);
         // pinned (8 legacy dispatches) and budget (cut 1 !== 0) both fail

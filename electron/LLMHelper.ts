@@ -3227,8 +3227,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     const contents = [{ role: 'user', parts }];
 
     const isGemma = model.startsWith("gemma-");
-    // Gemini models: no thinkingConfig unless the environment names a level (flights
-    // s50g/s50h fly LOW and MEDIUM; unset is what every earlier flight sent). See geminiThinking.ts.
+    // Gemini models: thinkingLevel LOW unless the environment names another level (bench
+    // 2026-09-17: LOW +21 acceptable on 117 pairs; MINIMAL is what flights through s50f sent).
+    // Gemma keeps its own pinned config below. See geminiThinking.ts.
     const thinkingLevel = isGemma ? undefined : geminiThinkingLevelFromEnv();
     const gemmaConfig: Record<string, unknown> = isGemma ? {
       maxOutputTokens: 4096,
