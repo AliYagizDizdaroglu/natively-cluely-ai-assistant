@@ -560,7 +560,15 @@ export async function* cutAtWordBudget(
                     if (emitted >= floor) mode = 'buffer';
                 }
             } else {
-                if (!m) { carry = text; text = ''; break; }
+                if (!m) {
+                    // Buffering waits for the sentence to end before deciding whether it fits, so
+                    // it keeps reading. Stop once even the unterminated tail cannot fit under the
+                    // ceiling: the sentence is already too long to keep, and reading the rest of
+                    // it only pays the provider for text nobody will hear. Keeps the early
+                    // IteratorClose the stream-mode ceiling used to give.
+                    if (emitted + countWords(text) > ceiling) { cut = true; finish(); return; }
+                    carry = text; text = ''; break;
+                }
                 const end = m.index + m[0].length;
                 const sentence = text.slice(0, end);
                 if (emitted + countWords(sentence) > limit) {
@@ -602,8 +610,26 @@ export async function* cutAtWordBudget(
  * maximum; the app's cut applied offline to those 20 answers would have
  * truncated 7. The prompt still asks for 80–150 words; the model's own stop is
  * what earns 18/20, so the stream is only clamped at the 200 the gate row
- * already bounds (`max <= 200`). Limit, floor and ceiling coincide, so this is
- * a hard stop — mid-sentence if it comes to that: a 200-word spoken answer is
- * already a runaway, and the gate row reports every cut as a finding.
+ * already bounds (`max <= 200`).
+ *
+ * The floor sits at 120, well below the limit, so a runaway ENDS ON A FINISHED
+ * SENTENCE. Under 120 words the stream is untouched, which covers the answers
+ * the prompt actually asks for (flight s50i: words p50 105). The switch to
+ * sentence buffering can only happen AT a sentence boundary, so the gap between
+ * floor and limit is the budget the next whole sentence has to fit in: 80 words
+ * here, against a longest observed sentence well under that. Buffered, a
+ * sentence that would cross 200 is dropped whole instead of sliced.
+ *
+ * Flight s50i (2026-09-18) is why: S2Q07 was cut at exactly 200 words
+ * mid-sentence, the same prompt answered offline ran to 218, and the grader
+ * marked the in-app answer weak for the ending it never reached — the only
+ * in-app loss that flight with an identifiable mechanical cause. A floor at the
+ * limit cannot fix this, and neither can one merely close to it: a sentence
+ * that STARTS below the floor is still streamed, and is sliced at the ceiling.
+ *
+ * Two cases still stop mid-sentence, both correctly: a single sentence longer
+ * than the floor-to-limit budget, and an answer with no terminator anywhere —
+ * neither has a boundary to keep. Either way the gate row reports the cut as a
+ * finding: a 200-word spoken answer is a runaway however it ends.
  */
-export const SPOKEN_WORD_GUARD: Readonly<Pick<WordBudgetOptions, 'limit' | 'floor' | 'ceiling'>> = { limit: 200, floor: 200, ceiling: 200 };
+export const SPOKEN_WORD_GUARD: Readonly<Pick<WordBudgetOptions, 'limit' | 'floor' | 'ceiling'>> = { limit: 200, floor: 120, ceiling: 200 };

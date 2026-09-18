@@ -392,8 +392,8 @@ describe('SPOKEN_WORD_GUARD — the verbal stream is clamped at 200 words and ne
         for await (const c of cutAtWordBudget(src, { ...SPOKEN_WORD_GUARD, onDone: (r) => { done = r; } })) out += c;
         return { out, done };
     }
-    it('is a single hard clamp at 200: limit, floor and ceiling all 200', () => {
-        expect(SPOKEN_WORD_GUARD).toEqual({ limit: 200, floor: 200, ceiling: 200 });
+    it('clamps at 200 and buffers whole sentences from 120, leaving 80 words for the next one to fit in', () => {
+        expect(SPOKEN_WORD_GUARD).toEqual({ limit: 200, floor: 120, ceiling: 200 });
     });
     it('a 170-word answer in four sentences — the longest the bare arm produced — streams whole, uncut', async () => {
         const text = [1, 2, 3, 4].map((i) => sentence(i === 4 ? 50 : 40, i)).join(' ');
@@ -414,21 +414,42 @@ describe('SPOKEN_WORD_GUARD — the verbal stream is clamped at 200 words and ne
         expect(out).toBe(text);
         expect(done).toEqual({ words: 200, cut: false, allowance: false });
     });
-    it('stops a 230-word runaway at exactly 200 whole words — never mid-word — for every chunk size', async () => {
-        const text = [1, 2, 3, 4, 5].map((i) => sentence(46, i)).join(' ');   // ends at 46, 92, 138, 184, 230
+    it('stops a 230-word runaway on its last FINISHED sentence, not mid-sentence, for every chunk size', async () => {
+        // Sentences end at 46, 92, 138, 184, 230 words. The fifth would pass 200, so the answer
+        // ends at 184 with its full stop. Flight s50i (2026-09-18) is why: the app cut S2Q07 at
+        // exactly 200 words mid-sentence while the same prompt answered offline ran to 218, and
+        // the grader marked the in-app answer weak for the ending it never reached.
+        const text = [1, 2, 3, 4, 5].map((i) => sentence(46, i)).join(' ');
         for (const size of [1, 3, 9, 40, 5000]) {
             const src = (async function* () { for (let i = 0; i < text.length; i += size) yield text.slice(i, i + size); })();
             let done: any = null;
             let out = '';
             for await (const c of cutAtWordBudget(src, { ...SPOKEN_WORD_GUARD, onDone: (r) => { done = r; } })) out += c;
-            expect(words(out)).toBe(200);
-            expect(done).toEqual({ words: 200, cut: true, allowance: false });
-            // The emitted text is a prefix of the answer that ends where word 201 begins:
-            // no fragment of "w5x15" is left dangling on the end of the spoken answer.
+            expect(words(out)).toBe(184);
+            expect(done).toEqual({ words: 184, cut: true, allowance: false });
+            // A prefix of the answer that stops on a sentence terminator — nothing dangles.
             expect(text.startsWith(out)).toBe(true);
-            expect(text.slice(out.length)).toMatch(/^\S/);
-            expect(out).toMatch(/\s$/);
+            expect(out.trimEnd()).toMatch(/[.!?]$/);
         }
+    });
+
+    it('a sentence that would cross 200 is dropped whole rather than truncated', async () => {
+        // 148 words in short sentences, then one 60-word sentence: 148 + 60 = 208 > 200.
+        const text = [1, 2, 3, 4].map((i) => sentence(37, i)).join(' ') + ' ' + sentence(60, 9);
+        const { out, done } = await run(text);
+        expect(words(out)).toBe(148);
+        expect(done).toEqual({ words: 148, cut: true, allowance: false });
+        expect(out.trimEnd()).toMatch(/[.!?]$/);
+        expect(out).not.toContain('w9x0');   // not one word of the dropped sentence leaked out
+    });
+
+    it('one runaway sentence with no terminator still stops at the 200-word ceiling — there is no boundary to keep', async () => {
+        const src = (async function* () { for (let i = 0; i < 260; i++) yield `w${i} `; })();
+        let done: any = null;
+        let out = '';
+        for await (const c of cutAtWordBudget(src, { ...SPOKEN_WORD_GUARD, onDone: (r) => { done = r; } })) out += c;
+        expect(words(out)).toBe(200);
+        expect(done).toMatchObject({ cut: true, words: 200 });
     });
     it('cutAtWordBudget honours an explicit ceiling below 2 × limit', async () => {
         // 250 words, no terminator anywhere: stops at the ceiling

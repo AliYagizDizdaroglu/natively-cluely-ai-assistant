@@ -71,14 +71,17 @@ describe('WhatToAnswerLLM word guard', () => {
         }
         expect(logs.filter((l) => l === '[Answer] budget: words=170 cut=no allowance=no')).toHaveLength(2);
     });
-    it('verbal: a 230-word runaway is clamped at 200 and the source is not drained', async () => {
+    it('verbal: a 230-word runaway stops on its last finished sentence, under 200, and the source is not drained', async () => {
+        // Sentences end at 46, 92, 138, 184, 230 words; the fifth would pass 200, so the spoken
+        // answer ends at 184 with its full stop rather than being sliced at word 200. Flight s50i
+        // (2026-09-18) is why — see SPOKEN_WORD_GUARD.
         const logs: string[] = [];
         vi.spyOn(console, 'log').mockImplementation((...a: any[]) => { logs.push(a.map(String).join(' ')); });
         const { helper, consumed, total } = makeHelper(FIVE);
         const out = await drain(new WhatToAnswerLLM(helper).generateStream('[INTERVIEWER]: Walk me through it.', undefined, VERBAL));
-        expect(words(out)).toBeGreaterThanOrEqual(200);
-        expect(words(out)).toBeLessThanOrEqual(202);
+        expect(words(out)).toBe(184);
+        expect(out.trimEnd()).toMatch(/[.!?]$/);
         expect(consumed()).toBeLessThan(total);
-        expect(logs.some((l) => /^\[Answer\] budget: words=20[0-2] cut=yes/.test(l))).toBe(true);
+        expect(logs).toContain('[Answer] budget: words=184 cut=yes allowance=no');
     });
 });
