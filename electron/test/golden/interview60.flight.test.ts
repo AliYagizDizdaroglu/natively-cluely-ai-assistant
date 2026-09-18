@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ANSWER_MODELS, FOCUSED_ONLY, LIVE_DEFAULT, LIVE_FALLBACK, answersFileFor, chooseLiveModel, newestRunDir } from './interview60.flight.mjs';
+import { ANSWER_MODELS, FOCUSED_ONLY, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, chooseLiveModel, newestRunDir } from './interview60.flight.mjs';
 
 describe('chooseLiveModel', () => {
     it('keeps 3.x on a tool call, aborts only when no key reached the probe, falls to 2.5 on silence or a dead session', () => {
@@ -48,5 +48,29 @@ describe('answersFileFor', () => {
         expect(ANSWER_MODELS[0]).toBe('gemini-3.1-flash-lite');
         expect(answersFileFor('gemini-3.1-flash-lite')).toBe('interview60.answers.json');
         expect(answersFileFor('gemma-4-31b-it')).toBe('interview60.answers.gemma-4-31b-it.json');
+    });
+
+    it('a tagged arm of the default model gets its own file, the way answers.mjs --tag names it', () => {
+        expect(answersFileFor('gemini-3.1-flash-lite', 'low')).toBe('interview60.answers.gemini-3.1-flash-lite_low.json');
+        expect(answersFileFor('gemini-3.1-flash-lite', 'captured-minimal')).toBe('interview60.answers.gemini-3.1-flash-lite_captured-minimal.json');
+    });
+});
+
+/**
+ * The 2026-09-17 bench showed the level change (+21 on 117 pairs) and the app-context tax
+ * (+6 on 57) only in PAIRED grading on the same bytes. These two arms give every flight its
+ * own pairs: the hour's captured prompts replayed at the pre-bench level, and the bare prompt
+ * at the shipped level, both on the app's answer model.
+ */
+describe('PAIRED_ARMS', () => {
+    it('are two arms of the app answer model with distinct tags: bare at LOW, and the captured hour at the default level', () => {
+        expect(PAIRED_ARMS.map((a) => a.model)).toEqual([ANSWER_MODELS[0], ANSWER_MODELS[0]]);
+        expect(new Set(PAIRED_ARMS.map((a) => a.tag)).size).toBe(2);
+        const low = PAIRED_ARMS.find((a) => a.tag === 'low')!;
+        expect(low.args).toEqual(['--thinking', 'LOW']);
+        expect(low.captured).toBe(false);
+        const cap = PAIRED_ARMS.find((a) => a.tag === 'captured-minimal')!;
+        expect(cap.captured).toBe(true);
+        expect(cap.args).toEqual([]);
     });
 });

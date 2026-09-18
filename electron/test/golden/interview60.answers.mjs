@@ -14,6 +14,7 @@
  *
  *   node electron/test/golden/interview60.answers.mjs
  *   node electron/test/golden/interview60.answers.mjs --model gemma-4-31b-it   # another arm of the comparison → interview60.answers.<model>.json
+ *   node electron/test/golden/interview60.answers.mjs --thinking LOW --tag low  # the default model at a thinking level → interview60.answers.gemini-3.1-flash-lite_low.json
  *
  * Resumable: results are written per question; transient errors (429/5xx)
  * are recorded as such and never scored as model failures.
@@ -86,6 +87,18 @@ if (CAPTURED && (SYSTEM_FILE || USER_TEMPLATE || PROMPT_SUFFIX || INLINE_SYSTEM)
     console.error('--captured replays the app\'s own prompt; it cannot be combined with --system-file, --user-file, --prompt-suffix or --inline-system');
     process.exit(2);
 }
+// --thinking <MINIMAL|LOW|MEDIUM|HIGH> puts thinkingConfig.thinkingLevel on the Gemini request
+// (needs --tag): the arm at a thinking level. Without it the request carries no thinkingConfig,
+// the provider default — MINIMAL on the lites — which is what every arm through s50h sent and
+// what the flight's "captured-minimal" arm replays, while the APP sends LOW since the 2026-09-17
+// bench (geminiThinking.ts). Gemini only: the Groq arms have no such setting. Each record keeps
+// the model's reported thoughtsTokenCount so an arm proves the level it actually got.
+const thi = process.argv.indexOf('--thinking');
+const THINKING = thi >= 0 && process.argv[thi + 1] ? process.argv[thi + 1].trim().toUpperCase() : '';
+if (THINKING && !['MINIMAL', 'LOW', 'MEDIUM', 'HIGH'].includes(THINKING)) { console.error(`--thinking "${process.argv[thi + 1]}" is not a Gemini thinking level; use MINIMAL, LOW, MEDIUM or HIGH`); process.exit(2); }
+if (THINKING && !TAG) { console.error('--thinking needs --tag <name>, or the variant would overwrite the plain arm'); process.exit(2); }
+if (THINKING && IS_GROQ) { console.error('--thinking is a Gemini setting; the Groq arms have no thinking level'); process.exit(2); }
+const GENERATION_CONFIG = { temperature: 0.4, maxOutputTokens: 65536, ...(THINKING ? { thinkingConfig: { thinkingLevel: THINKING } } : {}) };
 const ARM = TAG ? `${MODEL}_${TAG}` : MODEL;
 const SYSTEM_PROMPT = SYSTEM_FILE ? SYSTEM_FILE : PROMPT_SUFFIX ? `${P.VERBAL_WHAT_TO_ANSWER_PROMPT}\n\n${PROMPT_SUFFIX}` : P.VERBAL_WHAT_TO_ANSWER_PROMPT;
 const FILE_TAG = ARM.replace(/\//g, '_');
@@ -106,14 +119,14 @@ async function answerStreamedGemini(question, captured) {
         ? {
             contents: [{ role: 'user', parts: [{ text: captured.user }] }],
             systemInstruction: { parts: [{ text: captured.system }] },
-            generationConfig: { temperature: 0.4, maxOutputTokens: 65536 },
+            generationConfig: GENERATION_CONFIG,
         }
         : INLINE_SYSTEM
-        ? { contents: [{ role: 'user', parts: [{ text: `${SYSTEM_PROMPT}\n\n${userText(question)}` }] }], generationConfig: { temperature: 0.4, maxOutputTokens: 65536 } }
+        ? { contents: [{ role: 'user', parts: [{ text: `${SYSTEM_PROMPT}\n\n${userText(question)}` }] }], generationConfig: GENERATION_CONFIG }
         : {
             contents: [{ role: 'user', parts: [{ text: userText(question) }] }],
             systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-            generationConfig: { temperature: 0.4, maxOutputTokens: 65536 },
+            generationConfig: GENERATION_CONFIG,
         };
     const url = `https://generativelanguage.googleapis.com/v1alpha/models/${MODEL}:streamGenerateContent?alt=sse`;
     const t0 = Date.now();
@@ -123,7 +136,7 @@ async function answerStreamedGemini(question, captured) {
 
     const reader = res.body.getReader();
     const dec = new TextDecoder();
-    let buf = '', raw = '', ttft = null, finish = null;
+    let buf = '', raw = '', ttft = null, finish = null, thoughts = null;
     for (;;) {
         const { value, done } = await reader.read();
         if (done) break;
@@ -138,6 +151,8 @@ async function answerStreamedGemini(question, captured) {
             const piece = (cand?.content?.parts || []).map((p) => p.text || '').join('');
             if (piece) { if (ttft === null) ttft = Date.now() - t0; raw += piece; }
             if (cand?.finishReason) finish = cand.finishReason;
+            // usageMetadata rides on the last chunk; thoughtsTokenCount is absent when the model did not think.
+            if (j.usageMetadata) thoughts = j.usageMetadata.thoughtsTokenCount ?? 0;
         }
     }
     const total = Date.now() - t0;
@@ -150,7 +165,7 @@ async function answerStreamedGemini(question, captured) {
     spoken = spoken.trim();
     // raw: what the model wrote before the filter chain — the only way to see what the
     // filter removed (lists, notation) when an arm is diagnosing the prompt, not the filter.
-    return { spoken, offers, words: words(spoken), ttft, total, finish, rawLen: raw.length, raw };
+    return { spoken, offers, words: words(spoken), ttft, total, finish, rawLen: raw.length, raw, thoughts };
 }
 
 // Groq, OpenAI-compatible SSE: same system prompt, same user text, same filter chain,
@@ -259,7 +274,7 @@ if (CAPTURED) {
     if (uncaptured.length) { console.error(`--captured has no prompt for: ${uncaptured.join(', ')} (the app answered ${Object.keys(CAPTURED).length} question(s) that hour)`); process.exit(2); }
 }
 const todo = mains.filter((i) => !ONLY || ONLY.has(i.id)).slice(0, LIMIT);
-console.log(`ANSWER-ONLY PASS  model=${MODEL}${TAG ? `  variant=${TAG} (prompt suffix ${PROMPT_SUFFIX.length} chars)` : ''}${CAPTURED ? '  prompts=captured (the app\'s own system + user turn, replayed)' : ''}  ${todo.length} spoken questions\n`);
+console.log(`ANSWER-ONLY PASS  model=${MODEL}${TAG ? `  variant=${TAG} (prompt suffix ${PROMPT_SUFFIX.length} chars)` : ''}${THINKING ? `  thinking=${THINKING}` : ''}${CAPTURED ? '  prompts=captured (the app\'s own system + user turn, replayed)' : ''}  ${todo.length} spoken questions\n`);
 
 for (const item of todo) {
     if (store[item.id]?.spoken) { continue; }
@@ -285,7 +300,7 @@ for (const item of todo) {
         const checks = Object.fromEntries(Object.entries(VERBAL_CHECKS).map(([n, f]) => [n, f(ctx).ok]));
         store[item.id] = { ...item, model: ARM, ...r, checks };
         const bad = Object.entries(checks).filter(([, ok]) => !ok).map(([n]) => n);
-        console.log(`  ${item.id.padEnd(4)} ${String(r.words).padStart(3)}w  ttft ${String(r.ttft).padStart(5)}ms  total ${String(r.total).padStart(5)}ms  ${bad.length ? 'FAIL ' + bad.join(',') : 'ok'}`);
+        console.log(`  ${item.id.padEnd(4)} ${String(r.words).padStart(3)}w  ttft ${String(r.ttft).padStart(5)}ms  total ${String(r.total).padStart(5)}ms${r.thoughts != null ? `  thoughts ${String(r.thoughts).padStart(4)}` : ''}  ${bad.length ? 'FAIL ' + bad.join(',') : 'ok'}`);
     }
     fs.writeFileSync(OUT, JSON.stringify(store, null, 1));
     // Groq: the remaining-tokens header is what was left AFTER this request; when the

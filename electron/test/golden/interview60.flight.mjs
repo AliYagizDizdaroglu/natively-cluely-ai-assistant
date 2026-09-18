@@ -20,7 +20,9 @@
  *      script) runs the hour on Deepgram; auto's preflight refuses the hour if
  *      the app did not start that ear.
  *   3. answer passes on gemini-3.1-flash-lite, gemini-3.5-flash-lite and the
- *      Groq arms, the same 52 questions, prompt and filters, plus the
+ *      Groq arms, the same 52 questions, prompt and filters, then the focused
+ *      Flash arms and the two PAIRED_ARMS (the hour's captured prompts at the
+ *      pre-bench level, the bare prompt at the shipped LOW level), plus the
  *      chains pass, all copied into the run folder. Earlier answers/chains
  *      files are moved aside first: the passes resume from an existing file,
  *      and resuming from yesterday's answers would score yesterday's model.
@@ -73,6 +75,25 @@ export const FOCUSED_ONLY = 'S1Q02,S2Q07,S2Q10,S2Q09,S1Q06';
 export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
 
 /**
+ * Paired arms (2026-09-18): the hour's own experiment, on the app's answer model.
+ *
+ * The 2026-09-17 bench showed the thinking-level effect (+21 acceptable on 117 pairs) and the
+ * app-context tax (+6 on 57) only in PAIRED grading on the same bytes; unpaired arms across
+ * hours sit inside the ±4 noise. These two arms give every flight its own pairs:
+ *   captured-minimal  the hour's captured prompts (system + user turn, all items, follow-ups
+ *                     included) replayed with no thinkingConfig, i.e. the provider default the
+ *                     app sent through s50f — in-app vs this = the level, same bytes
+ *   low               the bare verbal prompt at LOW, the shipped level — in-app vs this = the
+ *                     app context at the shipped level; low vs the plain bare arm = the level
+ *                     on bare bytes
+ * ~60 lite calls. The captured arm is skipped, loudly, when the hour left no capture.
+ */
+export const PAIRED_ARMS = [
+    { model: ANSWER_MODELS[0], tag: 'low', captured: false, args: ['--thinking', 'LOW'] },
+    { model: ANSWER_MODELS[0], tag: 'captured-minimal', captured: true, args: [] },
+];
+
+/**
  * The Live model for the hour, from the probe's exit code: 0 (tool call seen)
  * → the default 3.x; 2 (no Gemini key in the env) → null, abort; anything
  * else → the 2.5 fallback. 3 is the silent case, but a 3.x session that dies
@@ -97,9 +118,14 @@ export function newestRunDir(names, label, startedAtIso) {
     return names.filter((n) => n.endsWith(`-${label}`) && n.slice(0, 19) >= since).sort().pop() ?? null;
 }
 
-/** The answers pass writes the default arm to the plain file and every other arm to a model-suffixed one. */
-export function answersFileFor(model) {
-    return model === ANSWER_MODELS[0] ? 'interview60.answers.json' : `interview60.answers.${model.replace(/\//g, '_')}.json`;
+/**
+ * The answers pass writes the default arm to the plain file and every other arm — another
+ * model, or a --tag variant of the default model — to a suffixed one, `<model>[_<tag>]`
+ * with "/" as "_", exactly as answers.mjs names it.
+ */
+export function answersFileFor(model, tag = '') {
+    const arm = tag ? `${model}_${tag}` : model;
+    return arm === ANSWER_MODELS[0] ? 'interview60.answers.json' : `interview60.answers.${arm.replace(/\//g, '_')}.json`;
 }
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -178,7 +204,7 @@ async function main() {
     log(`RUN-DIR ${runDir}   (auto exit ${autoExit}; 1 means the gate failed — its table is above)`);
 
     // 3. Answer arms (full, then the focused Flash arms) + chains, into the run folder.
-    if (!dry) for (const f of [...ANSWER_MODELS.map(answersFileFor), ...FOCUSED_MODELS.map(answersFileFor), 'interview60.chains.json']) moveAside(path.join(HERE, f), stamp);
+    if (!dry) for (const f of [...ANSWER_MODELS.map((m) => answersFileFor(m)), ...FOCUSED_MODELS.map((m) => answersFileFor(m)), ...PAIRED_ARMS.map((a) => answersFileFor(a.model, a.tag)), 'interview60.chains.json']) moveAside(path.join(HERE, f), stamp);
     const answersFiles = [];
     // The focused arms replay the app's OWN call for those questions — same system
     // instruction, same user turn, same résumé context and transcript, only the model id
@@ -191,11 +217,14 @@ async function main() {
     const focusedCaptured = dry || (promptsExit === 0 && fs.existsSync(promptsFile));
     if (!focusedCaptured) log('WARN  no captured prompts — the focused arms will send their own framing, NOT the app\'s call');
     const focusedArgs = ['--only', FOCUSED_ONLY, ...(focusedCaptured ? ['--captured', promptsFile] : [])];
-    const arms = [...ANSWER_MODELS.map((model) => ({ model, args: [] })), ...FOCUSED_MODELS.map((model) => ({ model, args: focusedArgs }))];
-    for (const { model, args } of arms) {
+    for (const a of PAIRED_ARMS) if (a.captured && !focusedCaptured) log(`WARN  paired arm ${a.tag} skipped — it replays the hour's captured prompts and there are none`);
+    const paired = PAIRED_ARMS.filter((a) => !a.captured || focusedCaptured)
+        .map((a) => ({ model: a.model, tag: a.tag, args: ['--tag', a.tag, ...a.args, ...(a.captured ? ['--captured', promptsFile] : [])] }));
+    const arms = [...ANSWER_MODELS.map((model) => ({ model, args: [] })), ...FOCUSED_MODELS.map((model) => ({ model, args: focusedArgs })), ...paired];
+    for (const { model, tag, args } of arms) {
         await run([path.join(HERE, 'interview60.answers.mjs'), '--model', model, ...args], { dry });
-        const src = path.join(HERE, answersFileFor(model));
-        const dest = path.join(runDir, answersFileFor(model));
+        const src = path.join(HERE, answersFileFor(model, tag));
+        const dest = path.join(runDir, answersFileFor(model, tag));
         if (dry) { answersFiles.push(dest); continue; }
         if (!fs.existsSync(src)) { log(`WARN  no answers file for ${model} — the pass wrote nothing`); continue; }
         fs.copyFileSync(src, dest);
@@ -216,7 +245,8 @@ async function main() {
         // 'captured' = the focused arms replayed the app's own system + user turn; 'own-framing'
         // = they sent the arm's bare question text, which is not the same experiment.
         focusedPrompts: focusedCaptured ? 'captured' : 'own-framing', focusedOnly: FOCUSED_ONLY,
-        toGrade: ['interview60.judge.pairs.json', ...ANSWER_MODELS.map((m) => `interview60.judge.pairs.${m}.json`)],
+        pairedArms: paired.map((a) => a.tag),
+        toGrade: ['interview60.judge.pairs.json', ...ANSWER_MODELS.map((m) => `interview60.judge.pairs.${m}.json`), ...paired.map((a) => `interview60.judge.pairs.${a.model}_${a.tag}.json`)],
         next: 'grade each pairs file with its rubric into interview60.judge.verdicts[.<model>].json, then interview60.judge.mjs <run> [--answers <file>] --verdicts <that file>',
     };
     if (!dry) fs.writeFileSync(path.join(runDir, 'interview60.flight.done.json'), JSON.stringify(done, null, 1));
