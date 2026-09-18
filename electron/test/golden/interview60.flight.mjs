@@ -75,22 +75,40 @@ export const FOCUSED_ONLY = 'S1Q02,S2Q07,S2Q10,S2Q09,S1Q06';
 export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
 
 /**
- * Paired arms (2026-09-18): the hour's own experiment, on the app's answer model.
+ * Paired arms (2026-09-18): the hour's own experiment, on the two Flash Lites.
  *
  * The 2026-09-17 bench showed the thinking-level effect (+21 acceptable on 117 pairs) and the
  * app-context tax (+6 on 57) only in PAIRED grading on the same bytes; unpaired arms across
- * hours sit inside the ±4 noise. These two arms give every flight its own pairs:
- *   captured-minimal  the hour's captured prompts (system + user turn, all items, follow-ups
- *                     included) replayed with no thinkingConfig, i.e. the provider default the
- *                     app sent through s50f — in-app vs this = the level, same bytes
- *   low               the bare verbal prompt at LOW, the shipped level — in-app vs this = the
- *                     app context at the shipped level; low vs the plain bare arm = the level
- *                     on bare bytes
- * ~60 lite calls. The captured arm is skipped, loudly, when the hour left no capture.
+ * hours sit inside the ±4 noise. These arms give every flight its own pairs, all answered
+ * minutes after the hour so nothing is compared across times of day:
+ *
+ *   on the app answer model (gemini-3.1-flash-lite)
+ *     captured-minimal  the hour's captured prompts (system + user turn, all items, follow-ups
+ *                       included) with no thinkingConfig — the provider default the app sent
+ *                       through s50f. in-app vs this = the level, same bytes.
+ *     captured-low      the same captured prompts at LOW, the shipped level: the offline twin of
+ *                       the hour itself. in-app vs this = what the app pipeline adds on top of a
+ *                       raw API call; and it is the like-for-like partner for captured-high.
+ *     low               the bare verbal prompt at LOW. in-app vs this = the app context at the
+ *                       shipped level; low vs the plain bare arm = the level on bare bytes.
+ *
+ *   on gemini-3.5-flash-lite, the stall-fallback model (2026-09-18 bench: it does NOT honour
+ *   LOW — probes reported no thought tokens on 3 of 4 calls — and at HIGH it TIED 3.1 at LOW on
+ *   quality, +3 on 117 pairs, while answering far shorter: words p50 74 vs 95. Its apparent
+ *   latency edge could not be believed, because those arms ran at 03:00 and the 3.1 arms at
+ *   10:05. These two arms settle that in the same window.)
+ *     captured-high     captured prompts at HIGH — pairs with captured-low on app bytes
+ *     high              the bare verbal prompt at HIGH — pairs with low on bare bytes
+ *
+ * ~155 lite calls, split across the two models' separate quotas. Captured arms are skipped,
+ * loudly, when the hour left no capture.
  */
 export const PAIRED_ARMS = [
     { model: ANSWER_MODELS[0], tag: 'low', captured: false, args: ['--thinking', 'LOW'] },
     { model: ANSWER_MODELS[0], tag: 'captured-minimal', captured: true, args: [] },
+    { model: ANSWER_MODELS[0], tag: 'captured-low', captured: true, args: ['--thinking', 'LOW'] },
+    { model: ANSWER_MODELS[1], tag: 'captured-high', captured: true, args: ['--thinking', 'HIGH'] },
+    { model: ANSWER_MODELS[1], tag: 'high', captured: false, args: ['--thinking', 'HIGH'] },
 ];
 
 /**

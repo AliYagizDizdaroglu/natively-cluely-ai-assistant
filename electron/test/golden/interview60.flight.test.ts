@@ -63,15 +63,36 @@ describe('answersFileFor', () => {
  * at the shipped level, both on the app's answer model.
  */
 describe('PAIRED_ARMS', () => {
-    it('are two arms of the app answer model with distinct tags: bare at LOW, and the captured hour at the default level', () => {
-        expect(PAIRED_ARMS.map((a) => a.model)).toEqual([ANSWER_MODELS[0], ANSWER_MODELS[0]]);
-        expect(new Set(PAIRED_ARMS.map((a) => a.tag)).size).toBe(2);
-        const low = PAIRED_ARMS.find((a) => a.tag === 'low')!;
-        expect(low.args).toEqual(['--thinking', 'LOW']);
-        expect(low.captured).toBe(false);
-        const cap = PAIRED_ARMS.find((a) => a.tag === 'captured-minimal')!;
-        expect(cap.captured).toBe(true);
-        expect(cap.args).toEqual([]);
+    const byTag = (tag: string) => PAIRED_ARMS.find((a) => a.tag === tag)!;
+
+    it('every arm is one of the two Flash Lites, with a distinct tag', () => {
+        expect(PAIRED_ARMS.length).toBeGreaterThan(0);
+        for (const a of PAIRED_ARMS) expect([ANSWER_MODELS[0], ANSWER_MODELS[1]]).toContain(a.model);
+        expect(new Set(PAIRED_ARMS.map((a) => a.tag)).size).toBe(PAIRED_ARMS.length);
+    });
+
+    it('covers the level on the app answer model: bare at LOW, the captured hour at the default and at LOW', () => {
+        expect(byTag('low')).toMatchObject({ model: ANSWER_MODELS[0], captured: false, args: ['--thinking', 'LOW'] });
+        expect(byTag('captured-minimal')).toMatchObject({ model: ANSWER_MODELS[0], captured: true, args: [] });
+        expect(byTag('captured-low')).toMatchObject({ model: ANSWER_MODELS[0], captured: true, args: ['--thinking', 'LOW'] });
+    });
+
+    it('covers gemini-3.5-flash-lite at HIGH on both byte shapes, in the same window as the 3.1 arms', () => {
+        // The 2026-09-18 bench tied 3.5 HIGH with 3.1 LOW on quality but could not compare latency:
+        // the 3.1 arms ran at 10:05 and the 3.5 arms at 03:00. These two arms run minutes after the
+        // hour, beside their 3.1 twins, so the comparison is same-window.
+        expect(byTag('captured-high')).toMatchObject({ model: ANSWER_MODELS[1], captured: true, args: ['--thinking', 'HIGH'] });
+        expect(byTag('high')).toMatchObject({ model: ANSWER_MODELS[1], captured: false, args: ['--thinking', 'HIGH'] });
+    });
+
+    it('never sets LOW on gemini-3.5-flash-lite, which does not honour it', () => {
+        // Probes 2026-09-17 (n=2 per cell): 3.5-lite reported no thought tokens at LOW on 3 of 4
+        // calls and honoured MEDIUM and HIGH every time. An arm at LOW would silently measure the
+        // provider default and be reported as a thinking arm.
+        for (const a of PAIRED_ARMS.filter((x) => x.model === ANSWER_MODELS[1])) {
+            const level = a.args[a.args.indexOf('--thinking') + 1];
+            expect(['MEDIUM', 'HIGH']).toContain(level);
+        }
     });
 
     it('capturedOnly names the spoken roster items the hour captured, so one missing capture does not refuse the whole arm', () => {
