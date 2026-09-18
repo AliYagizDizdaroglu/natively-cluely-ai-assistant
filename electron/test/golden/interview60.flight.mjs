@@ -39,7 +39,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { rosterLabel, ROSTER_NAME } from './roster.mjs';
+import { INTERVIEW, rosterLabel, ROSTER_NAME } from './roster.mjs';
 
 export const LIVE_DEFAULT = 'gemini-3.1-flash-live-preview';
 export const LIVE_FALLBACK = 'gemini-2.5-flash-native-audio-latest';
@@ -92,6 +92,16 @@ export const PAIRED_ARMS = [
     { model: ANSWER_MODELS[0], tag: 'low', captured: false, args: ['--thinking', 'LOW'] },
     { model: ANSWER_MODELS[0], tag: 'captured-minimal', captured: true, args: [] },
 ];
+
+/**
+ * The spoken roster items the hour captured a replayable prompt for (system + user turn).
+ * answers.mjs --captured refuses any id without one rather than inventing its framing, and an
+ * hour rarely captures every item (s50e 39 of 40, s50f 38 of 40), so the captured arm is
+ * pointed at exactly these with --only.
+ */
+export function capturedOnly(captured, items = INTERVIEW) {
+    return items.filter((i) => (i.kind ?? 'spoken') === 'spoken' && captured[i.id]?.system && captured[i.id]?.user).map((i) => i.id);
+}
 
 /**
  * The Live model for the hour, from the probe's exit code: 0 (tool call seen)
@@ -217,9 +227,11 @@ async function main() {
     const focusedCaptured = dry || (promptsExit === 0 && fs.existsSync(promptsFile));
     if (!focusedCaptured) log('WARN  no captured prompts — the focused arms will send their own framing, NOT the app\'s call');
     const focusedArgs = ['--only', FOCUSED_ONLY, ...(focusedCaptured ? ['--captured', promptsFile] : [])];
-    for (const a of PAIRED_ARMS) if (a.captured && !focusedCaptured) log(`WARN  paired arm ${a.tag} skipped — it replays the hour's captured prompts and there are none`);
-    const paired = PAIRED_ARMS.filter((a) => !a.captured || focusedCaptured)
-        .map((a) => ({ model: a.model, tag: a.tag, args: ['--tag', a.tag, ...a.args, ...(a.captured ? ['--captured', promptsFile] : [])] }));
+    const capturedIds = focusedCaptured && !dry ? capturedOnly(JSON.parse(fs.readFileSync(promptsFile, 'utf8'))) : [];
+    if (focusedCaptured && !dry) log(`paired captured arm: ${capturedIds.length} spoken items have a replayable prompt this hour`);
+    for (const a of PAIRED_ARMS) if (a.captured && !(focusedCaptured && (dry || capturedIds.length))) log(`WARN  paired arm ${a.tag} skipped — it replays the hour's captured prompts and there are none`);
+    const paired = PAIRED_ARMS.filter((a) => !a.captured || (focusedCaptured && (dry || capturedIds.length)))
+        .map((a) => ({ model: a.model, tag: a.tag, args: ['--tag', a.tag, ...a.args, ...(a.captured ? ['--captured', promptsFile, ...(dry ? [] : ['--only', capturedIds.join(',')])] : [])] }));
     const arms = [...ANSWER_MODELS.map((model) => ({ model, args: [] })), ...FOCUSED_MODELS.map((model) => ({ model, args: focusedArgs })), ...paired];
     for (const { model, tag, args } of arms) {
         await run([path.join(HERE, 'interview60.answers.mjs'), '--model', model, ...args], { dry });

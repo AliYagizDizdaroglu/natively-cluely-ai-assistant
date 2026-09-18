@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ANSWER_MODELS, FOCUSED_ONLY, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, chooseLiveModel, newestRunDir } from './interview60.flight.mjs';
+import { ANSWER_MODELS, FOCUSED_ONLY, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, capturedOnly, chooseLiveModel, newestRunDir } from './interview60.flight.mjs';
 
 describe('chooseLiveModel', () => {
     it('keeps 3.x on a tool call, aborts only when no key reached the probe, falls to 2.5 on silence or a dead session', () => {
@@ -72,5 +72,22 @@ describe('PAIRED_ARMS', () => {
         const cap = PAIRED_ARMS.find((a) => a.tag === 'captured-minimal')!;
         expect(cap.captured).toBe(true);
         expect(cap.args).toEqual([]);
+    });
+
+    it('capturedOnly names the spoken roster items the hour captured, so one missing capture does not refuse the whole arm', () => {
+        // s50f captured 38 of 40 (S1Q01 and S2Q02 missing); answers.mjs --captured refuses any
+        // id without a prompt, so the arm is pointed at exactly what was captured.
+        const items = [
+            { id: 'S1Q01', kind: 'spoken' }, { id: 'S1Q01F', kind: 'spoken' }, { id: 'S1Q02', kind: 'spoken' }, { id: 'S2Q02', kind: 'spoken' },
+            { id: 'C01', kind: 'screenshot' },
+        ];
+        const cap = {
+            S1Q01F: { system: 'sys', user: 'usr' },
+            S1Q02: { system: 'sys', user: 'usr' },
+            S2Q02: { system: 'sys' },          // user turn never recorded → not replayable
+            C01: { system: 'sys', user: 'usr' }, // a screenshot cue is not a spoken question
+        };
+        expect(capturedOnly(cap, items)).toEqual(['S1Q01F', 'S1Q02']);
+        expect(capturedOnly({}, items)).toEqual([]);
     });
 });
