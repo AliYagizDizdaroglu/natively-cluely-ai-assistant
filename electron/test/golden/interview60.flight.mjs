@@ -89,6 +89,12 @@ export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3
  *     captured-low      the same captured prompts at LOW, the shipped level: the offline twin of
  *                       the hour itself. in-app vs this = what the app pipeline adds on top of a
  *                       raw API call; and it is the like-for-like partner for captured-high.
+ *                       RUN THREE TIMES (-r2, -r3) since 2026-09-19: s50i put the live hour at
+ *                       28/39 against this arm's 33/39 on identical bytes, same model, same
+ *                       level, but at one sample a side against a ±4 bench floor. The three reps
+ *                       measure the twin's own rep-to-rep spread, and that band is what the live
+ *                       hour has to fall outside before the gap counts as a pipeline defect
+ *                       rather than sampling. Only the tag differs between them.
  *     low               the bare verbal prompt at LOW. in-app vs this = the app context at the
  *                       shipped level; low vs the plain bare arm = the level on bare bytes.
  *
@@ -107,6 +113,8 @@ export const PAIRED_ARMS = [
     { model: ANSWER_MODELS[0], tag: 'low', captured: false, args: ['--thinking', 'LOW'] },
     { model: ANSWER_MODELS[0], tag: 'captured-minimal', captured: true, args: [] },
     { model: ANSWER_MODELS[0], tag: 'captured-low', captured: true, args: ['--thinking', 'LOW'] },
+    { model: ANSWER_MODELS[0], tag: 'captured-low-r2', captured: true, args: ['--thinking', 'LOW'] },
+    { model: ANSWER_MODELS[0], tag: 'captured-low-r3', captured: true, args: ['--thinking', 'LOW'] },
     { model: ANSWER_MODELS[1], tag: 'captured-high', captured: true, args: ['--thinking', 'HIGH'] },
     { model: ANSWER_MODELS[1], tag: 'high', captured: false, args: ['--thinking', 'HIGH'] },
 ];

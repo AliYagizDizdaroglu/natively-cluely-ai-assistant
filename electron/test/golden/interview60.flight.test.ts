@@ -77,6 +77,17 @@ describe('PAIRED_ARMS', () => {
         expect(byTag('captured-low')).toMatchObject({ model: ANSWER_MODELS[0], captured: true, args: ['--thinking', 'LOW'] });
     });
 
+    it('runs the offline twin three times, identical but for the tag, so the hour has its own noise floor', () => {
+        // s50i measured in-app 28/39 against this arm's 33/39 on identical bytes, same model, same
+        // level — but at one sample per side, against a ±4 bench floor. Three reps give the twin's
+        // own rep-to-rep spread, which is the band the single live hour has to fall outside before
+        // the pipeline gap counts as real rather than sampling.
+        const twins = PAIRED_ARMS.filter((a) => a.tag.startsWith('captured-low'));
+        expect(twins).toHaveLength(3);
+        expect(new Set(twins.map((a) => a.tag)).size).toBe(3);
+        for (const t of twins) expect(t).toMatchObject({ model: ANSWER_MODELS[0], captured: true, args: ['--thinking', 'LOW'] });
+    });
+
     it('covers gemini-3.5-flash-lite at HIGH on both byte shapes, in the same window as the 3.1 arms', () => {
         // The 2026-09-18 bench tied 3.5 HIGH with 3.1 LOW on quality but could not compare latency:
         // the 3.1 arms ran at 10:05 and the 3.5 arms at 03:00. These two arms run minutes after the
