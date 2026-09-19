@@ -10,6 +10,7 @@
 
 import { EventEmitter } from 'events';
 import { RECOGNITION_LANGUAGES } from '../config/languages';
+import { keytermsFor } from './deepgramKeyterms';
 
 const RECONNECT_BASE_DELAY_MS = 1000;
 const RECONNECT_MAX_DELAY_MS = 30000;
@@ -167,6 +168,10 @@ export class DeepgramStreamingSTT extends EventEmitter {
 
             const deepgram = createClient(this.apiKey);
 
+            // Roster terms Deepgram measurably loses — "the tie rule" became "the Thai rule"
+            // and produced the only wrong answer of flight s50j. English-only; see
+            // deepgramKeyterms.ts for each term's provenance.
+            const keyterm = keytermsFor(this.languageCode);
             const live = deepgram.listen.live({
                 model: 'nova-3',
                 language: this.languageCode,
@@ -178,7 +183,9 @@ export class DeepgramStreamingSTT extends EventEmitter {
                 endpointing: 300,
                 utterance_end_ms: 1000,
                 vad_events: true,
+                ...(keyterm ? { keyterm: [...keyterm] } : {}),
             });
+            if (keyterm) console.log(`[DeepgramStreaming] keyterm prompting: ${keyterm.length} terms`);
             this.live = live;
             // Every handler below belongs to THIS socket. stop() and restartStream()
             // replace `this.live` but cannot detach handlers already attached, so a
