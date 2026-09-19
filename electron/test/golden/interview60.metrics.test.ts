@@ -589,14 +589,17 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // sorted words [67, 90, 140]: n 3, cut 1, p50 = pct(a,.5) = a[floor(3*.5)]
         // = a[1] = 90, max 140.
         expect(m.budget).toEqual({ n: 3, cut: 1, p50: 90, max: 140 });
+        // Same three lines read for length: p90 = a[floor(3*.9)] = a[2] = 140; over 85 are
+        // 90 and 140; nothing over 150.
+        expect(m.length).toEqual({ n: 3, p90: 140, over85: 2, over150: 0 });
         const row = evaluateGate(m).rows.find((r) => r.label === 'Spoken answers: streamed whole under the 200-word guard');
         // n 3 >= floor(delivered 2 * 0.9) = 1, and max 140 <= 200 — but one answer was
         // cut, and since flight s50c (2026-09-12) any cut is a runaway the row must surface.
         expect(row.pass).toBe(false);
         expect(row.value).toBe('3 answers, 1 cut by the guard, words p50 90 max 140');
     });
-    it('the two new rows are the last two, so index-based rendering stays aligned', () => {
-        expect(GATE.slice(-2).map((g) => g.key)).toEqual(['pinned', 'budget']);
+    it('the three newest rows are the last three, so index-based rendering stays aligned', () => {
+        expect(GATE.slice(-3).map((g) => g.key)).toEqual(['pinned', 'budget', 'length']);
     });
 
     it('budget gate row pass rule: no cut at all, max under the 200-word guard, median unbounded (flight s50c, 2026-09-12)', () => {
@@ -610,6 +613,24 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(row.pass({ ...base, budget: { ...base.budget, cut: 1 } })).toBe(false);
         // p50 170 — unbounded; the model's own stop governs length now.
         expect(row.pass({ ...base, budget: { ...base.budget, p50: 170, max: 190 } })).toBe(true);
+    });
+
+    it('length row: fails on any answer over the 150-word cliff, and shows the shares the grader cannot', () => {
+        // Sixteen independent graders on s50j named length as the dominant defect in every arm,
+        // and the frozen grader never demotes below delivery 1 for it — so the acceptable count
+        // is blind to the one lever with headroom. 150 is not a taste: s50e pinned the
+        // delivery-0 cliff at <=154 usable, >=158 dead, so any answer past 150 is one a
+        // candidate cannot say aloud. 85 is the rubric's spoken budget, shown for the trend.
+        const row = GATE.find((g) => g.key === 'length')!;
+        expect(row.label).toBe('Spoken answers under the 150-word cliff');
+        const base = { length: { n: 40, p90: 132, over85: 22, over150: 0 } } as any;
+        expect(row.pass(base)).toBe(true);
+        expect(row.show(base)).toBe('words p90 132, over 85: 22/40, over 150: 0/40');
+        // s50j as flown: five answers at or past 158 — the row must fail on exactly that.
+        expect(row.pass({ length: { n: 42, p90: 155, over85: 24, over150: 5 } })).toBe(false);
+        // nothing logged is not a pass
+        expect(row.pass({ length: { n: 0, p90: null, over85: 0, over150: 0 } })).toBe(false);
+        expect(row.show({ length: { n: 0, p90: null, over85: 0, over150: 0 } })).toBe('not logged');
     });
 
     it('latency row: TTFT p90 bar is the 10 s stall budget under the shipped LOW level, detect p50 stays 5 s', () => {
@@ -782,6 +803,8 @@ describe('GATE', () => {
             // Spec 2026-09-04 §2/§4 (answer-what-was-asked) — appended last.
             'Answer prompt pinned to the dispatched question',
             'Spoken answers: streamed whole under the 200-word guard',
+            // s50k (2026-09-20): the length lever the grader cannot see — appended last.
+            'Spoken answers under the 150-word cliff',
         ]);
     });
 });
@@ -807,6 +830,8 @@ describe('gate thresholds scale with the roster', () => {
         longs: 0, longWhole: 0, ttftP90: 3000, detectP50: 4000,
         pinned: { answers: items, legacy: 0, missing: 0, mismatched: 0 },
         budget: { n: items, cut: 0, p50: 90, max: 120 },
+        // consistent with p50 90 / max 120 above: about half run past 85, none past 150
+        length: { n: items, p90: 120, over85: Math.ceil(items / 2), over150: 0 },
     }) as any;
 
     it('passes a flawless hour whatever the roster size', () => {

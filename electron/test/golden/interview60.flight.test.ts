@@ -96,6 +96,17 @@ describe('PAIRED_ARMS', () => {
         expect(byTag('high')).toMatchObject({ model: ANSWER_MODELS[1], captured: false, args: ['--thinking', 'HIGH'] });
     });
 
+    it('runs the 3.5 HIGH twin three times too, so the model comparison is band against band', () => {
+        // s50j: the single captured-high arm scored 35 of 39 against the 3.1-LOW twin band of
+        // 29-33. Read against the worst rep that is +6 and clears the ship rule; read against
+        // the band it is +2 over the top. One arm against a band overstates by up to 4, so the
+        // model decision needs 3.5 HIGH's own band, same bytes, same window.
+        const twins = PAIRED_ARMS.filter((a) => a.tag.startsWith('captured-high'));
+        expect(twins).toHaveLength(3);
+        expect(new Set(twins.map((a) => a.tag)).size).toBe(3);
+        for (const t of twins) expect(t).toMatchObject({ model: ANSWER_MODELS[1], captured: true, args: ['--thinking', 'HIGH'] });
+    });
+
     it('never sets LOW on gemini-3.5-flash-lite, which does not honour it', () => {
         // Probes 2026-09-17 (n=2 per cell): 3.5-lite reported no thought tokens at LOW on 3 of 4
         // calls and honoured MEDIUM and HIGH every time. An arm at LOW would silently measure the

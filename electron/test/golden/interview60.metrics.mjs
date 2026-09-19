@@ -119,6 +119,17 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         p50: pct(budgetWords, .5),
         max: budgetWords.length ? budgetWords[budgetWords.length - 1] : null,
     };
+    // length: the same lines, read for what the grader cannot see. Sixteen independent graders
+    // on s50j named length the dominant defect in every arm, and the frozen rubric never demotes
+    // below delivery 1 for it — so the acceptable count is blind to the one lever with headroom.
+    // 150 is s50e's measured delivery-0 cliff (<=154 usable, >=158 dead); 85 is the rubric's
+    // spoken budget, carried for the trend.
+    const length = {
+        n: budgetLines.length,
+        p90: pct(budgetWords, .9),
+        over85: budgetLines.filter((b) => b.words > 85).length,
+        over150: budgetLines.filter((b) => b.words > 150).length,
+    };
 
     // — the STT socket (Deepgram): closed by the server every ~12 s, all hour —
     const sttClosedAt = [...dbg.matchAll(/^(\S+) \[LOG\] \[DeepgramStreaming\] Closed \(code=1011/gm)].map((m) => ts(m[1]));
@@ -378,7 +389,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, screenCaptures, heuristicChips, raceLosses,
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, resolvedEmptyFinals: stt.resolvedEmptyFinals, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
-        detectP50, ttftP90, ttftSource, judge, pinned, budget,
+        detectP50, ttftP90, ttftSource, judge, pinned, budget, length,
         // extra — feed the report's findings prose and tables; not part of the gate.
         // `dispatches` is the raw parsed dispatch list (narrowest export needed to make a
         // per-dispatch parse — e.g. a held detection's `question` — independently testable;
@@ -460,6 +471,10 @@ export const GATE = [
     // no budget line, hence 0.9). p50 is unbounded: the model's own stop
     // governs length now.
     { key: 'budget', label: 'Spoken answers: streamed whole under the 200-word guard', before: '13 of 42 cut by the question-scaled budget (s50c)', pass: (m) => m.budget.n > 0 && m.budget.n >= Math.floor(m.delivered * 0.9) && m.budget.cut === 0 && m.budget.max <= 200, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.cut} cut by the guard, words p50 ${m.budget.p50} max ${m.budget.max}` },
+    // Fails on any answer past the 150-word cliff — a candidate cannot say one aloud — and
+    // shows the over-85 share the grader cannot. Expected to FAIL on the current build (s50j:
+    // five answers at or past 158); the row exists so the length lever has a number.
+    { key: 'length', label: 'Spoken answers under the 150-word cliff', before: 'not measured (s50e: every in-app miss was length alone)', pass: (m) => m.length.n > 0 && m.length.over150 === 0, show: (m) => m.length.n === 0 ? 'not logged' : `words p90 ${m.length.p90}, over 85: ${m.length.over85}/${m.length.n}, over 150: ${m.length.over150}/${m.length.n}` },
 ];
 
 /** Counts over spoken items only — mirrors summarizeVerdicts in interview60.judge.mjs (kept dependency-free here). */

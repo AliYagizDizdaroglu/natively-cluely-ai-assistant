@@ -116,6 +116,11 @@ export const PAIRED_ARMS = [
     { model: ANSWER_MODELS[0], tag: 'captured-low-r2', captured: true, args: ['--thinking', 'LOW'] },
     { model: ANSWER_MODELS[0], tag: 'captured-low-r3', captured: true, args: ['--thinking', 'LOW'] },
     { model: ANSWER_MODELS[1], tag: 'captured-high', captured: true, args: ['--thinking', 'HIGH'] },
+    // Three reps of the 3.5 HIGH twin as well (s50k): s50j's single captured-high scored 35 of 39
+    // against the 3.1-LOW band of 29-33, which is +6 against the worst rep and +2 against the band
+    // — a model decision needs its own band on the same bytes, same window, not one arm.
+    { model: ANSWER_MODELS[1], tag: 'captured-high-r2', captured: true, args: ['--thinking', 'HIGH'] },
+    { model: ANSWER_MODELS[1], tag: 'captured-high-r3', captured: true, args: ['--thinking', 'HIGH'] },
     { model: ANSWER_MODELS[1], tag: 'high', captured: false, args: ['--thinking', 'HIGH'] },
 ];
 
