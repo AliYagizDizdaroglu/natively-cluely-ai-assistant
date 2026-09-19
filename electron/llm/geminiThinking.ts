@@ -53,3 +53,39 @@ export function firstTokenTimeoutMs(env: NodeJS.ProcessEnv = process.env): numbe
     }
     return geminiThinkingLevelFromEnv(env) === 'MINIMAL' ? 4000 : 10000;
 }
+
+/**
+ * The level a given model will actually honour, because a level it ignores is worse than no
+ * level: it reads as "thinking on" in the log and costs nothing but the request.
+ *
+ * gemini-3.5-flash-lite — the stall fallback — does not reliably honour LOW. Flight s50j
+ * caught it live: the hour's one stall (07:50) handed the answer to 3.5-lite carrying the
+ * shipped LOW and the request logged `thinking=LOW thoughts=0`, so every stall since LOW
+ * shipped was answered with no thinking at all. Two reps per level on the same prompt
+ * (2026-09-20) size it:
+ *
+ *      LOW      thoughts 0, 146        <- erratic and near-zero even when it fires
+ *      MEDIUM   thoughts 823, 760
+ *      HIGH     thoughts 1142, 1430
+ *      MINIMAL  thoughts 0, 0
+ *
+ * matching the 2026-09-17 probes (no thought tokens on 3 of 4 calls at LOW).
+ *
+ * LOW maps to HIGH rather than MEDIUM on the evidence we have: on s50j's own captured bytes
+ * 3.5-lite at HIGH scored 35 of 39 against the 3.1-LOW twin band of 29-33, with a shorter
+ * first-token tail than the primary (p90 4.6 s against 7.1 s), so the substitution costs no
+ * latency on a path that has already spent its budget stalling. MEDIUM is honoured too but has
+ * never been graded, and picking it would trade a measured level for an unmeasured one.
+ *
+ * MINIMAL is left alone everywhere: it is the explicit opt-out a flight sets to reproduce the
+ * pre-bench behaviour on every leg, and 3.5-lite at no config already reports zero thoughts, so
+ * the request and the intent already agree. Models we have not probed pass through untouched
+ * rather than inheriting a guess.
+ */
+const LEVELS_NOT_HONOURED: Readonly<Record<string, Readonly<Partial<Record<GeminiThinkingLevel, GeminiThinkingLevel>>>>> = {
+    'gemini-3.5-flash-lite': { LOW: 'HIGH' },
+};
+
+export function thinkingLevelForModel(model: string, level: GeminiThinkingLevel): GeminiThinkingLevel {
+    return LEVELS_NOT_HONOURED[model]?.[level] ?? level;
+}

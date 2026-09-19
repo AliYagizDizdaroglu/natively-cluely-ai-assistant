@@ -17,7 +17,7 @@ import {
 import { userContextBlock } from "./llm/userContext"
 import { keepVerbalPrompt, carriesSpokenBudget, withActiveModePrompt } from "./llm/knowledgePromptBudget"
 import { capturePrompt } from "./llm/promptCapture"
-import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs } from "./llm/geminiThinking"
+import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs, thinkingLevelForModel } from "./llm/geminiThinking"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
 import curl2Json from "@bany/curl-to-json";
 import { CustomProvider, CurlProvider } from './services/CredentialsManager';
@@ -3229,8 +3229,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     const isGemma = model.startsWith("gemma-");
     // Gemini models: thinkingLevel LOW unless the environment names another level (bench
     // 2026-09-17: LOW +21 acceptable on 117 pairs; MINIMAL is what flights through s50f sent).
-    // Gemma keeps its own pinned config below. See geminiThinking.ts.
-    const thinkingLevel = isGemma ? undefined : geminiThinkingLevelFromEnv();
+    // Resolved per MODEL, because the fallback ignores LOW and would otherwise log a level it
+    // never spent — s50j's one stall answered at thoughts=0. Gemma keeps its own pinned config
+    // below. See geminiThinking.ts.
+    const thinkingLevel = isGemma ? undefined : thinkingLevelForModel(model, geminiThinkingLevelFromEnv());
     const gemmaConfig: Record<string, unknown> = isGemma ? {
       maxOutputTokens: 4096,
       temperature: 0.3,

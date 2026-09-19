@@ -90,6 +90,37 @@ describe('a stalled primary on the technical verbal route falls back to the othe
         expect(text).toContain('I would key every message by document id.');
     });
 
+    it('with LOW shipped, the fallback leg is sent HIGH — the level 3.5-flash-lite actually spends', async () => {
+        // Flight s50j's one stall (2026-09-19 07:50) handed the answer to 3.5-flash-lite
+        // carrying the shipped LOW, and the request logged `thinking=LOW thoughts=0`: that
+        // model does not reliably honour LOW (two reps 2026-09-20: 0 and 146 thoughts, against
+        // 1142/1430 at HIGH). So every stall was answered with no thinking at all — the primary
+        // must keep LOW and the fallback must be raised, in the same request pair.
+        plan.push('silent', ['fallback answer']);
+        const helper = new LLMHelper('fake-gemini-key');
+        const out = drain(technical(helper));
+        await vi.advanceTimersByTimeAsync(10_000);
+        await out;
+        expect(generateContentStream).toHaveBeenCalledTimes(2);
+        const [primary, fallback] = generateContentStream.mock.calls.map((c) => c[0]);
+        expect(primary.model).toBe('gemini-3.1-flash-lite');
+        expect((primary.config as any)?.thinkingConfig).toEqual({ thinkingLevel: 'LOW' });
+        expect(fallback.model).toBe('gemini-3.5-flash-lite');
+        expect((fallback.config as any)?.thinkingConfig).toEqual({ thinkingLevel: 'HIGH' });
+    });
+
+    it('an explicit MINIMAL stays MINIMAL on both legs — it is the opt-out, not a level to raise', async () => {
+        process.env.NATIVELY_GEMINI_THINKING_LEVEL = 'MINIMAL';
+        plan.push('silent', ['fallback answer']);
+        const helper = new LLMHelper('fake-gemini-key');
+        const out = drain(technical(helper));
+        await vi.advanceTimersByTimeAsync(4000);
+        await out;
+        const [primary, fallback] = generateContentStream.mock.calls.map((c) => c[0]);
+        expect((primary.config as any)?.thinkingConfig).toEqual({ thinkingLevel: 'MINIMAL' });
+        expect((fallback.config as any)?.thinkingConfig).toEqual({ thinkingLevel: 'MINIMAL' });
+    });
+
     it('primary answers in time → one call, no fallback', async () => {
         plan.push(['I would key every message by document id.']);
         const helper = new LLMHelper('fake-gemini-key');
