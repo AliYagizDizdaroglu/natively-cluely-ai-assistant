@@ -45,6 +45,22 @@
  * support, break). Keyterm prompting biases the decoder toward what it is given, so padding
  * this list with ordinary English would cost accuracy elsewhere for nothing.
  *
+ * NO REGRESSION. Keyterm prompting biases the decoder toward what it is given, so all 40 s50j
+ * clips were replayed off and on and scored by word error rate against the scripted text:
+ * mean WER 22.35% off, 22.43% on, with 35 of 40 clips identical. The sweep flagged 2 clips
+ * "worse" and 3 "better" — but at ONE run per config, which is the same single-sample trap the
+ * s50j twin reps exist to catch. Re-running the five at 3 reps per config settles it:
+ *
+ *   S1Q08  within-OFF spread 17.1 pts, ON minus OFF 0.0  <- its "regression" reproduces with
+ *                                                           the list OFF; it is this harness's
+ *                                                           fixed 6 s tail truncating the clip
+ *   S1Q06  0.0 spread, ON minus OFF 0.0                  <- "regression" does not reproduce
+ *   S1Q07  0.0 spread, ON minus OFF 0.0                  <- "improvement" does not reproduce
+ *   S2Q01  0.0 spread, ON minus OFF -7.7 pts, 3/3 reps   <- the reranking fix, perfectly stable
+ *
+ * So the list costs nothing and the gains it does make are reproducible. Measure the within-
+ * config spread before believing any between-config difference here.
+ *
  * To extend it: re-run the scripted-vs-heard diff after a flight and add what the hour lost
  * twice. Do not add a term because it looks hard to hear — and confirm it against the audio
  * before calling it fixed, because two of the seven here do not respond at all.
