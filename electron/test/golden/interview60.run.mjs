@@ -228,9 +228,14 @@ async function appStart() {
     // byte offset captured against the OLD file is stale the instant the new
     // process reaches that point — the file's size drops well below it and
     // never catches back up. Wait for that reset (size drops below its
-    // pre-spawn value) before reading from 0, sharing the 90s budget with it.
+    // pre-spawn value) before reading from 0, sharing the start budget with it.
     const preSize = logSize(DEBUG_LOG);
-    const deadline = Date.now() + 90_000;
+    // 180s, not 90s: the s50k start needed 55s of the old budget and the 2026-09-20
+    // 19:50 smoke still had not reached whenReady at 90s. Three times the known-good
+    // time turns a slow start into a pass and leaves a genuine hang plainly over budget.
+    const deadline = Date.now() + 180_000;
+    const startLog = path.join(RUNS_DIR, 'app-start.log');
+    const startFd = fs.openSync(startLog, 'w');
     const child = spawn('cmd.exe', ['/c', 'npm', 'start'], {
         cwd: PROJ,
         // NATIVELY_CAPTURE_PROMPTS: record the exact system + user turn per answer, so the
@@ -238,15 +243,21 @@ async function appStart() {
         // has no reason to write the résumé context and the transcript to disk.
         env: { ...process.env, NATIVELY_AUTOSTART_MEETING: '1', NATIVELY_LIVE_MODE: 'auto', NATIVELY_CAPTURE_PROMPTS: '1' },
         detached: true,
-        stdio: 'ignore',
+        // The app's own stdout is the ONLY place a pre-whenReady exit explains itself:
+        // the single-instance-lock line at main.ts:3391, a native-module load failure, a
+        // modal dialog. 'ignore' threw that away and left the 2026-09-20 19:50 smoke
+        // failure undiagnosable — an exit code and two absent logs, nothing else.
+        stdio: ['ignore', startFd, startFd],
         windowsHide: false,
     });
     child.unref();
+    fs.closeSync(startFd);
     fs.writeFileSync(PID_FILE, String(child.pid));
     console.log(`APP START  pid=${child.pid}  waiting for the app to come up listening in Auto…`);
     while (preSize > 0 && logSize(DEBUG_LOG) >= preSize) {
         if (Date.now() >= deadline) {
             console.log('APP START  FAILED — natively_debug.log was never reset for this session (app never reached whenReady?)');
+            console.log(`  what the app printed is in ${startLog}`);
             process.exit(1);
         }
         await sleep(1000);
@@ -255,6 +266,7 @@ async function appStart() {
     if (!r.ok) {
         console.log(`APP START  FAILED — never saw: ${r.missing.map(String).join(', ')}`);
         console.log('  if the mode line is missing, the app never reached setLiveMode/startMeeting — check the log');
+        console.log(`  what the app printed is in ${startLog}`);
         process.exit(1);
     }
     console.log('APP START  listening in Auto');
