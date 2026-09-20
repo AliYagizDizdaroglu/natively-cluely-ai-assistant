@@ -158,7 +158,11 @@ describe.skipIf(!fs.existsSync(path.join(S50A, 'interview60.judge.json')))('coll
         expect(q.inApp[0].grade.verdict).toBe('wrong');
         expect(q.inApp[0].grade.reason).toMatch(/document-extraction/);
         expect(q.inApp[0].offsetS).toBeLessThan(-20);
-        expect(q.arms.map((a: any) => a.model).sort()).toEqual(['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'openai/gpt-oss-120b', 'qwen/qwen3.8-27b']);
+        // collectPass takes the arms from whatever answer files the run folder holds, and an
+        // experiment can add one (the 2026-09-09 *_structured prompt arms), so the canonical
+        // four must be present, not be the whole set.
+        const models = q.arms.map((a: any) => a.model).sort();
+        for (const m of ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'openai/gpt-oss-120b', 'qwen/qwen3.8-27b']) expect(models, m).toContain(m);
         expect(q.arms.every((a: any) => a.grade && a.answer)).toBe(true);
         const f = p.questions.find((x: any) => x.id === 'S1Q02F');
         expect(f.arms).toHaveLength(0);
