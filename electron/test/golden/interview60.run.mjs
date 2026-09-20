@@ -26,6 +26,7 @@ import path from 'path';
 import { execFileSync } from 'child_process';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
+import net from 'net';
 import { INTERVIEW, TTS_LOCAL_DIR, WAV_NAME, rosterLabel } from './roster.mjs';
 import { logSize as libLogSize, logSince as libLogSince, waitForLogLines, snapshotRun, sleep as libSleep, playStartFromStdout, playEndFromStdout } from './interview60.lib.mjs';
 import { computeRun, computeRunFromFiles, evaluateGate } from './interview60.metrics.mjs';
@@ -181,9 +182,9 @@ function appStop() {
         const pid = Number(fs.readFileSync(PID_FILE, 'utf8').trim());
         // Windows recycles pids — the tracked pid can belong to an unrelated
         // process by the time we get here (R35). Only tree-kill it if its
-        // command line still looks like the electron/npm start we spawned.
+        // command line still looks like the keeper we spawned (or an electron/npm start).
         const cmdLine = commandLineOf(pid);
-        const looksLikeOurs = /electron(\.exe)?/i.test(cmdLine) || /npm(\.cmd)?["']?\s+start/i.test(cmdLine);
+        const looksLikeOurs = /interview60\.run\.mjs["']?\s+app:keep/i.test(cmdLine) || /electron(\.exe)?/i.test(cmdLine) || /npm(\.cmd)?["']?\s+start/i.test(cmdLine);
         if (looksLikeOurs) {
             console.log(`APP STOP  taskkill tree pid=${pid}`);
             try { execFileSync('taskkill', ['/PID', String(pid), '/T', '/F'], { stdio: 'pipe' }); } catch { /* already gone */ }
@@ -220,9 +221,38 @@ function appStop() {
     }
 }
 
-/** Spawn `npm start` with the autostart flag; wait for the two log lines that prove it is listening in Auto. */
+/**
+ * Start the app and wait for the two log lines that prove it is listening in Auto.
+ *
+ * Two levels, because the one-level shape cannot be diagnosed (measured 2026-09-20): a
+ * cmd.exe spawned DETACHED from here — needed so app:start can return and the app outlives
+ * it — has no console, and every node child of a console-less cmd loses the handles it was
+ * given: cmd's own echo arrives, npm's output does not, cmd's own redirection does not help.
+ * A NON-detached child dies with this process instead (libuv's kill-on-close job). So this
+ * spawns a detached node KEEPER, which keeps its handles, and the keeper spawns npm start
+ * non-detached with both streams into app-start.log — that shape captured npm's stdout and
+ * a node child's stderr, and the keeper outlived its parent.
+ *
+ * Two attempts. The 19:50 smoke that day lost only a smoke to a start that never reached
+ * whenReady; the same failure at 10:10 costs the flight day, and auto() runs this function.
+ */
 async function appStart() {
     fs.mkdirSync(RUNS_DIR, { recursive: true });
+    const startLog = path.join(RUNS_DIR, 'app-start.log');
+    fs.writeFileSync(startLog, '');
+    for (let attempt = 1; attempt <= 2; attempt++) {
+        const keeperPid = await appStartOnce(startLog);
+        if (keeperPid === null) return;
+        console.log(`APP START  attempt ${attempt} of 2 failed — what the app printed is in ${startLog}`);
+        try { execFileSync('taskkill', ['/PID', String(keeperPid), '/T', '/F'], { stdio: 'pipe' }); } catch { /* already gone */ }
+        if (attempt === 2) process.exit(1);
+        // Vite runs --strictPort: a retry while the dead attempt's listener lingers exits at once.
+        if (!(await waitForPortFree(5180, 30_000))) { console.log('APP START  port 5180 still held 30s after the kill — not retrying into it'); process.exit(1); }
+    }
+}
+
+/** One attempt. Returns null once the app is listening in Auto, else the keeper pid to tree-kill. */
+async function appStartOnce(startLog) {
     // main.ts unconditionally resets natively_debug.log to a fresh, near-empty
     // file at app.whenReady() (rotating whatever was there into .log.1), so a
     // byte offset captured against the OLD file is stale the instant the new
@@ -234,31 +264,27 @@ async function appStart() {
     // 19:50 smoke still had not reached whenReady at 90s. Three times the known-good
     // time turns a slow start into a pass and leaves a genuine hang plainly over budget.
     const deadline = Date.now() + 180_000;
-    const startLog = path.join(RUNS_DIR, 'app-start.log');
-    const startFd = fs.openSync(startLog, 'w');
-    const child = spawn('cmd.exe', ['/c', 'npm', 'start'], {
+    // Append, never truncate: a second attempt must not erase what the first one printed.
+    fs.appendFileSync(startLog, `=== app:start attempt ${new Date().toISOString()} ===\n`);
+    const startFd = fs.openSync(startLog, 'a');
+    const keeper = spawn(process.execPath, [fileURLToPath(import.meta.url), 'app:keep', startLog], {
         cwd: PROJ,
         // NATIVELY_CAPTURE_PROMPTS: record the exact system + user turn per answer, so the
         // focused arms can replay the app's own call. Measured hours only — a normal session
         // has no reason to write the résumé context and the transcript to disk.
         env: { ...process.env, NATIVELY_AUTOSTART_MEETING: '1', NATIVELY_LIVE_MODE: 'auto', NATIVELY_CAPTURE_PROMPTS: '1' },
         detached: true,
-        // The app's own stdout is the ONLY place a pre-whenReady exit explains itself:
-        // the single-instance-lock line at main.ts:3391, a native-module load failure, a
-        // modal dialog. 'ignore' threw that away and left the 2026-09-20 19:50 smoke
-        // failure undiagnosable — an exit code and two absent logs, nothing else.
         stdio: ['ignore', startFd, startFd],
         windowsHide: false,
     });
-    child.unref();
+    keeper.unref();
     fs.closeSync(startFd);
-    fs.writeFileSync(PID_FILE, String(child.pid));
-    console.log(`APP START  pid=${child.pid}  waiting for the app to come up listening in Auto…`);
+    fs.writeFileSync(PID_FILE, String(keeper.pid));
+    console.log(`APP START  keeper pid=${keeper.pid}  waiting for the app to come up listening in Auto…`);
     while (preSize > 0 && logSize(DEBUG_LOG) >= preSize) {
         if (Date.now() >= deadline) {
             console.log('APP START  FAILED — natively_debug.log was never reset for this session (app never reached whenReady?)');
-            console.log(`  what the app printed is in ${startLog}`);
-            process.exit(1);
+            return keeper.pid;
         }
         await sleep(1000);
     }
@@ -266,10 +292,43 @@ async function appStart() {
     if (!r.ok) {
         console.log(`APP START  FAILED — never saw: ${r.missing.map(String).join(', ')}`);
         console.log('  if the mode line is missing, the app never reached setLiveMode/startMeeting — check the log');
-        console.log(`  what the app printed is in ${startLog}`);
-        process.exit(1);
+        return keeper.pid;
     }
     console.log('APP START  listening in Auto');
+    return null;
+}
+
+/**
+ * The process that owns the app (app:keep). Detached from whoever ran app:start, it spawns
+ * npm start NON-detached with both streams into startLog and lives exactly as long as the
+ * app does; appStop tree-kills it to end the hour.
+ */
+async function appKeep(startLog) {
+    const fd = fs.openSync(startLog, 'a');
+    const child = spawn('cmd.exe', ['/c', 'npm', 'start'], {
+        cwd: PROJ,
+        env: process.env,
+        detached: false,
+        stdio: ['ignore', fd, fd],
+        windowsHide: false,
+    });
+    fs.closeSync(fd);
+    await new Promise((resolve) => child.on('exit', resolve));
+}
+
+/** True once nothing listens on 127.0.0.1:port, polling once a second to the deadline. */
+async function waitForPortFree(port, timeoutMs) {
+    const deadline = Date.now() + timeoutMs;
+    for (;;) {
+        const free = await new Promise((resolve) => {
+            const probe = net.createServer();
+            probe.once('error', () => resolve(false));
+            probe.listen({ port, host: '127.0.0.1' }, () => probe.close(() => resolve(true)));
+        });
+        if (free) return true;
+        if (Date.now() >= deadline) return false;
+        await sleep(1000);
+    }
 }
 
 /**
@@ -516,9 +575,10 @@ if (cmd === 'preflight') await preflight();
 else if (cmd === 'app') await appPass();
 else if (cmd === 'report') report();
 else if (cmd === 'app:start') await appStart();
+else if (cmd === 'app:keep') await appKeep(process.argv[3]);   // internal: spawned detached by appStart
 else if (cmd === 'app:stop') appStop();
 else if (cmd === 'probe') { const p = await probe(); console.log(p.ready ? 'PROBE READY' : `PROBE NOT READY — ${p.reason}`); process.exit(p.ready ? 0 : 1); }
 else if (cmd === 'gate') gate(path.resolve(process.argv[3]));
 else if (cmd === 'wav:check') { const p = wavMismatch(); console.log(p ?? `${WAV_NAME} matches ${rosterLabel()}`); process.exit(p ? 1 : 0); }
 else if (cmd === 'auto') await auto(process.argv[3]);   // label defaults to "after"
-else { console.log('usage: interview60.run.mjs preflight|app|report|app:start|app:stop|probe|gate <dir>|wav:check|auto [label]'); process.exit(2); }
+else { console.log('usage: interview60.run.mjs preflight|app|report|app:start|app:keep <log>|app:stop|probe|gate <dir>|wav:check|auto [label]'); process.exit(2); }
