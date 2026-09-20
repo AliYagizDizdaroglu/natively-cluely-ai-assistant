@@ -18,6 +18,7 @@ import { userContextBlock } from "./llm/userContext"
 import { keepVerbalPrompt, carriesSpokenBudget, withActiveModePrompt } from "./llm/knowledgePromptBudget"
 import { capturePrompt } from "./llm/promptCapture"
 import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs, thinkingLevelForModel } from "./llm/geminiThinking"
+import { verbalPrimaryModel } from "./llm/verbalPrimaryModel"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
 import curl2Json from "@bany/curl-to-json";
 import { CustomProvider, CurlProvider } from './services/CredentialsManager';
@@ -43,6 +44,10 @@ const GEMINI_PRO_MODEL = "gemini-3.1-pro-preview"
 // reached when things are already going wrong, so it is warmed at startup too;
 // without that it would be slowest exactly when it is needed.
 export const GEMINI_FLASH_FALLBACK_MODEL = "gemini-3.5-flash-lite"
+// The only models NATIVELY_VERBAL_PRIMARY_MODEL may name. Both are already warmed at
+// startup and both have a graded band behind them, so a flight can swap the verbal
+// primary between them without introducing an unmeasured model — see verbalPrimaryModel.ts.
+export const VERBAL_PRIMARY_MODELS: readonly string[] = [GEMINI_FLASH_MODEL, GEMINI_FLASH_FALLBACK_MODEL]
 // TTFT budget for the Gemma coding path: the total window in which Gemma may
 // produce a first token (across bounded retries) before we abandon it and fall
 // back to warm Gemini Flash. TEXT default 6s — with the keep-warm heartbeat a
@@ -2714,12 +2719,16 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         // form they were measured with.
         if (carriesSpokenBudget(callerSystemPromptOverride)) {
           const verbalSystem = `${finalSystemPrompt}${styleSuffix}`;
+          // A flight may point the VERBAL answer at the other Flash Lite without changing
+          // the shipped default. Resolved here, before the capture, so the recorded prompt
+          // names the model that actually answered — the offline twin replays these bytes.
+          const verbalModel = verbalPrimaryModel(activeModelId, VERBAL_PRIMARY_MODELS);
           // Off unless the flight harness asks for it — see promptCapture.
-          capturePrompt({ model: activeModelId, system: verbalSystem, user: userContent });
+          capturePrompt({ model: verbalModel, system: verbalSystem, user: userContent });
           // The technical verbal route: same stall race as the behavioral route, so a
           // Google-side first-token stall (s50h: 44 s and 60 s) is answered by the other
           // Flash Lite instead of waited out.
-          yield* this.streamGeminiWithStallFallback(userContent, activeModelId, imagePaths, verbalSystem);
+          yield* this.streamGeminiWithStallFallback(userContent, verbalModel, imagePaths, verbalSystem);
           return;
         }
         const geminiMsg = styleSuffix ? `${finalSystemPrompt}${styleSuffix}\n\n${userContent}` : fullMsg;
@@ -3323,7 +3332,14 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     const notesBlock = userContextBlock(this.customNotes);
     if (notesBlock) console.log(`[LLMHelper] <user_context> appended to the system prompt (${this.customNotes.trim().length} chars)`);
     const systemWithLanguage = this.injectLanguageInstruction(`${systemPrompt}${notesBlock}`);
-    yield* this.streamGeminiWithStallFallback(userMessage, primaryModel, imagePaths, systemWithLanguage);
+    // Same flight override as the technical route, so an hour cannot measure one model on
+    // the behavioral question and another on the other thirty-nine.
+    yield* this.streamGeminiWithStallFallback(
+      userMessage,
+      verbalPrimaryModel(primaryModel, VERBAL_PRIMARY_MODELS),
+      imagePaths,
+      systemWithLanguage,
+    );
   }
 
   /**

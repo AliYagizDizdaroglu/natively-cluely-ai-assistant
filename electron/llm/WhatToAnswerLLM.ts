@@ -2,7 +2,7 @@ import { LLMHelper, GEMINI_FLASH_FALLBACK_MODEL, GEMINI_FLASH_MODEL } from "../L
 import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
-import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, SPOKEN_WORD_GUARD, type Suggestion } from "./verbalStreamFilter";
+import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, SPOKEN_WORD_GUARD, type Suggestion } from "./verbalStreamFilter";
 import { lastInterviewerTurn } from "./lastInterviewerTurn";
 import { tapFirstToken } from "./streamTaps";
 import * as fs from "fs";
@@ -109,53 +109,8 @@ export class WhatToAnswerLLM {
         if (!stripped && buffer) yield buffer;
     }
 
-    private async *filterCodeFences(
-        source: AsyncGenerator<string>
-    ): AsyncGenerator<string> {
-        const CARRY_LEN = 3; // ``` is 3 chars — minimum fence marker
-        let carry = '';
-        let suppressing = false;
-
-        for await (const chunk of source) {
-            const combined = carry + chunk;
-            let output = '';
-            let i = 0;
-
-            while (i < combined.length - CARRY_LEN) {
-                if (!suppressing && combined.startsWith('```', i)) {
-                    suppressing = true;
-                    i += 3;
-                    // Skip optional language tag on the same line
-                    while (i < combined.length && combined[i] !== '\n') i++;
-                    continue;
-                }
-                if (suppressing && combined.startsWith('```', i)) {
-                    suppressing = false;
-                    i += 3;
-                    console.warn('[WhatToAnswerLLM] filterCodeFences: code fence suppressed on verbal path — check intent classifier');
-                    continue;
-                }
-                // Strip any stray backticks even when not suppressing — verbal answers
-                // never legitimately contain backticks, and the 3-char carry buffer
-                // can leak 1-2 backticks across chunk boundaries after a fence transition.
-                if (!suppressing && combined[i] !== '`') output += combined[i];
-                i++;
-            }
-
-            // A chunk shorter than the carry is carried whole. Slicing from a
-            // negative index dropped the first character of a two-character opening
-            // chunk — Gemini opens with "I’", "So", "To" routinely, so 14 of 57
-            // delivered after6 answers began "’d start by…" (spec 2026-09-05 §4).
-            carry = combined.slice(Math.max(0, combined.length - CARRY_LEN));
-            if (output) yield output;
-        }
-
-        // Flush carry buffer — strip any backticks (fence detection artifact)
-        if (carry && !suppressing) {
-            const cleaned = carry.replace(/`/g, '');
-            if (cleaned) yield cleaned;
-        }
-    }
+    // filterCodeFences moved to verbalStreamFilter.ts on 2026-09-20 so the offline flight
+    // arms run the same suppression the app does — see the note on the function there.
 
     // Deprecated non-streaming method (redirect to streaming or implement if needed)
     async generate(cleanedTranscript: string): Promise<string> {
@@ -345,7 +300,7 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 const filtered = (raw: AsyncGenerator<string>) =>
                     stripSpokenNotation(
                         stripSuggestionBlock(
-                            filterVerbalLines(this.filterCodeFences(this.stripModelSentinel(raw))),
+                            filterVerbalLines(filterCodeFences(this.stripModelSentinel(raw))),
                             onSuggestionsOnce,
                         ),
                     );

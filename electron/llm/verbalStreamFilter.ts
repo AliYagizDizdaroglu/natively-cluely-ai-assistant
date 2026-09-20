@@ -169,6 +169,63 @@ function decidePartialLine(buf: string): PartialDecision {
     return { t: 'wait' };
 }
 
+/**
+ * Suppress fenced code blocks on the spoken path, and any stray backtick with them.
+ *
+ * Lived as a private method on WhatToAnswerLLM until 2026-09-20. It moved here because the
+ * offline flight arms replay the shipped chain to score a model and could not reach it: in
+ * flight s50k the SQL answer scored delivery 0 as a "raw code block" on two 3.1 reps and the
+ * coding answer on two 3.5 reps, while the same questions answered in-app scored 2/2/1. The
+ * arms were measuring a filter the app has. One implementation now serves both.
+ */
+export async function* filterCodeFences(
+    source: AsyncIterable<string>
+): AsyncGenerator<string> {
+    const CARRY_LEN = 3; // ``` is 3 chars — minimum fence marker
+    let carry = '';
+    let suppressing = false;
+
+    for await (const chunk of source) {
+        const combined = carry + chunk;
+        let output = '';
+        let i = 0;
+
+        while (i < combined.length - CARRY_LEN) {
+            if (!suppressing && combined.startsWith('```', i)) {
+                suppressing = true;
+                i += 3;
+                // Skip optional language tag on the same line
+                while (i < combined.length && combined[i] !== '\n') i++;
+                continue;
+            }
+            if (suppressing && combined.startsWith('```', i)) {
+                suppressing = false;
+                i += 3;
+                console.warn('[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier');
+                continue;
+            }
+            // Strip any stray backticks even when not suppressing — verbal answers
+            // never legitimately contain backticks, and the 3-char carry buffer
+            // can leak 1-2 backticks across chunk boundaries after a fence transition.
+            if (!suppressing && combined[i] !== '`') output += combined[i];
+            i++;
+        }
+
+        // A chunk shorter than the carry is carried whole. Slicing from a
+        // negative index dropped the first character of a two-character opening
+        // chunk — Gemini opens with "I’", "So", "To" routinely, so 14 of 57
+        // delivered after6 answers began "’d start by…" (spec 2026-09-05 §4).
+        carry = combined.slice(Math.max(0, combined.length - CARRY_LEN));
+        if (output) yield output;
+    }
+
+    // Flush carry buffer — strip any backticks (fence detection artifact)
+    if (carry && !suppressing) {
+        const cleaned = carry.replace(/`/g, '');
+        if (cleaned) yield cleaned;
+    }
+}
+
 const SENTINEL = '__MORE__';
 
 /** One offered expansion: a short noun-phrase label the UI can render as a chip. */
@@ -349,6 +406,18 @@ function cleanNotation(s: string): string {
     return s
         // "\text{rank}" -> "rank": the wrapper is typography, the word inside is speech
         .replace(/\\(?:text|mathrm|mathit|operatorname)\{([^}]*)\}/g, '$1')
+        // A MATCHED pair of dollars around a bare number or a backslash command is LaTeX,
+        // not money: "$100,000$" -> "100,000". Lookahead alone cannot tell the opening
+        // delimiter from currency, because "$100,000" is exactly how money is written —
+        // the closing delimiter is the signal, and money never has one. Flight s50k,
+        // 2026-09-20: 3.5-flash-lite typeset every number this way and two of three reps
+        // spoke "dollar one hundred thousand". The content must be a number or a command
+        // with no spaces, so two currency amounts in one sentence ("$5 and $10 million")
+        // cannot match and keep both their signs.
+        .replace(/\$(\d[\d,]*(?:\.\d+)?|\\[A-Za-z]+(?:\{[^{}]*\})*)\$/g, '$1')
+        // A fraction is read aloud, so say it: leaving "frac{3,000}{9,500}" behind only
+        // trades a stray dollar sign for a nonsense word.
+        .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '$1 over $2')
         // backticks: never spoken, never meaningful aloud
         .replace(/`+/g, '')
         // markdown emphasis markers
@@ -410,7 +479,17 @@ export async function* stripSpokenNotation(
         // hold the rest of the answer), so "\text{rank}" is judged whole. The hold
         // must accept at least what cleanNotation's rule can match, or the same text
         // splits differently across chunk sizes.
-        const held = s.match(/(\*\*|[*\\]|\$\d*(?:\.\d*)?\s*[/^\\]?\s*|\\[a-z]*(?:\{[^}]{0,40})?)$/);
+        // The "$" branches carry an optional CLOSING "$" so a typeset pair is judged in one
+        // span: without it the hold released "$100,000" and kept the closing delimiter for
+        // the next span, and the pair rule in cleanNotation never saw a pair (flight s50k).
+        // Commas are inside the number for the same reason. The "$\command" branch exists
+        // because "$\frac{…}" otherwise released a lone "$" the moment the backslash-command
+        // branch claimed the tail.
+        // A comma may only appear INSIDE the number ("$100,000"), never lead it: allowing
+        // "$," let a closing delimiter pair with the comma that follows it, so the hold
+        // released "$\frac{3,000}{9,500}" and kept "$," — splitting the very pair the
+        // cleanNotation rule needs to see whole.
+        const held = s.match(/(\*\*|[*\\]|\$\\[A-Za-z]*(?:\{[^{}]{0,40}\}?)*\$?|\$(?:\d[\d,]*)?(?:\.\d*)?\$?\s*[/^\\]?\s*|\\[a-z]*(?:\{[^}]{0,40})?)$/);
         if (held) {
             carry = held[0];
             s = s.slice(0, -carry.length);

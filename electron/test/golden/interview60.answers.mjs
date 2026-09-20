@@ -30,7 +30,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
 const require = createRequire(path.join(PROJ, 'package.json'));
 const P = require(path.join(PROJ, 'dist-electron/electron/llm/prompts.js'));
-const { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation } =
+const { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, filterCodeFences } =
     require(path.join(PROJ, 'dist-electron/electron/llm/verbalStreamFilter.js'));
 
 const KEY = fs.readFileSync(path.join(PROJ, '.env'), 'utf8').match(/^GEMINI_API_KEY=(.+)$/m)[1].trim();
@@ -159,9 +159,12 @@ async function answerStreamedGemini(question, captured) {
 
     // The shipped filter chain, fed character-by-character (the adversarial
     // chunking the app can see), exactly as WhatToAnswerLLM composes it.
+    // filterCodeFences joined on 2026-09-20: without it an arm scored a correct SQL or
+    // Python answer as an unspeakable code block while the app, which suppresses the
+    // fence, scored the same answer acceptable — s50k lost four arm marks that way.
     async function* gen() { for (const ch of raw) yield ch; }
     let spoken = '', offers = null;
-    for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(gen()), (o) => { offers = o; }))) spoken += p;
+    for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(filterCodeFences(gen())), (o) => { offers = o; }))) spoken += p;
     spoken = spoken.trim();
     // raw: what the model wrote before the filter chain — the only way to see what the
     // filter removed (lists, notation) when an arm is diagnosing the prompt, not the filter.
@@ -230,9 +233,10 @@ async function answerStreamedGroq(question) {
         }
     }
     const total = Date.now() - t0;
+    // Same chain as the streamed path above, filterCodeFences included.
     async function* gen() { for (const ch of raw) yield ch; }
     let spoken = '', offers = null;
-    for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(gen()), (o) => { offers = o; }))) spoken += p;
+    for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(filterCodeFences(gen())), (o) => { offers = o; }))) spoken += p;
     spoken = spoken.trim();
     // raw: what the model wrote before the filter chain — the only way to see what the
     // filter removed (lists, notation) when an arm is diagnosing the prompt, not the filter.

@@ -71,3 +71,61 @@ describe('stripSpokenNotation', () => {
         expect(await strip('__MORE__')).toBe('__MORE__');
     });
 });
+
+/**
+ * MEASURED DEFECT, flight s50k (2026-09-20): gemini-3.5-flash-lite at HIGH typeset every
+ * number in the arithmetic answer as LaTeX, and two of three reps reached the spoken text
+ * still carrying dollar signs:
+ *
+ *   model wrote   "a population of $100,000$ and a $9.5\%$ churn rate"
+ *   filter gave   "a population of $100,000 and a 9.5% churn rate"
+ *   spoken as     "a population of DOLLAR one hundred thousand"
+ *
+ * Root cause: the opening "$" of a wrapped number is indistinguishable from money by
+ * lookahead alone ("$100,000" is exactly how money looks), so the rule kept it while
+ * "(?<=\S)\$" removed the closing one. The pair is the signal money never has: real
+ * money carries no closing delimiter. The hold must therefore span the whole number —
+ * commas included — so both delimiters are judged in one span.
+ *
+ * 3.1-lite leaked nothing in 117 answers; this is the hazard that comes with the model,
+ * which is why it is fixed before 3.5 answers a flight as primary.
+ */
+describe('stripSpokenNotation — LaTeX-typeset numbers (flight s50k)', () => {
+    it('strips BOTH delimiters from a wrapped number', async () => {
+        expect(await strip('a population of $100,000$ and more'))
+            .toBe('a population of 100,000 and more');
+    });
+
+    it('strips them when the text arrives one character at a time', async () => {
+        // The offline arm feeds the filter char by char because that is the
+        // adversarial chunking the live stream can produce.
+        const src = 'a population of $100,000$ and more';
+        expect(await strip(...src.split(''))).toBe('a population of 100,000 and more');
+    });
+
+    it('speaks a wrapped fraction instead of leaking "frac"', async () => {
+        expect(await strip('a recall of $\\frac{3,000}{9,500}$, or 31.5%'))
+            .toBe('a recall of 3,000 over 9,500, or 31.5%');
+    });
+
+    it('clears the real s50k answer of every notation artifact', async () => {
+        const raw = 'With a population of $100,000$ and a $9.5\\%$ churn rate, there are '
+            + '$9,500$ actual churners. That gives a recall of $\\frac{3,000}{9,500}$, '
+            + 'or about $31.5\\%$.';
+        const out = await strip(...raw.split(''));
+        expect(out).not.toMatch(/[$\\]/);
+        expect(out).not.toContain('frac');
+        expect(out).toContain('population of 100,000');
+        expect(out).toContain('9.5% churn rate');
+        expect(out).toContain('3,000 over 9,500');
+    });
+
+    it('KEEPS money that has no closing delimiter, commas and all', async () => {
+        // The calibration case: without a closing "$" this is currency, and the
+        // rule must not touch it. If this ever fails, the fix has gone too far.
+        expect(await strip('that saves about $100,000 a year'))
+            .toBe('that saves about $100,000 a year');
+        expect(await strip('it costs $1,250.50 per month'))
+            .toBe('it costs $1,250.50 per month');
+    });
+});

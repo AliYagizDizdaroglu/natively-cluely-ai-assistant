@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, SPOKEN_WORD_GUARD, type Suggestion } from './verbalStreamFilter';
+import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, SPOKEN_WORD_GUARD, type Suggestion } from './verbalStreamFilter';
 
 /** Feed `text` through the filter in fixed-size chunks; return concatenated output. */
 async function runFilter(text: string, chunkSize = 6): Promise<string> {
@@ -459,5 +459,44 @@ describe('SPOKEN_WORD_GUARD — the verbal stream is clamped at 200 words and ne
         for await (const c of cutAtWordBudget(src, { limit: 150, floor: 150, ceiling: 200, onDone: (r) => { done = r; } })) out.push(c);
         expect(out.join('').trim().split(/\s+/)).toHaveLength(200);
         expect(done).toMatchObject({ cut: true, words: 200 });
+    });
+});
+
+/**
+ * filterCodeFences lived as a private method on WhatToAnswerLLM, so the offline flight arms
+ * — which replay the shipped chain to score a model — never ran it. Flight s50k paid for
+ * that: the SQL answer scored delivery 0 ("correct query, but a raw code block") on two of
+ * the 3.1 reps and the coding answer on two of the 3.5 reps, while the SAME question answered
+ * in-app scored 2/2/1, because the app suppresses the fence and the arm did not. Both bands
+ * were understated by roughly two, and the focused-five re-pick ranked those questions as
+ * hard when they are not. Exported so one implementation serves the app and the measurement.
+ */
+describe('filterCodeFences — the app suppresses fenced blocks, and so must the arms', () => {
+    async function* feed(...cs: string[]) { for (const c of cs) yield c; }
+    const run = async (...cs: string[]) => {
+        let out = '';
+        for await (const c of filterCodeFences(feed(...cs))) out += c;
+        return out;
+    };
+
+    it('suppresses a fenced block and keeps the prose around it', async () => {
+        const src = 'I would left join on the event table.\n```sql\nSELECT 1;\n```\nThat keeps zero-call rows.';
+        const out = await run(src);
+        expect(out).not.toContain('SELECT');
+        expect(out).not.toContain('```');
+        expect(out).toContain('I would left join on the event table.');
+        expect(out).toContain('That keeps zero-call rows.');
+    });
+
+    it('suppresses it when the text arrives one character at a time', async () => {
+        const src = 'Here it is.\n```python\nimport numpy as np\n```\nDone.';
+        const out = await run(...src.split(''));
+        expect(out).not.toContain('import numpy');
+        expect(out).not.toMatch(/`/);
+    });
+
+    it('leaves a fence-free answer untouched apart from stray backticks', async () => {
+        expect(await run('Use a left join and keep the filters in the ON clause.'))
+            .toBe('Use a left join and keep the filters in the ON clause.');
     });
 });
