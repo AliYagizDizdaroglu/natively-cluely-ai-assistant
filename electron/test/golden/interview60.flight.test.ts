@@ -27,6 +27,39 @@ describe('newestRunDir', () => {
     });
 });
 
+describe('FOCUSED_ONLY is re-picked from the last hour, not left to go stale', () => {
+    // A focused arm exists to SEPARATE models, so its questions must be ones arms disagree on.
+    // Scored across s50j's six app-bytes arms (in-app, three 3.1-LOW twins, 3.1 no-thinking,
+    // 3.5-lite HIGH) — the captured prompt is what a focused arm replays, so that is the right
+    // input to rank on, not the bare scripted text:
+    //
+    //   S1Q02  2/6   S1Q08  3/6   S2Q02  4/6   S1Q07  4/6      <- the four targets
+    //   S1Q06  6/6                                             <- the control, see below
+    //   S2Q07  6/6   S2Q09  6/6   S2Q10  6/6                   <- DROPPED, separating nothing
+    //
+    // Shipping thinking LOW moved three of the old five to 6 of 6 on captured bytes: the arms
+    // were spending 20 calls a day on questions every model now passes.
+    it('targets the four mains s50j arms actually disagreed on', () => {
+        for (const id of ['S1Q02', 'S1Q08', 'S2Q02', 'S1Q07']) {
+            expect(FOCUSED_ONLY.split(','), `${id} was 4 of 6 or worse on captured bytes`).toContain(id);
+        }
+    });
+
+    it('drops the three that every app-bytes arm now passes', () => {
+        for (const id of ['S2Q07', 'S2Q09', 'S2Q10']) {
+            expect(FOCUSED_ONLY.split(','), `${id} is 6 of 6 — it separates nothing`).not.toContain(id);
+        }
+    });
+
+    it('keeps S1Q06 as the control, which is a different job from being a target', () => {
+        // 9 of 10 arms pass it on captured bytes, and it still splits the bare arms 2 of 6. A
+        // focused arm that fails S1Q06 is a broken arm rather than a hard question, and that
+        // reading is what makes the four targets trustworthy. Do not drop it for being easy —
+        // being easy is the point.
+        expect(FOCUSED_ONLY.split(',')).toContain('S1Q06');
+    });
+});
+
 describe('FOCUSED_ONLY', () => {
     it('names only scenario50 mains, and no more than the free tier allows per model', async () => {
         // A typo here is expensive and silent until flight time: interview60.answers.mjs

@@ -60,18 +60,34 @@ export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 
  * them, the model is the next lever; if it does not, the misses are the questions', not the
  * model's.
  *
- * Re-pointed at the s50d (2026-09-13) in-app failures, since the original five had been
- * answered: S1Q08 and S2Q03 passed on 8 of 8 Flash attempts across s50c and s50d, so they
- * measured nothing further.
- *   S1Q02  weak in-app and in every arm both flights — 1 acceptable in 12 attempts
- *   S2Q07  weak in-app: citations never covered, drifted into a latency SLA
- *   S2Q10  weak in-app: misstated the outbox pattern as a cross-store transaction
- *   S2Q09  no in-app answer at all — Groq detection was 403 all hour, so it has no grade
- *   S1Q06  KEPT AS A CONTROL, not as a target: the one question where model size is proven
- *          (big Flash 7 of 8, lite 1 of 4). A Flash arm that fails S1Q06 is a broken arm,
- *          not a hard question, and that reading is what makes the other four trustworthy.
+ * Re-picked from s50j (2026-09-20). Shipping thinking LOW solved three of the previous five:
+ * S2Q07, S2Q09 and S2Q10 were answered acceptably by ALL SIX app-bytes arms, so the focused
+ * models were spending 20 calls a day on questions nothing could fail. A focused arm exists to
+ * SEPARATE models, so its questions have to be ones the arms disagree on.
+ *
+ * Ranked on the captured prompt, because that is what a focused arm replays — a question that
+ * is only hard on the bare scripted text would be an easy one here. Across s50j's six app-bytes
+ * arms (in-app, three 3.1-LOW twins, 3.1 at no thinking, 3.5-lite at HIGH):
+ *   S1Q02  2 of 6  the CV precision/recall reconciliation — wrong 10 of 10 at MINIMAL, and
+ *                  LOW only rescues it about a third of the time
+ *   S1Q08  3 of 6  delayed outcomes and experiment assignment; the assignment half is the part
+ *                  arms drop
+ *   S2Q02  4 of 6  per-metric units, denominators and uncertainty — answered with robustness
+ *                  checks instead of an interval
+ *   S1Q07  4 of 6  the platform design; LangSmith gets misplaced as a tabular-drift monitor
+ *   S1Q06  KEPT AS A CONTROL, not as a target — see below.
+ *
+ * S1Q06 stays because a control is a different job from a target: 9 of 10 arms pass it on
+ * captured bytes (and it still splits the bare arms 2 of 6), so an arm that fails it is a
+ * broken arm rather than a hard question, and that reading is what makes the four targets
+ * trustworthy. Do not drop it for being easy; being easy is the point. Its older rationale —
+ * "the one question where model size is proven" — no longer holds on captured bytes, where the
+ * lite arms went 6 of 6 and big Flash 3 of 4.
+ *
+ * Re-pick this after a flight by scoring every main across that hour's app-bytes arms; do not
+ * let it go stale again.
  */
-export const FOCUSED_ONLY = 'S1Q02,S2Q07,S2Q10,S2Q09,S1Q06';
+export const FOCUSED_ONLY = 'S1Q02,S1Q08,S2Q02,S1Q07,S1Q06';
 export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
 
 /**
