@@ -840,7 +840,9 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                         const lastMsg = prev[prev.length - 1];
                         if (lastMsg && lastMsg.isStreaming && lastMsg.intent === 'what_to_answer') {
                             const updated = [...prev];
-                            updated[prev.length - 1] = { ...lastMsg, text: data.token };
+                            // A reused bubble must not carry a superseded answer's cues onto
+                            // a coaching card (mirrors the R23 discipline below).
+                            updated[prev.length - 1] = { ...lastMsg, text: data.token, cues: undefined };
                             return updated;
                         }
                         return [...prev, {
@@ -893,6 +895,9 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                         isNegotiationCoaching: true,
                         negotiationCoachingData: coachingData,
                         text: '',
+                        // A reused streaming bubble must not carry a superseded answer's
+                        // cues onto a coaching card (mirrors the R23 discipline below).
+                        cues: undefined,
                         metrics: finalMetrics,
                     }
                     : {
