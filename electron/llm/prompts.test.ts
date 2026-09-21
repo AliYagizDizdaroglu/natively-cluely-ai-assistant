@@ -13,6 +13,7 @@ import {
     SPOKEN_WORD_BUDGET,
     SPOKEN_WORD_TARGET,
     SPOKEN_WORD_CEILING,
+    CUE_RULE, CUES_SENTINEL, CUE_MAX_LINES, CUE_MAX_WORDS,
     resolveGemmaSystemPrompt,
     resolveStyleSuffix,
 } from './prompts';
@@ -233,6 +234,28 @@ describe('spoken word budget', () => {
         // and the n=20 arm's run-to-run noise is about ±5, so the position is asserted to
         // keep the measured configuration, not because a move was shown to hurt.
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT.indexOf('[ANSWER THE QUESTION\'S STRUCTURE')).toBeGreaterThan(VERBAL_WHAT_TO_ANSWER_PROMPT.indexOf('Rules for that block:'));
-        expect(VERBAL_WHAT_TO_ANSWER_PROMPT.trimEnd().endsWith('- Still first person, still open with substance, still no questions back.')).toBe(true);
+        // Since cue mode (spec 2026-09-20) the cue rule follows the structured rule; nothing else may.
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.' + CUE_RULE)).toBe(true);
+    });
+});
+
+describe('CUE_RULE — cue mode (spec 2026-09-20)', () => {
+    it('names the sentinel and the limits the checks enforce', () => {
+        expect(CUES_SENTINEL).toBe('__CUES__');
+        expect(CUE_MAX_LINES).toBe(5);
+        expect(CUE_MAX_WORDS).toBe(8);
+        expect(CUE_RULE).toContain('[CUES FIRST]');
+        expect(CUE_RULE).toContain(CUES_SENTINEL);
+        expect(CUE_RULE).toContain(`at most ${CUE_MAX_WORDS} words`);
+        expect(CUE_RULE).toContain(`Never more than ${CUE_MAX_LINES}`);
+        expect(CUE_RULE.startsWith('\n\n')).toBe(true);   // it is appended to a prompt that ends without a newline
+    });
+
+    it('sits at the tail of the verbal prompt, directly after the structured rule, and nowhere else', () => {
+        // The structured rule was measured at the END of the prompt (13/20 against 8/20). The cue
+        // rule goes after it; the bench measures this position rather than assuming it (§4).
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.' + CUE_RULE)).toBe(true);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT.split(CUE_RULE).length - 1).toBe(1);
+        expect(UNIVERSAL_WHAT_TO_ANSWER_PROMPT).not.toContain(CUES_SENTINEL);   // the coding path has no cue block
     });
 });

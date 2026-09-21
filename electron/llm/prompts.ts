@@ -191,6 +191,41 @@ export const SPOKEN_WORD_TARGET = 60;
 export const SPOKEN_WORD_CEILING = 150;
 
 /**
+ * Sentinel that opens the cue block every verbal answer now begins with (cue mode, spec
+ * 2026-09-20). Same `__NAME__` convention as `__MORE__`; stripCueBlock in verbalStreamFilter
+ * removes it before display and hands the lines to the UI.
+ */
+export const CUES_SENTINEL = '__CUES__';
+
+/** Cue lines per answer: one per part the question names, never more. */
+export const CUE_MAX_LINES = 5;
+
+/** Words per cue line — a glance, not a sentence. */
+export const CUE_MAX_WORDS = 8;
+
+/**
+ * Cue mode: the answer opens with a cue block — one key-phrase line per part the question
+ * names — and the spoken answer follows unchanged. The main process strips the block
+ * (stripCueBlock), logs it, and shows it above the answer so the candidate composes the
+ * sentences and only glances at the prose. Appended at the TAIL of the verbal prompt, after
+ * the structured rule; the bench measures that position rather than assuming it, and this
+ * wording is a benched input (spec §9), not a settled text. Opens with a blank line because
+ * the prompt it is appended to ends without one.
+ */
+export const CUE_RULE = `
+
+[CUES FIRST]
+Before the spoken answer, output a cue block in this exact form, on its own lines:
+${CUES_SENTINEL}
+1| <key phrase for the first part the question names, at most ${CUE_MAX_WORDS} words>
+2| <the next part, in the order asked>
+Rules for that block:
+- One line per part the question names. A one-part question gets exactly one line. Never more than ${CUE_MAX_LINES}.
+- Each line carries the specific thing you will say for that part: the number, the named service, the mechanism, the trade-off. Never a generic label.
+- They are cues, not questions. Never address the listener.
+- The spoken answer follows on the next line, in the same form as always.`;
+
+/**
  * Condensed spoken answer + optional numbered depth offers, for the verbal paths.
  *
  * Why: EXECUTION_CONTRACT rule 11 asks for answers speakable in under 30 seconds,
@@ -2377,7 +2412,7 @@ If the question names a specific product, service or tool, answer in THAT produc
 This does NOT mean listing jargon. Name the specific parts you would actually touch, and only where the question is about that product.
 
 Output ONLY the spoken answer. Nothing else.
-${SPOKEN_LENGTH_AND_DEPTH}`;
+${SPOKEN_LENGTH_AND_DEPTH}${CUE_RULE}`;
 
 /**
  * UNIVERSAL: Recap / Summary
