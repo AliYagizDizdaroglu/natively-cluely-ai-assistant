@@ -140,9 +140,18 @@ export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3
  * captured system prompts to tell a cue hour from a pre-cue one. A string rather than an
  * import of the built prompts, so the flight plans without a dist; the flight test pins it
  * against the real constant.
+ *
+ * Fails closed: reads only the ids capturedOnly would actually replay (spoken, with both a
+ * system and a user turn) and requires ALL of them to carry the mark, not merely one. A mixed
+ * hour — some captured prompts with the rule, some without — must gate the arms closed; waving
+ * them through on any single match would leave answers.mjs --no-cues to refuse the first id
+ * that lacks the rule, mid-flight, instead of the flight skipping cleanly.
  */
 export const CUE_RULE_MARK = '[CUES FIRST]';
-export const hasCueRule = (captured) => Object.values(captured ?? {}).some((c) => typeof c?.system === 'string' && c.system.includes(CUE_RULE_MARK));
+export const hasCueRule = (captured) => {
+    const ids = capturedOnly(captured);
+    return ids.length > 0 && ids.every((id) => String(captured[id].system ?? '').includes(CUE_RULE_MARK));
+};
 
 export const PAIRED_ARMS = [
     { model: ANSWER_MODELS[0], tag: 'low', captured: false, args: ['--thinking', 'LOW'] },
@@ -307,9 +316,15 @@ async function main() {
     if (focusedCaptured && !dry) log(`paired captured arm: ${capturedIds.length} spoken items have a replayable prompt this hour`);
     const replayable = (a) => !a.captured || (focusedCaptured && (dry || capturedIds.length));
     const wanted = (a) => !a.when || dry || a.when(capturedJson);
+    // Named in numbers, once, rather than per arm: how many of the replayable captured prompts
+    // carry the rule at all (0 on a pre-cue hour) or how many of them lack it (a mixed hour).
+    const ruleCount = capturedIds.filter((id) => String(capturedJson[id].system ?? '').includes(CUE_RULE_MARK)).length;
+    const ruleSummary = ruleCount === 0
+        ? `0 of ${capturedIds.length} carry the cue rule`
+        : `${capturedIds.length - ruleCount} of ${capturedIds.length} lack it`;
     for (const a of PAIRED_ARMS) {
         if (!replayable(a)) log(`WARN  paired arm ${a.tag} skipped — it replays the hour's captured prompts and there are none`);
-        else if (!wanted(a)) log(`paired arm ${a.tag} skipped — the hour's captured prompts carry no cue rule, so the captured twins already are the no-cue band`);
+        else if (!wanted(a)) log(`paired arm ${a.tag} skipped — ${ruleSummary}, so --no-cues would refuse an id mid-flight instead`);
     }
     const paired = PAIRED_ARMS.filter((a) => replayable(a) && wanted(a))
         .map((a) => ({ model: a.model, tag: a.tag, args: ['--tag', a.tag, ...a.args, ...(a.captured ? ['--captured', promptsFile, ...(dry ? [] : ['--only', capturedIds.join(',')])] : [])] }));

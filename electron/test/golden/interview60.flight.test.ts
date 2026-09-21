@@ -195,8 +195,20 @@ describe('PAIRED_ARMS', () => {
 
     it('hasCueRule reads the shipped rule\'s header out of the captured system prompts', () => {
         expect(CUE_RULE).toContain(CUE_RULE_MARK);
-        expect(hasCueRule({ S1Q01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' } })).toBe(true);
-        expect(hasCueRule({ S1Q01: { system: 'prompt without it', user: 'u' } })).toBe(false);
+        // Scoped through capturedOnly, exactly what the captured-no-cues arm replays: only ids
+        // the roster calls spoken, with both a system and a user turn, are read at all — and
+        // ALL of those replayable prompts must carry the rule. A mixed hour (some captured
+        // prompts with it, some without) must fail closed rather than wave the arm through on
+        // .some() and have answers.mjs refuse it per id, mid-flight, instead. W01 and W02 are
+        // real interview60 ids (both spoken); C01 is real too but kind: 'screenshot'.
+        expect(hasCueRule({ W01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' } })).toBe(true);
+        expect(hasCueRule({ W01: { system: 'prompt without it', user: 'u' } })).toBe(false);
+        // MIXED: one replayable prompt carries the rule, the other does not — this is the case
+        // that tells .every() apart from .some(); a .some() reading would wrongly say true here.
+        expect(hasCueRule({ W01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' }, W02: { system: 'no rule here', user: 'u' } })).toBe(false);
         expect(hasCueRule({})).toBe(false);
+        // C01 is a screenshot cue — capturedOnly never replays it, so a rule-carrying capture of
+        // it alone must not count either; a .some() over every entry would wrongly say true here.
+        expect(hasCueRule({ C01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' } })).toBe(false);
     });
 });
