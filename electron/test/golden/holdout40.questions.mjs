@@ -21,8 +21,9 @@
  *
  * `q` is what the voice SAYS. Transforms from the written form, as scenario50's: class labels
  * move to `level`; hyphenated constructs SAPI mangles are unhyphenated ("PR-AUC" -> "PR AUC",
- * "fan-out" -> "fan out", "float32" -> "float 32"); em dashes become commas or colons; numerals
- * stay numerals ("10,000 requests", "70 percent") except where the written form spelt them.
+ * "fan-out" -> "fan out") and "float32" is split to "float 32"; em dashes become commas,
+ * colons or full stops; numerals stay numerals ("10,000 requests", "70 percent") except where
+ * the written form spelt them.
  *
  * `long` is DERIVED from LONG_WORDS, never hand-written (scenario50's lesson: 54 of 100
  * hand-kept flags were wrong). `R` ids cannot collide with interview60's W/M/C/H/L or

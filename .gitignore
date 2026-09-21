@@ -270,4 +270,10 @@ electron/test/golden/interview60.answers.*.json
 electron/test/golden/scenario50.wav
 electron/test/golden/scenario50-tts/
 electron/test/golden/scenario50-tts-local/
+
+# holdout40 roster — generated audio only, same rule as scenario50 (rebuild:
+# NATIVELY_ROSTER=holdout40 interview60.build-audio-local.mjs, after the CV slots are filled)
+electron/test/golden/holdout40.wav
+electron/test/golden/holdout40-tts/
+electron/test/golden/holdout40-tts-local/
 electron/test/golden/*.stale-*.json
