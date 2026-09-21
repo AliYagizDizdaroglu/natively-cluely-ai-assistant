@@ -135,6 +135,15 @@ export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3
  * ~155 lite calls, split across the two models' separate quotas. Captured arms are skipped,
  * loudly, when the hour left no capture.
  */
+/**
+ * Cue mode (spec 2026-09-20): the header line of the shipped CUE_RULE, read out of the hour's
+ * captured system prompts to tell a cue hour from a pre-cue one. A string rather than an
+ * import of the built prompts, so the flight plans without a dist; the flight test pins it
+ * against the real constant.
+ */
+export const CUE_RULE_MARK = '[CUES FIRST]';
+export const hasCueRule = (captured) => Object.values(captured ?? {}).some((c) => typeof c?.system === 'string' && c.system.includes(CUE_RULE_MARK));
+
 export const PAIRED_ARMS = [
     { model: ANSWER_MODELS[0], tag: 'low', captured: false, args: ['--thinking', 'LOW'] },
     { model: ANSWER_MODELS[0], tag: 'captured-minimal', captured: true, args: [] },
@@ -148,6 +157,13 @@ export const PAIRED_ARMS = [
     { model: ANSWER_MODELS[1], tag: 'captured-high-r2', captured: true, args: ['--thinking', 'HIGH'] },
     { model: ANSWER_MODELS[1], tag: 'captured-high-r3', captured: true, args: ['--thinking', 'HIGH'] },
     { model: ANSWER_MODELS[1], tag: 'high', captured: false, args: ['--thinking', 'HIGH'] },
+    // Cue mode (spec 2026-09-20 §8): a cue hour's own same-bytes no-cue band — the captured
+    // prompts with the exact CUE_RULE stripped, three reps like the other twins. Gated on the
+    // bytes: on a pre-cue hour the captured twins already are the no-cue band, and answers.mjs
+    // would refuse the variant anyway; the flight skips the arms with one log line instead.
+    { model: ANSWER_MODELS[0], tag: 'captured-no-cues', captured: true, args: ['--thinking', 'LOW', '--no-cues'], when: hasCueRule },
+    { model: ANSWER_MODELS[0], tag: 'captured-no-cues-r2', captured: true, args: ['--thinking', 'LOW', '--no-cues'], when: hasCueRule },
+    { model: ANSWER_MODELS[0], tag: 'captured-no-cues-r3', captured: true, args: ['--thinking', 'LOW', '--no-cues'], when: hasCueRule },
 ];
 
 /**
@@ -286,10 +302,16 @@ async function main() {
     const focusedOnly = focusedOnlyFor(ROSTER_NAME);
     if (!focusedOnly) log(`FOCUSED  roster ${ROSTER_NAME} has no focused five — skipping the ${FOCUSED_MODELS.length} focused arms`);
     const focusedArgs = ['--only', focusedOnly ?? '', ...(focusedCaptured ? ['--captured', promptsFile] : [])];
-    const capturedIds = focusedCaptured && !dry ? capturedOnly(JSON.parse(fs.readFileSync(promptsFile, 'utf8'))) : [];
+    const capturedJson = focusedCaptured && !dry ? JSON.parse(fs.readFileSync(promptsFile, 'utf8')) : null;
+    const capturedIds = capturedJson ? capturedOnly(capturedJson) : [];
     if (focusedCaptured && !dry) log(`paired captured arm: ${capturedIds.length} spoken items have a replayable prompt this hour`);
-    for (const a of PAIRED_ARMS) if (a.captured && !(focusedCaptured && (dry || capturedIds.length))) log(`WARN  paired arm ${a.tag} skipped — it replays the hour's captured prompts and there are none`);
-    const paired = PAIRED_ARMS.filter((a) => !a.captured || (focusedCaptured && (dry || capturedIds.length)))
+    const replayable = (a) => !a.captured || (focusedCaptured && (dry || capturedIds.length));
+    const wanted = (a) => !a.when || dry || a.when(capturedJson);
+    for (const a of PAIRED_ARMS) {
+        if (!replayable(a)) log(`WARN  paired arm ${a.tag} skipped — it replays the hour's captured prompts and there are none`);
+        else if (!wanted(a)) log(`paired arm ${a.tag} skipped — the hour's captured prompts carry no cue rule, so the captured twins already are the no-cue band`);
+    }
+    const paired = PAIRED_ARMS.filter((a) => replayable(a) && wanted(a))
         .map((a) => ({ model: a.model, tag: a.tag, args: ['--tag', a.tag, ...a.args, ...(a.captured ? ['--captured', promptsFile, ...(dry ? [] : ['--only', capturedIds.join(',')])] : [])] }));
     const arms = [...ANSWER_MODELS.map((model) => ({ model, args: [] })), ...(focusedOnly ? FOCUSED_MODELS.map((model) => ({ model, args: focusedArgs })) : []), ...paired];
     for (const { model, tag, args } of arms) {

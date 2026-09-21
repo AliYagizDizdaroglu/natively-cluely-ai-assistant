@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { ANSWER_MODELS, FOCUSED_ONLY_BY_ROSTER, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, capturedOnly, chooseLiveModel, focusedOnlyFor, newestRunDir } from './interview60.flight.mjs';
+import { ANSWER_MODELS, CUE_RULE_MARK, FOCUSED_ONLY_BY_ROSTER, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, capturedOnly, chooseLiveModel, focusedOnlyFor, hasCueRule, newestRunDir } from './interview60.flight.mjs';
+import { CUE_RULE } from '../../llm/prompts';
 
 describe('chooseLiveModel', () => {
     it('keeps 3.x on a tool call, aborts only when no key reached the probe, falls to 2.5 on silence or a dead session', () => {
@@ -177,5 +178,25 @@ describe('PAIRED_ARMS', () => {
         };
         expect(capturedOnly(cap, items)).toEqual(['S1Q01F', 'S1Q02']);
         expect(capturedOnly({}, items)).toEqual([]);
+    });
+
+    it('runs the same-bytes no-cue twin three times on the app answer model, only on an hour that flew with cues', () => {
+        // Cue mode (spec 2026-09-20 §8): a cue hour's control is its own captured bytes with the
+        // exact rule stripped, band against band within one hour. On a pre-cue hour the arm would
+        // silently duplicate the control, so it is gated on the bytes and skipped with a log line.
+        const twins = PAIRED_ARMS.filter((a) => a.tag.startsWith('captured-no-cues'));
+        expect(twins.map((a) => a.tag)).toEqual(['captured-no-cues', 'captured-no-cues-r2', 'captured-no-cues-r3']);
+        for (const t of twins) {
+            expect(t).toMatchObject({ model: ANSWER_MODELS[0], captured: true, args: ['--thinking', 'LOW', '--no-cues'] });
+            expect(t.when).toBe(hasCueRule);
+        }
+        expect(PAIRED_ARMS.filter((a) => !a.tag.startsWith('captured-no-cues')).every((a) => a.when === undefined)).toBe(true);
+    });
+
+    it('hasCueRule reads the shipped rule\'s header out of the captured system prompts', () => {
+        expect(CUE_RULE).toContain(CUE_RULE_MARK);
+        expect(hasCueRule({ S1Q01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' } })).toBe(true);
+        expect(hasCueRule({ S1Q01: { system: 'prompt without it', user: 'u' } })).toBe(false);
+        expect(hasCueRule({})).toBe(false);
     });
 });
