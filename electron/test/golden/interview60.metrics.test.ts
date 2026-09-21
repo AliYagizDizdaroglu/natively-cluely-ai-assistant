@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 // @ts-ignore — untyped ESM harness module
 import { computeRun, computeRunFromFiles, evaluateGate, GATE, spokenCodingRoutes } from './interview60.metrics.mjs';
+import { CUE_MAX_LINES, CUE_MAX_WORDS } from '../../llm/prompts';
 
 // @ts-ignore — import.meta is ESM-only; this file runs under vitest's ESM
 // transform regardless of electron/tsconfig.json's CommonJS module target
@@ -783,6 +784,56 @@ describe("supersede question capture — the replaces= group must not shift the 
         // 4 of S1.q's 11 content words ("describe your approach caching") are in the
         // anchor — a lost question= capture would read ~0.36, not >= 0.9.
         expect(s1.coverage).toBeGreaterThanOrEqual(0.9);
+    });
+});
+
+/**
+ * interview60.metrics.mjs deliberately imports no build (it reads logs on a checkout where
+ * dist-electron may not exist), so its wellformedCues hardcodes the CUE_MAX_LINES / CUE_MAX_WORDS
+ * values as literals instead of importing them. Nothing else would notice if those literals ever
+ * drifted from electron/llm/prompts.ts's real constants — the cueBlocks gate row would silently
+ * keep gating on stale limits. This fixture is built FROM the real constants (imported here, under
+ * vitest, which does have TypeScript source available), not from today's literal 5/8, so it keeps
+ * testing the actual boundary even if the constants change later.
+ */
+describe("the cue row's limits track CUE_MAX_LINES and CUE_MAX_WORDS", () => {
+    const T0 = Date.parse('2026-01-01T00:00:00.000Z');
+    const iso = (ms: number) => new Date(ms).toISOString();
+    // A cue of exactly n words, tagged so the lines are distinct; never "?", never "you".
+    const cueOfNWords = (tag: string, n: number) => [tag, ...Array.from({ length: n - 1 }, (_, i) => `w${i + 1}`)].join(' ');
+    const atTheLimit = Array.from({ length: CUE_MAX_LINES }, (_, i) => cueOfNWords(`line${i + 1}`, CUE_MAX_WORDS));
+    const oneLineOverTheLimit = Array.from({ length: CUE_MAX_LINES + 1 }, (_, i) => `option${i + 1} short`);
+    const oneWordOverTheLimit = [cueOfNWords('over', CUE_MAX_WORDS + 1)];
+
+    let dir = '';
+    let m: any;
+    beforeAll(() => {
+        dir = fs.mkdtempSync(path.join(os.tmpdir(), 'i60-cue-limits-'));
+        const timeline = {
+            startedAt: iso(T0 - 1000), startedMs: T0 - 1000,
+            startDebug: 0, endDebug: 1e9, startDiag: 0, endDiag: 1e9,
+            endedAt: iso(T0 + 60000),
+            items: [] as any[],
+        };
+        const dbgLines = [
+            `${iso(T0)} [LOG] [Answer] cues: ${JSON.stringify(atTheLimit)}`,
+            `${iso(T0 + 1000)} [LOG] [Answer] cues: ${JSON.stringify(oneLineOverTheLimit)}`,
+            `${iso(T0 + 2000)} [LOG] [Answer] cues: ${JSON.stringify(oneWordOverTheLimit)}`,
+        ];
+        fs.writeFileSync(path.join(dir, 'interview60.timeline.json'), JSON.stringify(timeline, null, 1));
+        fs.writeFileSync(path.join(dir, 'natively_debug.log'), dbgLines.join('\n') + '\n');
+        fs.writeFileSync(path.join(dir, 'verbal-diag.log'), '');
+        m = computeRunFromFiles({
+            debugLog: path.join(dir, 'natively_debug.log'),
+            diagLog: path.join(dir, 'verbal-diag.log'),
+            timelinePath: path.join(dir, 'interview60.timeline.json'),
+            answersPath: path.join(dir, 'interview60.answers.json'), // deliberately never written
+        });
+    });
+    afterAll(() => { if (dir) fs.rmSync(dir, { recursive: true, force: true }); });
+
+    it('a block at exactly CUE_MAX_LINES/CUE_MAX_WORDS is wellformed; one line over and one word over are not', () => {
+        expect(m.cueBlocks).toEqual({ n: 3, present: 3, wellformed: 1 });
     });
 });
 
