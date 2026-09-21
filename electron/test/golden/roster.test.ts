@@ -100,8 +100,7 @@ describe('scenario50 as a stimulus', () => {
  * holdout40 is the set that is NEVER tuned on: it answers "does the change still hold on
  * questions it was not tuned against" — once per shipped change. Its shape is the opposite of
  * scenario50's on purpose (short, mostly single-part, seven areas, AWS and Databricks named),
- * so a count drifting towards scenario50's is a design regression, not a detail. Read directly
- * from the question file: the roster loader refuses the set while its CV slots are unfilled.
+ * so a count drifting towards scenario50's is a design regression, not a detail.
  */
 describe('holdout40 as a stimulus', () => {
     it('is 33 mains and 12 follow-ups, R01 first and R33 last, with the level mix the spec fixes', async () => {
@@ -153,37 +152,19 @@ describe('holdout40 as a stimulus', () => {
     });
 });
 
-/**
- * The three reconciliation items carry {{SLOT}} markers the candidate fills from their own CV
- * (metrics only). An hour spoken with the markers in place would measure nothing and spend the
- * quota, so the loader refuses the roster at the boundary where it enters the harness.
- */
-describe('unfilled CV slots', () => {
-    it('unfilledSlots names each item that still carries a slot, with the slot names, and nothing else', async () => {
-        const { unfilledSlots } = await import('./roster.mjs');
-        const items = [
-            { id: 'A', q: 'plain question' },
-            { id: 'B', q: 'moved {{METRIC}} from {{BEFORE}} to {{AFTER}}' },
-            { id: 'C', q: 'a filled one: moved conversion from 3 to 4 percent' },
-        ];
-        expect(unfilledSlots(items)).toEqual([{ id: 'B', slots: ['METRIC', 'BEFORE', 'AFTER'] }]);
-        expect(unfilledSlots([items[0], items[2]])).toEqual([]);
-        // A half-deleted marker matches no {{NAME}} pair but would still be spoken aloud.
-        expect(unfilledSlots([{ id: 'D', q: 'moved conversion from {{BEFORE to 4 percent' }])).toEqual([{ id: 'D', slots: ['a stray {{ or }}'] }]);
-    });
-
-    it('refuses holdout40 while its slots are unfilled, naming them; loads it with its own audio paths once they are', async () => {
-        const { HOLDOUT40 } = await import('./holdout40.questions.mjs');
-        const { unfilledSlots } = await import('./roster.mjs');
-        if (unfilledSlots(HOLDOUT40).length) {
-            await expect(load({ NATIVELY_ROSTER: 'holdout40' })).rejects.toThrow(/R31.*METRIC_NAME/s);
-        } else {
-            const r = await load({ NATIVELY_ROSTER: 'holdout40' });
-            expect(r.INTERVIEW).toHaveLength(45);
-            expect(r.TTS_LOCAL_DIR).toBe('holdout40-tts-local');
-            expect(r.TTS_GEMINI_DIR).toBe('holdout40-tts');
-            expect(r.WAV_NAME).toBe('holdout40.wav');
-            expect(r.calibrationSample()).toHaveLength(8);
-        }
+describe('holdout40 in the harness', () => {
+    it('loads with its own audio paths and the eight-clip calibration sample', async () => {
+        const r = await load({ NATIVELY_ROSTER: 'holdout40' });
+        expect(r.ROSTER_NAME).toBe('holdout40');
+        expect(r.INTERVIEW).toHaveLength(45);
+        expect(r.INTERVIEW[0].id).toBe('R01');
+        // Its own directory and wav: the local TTS builder caches clips by id, so a shared
+        // directory would speak a stale clip for an hour without an error.
+        expect(r.TTS_LOCAL_DIR).toBe('holdout40-tts-local');
+        expect(r.TTS_GEMINI_DIR).toBe('holdout40-tts');
+        expect(r.WAV_NAME).toBe('holdout40.wav');
+        // The two longest clips, spoken SQL, a spoken identifier, numerals twice, two product
+        // names no keyterm covers — the renderings most likely to be misheard.
+        expect(r.calibrationSample().map((x: any) => x.id)).toEqual(['R02', 'R09', 'R13', 'R23', 'R25', 'R26', 'R29', 'R31']);
     });
 });

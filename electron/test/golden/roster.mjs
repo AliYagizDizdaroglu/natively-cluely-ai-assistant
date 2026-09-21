@@ -30,22 +30,6 @@ const ROSTERS = {
     holdout40: { items: HOLDOUT40, ttsLocal: 'holdout40-tts-local', ttsGemini: 'holdout40-tts', wav: 'holdout40.wav' },
 };
 
-/**
- * Items still carrying a {{SLOT}} marker — holdout40's reconciliation questions, whose CV
- * figures the candidate fills by hand. Each entry names the item and its open slots.
- */
-export function unfilledSlots(items) {
-    return items
-        .map((i) => {
-            const slots = [...i.q.matchAll(/\{\{([^}]*)\}\}/g)].map((m) => m[1]);
-            // A half-deleted marker ("{{BEFORE" with its close gone) pairs with nothing above and
-            // would still be spoken aloud, so a brace pair left over counts as a slot too.
-            if (/\{\{|\}\}/.test(i.q.replace(/\{\{[^}]*\}\}/g, ''))) slots.push('a stray {{ or }}');
-            return { id: i.id, slots };
-        })
-        .filter((x) => x.slots.length);
-}
-
 // Blank counts as unset. `NATIVELY_ROSTER=` is how a shell or a scheduled task
 // clears the variable, and `??` alone would take the empty string as a name and
 // abort the hour on it.
@@ -54,14 +38,6 @@ export const ROSTER_NAME = process.env.NATIVELY_ROSTER?.trim() || 'interview60';
 const chosen = ROSTERS[ROSTER_NAME];
 if (!chosen) {
     throw new Error(`NATIVELY_ROSTER=${ROSTER_NAME} is not a roster. Known: ${Object.keys(ROSTERS).join(', ')}`);
-}
-
-// An hour spoken with the markers in place would say "open brace metric name" to the app and
-// spend the quota measuring nothing, so the roster is refused where it enters the harness.
-const open = unfilledSlots(chosen.items);
-if (open.length) {
-    const named = open.map((x) => `${x.id}: ${x.slots.join(', ')}`).join('; ');
-    throw new Error(`roster ${ROSTER_NAME} still has unfilled CV slots: ${named} — fill them in the roster's question file before building audio or flying`);
 }
 
 /**
@@ -98,7 +74,7 @@ const SAMPLES = {
     // rendered anywhere (1.55 w/s). S2Q02 reads CV metrics as numerals ("72.4 percent").
     scenario50: ['S1Q04', 'S1Q06', 'S2Q01', 'S2Q02', 'S2Q05', 'S5Q04'],
     // R13 and R26 are the two longest clips. R02 speaks an identifier ("LRU cache"), R09 is
-    // spoken SQL, R23 reads numerals and "float 32", R31 reads the CV figures once filled.
+    // spoken SQL, R23 reads numerals and "float 32", R31 reads the invented CV figures.
     // R25 and R29 carry product names (SageMaker, Unity Catalog) no keyterm covers.
     holdout40: ['R02', 'R09', 'R13', 'R23', 'R25', 'R26', 'R29', 'R31'],
 };
