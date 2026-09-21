@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, SPOKEN_WORD_GUARD, type Suggestion } from './verbalStreamFilter';
+import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, SPOKEN_WORD_GUARD, extractCues, stripCueBlock, type Suggestion } from './verbalStreamFilter';
+import { CUES_SENTINEL } from './prompts';
 
 /** Feed `text` through the filter in fixed-size chunks; return concatenated output. */
 async function runFilter(text: string, chunkSize = 6): Promise<string> {
@@ -498,5 +499,88 @@ describe('filterCodeFences — the app suppresses fenced blocks, and so must the
     it('leaves a fence-free answer untouched apart from stray backticks', async () => {
         expect(await run('Use a left join and keep the filters in the ON clause.'))
             .toBe('Use a left join and keep the filters in the ON clause.');
+    });
+});
+
+/** Feed `text` through the cue guard in fixed-size chunks. */
+async function runCues(text: string, chunkSize: number): Promise<{ out: string; cues: string[] | null; calls: number }> {
+    async function* source() { for (let i = 0; i < text.length; i += chunkSize) yield text.slice(i, i + chunkSize); }
+    let out = '', cues: string[] | null = null, calls = 0;
+    for await (const c of stripCueBlock(source(), (x) => { cues = x; calls++; })) out += c;
+    return { out, cues, calls };
+}
+
+describe('extractCues — splitting the cue block from the spoken answer (cue mode, spec 2026-09-20)', () => {
+    const PROSE = 'Ten million vectors take about thirty gigabytes.\nQuantizing to int eight halves it.';
+
+    it('no sentinel at the start: no cues, text unchanged', () => {
+        expect(extractCues(PROSE)).toEqual({ cues: [], prose: PROSE });
+        expect(extractCues('')).toEqual({ cues: [], prose: '' });
+    });
+    it('one line, several lines, leading blank lines and a blank line inside the block', () => {
+        expect(extractCues(`__CUES__\n1| thirty gigabytes in float32\n${PROSE}`)).toEqual({ cues: ['thirty gigabytes in float32'], prose: PROSE });
+        expect(extractCues(`\n\n__CUES__\n1| thirty gigabytes\n\n2| int8, then shard\n${PROSE}`)).toEqual({ cues: ['thirty gigabytes', 'int8, then shard'], prose: PROSE });
+    });
+    it('the first non-cue line closes the block; that line and everything after it are prose', () => {
+        expect(extractCues(`__CUES__\n1| thirty gigabytes\nnot a cue line\n2| looks like one\n`)).toEqual({ cues: ['thirty gigabytes'], prose: 'not a cue line\n2| looks like one\n' });
+    });
+    it('wrapping quotes are removed; an over-long line is kept whole (a bench finding, not a runtime repair)', () => {
+        const long = 'one two three four five six seven eight nine ten';
+        expect(extractCues(`__CUES__\n1| "thirty gigabytes"\n2| ${long}\nProse.`)).toEqual({ cues: ['thirty gigabytes', long], prose: 'Prose.' });
+    });
+    it('block only, no prose', () => {
+        expect(extractCues('__CUES__\n1| a\n2| b\n')).toEqual({ cues: ['a', 'b'], prose: '' });
+    });
+    it('the sentinel it recognises is the one the prompt asks for', () => {
+        expect(extractCues(`${CUES_SENTINEL}\n1| a\nProse.`).cues).toEqual(['a']);
+    });
+});
+
+describe('stripCueBlock — the block must never flash on screen, and the prose must never be swallowed', () => {
+    const FULL = '__CUES__\n1| thirty gigabytes in float32\n2| int8, then shard\nTen million vectors take about thirty gigabytes. Quantizing to int eight halves it.\n';
+    const PROSE = 'Ten million vectors take about thirty gigabytes. Quantizing to int eight halves it.\n';
+
+    // 1 and 3 split "__CUES__" across chunk boundaries — where a naive indexOf leaks "__CU".
+    it.each([1, 3, 4, 7, 500])('strips the block at chunk size %i and matches extractCues', async (size) => {
+        const { out, cues, calls } = await runCues(FULL, size);
+        expect(out).not.toContain('__CUES__');
+        expect(out).not.toContain('__CU');
+        expect(out).toBe(extractCues(FULL).prose);
+        expect(out).toBe(PROSE);
+        expect(cues).toEqual(['thirty gigabytes in float32', 'int8, then shard']);
+        expect(calls).toBe(1);
+    });
+    it('passes an answer with no block through byte-for-byte and reports an empty array, once', async () => {
+        const { out, cues, calls } = await runCues(PROSE, 3);
+        expect(out).toBe(PROSE);
+        expect(cues).toEqual([]);
+        expect(calls).toBe(1);
+    });
+    it('tolerates whitespace before the sentinel (a stream often opens with a newline)', async () => {
+        const { out, cues } = await runCues('\n__CUES__\n1| a\nProse.', 2);
+        expect(out).toBe('Prose.');
+        expect(cues).toEqual(['a']);
+    });
+    it('a non-cue line closes the block; the prose starts there, with the line intact', async () => {
+        const { out, cues } = await runCues('__CUES__\n1| a\nThis is prose\n2| not a cue\n', 5);
+        expect(cues).toEqual(['a']);
+        expect(out).toBe('This is prose\n2| not a cue\n');
+    });
+    it('block only: cues delivered, nothing yielded, one callback at stream end', async () => {
+        const { out, cues, calls } = await runCues('__CUES__\n1| a\n2| b', 4);
+        expect(out).toBe('');
+        expect(cues).toEqual(['a', 'b']);
+        expect(calls).toBe(1);
+    });
+    it('a partial sentinel that never completes is prose', async () => {
+        const { out, cues } = await runCues('__CU', 1);
+        expect(out).toBe('__CU');
+        expect(cues).toEqual([]);
+    });
+    it('does not mistake ordinary underscores or a sentinel mid-answer for the block', async () => {
+        const text = 'Use __init__ for setup. Then __CUES__ is just text here.';
+        const { out, cues } = await runCues(text, 2);
+        expect(out).toBe(text);
+        expect(cues).toEqual([]);
     });
 });

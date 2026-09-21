@@ -319,6 +319,123 @@ function longestSentinelPrefixSuffix(s: string): number {
 }
 
 /**
+ * Sentinel that opens the cue block (cue mode, spec 2026-09-20). Kept module-local like
+ * SENTINEL above; prompts.ts CUES_SENTINEL is the same string and the test proves it.
+ */
+const CUES_SENTINEL = '__CUES__';
+const CUE_LINE = /^(\d+)\s*\|\s*(.+)$/;
+const cuePhrase = (m: RegExpMatchArray): string => m[2].trim().replace(/^["'`]|["'`]$/g, '');
+
+/**
+ * Splits a completed verbal answer into its cue block and the spoken prose.
+ *
+ * The model is asked (CUE_RULE) to OPEN with the sentinel and one `N| key phrase` line per
+ * part of the question, then the prose:
+ *
+ *     __CUES__
+ *     1| thirty gigabytes in float32
+ *     2| int8, then shard
+ *     Ten million vectors take ...
+ *
+ * The block ends at the first non-empty line that is not a cue line; that line and everything
+ * after it are prose, untouched. No sentinel at the start means no cues and the text is
+ * returned unchanged. Lines are trimmed and wrapping quotes removed, never truncated: an
+ * over-long cue is a bench finding (cues_wellformed), not a runtime repair.
+ */
+export function extractCues(text: string): { cues: string[]; prose: string } {
+    const lines = text.split('\n');
+    let i = 0;
+    while (i < lines.length && lines[i].trim() === '') i++;
+    if (i === lines.length) return { cues: [], prose: text };
+    const first = lines[i].trimStart();
+    if (!first.startsWith(CUES_SENTINEL)) return { cues: [], prose: text };
+    lines[i] = first.slice(CUES_SENTINEL.length);   // anything after the sentinel on its line is block text
+    const cues: string[] = [];
+    for (; i < lines.length; i++) {
+        const t = lines[i].trim();
+        if (t === '') continue;
+        const m = t.match(CUE_LINE);
+        if (!m) break;
+        const phrase = cuePhrase(m);
+        if (phrase) cues.push(phrase);
+    }
+    return { cues, prose: lines.slice(i).join('\n') };
+}
+
+/**
+ * Streaming guard for the cue block: yields the prose only and hands the cues to `onCues`
+ * exactly once — at block close, at stream end if the stream ends inside the block, or as
+ * soon as the stream is known not to start with the sentinel. Leading whitespace before the
+ * sentinel is tolerated. A sentinel anywhere but the start is prose and stays in the text.
+ *
+ * Holds back only what it must: before the decision, at most a partial sentinel (so an
+ * answer with no block is delayed by the length of "__CUES__" at most); inside the block,
+ * at most one partial line. The result on a whole string equals extractCues.
+ */
+export async function* stripCueBlock(
+    source: AsyncGenerator<string>,
+    onCues?: (cues: string[]) => void,
+): AsyncGenerator<string> {
+    let phase: 'prefix' | 'block' | 'prose' = 'prefix';
+    let pending = '';   // prefix: text not yet known to be prose; block: the partial line
+    const cues: string[] = [];
+    let reported = false;
+    const report = () => { if (reported) return; reported = true; onCues?.(cues.slice()); };
+
+    for await (const chunk of source) {
+        if (phase === 'prose') { yield chunk; continue; }
+        pending += chunk;
+        if (phase === 'prefix') {
+            const lead = pending.replace(/^\s+/, '');
+            if (lead.startsWith(CUES_SENTINEL)) {
+                phase = 'block';
+                pending = lead.slice(CUES_SENTINEL.length);
+            } else if (CUES_SENTINEL.startsWith(lead)) {
+                continue;   // still could be the sentinel (or only whitespace so far)
+            } else {
+                phase = 'prose';
+                report();
+                yield pending;
+                pending = '';
+                continue;
+            }
+        }
+        // phase === 'block': consume complete lines; the first non-cue line closes the block
+        let nl: number;
+        while ((nl = pending.indexOf('\n')) !== -1) {
+            const t = pending.slice(0, nl).trim();
+            if (t === '') { pending = pending.slice(nl + 1); continue; }
+            const m = t.match(CUE_LINE);
+            if (m) {
+                const phrase = cuePhrase(m);
+                if (phrase) cues.push(phrase);
+                pending = pending.slice(nl + 1);
+                continue;
+            }
+            phase = 'prose';
+            report();
+            yield pending;   // this line and everything after it, intact
+            pending = '';
+            break;
+        }
+    }
+
+    if (phase === 'prefix') {
+        // whitespace only, or a partial sentinel that never completed: prose, as it arrived
+        report();
+        if (pending) yield pending;
+        return;
+    }
+    if (phase === 'block') {
+        // the stream ended inside the block; a partial last line is a cue if it parses, else prose
+        const m = pending.trim().match(CUE_LINE);
+        if (m) { const phrase = cuePhrase(m); if (phrase) cues.push(phrase); pending = ''; }
+        report();
+        if (pending.trim()) yield pending;
+    }
+}
+
+/**
  * Streaming verbal-line filter. Same filtering semantics as the original
  * line-buffered version, but tokens flow through as soon as a line's prefix
  * can no longer match any HARD_DROP/REWRITE pattern (≤48 chars) instead of
