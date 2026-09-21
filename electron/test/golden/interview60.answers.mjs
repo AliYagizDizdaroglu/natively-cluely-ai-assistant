@@ -25,17 +25,23 @@ import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
 import { INTERVIEW, ROSTER_ITEMS, ROSTER_NAME } from './roster.mjs';
 import { VERBAL_CHECKS } from './problems.verbal.mjs';
+import { carriesCueRule, withCueRule, withoutCueRule } from './cueArm.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
 const require = createRequire(path.join(PROJ, 'package.json'));
 const P = require(path.join(PROJ, 'dist-electron/electron/llm/prompts.js'));
-const { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, filterCodeFences } =
+const { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, filterCodeFences, stripCueBlock } =
     require(path.join(PROJ, 'dist-electron/electron/llm/verbalStreamFilter.js'));
 
-const KEY = fs.readFileSync(path.join(PROJ, '.env'), 'utf8').match(/^GEMINI_API_KEY=(.+)$/m)[1].trim();
+// Keys come from the environment first — a launcher can run `node --env-file=<path>` for a
+// checkout that has no .env, which is how the cue bench runs from the worktree against MAIN's
+// key — then from .env beside package.json. Never printed.
+const envFile = () => { try { return fs.readFileSync(path.join(PROJ, '.env'), 'utf8'); } catch { return ''; } };
+const KEY = process.env.GEMINI_API_KEY?.trim() || (envFile().match(/^GEMINI_API_KEY=(.+)$/m) ?? [])[1]?.trim();
+if (!KEY) { console.error('GEMINI_API_KEY: not in the environment and no .env beside package.json'); process.exit(2); }
 // Read only when a Groq arm runs, so a Gemini arm never needs the key. Never printed.
-const groqKey = () => (fs.readFileSync(path.join(PROJ, '.env'), 'utf8').match(/^GROQ_API_KEY=(.+)$/m) ?? [])[1]?.trim();
+const groqKey = () => process.env.GROQ_API_KEY?.trim() || (envFile().match(/^GROQ_API_KEY=(.+)$/m) ?? [])[1]?.trim();
 const DEFAULT_MODEL = 'gemini-3.1-flash-lite';   // the app default (LLMHelper.ts GEMINI_FLASH_MODEL)
 // --model <id>: the same pass on another arm (same questions, prompt, filters) for the
 // model comparison; written beside, never over, the default arm's file the report reads.
@@ -87,6 +93,20 @@ if (CAPTURED && (SYSTEM_FILE || USER_TEMPLATE || PROMPT_SUFFIX || INLINE_SYSTEM)
     console.error('--captured replays the app\'s own prompt; it cannot be combined with --system-file, --user-file, --prompt-suffix or --inline-system');
     process.exit(2);
 }
+// --cues / --no-cues (cue mode, spec 2026-09-20 §8): the captured bytes with the shipped
+// CUE_RULE inserted where the app puts it (the bench treatment on a pre-cue hour) or removed
+// byte for byte (a cue hour's same-bytes control). Each needs --captured and --tag: the plain
+// arm sends the shipped prompt, rule included, so --cues on it would double the rule.
+const CUES_ADD = process.argv.includes('--cues');
+const CUES_STRIP = process.argv.includes('--no-cues');
+if (CUES_ADD && CUES_STRIP) { console.error('--cues and --no-cues are exclusive'); process.exit(2); }
+if ((CUES_ADD || CUES_STRIP) && !CAPTURED) { console.error(`${CUES_ADD ? '--cues' : '--no-cues'} needs --captured: the plain arm sends the shipped prompt, which already carries the cue rule`); process.exit(2); }
+if ((CUES_ADD || CUES_STRIP) && !TAG) { console.error(`${CUES_ADD ? '--cues' : '--no-cues'} needs --tag <name>`); process.exit(2); }
+if ((CUES_ADD || CUES_STRIP) && IS_GROQ) { console.error('--cues/--no-cues replay captured Gemini bytes; the Groq arms have no captured prompt'); process.exit(2); }
+const cueVariant = (captured) => !captured ? captured
+    : CUES_ADD ? { ...captured, system: withCueRule(captured.system, P.CUE_RULE, P.SPOKEN_LENGTH_AND_DEPTH) }
+    : CUES_STRIP ? { ...captured, system: withoutCueRule(captured.system, P.CUE_RULE) }
+    : captured;
 // --thinking <MINIMAL|LOW|MEDIUM|HIGH> puts thinkingConfig.thinkingLevel on the Gemini request
 // (needs --tag): the arm at a thinking level. Without it the request carries no thinkingConfig,
 // the provider default — MINIMAL on the lites — which is what every arm through s50h sent and
@@ -163,12 +183,13 @@ async function answerStreamedGemini(question, captured) {
     // Python answer as an unspeakable code block while the app, which suppresses the
     // fence, scored the same answer acceptable — s50k lost four arm marks that way.
     async function* gen() { for (const ch of raw) yield ch; }
-    let spoken = '', offers = null;
-    for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(filterCodeFences(gen())), (o) => { offers = o; }))) spoken += p;
+    let spoken = '', offers = null, cues = [];
+    // stripCueBlock innermost, exactly as WhatToAnswerLLM composes it (cue mode).
+    for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(filterCodeFences(stripCueBlock(gen(), (c) => { cues = c; }))), (o) => { offers = o; }))) spoken += p;
     spoken = spoken.trim();
     // raw: what the model wrote before the filter chain — the only way to see what the
     // filter removed (lists, notation) when an arm is diagnosing the prompt, not the filter.
-    return { spoken, offers, words: words(spoken), ttft, total, finish, rawLen: raw.length, raw, thoughts };
+    return { spoken, offers, cues, words: words(spoken), ttft, total, finish, rawLen: raw.length, raw, thoughts };
 }
 
 // Groq, OpenAI-compatible SSE: same system prompt, same user text, same filter chain,
@@ -235,12 +256,13 @@ async function answerStreamedGroq(question) {
     const total = Date.now() - t0;
     // Same chain as the streamed path above, filterCodeFences included.
     async function* gen() { for (const ch of raw) yield ch; }
-    let spoken = '', offers = null;
-    for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(filterCodeFences(gen())), (o) => { offers = o; }))) spoken += p;
+    let spoken = '', offers = null, cues = [];
+    // stripCueBlock innermost, exactly as WhatToAnswerLLM composes it (cue mode).
+    for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(filterCodeFences(stripCueBlock(gen(), (c) => { cues = c; }))), (o) => { offers = o; }))) spoken += p;
     spoken = spoken.trim();
     // raw: what the model wrote before the filter chain — the only way to see what the
     // filter removed (lists, notation) when an arm is diagnosing the prompt, not the filter.
-    return { spoken, offers, words: words(spoken), ttft, total, finish, rawLen: raw.length, raw };
+    return { spoken, offers, cues, words: words(spoken), ttft, total, finish, rawLen: raw.length, raw };
 }
 
 const answerStreamed = (question, captured) => (IS_GROQ ? answerStreamedGroq(question) : answerStreamedGemini(question, captured));
@@ -276,16 +298,24 @@ if (CAPTURED) {
     const ids = ONLY ? [...ONLY] : mains.map((i) => i.id);
     const uncaptured = ids.filter((id) => !CAPTURED[id]?.system || !CAPTURED[id]?.user);
     if (uncaptured.length) { console.error(`--captured has no prompt for: ${uncaptured.join(', ')} (the app answered ${Object.keys(CAPTURED).length} question(s) that hour)`); process.exit(2); }
+    if (CUES_ADD || CUES_STRIP) {
+        for (const id of ids) {
+            const has = carriesCueRule(CAPTURED[id].system, P.CUE_RULE);
+            if (CUES_ADD && has) { console.error(`--cues: the captured prompt for ${id} already carries the cue rule — this hour flew with cues; its control is --no-cues`); process.exit(2); }
+            if (CUES_STRIP && !has) { console.error(`--no-cues: the captured prompt for ${id} carries no cue rule — this hour flew without cues; the plain captured arm already is the control`); process.exit(2); }
+            if (CUES_ADD && withCueRule(CAPTURED[id].system, P.CUE_RULE, P.SPOKEN_LENGTH_AND_DEPTH) === null) { console.error(`--cues: the captured prompt for ${id} has no structured rule to anchor the cue rule to`); process.exit(2); }
+        }
+    }
 }
 const todo = mains.filter((i) => !ONLY || ONLY.has(i.id)).slice(0, LIMIT);
-console.log(`ANSWER-ONLY PASS  model=${MODEL}${TAG ? `  variant=${TAG} (prompt suffix ${PROMPT_SUFFIX.length} chars)` : ''}${THINKING ? `  thinking=${THINKING}` : ''}${CAPTURED ? '  prompts=captured (the app\'s own system + user turn, replayed)' : ''}  ${todo.length} spoken questions\n`);
+console.log(`ANSWER-ONLY PASS  model=${MODEL}${TAG ? `  variant=${TAG} (prompt suffix ${PROMPT_SUFFIX.length} chars)` : ''}${THINKING ? `  thinking=${THINKING}` : ''}${CAPTURED ? '  prompts=captured (the app\'s own system + user turn, replayed)' : ''}${CUES_ADD ? '  cues=inserted into the captured prompt' : CUES_STRIP ? '  cues=stripped from the captured prompt' : ''}  ${todo.length} spoken questions\n`);
 
 for (const item of todo) {
     if (store[item.id]?.spoken) { continue; }
     let r, lastErr, dropRetried = false;
     for (let a = 0; a < 4; a++) {
         try {
-            r = await answerStreamed(item.q, CAPTURED?.[item.id] ?? null);
+            r = await answerStreamed(item.q, cueVariant(CAPTURED?.[item.id] ?? null));
             // A stream that ends with no finish reason was cut by the provider mid-answer
             // (2026-09-11: gemini-3.8-flash free tier, three of eight answers cut after 1-3
             // minutes). One more try; a second cut is kept as the truncated answer it is.
@@ -300,8 +330,13 @@ for (const item of todo) {
         store[item.id] = { ...item, model: ARM, transientError: lastErr };
         console.log(`  ${item.id.padEnd(4)} TRANSIENT ${lastErr}`);
     } else {
-        const ctx = { spoken: r.spoken, offers: r.offers, sentinel: P.SUGGESTIONS_SENTINEL, budget: P.SPOKEN_WORD_BUDGET, wordCount: r.words };
-        const checks = Object.fromEntries(Object.entries(VERBAL_CHECKS).map(([n, f]) => [n, f(ctx).ok]));
+        // Cue checks apply only where the prompt that was sent carries the rule: the shipped
+        // prompt does (every plain arm since cue mode), a captured prompt does if the hour flew
+        // with cues or --cues inserted it, and --no-cues removes it on purpose.
+        const sentSystem = CAPTURED ? cueVariant(CAPTURED[item.id]).system : SYSTEM_PROMPT;
+        const expectCues = carriesCueRule(sentSystem, P.CUE_RULE);
+        const ctx = { spoken: r.spoken, offers: r.offers, cues: r.cues, sentinel: P.SUGGESTIONS_SENTINEL, cuesSentinel: P.CUES_SENTINEL, cueMaxLines: P.CUE_MAX_LINES, cueMaxWords: P.CUE_MAX_WORDS, budget: P.SPOKEN_WORD_BUDGET, wordCount: r.words };
+        const checks = Object.fromEntries(Object.entries(VERBAL_CHECKS).filter(([n]) => expectCues || !n.startsWith('cues_')).map(([n, f]) => [n, f(ctx).ok]));
         store[item.id] = { ...item, model: ARM, ...r, checks };
         const bad = Object.entries(checks).filter(([, ok]) => !ok).map(([n]) => n);
         console.log(`  ${item.id.padEnd(4)} ${String(r.words).padStart(3)}w  ttft ${String(r.ttft).padStart(5)}ms  total ${String(r.total).padStart(5)}ms${r.thoughts != null ? `  thoughts ${String(r.thoughts).padStart(4)}` : ''}  ${bad.length ? 'FAIL ' + bad.join(',') : 'ok'}`);
@@ -326,7 +361,7 @@ if (done.length) {
     console.log(`  TTFT   p50 ${pct(ttfts, .5)}ms  p90 ${pct(ttfts, .9)}ms  max ${Math.max(...ttfts)}ms`);
     console.log(`  TOTAL  p50 ${pct(totals, .5)}ms  p90 ${pct(totals, .9)}ms  max ${Math.max(...totals)}ms`);
     console.log(`  words  median ${pct(ws, .5)}  max ${Math.max(...ws)}  over ${P.SPOKEN_WORD_BUDGET}w: ${ws.filter((w) => w > P.SPOKEN_WORD_BUDGET).length}/${done.length}`);
-    for (const n of Object.keys(VERBAL_CHECKS)) {
+    for (const n of Object.keys(done[0]?.checks ?? {})) {
         const ok = done.filter((v) => v.checks[n]).length;
         console.log(`  ${n.padEnd(18)} ${ok}/${done.length}`);
     }

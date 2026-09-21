@@ -110,6 +110,17 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     // budget: one line per completed spoken answer from WhatToAnswerLLM.
     const budgetLines = [...dbg.matchAll(/^(\S+) \[LOG\] \[Answer\] budget: words=(\d+) cut=(yes|no) allowance=(yes|no)/gm)].map((m) => ({ at: ts(m[1]), words: Number(m[2]), cut: m[3] === 'yes', allowance: m[4] === 'yes' }));
     const budgetWords = budgetLines.map((b) => b.words).sort((a, b) => a - b);
+    // cue blocks (cue mode, spec 2026-09-20): one line per verbal answer from IntelligenceEngine,
+    // `[]` when the model opened without a block; coding routes emit none. The limits mirror
+    // CUE_MAX_LINES / CUE_MAX_WORDS in electron/llm/prompts.ts — this module reads logs on a
+    // clean checkout and imports no build.
+    const cueLines = [...dbg.matchAll(/^(\S+) \[LOG\] \[Answer\] cues: (\[.*\])$/gm)].map((m) => {
+        let cues = [];
+        try { cues = JSON.parse(m[2]); } catch { /* a malformed line is an answer with no cues */ }
+        return { at: ts(m[1]), cues: Array.isArray(cues) ? cues : [] };
+    });
+    const wellformedCues = (c) => c.length >= 1 && c.length <= 5 && c.every((x) => typeof x === 'string' && (x.match(/\S+/g) || []).length <= 8 && !x.includes('?') && !/\byou\b/i.test(x));
+    const cueBlocks = { n: cueLines.length, present: cueLines.filter((c) => c.cues.length > 0).length, wellformed: cueLines.filter((c) => wellformedCues(c.cues)).length };
     const budget = {
         n: budgetLines.length,
         // `cut` is the row's only failure mode since the 200-word guard replaced the
@@ -389,7 +400,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, screenCaptures, heuristicChips, raceLosses,
         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, resolvedEmptyFinals: stt.resolvedEmptyFinals, fragmentChips: stt.finalsAfterReconnect.length,
         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
-        detectP50, ttftP90, ttftSource, judge, pinned, budget, length,
+        detectP50, ttftP90, ttftSource, judge, pinned, budget, length, cueBlocks,
         // extra — feed the report's findings prose and tables; not part of the gate.
         // `dispatches` is the raw parsed dispatch list (narrowest export needed to make a
         // per-dispatch parse — e.g. a held detection's `question` — independently testable;
@@ -475,6 +486,10 @@ export const GATE = [
     // shows the over-85 share the grader cannot. Expected to FAIL on the current build (s50j:
     // five answers at or past 158); the row exists so the length lever has a number.
     { key: 'length', label: 'Spoken answers under the 150-word cliff', before: 'not measured (s50e: every in-app miss was length alone)', pass: (m) => m.length.n > 0 && m.length.over150 === 0, show: (m) => m.length.n === 0 ? 'not logged' : `words p90 ${m.length.p90}, over 85: ${m.length.over85}/${m.length.n}, over 150: ${m.length.over150}/${m.length.n}` },
+    // Cue mode (spec 2026-09-20): every verbal answer opens with a cue block the candidate
+    // glances at. `n` covers the delivered answers like the budget row (coding routes emit no
+    // cues line, hence 0.9); every block present and well-formed. Older runs read "not logged".
+    { key: 'cueBlocks', label: 'Cue block above every spoken answer', before: 'not logged (before cue mode)', pass: (m) => m.cueBlocks.n > 0 && m.cueBlocks.n >= Math.floor(m.delivered * 0.9) && m.cueBlocks.present === m.cueBlocks.n && m.cueBlocks.wellformed === m.cueBlocks.n, show: (m) => m.cueBlocks.n === 0 ? 'not logged' : `${m.cueBlocks.present}/${m.cueBlocks.n} present, ${m.cueBlocks.wellformed} well-formed` },
 ];
 
 /** Counts over spoken items only — mirrors summarizeVerdicts in interview60.judge.mjs (kept dependency-free here). */
