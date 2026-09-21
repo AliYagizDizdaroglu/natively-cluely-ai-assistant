@@ -2419,10 +2419,11 @@ export class AppState {
 
     })
 
-    this.intelligenceManager.on('suggested_answer_token', (token: string, question: string, confidence: number, replace?: boolean) => {
+    this.intelligenceManager.on('suggested_answer_token', (token: string, question: string, confidence: number, replace?: boolean, cues?: string[]) => {
       const win = mainWindow()
       if (win) {
-        win.webContents.send('intelligence-suggested-answer-token', { token, question, confidence, replace: replace === true })
+        // `cues` rides the first prose token of a stream that opened with a cue block (cue mode).
+        win.webContents.send('intelligence-suggested-answer-token', { token, question, confidence, replace: replace === true, ...(cues ? { cues } : {}) })
       }
     })
 
