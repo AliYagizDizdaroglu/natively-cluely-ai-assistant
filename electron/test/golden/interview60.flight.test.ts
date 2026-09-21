@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ANSWER_MODELS, FOCUSED_ONLY, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, capturedOnly, chooseLiveModel, newestRunDir } from './interview60.flight.mjs';
+import { ANSWER_MODELS, FOCUSED_ONLY_BY_ROSTER, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, capturedOnly, chooseLiveModel, focusedOnlyFor, newestRunDir } from './interview60.flight.mjs';
 
 describe('chooseLiveModel', () => {
     it('keeps 3.x on a tool call, aborts only when no key reached the probe, falls to 2.5 on silence or a dead session', () => {
@@ -41,13 +41,13 @@ describe('FOCUSED_ONLY is re-picked from the last hour, not left to go stale', (
     // were spending 20 calls a day on questions every model now passes.
     it('targets the four mains s50j arms actually disagreed on', () => {
         for (const id of ['S1Q02', 'S1Q08', 'S2Q02', 'S1Q07']) {
-            expect(FOCUSED_ONLY.split(','), `${id} was 4 of 6 or worse on captured bytes`).toContain(id);
+            expect(FOCUSED_ONLY_BY_ROSTER.scenario50.split(','), `${id} was 4 of 6 or worse on captured bytes`).toContain(id);
         }
     });
 
     it('drops the three that every app-bytes arm now passes', () => {
         for (const id of ['S2Q07', 'S2Q09', 'S2Q10']) {
-            expect(FOCUSED_ONLY.split(','), `${id} is 6 of 6 — it separates nothing`).not.toContain(id);
+            expect(FOCUSED_ONLY_BY_ROSTER.scenario50.split(','), `${id} is 6 of 6 — it separates nothing`).not.toContain(id);
         }
     });
 
@@ -56,7 +56,7 @@ describe('FOCUSED_ONLY is re-picked from the last hour, not left to go stale', (
         // focused arm that fails S1Q06 is a broken arm rather than a hard question, and that
         // reading is what makes the four targets trustworthy. Do not drop it for being easy —
         // being easy is the point.
-        expect(FOCUSED_ONLY.split(',')).toContain('S1Q06');
+        expect(FOCUSED_ONLY_BY_ROSTER.scenario50.split(',')).toContain('S1Q06');
     });
 });
 
@@ -69,10 +69,22 @@ describe('FOCUSED_ONLY', () => {
         const { SCENARIO50 } = await import('./scenario50.questions.mjs');
         // scenario50 carries no screenshot cues, so level is the only filter needed here.
         const mains = new Set(SCENARIO50.filter((i) => i.level !== 'followup').map((i) => i.id));
-        const ids = FOCUSED_ONLY.split(',');
+        const ids = FOCUSED_ONLY_BY_ROSTER.scenario50.split(',');
         expect(ids.length).toBeLessThanOrEqual(5);
         expect(new Set(ids).size).toBe(ids.length);
         for (const id of ids) expect(mains.has(id), `${id} is not a scenario50 main`).toBe(true);
+    });
+});
+
+describe('focusedOnlyFor', () => {
+    it('gives scenario50 its five and a roster without a pick nothing, so the flight skips the focused arms instead of failing them', () => {
+        // answers.mjs exits 2 on --only ids outside its roster, and the flight tolerates a missing
+        // answers file with one WARN — so scenario50's ids sent on holdout40 would fail all four
+        // focused arms and read as four accidents in the pass record. No pick means no arm, said
+        // once in the log. holdout40 picks its five after its baseline hour ranks the mains.
+        expect(focusedOnlyFor('scenario50')).toBe(FOCUSED_ONLY_BY_ROSTER.scenario50);
+        expect(focusedOnlyFor('holdout40')).toBeNull();
+        expect(focusedOnlyFor('interview60')).toBeNull();
     });
 });
 
