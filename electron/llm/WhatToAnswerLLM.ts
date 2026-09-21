@@ -2,7 +2,7 @@ import { LLMHelper, GEMINI_FLASH_FALLBACK_MODEL, GEMINI_FLASH_MODEL } from "../L
 import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
-import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, SPOKEN_WORD_GUARD, type Suggestion } from "./verbalStreamFilter";
+import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, stripCueBlock, SPOKEN_WORD_GUARD, type Suggestion } from "./verbalStreamFilter";
 import { lastInterviewerTurn } from "./lastInterviewerTurn";
 import { tapFirstToken } from "./streamTaps";
 import * as fs from "fs";
@@ -137,6 +137,11 @@ export class WhatToAnswerLLM {
         onSuggestions?: (suggestions: Suggestion[]) => void,
         // The Live ear's texts for the same turn — appended to the verbal message, spec 2026-09-09 §3.4.
         liveTexts?: string[],
+        // Cue mode (spec 2026-09-20): called exactly once per verbal stream with the cue lines
+        // the model opened with — an empty array when it emitted no block. Never called on
+        // the coding path, which has no cue rule and nothing waiting on the callback. The
+        // spoken text yielded by this generator never contains the block — see stripCueBlock.
+        onCues?: (cues: string[]) => void,
     ): AsyncGenerator<string> {
         try {
             // Build a rich message context
@@ -224,6 +229,9 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 // spoken word budget). Still notify, so a caller always gets exactly
                 // one callback per stream and never waits on one that cannot arrive.
                 onSuggestions?.([]);
+                // The cue callback is deliberately NOT invoked here: the coding prompt has no cue
+                // rule, and unlike the offers nothing waits on it — a logged empty cue line would
+                // only fail the flight's cue row on a legitimate coding route.
             } else {
                 // Verbal paths — both use VERBAL_WHAT_TO_ANSWER_PROMPT and the same
                 // output filters; they differ only in which model generates.
@@ -276,6 +284,7 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 // stripModelSentinel removes __model_source:X__ that LLMHelper prepends —
                 //   otherwise the first content line is "__model_source:Gemma 4__I'll explain..."
                 //   and DROP_PREFIXES can't match against the sentinel-prefixed line.
+                // stripCueBlock (innermost after it) removes the __CUES__ block and reports the cues once.
                 // filterCodeFences suppresses any ``` blocks that slip through.
                 // filterVerbalLines (streaming — see verbalStreamFilter.ts) drops
                 //   coding-format prose (Time:/Space:/Why: bullets, preambles) while
@@ -297,10 +306,20 @@ ANSWER SHAPE: ${intentResult.answerShape}
                     suggestionsSent = true;
                     onSuggestions?.(s);
                 };
+                // stripCueBlock is INNERMOST, right after the model-source strip: the cue block
+                // opens the answer, and stripping it first means only prose reaches the fence
+                // filter, the line filter, the word counter and the log. Same once-guard as the
+                // offers: the fallback's second stream must not report a second time.
+                let cuesSent = false;
+                const onCuesOnce = (c: string[]) => {
+                    if (cuesSent) return;
+                    cuesSent = true;
+                    onCues?.(c);
+                };
                 const filtered = (raw: AsyncGenerator<string>) =>
                     stripSpokenNotation(
                         stripSuggestionBlock(
-                            filterVerbalLines(filterCodeFences(this.stripModelSentinel(raw))),
+                            filterVerbalLines(filterCodeFences(stripCueBlock(this.stripModelSentinel(raw), onCuesOnce))),
                             onSuggestionsOnce,
                         ),
                     );
