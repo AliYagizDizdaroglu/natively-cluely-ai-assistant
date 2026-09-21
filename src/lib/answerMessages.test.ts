@@ -269,3 +269,28 @@ describe('replace targets the LAST what_to_answer message, not an earlier one', 
         expect(result[2]).toEqual({ id: 'a2', role: 'system', intent: 'what_to_answer', text: 'New B.', isStreaming: false });
     });
 });
+
+describe('cues on the answer bubble (cue mode, spec 2026-09-20 §6.8)', () => {
+    it('the first token of a new answer carries the cues onto the bubble it creates', () => {
+        const result = applyAnswerToken([], 'Ten ', false, makeNewId(), ['thirty gigabytes', 'int8, then shard']);
+        expect(result[0]).toMatchObject({ text: 'Ten ', intent: 'what_to_answer', isStreaming: true, cues: ['thirty gigabytes', 'int8, then shard'] });
+    });
+
+    it('a following token without cues keeps the cues already on the bubble', () => {
+        const streaming: AnswerMessage = { id: 'a1', role: 'system', text: 'Ten ', intent: 'what_to_answer', isStreaming: true, cues: ['thirty gigabytes'] };
+        const result = applyAnswerToken([streaming], 'million', false, makeNewId());
+        expect(result[0]).toEqual({ ...streaming, text: 'Ten million' });
+    });
+
+    it('a supersede restart takes the new stream\'s cues, or drops the old ones when it has none', () => {
+        const old: AnswerMessage = { id: 'a1', role: 'system', text: 'Old.', intent: 'what_to_answer', isStreaming: false, cues: ['old cue'] };
+        expect(applyAnswerToken([old], 'New', true, makeNewId(), ['new cue'])[0]).toEqual({ id: 'a1', role: 'system', intent: 'what_to_answer', text: 'New', isStreaming: true, cues: ['new cue'] });
+        expect(applyAnswerToken([old], 'New', true, makeNewId())[0]).toEqual({ id: 'a1', role: 'system', intent: 'what_to_answer', text: 'New', isStreaming: true });
+    });
+
+    it('applyFinalAnswer keeps the cues when finalize spreads the streaming message', () => {
+        const streaming: AnswerMessage = { id: 'a1', role: 'system', text: 'Ten million.', intent: 'what_to_answer', isStreaming: true, cues: ['thirty gigabytes'] };
+        const result = applyFinalAnswer([streaming], false, (s) => ({ ...(s as AnswerMessage), isStreaming: false }));
+        expect(result[0].cues).toEqual(['thirty gigabytes']);
+    });
+});

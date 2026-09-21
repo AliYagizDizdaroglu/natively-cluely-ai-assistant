@@ -15,6 +15,8 @@ export interface AnswerMessage {
     text: string;
     intent?: string;
     isStreaming?: boolean;
+    /** Cue mode: the key phrases the answer opened with, rendered above the text. */
+    cues?: string[];
     [k: string]: unknown;
 }
 
@@ -39,8 +41,12 @@ export function applyAnswerToken(
     prev: AnswerMessage[],
     token: string,
     replace: boolean,
-    newId: () => string
+    newId: () => string,
+    cues?: string[]
 ): AnswerMessage[] {
+    // `cues` rides the first prose token of a stream that opened with a cue block (cue mode);
+    // a restart takes the new stream's cues and never inherits the old ones.
+    const withCues = cues && cues.length ? { cues } : {};
     if (replace) {
         const i = lastIndexWhere(prev, (m) => m.intent === 'what_to_answer');
         if (i !== -1) {
@@ -48,7 +54,7 @@ export function applyAnswerToken(
             // A restart is a NEW answer under the same id (R23) — build it fresh
             // rather than spreading the old message, so a finished coaching
             // answer's card fields and metrics never survive onto the restart.
-            updated[i] = { id: prev[i].id, role: prev[i].role, intent: 'what_to_answer', text: token, isStreaming: true };
+            updated[i] = { id: prev[i].id, role: prev[i].role, intent: 'what_to_answer', text: token, isStreaming: true, ...withCues };
             return updated;
         }
     }
@@ -58,11 +64,11 @@ export function applyAnswerToken(
     // Already streaming and not a restart: this token belongs to that bubble.
     if (lastMsg && lastMsg.isStreaming && lastMsg.intent === 'what_to_answer') {
         const updated = [...prev];
-        updated[updated.length - 1] = { ...lastMsg, text: lastMsg.text + token };
+        updated[updated.length - 1] = { ...lastMsg, text: lastMsg.text + token, ...withCues };
         return updated;
     }
 
-    return [...prev, { id: newId(), role: 'system', text: token, intent: 'what_to_answer', isStreaming: true }];
+    return [...prev, { id: newId(), role: 'system', text: token, intent: 'what_to_answer', isStreaming: true, ...withCues }];
 }
 
 /** The finished answer. `finalize(msg)` builds the finished message from the streaming one (metrics, coaching card…). */
