@@ -168,6 +168,8 @@ describe('unfilled CV slots', () => {
         ];
         expect(unfilledSlots(items)).toEqual([{ id: 'B', slots: ['METRIC', 'BEFORE', 'AFTER'] }]);
         expect(unfilledSlots([items[0], items[2]])).toEqual([]);
+        // A half-deleted marker matches no {{NAME}} pair but would still be spoken aloud.
+        expect(unfilledSlots([{ id: 'D', q: 'moved conversion from {{BEFORE to 4 percent' }])).toEqual([{ id: 'D', slots: ['a stray {{ or }}'] }]);
     });
 
     it('refuses holdout40 while its slots are unfilled, naming them; loads it with its own audio paths once they are', async () => {

@@ -36,7 +36,13 @@ const ROSTERS = {
  */
 export function unfilledSlots(items) {
     return items
-        .map((i) => ({ id: i.id, slots: [...i.q.matchAll(/\{\{([^}]*)\}\}/g)].map((m) => m[1]) }))
+        .map((i) => {
+            const slots = [...i.q.matchAll(/\{\{([^}]*)\}\}/g)].map((m) => m[1]);
+            // A half-deleted marker ("{{BEFORE" with its close gone) pairs with nothing above and
+            // would still be spoken aloud, so a brace pair left over counts as a slot too.
+            if (/\{\{|\}\}/.test(i.q.replace(/\{\{[^}]*\}\}/g, ''))) slots.push('a stray {{ or }}');
+            return { id: i.id, slots };
+        })
         .filter((x) => x.slots.length);
 }
 
@@ -54,7 +60,7 @@ if (!chosen) {
 // spend the quota measuring nothing, so the roster is refused where it enters the harness.
 const open = unfilledSlots(chosen.items);
 if (open.length) {
-    const named = open.map((x) => `${x.id} {{${x.slots.join('}} {{')}}}`).join('; ');
+    const named = open.map((x) => `${x.id}: ${x.slots.join(', ')}`).join('; ');
     throw new Error(`roster ${ROSTER_NAME} still has unfilled CV slots: ${named} — fill them in the roster's question file before building audio or flying`);
 }
 
