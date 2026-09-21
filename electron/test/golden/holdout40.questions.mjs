@@ -15,9 +15,13 @@
  *     questions at and below the STT detector's word floor (R18, R05), a follow-up chained two
  *     deep (R22F2), a long-form design (R13), a false-intro distractor (R11), a restatement
  *     (R16), fillers (R21, R26), an estimation (R23)
- *   - three résumé-reconciliation items (R31–R33) whose figures are the candidate's own, in
- *     {{SLOT}} markers filled by hand — metrics only, never a name, employer, account or
- *     client. `roster.mjs` refuses the roster while any marker survives.
+ *   - three claim-reconciliation items (R31–R33) built on INVENTED figures in a hypothetical
+ *     framing ("a CV I read last week"): the user's choice (2026-09-21) over their own CV
+ *     figures, so no question contradicts the résumé the app holds and no personal figure
+ *     enters the repo, at the cost of the résumé-priming read on this area. R31's two claims
+ *     are deliberately inconsistent — 0.9 points on 400,000 sessions is 3,600 orders a month,
+ *     not the 5,000 the same CV claims, and 3,600 against 5,000 is not rounding. The failure
+ *     scenario50 kept showing on this shape was a mismatch waved away as rounding.
  *
  * `q` is what the voice SAYS. Transforms from the written form, as scenario50's: class labels
  * move to `level`; hyphenated constructs SAPI mangles are unhyphenated ("PR-AUC" -> "PR AUC",
@@ -38,7 +42,7 @@ export const AREAS = {
     A4: 'Classical ML & statistics',
     A5: 'Deep learning & LLMs',
     A6: 'MLOps, data engineering & cloud platforms',
-    A7: 'Résumé reconciliation',
+    A7: 'Claim reconciliation',
 };
 
 /** @type {{id:string,level:string,scenario:string,topic:string,q:string,gapMs:number,chain?:string}[]} */
@@ -231,33 +235,33 @@ const RAW = [
         q: "Bedrock or self hosted: how do you think about inference cost and latency for a nightly batch summarisation job?",
     },
 
-    // ── Area 7 — Résumé reconciliation ────────────────────────────────────────
-    // FILL THE {{SLOTS}} FROM YOUR OWN CV, HERE, before building audio. Metrics only — no name,
-    // employer, account or client — and not the figures scenario50 already uses (churn rate,
-    // risk-band capture, precision, PR-AUC/ROC-AUC, the RAG F1 / hallucination / multi-hop set).
-    // `holdout40.source.md` keeps the unfilled template. roster.mjs refuses the roster while any
-    // marker survives, and the audio builder re-renders a clip whose text changed.
+    // ── Area 7 — Claim reconciliation (invented figures, hypothetical framing) ──
+    // Not the figures scenario50 already uses (churn rate, risk-band capture, precision,
+    // PR-AUC/ROC-AUC, the RAG F1 / hallucination / multi-hop set): that arithmetic has been
+    // graded eleven times and prompts were tuned while looking at it.
     {
-        // METRIC_NAME a rate or score; BEFORE / AFTER its two values; N a population size;
-        // UNIT what it counts (users, requests, documents); OTHER_CLAIM a second CV figure the
-        // first should agree with.
+        // Metric consistency. 4.1 minus 3.2 is 0.9 points; 0.9 percent of 400,000 is 3,600 extra
+        // orders a month, so the 5,000 claim does NOT add up (it needs ~555,000 sessions or a
+        // 1.25-point lift). The answer has to state the number and the mismatch.
         id: 'R31', level: 'reasoning', scenario: 'A7', topic: AREAS.A7, gapMs: GAP.reasoning,
-        q: "Your CV says you moved {{METRIC_NAME}} from {{BEFORE}} to {{AFTER}} on roughly {{N}} {{UNIT}}. If that's right, about how many {{UNIT}} does the difference come to, and does it sit with the {{OTHER_CLAIM}} figure you also list?",
+        q: "Here's one from a CV I read last week: it says a model lifted checkout conversion from 3.2 to 4.1 percent on roughly 400,000 sessions a month, and later claims 5,000 extra orders a month. Does that add up?",
     },
     {
         id: 'R31F', level: 'followup', chain: 'R31', scenario: 'A7', topic: AREAS.A7, gapMs: GAP.followup,
-        q: "What else would you need to know before calling that improvement real?",
+        q: "What else would you need to know before calling that lift real?",
     },
     {
-        // PCT the percentage on the CV; WHAT the thing improved (latency, cost, accuracy).
+        // Claim provenance. Nothing is listed for the model: a good answer names the baseline
+        // and how it was measured, the traffic and window, the variance, and what else changed.
         id: 'R32', level: 'reasoning', scenario: 'A7', topic: AREAS.A7, gapMs: GAP.reasoning,
-        q: "You report a {{PCT}} percent improvement in {{WHAT}}. Improvement over what baseline, measured how, on what sample, and would you call it significant?",
+        q: "Say a CV claims a 40 percent cut in p95 latency. What do you ask before you believe it?",
     },
     {
-        // TECH_P / TECH_Q two technologies or roles listed on one project that an interviewer
-        // would want reconciled (a batch framework and a streaming one; "led" and "supported").
+        // Claim consistency. Both can be true — a rate fell while a count rose: more mail, a
+        // wider rollout, a moved threshold, complaints counting things that are not false
+        // positives. The answer has to separate the denominators before picking what to check.
         id: 'R33', level: 'reasoning', scenario: 'A7', topic: AREAS.A7, gapMs: GAP.reasoning,
-        q: "The same project lists both {{TECH_P}} and {{TECH_Q}}. Which did you actually own, and how did they fit together?",
+        q: "A vendor says their new spam filter cut false positives by 60 percent, and the support team says complaints about blocked mail went up after the rollout. Can both be true, and what would you check first?",
     },
 ];
 

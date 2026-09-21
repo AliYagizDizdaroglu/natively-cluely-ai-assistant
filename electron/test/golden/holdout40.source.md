@@ -4,15 +4,17 @@ The set exactly as written, before it is rendered for speech. This file is the s
 truth for wording; `holdout40.questions.mjs` is the harness rendering of the same questions.
 
 Design: `docs/superpowers/specs/2026-09-21-holdout-roster-design.md` (v5). Seven areas, 33
-mains + 12 follow-ups = 45 spoken items. Median question ~15 words; seven mains ask two things on
+mains + 12 follow-ups = 45 spoken items. Median question ~15 words; five mains ask two things on
 purpose and three more carry an "and why" rider. AWS and Databricks are named; Azure is not. **This roster is never tuned
 on** — every change is developed on scenario50 and validated here once.
 
-> **Slots.** The three résumé-reconciliation items (R31–R33) carry `{{SLOT}}` markers. The
-> candidate fills them from their own CV before audio is built — metrics only, never a name,
-> employer, account or client. `roster.test.ts` refuses the roster while any `{{` survives.
-> The figures must not be the ones scenario50 already uses (churn rate, risk-band capture,
-> precision, PR-AUC/ROC-AUC, the RAG F1 / hallucination / multi-hop set).
+> **Figures.** The three reconciliation items (R31–R33) use invented, self-consistent figures
+> in a hypothetical framing ("a CV I read last week"). The candidate chose this on 2026-09-21
+> over their own CV figures, so no question ever contradicts the résumé the app holds and no
+> personal figure enters the repo; the cost is that the résumé-priming read on this area is
+> lost. R31's two claims are deliberately inconsistent (see the note under it). Nothing here
+> reuses scenario50's figures (churn rate, risk-band capture, precision, PR-AUC/ROC-AUC, the
+> RAG F1 / hallucination / multi-hop set).
 
 > **Shapes from the final check (2026-09-21).** One redirect inside a single turn (R10), one
 > false premise (R08), three short questions — R15 at five words, R18 at four (exactly the STT
@@ -105,20 +107,24 @@ on** — every change is developed on scenario50 and validated here once.
 
 **R30. [Reasoning]** Bedrock or self-hosted — how do you think about inference cost and latency for a nightly batch summarisation job?
 
-## Area 7 — Résumé reconciliation (slots to fill)
+## Area 7 — Claim reconciliation (invented figures, hypothetical framing)
 
-**R31. [Reasoning · Reconciliation — metric consistency]** Your CV says you moved {{METRIC_NAME}} from {{BEFORE}} to {{AFTER}} on roughly {{N}} {{UNIT}} — if that's right, about how many {{UNIT}} does the difference come to, and does it sit with the {{OTHER_CLAIM}} figure you also list?
-*Follow-up R31F:* What else would you need to know before calling that improvement real?
+**R31. [Reasoning · Reconciliation — metric consistency]** Here's one from a CV I read last week: it says a model lifted checkout conversion from 3.2 to 4.1 percent on roughly 400,000 sessions a month, and later claims 5,000 extra orders a month — does that add up?
+*Follow-up R31F:* What else would you need to know before calling that lift real?
 
-> Slots: `METRIC_NAME` a rate or score (e.g. "conversion rate"); `BEFORE`/`AFTER` its two
-> values; `N` a population size; `UNIT` what it counts (users, requests, documents);
-> `OTHER_CLAIM` a second figure on the CV the first one should agree with.
+> Intended answer: 4.1 − 3.2 = 0.9 points; 0.9% of 400,000 ≈ 3,600 extra orders a month, so
+> the 5,000 claim does **not** add up (it would need ~555,000 sessions or a 1.25-point lift).
+> The two claims are inconsistent on purpose: the failure scenario50 kept showing on this shape
+> was a mismatch waved away as rounding, and 3,600 against 5,000 is not rounding.
 
-**R32. [Reasoning · Reconciliation — claim provenance]** You report a {{PCT}} percent improvement in {{WHAT}} — improvement over what baseline, measured how, on what sample, and would you call it significant?
+**R32. [Reasoning · Reconciliation — claim provenance]** Say a CV claims a 40 percent cut in p95 latency — what do you ask before you believe it?
 
-> Slots: `PCT` the percentage on the CV; `WHAT` the thing improved (latency, cost, accuracy).
+> Intended answer: the baseline and how it was measured (same endpoints, same load, same
+> percentile window), the traffic and duration behind it, the variance, and what else changed
+> at the same time. Nothing is listed in the question, so the model has to produce the list.
 
-**R33. [Reasoning · Reconciliation — claim consistency]** The same project lists both {{TECH_P}} and {{TECH_Q}} — which did you actually own, and how did they fit together?
+**R33. [Reasoning · Reconciliation — claim consistency]** A vendor says their new spam filter cut false positives by 60 percent, and the support team says complaints about blocked mail went up after the rollout — can both be true, and what would you check first?
 
-> Slots: `TECH_P`/`TECH_Q` two technologies or roles listed on one project that an interviewer
-> would want reconciled (e.g. a batch framework and a streaming one; "led" and "supported").
+> Intended answer: yes — a rate fell while a count rose. More mail, a wider rollout, a moved
+> threshold, or complaints that count things other than false positives. The answer has to
+> separate the two denominators before naming what to check.
