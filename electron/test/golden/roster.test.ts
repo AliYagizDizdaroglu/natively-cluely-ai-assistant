@@ -95,3 +95,93 @@ describe('scenario50 as a stimulus', () => {
         expect(s50.INTERVIEW.filter((x: any) => old.has(x.id))).toEqual([]);
     });
 });
+
+/**
+ * holdout40 is the set that is NEVER tuned on: it answers "does the change still hold on
+ * questions it was not tuned against" — once per shipped change. Its shape is the opposite of
+ * scenario50's on purpose (short, mostly single-part, seven areas, AWS and Databricks named),
+ * so a count drifting towards scenario50's is a design regression, not a detail. Read directly
+ * from the question file: the roster loader refuses the set while its CV slots are unfilled.
+ */
+describe('holdout40 as a stimulus', () => {
+    it('is 33 mains and 12 follow-ups, R01 first and R33 last, with the level mix the spec fixes', async () => {
+        const { HOLDOUT40 } = await import('./holdout40.questions.mjs');
+        expect(HOLDOUT40).toHaveLength(45);
+        expect(HOLDOUT40[0].id).toBe('R01');
+        expect(HOLDOUT40.at(-1)!.id).toBe('R33');
+        const mains = HOLDOUT40.filter((x: any) => x.level !== 'followup');
+        expect(mains).toHaveLength(33);
+        expect(HOLDOUT40.filter((x: any) => x.level === 'followup')).toHaveLength(12);
+        expect(mains.reduce((a: any, x: any) => ({ ...a, [x.level]: (a[x.level] ?? 0) + 1 }), {}))
+            .toEqual({ verbal: 6, reasoning: 17, design: 4, coding: 2, sql: 1, cloud: 3 });
+    });
+
+    it('chains every follow-up to an item spoken before it, exactly one of them two deep', async () => {
+        const { HOLDOUT40 } = await import('./holdout40.questions.mjs');
+        const asked = new Set<string>();
+        let twoDeep = 0;
+        for (const x of HOLDOUT40 as any[]) {
+            if (x.level === 'followup') {
+                expect(asked.has(x.chain), `${x.id} chains to ${x.chain}, which is not asked before it`).toBe(true);
+                if (x.chain.endsWith('F')) twoDeep++;
+            }
+            asked.add(x.id);
+        }
+        // R22 -> R22F -> R22F2. Every roster so far chains once, so context carried two turns
+        // deep has never been measured. judge.mjs brackets R22F2 with R22F's text only — stated
+        // in the spec, not a defect.
+        expect(twoDeep).toBe(1);
+    });
+
+    it('is the short-question set — median under 20 words, at most one item at LONG_WORDS — and names no Azure service', async () => {
+        const { HOLDOUT40 } = await import('./holdout40.questions.mjs');
+        const { wordsOf } = await import('./scenario50.questions.mjs');
+        const words = HOLDOUT40.map((x: any) => wordsOf(x.q)).sort((a: number, b: number) => a - b);
+        expect(words[Math.floor(words.length / 2)]).toBeLessThan(20);
+        expect(HOLDOUT40.filter((x: any) => x.long).length).toBeLessThanOrEqual(1);
+        // The résumé and JD the app holds are Azure-heavy, so every provider question here is a
+        // test of priming on providers the résumé barely mentions.
+        expect(HOLDOUT40.filter((x: any) => /azure/i.test(x.q))).toEqual([]);
+    });
+
+    it('cannot collide with interview60 or scenario50 ids', async () => {
+        const { HOLDOUT40 } = await import('./holdout40.questions.mjs');
+        const i60 = await load({});
+        const s50 = await load({ NATIVELY_ROSTER: 'scenario50' });
+        const taken = new Set([...i60.INTERVIEW, ...s50.INTERVIEW].map((x: any) => x.id));
+        expect(HOLDOUT40.filter((x: any) => taken.has(x.id))).toEqual([]);
+    });
+});
+
+/**
+ * The three reconciliation items carry {{SLOT}} markers the candidate fills from their own CV
+ * (metrics only). An hour spoken with the markers in place would measure nothing and spend the
+ * quota, so the loader refuses the roster at the boundary where it enters the harness.
+ */
+describe('unfilled CV slots', () => {
+    it('unfilledSlots names each item that still carries a slot, with the slot names, and nothing else', async () => {
+        const { unfilledSlots } = await import('./roster.mjs');
+        const items = [
+            { id: 'A', q: 'plain question' },
+            { id: 'B', q: 'moved {{METRIC}} from {{BEFORE}} to {{AFTER}}' },
+            { id: 'C', q: 'a filled one: moved conversion from 3 to 4 percent' },
+        ];
+        expect(unfilledSlots(items)).toEqual([{ id: 'B', slots: ['METRIC', 'BEFORE', 'AFTER'] }]);
+        expect(unfilledSlots([items[0], items[2]])).toEqual([]);
+    });
+
+    it('refuses holdout40 while its slots are unfilled, naming them; loads it with its own audio paths once they are', async () => {
+        const { HOLDOUT40 } = await import('./holdout40.questions.mjs');
+        const { unfilledSlots } = await import('./roster.mjs');
+        if (unfilledSlots(HOLDOUT40).length) {
+            await expect(load({ NATIVELY_ROSTER: 'holdout40' })).rejects.toThrow(/R31.*METRIC_NAME/s);
+        } else {
+            const r = await load({ NATIVELY_ROSTER: 'holdout40' });
+            expect(r.INTERVIEW).toHaveLength(45);
+            expect(r.TTS_LOCAL_DIR).toBe('holdout40-tts-local');
+            expect(r.TTS_GEMINI_DIR).toBe('holdout40-tts');
+            expect(r.WAV_NAME).toBe('holdout40.wav');
+            expect(r.calibrationSample()).toHaveLength(8);
+        }
+    });
+});

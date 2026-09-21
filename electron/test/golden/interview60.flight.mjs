@@ -87,7 +87,17 @@ export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 
  * Re-pick this after a flight by scoring every main across that hour's app-bytes arms; do not
  * let it go stale again.
  */
-export const FOCUSED_ONLY = 'S1Q02,S1Q08,S2Q02,S1Q07,S1Q06';
+export const FOCUSED_ONLY_BY_ROSTER = { scenario50: 'S1Q02,S1Q08,S2Q02,S1Q07,S1Q06' };
+
+/**
+ * The focused five for the roster the hour runs, or null when it has none. answers.mjs exits 2
+ * on --only ids outside its roster and the flight tolerates a missing answers file with one
+ * WARN, so scenario50's ids on another roster would fail all four focused arms by accident and
+ * read as four accidents in the pass record. No pick means the arms are skipped, once, in the
+ * log. holdout40 picks its five after its baseline hour ranks the mains, as scenario50's were
+ * re-picked from s50j.
+ */
+export const focusedOnlyFor = (roster) => FOCUSED_ONLY_BY_ROSTER[roster] ?? null;
 export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
 
 /**
@@ -273,13 +283,15 @@ async function main() {
     const promptsExit = await run([path.join(HERE, 'interview60.prompts.mjs'), runDir], { dry });
     const focusedCaptured = dry || (promptsExit === 0 && fs.existsSync(promptsFile));
     if (!focusedCaptured) log('WARN  no captured prompts — the focused arms will send their own framing, NOT the app\'s call');
-    const focusedArgs = ['--only', FOCUSED_ONLY, ...(focusedCaptured ? ['--captured', promptsFile] : [])];
+    const focusedOnly = focusedOnlyFor(ROSTER_NAME);
+    if (!focusedOnly) log(`FOCUSED  roster ${ROSTER_NAME} has no focused five — skipping the ${FOCUSED_MODELS.length} focused arms`);
+    const focusedArgs = ['--only', focusedOnly ?? '', ...(focusedCaptured ? ['--captured', promptsFile] : [])];
     const capturedIds = focusedCaptured && !dry ? capturedOnly(JSON.parse(fs.readFileSync(promptsFile, 'utf8'))) : [];
     if (focusedCaptured && !dry) log(`paired captured arm: ${capturedIds.length} spoken items have a replayable prompt this hour`);
     for (const a of PAIRED_ARMS) if (a.captured && !(focusedCaptured && (dry || capturedIds.length))) log(`WARN  paired arm ${a.tag} skipped — it replays the hour's captured prompts and there are none`);
     const paired = PAIRED_ARMS.filter((a) => !a.captured || (focusedCaptured && (dry || capturedIds.length)))
         .map((a) => ({ model: a.model, tag: a.tag, args: ['--tag', a.tag, ...a.args, ...(a.captured ? ['--captured', promptsFile, ...(dry ? [] : ['--only', capturedIds.join(',')])] : [])] }));
-    const arms = [...ANSWER_MODELS.map((model) => ({ model, args: [] })), ...FOCUSED_MODELS.map((model) => ({ model, args: focusedArgs })), ...paired];
+    const arms = [...ANSWER_MODELS.map((model) => ({ model, args: [] })), ...(focusedOnly ? FOCUSED_MODELS.map((model) => ({ model, args: focusedArgs })) : []), ...paired];
     for (const { model, tag, args } of arms) {
         await run([path.join(HERE, 'interview60.answers.mjs'), '--model', model, ...args], { dry });
         const src = path.join(HERE, answersFileFor(model, tag));
@@ -303,7 +315,7 @@ async function main() {
         commit, stt: process.env.NATIVELY_STT_PROVIDER ?? null,
         // 'captured' = the focused arms replayed the app's own system + user turn; 'own-framing'
         // = they sent the arm's bare question text, which is not the same experiment.
-        focusedPrompts: focusedCaptured ? 'captured' : 'own-framing', focusedOnly: FOCUSED_ONLY,
+        focusedPrompts: focusedCaptured ? 'captured' : 'own-framing', focusedOnly,
         pairedArms: paired.map((a) => a.tag),
         toGrade: ['interview60.judge.pairs.json', ...ANSWER_MODELS.map((m) => `interview60.judge.pairs.${m}.json`), ...paired.map((a) => `interview60.judge.pairs.${a.model}_${a.tag}.json`)],
         next: 'grade each pairs file with its rubric into interview60.judge.verdicts[.<model>].json, then interview60.judge.mjs <run> [--answers <file>] --verdicts <that file>',
