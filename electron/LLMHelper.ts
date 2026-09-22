@@ -3401,7 +3401,19 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
     // Primary responded — emit first token then stream the rest
     if (!firstResult.result.done && firstResult.result.value) {
-      yield firstResult.result.value;
+      // This token is yielded here, outside `yield* primaryStream`, so a consumer that stops
+      // on it (a superseding generation's .return(), an exit after the first words) never
+      // reaches primaryStream's own finally, the one that aborts the request. Close
+      // primaryStream on that exit. Not awaited, as in the stall branch: the consumer never
+      // waits on the primary's teardown, and since primaryStream is parked at its first
+      // yield, the close reaches the abort at once.
+      let delivered = false;
+      try {
+        yield firstResult.result.value;
+        delivered = true;
+      } finally {
+        if (!delivered) primaryStream.return(undefined);
+      }
     }
     if (!firstResult.result.done) {
       yield* primaryStream;
