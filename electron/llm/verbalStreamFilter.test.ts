@@ -179,6 +179,22 @@ describe('stripSpokenNotation — formulas that start with a number are not curr
     it('still strips the measured cases: backticks, bold, $O(\\log n)$', async () => {
         expect(await runNotation('Use `map.get(key)` in **O(1)**, not $O(\\log n)$.')).toBe('Use map.get(key) in O(1), not O(log n).');
     });
+    it('strips single-asterisk emphasis (flight s50m) but keeps a spaced star', async () => {
+        // 2026-09-22, s50m, S1Q03F: the hour's ONLY delivery-0 answer said "the
+        // *incremental* effect". cleanNotation removed "**" and nothing else, so italic
+        // emphasis reached the ear. The trailing-"*" hold already existed for exactly
+        // this judgement — only the rule was missing.
+        expect(await runNotation('a model to predict the *incremental* effect of the treatment.'))
+            .toBe('a model to predict the incremental effect of the treatment.');
+        // A star with space on both sides is multiplication or a stray bullet, not emphasis.
+        expect(await runNotation('the cost is 3 * 4 per shard.')).toBe('the cost is 3 * 4 per shard.');
+        // Bold still goes, and both forms in one sentence resolve.
+        expect(await runNotation('**latency** matters more than *throughput* here.'))
+            .toBe('latency matters more than throughput here.');
+        for (const size of [1, 2, 3, 5, 9]) {
+            expect(await runNotation('predict the *incremental* effect.', size)).toBe('predict the incremental effect.');
+        }
+    });
     it('strips a $…$ percentage ("$9.5\\%$" — 3.5 Flash, flight s50c) to "9.5%", keeping "$9.5" as money elsewhere', async () => {
         expect(await runNotation('the p99 improved by $9.5\\%$ after the change.')).toBe('the p99 improved by 9.5% after the change.');
         expect(await runNotation('the p99 improved by $9.5\\% after the change.')).toBe('the p99 improved by 9.5% after the change.');
