@@ -539,6 +539,14 @@ function cleanNotation(s: string): string {
         .replace(/`+/g, '')
         // markdown emphasis markers
         .replace(/\*\*/g, '')
+        // A SINGLE pair is emphasis too, and only the bold form was ever removed: flight
+        // s50m, 2026-09-22, S1Q03F spoke "the *incremental* effect" and took the hour's
+        // only delivery 0 for it. Judged the way the "$" rule is judged, by the character
+        // on the inside: a star touching a non-space is a delimiter, a star with space on
+        // both sides is multiplication or a stray bullet and stays. The trailing-"*" hold
+        // in stripSpokenNotation already feeds this rule its next character, so a pair
+        // split across chunks resolves the same as a whole one.
+        .replace(/\*(?=\S)|(?<=\S)\*/g, '')
         // LaTeX delimiters: an OPENING '$' is followed by something non-numeric ("$O(")
         // or by a number that a power or a division sign follows ("$1 / (c" — the
         // rank-fusion formula flight s50b spoke as "dollar one"; "$2^n"); a CLOSING '$'
@@ -570,11 +578,16 @@ export async function* stripSpokenNotation(
     // break was. Decided once, on the first non-blank character.
     let decided = false;
     let passthrough = false;
-    // The last character already spoken: a span that opens with "$" right after a
-    // non-space ("n)" | "$ for") is a CLOSING delimiter, which cleanNotation alone
-    // cannot see once the ")" has left in an earlier span.
+    // The last character already spoken: a span that opens with "$" or "*" right after a
+    // non-space ("n)" | "$ for" | "incremental" | "*") is a CLOSING delimiter, which
+    // cleanNotation alone cannot see once the character before it has left in an earlier
+    // span. The star joined this in s50m: the hold releases the closing star at the head
+    // of the next span, where the rule's lookbehind has nothing to look at.
     let lastOut = '';
-    const closingDollarFirst = (s: string) => (s.startsWith('$') && /\S/.test(lastOut) ? s.slice(1) : s);
+    // Only a LONE star is a closing single-emphasis delimiter. A leading "**" is the bold
+    // pair the hold kept whole, and slicing one star off it left an orphan that no rule
+    // could then match — "…and **p99**" spoke a trailing star.
+    const closingDelimiterFirst = (s: string) => (/^(?:\$|\*(?!\*))/.test(s) && /\S/.test(lastOut) ? s.slice(1) : s);
     for await (const chunk of source) {
         if (!decided) {
             const probe = (carry + chunk).trimStart();
@@ -612,13 +625,13 @@ export async function* stripSpokenNotation(
             s = s.slice(0, -carry.length);
         }
         if (s) {
-            const out = cleanNotation(closingDollarFirst(s));
+            const out = cleanNotation(closingDelimiterFirst(s));
             if (out) { lastOut = out.slice(-1); yield out; }
         }
     }
     // Stream ended while holding a character — surface it rather than swallow it.
     if (carry) {
-        const out = passthrough ? carry : cleanNotation(closingDollarFirst(carry));
+        const out = passthrough ? carry : cleanNotation(closingDelimiterFirst(carry));
         if (out) yield out;
     }
 }
