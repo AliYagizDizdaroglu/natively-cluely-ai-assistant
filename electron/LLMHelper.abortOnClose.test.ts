@@ -112,6 +112,37 @@ describe('Gemini stream aborts on early close', () => {
         expect(lastSignal?.aborted).toBe(true);
     }, { timeout: 5000 });
 
+    it('aborts the request when the consumer closes on the first token', async () => {
+        // The close the test above steps around: a superseding generation's .return(),
+        // or any exit right after the first words, lands on the token the first-token
+        // race hand-yields OUTSIDE `yield* primaryStream`.
+        generateContentStream.mockImplementation(heldOpenUntilAbort);
+        const helper = new LLMHelper('fake-gemini-key');
+
+        const seen: string[] = [];
+        let timer: NodeJS.Timeout | undefined;
+        const loop = (async () => {
+            for await (const token of helper.streamVerbalWithGeminiFlash('q', 'sys')) {
+                seen.push(token);
+                break;
+            }
+            return 'loop' as const;
+        })();
+
+        const raced = await Promise.race([
+            loop,
+            new Promise<'timeout'>(resolve => { timer = setTimeout(() => resolve('timeout'), 500); }),
+        ]);
+        clearTimeout(timer!);
+
+        expect(raced).toBe('loop');
+        expect(seen).toEqual(['first ']);
+        // The close does not wait for primaryStream's teardown, so nothing orders the abort
+        // before the loop's end; let the teardown's microtasks run before reading the signal.
+        await new Promise(resolve => setTimeout(resolve, 0));
+        expect(lastSignal?.aborted).toBe(true);
+    }, { timeout: 5000 });
+
     it('does not abort when the stream completes naturally', async () => {
         // Calibration: the abort must fire on an early close and nowhere else.
         generateContentStream.mockImplementation(completesNaturally);
