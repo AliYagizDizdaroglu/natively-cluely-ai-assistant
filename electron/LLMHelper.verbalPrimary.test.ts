@@ -96,4 +96,14 @@ describe('NATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only',
         const helper = new LLMHelper('AIzaTESTKEY');
         await expect(drain(technical(helper))).rejects.toThrow(/NATIVELY_VERBAL_PRIMARY_MODEL/);
     });
+
+    it('a caller that names its model gets that model — the override picks the primary, not every call', async () => {
+        // The verbal error fallback names the Flash Lite the primary is not, and typed chat names
+        // the selected model. Re-resolving either through the override sent the fallback straight
+        // back to the model that had just failed, and put typed chat on a model its label did not name.
+        process.env[VERBAL_PRIMARY_MODEL_ENV] = 'gemini-3.5-flash-lite';
+        const helper = new LLMHelper('AIzaTESTKEY');
+        await drain(helper.streamVerbalWithGeminiFlash('tell me about a time', VERBAL_WHAT_TO_ANSWER_PROMPT, undefined, 'gemini-3.1-flash-lite'));
+        expect(generateContentStream.mock.calls[0][0].model).toBe('gemini-3.1-flash-lite');
+    });
 });
