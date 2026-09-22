@@ -56,6 +56,7 @@ const start = Date.now();
 
 build({
   entryPoints,
+  absWorkingDir: rootDir, // resolve the relative entryPoints against rootDir, not process.cwd()
   bundle: false,          // match tsc behaviour: no bundling, just transpile
   outdir: outDir,
   outbase: rootDir,       // preserve directory structure (electron/main.ts → dist-electron/electron/main.js)
