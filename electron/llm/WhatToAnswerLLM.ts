@@ -189,8 +189,9 @@ export class WhatToAnswerLLM {
         // spoken text yielded by this generator never contains the block — see stripCueBlock.
         onCues?: (cues: string[]) => void,
     ): AsyncGenerator<string> {
-        // The model the verbal error fallback went to, for the last-resort message below.
-        let fallbackModel = GEMINI_FLASH_FALLBACK_MODEL;
+        // The model the verbal error fallback went to, for the last-resort message below —
+        // unset when none ran: a failure after the first words, the coding path, a refused override.
+        let fallbackModel: string | undefined;
         try {
             // Build a rich message context
             // Note: We can't easily inject the complex temporal/intent logic into universal prompt *variables* 
@@ -285,11 +286,13 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 // output filters; they differ only in which model generates.
                 // Name the model that will answer, outside the filter chain (which
                 // strips sentinels), so the bar under the answer stops guessing.
-                // Resolved the way LLMHelper resolves the call: the flight override replaces
-                // the model wherever the answer goes to Gemini proper — the fast route always,
-                // the technical route on a Gemini selection (Gemma and other providers route
-                // before the override is read). Naming the selection instead labelled s50l's
-                // and s50m's answers gemini-3.1-flash-lite while 3.5-lite wrote them.
+                // The flight override replaces the model wherever the answer goes to Gemini
+                // proper — the fast route always, the technical route on a Gemini selection —
+                // so a Gemini name goes through the same resolver the call does; a Gemma or
+                // other-provider name is kept. Naming the selection alone labelled s50l's and
+                // s50m's answers gemini-3.1-flash-lite while 3.5-lite wrote them. (Ollama, custom
+                // providers and Groq fast-text answer before streamChat's Gemini branch and keep
+                // whatever id the selection holds, as they always have.)
                 const selected = useDeepModel ? this.llmHelper.getCurrentModelId() : GEMINI_FLASH_MODEL;
                 const primaryModel = /^(gemini-|models\/)/.test(selected) ? verbalPrimaryModel(selected, VERBAL_PRIMARY_MODELS) : selected;
                 yield `__model_source:${primaryModel}__`;
@@ -428,7 +431,9 @@ ANSWER SHAPE: ${intentResult.answerShape}
             const msg = (error as Error)?.message ?? String(error);
             console.error("[WhatToAnswerLLM] Stream failed:", error);
             diagLog(`generateStream FAILED (fallback exhausted or unavailable): ${msg}`);
-            yield `[No answer — both the primary model and the ${fallbackModel} fallback failed: ${msg.slice(0, 160)}]`;
+            yield fallbackModel
+                ? `[No answer — both the primary model and the ${fallbackModel} fallback failed: ${msg.slice(0, 160)}]`
+                : `[No answer — the answer model failed: ${msg.slice(0, 160)}]`;
         }
     }
 }
