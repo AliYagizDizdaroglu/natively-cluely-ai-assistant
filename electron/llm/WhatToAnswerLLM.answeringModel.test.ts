@@ -18,15 +18,39 @@ vi.mock('electron', () => ({
 /**
  * The SDK per call, in call order. 'silent' is a Google-side stall: the request is accepted and
  * the first chunk never arrives. 'error' is a 503 before any token: the request itself rejects,
- * as the SDK's does. Anything else is the chunks to stream.
+ * as the SDK's does. { thenFail } streams its chunks and then drops the connection. { heldOpen }
+ * streams its chunks but, like the real SDK response (LLMHelper.abortOnClose.test.ts, measured
+ * 2026-09-05), only lets a close complete once the request's signal aborts. Anything else is the
+ * chunks to stream.
  */
-const plan: Array<'silent' | 'error' | string[]> = [];
-const generateContentStream = vi.fn(async (_params: { model: string; contents: unknown; config?: Record<string, unknown> }) => {
+const plan: Array<'silent' | 'error' | string[] | { thenFail: string[] } | { heldOpen: string[] }> = [];
+/** The abort signal each SDK call was given, in call order. */
+const signals: Array<AbortSignal | null> = [];
+const generateContentStream = vi.fn(async (params: { model: string; contents: unknown; config?: Record<string, unknown> }) => {
     const step = plan[generateContentStream.mock.calls.length - 1] ?? ['unplanned call'];
+    const signal = (params.config?.abortSignal as AbortSignal | undefined) ?? null;
+    signals.push(signal);
     if (step === 'error') throw new Error('got status: 503 Service Unavailable');
+    const streamed = step;   // typed without 'error', which the closure below would otherwise forget
     async function* stream() {
-        if (step === 'silent') { await new Promise<never>(() => {}); return; }
-        for (const text of step) yield { text: () => text };
+        if (streamed === 'silent') { await new Promise<never>(() => {}); return; }
+        if ('thenFail' in streamed) {
+            for (const text of streamed.thenFail) yield { text: () => text };
+            throw new Error('socket hang up');
+        }
+        if ('heldOpen' in streamed) {
+            try {
+                for (const text of streamed.heldOpen) yield { text: () => text };
+            } finally {
+                await new Promise<void>((resolve) => {
+                    if (!signal) return;   // no signal: the close never completes
+                    if (signal.aborted) { resolve(); return; }
+                    signal.addEventListener('abort', () => resolve(), { once: true });
+                });
+            }
+            return;
+        }
+        for (const text of streamed) yield { text: () => text };
     }
     return stream();
 });
@@ -77,6 +101,7 @@ describe('the answer is named after, and falls back from, the model that actuall
     beforeEach(() => {
         generateContentStream.mockClear();
         plan.length = 0;
+        signals.length = 0;
         delete process.env[VERBAL_PRIMARY_MODEL_ENV];
         // The shipped LOW, so the stall budget is the shipped 10 s.
         delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
@@ -133,6 +158,15 @@ describe('the answer is named after, and falls back from, the model that actuall
         expect(text).toContain('both the primary model and the gemini-3.1-flash-lite fallback failed');
     });
 
+    it('a failure after the first words names no fallback — none ran', async () => {
+        process.env[VERBAL_PRIMARY_MODEL_ENV] = 'gemini-3.5-flash-lite';
+        plan.push({ thenFail: ['The first words reached the screen. '] });
+        const text = (await answer(TECHNICAL)).join('');
+        expect(asked()).toEqual(['gemini-3.5-flash-lite']);
+        expect(text).toContain('socket hang up');
+        expect(text).not.toContain('fallback failed');
+    });
+
     it('when the model the stall race switched to fails too, the error fallback goes back to the other one', async () => {
         vi.useFakeTimers();
         plan.push('silent', 'error', ['Third request, first answer.']);
@@ -142,6 +176,38 @@ describe('the answer is named after, and falls back from, the model that actuall
         expect(asked()).toEqual(['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'gemini-3.1-flash-lite']);
         expect(named(chunks).at(-1)).toBe('gemini-3.1-flash-lite (fallback)');
         expect(chunks.join('')).toContain('Third request, first answer.');
+    });
+
+    it('override on, Gemma selected: the label keeps the Gemma name — the override never reaches that route', async () => {
+        // streamChat answers a Gemma selection before its Gemini branch reads the override, so
+        // only a Gemini name may pass through the resolver. A stand-in helper, because the real
+        // setModel('gemma-…') fires warm-up requests that would muddle the SDK's call order.
+        process.env[VERBAL_PRIMARY_MODEL_ENV] = 'gemini-3.5-flash-lite';
+        async function* gemmaAnswer() { yield 'A Gemma answer.'; }
+        const helper = { streamChat: vi.fn(gemmaAnswer), streamVerbalWithGeminiFlash: vi.fn(), getCurrentModelId: () => 'gemma-4-31b-it' } as any;
+        const chunks = await drain(new WhatToAnswerLLM(helper).generateStream('How do you make ingestion idempotent?', undefined, TECHNICAL));
+        expect(named(chunks)).toEqual(['gemma-4-31b-it']);
+    });
+
+    it('closing the answer early still aborts the request, through the stall-switch layer', async () => {
+        // The word budget's cut and a superseding generation both close the stream early, and
+        // the SDK releases a request only when its signal aborts. nameStallSwitch and its watch()
+        // now sit on that path, so the close has to travel through both. Closed on the second
+        // words: the first is hand-yielded by the stall race outside its delegation, a known gap.
+        process.env[VERBAL_PRIMARY_MODEL_ENV] = 'gemini-3.5-flash-lite';
+        plan.push({ heldOpen: ['I ', 'would ', 'key ', 'every ', 'write ', 'by ', 'document ', 'id ', 'and ', 'skip it.'] });
+        const answerStream = new WhatToAnswerLLM(new LLMHelper('fake-gemini-key')).generateStream('How do you make ingestion idempotent?', undefined, TECHNICAL);
+        let timer: NodeJS.Timeout | undefined;
+        const loop = (async () => {
+            let words = 0;
+            for await (const chunk of answerStream) if (!/^__model_source:/.test(chunk) && ++words === 2) break;
+            return 'closed' as const;
+        })();
+        // Real timers: a close waiting on an un-aborted request loses this race.
+        const raced = await Promise.race([loop, new Promise<'timeout'>((resolve) => { timer = setTimeout(() => resolve('timeout'), 500); })]);
+        clearTimeout(timer!);
+        expect(raced).toBe('closed');
+        expect(signals[0]?.aborted).toBe(true);
     });
 
     it('override off: a 503 on 3.1-lite still goes to 3.5-lite — the shipped pairing is unchanged', async () => {
