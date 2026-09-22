@@ -3320,10 +3320,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     userMessage: string,
     systemPrompt: string,
     imagePaths?: string[],
-    // Primary model for the verbal answer. Defaults to Flash Lite but the IPC
-    // layer passes the user's SELECTED model so the dropdown is authoritative
-    // (Gemma / Flash 2.5 selections actually generate, not just Flash Lite).
-    primaryModel: string = GEMINI_FLASH_MODEL,
+    // Primary model for the verbal answer. Omitted, it is Flash Lite (or the flight
+    // override); the IPC layer passes the user's SELECTED model so the dropdown is
+    // authoritative (Gemma / Flash 2.5 selections actually generate, not just Flash Lite).
+    primaryModel?: string,
   ): AsyncGenerator<string, void, unknown> {
     if (!this.client) {
       throw new Error("Gemini client not initialized — cannot route verbal answer to Flash");
@@ -3333,10 +3333,13 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     if (notesBlock) console.log(`[LLMHelper] <user_context> appended to the system prompt (${this.customNotes.trim().length} chars)`);
     const systemWithLanguage = this.injectLanguageInstruction(`${systemPrompt}${notesBlock}`);
     // Same flight override as the technical route, so an hour cannot measure one model on
-    // the behavioral question and another on the other thirty-nine.
+    // the behavioral question and another on the other thirty-nine. It picks the PRIMARY
+    // only: a caller that names its model gets that model. The verbal error fallback names
+    // the Flash Lite the primary is not, and resolving that through the override too sent
+    // it straight back to the model that had just failed.
     yield* this.streamGeminiWithStallFallback(
       userMessage,
-      verbalPrimaryModel(primaryModel, VERBAL_PRIMARY_MODELS),
+      primaryModel ?? verbalPrimaryModel(GEMINI_FLASH_MODEL, VERBAL_PRIMARY_MODELS),
       imagePaths,
       systemWithLanguage,
     );

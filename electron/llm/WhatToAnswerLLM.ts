@@ -1,10 +1,11 @@
-import { LLMHelper, GEMINI_FLASH_FALLBACK_MODEL, GEMINI_FLASH_MODEL } from "../LLMHelper";
+import { LLMHelper, GEMINI_FLASH_FALLBACK_MODEL, GEMINI_FLASH_MODEL, VERBAL_PRIMARY_MODELS } from "../LLMHelper";
 import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
 import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, SPOKEN_WORD_GUARD, type Suggestion } from "./verbalStreamFilter";
 import { lastInterviewerTurn } from "./lastInterviewerTurn";
 import { tapFirstToken } from "./streamTaps";
+import { verbalPrimaryModel } from "./verbalPrimaryModel";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -23,6 +24,9 @@ function diagLog(msg: string) {
 // Spoken word guard: see verbalStreamFilter.SPOKEN_WORD_GUARD — a 200-word
 // clamp, never a cut under it (flight s50c, 2026-09-12). Coding is exempt.
 
+/** The stall race's switch, as LLMHelper.streamGeminiWithStallFallback announces it: one whole chunk. */
+const STALL_SWITCH = /^__model_source:(\S+) \(fallback\)__$/;
+
 export class WhatToAnswerLLM {
     private llmHelper: LLMHelper;
 
@@ -39,17 +43,21 @@ export class WhatToAnswerLLM {
      * mid-interview. So a mid-stream failure is re-thrown and surfaces as an
      * error; only a clean pre-token failure is recoverable.
      *
-     * Both arguments arrive ALREADY FILTERED, so the __model_source__ sentinel
+     * Both streams arrive ALREADY FILTERED, so the __model_source__ sentinel
      * yielded here sits outside both filter chains: stripModelSentinel would
      * otherwise eat it and the redirection would be silent again.
      *
      * Note this is not an independent leg — the fallback is another Gemini model
      * on the same key, so a quota or auth fault takes out both. It covers a
      * per-model stall, block or capacity error, not a credential outage.
+     *
+     * The fallback model is picked at the moment of failure, from the model that
+     * failed: a constant here sent a 3.5-lite primary straight back to 3.5-lite.
      */
     private async *withVerbalFallback(
         primary: AsyncGenerator<string>,
-        makeFallback: () => AsyncGenerator<string>,
+        pickFallback: () => string,
+        makeFallback: (model: string) => AsyncGenerator<string>,
     ): AsyncGenerator<string> {
         let started = false;
         try {
@@ -60,11 +68,49 @@ export class WhatToAnswerLLM {
         } catch (err) {
             if (started) throw err;
             const msg = (err as Error)?.message ?? String(err);
-            console.warn(`[WhatToAnswerLLM] verbal primary failed before first token (${msg}) — redirecting to ${GEMINI_FLASH_FALLBACK_MODEL}`);
-            diagLog(`verbal primary FAILED pre-token: ${msg} -> redirect ${GEMINI_FLASH_FALLBACK_MODEL}`);
+            const model = pickFallback();
+            console.warn(`[WhatToAnswerLLM] verbal primary failed before first token (${msg}) — redirecting to ${model}`);
+            diagLog(`verbal primary FAILED pre-token: ${msg} -> redirect ${model}`);
             // Label carries no "_" — consumers match /__model_source:([^_]+)__/.
-            yield `__model_source:${GEMINI_FLASH_FALLBACK_MODEL} (fallback)__`;
-            yield* makeFallback();
+            yield `__model_source:${model} (fallback)__`;
+            yield* makeFallback(model);
+        }
+    }
+
+    /**
+     * Filter a raw verbal stream, and name the stall race's switch outside the filter chain.
+     *
+     * When the primary stalls, LLMHelper hands back the other Flash Lite's stream headed by
+     * `__model_source:<model> (fallback)__` — and stripModelSentinel, the chain's innermost
+     * stage, strips head sentinels, so the switch never reached the bar under the answer
+     * (flight s50m's verbal-diag.log: all four of the hour's switches stripped within 2 ms).
+     * So the switch is read off the RAW stream, before the chain, and named again after it,
+     * just ahead of the first words the other model wrote — never earlier, so a switched-to
+     * model that fails before its first token still counts as a pre-token failure.
+     * `onSwitch` learns which model is now writing the answer.
+     */
+    private async *nameStallSwitch(
+        raw: AsyncGenerator<string>,
+        filter: (raw: AsyncGenerator<string>) => AsyncGenerator<string>,
+        onSwitch: (model: string) => void,
+    ): AsyncGenerator<string> {
+        let switchedTo = null as string | null;
+        async function* watch() {
+            for await (const chunk of raw) {
+                const m = STALL_SWITCH.exec(chunk);
+                if (m) {
+                    switchedTo = m[1];
+                    onSwitch(m[1]);
+                }
+                yield chunk;
+            }
+        }
+        for await (const chunk of filter(watch())) {
+            if (switchedTo) {
+                yield `__model_source:${switchedTo} (fallback)__`;
+                switchedTo = null;
+            }
+            yield chunk;
         }
     }
 
@@ -138,6 +184,8 @@ export class WhatToAnswerLLM {
         // The Live ear's texts for the same turn — appended to the verbal message, spec 2026-09-09 §3.4.
         liveTexts?: string[],
     ): AsyncGenerator<string> {
+        // The model the verbal error fallback went to, for the last-resort message below.
+        let fallbackModel = GEMINI_FLASH_FALLBACK_MODEL;
         try {
             // Build a rich message context
             // Note: We can't easily inject the complex temporal/intent logic into universal prompt *variables* 
@@ -229,7 +277,13 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 // output filters; they differ only in which model generates.
                 // Name the model that will answer, outside the filter chain (which
                 // strips sentinels), so the bar under the answer stops guessing.
-                const primaryModel = useDeepModel ? this.llmHelper.getCurrentModelId() : GEMINI_FLASH_MODEL;
+                // Resolved the way LLMHelper resolves the call: the flight override replaces
+                // the model wherever the answer goes to Gemini proper — the fast route always,
+                // the technical route on a Gemini selection (Gemma and other providers route
+                // before the override is read). Naming the selection instead labelled s50l's
+                // and s50m's answers gemini-3.1-flash-lite while 3.5-lite wrote them.
+                const selected = useDeepModel ? this.llmHelper.getCurrentModelId() : GEMINI_FLASH_MODEL;
+                const primaryModel = /^(gemini-|models\/)/.test(selected) ? verbalPrimaryModel(selected, VERBAL_PRIMARY_MODELS) : selected;
                 yield `__model_source:${primaryModel}__`;
                 const t0 = Date.now();
                 let rawStream: AsyncGenerator<string>;
@@ -305,16 +359,27 @@ ANSWER SHAPE: ${intentResult.answerShape}
                         ),
                     );
 
+                // Which model is writing the answer: the primary, until the stall race switches.
+                let answering = primaryModel;
+                const filteredAndNamed = (raw: AsyncGenerator<string>) =>
+                    this.nameStallSwitch(raw, filtered, (model) => { answering = model; });
+
                 yield* tapFirstToken(
                     cutAtWordBudget(
                         this.withVerbalFallback(
-                            filtered(rawStream),
-                            () => filtered(
+                            filteredAndNamed(rawStream),
+                            // The Flash Lite that did NOT just fail, paired the way the stall race
+                            // pairs them (LLMHelper.streamGeminiWithStallFallback).
+                            () => {
+                                fallbackModel = answering === GEMINI_FLASH_FALLBACK_MODEL ? GEMINI_FLASH_MODEL : GEMINI_FLASH_FALLBACK_MODEL;
+                                return fallbackModel;
+                            },
+                            (model) => filteredAndNamed(
                                 this.llmHelper.streamVerbalWithGeminiFlash(
                                     fullMessage,
                                     VERBAL_WHAT_TO_ANSWER_PROMPT,
                                     undefined,
-                                    GEMINI_FLASH_FALLBACK_MODEL,
+                                    model,
                                 ),
                             ),
                         ),
@@ -344,7 +409,7 @@ ANSWER SHAPE: ${intentResult.answerShape}
             const msg = (error as Error)?.message ?? String(error);
             console.error("[WhatToAnswerLLM] Stream failed:", error);
             diagLog(`generateStream FAILED (fallback exhausted or unavailable): ${msg}`);
-            yield `[No answer — both the primary model and the ${GEMINI_FLASH_FALLBACK_MODEL} fallback failed: ${msg.slice(0, 160)}]`;
+            yield `[No answer — both the primary model and the ${fallbackModel} fallback failed: ${msg.slice(0, 160)}]`;
         }
     }
 }
