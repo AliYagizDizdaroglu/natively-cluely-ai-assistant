@@ -14,6 +14,8 @@ import * as path from "path";
 
 const DIAG_LOG = path.join(process.cwd(), "verbal-diag.log");
 function diagLog(msg: string) {
+    // Only from the app: same rule as the diagLog in WhatToAnswerLLM.ts.
+    if (process.type !== "browser") return;
     try {
         fs.appendFileSync(DIAG_LOG, `[${new Date().toISOString()}] ${msg}\n`);
     } catch { /* swallow — never break the stream on log failure */ }

@@ -12,10 +12,13 @@ import * as path from "path";
 // Diagnostic file logger — writes to project root so we can read it from outside electron
 const DIAG_LOG = path.join(process.cwd(), "verbal-diag.log");
 function diagLog(msg: string) {
-    // Never from a test run: the file is the LIVE app's diagnostic log (cwd of
-    // the checkout), and a unit test's synthetic "boom"/"socket hang up" lines
-    // landed in the middle of a real measurement on 2026-09-02.
-    if (process.env.VITEST) return;
+    // Only from the app's Electron main process. The file is the LIVE app's diagnostic
+    // log (cwd of the checkout), and any other process started there appends look-alike
+    // lines: a unit test's synthetic "boom"/"socket hang up" landed in the middle of a real
+    // measurement on 2026-09-02, and the flight's offline arms (plain node, through the
+    // filter's copy) add ~440 per flight. process.type, not versions.electron: Electron
+    // run as node keeps the version.
+    if (process.type !== "browser") return;
     try {
         fs.appendFileSync(DIAG_LOG, `[${new Date().toISOString()}] ${msg}\n`);
     } catch { /* swallow — never break the stream on log failure */ }
