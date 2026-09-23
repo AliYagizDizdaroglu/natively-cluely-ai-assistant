@@ -168,7 +168,7 @@ routing, answering, and Live-session stability are all measured on the real app.
 | `interview60.report-html.mjs` | builds the flight-test report page from the logs |
 
 ```bash
-node electron/test/golden/interview60.run.mjs auto [label]   # stop → build → relaunch → probe → hour → report → snapshot to interview60.runs/<stamp>-<label>/ → gate
+node electron/test/golden/interview60.run.mjs auto [label]   # stop → build → relaunch → probe → hour → report → snapshot to interview60.runs/<stamp>-<label>/ → gate → stop (a failed run closes the app too; after Ctrl+C or a killed task, run app:stop)
 node electron/test/golden/interview60.run.mjs app:start|app:stop|probe   # the pieces, individually
 node electron/test/golden/interview60.run.mjs gate <dir>   # judge a run snapshot against the spec §6 pass table; exits 0/1
 node electron/test/golden/interview60.answers.mjs      # AFTER the hour (same key — do not run concurrently)
