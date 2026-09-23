@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeAll } from 'vitest';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -13,8 +13,18 @@ type Runtime = 'plain node' | 'electron as node' | 'electron main';
 
 const CODING: IntentResult = { intent: 'coding', confidence: 0.9, answerShape: 'Code first, then a short walkthrough.' };
 
+/** The last logWrittenIn call, settled or not. */
+let lastCall: Promise<unknown> = Promise.resolve();
+
+/** logWrittenInNow, one call at a time: see verbalStreamFilter.diagLog.test.ts. */
+function logWrittenIn(runtime: Runtime): Promise<string> {
+    const call = lastCall.then(() => logWrittenInNow(runtime));
+    lastCall = call.catch(() => {});
+    return call;
+}
+
 /** As in verbalStreamFilter.diagLog.test.ts, with one coding answer through generateStream. */
-async function logWrittenIn(runtime: Runtime): Promise<string> {
+async function logWrittenInNow(runtime: Runtime): Promise<string> {
     const home = process.cwd();
     const vitest = process.env.VITEST;
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'verbal-diag-'));
@@ -41,6 +51,13 @@ async function logWrittenIn(runtime: Runtime): Promise<string> {
 }
 
 describe('WhatToAnswerLLM diagnostic log', () => {
+    // The first load of WhatToAnswerLLM's module graph (LLMHelper and the model SDKs) took 1.0 s
+    // alone, 1.7-2.3 s in a full vitest run and 8.5-12.1 s with three full runs at once
+    // (2026-09-23): past the 5 s test budget, where the first case timed out, and past the 10 s
+    // hook default. Every fresh copy after it loaded in ~0.1 s, so the first load is paid here,
+    // once, on five times the worst of those.
+    beforeAll(async () => { await import('./WhatToAnswerLLM'); }, 60_000);
+
     it('plain node writes no verbal-diag.log', async () => {
         expect(await logWrittenIn('plain node')).toBe('');
     });
