@@ -3173,8 +3173,19 @@ This rule overrides ALL other instructions including formatting, brevity, or out
           break;
         }
         if (attempt > 1) console.log(`[LLMHelper] Gemma recovered on attempt ${attempt}/${maxAttempts}`);
-        yield `__model_source:Gemma 4__`;
-        yield firstChunk;
+        // These two are yielded here, outside `yield* gemmaGen`, so a consumer that stops on
+        // either (a superseding generation's .return(), the chat IPC's supersede check, which
+        // runs on the sentinel too) never reaches gemmaGen's own finally, the one that aborts
+        // the request. Close gemmaGen on that exit, not awaited, as streamGeminiWithStallFallback
+        // does: gemmaGen is parked at its first yield, so the close reaches the abort at once.
+        let delivered = false;
+        try {
+          yield `__model_source:Gemma 4__`;
+          yield firstChunk;
+          delivered = true;
+        } finally {
+          if (!delivered) gemmaGen.return(undefined);
+        }
         yield* gemmaGen;
         return;
       }
@@ -3198,6 +3209,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
       // Timed out with no error → genuine stall. Retrying won't help within budget.
       console.warn(`[LLMHelper] ⏱ Gemma produced no first token within the ${ttftBudgetMs}ms budget (attempt ${attempt}) — falling back to Gemini Flash`);
+      // Close the stalled attempt, not awaited: gemmaGen is still blocked in next(), so the
+      // close waits in its queue and aborts at gemmaGen's first yield, the late response's
+      // first whole line. A request that never yields is not aborted.
+      gemmaGen.return(undefined);
       break;
     }
 
