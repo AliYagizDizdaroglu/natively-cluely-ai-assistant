@@ -3133,7 +3133,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       const remaining = deadline - Date.now();
       if (remaining <= 0) break; // budget exhausted — go to Flash
 
-      const gemmaGen = this.streamWithGeminiModel(fullMsg, gemmaModelId, imagePaths, systemInstruction);
+      const stall = new AbortController();
+      const gemmaGen = this.streamWithGeminiModel(fullMsg, gemmaModelId, imagePaths, systemInstruction, stall.signal);
       // First chunk that actually CARRIES CONTENT — null means the stream ended
       // without ever producing any.
       let firstChunk: string | null = null;
@@ -3209,10 +3210,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
       // Timed out with no error → genuine stall. Retrying won't help within budget.
       console.warn(`[LLMHelper] ⏱ Gemma produced no first token within the ${ttftBudgetMs}ms budget (attempt ${attempt}) — falling back to Gemini Flash`);
-      // Close the stalled attempt, not awaited: gemmaGen is still blocked in next(), so the
-      // close waits in its queue and aborts at gemmaGen's first yield, the late response's
-      // first whole line. A request that never yields is not aborted.
-      gemmaGen.return(undefined);
+      // Abort the stalled request at the deadline. A close of gemmaGen would queue behind its
+      // pending next() and reach the abort only at the late response's first whole line (42 s
+      // after the request on 2026-09-23), or never, for a response that never comes.
+      stall.abort();
       break;
     }
 
@@ -3231,7 +3232,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
   }
 
-  private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[], systemInstruction?: string): AsyncGenerator<string, void, unknown> {
+  private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[], systemInstruction?: string, stop?: AbortSignal): AsyncGenerator<string, void, unknown> {
     this.noteModelUse(model);
     if (!this.client) throw new Error("Gemini client not initialized");
 
@@ -3268,6 +3269,15 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     };
     if (systemInstruction) gemmaConfig.systemInstruction = systemInstruction;
     const abort = new AbortController();
+    // A caller's `stop` (a stall deadline) reaches the request through its own controller. An
+    // abort listener never runs for a signal that already fired (ours below, or the one the SDK
+    // adds without checking), so a stop that fired while the images above were prepared must
+    // keep the request from being sent at all. A later stop is heard: the SDK adds its listener
+    // before any I/O wait (1.44, API key, no tools).
+    // Not AbortSignal.any: under Electron 33 a combined signal that carries the SDK's listener,
+    // which it never removes, is never collected (measured 2026-09-23: 0 of 2000).
+    stop?.throwIfAborted();
+    stop?.addEventListener('abort', () => abort.abort(), { once: true });
     const streamResult = await activeClient.models.generateContentStream({
       model: model,
       contents: contents,
@@ -3302,15 +3312,14 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       : rawChunks();
 
     // A consumer that stops early — the spoken word budget's sentence cut, a
-    // superseding generation, the first-token stall above — closes this
-    // generator at a `yield`. IteratorClose alone leaves the SDK's request
-    // open: measured 2026-09-05, the response stayed alive 4 minutes after the
-    // break, versus 170 ms when the request is aborted. The abort runs from
-    // the yield's own `finally`, i.e. before the for-await closes the SDK
-    // iterator, so its pending read rejects at once instead of blocking until
-    // the server finishes (the ~28 s stall streamVerbalWithGeminiFlash notes).
-    // On natural completion `delivered` is true for every token and nothing
-    // is aborted.
+    // superseding generation — closes this generator at a `yield`. (A first-token
+    // stall has no yield to close at; it aborts through `stop`.) IteratorClose
+    // alone leaves the SDK's request open: measured 2026-09-05, the response
+    // stayed alive 4 minutes after the break, versus 170 ms when the request is
+    // aborted. The abort runs from the yield's own `finally`, i.e. before the
+    // for-await closes the SDK iterator, so its pending read rejects at once
+    // instead of blocking until the server finishes. On natural completion
+    // `delivered` is true for every token and nothing is aborted.
     for await (const token of tokenSource) {
       let delivered = false;
       try {
@@ -3386,7 +3395,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
     console.log(`[LLMHelper] verbal stall race: trying ${primaryModel} (fallback=${FALLBACK_MODEL} after ${timeoutMs}ms)`);
 
-    const primaryStream = this.streamWithGeminiModel(userMessage, primaryModel, imagePaths, systemInstruction);
+    const stall = new AbortController();
+    const primaryStream = this.streamWithGeminiModel(userMessage, primaryModel, imagePaths, systemInstruction, stall.signal);
 
     // Race first token against timeout — if primary stalls, fall back to the other Flash Lite
     let timeoutHandle!: NodeJS.Timeout;
@@ -3402,10 +3412,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
     if (firstResult.kind === 'timeout') {
       console.warn(`[LLMHelper] ${primaryModel} stalled after ${timeoutMs}ms — falling back to ${FALLBACK_MODEL}`);
-      // Do NOT await .return() — the generator is blocked inside generateContentStream's HTTP
-      // request and awaiting it would stall here until the server finally responds (~28s more).
-      // Fire-and-forget: the request completes in the background and the generator self-cleans.
-      primaryStream.return(undefined);
+      // Abort the stalled request at the deadline. A close of primaryStream would queue behind
+      // its pending next() and reach the abort only when a late first token arrives; a stalled
+      // primary that never got response headers held its socket 25 s (2026-09-23).
+      stall.abort();
       // Announce the redirection. Without this the UI keeps showing the primary's
       // label and a silent downgrade is indistinguishable from a normal answer.
       // Label must contain no "_" — the consumer regex is /__model_source:([^_]+)__/.
@@ -3419,9 +3429,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       // This token is yielded here, outside `yield* primaryStream`, so a consumer that stops
       // on it (a superseding generation's .return(), an exit after the first words) never
       // reaches primaryStream's own finally, the one that aborts the request. Close
-      // primaryStream on that exit. Not awaited, as in the stall branch: the consumer never
-      // waits on the primary's teardown, and since primaryStream is parked at its first
-      // yield, the close reaches the abort at once.
+      // primaryStream on that exit. Not awaited: the consumer never waits on the primary's
+      // teardown, and since primaryStream is parked at its first yield, the close reaches
+      // the abort at once.
       let delivered = false;
       try {
         yield firstResult.result.value;
