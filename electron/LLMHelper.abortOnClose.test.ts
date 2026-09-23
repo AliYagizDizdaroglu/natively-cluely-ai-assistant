@@ -63,6 +63,44 @@ const completesNaturally = async (params: any) => {
     return s();
 };
 
+/** Resolves after `ms`, or rejects the moment `signal` aborts, as fetch and its body reads do. */
+const lateUnlessAborted = (signal: AbortSignal, ms: number, order: string[]) =>
+    new Promise<void>((resolve, reject) => {
+        const late = setTimeout(() => { order.push('late response'); resolve(); }, ms);
+        signal.addEventListener('abort', () => { order.push('abort'); clearTimeout(late); reject(signal.reason); }, { once: true });
+    });
+
+async function* fallbackAnswer() { yield { text: () => 'fallback\n' }; }
+
+/**
+ * A first-token stall as the SDK sees it: the FIRST request's response headers are due only
+ * after `respondAfterMs`. `order` records whether the late response or the abort came first.
+ * Every later request is the fallback, which answers at once. The chunks end a line, for
+ * Gemma's line-buffered route.
+ */
+const lateFirstResponse = (respondAfterMs: number, order: string[]) => async (params: any) => {
+    if (generateContentStream.mock.calls.length > 1) return fallbackAnswer();
+    await lateUnlessAborted(params.config.abortSignal, respondAfterMs, order);
+    async function* s() { yield { text: () => 'late\n' }; }
+    return s();
+};
+
+/**
+ * The same stall once the response has started: the SDK call resolves at once, the stream
+ * yields `head` (a partial line, which Gemma's line buffer holds back), and the rest is due
+ * only after `respondAfterMs`.
+ */
+const lateFirstChunk = (respondAfterMs: number, order: string[], head: string) => async (params: any) => {
+    if (generateContentStream.mock.calls.length > 1) return fallbackAnswer();
+    const signal: AbortSignal = params.config.abortSignal;
+    async function* s() {
+        if (head) yield { text: () => head };
+        await lateUnlessAborted(signal, respondAfterMs, order);
+        yield { text: () => 'late\n' };
+    }
+    return s();
+};
+
 /**
  * MEASURED DEFECT (2026-09-05, scratchpad probe against gemini-3.1-flash-lite
  * with the real @google/genai SDK).
@@ -77,10 +115,16 @@ const completesNaturally = async (params: any) => {
  * every cut leaves a request open for minutes.
  */
 describe('Gemini stream aborts on early close', () => {
+    const savedTimeout = process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS;
+
     beforeEach(() => {
         lastSignal = null;
         generateContentStream.mockReset();
         generateContentStream.mockImplementation(defaultImpl);
+    });
+
+    afterEach(() => {
+        if (savedTimeout === undefined) delete process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS; else process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS = savedTimeout;
     });
 
     it('aborts the request when the consumer closes the stream early', async () => {
@@ -143,6 +187,27 @@ describe('Gemini stream aborts on early close', () => {
         expect(lastSignal?.aborted).toBe(true);
     }, { timeout: 5000 });
 
+    it.each([
+        ['before its response headers', (order: string[]) => lateFirstResponse(150, order)],
+        ['after its headers, before its first token', (order: string[]) => lateFirstChunk(150, order, '')],
+    ])('aborts a primary stalled %s at its deadline, before its late response', async (_stage, fake) => {
+        // The first-token race gives up at 50 ms and the fallback answers. The primary's request
+        // is still in flight, its response due at 150 ms. A close would queue behind the pending
+        // next() and land only when that response yields; the abort must not wait for it.
+        process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS = '50';
+        const order: string[] = [];
+        generateContentStream.mockImplementation(fake(order));
+        const helper = new LLMHelper('fake-gemini-key');
+
+        const chunks: string[] = [];
+        for await (const token of helper.streamVerbalWithGeminiFlash('q', 'sys')) chunks.push(token);
+
+        expect(chunks).toEqual(['__model_source:gemini-3.5-flash-lite (fallback)__', 'fallback\n']);
+        // Past the response's due time: the abort came first, and the response never arrived.
+        await new Promise(resolve => setTimeout(resolve, 200));
+        expect(order).toEqual(['abort']);
+    }, { timeout: 5000 });
+
     it('does not abort when the stream completes naturally', async () => {
         // Calibration: the abort must fire on an early close and nowhere else.
         generateContentStream.mockImplementation(completesNaturally);
@@ -172,18 +237,16 @@ let gemmaSignal: AbortSignal | null = null;
 
 /**
  * heldOpenUntilAbort for Gemma's guarded path, which buffers by line
- * (filterPlainTextLeaks), so every chunk ends a line. `respondAfterMs` holds the
- * response back to model a first-token stall. Any other model is the Flash
- * fallback and answers at once.
+ * (filterPlainTextLeaks), so every chunk ends a line. Any other model is the
+ * Flash fallback and answers at once.
  */
-const gemmaHeldOpenUntilAbort = (respondAfterMs = 0) => async (params: any) => {
+const gemmaHeldOpenUntilAbort = () => async (params: any) => {
     if (!String(params.model).startsWith('gemma-')) {
         async function* flash() { yield { text: () => 'flash\n' }; }
         return flash();
     }
     gemmaSignal = params.config?.abortSignal ?? null;
     const signal = gemmaSignal;
-    if (respondAfterMs) await new Promise(resolve => setTimeout(resolve, respondAfterMs));
     async function* s() {
         try {
             yield { text: () => 'first\n' };
@@ -212,14 +275,16 @@ const gemmaCompletesNaturally = async (params: any) => {
 
 /**
  * streamWithGemmaGuarded races Gemma's first content chunk, then hand-yields the
- * model-source sentinel and that chunk OUTSIDE `yield* gemmaGen`, and its stall
- * branch answers from Flash while gemmaGen is still blocked in next(). The abort
- * lives in streamWithGeminiModel's yield-level finally, so only a close that
- * reaches gemmaGen aborts the request. Reached by any gemma-* selection and by
- * every screenshot question from the chat IPC, which pins gemma-4-31b-it.
+ * model-source sentinel and that chunk OUTSIDE `yield* gemmaGen`: a consumer that
+ * stops on either must close gemmaGen to reach the abort in streamWithGeminiModel's
+ * yield-level finally. Its stall branch answers from Flash while gemmaGen is still
+ * blocked in next(), with no yield to close at, so it aborts the request through its
+ * stop signal at the deadline. Reached by any gemma-* selection and by every
+ * screenshot question from the chat IPC, which pins gemma-4-31b-it.
  */
 describe('Gemma guarded stream aborts on early close', () => {
     const savedTtft = process.env.NATIVELY_GEMMA_TTFT_MS;
+    const savedVisionTtft = process.env.NATIVELY_GEMMA_VISION_TTFT_MS;
 
     beforeEach(() => {
         gemmaSignal = null;
@@ -229,6 +294,7 @@ describe('Gemma guarded stream aborts on early close', () => {
 
     afterEach(() => {
         if (savedTtft === undefined) delete process.env.NATIVELY_GEMMA_TTFT_MS; else process.env.NATIVELY_GEMMA_TTFT_MS = savedTtft;
+        if (savedVisionTtft === undefined) delete process.env.NATIVELY_GEMMA_VISION_TTFT_MS; else process.env.NATIVELY_GEMMA_VISION_TTFT_MS = savedVisionTtft;
     });
 
     const gemmaRoute = (helper: LLMHelper) =>
@@ -278,21 +344,49 @@ describe('Gemma guarded stream aborts on early close', () => {
         expect(gemmaSignal?.aborted).toBe(true);
     }, { timeout: 5000 });
 
-    it('aborts a stalled attempt whose first chunk arrives after the fallback', async () => {
+    it.each([
+        ['before its response headers', (order: string[]) => lateFirstResponse(150, order)],
+        ['inside its first line', (order: string[]) => lateFirstChunk(150, order, 'a first line, not yet ended')],
+    ])('aborts an attempt stalled %s at its deadline, before its late response', async (_stage, fake) => {
         // The TTFT race gives up at 50 ms and Flash answers. The Gemma request is still in
-        // flight, blocked before its first yield, so a close can only land when that chunk
-        // arrives at 150 ms.
+        // flight, its response due at 150 ms. A close would queue behind the pending next()
+        // and land only at that response's first whole line; the abort must not wait for it.
         process.env.NATIVELY_GEMMA_TTFT_MS = '50';
-        generateContentStream.mockImplementation(gemmaHeldOpenUntilAbort(150));
+        const order: string[] = [];
+        generateContentStream.mockImplementation(fake(order));
         const helper = new LLMHelper('fake-gemini-key');
 
         const chunks: string[] = [];
         for await (const token of gemmaRoute(helper)) chunks.push(token);
 
-        expect(chunks).toEqual(['__model_source:Gemini Flash__', 'flash\n']);
-        // Past the late chunk at 150 ms; the close's teardown is microtasks after it.
-        await new Promise(resolve => setTimeout(resolve, 300));
-        expect(gemmaSignal?.aborted).toBe(true);
+        expect(chunks).toEqual(['__model_source:Gemini Flash__', 'fallback\n']);
+        // Past the response's due time: the abort came first, and the response never arrived.
+        await new Promise(resolve => setTimeout(resolve, 200));
+        expect(order).toEqual(['abort']);
+    }, { timeout: 5000 });
+
+    it('sends no request when its deadline passes while the screenshot is prepared', async () => {
+        // A retry can start with little budget left, and the screenshot is prepared before the
+        // request exists. An abort listener never runs for a signal that already fired, so a
+        // deadline that passed before the request exists has to keep it from being sent.
+        process.env.NATIVELY_GEMMA_VISION_TTFT_MS = '50';
+        const prepare = vi.spyOn(LLMHelper.prototype as any, 'processImageForVision').mockImplementation(
+            () => new Promise(resolve => setTimeout(() => resolve({ mimeType: 'image/jpeg', data: '' }), 100)));
+        generateContentStream.mockImplementation(async () => fallbackAnswer());
+        try {
+            const helper = new LLMHelper('fake-gemini-key');
+            // Any existing file: the spy stands in for the image work.
+            const screenshot = process.execPath;
+
+            const chunks: string[] = [];
+            for await (const token of helper.streamChat('q', [screenshot], undefined, undefined, false, 'gemma-4-31b-it')) chunks.push(token);
+
+            expect(chunks).toEqual(['__model_source:Gemini Flash__', 'fallback\n']);
+            // Gemma's preparation ended at 100 ms, before Flash's at 150 ms: it sent nothing.
+            expect(generateContentStream.mock.calls.map(c => c[0].model)).toEqual(['gemini-3.1-flash-lite']);
+        } finally {
+            prepare.mockRestore();
+        }
     }, { timeout: 5000 });
 
     it('does not abort the request when it completes naturally', async () => {
