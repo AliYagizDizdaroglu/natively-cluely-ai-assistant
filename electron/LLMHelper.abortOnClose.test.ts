@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Same electron + @google/genai shims as LLMHelper.emptyStream.test.ts.
 vi.mock('electron', () => ({
@@ -164,5 +164,146 @@ describe('Gemini stream aborts on early close', () => {
 
         const config = (generateContentStream.mock.calls[0][0] as any).config;
         expect(config.abortSignal).toBeInstanceOf(AbortSignal);
+    });
+});
+
+/** The signal the Gemma request was given. The Flash fallback's call leaves it alone. */
+let gemmaSignal: AbortSignal | null = null;
+
+/**
+ * heldOpenUntilAbort for Gemma's guarded path, which buffers by line
+ * (filterPlainTextLeaks), so every chunk ends a line. `respondAfterMs` holds the
+ * response back to model a first-token stall. Any other model is the Flash
+ * fallback and answers at once.
+ */
+const gemmaHeldOpenUntilAbort = (respondAfterMs = 0) => async (params: any) => {
+    if (!String(params.model).startsWith('gemma-')) {
+        async function* flash() { yield { text: () => 'flash\n' }; }
+        return flash();
+    }
+    gemmaSignal = params.config?.abortSignal ?? null;
+    const signal = gemmaSignal;
+    if (respondAfterMs) await new Promise(resolve => setTimeout(resolve, respondAfterMs));
+    async function* s() {
+        try {
+            yield { text: () => 'first\n' };
+            yield { text: () => 'second\n' };
+            yield { text: () => 'never\n' };
+        } finally {
+            await new Promise<void>(resolve => {
+                if (!signal) return;                        // no signal: the close never completes
+                if (signal.aborted) { resolve(); return; }
+                signal.addEventListener('abort', () => resolve(), { once: true });
+            });
+        }
+    }
+    return s();
+};
+
+/** Two lines and a natural end — nothing to abort. */
+const gemmaCompletesNaturally = async (params: any) => {
+    gemmaSignal = params.config?.abortSignal ?? null;
+    async function* s() {
+        yield { text: () => 'first\n' };
+        yield { text: () => 'second\n' };
+    }
+    return s();
+};
+
+/**
+ * streamWithGemmaGuarded races Gemma's first content chunk, then hand-yields the
+ * model-source sentinel and that chunk OUTSIDE `yield* gemmaGen`, and its stall
+ * branch answers from Flash while gemmaGen is still blocked in next(). The abort
+ * lives in streamWithGeminiModel's yield-level finally, so only a close that
+ * reaches gemmaGen aborts the request. Reached by any gemma-* selection and by
+ * every screenshot question from the chat IPC, which pins gemma-4-31b-it.
+ */
+describe('Gemma guarded stream aborts on early close', () => {
+    const savedTtft = process.env.NATIVELY_GEMMA_TTFT_MS;
+
+    beforeEach(() => {
+        gemmaSignal = null;
+        generateContentStream.mockReset();
+        generateContentStream.mockImplementation(defaultImpl);
+    });
+
+    afterEach(() => {
+        if (savedTtft === undefined) delete process.env.NATIVELY_GEMMA_TTFT_MS; else process.env.NATIVELY_GEMMA_TTFT_MS = savedTtft;
+    });
+
+    const gemmaRoute = (helper: LLMHelper) =>
+        helper.streamChat('q', undefined, undefined, undefined, false, 'gemma-4-31b-it');
+
+    /** Reads `n` tokens, then closes; the close races 500 ms of real time. */
+    async function closeAfter(n: number) {
+        const helper = new LLMHelper('fake-gemini-key');
+        const seen: string[] = [];
+        let timer: NodeJS.Timeout | undefined;
+        const loop = (async () => {
+            for await (const token of gemmaRoute(helper)) {
+                seen.push(token);
+                if (seen.length === n) break;
+            }
+            return 'loop' as const;
+        })();
+        const raced = await Promise.race([
+            loop,
+            new Promise<'timeout'>(resolve => { timer = setTimeout(() => resolve('timeout'), 500); }),
+        ]);
+        clearTimeout(timer!);
+        return { raced, seen };
+    }
+
+    it('aborts the request when the consumer closes on the model-source sentinel', async () => {
+        // The chat IPC's supersede check runs on every token, this sentinel included.
+        generateContentStream.mockImplementation(gemmaHeldOpenUntilAbort());
+
+        const { raced, seen } = await closeAfter(1);
+
+        expect(raced).toBe('loop');
+        expect(seen).toEqual(['__model_source:Gemma 4__']);
+        // Nothing orders an un-awaited close before the loop's end; let its microtasks run.
+        await new Promise(resolve => setTimeout(resolve, 0));
+        expect(gemmaSignal?.aborted).toBe(true);
+    }, { timeout: 5000 });
+
+    it('aborts the request when the consumer closes on the first chunk', async () => {
+        generateContentStream.mockImplementation(gemmaHeldOpenUntilAbort());
+
+        const { raced, seen } = await closeAfter(2);
+
+        expect(raced).toBe('loop');
+        expect(seen).toEqual(['__model_source:Gemma 4__', 'first\n']);
+        await new Promise(resolve => setTimeout(resolve, 0));
+        expect(gemmaSignal?.aborted).toBe(true);
+    }, { timeout: 5000 });
+
+    it('aborts a stalled attempt whose first chunk arrives after the fallback', async () => {
+        // The TTFT race gives up at 50 ms and Flash answers. The Gemma request is still in
+        // flight, blocked before its first yield, so a close can only land when that chunk
+        // arrives at 150 ms.
+        process.env.NATIVELY_GEMMA_TTFT_MS = '50';
+        generateContentStream.mockImplementation(gemmaHeldOpenUntilAbort(150));
+        const helper = new LLMHelper('fake-gemini-key');
+
+        const chunks: string[] = [];
+        for await (const token of gemmaRoute(helper)) chunks.push(token);
+
+        expect(chunks).toEqual(['__model_source:Gemini Flash__', 'flash\n']);
+        // Past the late chunk at 150 ms; the close's teardown is microtasks after it.
+        await new Promise(resolve => setTimeout(resolve, 300));
+        expect(gemmaSignal?.aborted).toBe(true);
+    }, { timeout: 5000 });
+
+    it('does not abort the request when it completes naturally', async () => {
+        // Calibration: the close must fire on an early exit and nowhere else.
+        generateContentStream.mockImplementation(gemmaCompletesNaturally);
+        const helper = new LLMHelper('fake-gemini-key');
+
+        const chunks: string[] = [];
+        for await (const token of gemmaRoute(helper)) chunks.push(token);
+
+        expect(chunks).toEqual(['__model_source:Gemma 4__', 'first\n', 'second\n']);
+        expect(gemmaSignal?.aborted).toBe(false);
     });
 });
