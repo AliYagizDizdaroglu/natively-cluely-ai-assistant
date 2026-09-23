@@ -26,6 +26,8 @@ function diagLog(msg: string) {
 
 /** The stall race's switch, as LLMHelper.streamGeminiWithStallFallback announces it: one whole chunk. */
 const STALL_SWITCH = /^__model_source:(\S+) \(fallback\)__$/;
+/** A Gemma selection's handover to Flash, as LLMHelper.streamWithGemmaGuarded announces it: one whole chunk. */
+const GEMMA_HANDOVER = /^__model_source:(Gemini Flash)__$/;
 
 export class WhatToAnswerLLM {
     private llmHelper: LLMHelper;
@@ -86,7 +88,9 @@ export class WhatToAnswerLLM {
      * (flight s50m's verbal-diag.log: all four of the hour's switches stripped within 2 ms).
      * So the switch is read off the RAW stream, before the chain, and named again after it,
      * just ahead of the first words the other model wrote — never earlier, so a switched-to
-     * model that fails before its first token still counts as a pre-token failure.
+     * model that fails before its first token still counts as a pre-token failure. A Gemma
+     * selection's handover to Flash (streamWithGemmaGuarded's `__model_source:Gemini Flash__`)
+     * is stripped the same way, so it is named the same way.
      * `onSwitch` learns which model is now writing the answer.
      */
     private async *nameStallSwitch(
@@ -97,7 +101,7 @@ export class WhatToAnswerLLM {
         let switchedTo = null as string | null;
         async function* watch() {
             for await (const chunk of raw) {
-                const m = STALL_SWITCH.exec(chunk);
+                const m = STALL_SWITCH.exec(chunk) ?? GEMMA_HANDOVER.exec(chunk);
                 if (m) {
                     switchedTo = m[1];
                     onSwitch(m[1]);
@@ -381,7 +385,9 @@ ANSWER SHAPE: ${intentResult.answerShape}
                         ),
                     );
 
-                // Which model is writing the answer: the primary, until the stall race switches.
+                // Which model is writing the answer: the primary, until a switch is announced — the
+                // stall race's model id, or 'Gemini Flash' after a Gemma handover (a label, but
+                // pickFallback never sees it: streamWithGemmaGuarded swallows Flash's own errors).
                 let answering = primaryModel;
                 const filteredAndNamed = (raw: AsyncGenerator<string>) =>
                     this.nameStallSwitch(raw, filtered, (model) => { answering = model; });

@@ -78,6 +78,14 @@ async function drain(gen: AsyncGenerator<string>): Promise<string[]> {
 const answer = (intent: unknown) =>
     drain(new WhatToAnswerLLM(new LLMHelper('fake-gemini-key')).generateStream('How do you make ingestion idempotent?', undefined, intent as any));
 
+/** The same, with Gemma selected by the real setModel — minus its Ollama warm-up, a real fetch to localhost. */
+const answerOnGemma = (intent: unknown) => {
+    const helper = new LLMHelper('fake-gemini-key');
+    vi.spyOn(helper as any, 'warmUpSafetyNet').mockImplementation(() => {});
+    helper.setModel('gemma-4-31b-it');
+    return drain(new WhatToAnswerLLM(helper).generateStream('How do you make ingestion idempotent?', undefined, intent as any));
+};
+
 /** The models the SDK was actually asked, in order. */
 const asked = () => generateContentStream.mock.calls.map((c) => c[0].model);
 /** Every name the bar under the answer was given, in order — it shows the last one. */
@@ -186,6 +194,31 @@ describe('the answer is named after, and falls back from, the model that actuall
         async function* gemmaAnswer() { yield 'A Gemma answer.'; }
         const helper = { streamChat: vi.fn(gemmaAnswer), streamVerbalWithGeminiFlash: vi.fn(), getCurrentModelId: () => 'gemma-4-31b-it' } as any;
         const chunks = await drain(new WhatToAnswerLLM(helper).generateStream('How do you make ingestion idempotent?', undefined, TECHNICAL));
+        expect(named(chunks)).toEqual(['gemma-4-31b-it']);
+    });
+
+    it('Gemma selected: a handover to Flash reaches the bar, ahead of the words Flash wrote', async () => {
+        // The technical route answers a Gemma selection through streamChat → streamWithGemmaGuarded,
+        // which announces its handover as the head sentinel `__model_source:Gemini Flash__` — and
+        // stripModelSentinel strips head sentinels, so the bar kept the Gemma name over Flash's words.
+        // The handover here is Gemma's empty stream (a RECITATION or safety block); a stall past the
+        // Gemma budget, a non-retryable error or spent retries hand over through the same code.
+        plan.push([], ['Flash answered instead.']);
+        const chunks = await answerOnGemma(TECHNICAL);
+        expect(asked()).toEqual(['gemma-4-31b-it', 'gemini-3.1-flash-lite']);
+        expect(named(chunks)).toEqual(['gemma-4-31b-it', 'Gemini Flash (fallback)']);
+        const switched = chunks.indexOf('__model_source:Gemini Flash (fallback)__');
+        expect(switched).toBeGreaterThan(-1);
+        expect(switched).toBeLessThan(chunks.findIndex((c) => c.includes('Flash answered')));
+    });
+
+    it('Gemma selected and answering: its own head label is not taken for a switch', async () => {
+        // A healthy Gemma stream is headed `__model_source:Gemma 4__`, stripped and never named again:
+        // the bar already names the Gemma selection. A switch pattern wide enough to catch it would
+        // label every Gemma answer as a fallback.
+        plan.push(['Gemma answered this one.']);
+        const chunks = await answerOnGemma(TECHNICAL);
+        expect(asked()).toEqual(['gemma-4-31b-it']);
         expect(named(chunks)).toEqual(['gemma-4-31b-it']);
     });
 
