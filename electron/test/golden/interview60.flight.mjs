@@ -14,7 +14,7 @@
  *      (connects, transcribes, never calls the tool). A connection failure
  *      aborts before anything is spent.
  *   2. auto <label>: stop → build → start → probe → preflight → hour →
- *      snapshot → gate. auto's own preflight still refuses the hour when the
+ *      snapshot → gate → stop. auto's own preflight still refuses the hour when the
  *      chosen ear is silent; a 429 wall postpones it (45 min deadline).
  *      NATIVELY_STT_PROVIDER=deepgram (set in the environment that launches this
  *      script) runs the hour on Deepgram; auto's preflight refuses the hour if

@@ -524,12 +524,18 @@ function runPreflight() {
 }
 
 /**
- * stop → build → start → probe → hour → report → snapshot. One command.
+ * stop → build → start → probe → hour → report → snapshot → gate → stop. One command.
  * Polls the probe every 2 min up to the deadline so a quota wall postpones
  * rather than wastes the hour.
  */
 async function auto(label = 'after') {
     appStop();
+    // ...and every exit of this process stops it again: the gate's process.exit, a probe that
+    // gave up, a failed start, a crash. Left running, the app stays in its auto-started
+    // meeting with the mic, Live and warm-ups on (after s50m, 2026-09-22: eleven hours).
+    // appStop is synchronous, as an 'exit' listener must be. Ceiling: Ctrl+C or a killed
+    // task emits no 'exit' — after one of those, run app:stop by hand.
+    process.on('exit', appStop);
     console.log('AUTO  building electron…');
     execFileSync('cmd.exe', ['/c', 'npm', 'run', 'build:electron'], { cwd: PROJ, stdio: 'inherit' });
     await appStart();
