@@ -156,7 +156,7 @@ describe('mergeVerdicts (graded outside the script — the no-key route)', () =>
             W01: { correctness: 2, on_topic: 2, delivery: 2, reason: 'clear and correct' },
             'W01#2': { correctness: 3, on_topic: 2, delivery: 2, reason: 'out of range' },
             // C01 has no verdict at all
-        });
+        }, 'claude-opus-5');
         expect(merged.model).toBe('claude-opus-5');
         expect(Object.keys(merged.items)).toEqual(['W01', 'W02', 'C01', 'W01#2']);
         expect(merged.items.W01).toMatchObject({ kind: 'spoken', verdict: 'acceptable', correctness: 2, on_topic: 2, delivery: 2, reason: 'clear and correct' });
@@ -175,7 +175,33 @@ describe('mergeVerdicts (graded outside the script — the no-key route)', () =>
         }, 'claude-opus-5', 'a1b2c3d4e5f6');
         expect(merged.graderPrompt).toBe('a1b2c3d4e5f6');
         // Absent when the caller does not supply one — a pre-freeze file, explicitly marked.
-        expect(mergeVerdicts(pairAnswers(dbg, timeline), {}).graderPrompt).toBeNull();
+        expect(mergeVerdicts(pairAnswers(dbg, timeline), {}, 'claude-opus-5').graderPrompt).toBeNull();
+    });
+
+    it('records the model that graded the verdicts, so the pass names its grader instead of a default label', () => {
+        // The grading agents' "opus" alias moved from claude-opus-5 to claude-opus-5-5 between two
+        // passes (2026-09-22 → 09-24) and the same answers lost 4-7 of 39 acceptable, while every
+        // judge file still said claude-opus-5: this merge wrote JUDGE_MODEL whoever graded.
+        const merged = mergeVerdicts(pairAnswers(dbg, timeline), {
+            W01: { correctness: 2, on_topic: 2, delivery: 2, reason: 'ok' },
+        }, 'claude-opus-5-5', 'a1b2c3d4e5f6');
+        expect(merged.graderModel).toBe('claude-opus-5-5');
+        expect(merged.model).toBe('claude-opus-5-5');
+    });
+
+    it('refuses to merge without the grader model, or with an alias that names no version', () => {
+        const pairs = pairAnswers(dbg, timeline);
+        const verdicts = { W01: { correctness: 2, on_topic: 2, delivery: 2, reason: 'ok' } };
+        expect(() => mergeVerdicts(pairs, verdicts)).toThrow(/--model/);
+        expect(() => mergeVerdicts(pairs, verdicts, 'opus')).toThrow(/--model/);
+    });
+
+    it('sends the operator to the grading agent\'s transcript for the model, and never offers an id to copy', () => {
+        // A literal id in the message is what the next alias move would copy onto the record.
+        let message = '';
+        try { mergeVerdicts(pairAnswers(dbg, timeline), {}, 'opus'); } catch (e) { message = String((e as Error).message); }
+        expect(message).toMatch(/transcript/);
+        expect(message).not.toMatch(/claude-[a-z]+-\d/);
     });
 
     it('keeps each item id and roster level, so the summary can report long questions and follow-ups beside the base roster', () => {
@@ -198,7 +224,7 @@ describe('mergeVerdicts (graded outside the script — the no-key route)', () =>
         const merged = mergeVerdicts(pairAnswers(log, tl), {
             L01: { correctness: 2, on_topic: 2, delivery: 2, reason: 'covers the pipeline' },
             L01F1: { correctness: 1, on_topic: 2, delivery: 2, reason: 'vague on the alert path' },
-        });
+        }, 'claude-opus-5');
         expect(merged.items.L01).toMatchObject({ id: 'L01', level: 'long', verdict: 'acceptable' });
         expect(merged.items.L01F1).toMatchObject({ id: 'L01F1', level: 'followup', verdict: 'weak' });
         // The base roster count excludes both, which is what keeps it comparable across flights.
@@ -220,7 +246,7 @@ describe('pairsFromAnswers (an answer-only pass arm, for the model comparison)',
         expect(pairs).toHaveLength(1);
         expect(pairs[0]).toMatchObject({ id: 'W01', kind: 'spoken', question: 'What is a Docker image?', heard: 'What is a Docker image?', answer: 'An image is a read-only template.', model: 'gemma-4-31b-it', source: 'answers-pass' });
         // A transient item is absent from the pairs, so the merge never scores it as wrong.
-        expect(Object.keys(mergeVerdicts(pairs, { W01: { correctness: 2, on_topic: 2, delivery: 2, reason: 'ok' } }).items)).toEqual(['W01']);
+        expect(Object.keys(mergeVerdicts(pairs, { W01: { correctness: 2, on_topic: 2, delivery: 2, reason: 'ok' } }, 'claude-opus-5').items)).toEqual(['W01']);
     });
 });
 

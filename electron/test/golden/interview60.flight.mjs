@@ -355,7 +355,7 @@ async function main() {
         focusedPrompts: focusedCaptured ? 'captured' : 'own-framing', focusedOnly,
         pairedArms: paired.map((a) => a.tag),
         toGrade: ['interview60.judge.pairs.json', ...ANSWER_MODELS.map((m) => `interview60.judge.pairs.${m}.json`), ...paired.map((a) => `interview60.judge.pairs.${a.model}_${a.tag}.json`)],
-        next: 'grade each pairs file with its rubric into interview60.judge.verdicts[.<model>].json, then interview60.judge.mjs <run> [--answers <file>] --verdicts <that file>',
+        next: 'grade each pairs file with its rubric into interview60.judge.verdicts[.<model>].json, then interview60.judge.mjs <run> [--answers <file>] --verdicts <that file> --model <the exact model id the grading agent ran on, from its transcript>',
     };
     if (!dry) fs.writeFileSync(path.join(runDir, 'interview60.flight.done.json'), JSON.stringify(done, null, 1));
     // 5. The pass record: passes/<run>.md and passes/INDEX.md, ungraded until the judge

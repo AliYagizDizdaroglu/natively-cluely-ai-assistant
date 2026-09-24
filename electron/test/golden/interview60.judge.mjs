@@ -14,9 +14,11 @@
  *
  * No key: --export writes <run>/interview60.judge.pairs.json (the pairs plus this rubric)
  * for an Opus subagent in Claude Code to grade into <run>/interview60.judge.verdicts.json,
- * then --verdicts <that file> writes the same judge file the gate reads:
+ * then --verdicts <that file> writes the same judge file the gate reads. --model names the
+ * exact model the grading agent ran on, read from its transcript (the "model" field of
+ * subagents/agent-<id>.jsonl), never an alias and never a value copied from an older pass:
  *   node electron/test/golden/interview60.judge.mjs <run-dir> --export
- *   node electron/test/golden/interview60.judge.mjs <run-dir> --verdicts <run>/interview60.judge.verdicts.json
+ *   node electron/test/golden/interview60.judge.mjs <run-dir> --verdicts <run>/interview60.judge.verdicts.json --model <grader model id>
  *
  * --answers <file> takes an answer-only pass file (interview60.answers.mjs
  * --model X) instead of the hour's log — the model comparison — and suffixes
@@ -191,7 +193,12 @@ const undelivered = (pair) => ({ ...baseOf(pair), correctness: 0, on_topic: 0, d
  * file the gate reads. A missing or out-of-range verdict is an error, so a
  * half-graded file cannot pass the gate.
  */
-export function mergeVerdicts(pairs, verdicts, model = JUDGE_MODEL, graderPrompt = null) {
+export function mergeVerdicts(pairs, verdicts, graderModel, graderPrompt = null) {
+    // graderModel: the exact model the grading agent ran on. An alias cannot stand in: "opus"
+    // moved from claude-opus-5 to claude-opus-5-5 between two passes (2026-09-22 → 09-24), the
+    // same answers lost 4-7 of 39 acceptable, and every judge file still said claude-opus-5,
+    // because this merge wrote JUDGE_MODEL whoever graded.
+    if (!/\d/.test(String(graderModel ?? ''))) throw new Error(`grader model ${JSON.stringify(graderModel ?? null)} is not an exact model id: pass --model with the model the grading agent ran on, read from its transcript (the "model" field of subagents/agent-<id>.jsonl). Never an alias such as "opus", which moves between versions, and never a value copied from an older pass.`);
     /** @type {Record<string, Record<string, unknown>>} */
     const items = {};
     for (const { key, pair } of keyPairs(pairs)) {
@@ -206,7 +213,7 @@ export function mergeVerdicts(pairs, verdicts, model = JUDGE_MODEL, graderPrompt
     // the grading agent was given. Scores from two different wordings are not comparable
     // (after8's identical answers: 50 under one, 46 under another), so a file without a
     // matching stamp must not be read as a trend against one that has it.
-    return { model, effort: null, graderPrompt, items, usage: { input: 0, output: 0 } };
+    return { model: graderModel, graderModel, effort: null, graderPrompt, items, usage: { input: 0, output: 0 } };
 }
 
 /** The frozen grader prompt's path, and the first 12 hex of its SHA-256 (null if missing). */
@@ -289,7 +296,7 @@ function recordPass(dir) {
 async function main() {
     const args = process.argv.slice(2);
     const dir = args.find((a) => !a.startsWith('--'));
-    if (!dir) { console.error('usage: interview60.judge.mjs <run-dir> [--effort high] [--concurrency 2] [--force] | --export | --verdicts <file> [--model <name>]'); process.exit(2); }
+    if (!dir) { console.error('usage: interview60.judge.mjs <run-dir> [--effort high] [--concurrency 2] [--force] | --export | --verdicts <file> --model <grader model id>'); process.exit(2); }
     const opt = (name, dflt) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : dflt; };
     const effort = opt('effort', 'high');
     const concurrency = Number(opt('concurrency', '2'));
@@ -297,7 +304,7 @@ async function main() {
     const exportOnly = args.includes('--export');
     const verdictsPath = opt('verdicts', null);
     const keyName = ['CLAUDE_API_KEY', 'ANTHROPIC_API_KEY'].find((n) => process.env[n]);
-    if (!exportOnly && !verdictsPath && !keyName) { console.error('no Claude key: set CLAUDE_API_KEY (or ANTHROPIC_API_KEY) in .env and run with --env-file=.env, or grade without one: --export, then --verdicts <file>'); process.exit(2); }
+    if (!exportOnly && !verdictsPath && !keyName) { console.error('no Claude key: set CLAUDE_API_KEY (or ANTHROPIC_API_KEY) in .env and run with --env-file=.env, or grade without one: --export, then --verdicts <file> --model <grader model id from its transcript>'); process.exit(2); }
 
     const answersPath = opt('answers', null);
     let pairs, tag = '';
@@ -318,11 +325,11 @@ async function main() {
         fs.writeFileSync(pairsOut, JSON.stringify({ model: JUDGE_MODEL, rubric: RUBRIC, items: toGrade }, null, 1));
         console.log(`EXPORT  ${path.basename(dir)}  ${tag ? 'arm ' + tag.slice(1) + '   ' : ''}${toGrade.length} delivered answers to grade; ${pairs.length - toGrade.length} undelivered will be scored wrong at merge`);
         console.log(`written ${pairsOut}`);
-        console.log(`next: hand ${GRADER_PROMPT_PATH} to the grading agent verbatim, with <PAIRS_FILE>=${pairsOut} and <VERDICTS_FILE>=${path.join(dir, `interview60.judge.verdicts${tag}.json`)}, then rerun with --verdicts <that file>. Instrument version ${graderPromptVersion()} — do not reword the prompt per run.`);
+        console.log(`next: hand ${GRADER_PROMPT_PATH} to the grading agent verbatim, with <PAIRS_FILE>=${pairsOut} and <VERDICTS_FILE>=${path.join(dir, `interview60.judge.verdicts${tag}.json`)}, then rerun with --verdicts <that file> --model <the exact model id the grading agent ran on, from its transcript>. Instrument version ${graderPromptVersion()} — do not reword the prompt per run.`);
         return;
     }
     if (verdictsPath) {
-        const judged = mergeVerdicts(pairs, JSON.parse(fs.readFileSync(verdictsPath, 'utf8')), opt('model', JUDGE_MODEL), graderPromptVersion());
+        const judged = mergeVerdicts(pairs, JSON.parse(fs.readFileSync(verdictsPath, 'utf8')), opt('model', null), graderPromptVersion());
         if (tag) judged.arm = tag.slice(1);
         fs.writeFileSync(out, JSON.stringify(judged, null, 1));
         console.log(`JUDGE  ${path.basename(dir)}  ${pairs.length} dispatched answers merged from ${verdictsPath}  model=${judged.model}`);

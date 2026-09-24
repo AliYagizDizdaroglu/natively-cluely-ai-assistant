@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { collectPass, renderPassRecord, renderPassIndex, passRow } from './interview60.pass-record.mjs';
+import { collectPass, renderPassRecord, renderPassIndex, passRow, graderOf } from './interview60.pass-record.mjs';
 
 /**
  * One record per pass, so a change to the pipeline can be read against the same golden
@@ -138,6 +138,62 @@ describe('renderPassIndex — the trend line across passes', () => {
     });
 });
 
+describe('the grader model — a pass names the model that graded it', () => {
+    // The grading agents moved from claude-opus-5 to claude-opus-5-5 between two passes
+    // (2026-09-22 → 09-24): the same answers lost 4-7 of 39 acceptable, and nothing on the
+    // record showed it, because every judge file carried the same default label.
+    const opus55 = 'claude-opus-5-5';
+    const graded55 = (over: Record<string, unknown> = {}) => pass({ meta: { ...pass().meta, graderModel: opus55, ...over }, summary: { ...pass().summary, arms: [{ ...pass().summary.arms[0], graderModel: opus55 }] } });
+
+    it('reads the grader from a judge file only where the file recorded it', () => {
+        expect(graderOf({ model: opus55, graderModel: opus55, effort: null })).toBe(opus55);
+        // The API route wrote the model it called, together with its effort.
+        expect(graderOf({ model: 'claude-opus-5', effort: 'high' })).toBe('claude-opus-5');
+        // A --verdicts merge from before the model was recorded: its label is not evidence.
+        expect(graderOf({ model: 'claude-opus-5', effort: null })).toBeNull();
+        expect(graderOf(null)).toBeNull();
+    });
+
+    it('prints the recorded grader in the record header and on each graded arm', () => {
+        const md = renderPassRecord(graded55());
+        expect(md).toContain('| grader | claude-opus-5-5, prompt e53dff6256aa |');
+        expect(md).toMatch(/- Arm qwen\/qwen3\.8-27b [^\n]*grader claude-opus-5-5/);
+    });
+
+    it('says the grader is unrecorded instead of printing the default label as fact', () => {
+        const md = renderPassRecord(pass({ meta: { ...pass().meta, graderModel: null } }));
+        expect(md).toMatch(/\| grader \| unrecorded[^\n]*claude-opus-5[^\n]*prompt e53dff6256aa \|/);
+        expect(md).toMatch(/- Arm qwen\/qwen3\.8-27b [^\n]*grader unrecorded/);
+    });
+
+    it('gives the index a grader column, so passes graded by different models read as not comparable', () => {
+        const allNew = passRow(graded55());
+        const allOld = passRow(pass({ meta: { ...pass().meta, dirName: '2026-09-10T07-10-00-s50b', startedAt: '2026-09-10T07:10:00.000Z', graderModel: null } }));
+        const mixed = passRow(pass({ meta: { ...pass().meta, dirName: '2026-09-11T07-10-00-s50c', startedAt: '2026-09-11T07:10:00.000Z', graderModel: opus55 } }));
+        const ungraded = passRow(pass({ meta: { ...pass().meta, dirName: '2026-09-12T07-10-00-s50d', startedAt: '2026-09-12T07:10:00.000Z', graded: false, graderModel: null }, summary: { ...pass().summary, inApp: null, arms: [] } }));
+        const md = renderPassIndex([allNew, allOld, mixed, ungraded]);
+        expect(md).toContain('| arms | grader |');
+        const rows = md.split('\n').filter((l) => l.startsWith('| 2026-'));
+        expect(rows[0]).toMatch(/\| claude-opus-5-5 \|$/);
+        expect(rows[1]).toMatch(/\| unrecorded \|$/);
+        expect(rows[2]).toMatch(/\| claude-opus-5-5 \+ unrecorded \|$/);
+        expect(rows[3]).toMatch(/\| — \|$/);
+    });
+
+    it('explains the grader column in the index preface, including what "unrecorded" means', () => {
+        const preface = renderPassIndex([]).split('\n').slice(0, 4).join('\n');
+        expect(preface).toMatch(/"grader"/);
+        expect(preface).toMatch(/unrecorded/);
+    });
+
+    it('escapes a grader name inside table cells', () => {
+        const odd = pass({ meta: { ...pass().meta, graderModel: 'model|x' } });
+        expect(renderPassRecord(odd)).toContain('| grader | model\\|x, prompt e53dff6256aa |');
+        const row = renderPassIndex([passRow(odd)]).split('\n').find((l) => l.startsWith('| 2026-'));
+        expect(row).toMatch(/\| model\\\|x \+ unrecorded \|$/);
+    });
+});
+
 describe.skipIf(!fs.existsSync(path.join(S50A, 'interview60.judge.json')))('collectPass on the real s50a run (skipped where the run folder is absent)', () => {
     let p: any;
     beforeAll(() => { p = collectPass(S50A); });
@@ -175,5 +231,11 @@ describe.skipIf(!fs.existsSync(path.join(S50A, 'interview60.judge.json')))('coll
         expect(p.summary.doubles).toBe(13);
         expect(p.summary.longWhole).toBe(12);
         expect(p.summary.arms.find((a: any) => a.model === 'qwen/qwen3.8-27b')).toMatchObject({ n: 20, acceptable: 10, weak: 10, wrong: 0 });
+    });
+
+    it('reads each judge file\'s grader: s50a was merged before graders were recorded, so none is claimed', () => {
+        expect(p.meta.graderModel).toBeNull();
+        expect(p.summary.arms.length).toBeGreaterThan(0);
+        expect(p.summary.arms.every((a: any) => a.graderModel === null)).toBe(true);
     });
 });

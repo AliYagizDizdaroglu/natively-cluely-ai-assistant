@@ -37,6 +37,16 @@ function gradeOf(v) {
     return { correctness: num(v.correctness), on_topic: num(v.on_topic), delivery: num(v.delivery), verdict: v.verdict ?? 'error', reason: String(v.reason ?? '') };
 }
 
+/**
+ * The model that graded a judge file, where the file recorded it: a --verdicts merge names it
+ * as graderModel (from 2026-09-24); the API route wrote the model it called, with its effort.
+ * An older merge carries only JUDGE_MODEL as a default label, which is not evidence — the
+ * grading agents moved from claude-opus-5 to claude-opus-5-5 under that same label.
+ */
+export function graderOf(judge) {
+    return judge?.graderModel ?? (judge?.effort ? judge.model ?? null : null);
+}
+
 function countVerdicts(grades) {
     const c = { acceptable: 0, weak: 0, wrong: 0, error: 0 };
     for (const g of grades) if (g && g.verdict in c) c[g.verdict]++;
@@ -67,7 +77,7 @@ export function collectPass(runDir) {
         stt: lastMatch(dbg, /\[Main\] Using ([^\n]+?) for interviewer/g)?.[1] ?? null,
         answerModel: lastMatch(dbg, /Default Model set to: (\S+)/g)?.[1] ?? null,
         commit: done.commit ?? null,
-        graded: !!judge, graderPrompt: judge?.graderPrompt ?? null, judgeModel: judge?.model ?? null,
+        graded: !!judge, graderPrompt: judge?.graderPrompt ?? null, judgeModel: judge?.model ?? null, graderModel: graderOf(judge),
     };
 
     // In-app answers: the judge's own pairing (dispatch → [Answer] full), keyed the way the
@@ -115,7 +125,7 @@ export function collectPass(runDir) {
             qById.get(pair.id)?.arms.push({ model, answer: pair.answer, ttft: typeof src.ttft === 'number' ? src.ttft : null, words: typeof src.words === 'number' ? src.words : wordsOf(pair.answer), grade });
         }
         const ttfts = Object.values(store).map((v) => v?.ttft);
-        arms.push({ model, n: pairs.length, ...countVerdicts(grades), ttftP50: pct(ttfts, .5), ttftP90: pct(ttfts, .9), graded: !!armJudge });
+        arms.push({ model, n: pairs.length, ...countVerdicts(grades), ttftP50: pct(ttfts, .5), ttftP90: pct(ttfts, .9), graded: !!armJudge, graderModel: graderOf(armJudge) });
     }
 
     // Per QUESTION, the best of a main's answers — the judge's own counts are per PAIR, and a
@@ -160,7 +170,7 @@ export function renderPassRecord(p) {
     out.push(`| ear | Live ${t.liveModel ?? 'unknown'} · STT ${t.stt ?? 'unknown'} |`);
     out.push(`| answers | ${t.answerModel ?? 'unknown'} (in-app)${s.arms.length ? ` · arms: ${s.arms.map((a) => a.model).join(', ')}` : ''} |`);
     out.push(`| commit | ${short(t.commit)} |`);
-    out.push(`| grader | ${t.graded ? `${t.judgeModel ?? 'unknown'}, prompt ${t.graderPrompt ?? 'unstamped'}` : 'not graded yet'} |`);
+    out.push(`| grader | ${t.graded ? `${t.graderModel != null ? cell(t.graderModel) : `unrecorded (the judge file's default label says ${t.judgeModel ?? 'nothing'})`}, prompt ${t.graderPrompt ?? 'unstamped'}` : 'not graded yet'} |`);
     out.push(`| run folder | ${t.runDir} |`, '');
 
     out.push('## Summary', '');
@@ -171,7 +181,7 @@ export function renderPassRecord(p) {
     } else {
         out.push('- In-app answers: not graded yet');
     }
-    for (const a of s.arms) out.push(`- Arm ${a.model} (${a.n} mains): ${a.graded ? counts(a) : 'not graded'} · TTFT p50 ${secs(a.ttftP50)} p90 ${secs(a.ttftP90)}`);
+    for (const a of s.arms) out.push(`- Arm ${a.model} (${a.n} mains): ${a.graded ? counts(a) : 'not graded'} · TTFT p50 ${secs(a.ttftP50)} p90 ${secs(a.ttftP90)}${a.graded ? ` · grader ${a.graderModel ?? 'unrecorded'}` : ''}`);
     out.push('');
 
     out.push('## Gate', '', `Overall: **${p.gate.pass ? 'PASS' : 'FAIL'}**`, '', '| | row | value |', '|---|---|---|');
@@ -205,19 +215,21 @@ export function passRow(p) {
         dirName: t.dirName, file: `${t.dirName}.md`, startedAt: t.startedAt, label: t.label, rosterLabel: t.rosterLabel ?? t.roster ?? null, commit: t.commit,
         items: s.items, heard: s.heard, delivered: s.delivered, doubles: s.doubles, supersedes: s.supersedes, longWhole: s.longWhole, longs: s.longs, ttftP90: s.ttftP90, detectP50: s.detectP50,
         graded: t.graded, inApp: s.inApp, arms: s.arms.map((a) => ({ model: a.model, acceptable: a.acceptable, n: a.n, graded: a.graded })),
+        // Every model that graded part of the pass: two passes are comparable only under the same one.
+        graders: [...new Set([...(t.graded ? [t.graderModel ?? 'unrecorded'] : []), ...s.arms.filter((a) => a.graded).map((a) => a.graderModel ?? 'unrecorded')])],
     };
 }
 
 /** INDEX.md: one row per pass, oldest first, so the golden set reads as a trend. */
 export function renderPassIndex(rows) {
     const sorted = [...rows].sort((a, b) => String(a.startedAt ?? a.dirName).localeCompare(String(b.startedAt ?? b.dirName)));
-    const out = ['# Passes', '', 'One row per pass over the golden questions, oldest first. "in-app" is the best answer per main question under the frozen grader; arms are the bare-prompt models on the same mains.', '',
-        '| pass | record | roster | commit | heard | delivered | doubles | supersedes | long whole | TTFT p90 | in-app | arms |', '|---|---|---|---|---|---|---|---|---|---|---|---|'];
+    const out = ['# Passes', '', 'One row per pass over the golden questions, oldest first. "in-app" is the best answer per main question under the frozen grader; arms are the bare-prompt models on the same mains. "grader" names the model that graded each pass where its judge files record it (from 2026-09-24); "unrecorded" means they predate that and carry only the default label claude-opus-5, which older records print as their grader. Compare passes only under the same grader.', '',
+        '| pass | record | roster | commit | heard | delivered | doubles | supersedes | long whole | TTFT p90 | in-app | arms | grader |', '|---|---|---|---|---|---|---|---|---|---|---|---|---|'];
     for (const r of sorted) {
-        if (r.error) { out.push(`| ${r.dirName} | — | — | — | — | — | — | — | — | — | unreadable: ${cell(r.error)} | — |`); continue; }
+        if (r.error) { out.push(`| ${r.dirName} | — | — | — | — | — | — | — | — | — | unreadable: ${cell(r.error)} | — | — |`); continue; }
         const inApp = r.inApp ? `${r.inApp.acceptable}/${r.inApp.questions} (${r.inApp.weak} weak, ${r.inApp.wrong} wrong)` : 'not graded';
         const arms = r.arms.length ? r.arms.map((a) => `${a.model.split('/').pop()} ${a.graded ? `${a.acceptable}/${a.n}` : 'not graded'}`).join(' · ') : '—';
-        out.push(`| ${r.dirName} | [record](${r.file}) | ${cell(r.rosterLabel ?? 'unknown')} | ${short(r.commit)} | ${r.heard}/${r.items} | ${r.delivered} | ${r.doubles} | ${r.supersedes} | ${r.longs ? `${r.longWhole}/${r.longs}` : '—'} | ${secs(r.ttftP90)} | ${inApp} | ${arms} |`);
+        out.push(`| ${r.dirName} | [record](${r.file}) | ${cell(r.rosterLabel ?? 'unknown')} | ${short(r.commit)} | ${r.heard}/${r.items} | ${r.delivered} | ${r.doubles} | ${r.supersedes} | ${r.longs ? `${r.longWhole}/${r.longs}` : '—'} | ${secs(r.ttftP90)} | ${inApp} | ${arms} | ${r.graders?.length ? r.graders.map(cell).join(' + ') : '—'} |`);
     }
     return out.join('\n') + '\n';
 }
