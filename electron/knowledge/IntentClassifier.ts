@@ -26,9 +26,28 @@ const COMPANY_KEYWORDS = [
 // everyday technical vocabulary ("base image", "expect", "range", "stock")
 // labelled 25 of 27 technical questions "negotiation" and routed them through
 // the coaching path — only strong terms are checked now.
+// "salary" by itself is not strong either: on 2026-09-24 (h40a R09) "the SQL for the
+// second highest salary in each department" went to the coaching card. The salary terms
+// are the phrases an interviewer uses about the candidate's own pay.
 const STRONG_NEGOTIATION = [
-    'salary', 'compensation', 'negotiate', 'negotiable', 'equity', 'rsu', 'rsus', 'signing bonus',
+    'salary expectation', 'salary expectations', 'expected salary', 'salary range', 'your salary',
+    'salary requirement', 'salary requirements', 'desired salary', 'base salary', 'salary offer',
+    'what salary', 'compensation', 'negotiate', 'negotiable', 'equity', 'rsu', 'rsus', 'signing bonus',
     'total comp', 'market rate', 'counteroffer', 'counter offer',
+];
+
+// A marker vetoes NEGOTIATION. On 2026-09-24 (h40a R09) "the SQL for the second highest salary
+// in each department" went to the negotiation coaching card, and the phrase list alone still sends
+// "write a query that returns the salary range" there. A technical question wrongly sent to the
+// card is unspeakable; a negotiation question wrongly vetoed gets an ordinary answer without the
+// salary block. "table" and "join" are not markers: "on the table" and "join us" are negotiation
+// idioms.
+// "sequel" is how the transcript writes SQL; "postgresql", "postgres" and "mysql" are the engine
+// names an interviewer says instead of it.
+const TECHNICAL_CONTEXT = [
+    'sql', 'sequel', 'postgresql', 'postgres', 'mysql', 'query', 'queries', 'tables', 'database',
+    'databases', 'schema', 'schemas', 'column', 'columns', 'function', 'functions', 'algorithm',
+    'algorithms', 'regression', 'pipeline', 'pipelines', 'dataset', 'datasets', 'implement', 'code',
 ];
 
 const PROFILE_DETAIL_KEYWORDS = [
@@ -50,7 +69,7 @@ export function classifyIntent(question: string): IntentType {
     const lower = question.toLowerCase();
 
     if (INTRO_KEYWORDS.some(kw => hasWord(lower, kw))) return IntentType.INTRO;
-    const strong = STRONG_NEGOTIATION.some(kw => hasWord(lower, kw));
+    const strong = STRONG_NEGOTIATION.some(kw => hasWord(lower, kw)) && !TECHNICAL_CONTEXT.some(kw => hasWord(lower, kw));
     if (strong) return IntentType.NEGOTIATION;
     if (COMPANY_KEYWORDS.some(kw => hasWord(lower, kw))) return IntentType.COMPANY_RESEARCH;
     if (PROFILE_DETAIL_KEYWORDS.some(kw => hasWord(lower, kw))) return IntentType.PROFILE_DETAIL;
