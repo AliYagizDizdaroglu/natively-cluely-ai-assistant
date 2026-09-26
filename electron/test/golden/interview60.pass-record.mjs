@@ -47,6 +47,16 @@ export function graderOf(judge) {
     return judge?.graderModel ?? (judge?.effort ? judge.model ?? null : null);
 }
 
+/**
+ * The hedge's startup line (verbalHedge.ts's describeVerbalHedgeAtStartup, logged in main.ts),
+ * read from the run's debug log text: 'on trigger=<n>ms' | 'off' | null when the line is absent
+ * (every run before da28f25, h40c review M6). Exported so a test can prove the regex against the
+ * real describe function's output, not only a hand-typed fixture (h40c review fix round 1, Minor 1).
+ */
+export function verbalHedgeFromLog(dbg) {
+    return lastMatch(dbg, /\[Main\] verbal hedge: (on trigger=\d+ms|off)/g)?.[1] ?? null;
+}
+
 function countVerdicts(grades) {
     const c = { acceptable: 0, weak: 0, wrong: 0, error: 0 };
     for (const g of grades) if (g && g.verdict in c) c[g.verdict]++;
@@ -76,6 +86,7 @@ export function collectPass(runDir) {
         liveModel: done.liveModel ?? null,
         stt: lastMatch(dbg, /\[Main\] Using ([^\n]+?) for interviewer/g)?.[1] ?? null,
         answerModel: lastMatch(dbg, /Default Model set to: (\S+)/g)?.[1] ?? null,
+        verbalHedge: verbalHedgeFromLog(dbg),
         commit: done.commit ?? null,
         graded: !!judge, graderPrompt: judge?.graderPrompt ?? null, judgeModel: judge?.model ?? null, graderModel: graderOf(judge),
     };
@@ -168,7 +179,12 @@ export function renderPassRecord(p) {
     out.push(`| started | ${t.startedAt ?? 'unknown'}${t.durationMin != null ? ` (${t.durationMin} min)` : ''} |`);
     out.push(`| roster | ${t.rosterLabel ?? t.roster ?? 'unknown'} |`);
     out.push(`| ear | Live ${t.liveModel ?? 'unknown'} · STT ${t.stt ?? 'unknown'} |`);
-    out.push(`| answers | ${t.answerModel ?? 'unknown'} (in-app)${s.arms.length ? ` · arms: ${s.arms.map((a) => a.model).join(', ')}` : ''} |`);
+    // The hedge only engages when the primary is one of the two lites (LLMHelper.ts:3395) — a
+    // different primary (NATIVELY_VERBAL_PRIMARY_MODEL, or Gemma) keeps its own name even with the
+    // flag on; the summary bullet below still names the flag either way (h40c review fix round 1, Minor 3).
+    const hedgeEngaged = t.verbalHedge?.startsWith('on') && (t.answerModel === 'gemini-3.1-flash-lite' || t.answerModel === 'gemini-3.5-flash-lite');
+    const answerLabel = hedgeEngaged ? 'hedge (gemini-3.5-flash-lite front, gemini-3.1-flash-lite back)' : (t.answerModel ?? 'unknown');
+    out.push(`| answers | ${answerLabel} (in-app)${s.arms.length ? ` · arms: ${s.arms.map((a) => a.model).join(', ')}` : ''} |`);
     out.push(`| commit | ${short(t.commit)} |`);
     out.push(`| grader | ${t.graded ? `${t.graderModel != null ? cell(t.graderModel) : `unrecorded (the judge file's default label says ${t.judgeModel ?? 'nothing'})`}, prompt ${t.graderPrompt ?? 'unstamped'}` : 'not graded yet'} |`);
     out.push(`| run folder | ${t.runDir} |`, '');
@@ -182,6 +198,7 @@ export function renderPassRecord(p) {
         out.push('- In-app answers: not graded yet');
     }
     for (const a of s.arms) out.push(`- Arm ${a.model} (${a.n} mains): ${a.graded ? counts(a) : 'not graded'} · TTFT p50 ${secs(a.ttftP50)} p90 ${secs(a.ttftP90)}${a.graded ? ` · grader ${a.graderModel ?? 'unrecorded'}` : ''}`);
+    if (t.verbalHedge != null) out.push(t.verbalHedge.startsWith('on') ? `- Verbal hedge: ${t.verbalHedge} (3.5-flash-lite front, 3.1-flash-lite back; answers name their model in the won-by lines)` : `- Verbal hedge: ${t.verbalHedge}`);
     out.push('');
 
     out.push('## Gate', '', `Overall: **${p.gate.pass ? 'PASS' : 'FAIL'}**`, '', '| | row | value |', '|---|---|---|');
