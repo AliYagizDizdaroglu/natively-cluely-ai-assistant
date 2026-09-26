@@ -1,0 +1,270 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "S1Q04F#1",
+   "id": "S1Q04F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I’d use numpy.argpartition instead of a full sort. This brings the complexity down from O(N log N) to O(N) by only identifying the top k elements without sorting the entire array. Since argpartition doesn't guarantee order, I’d then perform a standard sort on just that small subset of k elements to enforce the index-based tie-breaking rule. This keeps the heavy lifting linear while maintaining the deterministic output we need."
+  },
+  {
+   "key": "S1Q04F#2",
+   "id": "S1Q04F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I’d use a min-heap to track the top-k elements, which brings the complexity down to O(N log K). For the tie-breaking, I’d store tuples of (score, index) as the heap keys. This ensures the comparison logic naturally handles the tie-rule during insertion, avoiding the overhead of a full sort on the entire dataset."
+  },
+  {
+   "key": "S1Q04F#3",
+   "id": "S1Q04F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "For millions of rows, a full sort is inefficient. I’d use numpy.argpartition instead. It’s an O(N) operation that effectively moves the top K indices to the front of the array without sorting the entire dataset. Once I have those top K candidates, I’d perform a standard sort only on that small subset to enforce the tie-breaking rule. This keeps the complexity linear relative to the total number of customers, which is a massive win for performance."
+  },
+  {
+   "key": "S1Q04F#4",
+   "id": "S1Q04F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I’d move from a full sort to a heap-based approach. By maintaining a min-heap of size K, I can identify the top candidates in O(N log K) time rather than O(N log N). To preserve the tie-breaking rule, I’d store tuples of (score, original_index) in the heap, ensuring the comparator uses the index to resolve ties consistently."
+  },
+  {
+   "key": "S1Q04F#5",
+   "id": "S1Q04F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I’d use numpy.argpartition to identify the top K indices in linear time, O(N), rather than performing a full sort. Since argpartition doesn't guarantee order within the partition, I’d then perform a full sort only on those top K elements to strictly enforce the tie-breaking rule using the original indices. This keeps the complexity near-linear while ensuring exact correctness."
+  },
+  {
+   "key": "S1Q04F#6",
+   "id": "S1Q04F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I’d use numpy.argpartition instead of a full sort. It’s an O(N) operation that moves the top K elements to the front without sorting the entire array, which is significantly faster for millions of rows. To handle the tie-breaking, I’d construct a composite key—combining the score and the index—before partitioning, ensuring the deterministic order is preserved."
+  },
+  {
+   "key": "S1Q05F#1",
+   "id": "S1Q05F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout? [Follow-up to: Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.]",
+   "heard": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout?",
+   "source": "answers-pass",
+   "answer": "It’s legitimate when you’re performing time-series splitting, where the training set is strictly historical and the test set is future-dated. This mimics production. However, you need a customer-level holdout when you risk identity leakage. If the model learns to memorize specific customer IDs or static traits rather than behavioral patterns, it won't generalize to new users."
+  },
+  {
+   "key": "S1Q05F#2",
+   "id": "S1Q05F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout? [Follow-up to: Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.]",
+   "heard": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout?",
+   "source": "answers-pass",
+   "answer": "It’s legitimate when the objective is to predict risk for existing customers at any point in time, which is exactly how I handled the churn model at Dream Ventures. However, you need a customer-level holdout if you want to evaluate generalization to new, unseen users. Without it, the model can memorize specific user IDs or idiosyncratic patterns, leading to inflated performance metrics that won't reflect real-world accuracy on new signups."
+  },
+  {
+   "key": "S1Q05F#3",
+   "id": "S1Q05F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout? [Follow-up to: Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.]",
+   "heard": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout?",
+   "source": "answers-pass",
+   "answer": "It’s legitimate when you’re predicting a specific outcome for a specific time window, treating each snapshot as an independent inference task. However, I always use a customer-level holdout when I need to ensure the model generalizes to new users. Without it, the model can memorize a specific customer's idiosyncratic history, leading to leakage and inflated metrics that don't hold up in production."
+  },
+  {
+   "key": "S1Q05F#4",
+   "id": "S1Q05F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout? [Follow-up to: Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.]",
+   "heard": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout?",
+   "source": "answers-pass",
+   "answer": "It’s legitimate to have customers in multiple snapshots when the prediction task is strictly time-bound, like predicting churn for a specific month based on that month's usage. However, I always require a customer-level holdout when the goal is to generalize to new users. If you don't, the model can \"cheat\" by memorizing specific customer behavioral patterns rather than learning the generalizable churn signal, which leads to inflated performance metrics that won't hold up in production."
+  },
+  {
+   "key": "S1Q05F#5",
+   "id": "S1Q05F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout? [Follow-up to: Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.]",
+   "heard": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout?",
+   "source": "answers-pass",
+   "answer": "It’s legitimate to have multiple snapshots when you're treating this as a time-series problem where the model needs to learn how a user's behavior evolves leading up to churn. However, you absolutely require a customer-level holdout when your goal is to predict churn for new, unseen users. If you only split by time, the model can memorize the specific quirks of a user's history in the training set, which leads to overfitting and inflated performance metrics. By performing a group split on the customer ID, you ensure that the model is evaluated on its ability to generalize to users it has never encountered before."
+  },
+  {
+   "key": "S1Q05F#6",
+   "id": "S1Q05F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout? [Follow-up to: Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.]",
+   "heard": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout?",
+   "source": "answers-pass",
+   "answer": "It’s legitimate if you’re building a rolling risk engine where you need to score the same customer repeatedly over time. However, you need a customer-level holdout to prevent the model from memorizing specific customer quirks, which leads to overfitting. By using a group-based split on the customer ID, you ensure the model generalizes to new customers, not just new time periods for known ones."
+  },
+  {
+   "key": "S1Q06F#1",
+   "id": "S1Q06F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For the indexing, I’d prioritize a composite index on (customer_id, event_timestamp) to optimize both the join performance and the range scans. If historical records are corrected, I’d move to an upsert pattern using ON CONFLICT to ensure idempotency. If we need to preserve auditability, I’d implement a versioning pattern with valid_from and valid_to timestamps to track state changes instead of overwriting."
+  },
+  {
+   "key": "S1Q06F#2",
+   "id": "S1Q06F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d index the customer ID on the snapshots table and use a composite index on (customer_id, event_timestamp) for the events table to optimize time-range lookups. For corrections, I’d use an UPSERT pattern with ON CONFLICT if we only need the latest state. If auditability is required, I’d implement versioning with valid_from and valid_to timestamps to track changes without overwriting history."
+  },
+  {
+   "key": "S1Q06F#3",
+   "id": "S1Q06F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For the snapshots table, I’d use a composite index on (customer_id, snapshot_time) to optimize the join. On the events table, I’d index (customer_id, event_time, ingested_at) to support the range filtering and the ingestion constraint. If records can be corrected, the ingested_at check isn't enough. I’d implement a bi-temporal approach, using an updated_at or version column to select the latest version of each event that was active at the snapshot time."
+  },
+  {
+   "key": "S1Q06F#4",
+   "id": "S1Q06F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For the snapshots table, I’d create a composite index on (customer_id, snapshot_time). For the events table, I’d index (customer_id, event_time, ingested_at) to optimize the join and the range filtering.\n\nIf historical records can be corrected, ingested_at is no longer sufficient. I’d shift to a Slowly Changing Dimension Type 2 pattern, adding valid_from and valid_to columns to the events table. The query would then filter for the record where the snapshot time falls within that valid range, ensuring we always retrieve the state of the event as it existed at that specific moment."
+  },
+  {
+   "key": "S1Q06F#5",
+   "id": "S1Q06F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For the snapshots table, I’d use a composite index on (customer_id, snapshot_time) to optimize the join. On the events table, I’d index (customer_id, event_time, ingested_at) to support the range scan. If records are corrected, ingested_at fails. I’d implement an SCD Type 2 pattern with valid_from and valid_to columns, filtering for records where the snapshot time falls within that validity window."
+  },
+  {
+   "key": "S1Q06F#6",
+   "id": "S1Q06F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For indexing, I’d prioritize B-tree indexes on the join keys like customer ID and composite indexes on the event timestamp and customer ID to optimize time-range filtering. If historical records change, I’d switch to an upsert pattern using unique constraints. If we need strict auditability for ML reproducibility, I’d implement SCD Type 2 with valid-from and valid-to timestamps to version those records."
+  },
+  {
+   "key": "S1Q07F#1",
+   "id": "S1Q07F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions? [Follow-up to: Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.]",
+   "heard": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions?",
+   "source": "answers-pass",
+   "answer": "I’d handle this by making the scoring job idempotent and version-aware. Each batch run gets a unique execution ID, so before writing any scores, the job checks the database to skip customers already processed in previous attempts. For model consistency, I’d pin the specific model artifact version in the job configuration at the start, ensuring that even if the job restarts, it uses the exact same model version throughout. Finally, I’d wrap the database writes in a transaction or use a staging table to ensure that we only commit completed, valid scores."
+  },
+  {
+   "key": "S1Q07F#2",
+   "id": "S1Q07F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions? [Follow-up to: Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.]",
+   "heard": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions?",
+   "source": "answers-pass",
+   "answer": "I enforce idempotency by checking a state store, like a database flag, before triggering any action, ensuring we never process the same ID twice. To prevent mixed versions, I pin the specific model artifact version at the start of the job—never using a 'latest' pointer—so the entire batch runs against that exact, immutable container."
+  },
+  {
+   "key": "S1Q07F#3",
+   "id": "S1Q07F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions? [Follow-up to: Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.]",
+   "heard": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions?",
+   "source": "answers-pass",
+   "answer": "I’d handle this by ensuring the job is idempotent and the model version is pinned at the start. For campaign actions, I’d use a unique transaction ID for each customer and batch run; before triggering any action, the service checks the database to see if that ID was already processed. For model consistency, I’d fetch the specific model URI from MLflow once at the beginning of the job and use that same artifact for every inference, preventing any drift if a new model is promoted while the job is running."
+  },
+  {
+   "key": "S1Q07F#4",
+   "id": "S1Q07F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions? [Follow-up to: Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.]",
+   "heard": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions?",
+   "source": "answers-pass",
+   "answer": "I’d enforce idempotency and version pinning. For campaign actions, I’d use unique idempotency keys in the database so re-running the job skips already-processed records. To prevent mixed model versions, I’d pin the specific model artifact ID at the start of the job, ensuring the entire batch uses that version rather than a dynamic \"latest\" reference."
+  },
+  {
+   "key": "S1Q07F#5",
+   "id": "S1Q07F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions? [Follow-up to: Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.]",
+   "heard": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions?",
+   "source": "answers-pass",
+   "answer": "I handle this by enforcing idempotency at the persistence layer. Before executing any campaign action, the job checks a state table to verify if that specific user ID has already been processed for the current run. To prevent mixed model versions, I pin the model artifact ID at the start of the job and pass that context to every worker, ensuring the entire batch uses the same version regardless of when it resumes."
+  },
+  {
+   "key": "S1Q07F#6",
+   "id": "S1Q07F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions? [Follow-up to: Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.]",
+   "heard": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions?",
+   "source": "answers-pass",
+   "answer": "I solve this with idempotency and snapshotting. For duplicates, I use a \"check-then-act\" pattern where every action is keyed by a unique transaction ID in the database; the job queries this state to skip already-processed records. To prevent mixed versions, I snapshot the model artifact path and configuration at the start of the run, ensuring the job sticks to its original version even if a new model is deployed mid-night."
+  }
+ ]
+}

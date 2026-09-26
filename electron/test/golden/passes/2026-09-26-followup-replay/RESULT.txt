@@ -1,0 +1,4 @@
+n = 60 (item, rep) pairs graded
+  A: wrong=0 acceptable=16 weak=14
+  B: wrong=1 acceptable=22 weak=7
+DECISION: FAIL  (wrong(B)=1 > wrong(A)=0)
