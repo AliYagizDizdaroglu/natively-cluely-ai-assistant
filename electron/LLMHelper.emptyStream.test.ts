@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Same electron + @google/genai shims as LLMHelper.reliability.test.ts.
 vi.mock('electron', () => ({
@@ -53,9 +53,18 @@ async function drain(gen: AsyncGenerator<string, void, unknown>) {
  * present an empty answer as success.
  */
 describe('Gemma empty-stream fallback', () => {
+    // h40c review M5: an un-cleared NATIVELY_VERBAL_HEDGE from the shell could make a case here
+    // fail spuriously (or throw on a junk value) the moment it falls back to Gemini Flash.
+    const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+
     beforeEach(() => {
         generateContentStream.mockReset();
         generateContentStream.mockImplementation(defaultImpl);
+        delete process.env.NATIVELY_VERBAL_HEDGE;
+    });
+
+    afterEach(() => {
+        if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
     });
 
     it('falls back to Flash when Gemma yields ZERO chunks (RECITATION / safety block)', async () => {

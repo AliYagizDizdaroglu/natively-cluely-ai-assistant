@@ -58,17 +58,23 @@ const technical = (helper: LLMHelper) =>
 describe('a stalled primary on the technical verbal route falls back to the other Flash Lite', () => {
     const savedLevel = process.env.NATIVELY_GEMINI_THINKING_LEVEL;
     const savedTimeout = process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS;
+    // This file exercises today's race (the hedge off) — h40c review M5: a shell that exports
+    // NATIVELY_VERBAL_HEDGE (a flight or smoke shell) made every case here fail spuriously, or
+    // throw on a junk value, because the flag was never cleared.
+    const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
     beforeEach(() => {
         vi.useFakeTimers();
         generateContentStream.mockClear();
         plan.length = 0;
         delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
         delete process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS;
+        delete process.env.NATIVELY_VERBAL_HEDGE;
     });
     afterEach(() => {
         vi.useRealTimers();
         if (savedLevel === undefined) delete process.env.NATIVELY_GEMINI_THINKING_LEVEL; else process.env.NATIVELY_GEMINI_THINKING_LEVEL = savedLevel;
         if (savedTimeout === undefined) delete process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS; else process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS = savedTimeout;
+        if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
     });
 
     it('at MINIMAL, primary silent for 4 s → the answer streams from gemini-3.5-flash-lite, announced by the fallback sentinel', async () => {

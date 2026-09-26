@@ -31,6 +31,8 @@ function diagLog(msg: string) {
 const STALL_SWITCH = /^__model_source:(\S+) \(fallback\)__$/;
 /** A Gemma selection's handover to Flash, as LLMHelper.streamWithGemmaGuarded announces it: one whole chunk. */
 const GEMMA_HANDOVER = /^__model_source:(Gemini Flash)__$/;
+/** The hedge's winner, as LLMHelper.streamGeminiWithHedge announces it: one whole chunk. */
+const HEDGE_WINNER = /^__model_source:(\S+) \(hedge\)__$/;
 
 export class WhatToAnswerLLM {
     private llmHelper: LLMHelper;
@@ -93,7 +95,9 @@ export class WhatToAnswerLLM {
      * just ahead of the first words the other model wrote — never earlier, so a switched-to
      * model that fails before its first token still counts as a pre-token failure. A Gemma
      * selection's handover to Flash (streamWithGemmaGuarded's `__model_source:Gemini Flash__`)
-     * is stripped the same way, so it is named the same way.
+     * is stripped the same way, so it is named the same way. The hedge's winner
+     * (LLMHelper.streamGeminiWithHedge's `__model_source:<model> (hedge)__`) is re-announced
+     * verbatim, for the same reason.
      * `onSwitch` learns which model is now writing the answer.
      */
     private async *nameStallSwitch(
@@ -101,22 +105,21 @@ export class WhatToAnswerLLM {
         filter: (raw: AsyncGenerator<string>) => AsyncGenerator<string>,
         onSwitch: (model: string) => void,
     ): AsyncGenerator<string> {
-        let switchedTo = null as string | null;
+        let announce = null as string | null;
         async function* watch() {
             for await (const chunk of raw) {
-                const m = STALL_SWITCH.exec(chunk) ?? GEMMA_HANDOVER.exec(chunk);
+                const h = HEDGE_WINNER.exec(chunk);
+                const m = h ?? STALL_SWITCH.exec(chunk) ?? GEMMA_HANDOVER.exec(chunk);
                 if (m) {
-                    switchedTo = m[1];
+                    // The hedge's winner is re-announced verbatim; a stall switch or a Gemma handover as `(fallback)`, as before.
+                    announce = h ? chunk : `__model_source:${m[1]} (fallback)__`;
                     onSwitch(m[1]);
                 }
                 yield chunk;
             }
         }
         for await (const chunk of filter(watch())) {
-            if (switchedTo) {
-                yield `__model_source:${switchedTo} (fallback)__`;
-                switchedTo = null;
-            }
+            if (announce) { yield announce; announce = null; }
             yield chunk;
         }
     }

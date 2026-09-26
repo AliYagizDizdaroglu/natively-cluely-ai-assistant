@@ -106,6 +106,10 @@ const named = (chunks: string[]) => chunks.flatMap((c) => [...c.matchAll(/__mode
 describe('the answer is named after, and falls back from, the model that actually answered', () => {
     const savedModel = process.env[VERBAL_PRIMARY_MODEL_ENV];
     const savedLevel = process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+    // This describe exercises today's race (the hedge off) — h40c review M5: an un-cleared
+    // NATIVELY_VERBAL_HEDGE from the shell made 8 of these cases fail spuriously, or throw on a
+    // junk value.
+    const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
     beforeEach(() => {
         generateContentStream.mockClear();
         plan.length = 0;
@@ -113,11 +117,13 @@ describe('the answer is named after, and falls back from, the model that actuall
         delete process.env[VERBAL_PRIMARY_MODEL_ENV];
         // The shipped LOW, so the stall budget is the shipped 10 s.
         delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+        delete process.env.NATIVELY_VERBAL_HEDGE;
     });
     afterEach(() => {
         vi.useRealTimers();
         if (savedModel === undefined) delete process.env[VERBAL_PRIMARY_MODEL_ENV]; else process.env[VERBAL_PRIMARY_MODEL_ENV] = savedModel;
         if (savedLevel === undefined) delete process.env.NATIVELY_GEMINI_THINKING_LEVEL; else process.env.NATIVELY_GEMINI_THINKING_LEVEL = savedLevel;
+        if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
     });
 
     it('override on: the technical route names the model it calls', async () => {
@@ -248,5 +254,66 @@ describe('the answer is named after, and falls back from, the model that actuall
         const chunks = await answer(TECHNICAL);
         expect(asked()).toEqual(['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite']);
         expect(named(chunks)).toEqual(['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite (fallback)']);
+    });
+});
+
+/**
+ * The verbal hedge (NATIVELY_VERBAL_HEDGE=1) announces its winner as
+ * `__model_source:<model> (hedge)__`, ahead of its first token, on the RAW stream — exactly
+ * where the stall switch's `(fallback)` sentinel sits (LLMHelper.streamGeminiWithHedge). Without
+ * a HEDGE_WINNER branch in nameStallSwitch, stripModelSentinel would eat it as a head sentinel
+ * and the bar would keep showing the primary the head label named before any request was made —
+ * the same bug class as the stall switch (s50l/s50m, 783991a/47def85).
+ */
+describe('the hedge winner is named through generateStream, not just LLMHelper', () => {
+    // Save/restore, not delete (h40c review M5) — a bare delete here clobbered a value the
+    // shell had set for a reason (a flight or smoke run), instead of putting it back.
+    const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+    // h40c re-review N2: a shell exporting a junk NATIVELY_VERBAL_HEDGE_TRIGGER_MS made every
+    // case in this describe throw, since the hedge is on here and reads it.
+    const savedTrigger = process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
+    beforeEach(() => {
+        generateContentStream.mockClear();
+        plan.length = 0;
+        signals.length = 0;
+        process.env.NATIVELY_VERBAL_HEDGE = '1';
+        delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
+    });
+    afterEach(() => {
+        vi.useRealTimers();
+        if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
+        if (savedTrigger === undefined) delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS; else process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS = savedTrigger;
+    });
+
+    it('back wins: the bar names gemini-3.1-flash-lite (hedge), ahead of the words it wrote', async () => {
+        vi.useFakeTimers();
+        plan.push('silent', ['The back answered.']);
+        const out = answer(TECHNICAL);
+        await vi.advanceTimersByTimeAsync(5000);
+        const chunks = await out;
+        expect(asked()).toEqual(['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite']);
+        expect(named(chunks).at(-1)).toBe('gemini-3.1-flash-lite (hedge)');
+        // Chunks may be re-split by the filter chain, so compare positions in the joined text.
+        const text = chunks.join('');
+        const sentinelIdx = text.indexOf('__model_source:gemini-3.1-flash-lite (hedge)__');
+        const wordsIdx = text.indexOf('back answered');
+        expect(sentinelIdx).toBeGreaterThan(-1);
+        expect(wordsIdx).toBeGreaterThan(-1);
+        expect(sentinelIdx).toBeLessThan(wordsIdx);
+    });
+
+    it('front wins: the bar names gemini-3.5-flash-lite (hedge)', async () => {
+        plan.push(['The front answered.']);
+        const chunks = await answer(TECHNICAL);
+        expect(asked()).toEqual(['gemini-3.5-flash-lite']);
+        expect(named(chunks).at(-1)).toBe('gemini-3.5-flash-lite (hedge)');
+    });
+
+    it('both legs 503, then the redirect answers: the redirect re-enters the hedge', async () => {
+        plan.push('error', 'error', ['Recovered on the redirect.']);
+        const chunks = await answer(TECHNICAL);
+        expect(asked()).toEqual(['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-3.5-flash-lite']);
+        expect(named(chunks).at(-1)).toBe('gemini-3.5-flash-lite (hedge)');
+        expect(chunks.join('')).toContain('Recovered');
     });
 });

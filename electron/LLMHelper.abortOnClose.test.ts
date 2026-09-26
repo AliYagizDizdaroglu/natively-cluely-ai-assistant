@@ -116,15 +116,21 @@ const lateFirstChunk = (respondAfterMs: number, order: string[], head: string) =
  */
 describe('Gemini stream aborts on early close', () => {
     const savedTimeout = process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS;
+    // This file exercises today's race (the hedge off) — h40c review M5: an un-cleared
+    // NATIVELY_VERBAL_HEDGE from the shell made every case here fail spuriously, or throw on a
+    // junk value.
+    const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
 
     beforeEach(() => {
         lastSignal = null;
         generateContentStream.mockReset();
         generateContentStream.mockImplementation(defaultImpl);
+        delete process.env.NATIVELY_VERBAL_HEDGE;
     });
 
     afterEach(() => {
         if (savedTimeout === undefined) delete process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS; else process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS = savedTimeout;
+        if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
     });
 
     it('aborts the request when the consumer closes the stream early', async () => {
@@ -285,16 +291,20 @@ const gemmaCompletesNaturally = async (params: any) => {
 describe('Gemma guarded stream aborts on early close', () => {
     const savedTtft = process.env.NATIVELY_GEMMA_TTFT_MS;
     const savedVisionTtft = process.env.NATIVELY_GEMMA_VISION_TTFT_MS;
+    // See the note on the same lines in the describe block above (h40c review M5).
+    const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
 
     beforeEach(() => {
         gemmaSignal = null;
         generateContentStream.mockReset();
         generateContentStream.mockImplementation(defaultImpl);
+        delete process.env.NATIVELY_VERBAL_HEDGE;
     });
 
     afterEach(() => {
         if (savedTtft === undefined) delete process.env.NATIVELY_GEMMA_TTFT_MS; else process.env.NATIVELY_GEMMA_TTFT_MS = savedTtft;
         if (savedVisionTtft === undefined) delete process.env.NATIVELY_GEMMA_VISION_TTFT_MS; else process.env.NATIVELY_GEMMA_VISION_TTFT_MS = savedVisionTtft;
+        if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
     });
 
     const gemmaRoute = (helper: LLMHelper) =>
