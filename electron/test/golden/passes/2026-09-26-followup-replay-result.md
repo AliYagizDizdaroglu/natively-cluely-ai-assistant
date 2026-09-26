@@ -1,78 +1,56 @@
-# Pre-registration â€” follow-up parent restore, offline replay (2026-09-26)
+# Follow-up parent replay result: 2026-09-26, scenario50 (s50m)
 
-Written before any model call for this replay. Task 6 of plan h40c.
+The pre-registration is `PREREGISTER-followup-replay.md`, written at 18:28:12 local before any model
+call and not edited. The change under test is commit 6c50ec3 (`withParentExchange`, behind
+`NATIVELY_FOLLOWUP_PARENT`, off). Nothing here touches holdout40.
 
-## Rule (verbatim from the h40c plan, Task 6)
-
-Roster: scenario50, run `2026-09-22T08-22-50-s50m` (the newest scenario50 hour with captured
-prompts). Items: its 10 follow-ups whose captured prompt carries no parent line: S1Q04F S1Q05F
-S1Q06F S1Q07F S1Q08F S2Q04F S2Q05F S2Q06F S2Q07F S2Q08F; an id whose parent answer is absent from
-the hour's log is dropped before the run and named. Arms on gemini-3.1-flash-lite at LOW, 3 reps
-each, temperature 0.4 (the answers pass's own): A = the captured prompt exactly as the app sent it
-(parent absent); B = the same prompt with the parent exchange restored by the BUILT
-`withParentExchange` â†’ `prepareTranscriptForWhatToAnswer` â†’ `pinSettledQuestion` (flag on), the
-outer message bytes untouched. Instrument calibration before any call: with the flag off the
-rebuild reproduces every captured prompt of the run byte for byte. Grading: blind, both arms
-shuffled per item under anonymous keys, `question` = `questionForGrader` (carries "[Follow-up to:
-parent]"), Opus agents with the frozen grader prompt (stamp recorded), grader model recorded from
-the transcripts. Decision over the 30 (item, rep) pairs, in this order: (1) wrong(B) > wrong(A) â†’
-FAIL; (2) acceptable(B) âˆ’ acceptable(A) â‰¥ +5 â†’ PASS (the fix earns a pre-registered flight on a
-non-holdout roster); (3) delta â‰¤ +1 â†’ FAIL (the flag stays off; the diagnosis is re-examined); (4)
-otherwise INCONCLUSIVE: one more replay of the same design on s50l is allowed after the quota
-resets, and its result is read by the same rule pooled with this one. Budget: 60 requests on
-3.1-lite plus retries; not started unless the day's ledger shows â‰¥ 100 headroom. Nothing here
-touches holdout40.
-
-## Note on the app's actual behaviour after fix round 1
-
-`SessionTracker.addAssistantMessage(text, question)` now stores the PINNED question the answer
-was generated for (`IntelligenceEngine` passes `settled`, the last `[INTERVIEWER]` line of the
-transcript at answer time â€” not a raw STT fragment). This replay's arm B mirrors that: the
-restored `history[0].questionContext` is the parent's own pinned/settled question (the last
-`[INTERVIEWER]` line of the PARENT's captured block), not a raw fragment of what the interviewer
-said. This is a deliberate deviation from a literal reading of "the parent's question" toward what
-the fixed app actually now stores and would actually restore.
-
-## Ids kept
-
-All 10 named ids are kept â€” no drops. Checked against `pairAnswers()` over the s50m run's
-`natively_debug.log` + `interview60.timeline.json`: every parent (S1Q04, S1Q05, S1Q06, S1Q07,
-S1Q08, S2Q04, S2Q05, S2Q06, S2Q07, S2Q08) has exactly one delivered answer in that hour's log.
-
-| follow-up id | parent id | parent answer present |
-|---|---|---|
-| S1Q04F | S1Q04 | yes (575 chars) |
-| S1Q05F | S1Q05 | yes (562 chars) |
-| S1Q06F | S1Q06 | yes (414 chars) |
-| S1Q07F | S1Q07 | yes (761 chars) |
-| S1Q08F | S1Q08 | yes (567 chars) |
-| S2Q04F | S2Q04 | yes (607 chars) |
-| S2Q05F | S2Q05 | yes (590 chars) |
-| S2Q06F | S2Q06 | yes (505 chars) |
-| S2Q07F | S2Q07 | yes (629 chars) |
-| S2Q08F | S2Q08 | yes (629 chars) |
-
-(S2Q08 answer length listed as 629 chars, matching the measured value; see
-`SP\followup-replay-build.mjs` output for the authoritative per-id figures recorded at build
-time.)
-
-## Grader-prompt instrument stamp
-
-`graderPromptVersion()` (from `electron/test/golden/interview60.judge.mjs`, hashing both
-`interview60.grader-prompt.md` and the RUBRIC constant) at the time of this pre-registration:
+## VERDICT: FAIL by rule step 1. The flag stays off; the diagnosis is re-examined
 
 ```
-8564ba96369a
+n = 60 (item, rep) pairs graded
+  A: wrong=0 acceptable=16 weak=14
+  B: wrong=1 acceptable=22 weak=7
+DECISION: FAIL  (wrong(B)=1 > wrong(A)=0)
 ```
 
-## Quota check
+(`followup-replay-decide.mjs` output, verbatim. A = the captured prompt as the app sent it, parent
+absent. B = the same prompt with the parent exchange restored by the built modules. 10 follow-ups
+× 3 reps × 2 arms on gemini-3.1-flash-lite LOW; 61 requests, one retry after a 503. Graded blind by
+three Opus agents, all `claude-opus-5-5` per their transcripts, with the frozen grader prompt and
+each follow-up's parent question available to the grader.)
 
-`SP\quota-ledger.mjs` re-run 2026-09-26: gemini-3.1-flash-lite headroom = 500 âˆ’ 314 = 186, which
-is â‰¥ 100. Proceeding.
+## Per item (Y acceptable, w weak, X wrong; three reps each)
 
-## Status
+| Item | A | B | Change |
+|---|---|---|---|
+| S1Q04F | wYY | www | −2 |
+| S1Q05F | YwY | YYY | +1 |
+| S1Q06F | www | YYY | +3 |
+| S1Q07F | YYY | YYY | 0 |
+| S1Q08F | YYY | YYY | 0 |
+| S2Q04F | YYY | YYY | 0 |
+| S2Q05F | YYY | Yww | −2 |
+| S2Q06F | www | YYY | +3 |
+| S2Q07F | www | wXw | 0 |
+| S2Q08F | www | YYY | +3 |
 
-Written before any model call. This file's filesystem mtime is the pre-registration timestamp;
-see the report for the recorded value. A copy is placed at
-`SP\stage\electron\test\golden\passes\PREREGISTER-followup-replay.md` for the controller to commit
-as `passes/PREREGISTER-followup-replay.md`.
+## What it says
+
+- **The restore fixes the failure it was built for.** Three follow-ups that no rep answered
+  acceptably without the parent went to three of three with it: S1Q06F, S2Q06F, S2Q08F.
+- **It also cost two items.** S1Q04F and S2Q05F lost two acceptable reps each. The graders' reasons
+  are technical errors (tie handling in a top-k heap) and a misreading ("multi-hop dependencies"
+  read as dependence on the embedding model). Whether the restored parent caused them is not
+  tested here.
+- **The one wrong answer** is S2Q07F, B rep 2: it had an LLM judge enforce authorization by checking
+  session tokens. All six S2Q07F answers, in both arms, drift into ingestion; none was acceptable.
+- The registered rule reads wrong answers first, and a +6 gain does not buy back one new wrong.
+  That order was fixed before the run.
+
+## Next, not decided here
+
+The restore clearly helps follow-ups that cannot be understood alone; on others it is neutral or
+worse, for reasons this replay cannot separate from sampling on 3 reps. A narrower design, for
+example restoring the parent QUESTION only and not its answer, would be a new change with its own
+pre-registered replay, on scenario50 again or another non-holdout roster. The user decides whether
+to pursue it.
