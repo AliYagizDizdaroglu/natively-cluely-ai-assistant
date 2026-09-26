@@ -761,6 +761,104 @@ describe("supersede question capture — the replaces= group must not shift the 
     });
 });
 
+/**
+ * h40b R07F: an answer dispatched on a Live PARAPHRASE (verdict=paraphrase) anchors on the
+ * paraphrase's first 80 chars, which can share no content word with the played follow-up text
+ * — claim-once found no candidate at all and the answer fell into answersToNobody, R07F itself
+ * never claimed. The dispatch line also carries the question the app actually answered
+ * (question="…"), which does share the follow-up's content words.
+ */
+describe('claimOf: a paraphrase-anchored answer is claimed by its dispatched question (h40b R07F)', () => {
+    const T0 = Date.parse('2026-01-01T00:00:00.000Z');
+    const iso = (ms: number) => new Date(ms).toISOString();
+
+    const build = (withQuestion: boolean) => {
+        const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'i60-r07f-'));
+        const timeline = {
+            startedAt: iso(T0 - 1000), startedMs: T0 - 1000,
+            startDebug: 0, endDebug: 1e9, startDiag: 0, endDiag: 1e9,
+            endedAt: iso(T0 + 200000),
+            items: [
+                { id: 'R07', kind: 'spoken', level: 'verbal', topic: 'queues', q: 'Two workers pick up the same job from a queue. How do you stop that happening?', playedAt: T0, clipSecs: 6 },
+                { id: 'R07F', kind: 'spoken', level: 'followup', topic: 'queues', chain: 'R07', q: 'And if the worker that claimed it crashes halfway?', playedAt: T0 + 90000, clipSecs: 3 },
+            ],
+        };
+        const dispatchAt = T0 + 90000 + 10000; // R07F.playedAt + 10s
+        const questionField = withQuestion
+            ? ' question="In the scenario where two workers are picking up jobs from a queue, what happens if the worker that claimed a job crashes halfway through processing it?"'
+            : '';
+        const dbgLines = [
+            `${iso(dispatchAt)} [LOG] [Main] dispatch: answer source=live anchor="In the scenario where two workers are picking up jobs from a queue, what happens" verdict=paraphrase${questionField}`,
+            `${iso(dispatchAt + 4000)} [LOG] [Answer] full: "I rely on the visibility timeout and an idempotent handler."`,
+        ];
+        const diagLines = [`[${iso(dispatchAt + 1000)}] route: VERBAL-TECHNICAL (selected model, filtered)`];
+        fs.writeFileSync(path.join(dir, 'interview60.timeline.json'), JSON.stringify(timeline, null, 1));
+        fs.writeFileSync(path.join(dir, 'natively_debug.log'), dbgLines.join('\n') + '\n');
+        fs.writeFileSync(path.join(dir, 'verbal-diag.log'), diagLines.join('\n') + '\n');
+        const m = computeRunFromFiles({
+            debugLog: path.join(dir, 'natively_debug.log'),
+            diagLog: path.join(dir, 'verbal-diag.log'),
+            timelinePath: path.join(dir, 'interview60.timeline.json'),
+            answersPath: path.join(dir, 'interview60.answers.json'), // deliberately never written
+        });
+        fs.rmSync(dir, { recursive: true, force: true });
+        return m;
+    };
+
+    it('claims the paraphrase-anchored answer by its dispatched question=, not the anchor alone', () => {
+        const m = build(true);
+        expect(m.answersToNobody).toBe(0);
+        const r07f = m.items.find((i: any) => i.id === 'R07F');
+        expect(r07f.answered).toBe(true);
+        expect(r07f.dispatches).toBe(1);
+        expect(r07f.heardBy).toBe('live');
+    });
+
+    // Control: strip question= and the same anchor stays unclaimed — the pre-fix behaviour.
+    it('control: without question= the same anchor stays unclaimed, as before', () => {
+        const m = build(false);
+        expect(m.answersToNobody).toBe(1);
+        const r07f = m.items.find((i: any) => i.id === 'R07F');
+        expect(r07f.answered).toBe(false);
+    });
+
+    // Fix round 1, I1: does not let an unverified Live question= claim a real item — the after8
+    // fabrication (real dispatch, 2026-09-07T07:36:26.044Z, 13 s after M11 played). The 80-char
+    // anchor overlaps M11.q in one word ("multiple") — below the 0.15 floor. The full question=
+    // shares "multiple" and "cluster" with M11.q — enough to clear 0.15 if scored — but
+    // verdict=unverifiable means that text was never checked against the interviewer's own STT,
+    // unlike a paraphrase, so it must not be scored at all.
+    it('does not let an unverified Live question= claim a real item — the after8 fabrication', () => {
+        const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'i60-after8-fab-'));
+        const timeline = {
+            startedAt: '2026-09-07T07:36:00.000Z', startedMs: Date.parse('2026-09-07T07:36:00.000Z'),
+            startDebug: 0, endDebug: 1e9, startDiag: 0, endDiag: 1e9,
+            endedAt: '2026-09-07T07:40:00.000Z',
+            items: [
+                { id: 'M11', kind: 'spoken', level: 'medium', topic: 'Kubernetes', q: 'How do you manage GPU resources across multiple teams sharing one cluster?', playedAt: Date.parse('2026-09-07T07:36:12.968Z'), clipSecs: 5.3545 },
+            ],
+        };
+        const dbgLines = [
+            '2026-09-07T07:36:26.044Z [LOG] [Main] dispatch: answer source=live anchor="How would you approach deploying multiple versions of the same model in one clus" verdict=unverifiable question="How would you approach deploying multiple versions of the same model in one cluster?"',
+        ];
+        const diagLines = ['[2026-09-07T07:36:27.000Z] route: VERBAL-TECHNICAL (selected model, filtered)'];
+        fs.writeFileSync(path.join(dir, 'interview60.timeline.json'), JSON.stringify(timeline, null, 1));
+        fs.writeFileSync(path.join(dir, 'natively_debug.log'), dbgLines.join('\n') + '\n');
+        fs.writeFileSync(path.join(dir, 'verbal-diag.log'), diagLines.join('\n') + '\n');
+        const m = computeRunFromFiles({
+            debugLog: path.join(dir, 'natively_debug.log'),
+            diagLog: path.join(dir, 'verbal-diag.log'),
+            timelinePath: path.join(dir, 'interview60.timeline.json'),
+            answersPath: path.join(dir, 'interview60.answers.json'), // deliberately never written
+        });
+        fs.rmSync(dir, { recursive: true, force: true });
+        expect(m.answersToNobody).toBe(1);
+        const m11 = m.items.find((i: any) => i.id === 'M11');
+        expect(m11.answered).toBe(false);
+        expect(m11.dispatches).toBe(0);
+    });
+});
+
 describe('computeRun on a run dir missing a required log file', () => {
     let dir = '';
     beforeAll(() => {

@@ -50,7 +50,7 @@ import { CODING } from './problems.coding.mjs';
  */
 const problemOf = (item) => (item?.kind === 'screenshot' && item.problem ? CODING.find((c) => c.id === item.problem) ?? null : null);
 const problemText = (p) => `LeetCode ${p.leetcode} ${p.name}. ${p.shots.map((s) => [s.title, ...s.lines].filter(Boolean).join(' ')).join(' / ')}`;
-function questionForGrader(item, items) {
+export function questionForGrader(item, items) {
     let q = item.q;
     const p = problemOf(item);
     if (p) q += ` [On screen: ${problemText(p)}]`;
@@ -84,8 +84,8 @@ const overlap = (a, b) => {
  */
 export function pairAnswers(debugLog, timeline) {
     const items = timeline.items.map((i) => ({ ...i, spokeEnd: i.playedAt + Math.round((i.clipSecs ?? 0) * 1000) }));
-    const all = [...debugLog.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|extend|supersede) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)/gm)]
-        .map((m) => ({ at: Date.parse(m[1]), action: m[2], source: m[3], anchor: JSON.parse(`"${m[4]}"`), verdict: m[5] }));
+    const all = [...debugLog.matchAll(/^(\S+) \[LOG\] \[Main\] dispatch: (answer|extend|supersede) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)(?: duplicateOf=\w+ answered=(?:true|false))?(?: extends="(?:[^"\\]|\\.)*")?(?: replaces="(?:[^"\\]|\\.)*")?(?: reason=\w+)?(?: question="((?:[^"\\]|\\.)*)")?/gm)]
+        .map((m) => ({ at: Date.parse(m[1]), action: m[2], source: m[3], anchor: JSON.parse(`"${m[4]}"`), verdict: m[5], question: m[6] == null ? null : JSON.parse(`"${m[6]}"`) }));
     const dispatches = all.filter((d) => d.action === 'answer');
     const extendsList = all.filter((d) => d.action === 'extend');
     const supersedeList = all.filter((d) => d.action === 'supersede');
@@ -104,7 +104,15 @@ export function pairAnswers(debugLog, timeline) {
         let best = null, bestOv = 0;
         for (const it of items) {
             if (d.at < it.playedAt - 2000 || d.at > it.spokeEnd + 60_000) continue;
-            const ov = overlap(d.anchor, it.q);
+            // An answer dispatched on a Live PARAPHRASE (verdict=paraphrase) anchors on the
+            // paraphrase's first 80 chars, which can share no content word with the played text
+            // (h40b R07F went to nobody); the dispatch line also carries the question the app
+            // answered, so it is scored too — but ONLY on verdict=paraphrase: a paraphrase has
+            // been checked against the interviewer's own STT before dispatch, while an
+            // unverifiable question= is unchecked Live text, exactly where a fabrication lives
+            // (after8 M11: an invented question's question= shared enough words with a real item
+            // to falsely claim it, review fix round 1 I1).
+            const ov = Math.max(overlap(d.anchor, it.q), d.question && d.verdict === 'paraphrase' ? overlap(d.question, it.q) : 0);
             if (ov > bestOv || (ov === bestOv && best && it.playedAt > best.playedAt && it.playedAt <= d.at)) { best = it; bestOv = ov; }
         }
         // An anchor made only of stop words ("And when would you not?" — the tail of a
