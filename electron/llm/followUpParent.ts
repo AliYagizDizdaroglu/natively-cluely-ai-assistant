@@ -13,6 +13,19 @@ export function followUpParentEnabled(env: NodeJS.ProcessEnv = process.env): boo
 }
 
 /**
+ * The startup-time validate-and-describe step (h40c review M4): the hedge gets validated once at
+ * app launch (verbalHedge.ts); this flag did not, so a junk value threw inside every hands-free
+ * answer instead of refusing to start. Unlike describeVerbalHedgeAtStartup — which embeds
+ * "[Main] " itself and is logged raw — this function returns the line WITHOUT that prefix; main.ts
+ * adds "[Main] " at its own call site (h40c review fix round 1, Minor 2: the two differ on
+ * purpose, don't unify their shape). Throws followUpParentEnabled's own message on a bad value, so
+ * the caller can catch it and exit rather than starting with a config nobody chose.
+ */
+export function describeFollowUpParentAtStartup(env: NodeJS.ProcessEnv = process.env): string {
+    return followUpParentEnabled(env) ? 'follow-up parent: on' : 'follow-up parent: off';
+}
+
+/**
  * Put the previous answered exchange back into a transcript window that lost it.
  *
  * SessionTracker evicts context items older than 120 s on every add, while holdout40 and

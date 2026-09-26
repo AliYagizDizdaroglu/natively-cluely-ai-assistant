@@ -225,6 +225,45 @@ describe('the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-
         }
     });
 
+    it('h40c review M1: front yields nothing (empty stream), back yields tokens — the back is started with reason=front-empty and wins; the loser is labelled empty, not aborted', async () => {
+        plan.push([], ['Back answered.']);
+        const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+        try {
+            const helper = new LLMHelper('fake-gemini-key');
+            const out = drain(technical(helper));
+            await vi.advanceTimersByTimeAsync(1);
+            expect(generateContentStream).toHaveBeenCalledTimes(2);
+            const chunks = await out;
+            expect(asked()).toEqual(['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite']);
+            expect(chunks[0]).toBe('__model_source:gemini-3.1-flash-lite (hedge)__');
+            expect(chunks.join('')).toContain('Back answered.');
+            // The front already settled empty on its own — nothing to abort.
+            expect(signals[0]?.aborted).toBe(false);
+            const lines = log.mock.calls.map((c) => c.join(' '));
+            expect(lines.find((l) => l.includes('back started'))).toMatch(/back started at \d+ms reason=front-empty/);
+            expect(lines.find((l) => l.includes('won by'))).toMatch(/won by gemini-3\.1-flash-lite at \d+ms; other=empty/);
+        } finally {
+            log.mockRestore();
+        }
+    });
+
+    it('h40c review M1: both legs yield nothing — the generator ends without throwing, and the warn line names both empty', async () => {
+        plan.push([], []);
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        try {
+            const helper = new LLMHelper('fake-gemini-key');
+            const out = drain(technical(helper));
+            await vi.advanceTimersByTimeAsync(1);
+            const chunks = await out;
+            expect(chunks).toEqual([]);
+            expect(asked()).toEqual(['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite']);
+            const line = warn.mock.calls.map((c) => c.join(' ')).find((l) => l.includes('no answer'));
+            expect(line).toMatch(/no answer - front empty, back empty/);
+        } finally {
+            warn.mockRestore();
+        }
+    });
+
     it('both legs fail before a first token: the fronts error propagates, as the shipped race does', async () => {
         // Distinct text per leg (h40c review M4): a bare 'error' step on both legs made this
         // pass even if the code threw the BACK's error first — the assertion below pins which

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { withParentExchange, followUpParentEnabled, FOLLOWUP_PARENT_ENV, PARENT_MAX_AGE_MS } from './followUpParent';
+import { withParentExchange, followUpParentEnabled, describeFollowUpParentAtStartup, FOLLOWUP_PARENT_ENV, PARENT_MAX_AGE_MS } from './followUpParent';
 
 const ON = { [FOLLOWUP_PARENT_ENV]: '1' } as NodeJS.ProcessEnv;
 const OFF = {} as NodeJS.ProcessEnv;
@@ -14,6 +14,15 @@ describe('followUpParentEnabled', () => {
         expect(followUpParentEnabled({ [FOLLOWUP_PARENT_ENV]: '' } as any)).toBe(false);
         expect(followUpParentEnabled(ON)).toBe(true);
         expect(() => followUpParentEnabled({ [FOLLOWUP_PARENT_ENV]: 'yes' } as any)).toThrow(/NATIVELY_FOLLOWUP_PARENT/);
+    });
+});
+describe('describeFollowUpParentAtStartup (h40c review M4: the hedge gets a startup check, this flag did not)', () => {
+    it('names on/off for a valid value, and throws the flag\'s own message for a junk one', () => {
+        expect(describeFollowUpParentAtStartup(ON)).toBe('follow-up parent: on');
+        expect(describeFollowUpParentAtStartup(OFF)).toBe('follow-up parent: off');
+        expect(describeFollowUpParentAtStartup({ [FOLLOWUP_PARENT_ENV]: '0' } as any)).toBe('follow-up parent: off');
+        expect(describeFollowUpParentAtStartup({ [FOLLOWUP_PARENT_ENV]: '' } as any)).toBe('follow-up parent: off');
+        expect(() => describeFollowUpParentAtStartup({ [FOLLOWUP_PARENT_ENV]: 'yes' } as any)).toThrow(/NATIVELY_FOLLOWUP_PARENT/);
     });
 });
 describe('withParentExchange', () => {

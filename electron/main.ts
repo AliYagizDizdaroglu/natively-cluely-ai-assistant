@@ -256,6 +256,7 @@ import { createEnergyVad, EnergyVad } from './audio/energyVad'
 import { createInterviewerTurn, turnConstantsFromEnv, InterviewerTurn, TurnDecision } from './services/interviewerTurn'
 import { pickTurnDetection, turnDispatchInput } from './services/turnDispatch'
 import { describeVerbalHedgeAtStartup } from './llm/verbalHedge'
+import { describeFollowUpParentAtStartup } from './llm/followUpParent'
 
 export class AppState {
   private static instance: AppState | null = null
@@ -3439,8 +3440,11 @@ async function initializeApp() {
   // still held the single-instance lock until killed — a silent hang, not the loud, clean refusal
   // rule 11 asks for. A bad value now exits the process outright; no modal dialog (one would
   // block an unattended flight's scheduled task).
+  // The follow-up flag gets the same check (h40c review M4): unvalidated, a junk value threw
+  // inside every hands-free answer, mid-interview, instead of refusing to start.
   try {
     console.log(describeVerbalHedgeAtStartup())
+    console.log(`[Main] ${describeFollowUpParentAtStartup()}`)
   } catch (e) {
     console.error(`[Main] ${(e as Error).message} — refusing to start`)
     app.exit(1)

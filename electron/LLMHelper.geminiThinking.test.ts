@@ -49,8 +49,22 @@ async function drain(gen: AsyncGenerator<string, void, unknown>) {
  */
 describe('verbal Gemini call carries the thinking level, LOW by default, from NATIVELY_GEMINI_THINKING_LEVEL', () => {
     const saved = process.env.NATIVELY_GEMINI_THINKING_LEVEL;
-    beforeEach(() => { generateContentStream.mockClear(); delete process.env.NATIVELY_GEMINI_THINKING_LEVEL; });
-    afterEach(() => { if (saved === undefined) delete process.env.NATIVELY_GEMINI_THINKING_LEVEL; else process.env.NATIVELY_GEMINI_THINKING_LEVEL = saved; });
+    // h40c review M2: a shell that exports NATIVELY_VERBAL_HEDGE (a flight or smoke shell) routed
+    // the default primary model through the hedge instead of the plain call this file checks,
+    // changing the model, the level and the log line — same fix as LLMHelper.stallFallback.test.ts.
+    const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+    const savedTrigger = process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
+    beforeEach(() => {
+        generateContentStream.mockClear();
+        delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+        delete process.env.NATIVELY_VERBAL_HEDGE;
+        delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
+    });
+    afterEach(() => {
+        if (saved === undefined) delete process.env.NATIVELY_GEMINI_THINKING_LEVEL; else process.env.NATIVELY_GEMINI_THINKING_LEVEL = saved;
+        if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
+        if (savedTrigger === undefined) delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS; else process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS = savedTrigger;
+    });
 
     it('unset → thinkingConfig.thinkingLevel LOW on the request (the shipped default)', async () => {
         const helper = new LLMHelper('fake-gemini-key');
