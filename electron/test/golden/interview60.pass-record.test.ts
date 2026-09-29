@@ -227,7 +227,7 @@ describe('verbalHedgeFromLog (h40c review, fix round 1, Minor 1): the regex M6 e
     const at = (line: string) => `2026-09-26T10:00:00.000Z [LOG] ${line}`;
 
     it('reads off and on-trigger from the real describeVerbalHedgeAtStartup output', () => {
-        expect(verbalHedgeFromLog(at(describeVerbalHedgeAtStartup({})))).toBe('off');
+        expect(verbalHedgeFromLog(at(describeVerbalHedgeAtStartup({ NATIVELY_VERBAL_HEDGE: '0' } as any)))).toBe('off');
         expect(verbalHedgeFromLog(at(describeVerbalHedgeAtStartup({ NATIVELY_VERBAL_HEDGE: '1' } as any)))).toBe('on trigger=5000ms');
     });
 

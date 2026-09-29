@@ -53,14 +53,16 @@ async function drain(gen: AsyncGenerator<string, void, unknown>) {
  * present an empty answer as success.
  */
 describe('Gemma empty-stream fallback', () => {
-    // h40c review M5: an un-cleared NATIVELY_VERBAL_HEDGE from the shell could make a case here
-    // fail spuriously (or throw on a junk value) the moment it falls back to Gemini Flash.
+    // The flag is never read on this path: every case is a Gemma route, and streamWithGemmaGuarded's Tier-2 Flash call
+    // goes straight to streamWithGeminiModel, not through streamGeminiWithStallFallback, the only reader of
+    // NATIVELY_VERBAL_HEDGE. It is pinned to '0' anyway, as in abortOnClose's Gemma block, so both files run in the
+    // same environment whatever the shell exports (h40c review M5).
     const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
 
     beforeEach(() => {
         generateContentStream.mockReset();
         generateContentStream.mockImplementation(defaultImpl);
-        delete process.env.NATIVELY_VERBAL_HEDGE;
+        process.env.NATIVELY_VERBAL_HEDGE = '0';
     });
 
     afterEach(() => {

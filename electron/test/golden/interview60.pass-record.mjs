@@ -179,9 +179,11 @@ export function renderPassRecord(p) {
     out.push(`| started | ${t.startedAt ?? 'unknown'}${t.durationMin != null ? ` (${t.durationMin} min)` : ''} |`);
     out.push(`| roster | ${t.rosterLabel ?? t.roster ?? 'unknown'} |`);
     out.push(`| ear | Live ${t.liveModel ?? 'unknown'} · STT ${t.stt ?? 'unknown'} |`);
-    // The hedge only engages when the primary is one of the two lites (LLMHelper.ts:3395) — a
-    // different primary (NATIVELY_VERBAL_PRIMARY_MODEL, or Gemma) keeps its own name even with the
-    // flag on; the summary bullet below still names the flag either way (h40c review fix round 1, Minor 3).
+    // The hedge only engages when the primary is one of the two lites (LLMHelper.ts:3396). answerModel
+    // is the SELECTED model (the log's last "Default Model set to:"), so a Gemma or other non-lite
+    // selection keeps its own name even with the flag on. NATIVELY_VERBAL_PRIMARY_MODEL is not read
+    // here: it names only the two lites, which the hedge takes alike. The summary bullet below still
+    // names the flag either way (h40c review fix round 1, Minor 3).
     const hedgeEngaged = t.verbalHedge?.startsWith('on') && (t.answerModel === 'gemini-3.1-flash-lite' || t.answerModel === 'gemini-3.5-flash-lite');
     const answerLabel = hedgeEngaged ? 'hedge (gemini-3.5-flash-lite front, gemini-3.1-flash-lite back)' : (t.answerModel ?? 'unknown');
     out.push(`| answers | ${answerLabel} (in-app)${s.arms.length ? ` · arms: ${s.arms.map((a) => a.model).join(', ')}` : ''} |`);

@@ -106,9 +106,10 @@ const named = (chunks: string[]) => chunks.flatMap((c) => [...c.matchAll(/__mode
 describe('the answer is named after, and falls back from, the model that actually answered', () => {
     const savedModel = process.env[VERBAL_PRIMARY_MODEL_ENV];
     const savedLevel = process.env.NATIVELY_GEMINI_THINKING_LEVEL;
-    // This describe exercises today's race (the hedge off) — h40c review M5: an un-cleared
-    // NATIVELY_VERBAL_HEDGE from the shell made 8 of these cases fail spuriously, or throw on a
-    // junk value.
+    // This describe exercises the stall race, so it pins the hedge off with NATIVELY_VERBAL_HEDGE='0'.
+    // The hedge is the shipped default since h40c (2026-09-29): left unset it takes these cases
+    // through the hedge instead (h40c review M5 saw the same from a flight or smoke shell that
+    // exported the flag, or a throw on a junk value).
     const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
     beforeEach(() => {
         generateContentStream.mockClear();
@@ -117,7 +118,7 @@ describe('the answer is named after, and falls back from, the model that actuall
         delete process.env[VERBAL_PRIMARY_MODEL_ENV];
         // The shipped LOW, so the stall budget is the shipped 10 s.
         delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
-        delete process.env.NATIVELY_VERBAL_HEDGE;
+        process.env.NATIVELY_VERBAL_HEDGE = '0';
     });
     afterEach(() => {
         vi.useRealTimers();
@@ -249,7 +250,7 @@ describe('the answer is named after, and falls back from, the model that actuall
         expect(signals[0]?.aborted).toBe(true);
     });
 
-    it('override off: a 503 on 3.1-lite still goes to 3.5-lite — the shipped pairing is unchanged', async () => {
+    it('override off: a 503 on 3.1-lite still goes to 3.5-lite — the pairing of the opt-out stall race (NATIVELY_VERBAL_HEDGE=0) is unchanged', async () => {
         plan.push('error', ['Recovered.']);
         const chunks = await answer(TECHNICAL);
         expect(asked()).toEqual(['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite']);

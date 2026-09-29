@@ -8,6 +8,11 @@
  * bench, proof flight, and only then the code default. The LOW default is trusted today
  * precisely because it was measured behind a flag before it became the default.
  *
+ * Since the hedge became the default (flight h40c, 2026-09-29) this override decides which model
+ * answers only with NATIVELY_VERBAL_HEDGE=0: the hedge starts gemini-3.5-flash-lite first whichever
+ * of the two Flash Lites is the primary, and those two are all this override may name, so with the
+ * hedge on it changes nothing about which model answers (an invalid value still refuses).
+ *
  * Why it is needed now. Flight s50k (2026-09-20) ran three reps of each model on the same
  * captured bytes in the same window:
  *

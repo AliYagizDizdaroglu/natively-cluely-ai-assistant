@@ -48,16 +48,17 @@ const technical = (helper: LLMHelper) =>
 describe('NATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only', () => {
     const saved = process.env[VERBAL_PRIMARY_MODEL_ENV];
     const savedLevel = process.env.NATIVELY_GEMINI_THINKING_LEVEL;
-    // h40c review M2: a shell that exports NATIVELY_VERBAL_HEDGE (a flight or smoke shell) routed
-    // the two lite models through the hedge instead of the plain call this file checks, changing
-    // which model answers — same fix as LLMHelper.stallFallback.test.ts.
+    // This file checks the plain call, so it pins the hedge off with NATIVELY_VERBAL_HEDGE='0'. The
+    // hedge is the shipped default since h40c (2026-09-29): left unset it routes the two lite models
+    // through the hedge instead, changing which model answers (h40c review M2 saw the same from a
+    // flight or smoke shell that exported the flag) — same as LLMHelper.stallFallback.test.ts.
     const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
     const savedTrigger = process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
     beforeEach(() => {
         generateContentStream.mockClear();
         delete process.env[VERBAL_PRIMARY_MODEL_ENV];
         delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
-        delete process.env.NATIVELY_VERBAL_HEDGE;
+        process.env.NATIVELY_VERBAL_HEDGE = '0';
         delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
     });
     afterEach(() => {

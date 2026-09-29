@@ -99,11 +99,12 @@ const technical = (helper: LLMHelper) =>
 const asked = () => generateContentStream.mock.calls.map((c) => c[0].model);
 
 /**
- * The verbal hedge (NATIVELY_VERBAL_HEDGE=1): gemini-3.5-flash-lite starts first; with no first
- * token by the trigger (default 5000 ms), or a pre-token failure, gemini-3.1-flash-lite starts
- * beside it and the first token wins — the other request is aborted through its own signal
- * (never AbortSignal.any: it leaks under Electron 33). Off unless the flag is set, so a flight
- * can compare the shipped stall race against the hedge — see verbalHedge.ts and
+ * The verbal hedge, the shipped default since flight h40c (2026-09-29): gemini-3.5-flash-lite
+ * starts first; with no first token by the trigger (default 5000 ms), or a pre-token failure,
+ * gemini-3.1-flash-lite starts beside it and the first token wins — the other request is aborted
+ * through its own signal (never AbortSignal.any: it leaks under Electron 33). Most cases below set
+ * NATIVELY_VERBAL_HEDGE=1 in beforeEach; the default-on pin unsets it, and the opt-out pin sets
+ * '0', which restores the previous stall race — see verbalHedge.ts and
  * docs/superpowers/specs/2026-09-24-verbal-hedge-proposal.md.
  */
 describe('the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite', () => {
@@ -264,7 +265,7 @@ describe('the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-
         }
     });
 
-    it('both legs fail before a first token: the fronts error propagates, as the shipped race does', async () => {
+    it('both legs fail before a first token: the fronts error propagates, as the opt-out stall race (NATIVELY_VERBAL_HEDGE=0) does', async () => {
         // Distinct text per leg (h40c review M4): a bare 'error' step on both legs made this
         // pass even if the code threw the BACK's error first — the assertion below pins which
         // one it must be.
@@ -390,8 +391,27 @@ describe('the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-
         }
     });
 
-    it('default-off pin: the flag unset behaves exactly like today, and logs no hedge line', async () => {
+    it('default-on pin: with the variable UNSET the technical route takes the hedge — front 3.5-lite first, the hedge sentinel, the back never starts', async () => {
         delete process.env[VERBAL_HEDGE_ENV];
+        plan.push(['I would key every message ', 'by document id.']);
+        const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+        try {
+            const helper = new LLMHelper('fake-gemini-key');
+            const out = drain(technical(helper));
+            await vi.advanceTimersByTimeAsync(10_000);
+            const chunks = await out;
+            expect(generateContentStream).toHaveBeenCalledTimes(1);
+            expect(asked()).toEqual(['gemini-3.5-flash-lite']);
+            expect(chunks[0]).toBe('__model_source:gemini-3.5-flash-lite (hedge)__');
+            const line = log.mock.calls.map((c) => c.join(' ')).find((l) => l.includes('won by'));
+            expect(line).toMatch(/won by gemini-3\.5-flash-lite at \d+ms; other=not-started/);
+        } finally {
+            log.mockRestore();
+        }
+    });
+
+    it("opt-out pin: '0' behaves exactly like the previous stall race (3.1-lite first, 3.5-lite raced in at 10 s), and logs no hedge line", async () => {
+        process.env[VERBAL_HEDGE_ENV] = '0';
         plan.push('silent', ['fallback answer']);
         const log = vi.spyOn(console, 'log').mockImplementation(() => {});
         try {
@@ -410,7 +430,7 @@ describe('the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-
         }
     });
 
-    it('default-off pin: an invalid flag value throws, naming the variable, instead of flying silently off', async () => {
+    it('invalid-value pin: an invalid flag value throws, naming the variable, instead of flying silently on or off', async () => {
         process.env[VERBAL_HEDGE_ENV] = 'yes';
         plan.push(['unused']);
         const helper = new LLMHelper('fake-gemini-key');

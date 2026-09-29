@@ -2720,9 +2720,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         // form they were measured with.
         if (carriesSpokenBudget(callerSystemPromptOverride)) {
           const verbalSystem = `${finalSystemPrompt}${styleSuffix}`;
-          // A flight may point the VERBAL answer at the other Flash Lite without changing
-          // the shipped default. Resolved here, before the capture, so the recorded prompt
-          // names the model that actually answered — the offline twin replays these bytes.
+          // A flight may point the VERBAL answer at the other Flash Lite, but only with NATIVELY_VERBAL_HEDGE=0
+          // (the hedge takes either alike). Resolved here, before the capture, so the recorded prompt names
+          // the RESOLVED primary, not the leg that won — the offline twin replays these bytes.
           const verbalModel = verbalPrimaryModel(activeModelId, VERBAL_PRIMARY_MODELS);
           // Off unless the flight harness asks for it — see promptCapture.
           capturePrompt({ model: verbalModel, system: verbalSystem, user: userContent });
@@ -3391,7 +3391,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
   ): AsyncGenerator<string, void, unknown> {
     // The verbal hedge (NATIVELY_VERBAL_HEDGE=1): 3.5-lite HIGH first, 3.1-lite LOW raced in when it
     // is silent, the first token wins — see streamGeminiWithHedge. Only the two Flash Lites hedge;
-    // any other primary keeps the race below. Off unless the flag is set, so a flight compares the two.
+    // any other primary keeps the race below. The hedge is the default since the h40c pass (2026-09-29);
+    // NATIVELY_VERBAL_HEDGE=0 restores the stall race below for the two Flash Lites too.
     if (verbalHedgeEnabled() && (primaryModel === GEMINI_FLASH_MODEL || primaryModel === GEMINI_FLASH_FALLBACK_MODEL)) {
       yield* this.streamGeminiWithHedge(userMessage, imagePaths, systemInstruction);
       return;
@@ -3461,8 +3462,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
    * before its first token, gemini-3.1-flash-lite (LOW) starts BESIDE it and 3.5-lite keeps running;
    * the first token wins and the other request is aborted at once through its own stop signal
    * (never AbortSignal.any: it leaks under Electron 33). A leg that fails leaves the other to finish.
-   * Both failing throws the front's error so WhatToAnswerLLM's pre-token redirect applies, as with
-   * today's race; both ending empty ends empty, as today. The winner is announced as
+   * Both failing throws the front's error so WhatToAnswerLLM's pre-token redirect applies, and both
+   * ending empty ends empty, as in the stall race (NATIVELY_VERBAL_HEDGE=0). The winner is announced as
    * `__model_source:<model> (hedge)__` ahead of its first token: the head label named the shipped
    * primary before any request was made, and a bar that names the wrong model was the 2026-09-22
    * bug class (783991a, 47def85).
@@ -3527,7 +3528,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       console.warn(`[LLMHelper] verbal hedge: no answer - front ${f.kind}, back ${b.kind}`);
       if (f.kind === 'error') throw f.err;
       if (b.kind === 'error') throw b.err;
-      return;   // both empty: nothing to say, as today
+      return;   // both empty: nothing to say, as in the stall race (NATIVELY_VERBAL_HEDGE=0)
     }
     const loser = winner.leg === front ? back : front;
     // A leg the loser never got to finish — still pending, OR it also produced a token in the

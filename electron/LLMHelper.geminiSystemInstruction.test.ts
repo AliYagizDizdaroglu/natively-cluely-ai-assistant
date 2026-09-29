@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Same import-time shims as LLMHelper.knowledgeBudget.test.ts (electron surface + Gemini SDK).
 vi.mock('electron', () => ({
@@ -45,8 +45,17 @@ async function drain(gen: AsyncGenerator<string, void, unknown>) {
  * sends the same prompt as systemInstruction, produced none.
  */
 describe('non-Gemma Gemini models get the system prompt as systemInstruction, like Gemma does', () => {
+    // Pins the hedge off: the title says 3.1-lite, the stall race's first request; the default hedge asks 3.5-lite first.
+    const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+    const savedTrigger = process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
     beforeEach(() => {
         generateContentStream.mockClear();
+        process.env.NATIVELY_VERBAL_HEDGE = '0';
+        delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
+    });
+    afterEach(() => {
+        if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
+        if (savedTrigger === undefined) delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS; else process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS = savedTrigger;
     });
 
     it('verbal answer on gemini-3.1-flash-lite → systemInstruction carries the prompt, the user turn carries only the question', async () => {
