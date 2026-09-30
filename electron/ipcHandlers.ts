@@ -541,6 +541,7 @@ export function initializeIpcHandlers(appState: AppState): void {
               // Knowledge-mode injection for the verbal Flash path. streamChat
               // does this internally; this branch bypasses streamChat, so we must
               // inject the resume/JD context here too.
+
               // A typed answer carries no cue block (spec 2026-09-30 §3.6): this path forwards raw
               // tokens to the bubble, so it sends the verbal prompt WITHOUT the cue rule.
               let verbalSystemPrompt = VERBAL_TYPED_PROMPT;
