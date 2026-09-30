@@ -190,14 +190,17 @@ describe('PAIRED_ARMS', () => {
         expect(capturedOnly({}, items)).toEqual([]);
     });
 
-    it('runs the same-bytes no-cue twin three times on the app answer model, only on an hour that flew with cues', () => {
+    it('runs the same-bytes no-cue twin three times on the hedge\'s front leg, only on an hour that flew with cues', () => {
         // Cue mode (spec 2026-09-20 §8): a cue hour's control is its own captured bytes with the
         // exact rule stripped, band against band within one hour. On a pre-cue hour the arm would
         // silently duplicate the control, so it is gated on the bytes and skipped with a log line.
+        // The twins pair with captured-high (3.5-lite, HIGH, same bytes, rule stripped): under the
+        // hedge default 3.5-lite writes almost every answer (h40c: 44 of 45), so the cue-vs-no-cue
+        // band has to be read on that model, not on 3.1-lite, which is only the back leg.
         const twins = PAIRED_ARMS.filter((a) => a.tag.startsWith('captured-no-cues'));
-        expect(twins.map((a) => a.tag)).toEqual(['captured-no-cues', 'captured-no-cues-r2', 'captured-no-cues-r3']);
+        expect(twins.map((a) => a.tag)).toEqual(['captured-no-cues-high', 'captured-no-cues-high-r2', 'captured-no-cues-high-r3']);
         for (const t of twins) {
-            expect(t).toMatchObject({ model: ANSWER_MODELS[0], captured: true, args: ['--thinking', 'LOW', '--no-cues'] });
+            expect(t).toMatchObject({ model: ANSWER_MODELS[1], captured: true, args: ['--thinking', 'HIGH', '--no-cues'] });
             expect(t.when).toBe(hasCueRule);
         }
         expect(PAIRED_ARMS.filter((a) => !a.tag.startsWith('captured-no-cues')).every((a) => a.when === undefined)).toBe(true);

@@ -144,6 +144,13 @@ export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3
  *   10:05. These two arms settle that in the same window.)
  *     captured-high     captured prompts at HIGH — pairs with captured-low on app bytes
  *     high              the bare verbal prompt at HIGH — pairs with low on bare bytes
+ *     captured-no-cues-high
+ *                       captured-high's no-cue twin: same model, same level, same bytes, only the
+ *                       cue rule stripped (answers.mjs --no-cues; cue mode, spec 2026-09-20 §8).
+ *                       RUN THREE TIMES (-r2, -r3) like the other twins, and only on an hour that
+ *                       flew with cues (hasCueRule). Under the hedge default (h40c, 2026-09-29)
+ *                       3.5-lite HIGH writes almost every answer (44 of 45), so the cue-vs-no-cue
+ *                       band has to be read on that model; 3.1-lite is only the back leg.
  *
  * ~155 lite calls, split across the two models' separate quotas. Captured arms are skipped,
  * loudly, when the hour left no capture.
@@ -179,13 +186,13 @@ export const PAIRED_ARMS = [
     { model: ANSWER_MODELS[1], tag: 'captured-high-r2', captured: true, args: ['--thinking', 'HIGH'] },
     { model: ANSWER_MODELS[1], tag: 'captured-high-r3', captured: true, args: ['--thinking', 'HIGH'] },
     { model: ANSWER_MODELS[1], tag: 'high', captured: false, args: ['--thinking', 'HIGH'] },
-    // Cue mode (spec 2026-09-20 §8): a cue hour's own same-bytes no-cue band — the captured
-    // prompts with the exact CUE_RULE stripped, three reps like the other twins. Gated on the
-    // bytes: on a pre-cue hour the captured twins already are the no-cue band, and answers.mjs
-    // would refuse the variant anyway; the flight skips the arms with one log line instead.
-    { model: ANSWER_MODELS[0], tag: 'captured-no-cues', captured: true, args: ['--thinking', 'LOW', '--no-cues'], when: hasCueRule },
-    { model: ANSWER_MODELS[0], tag: 'captured-no-cues-r2', captured: true, args: ['--thinking', 'LOW', '--no-cues'], when: hasCueRule },
-    { model: ANSWER_MODELS[0], tag: 'captured-no-cues-r3', captured: true, args: ['--thinking', 'LOW', '--no-cues'], when: hasCueRule },
+    // Cue mode (spec 2026-09-20 §8): captured-high's no-cue twins, three reps, on the hedge's front
+    // leg (the doc block above says why). Gated on the bytes: on a pre-cue hour captured-high
+    // already is the no-cue band, and answers.mjs would refuse the variant anyway; the flight
+    // skips the arms with one log line instead.
+    { model: ANSWER_MODELS[1], tag: 'captured-no-cues-high', captured: true, args: ['--thinking', 'HIGH', '--no-cues'], when: hasCueRule },
+    { model: ANSWER_MODELS[1], tag: 'captured-no-cues-high-r2', captured: true, args: ['--thinking', 'HIGH', '--no-cues'], when: hasCueRule },
+    { model: ANSWER_MODELS[1], tag: 'captured-no-cues-high-r3', captured: true, args: ['--thinking', 'HIGH', '--no-cues'], when: hasCueRule },
 ];
 
 /**
