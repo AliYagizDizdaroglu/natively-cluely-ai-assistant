@@ -777,7 +777,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
       ipcRenderer.removeListener("intelligence-assist-update", subscription)
     }
   },
-  onIntelligenceSuggestedAnswerToken: (callback: (data: { token: string; question: string; confidence: number; replace?: boolean }) => void) => {
+  onIntelligenceSuggestedAnswerToken: (callback: (data: { token: string; question: string; confidence: number; replace?: boolean; cues?: string[] }) => void) => {
     const subscription = (_: any, data: any) => callback(data)
     ipcRenderer.on("intelligence-suggested-answer-token", subscription)
     return () => {

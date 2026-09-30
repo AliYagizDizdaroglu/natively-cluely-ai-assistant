@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { ANSWER_MODELS, FOCUSED_MODELS, FOCUSED_ONLY_BY_ROSTER, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, capturedOnly, chooseLiveModel, focusedOnlyFor, newestRunDir } from './interview60.flight.mjs';
+import { ANSWER_MODELS, CUE_RULE_MARK, FOCUSED_MODELS, FOCUSED_ONLY_BY_ROSTER, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, capturedOnly, chooseLiveModel, focusedOnlyFor, hasCueRule, newestRunDir } from './interview60.flight.mjs';
+import { CUE_RULE } from '../../llm/prompts';
 
 describe('chooseLiveModel', () => {
     it('keeps 3.x on a tool call, aborts only when no key reached the probe, falls to 2.5 on silence or a dead session', () => {
@@ -187,5 +188,45 @@ describe('PAIRED_ARMS', () => {
         };
         expect(capturedOnly(cap, items)).toEqual(['S1Q01F', 'S1Q02']);
         expect(capturedOnly({}, items)).toEqual([]);
+    });
+
+    it('runs the same-bytes no-cue twin three times on the hedge\'s front leg, only on an hour that flew with cues', () => {
+        // Cue mode (spec 2026-09-20 §8): a cue hour's control is its own captured bytes with the
+        // exact rule stripped, band against band within one hour. On a pre-cue hour the arm would
+        // silently duplicate the control, so it is gated on the bytes and skipped with a log line.
+        // The twins pair with captured-high (3.5-lite, HIGH, same bytes, rule stripped): under the
+        // hedge default 3.5-lite writes almost every answer (h40c: 44 of 45), so the cue-vs-no-cue
+        // band has to be read on that model, not on 3.1-lite, which is only the back leg.
+        const twins = PAIRED_ARMS.filter((a) => a.tag.startsWith('captured-no-cues'));
+        expect(twins.map((a) => a.tag)).toEqual(['captured-no-cues-high', 'captured-no-cues-high-r2', 'captured-no-cues-high-r3']);
+        // The pairing is also derived from captured-high's own entry, so the two cannot drift apart: same
+        // model, same args plus --no-cues. Checked before the literals, so a drift fails on the pairing first.
+        const high = byTag('captured-high');
+        for (const t of twins) {
+            expect(t.model, t.tag).toBe(high.model);
+            expect(t.args, t.tag).toEqual([...high.args, '--no-cues']);
+            expect(t).toMatchObject({ model: ANSWER_MODELS[1], captured: true, args: ['--thinking', 'HIGH', '--no-cues'] });
+            expect(t.when).toBe(hasCueRule);
+        }
+        expect(PAIRED_ARMS.filter((a) => !a.tag.startsWith('captured-no-cues')).every((a) => a.when === undefined)).toBe(true);
+    });
+
+    it('hasCueRule reads the shipped rule\'s header out of the captured system prompts', () => {
+        expect(CUE_RULE).toContain(CUE_RULE_MARK);
+        // Scoped through capturedOnly, exactly what the captured-no-cues arm replays: only ids
+        // the roster calls spoken, with both a system and a user turn, are read at all — and
+        // ALL of those replayable prompts must carry the rule. A mixed hour (some captured
+        // prompts with it, some without) must fail closed rather than wave the arm through on
+        // .some() and have answers.mjs refuse it per id, mid-flight, instead. W01 and W02 are
+        // real interview60 ids (both spoken); C01 is real too but kind: 'screenshot'.
+        expect(hasCueRule({ W01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' } })).toBe(true);
+        expect(hasCueRule({ W01: { system: 'prompt without it', user: 'u' } })).toBe(false);
+        // MIXED: one replayable prompt carries the rule, the other does not — this is the case
+        // that tells .every() apart from .some(); a .some() reading would wrongly say true here.
+        expect(hasCueRule({ W01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' }, W02: { system: 'no rule here', user: 'u' } })).toBe(false);
+        expect(hasCueRule({})).toBe(false);
+        // C01 is a screenshot cue — capturedOnly never replays it, so a rule-carrying capture of
+        // it alone must not count either; a .some() over every entry would wrongly say true here.
+        expect(hasCueRule({ C01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' } })).toBe(false);
     });
 });

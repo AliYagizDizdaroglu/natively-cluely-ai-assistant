@@ -25,7 +25,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
 const require = createRequire(path.join(PROJ, 'package.json'));
 const P = require(path.join(PROJ, 'dist-electron/electron/llm/prompts.js'));
-const { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation } =
+const { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, stripCueBlock } =
     require(path.join(PROJ, 'dist-electron/electron/llm/verbalStreamFilter.js'));
 
 const KEY = fs.readFileSync(path.join(PROJ, '.env'), 'utf8').match(/^GEMINI_API_KEY=(.+)$/m)[1].trim();
@@ -84,7 +84,9 @@ async function answer(fullMessage) {
         const raw = (j.candidates?.[0]?.content?.parts || []).map((p) => p.text || '').join('');
         async function* gen() { for (const ch of raw) yield ch; }
         let spoken = '';
-        for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(gen()), () => {}))) spoken += p;
+        // stripCueBlock innermost, as WhatToAnswerLLM places it (cue mode): the stored answer, the
+        // anchor proxy and the history carry prose only; the cues are discarded like the offers.
+        for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(stripCueBlock(gen(), () => {})), () => {}))) spoken += p;
         return spoken.trim();
     }
     throw new Error(`answer failed: ${lastErr}`);

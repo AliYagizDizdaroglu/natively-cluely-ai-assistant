@@ -144,10 +144,35 @@ export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3
  *   10:05. These two arms settle that in the same window.)
  *     captured-high     captured prompts at HIGH — pairs with captured-low on app bytes
  *     high              the bare verbal prompt at HIGH — pairs with low on bare bytes
+ *     captured-no-cues-high
+ *                       captured-high's no-cue twin: same model, same level, same bytes, only the
+ *                       cue rule stripped (answers.mjs --no-cues; cue mode, spec 2026-09-20 §8).
+ *                       RUN THREE TIMES (-r2, -r3) like the other twins, and only on an hour that
+ *                       flew with cues (hasCueRule). Under the hedge default (h40c, 2026-09-29)
+ *                       3.5-lite HIGH writes almost every answer (44 of 45), so the cue-vs-no-cue
+ *                       band has to be read on that model; 3.1-lite is only the back leg.
  *
  * ~155 lite calls, split across the two models' separate quotas. Captured arms are skipped,
  * loudly, when the hour left no capture.
  */
+/**
+ * Cue mode (spec 2026-09-20): the header line of the shipped CUE_RULE, read out of the hour's
+ * captured system prompts to tell a cue hour from a pre-cue one. A string rather than an
+ * import of the built prompts, so the flight plans without a dist; the flight test pins it
+ * against the real constant.
+ *
+ * Fails closed: reads only the ids capturedOnly would actually replay (spoken, with both a
+ * system and a user turn) and requires ALL of them to carry the mark, not merely one. A mixed
+ * hour — some captured prompts with the rule, some without — must gate the arms closed; waving
+ * them through on any single match would leave answers.mjs --no-cues to refuse the first id
+ * that lacks the rule, mid-flight, instead of the flight skipping cleanly.
+ */
+export const CUE_RULE_MARK = '[CUES FIRST]';
+export const hasCueRule = (captured) => {
+    const ids = capturedOnly(captured);
+    return ids.length > 0 && ids.every((id) => String(captured[id].system ?? '').includes(CUE_RULE_MARK));
+};
+
 export const PAIRED_ARMS = [
     { model: ANSWER_MODELS[0], tag: 'low', captured: false, args: ['--thinking', 'LOW'] },
     { model: ANSWER_MODELS[0], tag: 'captured-minimal', captured: true, args: [] },
@@ -161,6 +186,13 @@ export const PAIRED_ARMS = [
     { model: ANSWER_MODELS[1], tag: 'captured-high-r2', captured: true, args: ['--thinking', 'HIGH'] },
     { model: ANSWER_MODELS[1], tag: 'captured-high-r3', captured: true, args: ['--thinking', 'HIGH'] },
     { model: ANSWER_MODELS[1], tag: 'high', captured: false, args: ['--thinking', 'HIGH'] },
+    // Cue mode (spec 2026-09-20 §8): captured-high's no-cue twins, three reps, on the hedge's front
+    // leg (the doc block above says why). Gated on the bytes: on a pre-cue hour captured-high
+    // already is the no-cue band, and answers.mjs would refuse the variant anyway; the flight
+    // skips the arms with one log line instead.
+    { model: ANSWER_MODELS[1], tag: 'captured-no-cues-high', captured: true, args: ['--thinking', 'HIGH', '--no-cues'], when: hasCueRule },
+    { model: ANSWER_MODELS[1], tag: 'captured-no-cues-high-r2', captured: true, args: ['--thinking', 'HIGH', '--no-cues'], when: hasCueRule },
+    { model: ANSWER_MODELS[1], tag: 'captured-no-cues-high-r3', captured: true, args: ['--thinking', 'HIGH', '--no-cues'], when: hasCueRule },
 ];
 
 /**
@@ -299,10 +331,22 @@ async function main() {
     const focusedOnly = focusedOnlyFor(ROSTER_NAME);
     if (!focusedOnly) log(`FOCUSED  roster ${ROSTER_NAME} has no focused five — skipping the ${FOCUSED_MODELS.length} focused arms`);
     const focusedArgs = ['--only', focusedOnly ?? '', ...(focusedCaptured ? ['--captured', promptsFile] : [])];
-    const capturedIds = focusedCaptured && !dry ? capturedOnly(JSON.parse(fs.readFileSync(promptsFile, 'utf8'))) : [];
+    const capturedJson = focusedCaptured && !dry ? JSON.parse(fs.readFileSync(promptsFile, 'utf8')) : null;
+    const capturedIds = capturedJson ? capturedOnly(capturedJson) : [];
     if (focusedCaptured && !dry) log(`paired captured arm: ${capturedIds.length} spoken items have a replayable prompt this hour`);
-    for (const a of PAIRED_ARMS) if (a.captured && !(focusedCaptured && (dry || capturedIds.length))) log(`WARN  paired arm ${a.tag} skipped — it replays the hour's captured prompts and there are none`);
-    const paired = PAIRED_ARMS.filter((a) => !a.captured || (focusedCaptured && (dry || capturedIds.length)))
+    const replayable = (a) => !a.captured || (focusedCaptured && (dry || capturedIds.length));
+    const wanted = (a) => !a.when || dry || a.when(capturedJson);
+    // Named in numbers, once, rather than per arm: how many of the replayable captured prompts
+    // carry the rule at all (0 on a pre-cue hour) or how many of them lack it (a mixed hour).
+    const ruleCount = capturedIds.filter((id) => String(capturedJson[id].system ?? '').includes(CUE_RULE_MARK)).length;
+    const ruleSummary = ruleCount === 0
+        ? `0 of ${capturedIds.length} carry the cue rule`
+        : `${capturedIds.length - ruleCount} of ${capturedIds.length} lack it`;
+    for (const a of PAIRED_ARMS) {
+        if (!replayable(a)) log(`WARN  paired arm ${a.tag} skipped — it replays the hour's captured prompts and there are none`);
+        else if (!wanted(a)) log(`paired arm ${a.tag} skipped — ${ruleSummary}, so --no-cues would refuse an id mid-flight instead`);
+    }
+    const paired = PAIRED_ARMS.filter((a) => replayable(a) && wanted(a))
         .map((a) => ({ model: a.model, tag: a.tag, args: ['--tag', a.tag, ...a.args, ...(a.captured ? ['--captured', promptsFile, ...(dry ? [] : ['--only', capturedIds.join(',')])] : [])] }));
     const arms = [...ANSWER_MODELS.map((model) => ({ model, args: [] })), ...(focusedOnly ? FOCUSED_MODELS.map((model) => ({ model, args: focusedArgs })) : []), ...paired];
     for (const { model, tag, args } of arms) {

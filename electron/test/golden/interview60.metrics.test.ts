@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 // @ts-ignore — untyped ESM harness module
 import { computeRun, computeRunFromFiles, evaluateGate, GATE, spokenCodingRoutes } from './interview60.metrics.mjs';
+import { CUE_MAX_LINES, CUE_MAX_WORDS } from '../../llm/prompts';
 
 // @ts-ignore — import.meta is ESM-only; this file runs under vitest's ESM
 // transform regardless of electron/tsconfig.json's CommonJS module target
@@ -277,6 +278,17 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             `${iso(T0 + 1100900)} [LOG] [Answer] budget: words=67 cut=yes allowance=no`,
             `${iso(T0 + 1110900)} [LOG] [Answer] budget: words=90 cut=no allowance=yes`,
             `${iso(T0 + 1120900)} [LOG] [Answer] budget: words=140 cut=no allowance=yes`,
+            // Cue mode (spec 2026-09-20): one cues line per verbal answer — a well-formed block and
+            // an answer the model opened without one (the row must surface the miss).
+            // Spec 2026-09-30: the engine logs one `cues trimmed:` line, FIRST, per block the display
+            // changed; the row counts it and never gates on it. Both pairs are ones the engine can
+            // log: a drop leaves exactly 3 displayed lines, and an empty displayed cue (a line that
+            // was nothing but notation — not well-formed) arrives with its `cleaned` entry.
+            `${iso(T0 + 1100940)} [LOG] [Answer] cues trimmed: {"rawLines":4,"dropped":["a fourth named part"],"cut":[],"cleaned":[]}`,
+            `${iso(T0 + 1100950)} [LOG] [Answer] cues: ["thirty gigabytes in float32","int8, then shard","a third named part"]`,
+            `${iso(T0 + 1110950)} [LOG] [Answer] cues: []`,
+            `${iso(T0 + 1120940)} [LOG] [Answer] cues trimmed: {"rawLines":2,"dropped":[],"cut":[],"cleaned":["**"]}`,
+            `${iso(T0 + 1120950)} [LOG] [Answer] cues: ["","Parquet"]`,
             // 2026-09-09 whole-turn (Task 8): hold (a fragmentary head, held for the other
             // ear) -> mark (detection only) -> answer -> supersede (replaces the answer
             // already given). The hold fires 100ms before the mark, at spokeEnd-900 — the
@@ -598,8 +610,8 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(row.pass).toBe(false);
         expect(row.value).toBe('3 answers, 1 cut by the guard, words p50 90 max 140');
     });
-    it('the three newest rows are the last three, so index-based rendering stays aligned', () => {
-        expect(GATE.slice(-3).map((g) => g.key)).toEqual(['pinned', 'budget', 'length']);
+    it('the four newest rows are the last four, so index-based rendering stays aligned', () => {
+        expect(GATE.slice(-4).map((g) => g.key)).toEqual(['pinned', 'budget', 'length', 'cueBlocks']);
     });
 
     it('budget gate row pass rule: no cut at all, max under the 200-word guard, median unbounded (flight s50c, 2026-09-12)', () => {
@@ -631,6 +643,30 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // nothing logged is not a pass
         expect(row.pass({ length: { n: 0, p90: null, over85: 0, over150: 0 } })).toBe(false);
         expect(row.show({ length: { n: 0, p90: null, over85: 0, over150: 0 } })).toBe('not logged');
+    });
+
+    it('cueBlocks — counts the blocks, the trims and an empty displayed cue; the row fails when one answer opened without a block', () => {
+        expect(m.cueBlocks).toEqual({ n: 3, present: 2, wellformed: 1, trimmed: 2 });
+        const row = evaluateGate(m).rows.find((r) => r.label === 'Cue block above every spoken answer');
+        expect(row.pass).toBe(false);
+        expect(row.value).toBe('2/3 present, 1 well-formed, 2 trimmed');
+    });
+
+    it('cueBlocks gate row pass rule: logged for the delivered answers, every block present and well-formed', () => {
+        const row = GATE.find((g) => g.key === 'cueBlocks')!;
+        const base = { cueBlocks: { n: 10, present: 10, wellformed: 10, trimmed: 0 }, delivered: 10 } as any;
+        expect(row.pass(base)).toBe(true);
+        expect(row.pass({ ...base, cueBlocks: { n: 10, present: 9, wellformed: 9 } })).toBe(false);
+        expect(row.pass({ ...base, cueBlocks: { n: 10, present: 10, wellformed: 9 } })).toBe(false);
+        // coding routes emit no cues line, hence the same 0.9 tolerance as the budget row
+        expect(row.pass({ ...base, cueBlocks: { n: 9, present: 9, wellformed: 9 } })).toBe(true);
+        expect(row.pass({ ...base, cueBlocks: { n: 8, present: 8, wellformed: 8 } })).toBe(false);
+        expect(row.pass({ ...base, cueBlocks: { n: 0, present: 0, wellformed: 0 } })).toBe(false);
+        // spec 2026-09-30: trims are shown in the value and never fail the row — the winning
+        // wording overruns sometimes by its own pre-registered rule, and the cap keeps the block small
+        expect(row.pass({ ...base, cueBlocks: { ...base.cueBlocks, trimmed: 3 } })).toBe(true);
+        expect(row.show({ ...base, cueBlocks: { ...base.cueBlocks, trimmed: 3 } })).toBe('10/10 present, 10 well-formed, 3 trimmed');
+        expect(row.show({ cueBlocks: { n: 0, present: 0, wellformed: 0 } })).toBe('not logged');
     });
 
     it('latency row: TTFT p90 bar is the 10 s stall budget under the shipped LOW level, detect p50 stays 5 s', () => {
@@ -666,8 +702,8 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // ttftP90=3000ms and detectP50=1500ms are both under their bars (10 s TTFT, 5 s detect).
         expect(rows['Answer TTFT p90 · detect p50']).toBe(true);
         const failed = g.rows.filter((r) => !r.pass).map((r) => r.label);
-        // pinned (8 legacy dispatches) and budget (cut 1 !== 0) both fail
-        // here too — appended last, same as GATE itself.
+        // pinned (8 legacy dispatches), budget (cut 1 !== 0) and cueBlocks (2 of 3 present)
+        // all fail here too — appended last, same as GATE itself.
         expect(failed).toEqual([
             'Answered hands-free',
             // 'Heard by either detector' is absent: see above — the row is proportional now
@@ -681,6 +717,7 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             'Long questions answered whole',
             'Answer prompt pinned to the dispatched question',
             'Spoken answers: streamed whole under the 200-word guard',
+            'Cue block above every spoken answer',
         ]);
     });
 
@@ -758,6 +795,56 @@ describe("supersede question capture — the replaces= group must not shift the 
         // 4 of S1.q's 11 content words ("describe your approach caching") are in the
         // anchor — a lost question= capture would read ~0.36, not >= 0.9.
         expect(s1.coverage).toBeGreaterThanOrEqual(0.9);
+    });
+});
+
+/**
+ * interview60.metrics.mjs deliberately imports no build (it reads logs on a checkout where
+ * dist-electron may not exist), so its wellformedCues hardcodes the CUE_MAX_LINES / CUE_MAX_WORDS
+ * values as literals instead of importing them. Nothing else would notice if those literals ever
+ * drifted from electron/llm/prompts.ts's real constants — the cueBlocks gate row would silently
+ * keep gating on stale limits. This fixture is built FROM the real constants (imported here, under
+ * vitest, which does have TypeScript source available), not from today's literal 3/5, so it keeps
+ * testing the actual boundary even if the constants change later.
+ */
+describe("the cue row's limits track CUE_MAX_LINES and CUE_MAX_WORDS", () => {
+    const T0 = Date.parse('2026-01-01T00:00:00.000Z');
+    const iso = (ms: number) => new Date(ms).toISOString();
+    // A cue of exactly n words, tagged so the lines are distinct; never "?", never "you".
+    const cueOfNWords = (tag: string, n: number) => [tag, ...Array.from({ length: n - 1 }, (_, i) => `w${i + 1}`)].join(' ');
+    const atTheLimit = Array.from({ length: CUE_MAX_LINES }, (_, i) => cueOfNWords(`line${i + 1}`, CUE_MAX_WORDS));
+    const oneLineOverTheLimit = Array.from({ length: CUE_MAX_LINES + 1 }, (_, i) => `option${i + 1} short`);
+    const oneWordOverTheLimit = [cueOfNWords('over', CUE_MAX_WORDS + 1)];
+
+    let dir = '';
+    let m: any;
+    beforeAll(() => {
+        dir = fs.mkdtempSync(path.join(os.tmpdir(), 'i60-cue-limits-'));
+        const timeline = {
+            startedAt: iso(T0 - 1000), startedMs: T0 - 1000,
+            startDebug: 0, endDebug: 1e9, startDiag: 0, endDiag: 1e9,
+            endedAt: iso(T0 + 60000),
+            items: [] as any[],
+        };
+        const dbgLines = [
+            `${iso(T0)} [LOG] [Answer] cues: ${JSON.stringify(atTheLimit)}`,
+            `${iso(T0 + 1000)} [LOG] [Answer] cues: ${JSON.stringify(oneLineOverTheLimit)}`,
+            `${iso(T0 + 2000)} [LOG] [Answer] cues: ${JSON.stringify(oneWordOverTheLimit)}`,
+        ];
+        fs.writeFileSync(path.join(dir, 'interview60.timeline.json'), JSON.stringify(timeline, null, 1));
+        fs.writeFileSync(path.join(dir, 'natively_debug.log'), dbgLines.join('\n') + '\n');
+        fs.writeFileSync(path.join(dir, 'verbal-diag.log'), '');
+        m = computeRunFromFiles({
+            debugLog: path.join(dir, 'natively_debug.log'),
+            diagLog: path.join(dir, 'verbal-diag.log'),
+            timelinePath: path.join(dir, 'interview60.timeline.json'),
+            answersPath: path.join(dir, 'interview60.answers.json'), // deliberately never written
+        });
+    });
+    afterAll(() => { if (dir) fs.rmSync(dir, { recursive: true, force: true }); });
+
+    it('a block at exactly CUE_MAX_LINES/CUE_MAX_WORDS is wellformed; one line over and one word over are not', () => {
+        expect(m.cueBlocks).toEqual({ n: 3, present: 3, wellformed: 1, trimmed: 0 });
     });
 });
 
@@ -903,6 +990,8 @@ describe('GATE', () => {
             'Spoken answers: streamed whole under the 200-word guard',
             // s50k (2026-09-20): the length lever the grader cannot see — appended last.
             'Spoken answers under the 150-word cliff',
+            // Cue mode (spec 2026-09-20 §8) — appended last.
+            'Cue block above every spoken answer',
         ]);
     });
 });
@@ -930,6 +1019,8 @@ describe('gate thresholds scale with the roster', () => {
         budget: { n: items, cut: 0, p50: 90, max: 120 },
         // consistent with p50 90 / max 120 above: about half run past 85, none past 150
         length: { n: items, p90: 120, over85: Math.ceil(items / 2), over150: 0 },
+        // cue mode (spec 2026-09-20): every delivered answer opened with a well-formed block
+        cueBlocks: { n: items, present: items, wellformed: items, trimmed: 0 },
     }) as any;
 
     it('passes a flawless hour whatever the roster size', () => {

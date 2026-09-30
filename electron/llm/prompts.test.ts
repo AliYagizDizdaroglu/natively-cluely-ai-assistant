@@ -13,6 +13,7 @@ import {
     SPOKEN_WORD_BUDGET,
     SPOKEN_WORD_TARGET,
     SPOKEN_WORD_CEILING,
+    CUE_RULE, CUE_SHAPE_RULE, CUES_SENTINEL, CUE_MAX_LINES, CUE_MAX_WORDS, VERBAL_TYPED_PROMPT,
     resolveGemmaSystemPrompt,
     resolveStyleSuffix,
 } from './prompts';
@@ -233,6 +234,51 @@ describe('spoken word budget', () => {
         // and the n=20 arm's run-to-run noise is about ±5, so the position is asserted to
         // keep the measured configuration, not because a move was shown to hurt.
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT.indexOf('[ANSWER THE QUESTION\'S STRUCTURE')).toBeGreaterThan(VERBAL_WHAT_TO_ANSWER_PROMPT.indexOf('Rules for that block:'));
-        expect(VERBAL_WHAT_TO_ANSWER_PROMPT.trimEnd().endsWith('- Still first person, still open with substance, still no questions back.')).toBe(true);
+        // Since cue mode (spec 2026-09-20) the cue rule follows the structured rule; nothing else may.
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.' + CUE_RULE)).toBe(true);
+    });
+});
+
+describe('CUE_RULE — cue mode (spec 2026-09-20; limits and wording spec 2026-09-30)', () => {
+    it('names the sentinel and the limits the engine enforces at the display boundary', () => {
+        expect(CUES_SENTINEL).toBe('__CUES__');
+        expect(CUE_MAX_LINES).toBe(3);
+        expect(CUE_MAX_WORDS).toBe(5);
+        expect(CUE_RULE).toContain('[CUES FIRST]');
+        expect(CUE_RULE).toContain(CUES_SENTINEL);
+        // The two edits every spike made to the captured prompt: the template line's number and
+        // the shape bullet. Both follow the constants, so the prompt and the code cap cannot drift.
+        expect(CUE_RULE).toContain(`1| <key phrase for the first part the question names, at most ${CUE_MAX_WORDS} words>`);
+        expect(CUE_RULE.split(CUE_SHAPE_RULE).length - 1).toBe(1);
+        // ...and where the old bullet stood: first under the block's rules, above the three kept bullets
+        expect(CUE_RULE).toContain(`Rules for that block:\n${CUE_SHAPE_RULE}\n- Each line carries`);
+        expect(CUE_RULE).not.toContain('Never more than');
+        expect(CUE_RULE.startsWith('\n\n')).toBe(true);   // it is appended to a prompt that ends without a newline
+    });
+
+    it("the shape bullet is spike 6's winner, verbatim (passes/PREREGISTER-spike6.md, 2026-09-30): a swap edits this pin and the constant, nothing else", () => {
+        // ── benched wording: one-first ──
+        expect(CUE_SHAPE_RULE).toBe('- At most 3 lines, each at most 5 words. The first line is the answer itself in the fewest words that carry it: one or two words when that is enough (asked "Tabs or spaces?", the whole block is 1| Spaces). A one-part question gets exactly one line. Add a line only for another part the QUESTION names, never for a point you add on your own; when it names more than 3 parts, group related parts into themes so every part is still covered in 3 lines.');
+        // The lines the delta keeps, unchanged.
+        expect(CUE_RULE).toContain('- Each line carries the specific thing you will say for that part: the number, the named service, the mechanism, the trade-off. Never a generic label.');
+        expect(CUE_RULE).toContain('- They are cues, not questions. Never address the listener.');
+        expect(CUE_RULE).toContain('- The spoken answer follows on the next line, in the same form as always.');
+    });
+
+    it('sits at the tail of the verbal prompt, directly after the structured rule, and nowhere else', () => {
+        // The structured rule was measured at the END of the prompt (13/20 against 8/20). The cue
+        // rule goes after it; the bench measures this position rather than assuming it (§4).
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.' + CUE_RULE)).toBe(true);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT.split(CUE_RULE).length - 1).toBe(1);
+        expect(UNIVERSAL_WHAT_TO_ANSWER_PROMPT).not.toContain(CUES_SENTINEL);   // the coding path has no cue block
+    });
+});
+
+describe('the typed chat path answers without a cue block (spec 2026-09-30 §3.6)', () => {
+    it('the typed prompt is the hands-free prompt minus the cue rule, derived so the two cannot drift', () => {
+        expect(VERBAL_TYPED_PROMPT).not.toContain(CUES_SENTINEL);
+        expect(VERBAL_TYPED_PROMPT).not.toContain('[CUES FIRST]');
+        expect(VERBAL_TYPED_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.')).toBe(true);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toBe(`${VERBAL_TYPED_PROMPT}${CUE_RULE}`);
     });
 });

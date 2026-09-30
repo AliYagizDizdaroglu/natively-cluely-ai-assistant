@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
-import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, SPOKEN_WORD_GUARD, type Suggestion } from './verbalStreamFilter';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, SPOKEN_WORD_GUARD, extractCues, stripCueBlock, trimCues, type Suggestion } from './verbalStreamFilter';
+import { CUES_SENTINEL } from './prompts';
 
 /** Feed `text` through the filter in fixed-size chunks; return concatenated output. */
 async function runFilter(text: string, chunkSize = 6): Promise<string> {
@@ -282,6 +283,129 @@ describe('stripSuggestionBlock — the block must never flash on screen mid-stre
     });
 });
 
+describe('the offers block BEFORE the spoken answer (spec 2026-09-30 offers-before-answer): the answer is shown, the offers are kept', () => {
+    // The guard writes one console.warn line per stream whose offers block leads (spec §4). Silenced here so the run's
+    // output stays clean, restored after every case (a failing one included), and read back by the log-line case.
+    beforeEach(() => { vi.spyOn(console, 'warn').mockImplementation(() => {}); });
+    afterEach(() => { vi.restoreAllMocks(); });
+    const PROSE = 'Ten million vectors take about thirty gigabytes in float32, so I would quantise to int8 first.';
+    const OFFERS = '__MORE__\n1| cold start mitigation\n2| GPU node pools\n';
+    const TWO = [{ n: 1, label: 'cold start mitigation' }, { n: 2, label: 'GPU node pools' }];
+    const AB = [{ n: 1, label: 'a b' }];
+    const ABCD = [{ n: 1, label: 'a b' }, { n: 2, label: 'c d' }];
+    /** Feed `chunks` through the guard; record how many source chunks had been handed out when the first non-blank piece was yielded (-1: never). */
+    async function runStripTimed(chunks: string[]): Promise<{ out: string; sugg: Suggestion[] | null; calls: number; shownAfter: number }> {
+        let seen = 0, shownAfter = -1, sugg: Suggestion[] | null = null, calls = 0, out = '';
+        async function* source() { for (const c of chunks) { seen++; yield c; } }
+        for await (const p of stripSuggestionBlock(source(), (s) => { sugg = s; calls++; })) { if (shownAfter === -1 && p.trim()) shownAfter = seen; out += p; }
+        return { out, sugg, calls, shownAfter };
+    }
+    const cut = (text: string, size: number): string[] => { const o: string[] = []; for (let i = 0; i < text.length; i += size) o.push(text.slice(i, i + size)); return o; };
+
+    it('extractSuggestions: offers first, then the answer — the answer is the text after the block, the offers are kept', () => {
+        expect(extractSuggestions(`${OFFERS}\n${PROSE}`)).toEqual({ answer: PROSE, suggestions: TWO });   // today { answer: '', suggestions: TWO }
+    });
+    it('extractSuggestions: offers first, the answer, then a second block — both blocks are offers, the answer ends at the second sentinel', () => {
+        expect(extractSuggestions(`${OFFERS}${PROSE}\n__MORE__\n3| a later thought\n`)).toEqual({ answer: PROSE, suggestions: [...TWO, { n: 3, label: 'a later thought' }] });
+    });
+    it('extractSuggestions: offers only — no answer, as today; a true block-only reply stays a failure by the cue spec', () => {
+        expect(extractSuggestions(OFFERS)).toEqual({ answer: '', suggestions: TWO });
+        expect(extractSuggestions('__MORE__\n1| a b\n\n')).toEqual({ answer: '', suggestions: AB });
+    });
+    it('extractSuggestions: the answer first — unchanged; a blank line before the sentinel is still "answer first", and a stray line inside a TRAILING block is still dropped', () => {
+        expect(extractSuggestions(`${PROSE}\n\n${OFFERS}`)).toEqual({ answer: PROSE, suggestions: TWO });
+        expect(extractSuggestions(`${PROSE}\n__MORE__\nHere is what I left out:\n1| a b\n`)).toEqual({ answer: PROSE, suggestions: AB });
+    });
+    it('extractSuggestions: a digit-led answer after the offers is the answer, not an offer', () => {
+        expect(extractSuggestions('__MORE__\n1| a b\n10 million vectors fit.')).toEqual({ answer: '10 million vectors fit.', suggestions: AB });
+    });
+    it('extractSuggestions: the known edge, stated — an offer-shaped line AFTER the answer began, with no second sentinel, is answer text (0 of 624 saved replies)', () => {
+        expect(extractSuggestions(`__MORE__\n1| a b\n${PROSE}\n2| c d\n`)).toEqual({ answer: `${PROSE}\n2| c d\n`, suggestions: AB });
+    });
+
+    // The shape of 9 of 624 saved replies: the offers, a blank line, then one paragraph with no newline until the end.
+    it.each([1, 3, 7, 40])('streaming, offers first then a one-paragraph answer, chunk size %i: the answer is released on the chunk that carries its first character, the output is the answer, the offers arrive once', async (size) => {
+        const text = `${OFFERS}\n${PROSE}`;
+        const r = await runStripTimed(cut(text, size));
+        expect(r.shownAfter).toBe(Math.floor(text.indexOf('Ten') / size) + 1);   // 54, 18, 8, 2 of 147, 49, 21, 4 chunks (today -1: nothing is ever shown)
+        expect(r.out.trim()).toBe(PROSE);
+        expect(r.out).not.toContain('__MORE__');
+        expect(r.sugg).toEqual(TWO);
+        expect(r.calls).toBe(1);
+    });
+    it('streaming: the last offer line, the blank line and the answer arriving in one chunk — the answer is released inside that chunk', async () => {
+        expect(await runStripTimed(['__MORE__\n1| a b\n', '2| c d\n\nTen ', 'million.'])).toEqual({ out: 'Ten million.', sugg: ABCD, calls: 1, shownAfter: 2 });
+    });
+
+    // The partial line after the offers: the early close's question on the offer grammar (CUE_LINE_PREFIX). A third chunk
+    // completes the line, so a HOLD and a CLOSE differ by WHEN the first piece was shown: a held partial from chunk 3 (or
+    // never, when it becomes an offer), a closed one from chunk 2. Each row is pinned against extractSuggestions too.
+    const LEAD = '__MORE__\n1| a b\n';
+    const ROWS: Array<[string, string, string, number, string, Suggestion[]]> = [
+        // [state, partial (chunk 2), rest (chunk 3), shownAfter, answer, offers]
+        ['empty: held', '', '2| c d\nZ', 3, 'Z', ABCD],
+        ['whitespace only: held', '  ', '\n2| c d\nZ', 3, 'Z', ABCD],
+        ['digits: held', '2', '| c d\nZ', 3, 'Z', ABCD],
+        ['digits and the bar: held', '2|', ' c d\nZ', 3, 'Z', ABCD],
+        ['a partial offer line: held to its newline', '2| c', ' d\nZ', 3, 'Z', ABCD],
+        ['digits, the bar, a CR, then the label (CRLF after the bar): held — the same expression as the cue block', '2|\rc d', '\nZ', 3, 'Z', ABCD],
+        ['a partial offer line ending in CR (CRLF, boundary between \\r and \\n): held', '2| c d\r', '\nZ', 3, 'Z', ABCD],
+        ['prose: closes — the answer begins', 'Ten', ' million\nZ', 2, 'Ten million\nZ', AB],
+        ['prose that starts with a number: closes', '10 million', ' vectors\nZ', 2, '10 million vectors\nZ', AB],
+        ['a list marker: closes', '2.', ' First\nZ', 2, '2. First\nZ', AB],
+        ['a second sentinel: closes the block, is held as a sentinel prefix, and opens a second leading block', '_', '_MORE__\n2| c d\nZ', 3, 'Z', ABCD],
+        ['an underscore that is not a sentinel: closes, and is answer text', '_', 'x\nZ', 3, '_x\nZ', AB],
+    ];
+    it.each(ROWS)('the partial line after the offers — %s', async (_state, partial, rest, shownAfter, answer, offers) => {
+        const r = await runStripTimed([LEAD, partial, rest]);
+        expect(r.shownAfter).toBe(shownAfter);
+        expect(r.out).toBe(answer);
+        expect(r.sugg).toEqual(offers);
+        expect(r.calls).toBe(1);
+        expect(extractSuggestions(LEAD + partial + rest)).toEqual({ answer, suggestions: offers });
+    });
+
+    it('whitespace yielded before the sentinel is not spoken text: the block still leads', async () => {
+        expect(await runStripTimed(['\n', '__MORE__\n1| a b\n', 'Ten'])).toEqual({ out: '\nTen', sugg: AB, calls: 1, shownAfter: 3 });
+    });
+
+    // MAIN's path without cues, and every answer that keeps the asked order: nothing may change here.
+    it.each([1, 3, 4, 7, 500])("the answer first (today's order) at chunk size %i: byte-identical up to the sentinel, the offers as before", async (size) => {
+        const FULL = 'Bloom filters answer membership fast.\n__MORE__\n1| false positive rate math\n2| counting filters for deletes\n';
+        const r = await runStripTimed(cut(FULL, size));
+        expect(r.out).toBe('Bloom filters answer membership fast.\n');
+        expect(r.sugg).toEqual([{ n: 1, label: 'false positive rate math' }, { n: 2, label: 'counting filters for deletes' }]);
+        expect(r.calls).toBe(1);
+        expect(r.shownAfter).toBe(1);
+    });
+    it('a trailing block with a stray line, streamed: the stray line is dropped, not shown (today\'s rule; the block does not lead)', async () => {
+        expect(await runStripTimed(['Answer first.\n', '__MORE__\nHere is more:\n1| a b\n'])).toEqual({ out: 'Answer first.\n', sugg: AB, calls: 1, shownAfter: 1 });
+    });
+    it('offers only, streamed: nothing is shown, the offers arrive once — as today', async () => {
+        expect(await runStripTimed(cut(OFFERS, 4))).toEqual({ out: '', sugg: TWO, calls: 1, shownAfter: -1 });
+    });
+    it('the stream ends on a held partial after the offers: a complete offer line is an offer, anything else is shown as answer text', async () => {
+        expect(await runStripTimed([LEAD, '2| c d'])).toEqual({ out: '', sugg: ABCD, calls: 1, shownAfter: -1 });
+        expect(await runStripTimed([LEAD, '2|'])).toEqual({ out: '2|', sugg: AB, calls: 1, shownAfter: 2 });   // today: out '' (the tail)
+    });
+    it.each([1, 3, 4, 7, 500])('streaming equals extractSuggestions at chunk size %i for a leading block, the answer and a trailing block', async (size) => {
+        const text = `${OFFERS}${PROSE}\n__MORE__\n3| a later thought\n`;
+        const r = await runStripTimed(cut(text, size));
+        const whole = extractSuggestions(text);
+        expect(r.out.trim()).toBe(whole.answer);
+        expect(r.sugg).toEqual(whole.suggestions);
+        expect(r.calls).toBe(1);
+    });
+    it('logs one fixed line per stream when the block leads (the live proof that the branch fired; the build marker), and none when the answer comes first', async () => {
+        const warn = vi.mocked(console.warn);   // the describe's silent spy (beforeEach); restored by its afterEach
+        await runStripTimed([LEAD, '_', '_MORE__\n2| c d\nZ']);   // two leading blocks, one line
+        expect(warn.mock.calls.map((c) => String(c[0]))).toEqual(['[verbalStreamFilter] stripSuggestionBlock: offers block before the spoken answer (shown after it)']);
+        warn.mockClear();
+        await runStripTimed(cut('Answer first.\n__MORE__\n1| a b\n', 5));
+        expect(warn).not.toHaveBeenCalled();
+    });
+});
+
 describe('cutAtWordBudget (spec 2026-09-04 §4)', () => {
     /** n distinct words ending in a period — sentence i of an answer. */
     const sentence = (n: number, i: number) => Array.from({ length: n }, (_, k) => `w${i}x${k}`).join(' ') + '.';
@@ -514,5 +638,225 @@ describe('filterCodeFences — the app suppresses fenced blocks, and so must the
     it('leaves a fence-free answer untouched apart from stray backticks', async () => {
         expect(await run('Use a left join and keep the filters in the ON clause.'))
             .toBe('Use a left join and keep the filters in the ON clause.');
+    });
+});
+
+/** Feed `text` through the cue guard in fixed-size chunks. */
+async function runCues(text: string, chunkSize: number): Promise<{ out: string; cues: string[] | null; calls: number }> {
+    async function* source() { for (let i = 0; i < text.length; i += chunkSize) yield text.slice(i, i + chunkSize); }
+    let out = '', cues: string[] | null = null, calls = 0;
+    for await (const c of stripCueBlock(source(), (x) => { cues = x; calls++; })) out += c;
+    return { out, cues, calls };
+}
+
+describe('extractCues — splitting the cue block from the spoken answer (cue mode, spec 2026-09-20)', () => {
+    const PROSE = 'Ten million vectors take about thirty gigabytes.\nQuantizing to int eight halves it.';
+
+    it('no sentinel at the start: no cues, text unchanged', () => {
+        expect(extractCues(PROSE)).toEqual({ cues: [], prose: PROSE });
+        expect(extractCues('')).toEqual({ cues: [], prose: '' });
+    });
+    it('one line, several lines, leading blank lines and a blank line inside the block', () => {
+        expect(extractCues(`__CUES__\n1| thirty gigabytes in float32\n${PROSE}`)).toEqual({ cues: ['thirty gigabytes in float32'], prose: PROSE });
+        expect(extractCues(`\n\n__CUES__\n1| thirty gigabytes\n\n2| int8, then shard\n${PROSE}`)).toEqual({ cues: ['thirty gigabytes', 'int8, then shard'], prose: PROSE });
+    });
+    it('the first non-cue line closes the block; that line and everything after it are prose', () => {
+        expect(extractCues(`__CUES__\n1| thirty gigabytes\nnot a cue line\n2| looks like one\n`)).toEqual({ cues: ['thirty gigabytes'], prose: 'not a cue line\n2| looks like one\n' });
+    });
+    it('wrapping quotes are removed; an over-long line is kept whole by the parser (the display cap is trimCues)', () => {
+        const long = 'one two three four five six seven eight nine ten';
+        expect(extractCues(`__CUES__\n1| "thirty gigabytes"\n2| ${long}\nProse.`)).toEqual({ cues: ['thirty gigabytes', long], prose: 'Prose.' });
+    });
+    it('block only, no prose', () => {
+        expect(extractCues('__CUES__\n1| a\n2| b\n')).toEqual({ cues: ['a', 'b'], prose: '' });
+    });
+    it('the sentinel it recognises is the one the prompt asks for', () => {
+        expect(extractCues(`${CUES_SENTINEL}\n1| a\nProse.`).cues).toEqual(['a']);
+    });
+});
+
+describe('stripCueBlock — the block must never flash on screen, and the prose must never be swallowed', () => {
+    const FULL = '__CUES__\n1| thirty gigabytes in float32\n2| int8, then shard\nTen million vectors take about thirty gigabytes. Quantizing to int eight halves it.\n';
+    const PROSE = 'Ten million vectors take about thirty gigabytes. Quantizing to int eight halves it.\n';
+
+    // 1 and 3 split "__CUES__" across chunk boundaries — where a naive indexOf leaks "__CU".
+    it.each([1, 3, 4, 7, 500])('strips the block at chunk size %i and matches extractCues', async (size) => {
+        const { out, cues, calls } = await runCues(FULL, size);
+        expect(out).not.toContain('__CUES__');
+        expect(out).not.toContain('__CU');
+        expect(out).toBe(extractCues(FULL).prose);
+        expect(out).toBe(PROSE);
+        expect(cues).toEqual(['thirty gigabytes in float32', 'int8, then shard']);
+        expect(calls).toBe(1);
+    });
+    it('passes an answer with no block through byte-for-byte and reports an empty array, once', async () => {
+        const { out, cues, calls } = await runCues(PROSE, 3);
+        expect(out).toBe(PROSE);
+        expect(cues).toEqual([]);
+        expect(calls).toBe(1);
+    });
+    it('tolerates whitespace before the sentinel (a stream often opens with a newline)', async () => {
+        const { out, cues } = await runCues('\n__CUES__\n1| a\nProse.', 2);
+        expect(out).toBe('Prose.');
+        expect(cues).toEqual(['a']);
+    });
+    it('a non-cue line closes the block; the prose starts there, with the line intact', async () => {
+        const { out, cues } = await runCues('__CUES__\n1| a\nThis is prose\n2| not a cue\n', 5);
+        expect(cues).toEqual(['a']);
+        expect(out).toBe('This is prose\n2| not a cue\n');
+    });
+    it('block only: cues delivered, nothing yielded, one callback at stream end', async () => {
+        const { out, cues, calls } = await runCues('__CUES__\n1| a\n2| b', 4);
+        expect(out).toBe('');
+        expect(cues).toEqual(['a', 'b']);
+        expect(calls).toBe(1);
+    });
+    it('a partial sentinel that never completes is prose', async () => {
+        const { out, cues } = await runCues('__CU', 1);
+        expect(out).toBe('__CU');
+        expect(cues).toEqual([]);
+    });
+    it('does not mistake ordinary underscores or a sentinel mid-answer for the block', async () => {
+        const text = 'Use __init__ for setup. Then __CUES__ is just text here.';
+        const { out, cues } = await runCues(text, 2);
+        expect(out).toBe(text);
+        expect(cues).toEqual([]);
+    });
+});
+
+describe('stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line', () => {
+    /** Feed `chunks` through the cue guard; record how many source chunks had been handed out when the cues were reported, and the output pieces as yielded. */
+    async function runCuesTimed(chunks: string[]): Promise<{ out: string[]; cues: string[] | null; calls: number; reportedAfter: number }> {
+        let seen = 0, reportedAfter = -1, cues: string[] | null = null, calls = 0;
+        async function* source() { for (const c of chunks) { seen++; yield c; } }
+        const out: string[] = [];
+        for await (const p of stripCueBlock(source(), (x) => { cues = x; calls++; reportedAfter = seen; })) out.push(p);
+        return { out, cues, calls, reportedAfter };
+    }
+
+    it('reports the cues and releases the prose as soon as a partial line cannot be a cue line (final review I2, Appendix B)', async () => {
+        const r = await runCuesTimed(['__CUES__\n1| a\n', 'Ten ', 'million ', 'vectors.']);
+        expect(r.reportedAfter).toBe(2);                           // today 4: at stream end
+        expect(r.out).toEqual(['Ten ', 'million ', 'vectors.']);   // today ['Ten million vectors.']
+        expect(r.cues).toEqual(['a']);
+        expect(r.calls).toBe(1);
+    });
+
+    // A one-paragraph answer: two cue lines, then prose with NO newline anywhere — the shape of 15 of 21 answers at the 16:12 re-smoke.
+    const NO_NL = '__CUES__\n1| thirty gigabytes in float32\n2| int8, then shard\nTen million vectors take about thirty gigabytes. Quantizing to int eight halves it.';
+    it.each([1, 3, 4, 7, 500])('a paragraph with no newline at chunk size %i: the report fires on the chunk that carries the first prose character, the prose streams, the whole equals extractCues', async (size) => {
+        const chunks: string[] = [];
+        for (let i = 0; i < NO_NL.length; i += size) chunks.push(NO_NL.slice(i, i + size));
+        const r = await runCuesTimed(chunks);
+        const firstProseChunk = Math.floor(NO_NL.indexOf('Ten') / size) + 1;   // 1-based: 61, 21, 16, 9, 1
+        expect(r.reportedAfter).toBe(firstProseChunk);                        // today: the last chunk (143, 48, 36, 21, 1)
+        expect(r.out.join('')).toBe(extractCues(NO_NL).prose);
+        expect(r.cues).toEqual(extractCues(NO_NL).cues);
+        expect(r.calls).toBe(1);
+        if (size < NO_NL.length) expect(r.out.length).toBeGreaterThan(1);   // today: one piece, at the end
+    });
+
+    // Each partial state alone in its own chunk after one complete cue line; a third chunk completes the line, so a HOLD
+    // and a CLOSE differ by WHEN the report fired: a held partial reports on chunk 3 (its newline), a closed one on chunk 2.
+    // Every row is also pinned against extractCues on the completed text, so a wrong expectation fails for the right reason.
+    const HEAD = '__CUES__\n1| a\n';
+    const ROWS: Array<[string, string, string, number, string[], string]> = [
+        // [state, partial (chunk 2), rest (chunk 3), reportedAfter, cues, prose]
+        ['empty: held', '', '2| b\nZ', 3, ['a', 'b'], 'Z'],
+        ['whitespace only: held', '   ', '\n2| b\nZ', 3, ['a', 'b'], 'Z'],
+        ['a lone CR from a CRLF stream: held', '\r', '\n2| b\nZ', 3, ['a', 'b'], 'Z'],
+        ['digits: held', '2', '| b\nZ', 3, ['a', 'b'], 'Z'],
+        ['two digits: held', '12', '| b\nZ', 3, ['a', 'b'], 'Z'],
+        ['digits and a space: held (the bar may still follow)', '2 ', '| b\nZ', 3, ['a', 'b'], 'Z'],
+        ['digits and the bar: held', '2|', ' b\nZ', 3, ['a', 'b'], 'Z'],
+        ['a partial cue line: held to its newline', '2| Spa', 'ces\nZ', 3, ['a', 'Spaces'], 'Z'],
+        ['a partial cue line ending in CR (CRLF, boundary between \\r and \\n): held — trim(), not trimStart()', '2| Spa\r', '\nZ', 3, ['a', 'Spa'], 'Z'],
+        ['digits, the bar, a stray CR, then the phrase: held (CUE_LINE takes whitespace after the bar, and CR is whitespace)', '2|\rb', '\nZ', 3, ['a', 'b'], 'Z'],
+        ['prose: closes', 'Ten', ' million\nZ', 2, ['a'], 'Ten million\nZ'],
+        ['prose that starts with a number: closes', '10 million vectors', '\nZ', 2, ['a'], '10 million vectors\nZ'],
+        ['prose that starts with a count: closes', '3 things matter', '\nZ', 2, ['a'], '3 things matter\nZ'],
+        ['prose that starts with a year: closes', '2024 was', ' the year\nZ', 2, ['a'], '2024 was the year\nZ'],
+        ['prose with a digit start and a bar later: closes', '10 million | shards', '\nZ', 2, ['a'], '10 million | shards\nZ'],
+        ['a numbered list marker: closes', '2.', ' First\nZ', 2, ['a'], '2. First\nZ'],
+        ['a bullet: closes', '- first', '\nZ', 2, ['a'], '- first\nZ'],
+    ];
+    it.each(ROWS)('partial state — %s', async (_state, partial, rest, reportedAfter, cues, prose) => {
+        const r = await runCuesTimed([HEAD, partial, rest]);
+        expect(r.reportedAfter).toBe(reportedAfter);
+        expect(r.cues).toEqual(cues);
+        expect(r.out.join('')).toBe(prose);
+        expect(r.calls).toBe(1);
+        expect(extractCues(HEAD + partial + rest)).toEqual({ cues, prose });
+    });
+
+    it("text on the sentinel's own line: a cue there is held to its newline, prose there closes the block at once", async () => {
+        expect(await runCuesTimed(['__CUES__ 1| Spa', 'ces\nZ'])).toEqual({ out: ['Z'], cues: ['Spaces'], calls: 1, reportedAfter: 2 });
+        expect(await runCuesTimed(['__CUES__Ten', ' million\nZ'])).toEqual({ out: ['Ten', ' million\nZ'], cues: [], calls: 1, reportedAfter: 1 });   // today: ['Ten million\nZ'], reported after 2
+        expect(extractCues('__CUES__Ten million\nZ')).toEqual({ cues: [], prose: 'Ten million\nZ' });
+    });
+
+    it('the stream ends on a held partial: a complete cue line is a cue, anything else goes out as prose, as before', async () => {
+        expect(await runCuesTimed(['__CUES__\n1| a\n', '2| b'])).toEqual({ out: [], cues: ['a', 'b'], calls: 1, reportedAfter: 2 });
+        expect(await runCuesTimed(['__CUES__\n1| a\n', '2|'])).toEqual({ out: ['2|'], cues: ['a'], calls: 1, reportedAfter: 2 });
+        expect(await runCuesTimed(['__CUES__\n1| a\n', '2'])).toEqual({ out: ['2'], cues: ['a'], calls: 1, reportedAfter: 2 });
+    });
+});
+
+describe('trimCues — the cue block as DISPLAYED: notation cleaned, then at most 3 lines of 5 words (spec 2026-09-30)', () => {
+    const L = 3, W = 5;
+    // The 2026-09-30 smoke's S1Q09 block: 8 lines for 8 named Azure components.
+    const EIGHT = ['Blob Storage for data', 'Azure ML for training', 'Model Registry for versioning', 'ACR for images', 'AKS for inference', 'Data Factory for orchestration', 'Entra ID for security', 'Azure Monitor for observability'];
+
+    it('a block inside both limits with nothing to clean is displayed unchanged and reports nothing to log', () => {
+        expect(trimCues(['Layer caching', 'Instruction ordering'], L, W)).toEqual({ cues: ['Layer caching', 'Instruction ordering'], rawLines: 2, dropped: [], cut: [], cleaned: [] });
+        expect(trimCues([], L, W)).toEqual({ cues: [], rawLines: 0, dropped: [], cut: [], cleaned: [] });
+    });
+
+    it("the smoke's 8-line block keeps its first 3 lines; the other 5 are reported verbatim, in order", () => {
+        const r = trimCues(EIGHT, L, W);
+        expect(r.cues).toEqual(EIGHT.slice(0, 3));
+        expect(r).toMatchObject({ rawLines: 8, dropped: EIGHT.slice(3), cut: [], cleaned: [] });
+    });
+
+    it('a dropped line is reported raw and is neither cleaned nor cut', () => {
+        // notation AND 8 words: had it been processed before the slice, it would show up in cut and cleaned
+        const fourth = '**Data Factory** for batch and streaming orchestration pipelines';
+        const r = trimCues([...EIGHT.slice(0, 3), fourth], L, W);
+        expect(r.cues).toEqual(EIGHT.slice(0, 3));
+        expect(r).toMatchObject({ dropped: [fourth], cut: [], cleaned: [] });
+    });
+
+    it('a 7-word line is cut to its first 5 words and reported raw; a 5-word line is not', () => {
+        const seven = 'Batch/Online Architecture: Feature Store and Shared Logic';
+        const r = trimCues([seven, '60% precision and 31.6% recall'], L, W);
+        expect(r.cues).toEqual(['Batch/Online Architecture: Feature Store and', '60% precision and 31.6% recall']);
+        expect(r).toMatchObject({ rawLines: 2, dropped: [], cut: [seven], cleaned: [] });
+    });
+
+    it('notation is cleaned the way the prose is (spike 4: a cue came out as raw LaTeX), BEFORE the count, and every cleaned line is reported raw', () => {
+        const latex = '$O(\\log n)$ time complexity';
+        const marks = '`ModelLatency` vs **OverheadLatency**';
+        const r = trimCues([latex, marks, 'Parquet'], L, W);
+        expect(r.cues).toEqual(['O(log n) time complexity', 'ModelLatency vs OverheadLatency', 'Parquet']);
+        expect(r).toMatchObject({ dropped: [], cut: [], cleaned: [latex, marks] });
+        // \frac adds the word "over": the count is taken after cleanup, so the DISPLAYED line never exceeds 5 words
+        const frac = '$\\frac{3,000}{9,500}$ true positive rate';
+        const f = trimCues([frac], L, W);
+        expect(f.cues).toEqual(['3,000 over 9,500 true positive']);
+        expect(f).toMatchObject({ cut: [frac], cleaned: [frac] });
+    });
+
+    it('a line that is nothing but notation is not hidden: it displays empty (the smoke check and the metrics row flag it)', () => {
+        expect(trimCues(['**', 'Parquet'], L, W)).toMatchObject({ cues: ['', 'Parquet'], cleaned: ['**'] });
+        // cleanup can leave a leading space, and the display trims it
+        expect(trimCues(['** Parquet'], L, W)).toMatchObject({ cues: ['Parquet'], cleaned: ['** Parquet'] });
+        // the parser can hand over a line with a space on both sides, `1| " padded "`
+        expect(trimCues([' padded '], L, W)).toMatchObject({ cues: ['padded'], cleaned: [' padded '] });
+    });
+
+    it('applies exactly the limits it is given (the engine passes CUE_MAX_LINES / CUE_MAX_WORDS)', () => {
+        expect(trimCues(EIGHT, 5, 8).cues).toEqual(EIGHT.slice(0, 5));
+        expect(trimCues(['one two three four five six'], 3, 6).cut).toEqual([]);
+        expect(trimCues(['one two three four five six'], 3, 5).cues).toEqual(['one two three four five']);
     });
 });

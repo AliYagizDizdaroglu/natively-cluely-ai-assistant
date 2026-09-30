@@ -191,6 +191,56 @@ export const SPOKEN_WORD_TARGET = 60;
 export const SPOKEN_WORD_CEILING = 150;
 
 /**
+ * Sentinel that opens the cue block every hands-free verbal answer begins with (cue mode, spec
+ * 2026-09-20; a typed answer carries none, spec 2026-09-30 §3.6). Same `__NAME__` convention as
+ * `__MORE__`; stripCueBlock in verbalStreamFilter removes it before display and hands the lines
+ * to the UI.
+ */
+export const CUES_SENTINEL = '__CUES__';
+
+/**
+ * Cue lines the candidate sees — a ceiling, not a target (spec 2026-09-30): a simple question
+ * gets one line, a many-part question is grouped into themes so every named part still fits.
+ * Enforced at the display boundary by trimCues (IntelligenceEngine onCues), every cut logged.
+ */
+export const CUE_MAX_LINES = 3;
+
+/** Words per displayed cue line — a glance, not a sentence. Cut to the first CUE_MAX_WORDS by trimCues, logged. */
+export const CUE_MAX_WORDS = 5;
+
+/**
+ * The cue rule's shape bullet, ONE constant so that a wording swap touches this line and its
+ * verbatim test pin only. The text is spike 6's winner under a rule written before its data
+ * (electron/test/golden/passes/PREREGISTER-spike6.md; spec 2026-09-30 §3.1, §7). The numbers
+ * are the constants above, so the prompt and the code cap cannot drift apart; at 3/5 this
+ * resolves byte for byte to the spike text.
+ */
+// ── benched wording: one-first ──
+export const CUE_SHAPE_RULE = `- At most ${CUE_MAX_LINES} lines, each at most ${CUE_MAX_WORDS} words. The first line is the answer itself in the fewest words that carry it: one or two words when that is enough (asked "Tabs or spaces?", the whole block is 1| Spaces). A one-part question gets exactly one line. Add a line only for another part the QUESTION names, never for a point you add on your own; when it names more than ${CUE_MAX_LINES} parts, group related parts into themes so every part is still covered in ${CUE_MAX_LINES} lines.`;
+
+/**
+ * Cue mode: the answer opens with a cue block — at most CUE_MAX_LINES key-phrase lines — and
+ * the spoken answer follows unchanged. The main process strips the block (stripCueBlock), caps
+ * it (trimCues; the engine logs every display edit), and shows it above the answer so the
+ * candidate composes the sentences and only glances at the prose. Appended at the TAIL of the
+ * hands-free verbal prompt, after the structured rule; the bench measures that position rather
+ * than assuming it. The shape bullet is CUE_SHAPE_RULE, a benched input (spec 2026-09-30 §3.1).
+ * Opens with a blank line because the prompt it is appended to ends without one.
+ */
+export const CUE_RULE = `
+
+[CUES FIRST]
+Before the spoken answer, output a cue block in this exact form, on its own lines:
+${CUES_SENTINEL}
+1| <key phrase for the first part the question names, at most ${CUE_MAX_WORDS} words>
+2| <the next part, in the order asked>
+Rules for that block:
+${CUE_SHAPE_RULE}
+- Each line carries the specific thing you will say for that part: the number, the named service, the mechanism, the trade-off. Never a generic label.
+- They are cues, not questions. Never address the listener.
+- The spoken answer follows on the next line, in the same form as always.`;
+
+/**
  * Condensed spoken answer + optional numbered depth offers, for the verbal paths.
  *
  * Why: EXECUTION_CONTRACT rule 11 asks for answers speakable in under 30 seconds,
@@ -2333,7 +2383,13 @@ RULES:
 
 Output ONLY the spoken answer. Nothing else.`;
 
-export const VERBAL_WHAT_TO_ANSWER_PROMPT = `${CORE_IDENTITY}
+/**
+ * The verbal prompt WITHOUT the cue rule: what a TYPED chat question sends (ipcHandlers.ts,
+ * gemini-chat-stream), whose raw tokens go straight to the chat bubble with no stripCueBlock in
+ * the way. The hands-free prompt below is this text plus CUE_RULE, derived so the two cannot
+ * drift (spec 2026-09-30 §3.6).
+ */
+export const VERBAL_TYPED_PROMPT = `${CORE_IDENTITY}
 ${EXECUTION_CONTRACT}
 ${CONTEXT_INTELLIGENCE_LAYER}
 INTERVIEW FRAMING — READ THIS FIRST:
@@ -2378,6 +2434,14 @@ This does NOT mean listing jargon. Name the specific parts you would actually to
 
 Output ONLY the spoken answer. Nothing else.
 ${SPOKEN_LENGTH_AND_DEPTH}`;
+
+/**
+ * The hands-free interview answer's prompt (WhatToAnswerLLM and the offline replicas in
+ * electron/test/golden): the typed prompt plus the cue rule at its tail (cue mode, spec
+ * 2026-09-20; the split, spec 2026-09-30 §3.6). Derived, not duplicated: everything but the cue
+ * block is one text.
+ */
+export const VERBAL_WHAT_TO_ANSWER_PROMPT = `${VERBAL_TYPED_PROMPT}${CUE_RULE}`;
 
 /**
  * UNIVERSAL: Recap / Summary

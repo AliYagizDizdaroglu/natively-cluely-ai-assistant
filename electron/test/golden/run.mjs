@@ -169,7 +169,7 @@ function adversarialChunks(text, sentinel) {
 
 async function runVerbal(store) {
   const P = prompts();
-  const { filterVerbalLines, stripSuggestionBlock } = verbalFilter();
+  const { filterVerbalLines, stripSuggestionBlock, stripCueBlock } = verbalFilter();
   const SENTINEL = P.SUGGESTIONS_SENTINEL;
   const BUDGET = P.SPOKEN_WORD_BUDGET;
 
@@ -201,15 +201,16 @@ async function runVerbal(store) {
         });
 
         // pipe through the REAL shipped filter, in adversarial chunks
-        let spoken = '', offers = null;
+        let spoken = '', offers = null, cues = [];
         async function* chunks() { for (const c of adversarialChunks(r.text, SENTINEL)) yield c; }
-        for await (const piece of stripSuggestionBlock(filterVerbalLines(chunks()), (o) => { offers = o; })) spoken += piece;
+        // stripCueBlock innermost, exactly as WhatToAnswerLLM composes it (cue mode).
+        for await (const piece of stripSuggestionBlock(filterVerbalLines(stripCueBlock(chunks(), (c) => { cues = c; })), (o) => { offers = o; })) spoken += piece;
 
-        const ctx = { spoken: spoken.trim(), offers, sentinel: SENTINEL, budget: BUDGET, wordCount: words(spoken) };
+        const ctx = { spoken: spoken.trim(), offers, cues, sentinel: SENTINEL, cuesSentinel: P.CUES_SENTINEL, cueMaxLines: P.CUE_MAX_LINES, cueMaxWords: P.CUE_MAX_WORDS, budget: BUDGET, wordCount: words(spoken) };
         // finish + rawLen are recorded so a truncation can be diagnosed from the
         // stored result instead of needing a live re-probe.
         rec.ms = r.ms; rec.finish = r.finish; rec.rawLen = r.text.length;
-        rec.words = ctx.wordCount; rec.offers = offers;
+        rec.words = ctx.wordCount; rec.offers = offers; rec.cues = cues;
         rec.checks = Object.fromEntries(Object.entries(VERBAL_CHECKS).map(([n, f]) => [n, f(ctx)]));
         const failed = Object.entries(rec.checks).filter(([, v]) => !v.ok);
         console.log(`  Q${i + 1} ${ctx.wordCount}w ${r.ms}ms  ${failed.length ? 'FAIL: ' + failed.map(([n, v]) => `${n}(${v.detail})`).join(', ') : 'all checks ok'}`);

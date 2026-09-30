@@ -8,6 +8,21 @@ import path from 'node:path';
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 export const nowIso = () => new Date().toISOString();
 
+/**
+ * A named key from the environment first — a launcher can run `node --env-file=<path>` for a
+ * checkout that has none of its own, which is how a worktree runs a harness against another
+ * checkout's key — else the project's own .env file, else undefined. Never throws on a missing
+ * .env (a worktree has none) and never logs the value; the caller decides what a missing key
+ * means for it. `env` and `projDir` are parameters, not process.env/PROJ, so this stays pure.
+ */
+export function resolveEnvKey(name, env, projDir) {
+    const fromEnv = env[name]?.trim();
+    if (fromEnv) return fromEnv;
+    let text = '';
+    try { text = fs.readFileSync(path.join(projDir, '.env'), 'utf8'); } catch { /* no .env beside package.json */ }
+    return text.match(new RegExp(`^${name}=(.+)$`, 'm'))?.[1]?.trim() || undefined;
+}
+
 export function logSize(file) {
     try { return fs.statSync(file).size; } catch { return 0; }
 }

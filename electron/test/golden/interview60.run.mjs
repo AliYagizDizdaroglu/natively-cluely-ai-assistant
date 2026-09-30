@@ -28,7 +28,7 @@ import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import net from 'net';
 import { INTERVIEW, TTS_LOCAL_DIR, WAV_NAME, rosterLabel } from './roster.mjs';
-import { logSize as libLogSize, logSince as libLogSince, waitForLogLines, snapshotRun, sleep as libSleep, playStartFromStdout, playEndFromStdout } from './interview60.lib.mjs';
+import { logSize as libLogSize, logSince as libLogSince, waitForLogLines, snapshotRun, sleep as libSleep, playStartFromStdout, playEndFromStdout, resolveEnvKey } from './interview60.lib.mjs';
 import { computeRun, computeRunFromFiles, evaluateGate } from './interview60.metrics.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -50,7 +50,12 @@ const CUES_LOG = path.join(HERE, 'interview60.cues.log');
 const CUES_PID = path.join(HERE, 'interview60.cues.pid');
 const HTML = path.join(HERE, 'interview60.report.html');
 
-const KEY = fs.readFileSync(path.join(PROJ, '.env'), 'utf8').match(/^GEMINI_API_KEY=(.+)$/m)[1].trim();
+// Keys come from the environment first — a launcher can run `node --env-file=<path>` for a
+// checkout that has no .env, which is how a worktree runs this harness against another
+// checkout's key — then from .env beside package.json. Never printed. Same rule as
+// interview60.answers.mjs.
+const KEY = resolveEnvKey('GEMINI_API_KEY', process.env, PROJ);
+if (!KEY) { console.error('GEMINI_API_KEY: not in the environment and no .env beside package.json'); process.exit(2); }
 const sleep = libSleep;
 const logSize = libLogSize;
 const logSince = libLogSince;
