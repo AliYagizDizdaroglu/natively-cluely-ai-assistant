@@ -61,4 +61,21 @@ describe('runWhatShouldISay carries the cue block', () => {
         expect(emits.every((e) => e.cues === undefined)).toBe(true);
         expect(logs).toContain('[Answer] cues: []');
     });
+
+    it('a hedge-won answer: the sentinel-only chunk between the cues and the prose names the model and does not swallow the cues', async () => {
+        // The hedge announces its winner as its own chunk, yielded after onCues has fired and before the
+        // first prose token. The engine must skip that chunk before it reads pendingCues.
+        const logs = captureLogs();
+        stubStream(['a', 'b'], ['__model_source:gemini-3.5-flash-lite (hedge)__', 'Ten million ', 'vectors take thirty gigabytes.']);
+        const engine = new IntelligenceEngine(stubHelper(), new SessionTracker());
+        const emits = listen(engine);
+        const sources: string[] = [];
+        engine.on('suggested_answer_source', (label: string) => { sources.push(label); });
+        await engine.runWhatShouldISay(QUESTION, 1.0, undefined, { intentOverride: 'verbal', bypassCooldown: true });
+        expect(sources).toEqual(['gemini-3.5-flash-lite (hedge)']);
+        expect(emits.map((e) => e.token)).toEqual(['Ten million ', 'vectors take thirty gigabytes.']);
+        expect(emits[0].cues).toEqual(['a', 'b']);
+        expect(emits[1].cues).toBeUndefined();
+        expect(logs).toContain(`[Answer] full: ${JSON.stringify(PROSE)}`);
+    });
 });
