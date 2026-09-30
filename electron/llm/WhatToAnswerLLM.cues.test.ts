@@ -54,4 +54,19 @@ describe('WhatToAnswerLLM cue block', () => {
         await drain(run(makeHelper('def f():\n    return 1\n'), CODING, onCues));
         expect(onCues).not.toHaveBeenCalled();
     });
+
+    it('offers block BEFORE the spoken answer (spec 2026-09-30 offers-before-answer): the cues once, the answer shown, the offers once, neither block in the output', async () => {
+        vi.spyOn(console, 'warn').mockImplementation(() => {});   // the guard's one line per leading block
+        const onCues = vi.fn(), onSuggestions = vi.fn();
+        // invented text of the saved shape: the cue block, the offers block, a blank line, one paragraph
+        const helper = makeHelper(`__CUES__\n1| thirty gigabytes in float32\n__MORE__\n1| int8 quantization trade-offs\n2| sharding across nodes\n\n${PROSE}`);
+        const out = await drain(new WhatToAnswerLLM(helper).generateStream('[INTERVIEWER]: How much memory?', undefined, VERBAL, undefined, undefined, onSuggestions, undefined, onCues));
+        expect(out.trim()).toBe(PROSE);                                   // today '': the whole answer was thrown away as "the block"
+        expect(out).not.toContain('__MORE__');
+        expect(out).not.toContain('1|');
+        expect(onCues).toHaveBeenCalledTimes(1);
+        expect(onCues).toHaveBeenCalledWith(['thirty gigabytes in float32']);
+        expect(onSuggestions).toHaveBeenCalledTimes(1);
+        expect(onSuggestions).toHaveBeenCalledWith([{ n: 1, label: 'int8 quantization trade-offs' }, { n: 2, label: 'sharding across nodes' }]);
+    });
 });

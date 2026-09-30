@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, SPOKEN_WORD_GUARD, extractCues, stripCueBlock, trimCues, type Suggestion } from './verbalStreamFilter';
 import { CUES_SENTINEL } from './prompts';
 
@@ -280,6 +280,129 @@ describe('stripSuggestionBlock — the block must never flash on screen mid-stre
         const { out, sugg } = await runStrip(text, 2);
         expect(out).toBe(text);
         expect(sugg).toEqual([]);
+    });
+});
+
+describe('the offers block BEFORE the spoken answer (spec 2026-09-30 offers-before-answer): the answer is shown, the offers are kept', () => {
+    // The guard writes one console.warn line per stream whose offers block leads (spec §4). Silenced here so the run's
+    // output stays clean, restored after every case (a failing one included), and read back by the log-line case.
+    beforeEach(() => { vi.spyOn(console, 'warn').mockImplementation(() => {}); });
+    afterEach(() => { vi.restoreAllMocks(); });
+    const PROSE = 'Ten million vectors take about thirty gigabytes in float32, so I would quantise to int8 first.';
+    const OFFERS = '__MORE__\n1| cold start mitigation\n2| GPU node pools\n';
+    const TWO = [{ n: 1, label: 'cold start mitigation' }, { n: 2, label: 'GPU node pools' }];
+    const AB = [{ n: 1, label: 'a b' }];
+    const ABCD = [{ n: 1, label: 'a b' }, { n: 2, label: 'c d' }];
+    /** Feed `chunks` through the guard; record how many source chunks had been handed out when the first non-blank piece was yielded (-1: never). */
+    async function runStripTimed(chunks: string[]): Promise<{ out: string; sugg: Suggestion[] | null; calls: number; shownAfter: number }> {
+        let seen = 0, shownAfter = -1, sugg: Suggestion[] | null = null, calls = 0, out = '';
+        async function* source() { for (const c of chunks) { seen++; yield c; } }
+        for await (const p of stripSuggestionBlock(source(), (s) => { sugg = s; calls++; })) { if (shownAfter === -1 && p.trim()) shownAfter = seen; out += p; }
+        return { out, sugg, calls, shownAfter };
+    }
+    const cut = (text: string, size: number): string[] => { const o: string[] = []; for (let i = 0; i < text.length; i += size) o.push(text.slice(i, i + size)); return o; };
+
+    it('extractSuggestions: offers first, then the answer — the answer is the text after the block, the offers are kept', () => {
+        expect(extractSuggestions(`${OFFERS}\n${PROSE}`)).toEqual({ answer: PROSE, suggestions: TWO });   // today { answer: '', suggestions: TWO }
+    });
+    it('extractSuggestions: offers first, the answer, then a second block — both blocks are offers, the answer ends at the second sentinel', () => {
+        expect(extractSuggestions(`${OFFERS}${PROSE}\n__MORE__\n3| a later thought\n`)).toEqual({ answer: PROSE, suggestions: [...TWO, { n: 3, label: 'a later thought' }] });
+    });
+    it('extractSuggestions: offers only — no answer, as today; a true block-only reply stays a failure by the cue spec', () => {
+        expect(extractSuggestions(OFFERS)).toEqual({ answer: '', suggestions: TWO });
+        expect(extractSuggestions('__MORE__\n1| a b\n\n')).toEqual({ answer: '', suggestions: AB });
+    });
+    it('extractSuggestions: the answer first — unchanged; a blank line before the sentinel is still "answer first", and a stray line inside a TRAILING block is still dropped', () => {
+        expect(extractSuggestions(`${PROSE}\n\n${OFFERS}`)).toEqual({ answer: PROSE, suggestions: TWO });
+        expect(extractSuggestions(`${PROSE}\n__MORE__\nHere is what I left out:\n1| a b\n`)).toEqual({ answer: PROSE, suggestions: AB });
+    });
+    it('extractSuggestions: a digit-led answer after the offers is the answer, not an offer', () => {
+        expect(extractSuggestions('__MORE__\n1| a b\n10 million vectors fit.')).toEqual({ answer: '10 million vectors fit.', suggestions: AB });
+    });
+    it('extractSuggestions: the known edge, stated — an offer-shaped line AFTER the answer began, with no second sentinel, is answer text (0 of 624 saved replies)', () => {
+        expect(extractSuggestions(`__MORE__\n1| a b\n${PROSE}\n2| c d\n`)).toEqual({ answer: `${PROSE}\n2| c d\n`, suggestions: AB });
+    });
+
+    // The shape of 9 of 624 saved replies: the offers, a blank line, then one paragraph with no newline until the end.
+    it.each([1, 3, 7, 40])('streaming, offers first then a one-paragraph answer, chunk size %i: the answer is released on the chunk that carries its first character, the output is the answer, the offers arrive once', async (size) => {
+        const text = `${OFFERS}\n${PROSE}`;
+        const r = await runStripTimed(cut(text, size));
+        expect(r.shownAfter).toBe(Math.floor(text.indexOf('Ten') / size) + 1);   // 54, 18, 8, 2 of 147, 49, 21, 4 chunks (today -1: nothing is ever shown)
+        expect(r.out.trim()).toBe(PROSE);
+        expect(r.out).not.toContain('__MORE__');
+        expect(r.sugg).toEqual(TWO);
+        expect(r.calls).toBe(1);
+    });
+    it('streaming: the last offer line, the blank line and the answer arriving in one chunk — the answer is released inside that chunk', async () => {
+        expect(await runStripTimed(['__MORE__\n1| a b\n', '2| c d\n\nTen ', 'million.'])).toEqual({ out: 'Ten million.', sugg: ABCD, calls: 1, shownAfter: 2 });
+    });
+
+    // The partial line after the offers: the early close's question on the offer grammar (CUE_LINE_PREFIX). A third chunk
+    // completes the line, so a HOLD and a CLOSE differ by WHEN the first piece was shown: a held partial from chunk 3 (or
+    // never, when it becomes an offer), a closed one from chunk 2. Each row is pinned against extractSuggestions too.
+    const LEAD = '__MORE__\n1| a b\n';
+    const ROWS: Array<[string, string, string, number, string, Suggestion[]]> = [
+        // [state, partial (chunk 2), rest (chunk 3), shownAfter, answer, offers]
+        ['empty: held', '', '2| c d\nZ', 3, 'Z', ABCD],
+        ['whitespace only: held', '  ', '\n2| c d\nZ', 3, 'Z', ABCD],
+        ['digits: held', '2', '| c d\nZ', 3, 'Z', ABCD],
+        ['digits and the bar: held', '2|', ' c d\nZ', 3, 'Z', ABCD],
+        ['a partial offer line: held to its newline', '2| c', ' d\nZ', 3, 'Z', ABCD],
+        ['digits, the bar, a CR, then the label (CRLF after the bar): held — the same expression as the cue block', '2|\rc d', '\nZ', 3, 'Z', ABCD],
+        ['a partial offer line ending in CR (CRLF, boundary between \\r and \\n): held', '2| c d\r', '\nZ', 3, 'Z', ABCD],
+        ['prose: closes — the answer begins', 'Ten', ' million\nZ', 2, 'Ten million\nZ', AB],
+        ['prose that starts with a number: closes', '10 million', ' vectors\nZ', 2, '10 million vectors\nZ', AB],
+        ['a list marker: closes', '2.', ' First\nZ', 2, '2. First\nZ', AB],
+        ['a second sentinel: closes the block, is held as a sentinel prefix, and opens a second leading block', '_', '_MORE__\n2| c d\nZ', 3, 'Z', ABCD],
+        ['an underscore that is not a sentinel: closes, and is answer text', '_', 'x\nZ', 3, '_x\nZ', AB],
+    ];
+    it.each(ROWS)('the partial line after the offers — %s', async (_state, partial, rest, shownAfter, answer, offers) => {
+        const r = await runStripTimed([LEAD, partial, rest]);
+        expect(r.shownAfter).toBe(shownAfter);
+        expect(r.out).toBe(answer);
+        expect(r.sugg).toEqual(offers);
+        expect(r.calls).toBe(1);
+        expect(extractSuggestions(LEAD + partial + rest)).toEqual({ answer, suggestions: offers });
+    });
+
+    it('whitespace yielded before the sentinel is not spoken text: the block still leads', async () => {
+        expect(await runStripTimed(['\n', '__MORE__\n1| a b\n', 'Ten'])).toEqual({ out: '\nTen', sugg: AB, calls: 1, shownAfter: 3 });
+    });
+
+    // MAIN's path without cues, and every answer that keeps the asked order: nothing may change here.
+    it.each([1, 3, 4, 7, 500])("the answer first (today's order) at chunk size %i: byte-identical up to the sentinel, the offers as before", async (size) => {
+        const FULL = 'Bloom filters answer membership fast.\n__MORE__\n1| false positive rate math\n2| counting filters for deletes\n';
+        const r = await runStripTimed(cut(FULL, size));
+        expect(r.out).toBe('Bloom filters answer membership fast.\n');
+        expect(r.sugg).toEqual([{ n: 1, label: 'false positive rate math' }, { n: 2, label: 'counting filters for deletes' }]);
+        expect(r.calls).toBe(1);
+        expect(r.shownAfter).toBe(1);
+    });
+    it('a trailing block with a stray line, streamed: the stray line is dropped, not shown (today\'s rule; the block does not lead)', async () => {
+        expect(await runStripTimed(['Answer first.\n', '__MORE__\nHere is more:\n1| a b\n'])).toEqual({ out: 'Answer first.\n', sugg: AB, calls: 1, shownAfter: 1 });
+    });
+    it('offers only, streamed: nothing is shown, the offers arrive once — as today', async () => {
+        expect(await runStripTimed(cut(OFFERS, 4))).toEqual({ out: '', sugg: TWO, calls: 1, shownAfter: -1 });
+    });
+    it('the stream ends on a held partial after the offers: a complete offer line is an offer, anything else is shown as answer text', async () => {
+        expect(await runStripTimed([LEAD, '2| c d'])).toEqual({ out: '', sugg: ABCD, calls: 1, shownAfter: -1 });
+        expect(await runStripTimed([LEAD, '2|'])).toEqual({ out: '2|', sugg: AB, calls: 1, shownAfter: 2 });   // today: out '' (the tail)
+    });
+    it.each([1, 3, 4, 7, 500])('streaming equals extractSuggestions at chunk size %i for a leading block, the answer and a trailing block', async (size) => {
+        const text = `${OFFERS}${PROSE}\n__MORE__\n3| a later thought\n`;
+        const r = await runStripTimed(cut(text, size));
+        const whole = extractSuggestions(text);
+        expect(r.out.trim()).toBe(whole.answer);
+        expect(r.sugg).toEqual(whole.suggestions);
+        expect(r.calls).toBe(1);
+    });
+    it('logs one fixed line per stream when the block leads (the live proof that the branch fired; the build marker), and none when the answer comes first', async () => {
+        const warn = vi.mocked(console.warn);   // the describe's silent spy (beforeEach); restored by its afterEach
+        await runStripTimed([LEAD, '_', '_MORE__\n2| c d\nZ']);   // two leading blocks, one line
+        expect(warn.mock.calls.map((c) => String(c[0]))).toEqual(['[verbalStreamFilter] stripSuggestionBlock: offers block before the spoken answer (shown after it)']);
+        warn.mockClear();
+        await runStripTimed(cut('Answer first.\n__MORE__\n1| a b\n', 5));
+        expect(warn).not.toHaveBeenCalled();
     });
 });
 

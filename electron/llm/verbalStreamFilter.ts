@@ -242,7 +242,7 @@ export interface Suggestion {
  * Splits a completed verbal answer into the spoken part and its expansion offers.
  *
  * The model is asked (see SPOKEN_LENGTH_AND_DEPTH) to keep the spoken answer under
- * the word budget and name any depth it dropped after a `__MORE__` sentinel:
+ * the word budget and name any depth it dropped AFTER the answer, behind a `__MORE__` sentinel:
  *
  *     ...spoken answer...
  *     __MORE__
@@ -250,65 +250,128 @@ export interface Suggestion {
  *     2| hot-key handling on the ring
  *
  * Tolerant by design: a missing block is the common case (correct whenever the
- * answer is already complete), and malformed lines are dropped rather than shown,
- * because leaking `1| ...` into the answer bubble is worse than losing one chip.
+ * answer is already complete), and malformed lines inside a trailing block are dropped rather
+ * than shown, because leaking `1| ...` into the answer bubble is worse than losing one chip.
+ *
+ * The block can also LEAD (spec 2026-09-30 offers-before-answer). About one reply in forty that
+ * opens with a cue block puts its offers right after the cues and before the spoken answer (9 of
+ * 366 saved 3.5-lite replies lead with the block, 8 of them with an answer after it; 1 of 247 on
+ * 3.1-lite), and the old rule threw that answer away. When nothing but
+ * whitespace precedes the sentinel, the block is only the run of offer lines and blank lines that
+ * follows it; the first other line begins the spoken answer, which is split again by this same
+ * rule (so a later sentinel ends it and adds its offers). Offers with no answer at all is still
+ * an empty answer. An offer-shaped line AFTER the answer began, with no second sentinel, is
+ * answer text: seen in 0 of 624 saved replies, accepted rather than buffered for.
  */
 export function extractSuggestions(text: string): { answer: string; suggestions: Suggestion[] } {
     const i = text.indexOf(SENTINEL);
     if (i === -1) return { answer: text, suggestions: [] };
-
-    const answer = text.slice(0, i).replace(/\s+$/, '');
-    const suggestions: Suggestion[] = [];
-    for (const raw of text.slice(i + SENTINEL.length).split('\n')) {
-        const line = raw.trim();
-        if (!line) continue;
-        const m = line.match(/^(\d+)\s*\|\s*(.+)$/);
-        if (!m) continue;                       // stray prose inside the block — drop it
-        const label = m[2].trim().replace(/^["'`]|["'`]$/g, '');
-        if (label) suggestions.push({ n: Number(m[1]), label });
+    if (text.slice(0, i).trim() !== '') {
+        // spoken text came first: the answer ends at the sentinel and everything after it is the block
+        return { answer: text.slice(0, i).replace(/\s+$/, ''), suggestions: offersIn(text.slice(i + SENTINEL.length).split('\n')) };
     }
-    return { answer, suggestions };
+    // the block leads: the run of offer lines and blank lines after the sentinel; the first other line
+    // begins the spoken answer, which may carry its own block later (the same rule again on the rest)
+    const lines = text.slice(i + SENTINEL.length).split('\n');
+    const suggestions: Suggestion[] = [];
+    let k = 0;
+    for (; k < lines.length; k++) {
+        const t = lines[k].trim();
+        if (t === '') continue;
+        const m = t.match(CUE_LINE);
+        if (!m) break;
+        const s = suggestionOf(m);
+        if (s) suggestions.push(s);
+    }
+    if (k === lines.length) return { answer: '', suggestions };
+    const rest = extractSuggestions(lines.slice(k).join('\n'));
+    return { answer: rest.answer, suggestions: suggestions.concat(rest.suggestions) };
 }
 
 /**
- * Streaming guard for the sentinel: yields the spoken answer and suppresses
- * everything from `__MORE__` onward, so the block never flashes on screen while
- * tokens arrive. Captured offers are handed to `onSuggestions` at stream end.
+ * Streaming guard for the sentinel: yields the spoken answer and suppresses the offers block, so
+ * the block never flashes on screen while tokens arrive. Captured offers are handed to
+ * `onSuggestions` exactly once, at stream end, in every state.
  *
- * Holds back only a short tail (the sentinel can straddle a chunk boundary) —
- * enough to recognise a partial `__MOR`, not enough to stall the stream.
+ * A block that FOLLOWS spoken text ends the answer: everything from `__MORE__` on is the block,
+ * and stray lines in it are dropped (offersIn). A block that LEADS — nothing but whitespace
+ * yielded before the sentinel — is only the run of offer lines and blank lines after it (spec
+ * 2026-09-30 offers-before-answer): the spoken answer is released at its first character that
+ * cannot start an offer line (CUE_LINE_PREFIX, the early close's question on the same grammar —
+ * a one-paragraph answer has no newline before the stream ends, so a line-complete rule would
+ * hold it whole), and the normal path resumes there, so a later sentinel ends the answer as
+ * before. Until this rule every sentinel ended the answer, and a leading block threw the whole
+ * spoken answer away: the candidate saw "Could you repeat that?" and no cues (the 16:12 re-smoke
+ * of 2026-09-30). One fixed console.warn line per stream names a leading block, so a run can
+ * show the branch fired.
+ *
+ * Holds back only a short tail (the sentinel can straddle a chunk boundary) — enough to
+ * recognise a partial `__MOR`, not enough to stall the stream — and, inside a leading block, a
+ * partial line only while it can still become an offer line.
  */
 export async function* stripSuggestionBlock(
     source: AsyncGenerator<string>,
     onSuggestions?: (s: Suggestion[]) => void,
 ): AsyncGenerator<string> {
-    let pending = '';   // possible partial sentinel, not yet safe to emit
-    let tail = '';      // everything after the sentinel
-    let found = false;
+    let phase: 'answer' | 'lead' | 'tail' = 'answer';
+    let pending = '';   // answer: a possible partial sentinel, not yet safe to emit; lead: the partial line
+    let tail = '';      // everything after a sentinel that followed spoken text
+    let spoke = false;  // a non-blank piece has been yielded: the next sentinel ends the answer
+    let named = false;  // the leading-block line is written once per stream
+    const leading: Suggestion[] = [];   // the offers of a block that preceded the spoken answer
 
     for await (const chunk of source) {
-        if (found) { tail += chunk; continue; }
+        if (phase === 'tail') { tail += chunk; continue; }
         pending += chunk;
-        const at = pending.indexOf(SENTINEL);
-        if (at !== -1) {
-            found = true;
-            const before = pending.slice(0, at);
-            if (before) yield before;
-            tail = pending.slice(at + SENTINEL.length);
-            pending = '';
-            continue;
+        // One chunk can carry the end of a leading block AND the start of the answer (and a further
+        // sentinel), so the phases run on the same `pending` until nothing more can be decided.
+        for (;;) {
+            if (phase === 'answer') {
+                const at = pending.indexOf(SENTINEL);
+                if (at === -1) {
+                    // Emit everything that cannot be the start of the sentinel; keep the rest.
+                    const keep = longestSentinelPrefixSuffix(pending);
+                    const emit = pending.slice(0, pending.length - keep);
+                    if (emit) { if (emit.trim()) spoke = true; yield emit; }
+                    pending = pending.slice(pending.length - keep);
+                    break;
+                }
+                const before = pending.slice(0, at);
+                if (before) { if (before.trim()) spoke = true; yield before; }
+                pending = pending.slice(at + SENTINEL.length);
+                if (spoke) { phase = 'tail'; tail = pending; pending = ''; break; }
+                phase = 'lead';
+                if (!named) { named = true; console.warn('[verbalStreamFilter] stripSuggestionBlock: offers block before the spoken answer (shown after it)'); }
+            }
+            // phase === 'lead': consume complete offer lines and blank lines; the first other text is the answer
+            let nl: number;
+            let closed = false;
+            while ((nl = pending.indexOf('\n')) !== -1) {
+                const t = pending.slice(0, nl).trim();
+                if (t === '') { pending = pending.slice(nl + 1); continue; }
+                const m = t.match(CUE_LINE);
+                if (!m) { closed = true; break; }
+                const s = suggestionOf(m);
+                if (s) leading.push(s);
+                pending = pending.slice(nl + 1);
+            }
+            if (!closed) {
+                const head = pending.trim();
+                if (head !== '' && !CUE_LINE_PREFIX.test(head)) closed = true;
+            }
+            if (!closed) break;
+            phase = 'answer';   // `pending` starts the spoken answer: the answer phase takes it from here
         }
-        // Emit everything that cannot be the start of the sentinel; keep the rest.
-        const keep = longestSentinelPrefixSuffix(pending);
-        const emit = pending.slice(0, pending.length - keep);
-        if (emit) yield emit;
-        pending = pending.slice(pending.length - keep);
     }
 
-    if (!found && pending) yield pending;
-    if (onSuggestions) {
-        onSuggestions(found ? extractSuggestions(SENTINEL + tail).suggestions : []);
+    if (phase === 'answer' && pending) yield pending;
+    if (phase === 'lead') {
+        // the stream ended inside a leading block: a partial last line is an offer if it parses, else answer text
+        const m = pending.trim().match(CUE_LINE);
+        if (m) { const s = suggestionOf(m); if (s) leading.push(s); }
+        else if (pending.trim()) yield pending;
     }
+    onSuggestions?.(leading.concat(phase === 'tail' ? offersIn(tail.split('\n')) : []));
 }
 
 /** Length of the longest suffix of `s` that is a proper prefix of the sentinel. */
@@ -332,10 +395,27 @@ const CUE_LINE = /^(\d+)\s*\|\s*(.+)$/;
  * matters: CUE_LINE takes whitespace there, and `\s` matches CR, U+2028 and U+2029 where `.` does not, so
  * "1|<CR>abc" is a cue line and must be held (a first draft's `(\|.*)?` released it as prose; with this one,
  * 0 of 200,000 fuzz cases differ from extractCues). Anchored like CUE_LINE, so a prefix that fails it cannot
- * be completed into a match by any suffix — the ground of stripCueBlock's early close.
+ * be completed into a match by any suffix — the ground of stripCueBlock's early close, and of
+ * stripSuggestionBlock's leading-block close (the cue block borrowed the offer block's grammar).
  */
 const CUE_LINE_PREFIX = /^\d+\s*(\|\s*.*)?$/;
 const cuePhrase = (m: RegExpMatchArray): string => m[2].trim().replace(/^["'`]|["'`]$/g, '');
+/** An offer from a matched `N| label` line (the grammar the cue block borrowed), or null when the label is empty (a bare `1| "`). */
+const suggestionOf = (m: RegExpMatchArray): Suggestion | null => {
+    const label = cuePhrase(m);
+    return label ? { n: Number(m[1]), label } : null;
+};
+/** The offers in a TRAILING block's lines: every `N| label` line; blank and stray lines are dropped, never shown. */
+const offersIn = (lines: string[]): Suggestion[] => {
+    const offers: Suggestion[] = [];
+    for (const raw of lines) {
+        const m = raw.trim().match(CUE_LINE);
+        if (!m) continue;
+        const s = suggestionOf(m);
+        if (s) offers.push(s);
+    }
+    return offers;
+};
 
 /**
  * Splits a completed verbal answer into its cue block and the spoken prose.

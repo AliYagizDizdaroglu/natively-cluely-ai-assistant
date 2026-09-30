@@ -168,6 +168,26 @@ describe('hedge x cue mode', () => {
         expect(spoken(chunks)).toContain('Ten million vectors take about thirty gigabytes.');   // the redirect's prose, as case D reads it
     });
 
+    // Offers first, with both fixes (spec 2026-09-30 offers-before-answer §3.3): the early close reports the cues on the `_`
+    // of `__MORE__`, nothing is shown until the offers block has passed, and a stream that dies inside it is a pre-token
+    // failure: the redirect answers under the DEAD stream's cue (D3's state, a window as long as the offers block). It
+    // passes before and after the offers fix — nothing is shown in that stretch either way — and guards the once-guard.
+    const DIES_INSIDE_ITS_OFFERS = { thenFail: ['__CUES__\n1| first stream cue a\n__MORE__\n1| an offer\n'] };
+
+    it("D4. a stream that dies inside a leading offers block is redirected: its cue over the redirect's prose, the redirect's block dropped by the once-guard", async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});   // the guard's one line for the leading block (this file has no restoreAllMocks)
+        try {
+            plan.push(DIES_INSIDE_ITS_OFFERS, CHUNKED);
+            const onCues = vi.fn();
+            const chunks = await run(onCues);
+            expect(asked()).toEqual(['gemini-3.5-flash-lite', 'gemini-3.5-flash-lite']);
+            expect(onCues).toHaveBeenCalledTimes(1);
+            expect(onCues).toHaveBeenCalledWith(['first stream cue a']);
+            expect(spoken(chunks)).toContain('Ten million vectors take about thirty gigabytes.');
+            expect(spoken(chunks)).not.toContain('an offer');
+        } finally { warn.mockRestore(); }
+    });
+
     it('E. hedge OFF (NATIVELY_VERBAL_HEDGE=0), the old stall race: cues once, so both policies feed the same chain', async () => {
         process.env.NATIVELY_VERBAL_HEDGE = '0';
         plan.push(CHUNKED);
