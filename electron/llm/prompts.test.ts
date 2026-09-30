@@ -13,7 +13,7 @@ import {
     SPOKEN_WORD_BUDGET,
     SPOKEN_WORD_TARGET,
     SPOKEN_WORD_CEILING,
-    CUE_RULE, CUE_SHAPE_RULE, CUES_SENTINEL, CUE_MAX_LINES, CUE_MAX_WORDS,
+    CUE_RULE, CUE_SHAPE_RULE, CUES_SENTINEL, CUE_MAX_LINES, CUE_MAX_WORDS, VERBAL_TYPED_PROMPT,
     resolveGemmaSystemPrompt,
     resolveStyleSuffix,
 } from './prompts';
@@ -250,11 +250,13 @@ describe('CUE_RULE — cue mode (spec 2026-09-20; limits and wording spec 2026-0
         // the shape bullet. Both follow the constants, so the prompt and the code cap cannot drift.
         expect(CUE_RULE).toContain(`1| <key phrase for the first part the question names, at most ${CUE_MAX_WORDS} words>`);
         expect(CUE_RULE.split(CUE_SHAPE_RULE).length - 1).toBe(1);
+        // ...and where the old bullet stood: first under the block's rules, above the three kept bullets
+        expect(CUE_RULE).toContain(`Rules for that block:\n${CUE_SHAPE_RULE}\n- Each line carries`);
         expect(CUE_RULE).not.toContain('Never more than');
         expect(CUE_RULE.startsWith('\n\n')).toBe(true);   // it is appended to a prompt that ends without a newline
     });
 
-    it("the shape bullet is spike 6's winner, verbatim (SPIKE6-RULE.md, 2026-09-30): a swap edits this pin and the constant, nothing else", () => {
+    it("the shape bullet is spike 6's winner, verbatim (passes/PREREGISTER-spike6.md, 2026-09-30): a swap edits this pin and the constant, nothing else", () => {
         // ── benched wording: one-first ──
         expect(CUE_SHAPE_RULE).toBe('- At most 3 lines, each at most 5 words. The first line is the answer itself in the fewest words that carry it: one or two words when that is enough (asked "Tabs or spaces?", the whole block is 1| Spaces). A one-part question gets exactly one line. Add a line only for another part the QUESTION names, never for a point you add on your own; when it names more than 3 parts, group related parts into themes so every part is still covered in 3 lines.');
         // The lines the delta keeps, unchanged.
@@ -269,5 +271,14 @@ describe('CUE_RULE — cue mode (spec 2026-09-20; limits and wording spec 2026-0
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.' + CUE_RULE)).toBe(true);
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT.split(CUE_RULE).length - 1).toBe(1);
         expect(UNIVERSAL_WHAT_TO_ANSWER_PROMPT).not.toContain(CUES_SENTINEL);   // the coding path has no cue block
+    });
+});
+
+describe('the typed chat path answers without a cue block (spec 2026-09-30 §3.6)', () => {
+    it('the typed prompt is the hands-free prompt minus the cue rule, derived so the two cannot drift', () => {
+        expect(VERBAL_TYPED_PROMPT).not.toContain(CUES_SENTINEL);
+        expect(VERBAL_TYPED_PROMPT).not.toContain('[CUES FIRST]');
+        expect(VERBAL_TYPED_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.')).toBe(true);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toBe(`${VERBAL_TYPED_PROMPT}${CUE_RULE}`);
     });
 });
