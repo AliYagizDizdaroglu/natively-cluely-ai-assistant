@@ -78,6 +78,15 @@ export const DEEPGRAM_KEYTERMS: readonly string[] = [
 ];
 
 /**
+ * English (`en`, `en-US`, …) as Deepgram names it; 'multi' and every other code fail it. The one
+ * test shared by keyterm prompting (below) and the boundary repair (deepgramBoundaryRepair.ts,
+ * DeepgramStreamingSTT.connect): both are built for English transcripts only.
+ */
+export function isEnglishLanguage(languageCode: string): boolean {
+    return /^en(-|$)/i.test(languageCode);
+}
+
+/**
  * keyterm prompting is a nova-3, English-only parameter. The app switches Deepgram to another
  * language — and to 'multi' — at runtime from the language picker, and sending keyterm on
  * those connections is at best ignored and at worst a 400 that costs the socket. So the list
@@ -85,5 +94,5 @@ export const DEEPGRAM_KEYTERMS: readonly string[] = [
  * it, so undefined means the parameter is simply absent).
  */
 export function keytermsFor(languageCode: string): readonly string[] | undefined {
-    return /^en(-|$)/i.test(languageCode) ? DEEPGRAM_KEYTERMS : undefined;
+    return isEnglishLanguage(languageCode) ? DEEPGRAM_KEYTERMS : undefined;
 }

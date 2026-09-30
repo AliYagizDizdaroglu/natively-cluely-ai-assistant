@@ -10,7 +10,8 @@
 
 import { EventEmitter } from 'events';
 import { RECOGNITION_LANGUAGES } from '../config/languages';
-import { keytermsFor } from './deepgramKeyterms';
+import { keytermsFor, isEnglishLanguage } from './deepgramKeyterms';
+import { createBoundaryRepair } from './deepgramBoundaryRepair';
 
 const RECONNECT_BASE_DELAY_MS = 1000;
 const RECONNECT_MAX_DELAY_MS = 30000;
@@ -196,6 +197,12 @@ export class DeepgramStreamingSTT extends EventEmitter {
             // later with 1011, and that close orphaned C: one 1011 every 12.1 s for
             // the whole hour (308 closes), each dropping the audio the orphan held.
             const stale = (): boolean => this.live !== live;
+            // The boundary repair belongs to THIS socket, like the handlers: a restart's new socket
+            // starts with no remembered cut, so nothing is ever repaired across a reconnect. English
+            // sockets only (the test keytermsFor uses): the rule compares ASCII tokens, and mangled
+            // Spanish and Turkish text in the 2026-09-29 spec review; any other language, and
+            // 'multi', passes through untouched.
+            const boundaryRepair = isEnglishLanguage(this.languageCode) ? createBoundaryRepair() : null;
 
             live.on(LiveTranscriptionEvents.Open, () => {
                 if (stale()) {
@@ -218,9 +225,27 @@ export class DeepgramStreamingSTT extends EventEmitter {
                         const transcript = alt?.transcript;
                         const isFinal = data.is_final ?? false;
                         console.log(`[DeepgramStreaming] Transcript event — isFinal=${isFinal}, text="${transcript ?? '(empty)'}"`);
-                        if (!transcript) return;
+                        if (!transcript) {
+                            // An empty FINAL is a pause (median 187 per run log): a cut remembered
+                            // before it must not be glued onto the next utterance. Empty interims are
+                            // not (they are frequent and can precede a segment's words).
+                            if (isFinal) boundaryRepair?.clear();
+                            return;
+                        }
+                        // Deepgram sometimes finalizes short of its own interim and resumes one word
+                        // later; the word is in no final. Measured 2026-09-29: 25 repaired losses in
+                        // the non-holdout logs, all 25 true to the script (the measured precision; 25
+                        // is a floor on the losses), Deepgram lost a word in 6 of 20 seam1 plays;
+                        // the rule lives in deepgramBoundaryRepair. speech_final = Deepgram heard the
+                        // utterance end at this final, so it leaves no cut (never logged: its in-app
+                        // effect is unmeasured).
+                        const repaired = boundaryRepair?.onTranscript(transcript, isFinal, Date.now(), data.speech_final === true);
+                        if (repaired?.restored) {
+                            // interview60.turns-finals.mjs pairs this line with the final logged just above it: keep the two adjacent
+                            console.log(`[DeepgramStreaming] boundary repair: restored "${repaired.restored.join(' ')}" before "${transcript.slice(0, 40)}"`);
+                        }
                         this.emit('transcript', {
-                            text: transcript,
+                            text: repaired?.text ?? transcript,
                             isFinal,
                             confidence: alt?.confidence ?? 1.0,
                         });
@@ -233,7 +258,8 @@ export class DeepgramStreamingSTT extends EventEmitter {
                 // above; until 2026-09-09 nobody listened. The interviewer turn logs
                 // them beside its own VAD (a calibration signal, not a decision input).
                 live.on(LiveTranscriptionEvents.SpeechStarted, () => { if (!stale()) this.emit('speech-started', { at: Date.now() }); });
-                live.on(LiveTranscriptionEvents.UtteranceEnd, () => { if (!stale()) this.emit('utterance-end', { at: Date.now() }); });
+                // An UtteranceEnd is a pause for the boundary repair too (its state is this socket's own).
+                live.on(LiveTranscriptionEvents.UtteranceEnd, () => { boundaryRepair?.clear(); if (!stale()) this.emit('utterance-end', { at: Date.now() }); });
 
                 // Flush buffered audio
                 const buffered = this.buffer.splice(0);
