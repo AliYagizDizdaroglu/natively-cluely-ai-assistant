@@ -617,6 +617,14 @@ describe('trimCues — the cue block as DISPLAYED: notation cleaned, then at mos
         expect(r).toMatchObject({ rawLines: 8, dropped: EIGHT.slice(3), cut: [], cleaned: [] });
     });
 
+    it('a dropped line is reported raw and is neither cleaned nor cut', () => {
+        // notation AND 8 words: had it been processed before the slice, it would show up in cut and cleaned
+        const fourth = '**Data Factory** for batch and streaming orchestration pipelines';
+        const r = trimCues([...EIGHT.slice(0, 3), fourth], L, W);
+        expect(r.cues).toEqual(EIGHT.slice(0, 3));
+        expect(r).toMatchObject({ dropped: [fourth], cut: [], cleaned: [] });
+    });
+
     it('a 7-word line is cut to its first 5 words and reported raw; a 5-word line is not', () => {
         const seven = 'Batch/Online Architecture: Feature Store and Shared Logic';
         const r = trimCues([seven, '60% precision and 31.6% recall'], L, W);
@@ -641,6 +649,8 @@ describe('trimCues — the cue block as DISPLAYED: notation cleaned, then at mos
         expect(trimCues(['**', 'Parquet'], L, W)).toMatchObject({ cues: ['', 'Parquet'], cleaned: ['**'] });
         // cleanup can leave a leading space, and the display trims it
         expect(trimCues(['** Parquet'], L, W)).toMatchObject({ cues: ['Parquet'], cleaned: ['** Parquet'] });
+        // the parser can hand over a line with a space on both sides, `1| " padded "`
+        expect(trimCues([' padded '], L, W)).toMatchObject({ cues: ['padded'], cleaned: [' padded '] });
     });
 
     it('applies exactly the limits it is given (the engine passes CUE_MAX_LINES / CUE_MAX_WORDS)', () => {

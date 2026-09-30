@@ -578,9 +578,11 @@ function cleanNotation(s: string): string {
  * Both limits are the ceiling the prompt already asks for (CUE_SHAPE_RULE); this is the
  * enforcement, at the display boundary only — extractCues and stripCueBlock stay raw so the
  * harness and the bench keep measuring what the model produced. `dropped`, `cut` and `cleaned`
- * carry the raw text of every line the display changed, for the engine's log line. A line that
- * cleans to nothing is neither hidden nor repaired: it displays empty, and the smoke check and
- * the metrics row flag it.
+ * carry the raw text of every line the display changed, for the engine's log line. A displayed
+ * line is also trimmed of surrounding whitespace, and a line that differs from its raw text only
+ * by that whitespace is listed in `cleaned` (the display did change). A line that cleans to
+ * nothing is neither hidden nor repaired: it displays empty, and the smoke check and the
+ * metrics row flag it.
  */
 export function trimCues(raw: string[], maxLines: number, maxWords: number): { cues: string[]; rawLines: number; dropped: string[]; cut: string[]; cleaned: string[] } {
     const cut: string[] = [];
