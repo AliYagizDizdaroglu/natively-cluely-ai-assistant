@@ -87,3 +87,22 @@ for cap3-min. The margin is more than 2, so no tie-break was needed.
 
     The point estimate is 0 in every case. The spike cannot rule an absent block out. The re-smoke's rule (an absent
     block fails it) was stated before arming and stands.
+
+## Addendum, 2026-09-30 15:27: block-only answers (final review, finding I1)
+
+The rule's primary measure counts a block of exactly one line whose line carries the answer. It never looks at the
+prose. A reply that is ONLY a cue block would count as a success there, while in the app it shows "Could you repeat
+that?" and no cue. The winning wording tells the model that the whole block can be one word, so the question is fair.
+
+The rows already stored the prose word count, so the recount needed no model call
+(`recount-blockonly.mjs`, calibrated on five rows with known answers; it prints counts only):
+
+| model | rows | block-only (a block, no prose under it) | smallest prose, words |
+|---|---|---|---|
+| 3.1-lite LOW, all three wordings | 108 | 0 | 33 |
+| 3.5-lite HIGH, all three wordings | 108 | 0 | 27 |
+
+- No row of the 15 (one-first) or of the 11 (strict-ex) is block-only. The decision stands as registered.
+- The spike cannot rule a block-only answer out: 0 of 36 for one-first on 3.5-lite HIGH has the same 8.0% upper bound
+  as the absent block above.
+- The re-smoke's check (v4) and the simple-question probe both count block-only answers from now on.

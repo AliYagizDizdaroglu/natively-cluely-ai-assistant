@@ -3,12 +3,14 @@
 Times-only correction, 08:52 (before any counted call): this header first said "~08:50"; the file's mtime was 08:29:36.
 The rule below is unchanged.
 
-Times-only correction, 10:36 (after spike 6's calls; no rule text touched): the Addendum header below says 09:25, but
+Times-only correction, 10:33 (after spike 6's calls; no rule text touched): the Addendum header below says 09:25, but
 this file's mtime before this edit was 09:21:40, so the addendum was written by 09:21, still before any counted call
-(spike 6's counted calls began at 10:04).
+(spike 6's counted calls began at 10:04). (This note itself first said "10:36"; the edit was saved at 10:33:54.
+Corrected 11:19.)
 
 This file's mtime predates every spike-6 call that counts (the 10:03 runs on both models; the 25 calls cut by the
-quota at 08:16 are discarded). The rule is not changed after the data exists.
+quota at 08:16 are discarded). The rule is not changed after the data exists. (True of the rule text: the last edit
+that touched it was saved at 09:21:40. The file's mtime has moved since, with the times-only notes above.)
 
 Arms (verbatim in make-spike6.mjs): `cap3-min` (spike 3), `strict-ex` (spike 4), `one-first` (new: cap first, answer
 first + the Tabs/Spaces example, "A one-part question gets exactly one line", only the question's parts, grouping).
