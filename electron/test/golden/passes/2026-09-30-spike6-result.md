@@ -106,3 +106,33 @@ The rows already stored the prose word count, so the recount needed no model cal
 - The spike cannot rule a block-only answer out: 0 of 36 for one-first on 3.5-lite HIGH has the same 8.0% upper bound
   as the absent block above.
 - The re-smoke's check (v4) and the simple-question probe both count block-only answers from now on.
+
+## Correction, 2026-09-30 19:15: the 15:27 recount missed two replies of which nothing would be shown
+
+The table above is wrong as a statement about the screen. `recount-blockonly.mjs` took every word after the cue block
+as prose, the `__MORE__` offers included, so it could not see a reply whose offers block comes BEFORE the spoken
+answer. The app's filters drop everything from `__MORE__` on, so such a reply shows nothing: the substitute line and
+no cues. The v2 re-smoke met one live (`2026-09-30-cuesmoke-v2-result.md`).
+
+Recounted by what the built filter chain shows (`spike6-correction.mjs`, which runs each saved reply through the
+chain as the app does; no model call):
+
+| model | rows | show nothing | which |
+|---|---|---|---|
+| 3.1-lite LOW, all three wordings | 108 | 0 | |
+| 3.5-lite HIGH, all three wordings | 108 | 2 | one-first X2 rep 4 (simple, a one-line block); cap3-min M1 rep 3 (medium) |
+
+Both have the shape: cue block, `__MORE__`, two offer lines, a blank line, then the spoken answer (55 and 58 words).
+The smallest answer that IS shown is 27 words, as the old table said.
+
+What this changes in the decision: nothing, and one number.
+
+- The rule was applied as registered, and its primary measure never looked below the block. X2 rep 4 is one of
+  one-first's 15 one-line answers. With the two replies taken out, the measure on 3.5-lite HIGH reads one-first 14,
+  strict-ex 11, cap3-min 10 of 24: one-first is still the only wording within 2 of the best.
+- "No row of the 15 is block-only" is false for that one row in the sense that matters to the candidate.
+
+What the spikes did not measure, and should have: every spike read the cue block's shape and never what reaches the
+screen. Across all six spikes and the repro, 10 of 624 saved replies show nothing (9 with the offers before the
+answer, 1 with no spoken answer at all); the counts by model and wording are in the re-smoke's result note.
+

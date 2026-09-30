@@ -22,6 +22,13 @@ The script also refuses by name when the run folder has no `interview60.prompts.
 built first with `node electron/test/golden/interview60.prompts.mjs <run dir>` from the worktree). Calibration: 17
 cases.
 
+Note, 16:10 the same day (before any probe call; no measure is added or removed). The final review's second part
+(finding P2-M1) saw that the block-only count took the `__MORE__` offers for a spoken answer: a reply of a cue block
+plus offers, with nothing to say aloud, was not counted, while the app strips the offers and shows "Could you repeat
+that?". The count now takes the spoken answer only, as the built `extractSuggestions` splits it. Four calibration
+cases on made-up replies show the old and the new count side by side (a block plus offers: 5 before, 0 now).
+Calibration: 21 cases.
+
 ## What it measures, and why
 
 The user's intent for cues is "small and fast": one or two words when that carries the answer, up to 3 lines of 5
