@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, SPOKEN_WORD_GUARD, extractCues, stripCueBlock, type Suggestion } from './verbalStreamFilter';
+import { filterVerbalLines, extractSuggestions, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, SPOKEN_WORD_GUARD, extractCues, stripCueBlock, trimCues, type Suggestion } from './verbalStreamFilter';
 import { CUES_SENTINEL } from './prompts';
 
 /** Feed `text` through the filter in fixed-size chunks; return concatenated output. */
@@ -540,7 +540,7 @@ describe('extractCues — splitting the cue block from the spoken answer (cue mo
     it('the first non-cue line closes the block; that line and everything after it are prose', () => {
         expect(extractCues(`__CUES__\n1| thirty gigabytes\nnot a cue line\n2| looks like one\n`)).toEqual({ cues: ['thirty gigabytes'], prose: 'not a cue line\n2| looks like one\n' });
     });
-    it('wrapping quotes are removed; an over-long line is kept whole (a bench finding, not a runtime repair)', () => {
+    it('wrapping quotes are removed; an over-long line is kept whole by the parser (the display cap is trimCues)', () => {
         const long = 'one two three four five six seven eight nine ten';
         expect(extractCues(`__CUES__\n1| "thirty gigabytes"\n2| ${long}\nProse.`)).toEqual({ cues: ['thirty gigabytes', long], prose: 'Prose.' });
     });
@@ -598,5 +598,54 @@ describe('stripCueBlock — the block must never flash on screen, and the prose 
         const { out, cues } = await runCues(text, 2);
         expect(out).toBe(text);
         expect(cues).toEqual([]);
+    });
+});
+
+describe('trimCues — the cue block as DISPLAYED: notation cleaned, then at most 3 lines of 5 words (spec 2026-09-30)', () => {
+    const L = 3, W = 5;
+    // The 2026-09-30 smoke's S1Q09 block: 8 lines for 8 named Azure components.
+    const EIGHT = ['Blob Storage for data', 'Azure ML for training', 'Model Registry for versioning', 'ACR for images', 'AKS for inference', 'Data Factory for orchestration', 'Entra ID for security', 'Azure Monitor for observability'];
+
+    it('a block inside both limits with nothing to clean is displayed unchanged and reports nothing to log', () => {
+        expect(trimCues(['Layer caching', 'Instruction ordering'], L, W)).toEqual({ cues: ['Layer caching', 'Instruction ordering'], rawLines: 2, dropped: [], cut: [], cleaned: [] });
+        expect(trimCues([], L, W)).toEqual({ cues: [], rawLines: 0, dropped: [], cut: [], cleaned: [] });
+    });
+
+    it("the smoke's 8-line block keeps its first 3 lines; the other 5 are reported verbatim, in order", () => {
+        const r = trimCues(EIGHT, L, W);
+        expect(r.cues).toEqual(EIGHT.slice(0, 3));
+        expect(r).toMatchObject({ rawLines: 8, dropped: EIGHT.slice(3), cut: [], cleaned: [] });
+    });
+
+    it('a 7-word line is cut to its first 5 words and reported raw; a 5-word line is not', () => {
+        const seven = 'Batch/Online Architecture: Feature Store and Shared Logic';
+        const r = trimCues([seven, '60% precision and 31.6% recall'], L, W);
+        expect(r.cues).toEqual(['Batch/Online Architecture: Feature Store and', '60% precision and 31.6% recall']);
+        expect(r).toMatchObject({ rawLines: 2, dropped: [], cut: [seven], cleaned: [] });
+    });
+
+    it('notation is cleaned the way the prose is (spike 4: a cue came out as raw LaTeX), BEFORE the count, and every cleaned line is reported raw', () => {
+        const latex = '$O(\\log n)$ time complexity';
+        const marks = '`ModelLatency` vs **OverheadLatency**';
+        const r = trimCues([latex, marks, 'Parquet'], L, W);
+        expect(r.cues).toEqual(['O(log n) time complexity', 'ModelLatency vs OverheadLatency', 'Parquet']);
+        expect(r).toMatchObject({ dropped: [], cut: [], cleaned: [latex, marks] });
+        // \frac adds the word "over": the count is taken after cleanup, so the DISPLAYED line never exceeds 5 words
+        const frac = '$\\frac{3,000}{9,500}$ true positive rate';
+        const f = trimCues([frac], L, W);
+        expect(f.cues).toEqual(['3,000 over 9,500 true positive']);
+        expect(f).toMatchObject({ cut: [frac], cleaned: [frac] });
+    });
+
+    it('a line that is nothing but notation is not hidden: it displays empty (the smoke check and the metrics row flag it)', () => {
+        expect(trimCues(['**', 'Parquet'], L, W)).toMatchObject({ cues: ['', 'Parquet'], cleaned: ['**'] });
+        // cleanup can leave a leading space, and the display trims it
+        expect(trimCues(['** Parquet'], L, W)).toMatchObject({ cues: ['Parquet'], cleaned: ['** Parquet'] });
+    });
+
+    it('applies exactly the limits it is given (the engine passes CUE_MAX_LINES / CUE_MAX_WORDS)', () => {
+        expect(trimCues(EIGHT, 5, 8).cues).toEqual(EIGHT.slice(0, 5));
+        expect(trimCues(['one two three four five six'], 3, 6).cut).toEqual([]);
+        expect(trimCues(['one two three four five six'], 3, 5).cues).toEqual(['one two three four five']);
     });
 });

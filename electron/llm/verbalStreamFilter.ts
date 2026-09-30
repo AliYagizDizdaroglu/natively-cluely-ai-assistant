@@ -341,8 +341,9 @@ const cuePhrase = (m: RegExpMatchArray): string => m[2].trim().replace(/^["'`]|[
  *
  * The block ends at the first non-empty line that is not a cue line; that line and everything
  * after it are prose, untouched. No sentinel at the start means no cues and the text is
- * returned unchanged. Lines are trimmed and wrapping quotes removed, never truncated: an
- * over-long cue is a bench finding (cues_wellformed), not a runtime repair.
+ * returned unchanged. Lines are trimmed and wrapping quotes removed, never truncated HERE:
+ * the display cap is trimCues, applied by the engine at the display boundary and logged, so
+ * the harness and the bench keep the raw block (cues_wellformed measures the model).
  */
 export function extractCues(text: string): { cues: string[]; prose: string } {
     const lines = text.split('\n');
@@ -562,6 +563,37 @@ function cleanNotation(s: string): string {
         .replace(/\$(?=[^\d\s])|\$(?=\d+(?:\.\d+)?\s*(?:\^|\/(?:\s|\()|\\%))|(?<=\S)\$/g, '')
         // backslash commands: "\log n" -> "log n", "\(" -> "(", "\%" -> "%"
         .replace(/\\(?=[A-Za-z(){}[\]%])/g, '');
+}
+
+/**
+ * The cue block as DISPLAYED (spec 2026-09-30): each line through the spoken-notation cleanup
+ * above — a cue came out as raw LaTeX, `$O(\log n)$`, in spike 4; the prose gets this cleanup in
+ * stripSpokenNotation and the cues skipped it — then the block cut to `maxLines` lines and each
+ * kept line to its first `maxWords` words. Cleanup runs BEFORE the cut because it changes the
+ * word count (`\frac{a}{b}` becomes `a over b`) and a cut inside a `$…$` pair would leave a
+ * delimiter no rule can match; the count the candidate sees is the count that is capped. The
+ * cleanup rules were written for speech: on screen the single-star rule turns "3*4 shards" into
+ * "34 shards" — no measured cue has carried one, and every cleaned line is reported raw.
+ *
+ * Both limits are the ceiling the prompt already asks for (CUE_SHAPE_RULE); this is the
+ * enforcement, at the display boundary only — extractCues and stripCueBlock stay raw so the
+ * harness and the bench keep measuring what the model produced. `dropped`, `cut` and `cleaned`
+ * carry the raw text of every line the display changed, for the engine's log line. A line that
+ * cleans to nothing is neither hidden nor repaired: it displays empty, and the smoke check and
+ * the metrics row flag it.
+ */
+export function trimCues(raw: string[], maxLines: number, maxWords: number): { cues: string[]; rawLines: number; dropped: string[]; cut: string[]; cleaned: string[] } {
+    const cut: string[] = [];
+    const cleaned: string[] = [];
+    const cues = raw.slice(0, maxLines).map((line) => {
+        const clean = cleanNotation(line).trim();
+        if (clean !== line) cleaned.push(line);
+        const words = clean.match(/\S+/g) ?? [];
+        if (words.length <= maxWords) return clean;
+        cut.push(line);
+        return words.slice(0, maxWords).join(' ');
+    });
+    return { cues, rawLines: raw.length, dropped: raw.slice(maxLines), cut, cleaned };
 }
 
 /**
