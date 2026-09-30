@@ -281,11 +281,13 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             // Cue mode (spec 2026-09-20): one cues line per verbal answer — a well-formed block and
             // an answer the model opened without one (the row must surface the miss).
             // Spec 2026-09-30: the engine logs one `cues trimmed:` line, FIRST, per block the display
-            // changed; the row counts it and never gates on it.
+            // changed; the row counts it and never gates on it. Both pairs are ones the engine can
+            // log: a drop leaves exactly 3 displayed lines, and an empty displayed cue (a line that
+            // was nothing but notation — not well-formed) arrives with its `cleaned` entry.
             `${iso(T0 + 1100940)} [LOG] [Answer] cues trimmed: {"rawLines":4,"dropped":["a fourth named part"],"cut":[],"cleaned":[]}`,
-            `${iso(T0 + 1100950)} [LOG] [Answer] cues: ["thirty gigabytes in float32","int8, then shard"]`,
+            `${iso(T0 + 1100950)} [LOG] [Answer] cues: ["thirty gigabytes in float32","int8, then shard","a third named part"]`,
             `${iso(T0 + 1110950)} [LOG] [Answer] cues: []`,
-            // Spec 2026-09-30: an empty DISPLAYED cue (a line that was nothing but notation) is not well-formed.
+            `${iso(T0 + 1120940)} [LOG] [Answer] cues trimmed: {"rawLines":2,"dropped":[],"cut":[],"cleaned":["**"]}`,
             `${iso(T0 + 1120950)} [LOG] [Answer] cues: ["","Parquet"]`,
             // 2026-09-09 whole-turn (Task 8): hold (a fragmentary head, held for the other
             // ear) -> mark (detection only) -> answer -> supersede (replaces the answer
@@ -644,10 +646,10 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
     });
 
     it('cueBlocks — counts the blocks, the trims and an empty displayed cue; the row fails when one answer opened without a block', () => {
-        expect(m.cueBlocks).toEqual({ n: 3, present: 2, wellformed: 1, trimmed: 1 });
+        expect(m.cueBlocks).toEqual({ n: 3, present: 2, wellformed: 1, trimmed: 2 });
         const row = evaluateGate(m).rows.find((r) => r.label === 'Cue block above every spoken answer');
         expect(row.pass).toBe(false);
-        expect(row.value).toBe('2/3 present, 1 well-formed, 1 trimmed');
+        expect(row.value).toBe('2/3 present, 1 well-formed, 2 trimmed');
     });
 
     it('cueBlocks gate row pass rule: logged for the delivered answers, every block present and well-formed', () => {
@@ -802,7 +804,7 @@ describe("supersede question capture — the replaces= group must not shift the 
  * values as literals instead of importing them. Nothing else would notice if those literals ever
  * drifted from electron/llm/prompts.ts's real constants — the cueBlocks gate row would silently
  * keep gating on stale limits. This fixture is built FROM the real constants (imported here, under
- * vitest, which does have TypeScript source available), not from today's literal 5/8, so it keeps
+ * vitest, which does have TypeScript source available), not from today's literal 3/5, so it keeps
  * testing the actual boundary even if the constants change later.
  */
 describe("the cue row's limits track CUE_MAX_LINES and CUE_MAX_WORDS", () => {

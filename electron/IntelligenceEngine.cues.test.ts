@@ -62,6 +62,7 @@ describe('runWhatShouldISay carries the cue block', () => {
         await engine.runWhatShouldISay(QUESTION, 1.0, undefined, { intentOverride: 'verbal', bypassCooldown: true });
         expect(emits.every((e) => e.cues === undefined)).toBe(true);
         expect(logs).toContain('[Answer] cues: []');
+        expect(logs.some((l) => l.startsWith('[Answer] cues trimmed:'))).toBe(false);
     });
 
     it('a hedge-won answer: the sentinel-only chunk between the cues and the prose names the model and does not swallow the cues', async () => {
@@ -139,5 +140,18 @@ describe('runWhatShouldISay carries the cue block', () => {
         expect(trimmedAt).toBeGreaterThan(-1);
         expect(logs.indexOf('[Answer] cues: ["O(log n) time complexity"]')).toBeGreaterThan(trimmedAt);
         expect(JSON.parse(logs[trimmedAt].slice('[Answer] cues trimmed: '.length))).toEqual({ rawLines: 1, dropped: [], cut: [], cleaned: ['$O(\\log n)$ time complexity'] });
+    });
+
+    it('spec 2026-09-30: a cue that was nothing but notation is displayed empty, not dropped — it is logged in `cleaned`, and the row and the smoke check flag it', async () => {
+        const logs = captureLogs();
+        stubStream(['**', 'Parquet'], ['Ten million ', 'vectors take thirty gigabytes.']);
+        const engine = new IntelligenceEngine(stubHelper(), new SessionTracker());
+        const emits = listen(engine);
+        await engine.runWhatShouldISay(QUESTION, 1.0, undefined, { intentOverride: 'verbal', bypassCooldown: true });
+        expect(emits[0].cues).toEqual(['', 'Parquet']);
+        const trimmedAt = logs.findIndex((l) => l.startsWith('[Answer] cues trimmed: '));
+        expect(trimmedAt).toBeGreaterThan(-1);
+        expect(logs.indexOf('[Answer] cues: ["","Parquet"]')).toBeGreaterThan(trimmedAt);
+        expect(JSON.parse(logs[trimmedAt].slice('[Answer] cues trimmed: '.length))).toEqual({ rawLines: 2, dropped: [], cut: [], cleaned: ['**'] });
     });
 });
