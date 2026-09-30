@@ -326,6 +326,15 @@ function longestSentinelPrefixSuffix(s: string): number {
  */
 const CUES_SENTINEL = '__CUES__';
 const CUE_LINE = /^(\d+)\s*\|\s*(.+)$/;
+/**
+ * A partial block line that can still complete into a CUE_LINE once more characters arrive: digits, then
+ * optional whitespace, then optionally the bar, whitespace and anything after it. The `\s*` after the bar
+ * matters: CUE_LINE takes whitespace there, and `\s` matches CR, U+2028 and U+2029 where `.` does not, so
+ * "1|<CR>abc" is a cue line and must be held (a first draft's `(\|.*)?` released it as prose; with this one,
+ * 0 of 200,000 fuzz cases differ from extractCues). Anchored like CUE_LINE, so a prefix that fails it cannot
+ * be completed into a match by any suffix — the ground of stripCueBlock's early close.
+ */
+const CUE_LINE_PREFIX = /^\d+\s*(\|\s*.*)?$/;
 const cuePhrase = (m: RegExpMatchArray): string => m[2].trim().replace(/^["'`]|["'`]$/g, '');
 
 /**
@@ -373,8 +382,14 @@ export function extractCues(text: string): { cues: string[]; prose: string } {
  * sentinel is tolerated. A sentinel anywhere but the start is prose and stays in the text.
  *
  * Holds back only what it must: before the decision, at most a partial sentinel (so an
- * answer with no block is delayed by the length of "__CUES__" at most); inside the block,
- * at most one partial line. The result on a whole string equals extractCues.
+ * answer with no block is delayed by the length of "__CUES__" at most); inside the block, a
+ * partial line only while it can still become a cue line (CUE_LINE_PREFIX; a line terminator
+ * after the bar is whitespace to CUE_LINE and is held). The first character that rules that
+ * out closes the block, reports the cues and releases the text, so a one-paragraph answer
+ * streams from its first word instead of waiting for a newline that never comes (final review
+ * I2, 2026-09-30: 14 of 22 answers at the 05:00 smoke arrived whole). A partial cue line
+ * ("1| Spa") is held to its newline, which is when the loop reads it. The result on a whole
+ * string, joined, equals extractCues; the pieces are the source's.
  */
 export async function* stripCueBlock(
     source: AsyncGenerator<string>,
@@ -421,6 +436,23 @@ export async function* stripCueBlock(
             yield pending;   // this line and everything after it, intact
             pending = '';
             break;
+        }
+        // Early close (spec 2026-09-30 cue-early-close): the loop above reads COMPLETE lines only, and a
+        // spoken answer is usually one paragraph with no newline, so the cues and the whole first
+        // paragraph waited for the stream to end (14 of 22 answers at the 05:00 smoke; final review I2).
+        // A partial line that can no longer become a cue line is prose: close the block now, hand the
+        // cues out and let it stream. trim(), not trimStart(): a CRLF stream can leave "1| Spa\r"
+        // pending, and the loop trims the same way once the "\n" lands; a line terminator AFTER the bar
+        // ("1|\rSpa") is whitespace to CUE_LINE and is held by CUE_LINE_PREFIX's own `\s*`. Anything that
+        // could still be a cue line — nothing yet, "1", "1 ", "1|", "1| Spa" — is held to its newline, as before.
+        if (phase === 'block') {
+            const head = pending.trim();
+            if (head !== '' && !CUE_LINE_PREFIX.test(head)) {
+                phase = 'prose';
+                report();
+                yield pending;   // the partial line, intact; everything after it streams as prose
+                pending = '';
+            }
         }
     }
 

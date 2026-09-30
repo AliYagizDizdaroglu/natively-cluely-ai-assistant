@@ -133,6 +133,41 @@ describe('hedge x cue mode', () => {
         expect(spoken(chunks).replace(/\[No answer[^\]]*\]/, '').trim()).toContain('Ten million vectors take about thirty gigabytes.');
     });
 
+    // The window the early close narrows (spec 2026-09-30 cue-early-close §3.2). Once the first prose chunk has cleared the
+    // filters the reader has seen the answer begin, so a failure after it is a MID-STREAM failure: withVerbalFallback
+    // re-throws (its first-content guard, MAIN's contract since 2026-09-01) and generateStream shows the error under the
+    // words already shown. Before the early close the parser was still holding "Ten million vectors " when this stream
+    // died, nothing had reached the reader, and the same failure was a clean redirect whose cues were the REDIRECT's.
+    const DIES_AFTER_FIRST_WORDS = { thenFail: ['__CUES__\n1| first stream cue a\n', 'Ten million vectors '] };
+
+    it('D2. a stream that dies after its first prose chunk was shown is not redirected: one report with its own cue, its words, then the error', async () => {
+        plan.push(DIES_AFTER_FIRST_WORDS, CHUNKED);
+        const onCues = vi.fn();
+        const chunks = await run(onCues);
+        expect(asked()).toEqual(['gemini-3.5-flash-lite']);          // today ['gemini-3.5-flash-lite', 'gemini-3.5-flash-lite']: a redirect ran
+        expect(onCues).toHaveBeenCalledTimes(1);
+        expect(onCues).toHaveBeenCalledWith(['first stream cue a']);   // today CUES: the redirect's block; the dead stream never reported
+        expect(spoken(chunks)).toContain('Ten million');
+        expect(spoken(chunks)).toContain('[No answer — the answer model failed: socket hang up]');
+        expect(spoken(chunks)).not.toContain('thirty gigabytes');       // nothing of the redirect that did not run
+    });
+
+    // The state between D and D2 (review M1): the early close reports on "Te", the fence filter's 3-character carry
+    // holds it, the stream dies with nothing shown, so the redirect runs — and the once-guard drops the redirect's block:
+    // the candidate reads the DEAD stream's cue over the redirect's prose. Today the same death shows the redirect's cues.
+    // The window is up to 3 characters, up to 48 for an opener the line filter holds ("I'm going to walk you through").
+    const DIES_INSIDE_THE_HOLDS = { thenFail: ['__CUES__\n1| first stream cue a\n', 'Te'] };
+
+    it("D3. a stream that dies after the early close but before its first words clear the filters is redirected: its cue over the redirect's prose", async () => {
+        plan.push(DIES_INSIDE_THE_HOLDS, CHUNKED);
+        const onCues = vi.fn();
+        const chunks = await run(onCues);
+        expect(asked()).toEqual(['gemini-3.5-flash-lite', 'gemini-3.5-flash-lite']);
+        expect(onCues).toHaveBeenCalledTimes(1);
+        expect(onCues).toHaveBeenCalledWith(['first stream cue a']);   // today CUES: the dead stream had not reported
+        expect(spoken(chunks)).toContain('Ten million vectors take about thirty gigabytes.');   // the redirect's prose, as case D reads it
+    });
+
     it('E. hedge OFF (NATIVELY_VERBAL_HEDGE=0), the old stall race: cues once, so both policies feed the same chain', async () => {
         process.env.NATIVELY_VERBAL_HEDGE = '0';
         plan.push(CHUNKED);
