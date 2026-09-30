@@ -119,7 +119,7 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
         try { cues = JSON.parse(m[2]); } catch { /* a malformed line is an answer with no cues */ }
         return { at: ts(m[1]), cues: Array.isArray(cues) ? cues : [] };
     });
-    const wellformedCues = (c) => c.length >= 1 && c.length <= 5 && c.every((x) => typeof x === 'string' && (x.match(/\S+/g) || []).length <= 8 && !x.includes('?') && !/\byou\b/i.test(x));
+    const wellformedCues = (c) => c.length >= 1 && c.length <= 3 && c.every((x) => typeof x === 'string' && (x.match(/\S+/g) || []).length <= 5 && !x.includes('?') && !/\byou\b/i.test(x));
     const cueBlocks = { n: cueLines.length, present: cueLines.filter((c) => c.cues.length > 0).length, wellformed: cueLines.filter((c) => wellformedCues(c.cues)).length };
     const budget = {
         n: budgetLines.length,

@@ -197,19 +197,32 @@ export const SPOKEN_WORD_CEILING = 150;
  */
 export const CUES_SENTINEL = '__CUES__';
 
-/** Cue lines per answer: one per part the question names, never more. */
-export const CUE_MAX_LINES = 5;
+/**
+ * Cue lines the candidate sees — a ceiling, not a target (spec 2026-09-30): a simple question
+ * gets one line, a many-part question is grouped into themes so every named part still fits.
+ * Enforced at the display boundary by trimCues (IntelligenceEngine onCues), every cut logged.
+ */
+export const CUE_MAX_LINES = 3;
 
-/** Words per cue line — a glance, not a sentence. */
-export const CUE_MAX_WORDS = 8;
+/** Words per displayed cue line — a glance, not a sentence. Cut to the first 5 by trimCues, logged. */
+export const CUE_MAX_WORDS = 5;
 
 /**
- * Cue mode: the answer opens with a cue block — one key-phrase line per part the question
- * names — and the spoken answer follows unchanged. The main process strips the block
- * (stripCueBlock), logs it, and shows it above the answer so the candidate composes the
- * sentences and only glances at the prose. Appended at the TAIL of the verbal prompt, after
- * the structured rule; the bench measures that position rather than assuming it, and this
- * wording is a benched input (spec §9), not a settled text. Opens with a blank line because
+ * The cue rule's shape bullet, ONE constant so that a wording swap touches this line and its
+ * verbatim test pin only. The text is spike 6's winner under a rule written before its data
+ * (SPIKE6-RULE.md; spec 2026-09-30 §3.1, §7). The numbers are the constants above, so the
+ * prompt and the code cap cannot drift apart; at 3/5 this resolves byte for byte to the spike text.
+ */
+// ── benched wording: one-first ──
+export const CUE_SHAPE_RULE = `- At most ${CUE_MAX_LINES} lines, each at most ${CUE_MAX_WORDS} words. The first line is the answer itself in the fewest words that carry it: one or two words when that is enough (asked "Tabs or spaces?", the whole block is 1| Spaces). A one-part question gets exactly one line. Add a line only for another part the QUESTION names, never for a point you add on your own; when it names more than ${CUE_MAX_LINES} parts, group related parts into themes so every part is still covered in ${CUE_MAX_LINES} lines.`;
+
+/**
+ * Cue mode: the answer opens with a cue block — at most CUE_MAX_LINES key-phrase lines — and
+ * the spoken answer follows unchanged. The main process strips the block (stripCueBlock), caps
+ * and logs it (trimCues), and shows it above the answer so the candidate composes the sentences
+ * and only glances at the prose. Appended at the TAIL of the hands-free verbal prompt, after the
+ * structured rule; the bench measures that position rather than assuming it. The shape bullet
+ * is CUE_SHAPE_RULE, a benched input (spec 2026-09-30 §3.1). Opens with a blank line because
  * the prompt it is appended to ends without one.
  */
 export const CUE_RULE = `
@@ -220,7 +233,7 @@ ${CUES_SENTINEL}
 1| <key phrase for the first part the question names, at most ${CUE_MAX_WORDS} words>
 2| <the next part, in the order asked>
 Rules for that block:
-- One line per part the question names. A one-part question gets exactly one line. Never more than ${CUE_MAX_LINES}.
+${CUE_SHAPE_RULE}
 - Each line carries the specific thing you will say for that part: the number, the named service, the mechanism, the trade-off. Never a generic label.
 - They are cues, not questions. Never address the listener.
 - The spoken answer follows on the next line, in the same form as always.`;
