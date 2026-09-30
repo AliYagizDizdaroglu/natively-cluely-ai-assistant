@@ -14,6 +14,8 @@ import {
 import { getAnswerShapeGuidance, IntentResult } from './llm/IntentClassifier';
 import { pinSettledQuestion } from './llm/lastInterviewerTurn';
 import { withParentExchange } from './llm/followUpParent';
+import { CUE_MAX_LINES, CUE_MAX_WORDS } from './llm/prompts';
+import { trimCues } from './llm/verbalStreamFilter';
 
 // Mode types
 export type IntelligenceMode = 'idle' | 'assist' | 'what_to_say' | 'follow_up' | 'recap' | 'clarify' | 'manual' | 'follow_up_questions' | 'code_hint' | 'brainstorm';
@@ -406,10 +408,18 @@ export class IntelligenceEngine extends EventEmitter {
             // Cue mode (spec 2026-09-20): the filter reports the cue lines once, at block close —
             // before the first prose token — so they ride that token into the renderer. One
             // log line per answer is what the flight's cue row reads; fullAnswer stays prose.
+            // Spec 2026-09-30: what is logged and shown is the block as DISPLAYED — notation
+            // cleaned, at most CUE_MAX_LINES lines of CUE_MAX_WORDS words (trimCues). The cap
+            // is enforced here, at the display boundary, so the parser stays raw for the
+            // harness; every display edit is logged first, on its own line: the raw line count
+            // and the raw text of each dropped, cut or cleaned line. A block the display did
+            // not change logs no such line.
             let pendingCues: string[] | null = null;
-            const onCues = (cues: string[]) => {
-                console.log(`[Answer] cues: ${JSON.stringify(cues)}`);
-                if (cues.length) pendingCues = cues;
+            const onCues = (raw: string[]) => {
+                const t = trimCues(raw, CUE_MAX_LINES, CUE_MAX_WORDS);
+                if (t.dropped.length || t.cut.length || t.cleaned.length) console.log(`[Answer] cues trimmed: ${JSON.stringify({ rawLines: t.rawLines, dropped: t.dropped, cut: t.cut, cleaned: t.cleaned })}`);
+                console.log(`[Answer] cues: ${JSON.stringify(t.cues)}`);
+                if (t.cues.length) pendingCues = t.cues;
             };
             const stream = this.whatToAnswerLLM.generateStream(preparedTranscript, temporalContext, intentResult, imagePaths, options.forceFastModel, undefined, options.liveTexts, onCues);
             let streamAborted = false;

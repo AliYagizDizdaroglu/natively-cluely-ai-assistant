@@ -113,14 +113,22 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     // cue blocks (cue mode, spec 2026-09-20): one line per verbal answer from IntelligenceEngine,
     // `[]` when the model opened without a block; coding routes emit none. The limits mirror
     // CUE_MAX_LINES / CUE_MAX_WORDS in electron/llm/prompts.ts — this module reads logs on a
-    // clean checkout and imports no build.
+    // clean checkout and imports no build. Since spec 2026-09-30 the logged block is the one
+    // DISPLAYED (trimCues: notation cleaned, at most 3 lines of 5 words), so the line/word part
+    // of `wellformed` guards the seam — it fails only if the engine's cap stopped running; `?`,
+    // "you", an EMPTY cue (a line that was nothing but notation, the one state the cleanup can
+    // create) and an absent block still fail it. `trimmed` counts the `[Answer] cues trimmed:`
+    // lines the engine logs (first, one per block the display changed: dropped, cut or cleaned):
+    // shown in the row, never gated — the winning wording overruns sometimes by its own
+    // pre-registered rule, and every changed line is in the log verbatim for the result note.
     const cueLines = [...dbg.matchAll(/^(\S+) \[LOG\] \[Answer\] cues: (\[.*\])$/gm)].map((m) => {
         let cues = [];
         try { cues = JSON.parse(m[2]); } catch { /* a malformed line is an answer with no cues */ }
         return { at: ts(m[1]), cues: Array.isArray(cues) ? cues : [] };
     });
-    const wellformedCues = (c) => c.length >= 1 && c.length <= 3 && c.every((x) => typeof x === 'string' && (x.match(/\S+/g) || []).length <= 5 && !x.includes('?') && !/\byou\b/i.test(x));
-    const cueBlocks = { n: cueLines.length, present: cueLines.filter((c) => c.cues.length > 0).length, wellformed: cueLines.filter((c) => wellformedCues(c.cues)).length };
+    const trimLines = [...dbg.matchAll(/^(\S+) \[LOG\] \[Answer\] cues trimmed: (\{.*\})$/gm)];
+    const wellformedCues = (c) => c.length >= 1 && c.length <= 3 && c.every((x) => typeof x === 'string' && x.trim() !== '' && (x.match(/\S+/g) || []).length <= 5 && !x.includes('?') && !/\byou\b/i.test(x));
+    const cueBlocks = { n: cueLines.length, present: cueLines.filter((c) => c.cues.length > 0).length, wellformed: cueLines.filter((c) => wellformedCues(c.cues)).length, trimmed: trimLines.length };
     const budget = {
         n: budgetLines.length,
         // `cut` is the row's only failure mode since the 200-word guard replaced the
@@ -497,7 +505,7 @@ export const GATE = [
     // Cue mode (spec 2026-09-20): every verbal answer opens with a cue block the candidate
     // glances at. `n` covers the delivered answers like the budget row (coding routes emit no
     // cues line, hence 0.9); every block present and well-formed. Older runs read "not logged".
-    { key: 'cueBlocks', label: 'Cue block above every spoken answer', before: 'not logged (before cue mode)', pass: (m) => m.cueBlocks.n > 0 && m.cueBlocks.n >= Math.floor(m.delivered * 0.9) && m.cueBlocks.present === m.cueBlocks.n && m.cueBlocks.wellformed === m.cueBlocks.n, show: (m) => m.cueBlocks.n === 0 ? 'not logged' : `${m.cueBlocks.present}/${m.cueBlocks.n} present, ${m.cueBlocks.wellformed} well-formed` },
+    { key: 'cueBlocks', label: 'Cue block above every spoken answer', before: 'not logged (before cue mode)', pass: (m) => m.cueBlocks.n > 0 && m.cueBlocks.n >= Math.floor(m.delivered * 0.9) && m.cueBlocks.present === m.cueBlocks.n && m.cueBlocks.wellformed === m.cueBlocks.n, show: (m) => m.cueBlocks.n === 0 ? 'not logged' : `${m.cueBlocks.present}/${m.cueBlocks.n} present, ${m.cueBlocks.wellformed} well-formed, ${m.cueBlocks.trimmed} trimmed` },
 ];
 
 /** Counts over spoken items only — mirrors summarizeVerdicts in interview60.judge.mjs (kept dependency-free here). */

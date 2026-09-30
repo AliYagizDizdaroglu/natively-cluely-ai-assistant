@@ -50,6 +50,8 @@ describe('runWhatShouldISay carries the cue block', () => {
         expect(emits[1].cues).toBeUndefined();
         expect(logs).toContain('[Answer] cues: ["thirty gigabytes in float32","int8, then shard"]');
         expect(logs).toContain(`[Answer] full: ${JSON.stringify(PROSE)}`);
+        // spec 2026-09-30: a block inside the limits with nothing to clean logs no trimmed line
+        expect(logs.some((l) => l.startsWith('[Answer] cues trimmed:'))).toBe(false);
     });
 
     it('no block: an empty cues line is logged and no token carries cues', async () => {
@@ -77,5 +79,65 @@ describe('runWhatShouldISay carries the cue block', () => {
         expect(emits[0].cues).toEqual(['a', 'b']);
         expect(emits[1].cues).toBeUndefined();
         expect(logs).toContain(`[Answer] full: ${JSON.stringify(PROSE)}`);
+    });
+
+    it('spec 2026-09-30: dropped only — the smoke\'s real S1Q09 block, 8 lines of at most 5 words, keeps 3 and logs the 5 dropped lines first', async () => {
+        const logs = captureLogs();
+        const eight = ['Blob Storage for data', 'Azure ML for training', 'Model Registry for versioning', 'ACR for images', 'AKS for inference', 'Data Factory for orchestration', 'Entra ID for security', 'Azure Monitor for observability'];
+        stubStream(eight, ['Ten million ', 'vectors take thirty gigabytes.']);
+        const engine = new IntelligenceEngine(stubHelper(), new SessionTracker());
+        const emits = listen(engine);
+        await engine.runWhatShouldISay(QUESTION, 1.0, undefined, { intentOverride: 'verbal', bypassCooldown: true });
+        expect(emits[0].cues).toEqual(eight.slice(0, 3));
+        expect(emits[1].cues).toBeUndefined();
+        const trimmedAt = logs.findIndex((l) => l.startsWith('[Answer] cues trimmed: '));
+        expect(trimmedAt).toBeGreaterThan(-1);
+        expect(logs.indexOf(`[Answer] cues: ${JSON.stringify(eight.slice(0, 3))}`)).toBeGreaterThan(trimmedAt);
+        expect(JSON.parse(logs[trimmedAt].slice('[Answer] cues trimmed: '.length))).toEqual({ rawLines: 8, dropped: eight.slice(3), cut: [], cleaned: [] });
+    });
+
+    it('spec 2026-09-30: cut only — one 7-word line is displayed as its first 5 words and logged first, with nothing dropped', async () => {
+        const logs = captureLogs();
+        const seven = 'Batch/Online Architecture: Feature Store and Shared Logic';
+        stubStream([seven], ['Ten million ', 'vectors take thirty gigabytes.']);
+        const engine = new IntelligenceEngine(stubHelper(), new SessionTracker());
+        const emits = listen(engine);
+        await engine.runWhatShouldISay(QUESTION, 1.0, undefined, { intentOverride: 'verbal', bypassCooldown: true });
+        expect(emits[0].cues).toEqual(['Batch/Online Architecture: Feature Store and']);
+        const trimmedAt = logs.findIndex((l) => l.startsWith('[Answer] cues trimmed: '));
+        expect(trimmedAt).toBeGreaterThan(-1);
+        expect(logs.indexOf('[Answer] cues: ["Batch/Online Architecture: Feature Store and"]')).toBeGreaterThan(trimmedAt);
+        expect(JSON.parse(logs[trimmedAt].slice('[Answer] cues trimmed: '.length))).toEqual({ rawLines: 1, dropped: [], cut: [seven], cleaned: [] });
+    });
+
+    it('spec 2026-09-30: dropped and cut together — an 8-line block with a 7-word line is displayed as 3 lines of 5 words, both cuts logged first', async () => {
+        const logs = captureLogs();
+        const eight = ['Blob Storage for data', 'Azure ML for training and registry work', 'Model Registry for versioning', 'ACR for images', 'AKS for inference', 'Data Factory for orchestration', 'Entra ID for security', 'Azure Monitor for observability'];
+        const shown = ['Blob Storage for data', 'Azure ML for training and', 'Model Registry for versioning'];
+        stubStream(eight, ['Ten million ', 'vectors take thirty gigabytes.']);
+        const engine = new IntelligenceEngine(stubHelper(), new SessionTracker());
+        const emits = listen(engine);
+        await engine.runWhatShouldISay(QUESTION, 1.0, undefined, { intentOverride: 'verbal', bypassCooldown: true });
+        expect(emits[0].cues).toEqual(shown);
+        expect(emits[1].cues).toBeUndefined();
+        const trimmedAt = logs.findIndex((l) => l.startsWith('[Answer] cues trimmed: '));
+        const cuesAt = logs.indexOf(`[Answer] cues: ${JSON.stringify(shown)}`);
+        expect(trimmedAt).toBeGreaterThan(-1);
+        expect(cuesAt).toBeGreaterThan(trimmedAt);
+        expect(JSON.parse(logs[trimmedAt].slice('[Answer] cues trimmed: '.length))).toEqual({ rawLines: 8, dropped: eight.slice(3), cut: ['Azure ML for training and registry work'], cleaned: [] });
+        expect(logs.filter((l) => l.startsWith('[Answer] cues'))).toHaveLength(2);
+    });
+
+    it('spec 2026-09-30: cleaned only — a cue in raw LaTeX is displayed spoken-clean, and the cleanup is logged in `cleaned` on the trimmed line, first', async () => {
+        const logs = captureLogs();
+        stubStream(['$O(\\log n)$ time complexity'], ['Ten million ', 'vectors take thirty gigabytes.']);
+        const engine = new IntelligenceEngine(stubHelper(), new SessionTracker());
+        const emits = listen(engine);
+        await engine.runWhatShouldISay(QUESTION, 1.0, undefined, { intentOverride: 'verbal', bypassCooldown: true });
+        expect(emits[0].cues).toEqual(['O(log n) time complexity']);
+        const trimmedAt = logs.findIndex((l) => l.startsWith('[Answer] cues trimmed: '));
+        expect(trimmedAt).toBeGreaterThan(-1);
+        expect(logs.indexOf('[Answer] cues: ["O(log n) time complexity"]')).toBeGreaterThan(trimmedAt);
+        expect(JSON.parse(logs[trimmedAt].slice('[Answer] cues trimmed: '.length))).toEqual({ rawLines: 1, dropped: [], cut: [], cleaned: ['$O(\\log n)$ time complexity'] });
     });
 });

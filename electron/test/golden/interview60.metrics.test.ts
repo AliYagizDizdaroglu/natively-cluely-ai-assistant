@@ -280,8 +280,13 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
             `${iso(T0 + 1120900)} [LOG] [Answer] budget: words=140 cut=no allowance=yes`,
             // Cue mode (spec 2026-09-20): one cues line per verbal answer — a well-formed block and
             // an answer the model opened without one (the row must surface the miss).
+            // Spec 2026-09-30: the engine logs one `cues trimmed:` line, FIRST, per block the display
+            // changed; the row counts it and never gates on it.
+            `${iso(T0 + 1100940)} [LOG] [Answer] cues trimmed: {"rawLines":4,"dropped":["a fourth named part"],"cut":[],"cleaned":[]}`,
             `${iso(T0 + 1100950)} [LOG] [Answer] cues: ["thirty gigabytes in float32","int8, then shard"]`,
             `${iso(T0 + 1110950)} [LOG] [Answer] cues: []`,
+            // Spec 2026-09-30: an empty DISPLAYED cue (a line that was nothing but notation) is not well-formed.
+            `${iso(T0 + 1120950)} [LOG] [Answer] cues: ["","Parquet"]`,
             // 2026-09-09 whole-turn (Task 8): hold (a fragmentary head, held for the other
             // ear) -> mark (detection only) -> answer -> supersede (replaces the answer
             // already given). The hold fires 100ms before the mark, at spokeEnd-900 — the
@@ -638,16 +643,16 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(row.show({ length: { n: 0, p90: null, over85: 0, over150: 0 } })).toBe('not logged');
     });
 
-    it('cueBlocks — counts the blocks, and the row fails when one answer opened without one', () => {
-        expect(m.cueBlocks).toEqual({ n: 2, present: 1, wellformed: 1 });
+    it('cueBlocks — counts the blocks, the trims and an empty displayed cue; the row fails when one answer opened without a block', () => {
+        expect(m.cueBlocks).toEqual({ n: 3, present: 2, wellformed: 1, trimmed: 1 });
         const row = evaluateGate(m).rows.find((r) => r.label === 'Cue block above every spoken answer');
         expect(row.pass).toBe(false);
-        expect(row.value).toBe('1/2 present, 1 well-formed');
+        expect(row.value).toBe('2/3 present, 1 well-formed, 1 trimmed');
     });
 
     it('cueBlocks gate row pass rule: logged for the delivered answers, every block present and well-formed', () => {
         const row = GATE.find((g) => g.key === 'cueBlocks')!;
-        const base = { cueBlocks: { n: 10, present: 10, wellformed: 10 }, delivered: 10 } as any;
+        const base = { cueBlocks: { n: 10, present: 10, wellformed: 10, trimmed: 0 }, delivered: 10 } as any;
         expect(row.pass(base)).toBe(true);
         expect(row.pass({ ...base, cueBlocks: { n: 10, present: 9, wellformed: 9 } })).toBe(false);
         expect(row.pass({ ...base, cueBlocks: { n: 10, present: 10, wellformed: 9 } })).toBe(false);
@@ -655,6 +660,10 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         expect(row.pass({ ...base, cueBlocks: { n: 9, present: 9, wellformed: 9 } })).toBe(true);
         expect(row.pass({ ...base, cueBlocks: { n: 8, present: 8, wellformed: 8 } })).toBe(false);
         expect(row.pass({ ...base, cueBlocks: { n: 0, present: 0, wellformed: 0 } })).toBe(false);
+        // spec 2026-09-30: trims are shown in the value and never fail the row — the winning
+        // wording overruns sometimes by its own pre-registered rule, and the cap keeps the block small
+        expect(row.pass({ ...base, cueBlocks: { ...base.cueBlocks, trimmed: 3 } })).toBe(true);
+        expect(row.show({ ...base, cueBlocks: { ...base.cueBlocks, trimmed: 3 } })).toBe('10/10 present, 10 well-formed, 3 trimmed');
         expect(row.show({ cueBlocks: { n: 0, present: 0, wellformed: 0 } })).toBe('not logged');
     });
 
@@ -691,7 +700,7 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
         // ttftP90=3000ms and detectP50=1500ms are both under their bars (10 s TTFT, 5 s detect).
         expect(rows['Answer TTFT p90 · detect p50']).toBe(true);
         const failed = g.rows.filter((r) => !r.pass).map((r) => r.label);
-        // pinned (8 legacy dispatches), budget (cut 1 !== 0) and cueBlocks (1 of 2 present)
+        // pinned (8 legacy dispatches), budget (cut 1 !== 0) and cueBlocks (2 of 3 present)
         // all fail here too — appended last, same as GATE itself.
         expect(failed).toEqual([
             'Answered hands-free',
@@ -833,7 +842,7 @@ describe("the cue row's limits track CUE_MAX_LINES and CUE_MAX_WORDS", () => {
     afterAll(() => { if (dir) fs.rmSync(dir, { recursive: true, force: true }); });
 
     it('a block at exactly CUE_MAX_LINES/CUE_MAX_WORDS is wellformed; one line over and one word over are not', () => {
-        expect(m.cueBlocks).toEqual({ n: 3, present: 3, wellformed: 1 });
+        expect(m.cueBlocks).toEqual({ n: 3, present: 3, wellformed: 1, trimmed: 0 });
     });
 });
 
@@ -1009,7 +1018,7 @@ describe('gate thresholds scale with the roster', () => {
         // consistent with p50 90 / max 120 above: about half run past 85, none past 150
         length: { n: items, p90: 120, over85: Math.ceil(items / 2), over150: 0 },
         // cue mode (spec 2026-09-20): every delivered answer opened with a well-formed block
-        cueBlocks: { n: items, present: items, wellformed: items },
+        cueBlocks: { n: items, present: items, wellformed: items, trimmed: 0 },
     }) as any;
 
     it('passes a flawless hour whatever the roster size', () => {
