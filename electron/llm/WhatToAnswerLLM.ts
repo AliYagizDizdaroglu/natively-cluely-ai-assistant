@@ -193,10 +193,11 @@ export class WhatToAnswerLLM {
         onSuggestions?: (suggestions: Suggestion[]) => void,
         // The Live ear's texts for the same turn — appended to the verbal message, spec 2026-09-09 §3.4.
         liveTexts?: string[],
-        // Cue mode (spec 2026-09-20): called exactly once per verbal stream with the cue lines
-        // the model opened with — an empty array when it emitted no block. Never called on
-        // the coding path, which has no cue rule and nothing waiting on the callback. The
-        // spoken text yielded by this generator never contains the block — see stripCueBlock.
+        // Cue mode (spec 2026-09-20): called at most once per verbal stream with the cue lines
+        // the model opened with — an empty array when it emitted no block, and not at all when
+        // every stream failed before its block was decided. Never called on the coding path,
+        // which has no cue rule and nothing waiting on the callback. The spoken text yielded
+        // by this generator never contains the block — see stripCueBlock.
         onCues?: (cues: string[]) => void,
     ): AsyncGenerator<string> {
         // The model the verbal error fallback went to, for the last-resort message below —

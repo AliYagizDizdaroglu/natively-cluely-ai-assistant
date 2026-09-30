@@ -89,7 +89,7 @@ export const VERBAL_CHECKS = {
     detail: JSON.stringify(spoken.trim().slice(-24)),
   }),
 
-  /** Cue mode (spec 2026-09-20): the answer opened with a cue block — one line per part. */
+  /** Cue mode (spec 2026-09-20): the answer opened with a cue block of at least one line. */
   cues_present: ({ cues }) => ({ ok: Array.isArray(cues) && cues.length > 0, detail: `${Array.isArray(cues) ? cues.length : 0} cues` }),
 
   /** 1 to cueMaxLines lines, each at most cueMaxWords words, labels not questions, never addressing the listener. */

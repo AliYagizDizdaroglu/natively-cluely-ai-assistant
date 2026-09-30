@@ -331,8 +331,9 @@ const cuePhrase = (m: RegExpMatchArray): string => m[2].trim().replace(/^["'`]|[
 /**
  * Splits a completed verbal answer into its cue block and the spoken prose.
  *
- * The model is asked (CUE_RULE) to OPEN with the sentinel and one `N| key phrase` line per
- * part of the question, then the prose:
+ * The model is asked (CUE_RULE) to OPEN with the sentinel and a few `N| key phrase` lines —
+ * one line for a one-part question, grouped themes for a many-part one (CUE_SHAPE_RULE) —
+ * then the prose:
  *
  *     __CUES__
  *     1| thirty gigabytes in float32
