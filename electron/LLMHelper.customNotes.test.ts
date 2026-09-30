@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Same import-time shims as LLMHelper.streamChat.test.ts (electron surface + Gemini SDK).
 vi.mock('electron', () => ({
@@ -43,8 +43,17 @@ const sentText = () => generateContentStream.mock.calls.map((c) => JSON.stringif
 const NOTES = 'Led the payments migration at Acme; interviewing for a staff role.';
 
 describe('custom notes reach the hands-free answer paths', () => {
+    // Pins the hedge off: these cases check the bytes of the plain verbal call, and the default hedge would read a shell's trigger.
+    const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+    const savedTrigger = process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
     beforeEach(() => {
         generateContentStream.mockClear();
+        process.env.NATIVELY_VERBAL_HEDGE = '0';
+        delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
+    });
+    afterEach(() => {
+        if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
+        if (savedTrigger === undefined) delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS; else process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS = savedTrigger;
     });
 
     it('streamChat with the verbal override (technical path) carries the <user_context> block', async () => {

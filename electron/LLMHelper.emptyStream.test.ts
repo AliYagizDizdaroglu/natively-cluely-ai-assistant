@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Same electron + @google/genai shims as LLMHelper.reliability.test.ts.
 vi.mock('electron', () => ({
@@ -53,9 +53,20 @@ async function drain(gen: AsyncGenerator<string, void, unknown>) {
  * present an empty answer as success.
  */
 describe('Gemma empty-stream fallback', () => {
+    // The flag is never read on this path: every case is a Gemma route, and streamWithGemmaGuarded's Tier-2 Flash call
+    // goes straight to streamWithGeminiModel, not through streamGeminiWithStallFallback, the only reader of
+    // NATIVELY_VERBAL_HEDGE. It is pinned to '0' anyway, as in abortOnClose's Gemma block, so both files run in the
+    // same environment whatever the shell exports (h40c review M5).
+    const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+
     beforeEach(() => {
         generateContentStream.mockReset();
         generateContentStream.mockImplementation(defaultImpl);
+        process.env.NATIVELY_VERBAL_HEDGE = '0';
+    });
+
+    afterEach(() => {
+        if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
     });
 
     it('falls back to Flash when Gemma yields ZERO chunks (RECITATION / safety block)', async () => {

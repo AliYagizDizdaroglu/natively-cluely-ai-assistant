@@ -255,6 +255,8 @@ import { resolveSttProvider } from './services/sttProviderOverride'
 import { createEnergyVad, EnergyVad } from './audio/energyVad'
 import { createInterviewerTurn, turnConstantsFromEnv, InterviewerTurn, TurnDecision } from './services/interviewerTurn'
 import { pickTurnDetection, turnDispatchInput } from './services/turnDispatch'
+import { describeVerbalHedgeAtStartup } from './llm/verbalHedge'
+import { describeFollowUpParentAtStartup } from './llm/followUpParent'
 
 export class AppState {
   private static instance: AppState | null = null
@@ -2430,6 +2432,9 @@ export class AppState {
     // Which model actually produced the verbal answer. The renderer used to
     // hardcode "Gemini Flash 3.1" here, so a fallback redirect was invisible.
     this.intelligenceManager.on('suggested_answer_source', (label: string) => {
+      // The only place the label the renderer receives is visible to a log reader — the h40c
+      // smoke check and a flight both read it off natively_debug.log.
+      console.log(`[Main] answer source: ${label}`)
       const win = mainWindow()
       if (win) {
         win.webContents.send('intelligence-suggested-answer-source', label)
@@ -3428,6 +3433,24 @@ async function initializeApp() {
       fs.writeFileSync(logFile, `=== Natively session started ${new Date().toISOString()} ===\n`);
     }
   } catch { /* non-fatal */ }
+
+  // Validate the verbal hedge's env once, here — after whenReady (so the log file above already
+  // exists) and before credentials, IPC or any window. h40c re-review N1: this used to run right
+  // before createWindow(), inside this same async function; a throw there skipped createWindow(),
+  // the tray, global shortcuts and the quit-time handlers, leaving a windowless process that
+  // still held the single-instance lock until killed — a silent hang, not the loud, clean refusal
+  // rule 11 asks for. A bad value now exits the process outright; no modal dialog (one would
+  // block an unattended flight's scheduled task).
+  // The follow-up flag gets the same check (h40c review M4): unvalidated, a junk value threw
+  // inside every hands-free answer, mid-interview, instead of refusing to start.
+  try {
+    console.log(describeVerbalHedgeAtStartup())
+    console.log(`[Main] ${describeFollowUpParentAtStartup()}`)
+  } catch (e) {
+    console.error(`[Main] ${(e as Error).message} — refusing to start`)
+    app.exit(1)
+    return
+  }
 
   // 2a. PRE-EMPTIVE dock hide: must happen before ANY operation that causes macOS to
   // register a dock entry (app.setName, BrowserWindow creation, etc.).

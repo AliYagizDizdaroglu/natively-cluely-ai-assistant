@@ -1,7 +1,7 @@
 /**
  * Unattended flight: the whole after-run sequence from a scheduled task, no
  * hands. Probe the Live ear, pick the Live model, run the auto hour, then the
- * three-arm answer passes, the chains pass and the judge exports, and leave a
+ * answer passes, the chains pass and the judge exports, and leave a
  * done-marker in the run folder listing what is left to grade.
  *
  *   node electron/test/golden/interview60.flight.mjs [label=after] [--dry-run]
@@ -19,10 +19,11 @@
  *      NATIVELY_STT_PROVIDER=deepgram (set in the environment that launches this
  *      script) runs the hour on Deepgram; auto's preflight refuses the hour if
  *      the app did not start that ear.
- *   3. answer passes on gemini-3.1-flash-lite, gemini-3.5-flash-lite and the
- *      Groq arms, the same 52 questions, prompt and filters, then the focused
- *      Flash arms and the two PAIRED_ARMS (the hour's captured prompts at the
- *      pre-bench level, the bare prompt at the shipped LOW level), plus the
+ *   3. answer passes on gemini-3.1-flash-lite and gemini-3.5-flash-lite, the
+ *      roster's questions, prompt and filters, then the focused Flash arms
+ *      and the paired arms (PAIRED_ARMS below: the hour's captured prompts
+ *      and the bare prompt, on both Flash Lites, at the levels and
+ *      repetitions listed there), plus the
  *      chains pass, all copied into the run folder. Earlier answers/chains
  *      files are moved aside first: the passes resume from an existing file,
  *      and resuming from yesterday's answers would score yesterday's model.
@@ -43,15 +44,19 @@ import { INTERVIEW, rosterLabel, ROSTER_NAME } from './roster.mjs';
 
 export const LIVE_DEFAULT = 'gemini-3.1-flash-live-preview';
 export const LIVE_FALLBACK = 'gemini-2.5-flash-native-audio-latest';
-// The first is the app's answer model; the rest are comparison arms. Ids with a "/" run
-// on Groq (answers.mjs; with a placeholder GROQ_API_KEY the pass exits 3 in seconds and
-// the flight goes on without that file). Both Gemma arms are deliberately absent.
-// gemma-4-26b-a4b-it: the 2026-09-08 probe leaked its planning text into the spoken
-// answer and one answer ran 11 min to MAX_TOKENS. gemma-4-31b-it: 49, then 37, then 35
-// acceptable of 52 across after7/8/9 under the frozen grader, with 4 answers degenerating
-// into repeated tokens and 16 truncating mid-word, at 19.4s to first token. Re-measuring
-// a model already ruled out costs an hour of flight time and holds the judge exports.
-export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'qwen/qwen3.8-27b', 'openai/gpt-oss-120b'];
+// The first is the selected model (the stall race's first leg, the hedge's back leg), the second is
+// the hedge's front leg (the stall race's fallback). Since the hedge became the default (h40c,
+// 2026-09-29) the hour answers with the second first; the arms are unchanged. The Groq comparison arms
+// (qwen/qwen3.8-27b, openai/gpt-oss-120b) were dropped from the flight at the user's
+// request on 2026-09-26 — answers.mjs still runs a Groq id by hand (ids with a "/";
+// with a placeholder GROQ_API_KEY that pass exits 3 in seconds). Both Gemma arms are
+// deliberately absent. gemma-4-26b-a4b-it: the 2026-09-08 probe leaked its planning text
+// into the spoken answer and one answer ran 11 min to MAX_TOKENS. gemma-4-31b-it: 49, then
+// 37, then 35 acceptable of 52 across after7/8/9 under the frozen grader, with 4 answers
+// degenerating into repeated tokens and 16 truncating mid-word, at 19.4s to first token.
+// Re-measuring a model already ruled out costs an hour of flight time and holds the judge
+// exports.
+export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite'];
 
 /**
  * Focused arms: the non-lite Flash models, whose free tier allows a handful of calls a day,
@@ -108,13 +113,20 @@ export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3
  * hours sit inside the ±4 noise. These arms give every flight its own pairs, all answered
  * minutes after the hour so nothing is compared across times of day:
  *
- *   on the app answer model (gemini-3.1-flash-lite)
+ *   on gemini-3.1-flash-lite, the selected app model (the stall race's first leg, the hedge's back leg;
+ *   in-app vs these arms is a same-model read only with NATIVELY_VERBAL_HEDGE=0)
  *     captured-minimal  the hour's captured prompts (system + user turn, all items, follow-ups
  *                       included) with no thinkingConfig — the provider default the app sent
- *                       through s50f. in-app vs this = the level, same bytes.
+ *                       through s50f. in-app vs this = the level, same bytes, but only with
+ *                       NATIVELY_VERBAL_HEDGE=0: under the hedge default (h40c, 2026-09-29) the
+ *                       hour answers with 3.5-lite HIGH first, so it no longer isolates the level.
  *     captured-low      the same captured prompts at LOW, the shipped level: the offline twin of
- *                       the hour itself. in-app vs this = what the app pipeline adds on top of a
- *                       raw API call; and it is the like-for-like partner for captured-high.
+ *                       the hour itself under NATIVELY_VERBAL_HEDGE=0. Since the hedge became the
+ *                       default (h40c, 2026-09-29) the hour answers with 3.5-lite HIGH first, so
+ *                       captured-high is the twin of the answers 3.5-lite won; a 3.1-lite win (its
+ *                       won-by line) pairs with captured-low. The arms themselves are unchanged.
+ *                       in-app vs this = what the app pipeline adds on top of a raw API call; and
+ *                       it is the like-for-like partner for captured-high.
  *                       RUN THREE TIMES (-r2, -r3) since 2026-09-19: s50i put the live hour at
  *                       28/39 against this arm's 33/39 on identical bytes, same model, same
  *                       level, but at one sample a side against a ±4 bench floor. The three reps
@@ -124,7 +136,8 @@ export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3
  *     low               the bare verbal prompt at LOW. in-app vs this = the app context at the
  *                       shipped level; low vs the plain bare arm = the level on bare bytes.
  *
- *   on gemini-3.5-flash-lite, the stall-fallback model (2026-09-18 bench: it does NOT honour
+ *   on gemini-3.5-flash-lite, the hedge's front leg, the stall race's fallback under
+ *   NATIVELY_VERBAL_HEDGE=0 (2026-09-18 bench: it does NOT honour
  *   LOW — probes reported no thought tokens on 3 of 4 calls — and at HIGH it TIED 3.1 at LOW on
  *   quality, +3 on 117 pairs, while answering far shorter: words p50 74 vs 95. Its apparent
  *   latency edge could not be believed, because those arms ran at 03:00 and the 3.1 arms at

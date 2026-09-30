@@ -1,0 +1,270 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "S1Q08F#1",
+   "id": "S1Q08F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How could repeatedly training on customers affected by previous campaigns introduce bias? [Follow-up to: Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.]",
+   "heard": "How could repeatedly training on customers affected by previous campaigns introduce bias?",
+   "source": "answers-pass",
+   "answer": "It introduces selection bias because the labels become confounded by the intervention. If I train on a population where retention offers were targeted, the model learns the effect of the offer rather than the underlying churn propensity. It essentially masks the true signal, making the model think the offer caused the retention, even if the user might have stayed anyway. To fix this, I move away from standard churn prediction and toward uplift modeling, which explicitly estimates the Conditional Average Treatment Effect to isolate the impact of the campaign from the user's inherent risk."
+  },
+  {
+   "key": "S1Q08F#2",
+   "id": "S1Q08F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How could repeatedly training on customers affected by previous campaigns introduce bias? [Follow-up to: Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.]",
+   "heard": "How could repeatedly training on customers affected by previous campaigns introduce bias?",
+   "source": "answers-pass",
+   "answer": "When we act on model predictions—like offering a discount to high-risk churners—we create a feedback loop that biases future training data. We’re effectively suppressing the \"churn\" signal for the group the model identified, making it look like they were less likely to churn than they actually were. To counter this, I include the campaign intervention as a feature or use propensity score matching to adjust the weights, ensuring the model learns the customer's underlying intent rather than just the success of our retention efforts."
+  },
+  {
+   "key": "S1Q08F#3",
+   "id": "S1Q08F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How could repeatedly training on customers affected by previous campaigns introduce bias? [Follow-up to: Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.]",
+   "heard": "How could repeatedly training on customers affected by previous campaigns introduce bias?",
+   "source": "answers-pass",
+   "answer": "That creates a feedback loop where the model mistakes the effectiveness of the retention campaign for the customer's inherent behavior. If we target high-risk users with an offer and they stay, the model learns that those \"high-risk\" features are actually associated with retention, which artificially suppresses churn scores. I mitigate this by using uplift modeling to isolate the treatment effect or by maintaining a random control group that receives no intervention, which lets us measure the true counterfactual."
+  },
+  {
+   "key": "S1Q08F#4",
+   "id": "S1Q08F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How could repeatedly training on customers affected by previous campaigns introduce bias? [Follow-up to: Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.]",
+   "heard": "How could repeatedly training on customers affected by previous campaigns introduce bias?",
+   "source": "answers-pass",
+   "answer": "It creates a feedback loop where the model conflates the campaign's effect with the user's inherent churn risk. If we don't account for the intervention, the model learns that the treatment itself is the primary driver of retention, leading it to underestimate churn risk for future treated groups. That’s why I use inverse propensity weighting—to isolate the user's baseline behavior from the campaign's influence."
+  },
+  {
+   "key": "S1Q08F#5",
+   "id": "S1Q08F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How could repeatedly training on customers affected by previous campaigns introduce bias? [Follow-up to: Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.]",
+   "heard": "How could repeatedly training on customers affected by previous campaigns introduce bias?",
+   "source": "answers-pass",
+   "answer": "It creates a feedback loop where the model starts predicting the intervention rather than the actual churn propensity. If we train on customers who received a retention offer, the model might learn that the offer itself prevents churn, which masks the true risk factors. I handle this by either excluding treated samples from the training set or explicitly including the treatment flag as a feature so the model learns to account for that specific intervention."
+  },
+  {
+   "key": "S1Q08F#6",
+   "id": "S1Q08F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Churn prediction",
+   "question": "How could repeatedly training on customers affected by previous campaigns introduce bias? [Follow-up to: Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.]",
+   "heard": "How could repeatedly training on customers affected by previous campaigns introduce bias?",
+   "source": "answers-pass",
+   "answer": "It creates a classic selection bias, or confounding, where the retention offer is correlated with both the user's features and the final churn outcome. If the model doesn't account for the intervention, it learns a biased relationship—for example, it might see that high-risk users who received offers didn't churn, and incorrectly conclude that those users were naturally low-risk. To correct this, I use Inverse Propensity Weighting to adjust the training distribution, effectively neutralizing the effect of the campaign so the model learns the user's natural propensity to churn rather than their response to the offer."
+  },
+  {
+   "key": "S2Q04F#1",
+   "id": "S2Q04F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source?",
+   "source": "answers-pass",
+   "answer": "I use Rank Fusion because raw scores from disparate sources—like BM25 and vector search—are on incomparable scales and distributions, making direct addition mathematically invalid. RRF normalizes these signals by focusing on relative rank, which is much more robust. To add weights, I would simply multiply the reciprocal rank contribution for each source by a specific scalar weight before summing them, allowing me to prioritize one retrieval method over the other based on empirical performance."
+  },
+  {
+   "key": "S2Q04F#2",
+   "id": "S2Q04F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source?",
+   "source": "answers-pass",
+   "answer": "I’d use Rank Fusion because raw scores from different retrieval methods—like cosine similarity versus BM25—operate on completely different scales and distributions, making them mathematically incompatible to sum directly. Rank Fusion, specifically Reciprocal Rank Fusion, normalizes these by using the ordinal rank instead of the score, which is scale-invariant. To add configurable weights, I’d simply multiply the reciprocal rank of each source by a specific weight coefficient before summing them. This allows me to tune the system to prioritize, for example, vector search over keyword search depending on the query type."
+  },
+  {
+   "key": "S2Q04F#3",
+   "id": "S2Q04F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source?",
+   "source": "answers-pass",
+   "answer": "I’d choose RRF because raw scores from different retrieval methods are often on completely different scales. BM25 scores depend on term frequency and document length, while vector cosine similarities are bounded, so you can't just add them together without complex normalization. RRF bypasses that by using rank as a universal metric. To add weights, I'd simply multiply each reciprocal rank contribution by a source-specific weight—like a weight for the keyword list and a weight for the vector list—before summing them up."
+  },
+  {
+   "key": "S2Q04F#4",
+   "id": "S2Q04F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source?",
+   "source": "answers-pass",
+   "answer": "I use Rank Fusion because raw scores from different retrieval methods—like BM25 and vector embeddings—are rarely on the same scale. Summing them directly biases the result toward the method with higher absolute values, whereas Rank Fusion normalizes by position, treating them as comparable signals. To add configurable weights, I simply multiply the reciprocal rank of each document by a source-specific coefficient before summing. This lets me dynamically tune the influence of, say, semantic search versus keyword matching based on the query context."
+  },
+  {
+   "key": "S2Q04F#5",
+   "id": "S2Q04F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source?",
+   "source": "answers-pass",
+   "answer": "Raw scores from different retrieval methods, like cosine similarity and BM25, exist on incompatible scales, making direct addition mathematically unsound. RRF normalizes these into a rank-based space, allowing us to combine them fairly regardless of the underlying scoring mechanism. To add weights, I would simply multiply each rank contribution by a source-specific coefficient, which lets me prioritize one retrieval channel—like vector search—over another if I know it’s more reliable for a specific domain."
+  },
+  {
+   "key": "S2Q04F#6",
+   "id": "S2Q04F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source?",
+   "source": "answers-pass",
+   "answer": "I prefer Rank Fusion because raw scores from different retrieval methods—like BM25 and vector cosine similarity—are rarely on the same scale. Summing them directly creates a bias toward whichever method happens to produce larger numbers. Rank Fusion normalizes this by focusing on the relative position, which makes the final ranking much more robust. To add configurable weights, I simply multiply the reciprocal rank score for each source by a weight factor before summing them up. This lets me tune the influence of each retriever—for instance, giving more weight to vector search when the query is highly semantic."
+  },
+  {
+   "key": "S2Q05F#1",
+   "id": "S2Q05F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies.",
+   "source": "answers-pass",
+   "answer": "A greedy policy often fails when a query is multifaceted, like asking for the \"pros and cons\" of a policy. It might return five chunks all focused on the \"pros\" because they have the highest cosine similarity, completely ignoring the \"cons\" because they didn't score as high initially.\n\nTo fix this, I’d implement Maximal Marginal Relevance, or MMR. It re-ranks results by penalizing chunks that are too similar to ones already selected, forcing the system to pick diverse information rather than just the top matches.\n\nFor multi-hop dependencies, greedy retrieval isn't enough because the second step depends on the first. I’d use an agentic workflow, like LangGraph, where the model performs an initial search, synthesizes that context, and then generates a specific follow-up query to retrieve the remaining missing pieces."
+  },
+  {
+   "key": "S2Q05F#2",
+   "id": "S2Q05F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies.",
+   "source": "answers-pass",
+   "answer": "The greedy policy fails when the top-ranked chunks are highly redundant, like three different paragraphs stating the same core fact. You end up exhausting your context budget with zero new information, missing the nuanced details that answer the \"how\" or \"why\" of the query.\n\nTo fix this, I’d implement Maximal Marginal Relevance, or MMR. Instead of just picking by relevance, I’d score candidates by balancing their relevance against their cosine similarity to the chunks already in the selection. For multi-hop queries, I’d move away from a flat retrieval approach entirely. I’d use an agentic decomposition step to break the query into sub-questions first, ensuring the retrieval process explicitly targets distinct information needs rather than just chasing the highest similarity score."
+  },
+  {
+   "key": "S2Q05F#3",
+   "id": "S2Q05F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies.",
+   "source": "answers-pass",
+   "answer": "Greedy selection fails on multi-faceted queries. If you ask about \"Kubernetes pros and cons,\" top results might all focus on the pros, ignoring the cons entirely. I solve this using Maximal Marginal Relevance, which penalizes redundant chunks. For multi-hop dependencies, I use agentic query decomposition to break the prompt into sub-queries, ensuring each retrieval pass targets a distinct, necessary piece of information."
+  },
+  {
+   "key": "S2Q05F#4",
+   "id": "S2Q05F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies.",
+   "source": "answers-pass",
+   "answer": "A greedy relevance-first policy fails when the top results are semantically redundant, effectively crowding out necessary information. For example, if I query about Kubernetes networking, the top five chunks might all define a Service, but none cover Ingress or CNI, leaving the answer incomplete.\n\nTo fix this, I incorporate Maximum Marginal Relevance, or MMR. Instead of just picking the highest similarity score, I calculate a score that penalizes chunks highly similar to ones already selected. This forces the system to pick diverse information.\n\nFor multi-hop dependencies, I don't rely on a single retrieval pass. I use agentic decomposition, where the system breaks the complex query into sub-questions. This ensures each retrieval step is tailored to a specific piece of the puzzle, rather than hoping a single greedy pass captures everything."
+  },
+  {
+   "key": "S2Q05F#5",
+   "id": "S2Q05F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies.",
+   "source": "answers-pass",
+   "answer": "The greedy policy fails when the top results are redundant, such as a query about \"inflation causes\" where the top five chunks are just different phrasings of the same introductory paragraph, causing me to miss the rest of the document's analysis. To fix this, I would implement Maximum Marginal Relevance, or MMR. Instead of just picking the highest score, I select candidates that maximize relevance while minimizing cosine similarity to the chunks already in my context window, which forces novelty. The key dependencies here are the quality of the embedding model, which dictates how accurately we measure that similarity, and the computational overhead of calculating those pairwise similarities, which can become a bottleneck as the candidate pool grows."
+  },
+  {
+   "key": "S2Q05F#6",
+   "id": "S2Q05F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies.",
+   "source": "answers-pass",
+   "answer": "A greedy policy fails when the top results are redundant. If I'm querying a policy document and the top three chunks are just slight rephrasings of the same clause, I lose coverage of other critical sections. To fix this, I'd implement Maximal Marginal Relevance, or MMR. Instead of just raw relevance, I'd score chunks by subtracting a penalty based on their cosine similarity to already selected content. The core dependency is the quality of the embedding model; if the semantic space is poorly aligned, the similarity penalty won't effectively filter redundancy. Also, tuning the diversity hyperparameter is delicate—if it's too high, you risk excluding relevant information just because it shares a topic."
+  },
+  {
+   "key": "S2Q06F#1",
+   "id": "S2Q06F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically? [Follow-up to: Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.]",
+   "heard": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically?",
+   "source": "answers-pass",
+   "answer": "To test concurrency and cancellation deterministically, I rely on dependency injection to swap out real-time components with mockable clocks or event loops. I’d use a library like pytest-asyncio to control the event loop, allowing me to manually advance time or trigger specific task states.\n\nFor cancellation, I’d inject a controlled asyncio.Event or a custom signal handler that I can toggle from the test suite. This lets me verify that when the deadline hits or a cancellation signal is sent, the task actually cleans up resources—like closing database connections or aborting downstream API calls—without leaving hanging processes. I’d also use pytest fixtures to simulate transient failures at specific points in the execution flow, ensuring the retry logic respects the overall deadline rather than just restarting the clock. Finally, I’d use asyncio.gather with controlled task cancellation to verify that concurrent operations are aborted simultaneously and that the system state remains consistent."
+  },
+  {
+   "key": "S2Q06F#2",
+   "id": "S2Q06F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically? [Follow-up to: Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.]",
+   "heard": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically?",
+   "source": "answers-pass",
+   "answer": "I'd wrap the evaluation in a loop that checks the remaining time against the deadline before each attempt, using exponential backoff for transient errors, while keeping asyncio.wait_for as the outer boundary. To test this deterministically, I'd use unittest.mock to inject controlled delays and specific exceptions. I'd use an asyncio.Event as a latch to verify exactly eight tasks are active, and for cancellation, I'd trigger it and assert that the cleanup logic executes while the other tasks continue unaffected."
+  },
+  {
+   "key": "S2Q06F#3",
+   "id": "S2Q06F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically? [Follow-up to: Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.]",
+   "heard": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically?",
+   "source": "answers-pass",
+   "answer": "I approach this by injecting a mock clock and a fault-injection layer into the service. By controlling the clock, I can simulate backoff intervals instantly, and the fault injector lets me trigger specific transient errors at precise execution points. For cancellation, I’d use structured concurrency to trigger the deadline, then assert that the task state transitions to cancelled and that cleanup hooks—like database rollbacks—actually execute."
+  },
+  {
+   "key": "S2Q06F#4",
+   "id": "S2Q06F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically? [Follow-up to: Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.]",
+   "heard": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically?",
+   "source": "answers-pass",
+   "answer": "I approach this by abstracting time and the executor. I inject a clock interface so I can manually advance time in my tests, which lets me simulate deadline expirations instantly without waiting. For concurrency, I use a controlled task runner where I can explicitly trigger task completions or failures in a specific order, effectively turning non-deterministic race conditions into a predictable sequence of events."
+  },
+  {
+   "key": "S2Q06F#5",
+   "id": "S2Q06F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically? [Follow-up to: Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.]",
+   "heard": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically?",
+   "source": "answers-pass",
+   "answer": "I'd handle the retries by wrapping the evaluation call in a loop that checks the remaining time against the deadline before each attempt, using an exponential backoff to avoid hammering the service. I'd calculate the remaining budget dynamically so the final attempt is truncated if necessary, ensuring we never exceed the per-case timeout.\n\nTo test this deterministically, I’d use unittest.mock or pytest-mock to patch the evaluation function, injecting controlled delays and specific transient exceptions. By using asyncio's TaskGroup or gather alongside a virtual clock—like freezegun or by mocking asyncio.sleep—I can simulate concurrency and verify that the semaphore correctly limits active tasks and that timeouts trigger exactly when expected without leaking or canceling unrelated tasks."
+  },
+  {
+   "key": "S2Q06F#6",
+   "id": "S2Q06F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically? [Follow-up to: Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.]",
+   "heard": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically?",
+   "source": "answers-pass",
+   "answer": "To handle retries with a deadline, I’d wrap the evaluation call in a loop that checks the remaining time against a deadline timestamp before each attempt. I’d use an exponential backoff strategy for transient errors, but ensure the asyncio.wait_for call is updated or re-evaluated for each retry so the total execution time never exceeds the original budget.\n\nFor deterministic testing, I’d mock the evaluation function using an asyncio.Event or a controlled sleep to simulate specific latencies and failure states. This lets me freeze time and force race conditions or timeouts exactly when I want. I’d verify concurrency by asserting that the number of active tasks—tracked via a counter or by inspecting the event loop—never exceeds the semaphore limit, and I’d confirm cancellation by checking that the cleanup logic runs when I trigger a timeout on a specific task."
+  }
+ ]
+}

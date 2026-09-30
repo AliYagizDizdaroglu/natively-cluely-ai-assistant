@@ -236,7 +236,7 @@ export class SessionTracker {
     /**
      * Add assistant-generated message to context
      */
-    addAssistantMessage(text: string): void {
+    addAssistantMessage(text: string, questionContext?: string): void {
         console.log(`[SessionTracker] addAssistantMessage called with:`, text.substring(0, 50));
         // Whole answer, one JSON-encoded line: the flight-test harness grades
         // answers from this log (interview60.judge.mjs). Nothing else in the app
@@ -284,7 +284,7 @@ export class SessionTracker {
         this.assistantResponseHistory.push({
             text: cleanText,
             timestamp: Date.now(),
-            questionContext: this.getLastInterviewerTurn() || 'unknown'
+            questionContext: questionContext?.trim() || this.getLastInterviewerTurn() || 'unknown'
         });
 
         // Keep history bounded (last 10 responses)

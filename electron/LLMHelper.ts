@@ -19,6 +19,7 @@ import { keepVerbalPrompt, carriesSpokenBudget, withActiveModePrompt } from "./l
 import { capturePrompt } from "./llm/promptCapture"
 import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs, thinkingLevelForModel } from "./llm/geminiThinking"
 import { verbalPrimaryModel } from "./llm/verbalPrimaryModel"
+import { verbalHedgeEnabled, verbalHedgeTriggerMs } from "./llm/verbalHedge"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
 import curl2Json from "@bany/curl-to-json";
 import { CustomProvider, CurlProvider } from './services/CredentialsManager';
@@ -2719,9 +2720,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         // form they were measured with.
         if (carriesSpokenBudget(callerSystemPromptOverride)) {
           const verbalSystem = `${finalSystemPrompt}${styleSuffix}`;
-          // A flight may point the VERBAL answer at the other Flash Lite without changing
-          // the shipped default. Resolved here, before the capture, so the recorded prompt
-          // names the model that actually answered — the offline twin replays these bytes.
+          // A flight may point the VERBAL answer at the other Flash Lite, but only with NATIVELY_VERBAL_HEDGE=0
+          // (the hedge takes either alike). Resolved here, before the capture, so the recorded prompt names
+          // the RESOLVED primary, not the leg that won — the offline twin replays these bytes.
           const verbalModel = verbalPrimaryModel(activeModelId, VERBAL_PRIMARY_MODELS);
           // Off unless the flight harness asks for it — see promptCapture.
           capturePrompt({ model: verbalModel, system: verbalSystem, user: userContent });
@@ -3388,6 +3389,15 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     imagePaths: string[] | undefined,
     systemInstruction: string,
   ): AsyncGenerator<string, void, unknown> {
+    // The verbal hedge (NATIVELY_VERBAL_HEDGE=1): 3.5-lite HIGH first, 3.1-lite LOW raced in when it
+    // is silent, the first token wins — see streamGeminiWithHedge. Only the two Flash Lites hedge;
+    // any other primary keeps the race below. The hedge is the default since the h40c pass (2026-09-29);
+    // NATIVELY_VERBAL_HEDGE=0 restores the stall race below for the two Flash Lites too.
+    if (verbalHedgeEnabled() && (primaryModel === GEMINI_FLASH_MODEL || primaryModel === GEMINI_FLASH_FALLBACK_MODEL)) {
+      yield* this.streamGeminiWithHedge(userMessage, imagePaths, systemInstruction);
+      return;
+    }
+
     const FALLBACK_MODEL = primaryModel === GEMINI_FLASH_FALLBACK_MODEL
       ? GEMINI_FLASH_MODEL
       : GEMINI_FLASH_FALLBACK_MODEL;
@@ -3443,6 +3453,92 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     if (!firstResult.result.done) {
       yield* primaryStream;
     }
+  }
+
+  /**
+   * The verbal hedge — docs/superpowers/specs/2026-09-24-verbal-hedge-proposal.md, the policy of
+   * electron/test/golden/hedge-live.policy.mjs (runHedge), probed live 2026-09-25: PROCEED.
+   * gemini-3.5-flash-lite (HIGH) starts first. With no first token by the trigger, or on a failure
+   * before its first token, gemini-3.1-flash-lite (LOW) starts BESIDE it and 3.5-lite keeps running;
+   * the first token wins and the other request is aborted at once through its own stop signal
+   * (never AbortSignal.any: it leaks under Electron 33). A leg that fails leaves the other to finish.
+   * Both failing throws the front's error so WhatToAnswerLLM's pre-token redirect applies, and both
+   * ending empty ends empty, as in the stall race (NATIVELY_VERBAL_HEDGE=0). The winner is announced as
+   * `__model_source:<model> (hedge)__` ahead of its first token: the head label named the shipped
+   * primary before any request was made, and a bar that names the wrong model was the 2026-09-22
+   * bug class (783991a, 47def85).
+   */
+  private async * streamGeminiWithHedge(
+    userMessage: string,
+    imagePaths: string[] | undefined,
+    systemInstruction: string,
+  ): AsyncGenerator<string, void, unknown> {
+    const FRONT = GEMINI_FLASH_FALLBACK_MODEL, BACK = GEMINI_FLASH_MODEL;
+    const triggerMs = verbalHedgeTriggerMs();
+    const t0 = Date.now();
+    const since = () => Date.now() - t0;
+    console.log(`[LLMHelper] verbal hedge: front=${FRONT} back=${BACK} trigger=${triggerMs}ms`);
+    type First = { kind: 'token'; value: string } | { kind: 'empty' } | { kind: 'error'; err: unknown };
+    const start = (model: string) => {
+      const stop = new AbortController();
+      const gen = this.streamWithGeminiModel(userMessage, model, imagePaths, systemInstruction, stop.signal);
+      const leg = { model, gen, stop, settled: null as First | null, first: null as unknown as Promise<First> };
+      leg.first = gen.next().then(
+        (r): First => (r.done || !r.value ? { kind: 'empty' } : { kind: 'token', value: r.value }),
+        (err): First => ({ kind: 'error', err }),
+      ).then((r) => { leg.settled = r; return r; });
+      return leg;
+    };
+    type Leg = ReturnType<typeof start>;
+    const deliver = async function* (leg: Leg, firstToken: string): AsyncGenerator<string, void, unknown> {
+      // The sentinel and the first token are hand-yielded outside `yield* leg.gen`; a consumer that
+      // stops on either (a superseding generation) never reaches the request's own finally, so close
+      // the parked generator here, not awaited (it sits at its first yield: the close aborts at once).
+      let delivered = false;
+      try {
+        yield `__model_source:${leg.model} (hedge)__`;
+        yield firstToken;
+        delivered = true;
+      } finally {
+        if (!delivered) leg.gen.return(undefined);
+      }
+      yield* leg.gen;
+    };
+    const front = start(FRONT);
+    let timer!: NodeJS.Timeout;
+    const trigger = new Promise<'trigger'>((resolve) => { timer = setTimeout(() => resolve('trigger'), triggerMs); });
+    const frontFirst = await Promise.race([front.first, trigger]);
+    clearTimeout(timer);
+    if (frontFirst !== 'trigger' && frontFirst.kind === 'token') {
+      console.log(`[LLMHelper] verbal hedge: won by ${FRONT} at ${since()}ms; other=not-started`);
+      yield* deliver(front, frontFirst.value);
+      return;
+    }
+    const reason = frontFirst === 'trigger' ? 'trigger' : frontFirst.kind === 'error' ? 'front-error' : 'front-empty';
+    if (frontFirst !== 'trigger' && frontFirst.kind === 'error') console.warn(`[LLMHelper] verbal hedge: ${FRONT} failed before its first token: ${(frontFirst.err as Error)?.message ?? String(frontFirst.err)}`);
+    console.log(`[LLMHelper] verbal hedge: back started at ${since()}ms reason=${reason}`);
+    const back = start(BACK);
+    const legs: Leg[] = reason === 'trigger' ? [front, back] : [back];
+    const winner = await new Promise<{ leg: Leg; value: string } | null>((resolve) => {
+      let alive = legs.length;
+      for (const leg of legs) leg.first.then((r) => { if (r.kind === 'token') resolve({ leg, value: r.value }); else if (--alive === 0) resolve(null); });
+    });
+    if (!winner) {
+      const f = front.settled!, b = back.settled!;
+      console.warn(`[LLMHelper] verbal hedge: no answer - front ${f.kind}, back ${b.kind}`);
+      if (f.kind === 'error') throw f.err;
+      if (b.kind === 'error') throw b.err;
+      return;   // both empty: nothing to say, as in the stall race (NATIVELY_VERBAL_HEDGE=0)
+    }
+    const loser = winner.leg === front ? back : front;
+    // A leg the loser never got to finish — still pending, OR it also produced a token in the
+    // same tick the winner did (h40c review M1: two sockets can both deliver before either
+    // .then() runs) — is aborted and labelled 'aborted', not 'empty': only a leg that is
+    // genuinely done (failed or empty) is left alone.
+    const other = loser.settled?.kind === 'error' ? 'failed' : loser.settled?.kind === 'empty' ? 'empty' : 'aborted';
+    if (loser.settled?.kind !== 'error' && loser.settled?.kind !== 'empty') loser.stop.abort();   // its pending next() rejects into `first` (already caught): no unhandled rejection
+    console.log(`[LLMHelper] verbal hedge: won by ${winner.leg.model} at ${since()}ms; other=${other}`);
+    yield* deliver(winner.leg, winner.value);
   }
 
   /**

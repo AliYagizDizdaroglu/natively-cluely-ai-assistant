@@ -210,9 +210,17 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     const claimOf = new Map(); // dispatch -> item (spoken or cue)
     if (hasDispatch) {
         for (const d of dispatches) {
+            // An answer dispatched on a Live PARAPHRASE (verdict=paraphrase) anchors on the
+            // paraphrase's first 80 chars, which can share no content word with the played text
+            // (h40b R07F went to nobody); the dispatch line also carries the question the app
+            // answered, so it is scored too — but ONLY on verdict=paraphrase: a paraphrase has
+            // been checked against the interviewer's own STT before dispatch, while an
+            // unverifiable question= is unchecked Live text, exactly where a fabrication lives
+            // (after8 M11: an invented question's question= shared enough words with a real item
+            // to falsely claim it, review fix round 1 I1).
             const candidates = allWindows
                 .filter((it) => d.at >= it.playedAt - 2000 && d.at <= it.spokeEnd + 60000)
-                .map((it) => ({ it, score: Math.max(overlap(d.anchor, it.q), overlap(it.q, d.anchor)) }))
+                .map((it) => ({ it, score: Math.max(overlap(d.anchor, it.q), overlap(it.q, d.anchor), d.question && d.verdict === 'paraphrase' ? overlap(d.question, it.q) : 0, d.question && d.verdict === 'paraphrase' ? overlap(it.q, d.question) : 0) }))
                 .filter((c) => c.score >= 0.15);
             if (!candidates.length) continue;
             candidates.sort((a, b) => {

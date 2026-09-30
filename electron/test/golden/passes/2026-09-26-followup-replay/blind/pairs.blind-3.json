@@ -1,0 +1,138 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "S2Q07F#1",
+   "id": "S2Q07F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "A user loses access to a document while a query is running. Where and when must authorization be checked? [Follow-up to: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.]",
+   "heard": "A user loses access to a document while a query is running. Where and when must authorization be checked?",
+   "source": "answers-pass",
+   "answer": "Authorization must be enforced at the retrieval layer using pre-filters, ensuring unauthorized chunks never enter the context window. If access is revoked mid-query, the system should re-verify permissions at the generation step, treating the document as inaccessible and excluding it from the final response. For ingestion, I enforce strict schema validation using Pydantic models; any malformed metadata is routed to a dead-letter queue for manual review or automated repair, preventing corruption of the vector index."
+  },
+  {
+   "key": "S2Q07F#2",
+   "id": "S2Q07F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "A user loses access to a document while a query is running. Where and when must authorization be checked? [Follow-up to: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.]",
+   "heard": "A user loses access to a document while a query is running. Where and when must authorization be checked?",
+   "source": "answers-pass",
+   "answer": "Authorization must be enforced at the retrieval layer, specifically at query time. I filter retrieved context against the user's ACLs before it reaches the LLM, ensuring the model never processes unauthorized data. If access is lost mid-query, the system should exclude those documents and, if needed, inform the user that the response is based on partial data.\n\nFor ingestion, I enforce strict schema validation using Pydantic models at the entry point. Records failing validation go to a dead-letter queue. For partial metadata, I use an LLM-based extraction step to infer missing fields, but I assign confidence scores; if confidence is low, I flag it for human review rather than letting bad data pollute the index."
+  },
+  {
+   "key": "S2Q07F#3",
+   "id": "S2Q07F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "A user loses access to a document while a query is running. Where and when must authorization be checked? [Follow-up to: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.]",
+   "heard": "A user loses access to a document while a query is running. Where and when must authorization be checked?",
+   "source": "answers-pass",
+   "answer": "Authorization must be enforced at the retrieval layer using pre-filtering, but for critical security, I implement a secondary verification step at the generation layer. By injecting access control lists into the metadata, the search engine filters out unauthorized chunks before they even reach the LLM, but if a permission change happens mid-query, the LLM-as-judge layer catches the discrepancy by cross-referencing the retrieved context against the user's current session token.\n\nRegarding ingestion, I handle partial or incorrect metadata by implementing a strict schema validation layer using Pydantic models before any data hits the vector database. If a document fails validation, it gets routed to a dead-letter queue for manual inspection, ensuring that only clean, fully-attributed data enters the index, which prevents the downstream retrieval and citation errors that typically plague large-scale RAG systems."
+  },
+  {
+   "key": "S2Q07F#4",
+   "id": "S2Q07F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "A user loses access to a document while a query is running. Where and when must authorization be checked? [Follow-up to: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.]",
+   "heard": "A user loses access to a document while a query is running. Where and when must authorization be checked?",
+   "source": "answers-pass",
+   "answer": "I treat authorization as a multi-layer constraint. I enforce it at the retrieval layer using pre-filtering—so the vector database only returns what the user is permitted to see—and then again as a post-retrieval guardrail before the context is injected into the prompt. If access is lost mid-query, the retrieval step will naturally fail to fetch that document, and the system should simply return the answer based on the remaining authorized context, potentially flagging that some sources were excluded.\n\nFor ingestion, I rely on strict Pydantic schemas to catch partial or malformed data immediately. If data is dirty, I push it to a staging pipeline where an LLM-as-judge or a deterministic script cleans and validates the metadata before it's indexed. This keeps the vector store clean and ensures our filtering logic doesn't break on bad data."
+  },
+  {
+   "key": "S2Q07F#5",
+   "id": "S2Q07F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "A user loses access to a document while a query is running. Where and when must authorization be checked? [Follow-up to: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.]",
+   "heard": "A user loses access to a document while a query is running. Where and when must authorization be checked?",
+   "source": "answers-pass",
+   "answer": "Authorization needs to be checked at the retrieval layer, ideally using a pre-filter on the vector store namespace to ensure only authorized documents are fetched. If access is lost mid-query, the retrieval service must re-verify permissions against the IAM service before the context is injected into the LLM prompt; if denied, we simply exclude that document entirely. For metadata ingestion, I enforce strict schema validation using Pydantic models at the pipeline entry point. If data is partial or malformed, I route those records to a dead-letter queue for review rather than indexing them, ensuring our search indices remain clean and reliable."
+  },
+  {
+   "key": "S2Q07F#6",
+   "id": "S2Q07F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "A user loses access to a document while a query is running. Where and when must authorization be checked? [Follow-up to: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.]",
+   "heard": "A user loses access to a document while a query is running. Where and when must authorization be checked?",
+   "source": "answers-pass",
+   "answer": "Authorization needs to be a two-gate process. First, we apply pre-filters at the retrieval layer so restricted chunks never enter the context window. Second, we re-verify permissions at the generation layer before the LLM synthesizes the answer. If access is revoked mid-query, the system must fail-safe by excluding those chunks, leading the LLM to report it has no information rather than leaking data.\n\nFor ingestion, I use a strict schema validation layer—like Pydantic—to catch malformed metadata before it hits the database. If metadata is incomplete or incorrect, the record is routed to a dead-letter queue for automated repair or manual review, which keeps our index clean and queryable."
+  },
+  {
+   "key": "S2Q08F#1",
+   "id": "S2Q08F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate the index in three stages. First, I run a checksum on document counts and metadata schemas to ensure physical completeness. Second, I run a golden set of queries through both indices, using an LLM-as-judge pipeline to compare retrieval relevance and catch any accuracy regressions. Finally, I deploy the new index in shadow mode to process live traffic, comparing retrieved context and latency against production before the final cutover."
+  },
+  {
+   "key": "S2Q08F#2",
+   "id": "S2Q08F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I use a three-layer verification. First, I run a checksum comparison between the source document store and the vector database to ensure total record parity. Second, I run shadow traffic where I pipe production queries to both indexes, comparing NDCG and recall on a golden set to ensure the new model isn't degrading performance. Finally, I monitor the CDC stream lag; I only cut over once the ingestion latency is sub-second, proving the new index is fully synchronized and current."
+  },
+  {
+   "key": "S2Q08F#3",
+   "id": "S2Q08F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I use a shadow-traffic validation approach combined with an automated \"golden set\" comparison. Before cutover, I run the new index in parallel with the production one, routing a percentage of live queries to both and comparing the retrieved context chunks for semantic overlap and retrieval metrics like NDCG. Simultaneously, I run a regression suite against a curated golden set of queries—specifically including edge cases that caused past hallucinations—to ensure the new index maintains or improves accuracy scores before I promote it to the primary endpoint."
+  },
+  {
+   "key": "S2Q08F#4",
+   "id": "S2Q08F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a reconciliation job that compares the document ID set from the source database against the index to ensure 100% coverage. For currency, I monitor the CDC stream lag; once the lag hits sub-second latency, I know the index is synchronized. Finally, I perform a shadow evaluation, routing production traffic to both indices and comparing the top-k results to verify that the new index performs as expected before the cutover."
+  },
+  {
+   "key": "S2Q08F#5",
+   "id": "S2Q08F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a shadow validation process where the new index processes a mirrored stream of production traffic in parallel. I compare the retrieval results from both the old and new indices against a golden set of queries to ensure the new model maintains or improves NDCG and recall. Finally, I monitor the ingestion lag on the new index using a dedicated consumer group to confirm it’s caught up to the CDC stream and matches the document count of the primary index before I flip the traffic."
+  },
+  {
+   "key": "S2Q08F#6",
+   "id": "S2Q08F",
+   "kind": "spoken",
+   "level": "followup",
+   "topic": "Document intelligence / RAG",
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run the new index in a shadow environment, mirroring live traffic to compare it against the current production index. I use an LLM-as-judge pipeline to evaluate retrieval quality against our golden set, specifically tracking recall and precision parity. Once the new index meets or exceeds our baseline metrics on that shadow traffic, I trigger the cutover."
+  }
+ ]
+}

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { RUBRIC, graderPromptVersion, mergeVerdicts, pairAnswers, pairsFromAnswers, summarizeVerdicts, verdictOf } from './interview60.judge.mjs';
+import { RUBRIC, graderPromptVersion, mergeVerdicts, pairAnswers, pairsFromAnswers, questionForGrader, summarizeVerdicts, verdictOf } from './interview60.judge.mjs';
 import { summarizeJudge } from './interview60.metrics.mjs';
 
 const t = (s: string) => Date.parse(`2026-09-04T08:00:${s}Z`);
@@ -113,6 +113,45 @@ describe('pairAnswers', () => {
         // An anchor WITH content words that matches nothing still stays unclaimed.
         const noise = '2026-09-04T08:00:44.000Z [LOG] [Main] dispatch: answer source=whisper anchor="Configure the printer driver settings" verdict=match';
         expect(pairAnswers(noise, timeline).map((p) => p.id)).toEqual(['?']);
+    });
+
+    it('claims an answer anchored on a Live paraphrase by the question= it dispatched (h40b R07F: the anchor is the paraphrase\'s first 80 chars and shares no content word with the played text)', () => {
+        const at = (iso: string) => Date.parse(iso);
+        const tl = { ...timeline, items: [
+            { id: 'R07', kind: 'spoken', level: 'verbal', topic: 'queues', q: 'Two workers pick up the same job from a queue. How do you stop that happening?', playedAt: at('2026-09-04T08:00:00.000Z'), clipSecs: 6 },
+            { id: 'R07F', kind: 'spoken', level: 'followup', topic: 'queues', chain: 'R07', q: 'And if the worker that claimed it crashes halfway?', playedAt: at('2026-09-04T08:01:30.000Z'), clipSecs: 3 },
+        ] };
+        const log = [
+            '2026-09-04T08:01:40.000Z [LOG] [Main] dispatch: answer source=live anchor="In the scenario where two workers are picking up jobs from a queue, what happens" verdict=paraphrase question="In the scenario where two workers are picking up jobs from a queue, what happens if the worker that claimed a job crashes halfway through processing it?"',
+            '2026-09-04T08:01:44.000Z [LOG] [Answer] full: "I rely on the visibility timeout and an idempotent handler."',
+        ].join('\n');
+        const pairs = pairAnswers(log, tl);
+        expect(pairs.map((p) => p.id)).toEqual(['R07F']);
+        expect(pairs[0].question).toBe(`${tl.items[1].q} [Follow-up to: ${tl.items[0].q}]`);
+        expect(pairs[0].heard).toBe('In the scenario where two workers are picking up jobs from a queue, what happens');
+        // Without a question= field the same anchor stays unclaimed, as before (R07's own window ended at 66 s).
+        expect(pairAnswers(log.replace(/ question="[^"]*"/, ''), tl).map((p) => p.id)).toEqual(['?']);
+    });
+    it('exports questionForGrader for the blind-pairs builders: a chained follow-up carries its parent', () => {
+        const items = [{ id: 'P', q: 'Parent question?' }, { id: 'F', chain: 'P', q: 'Follow-up?' }] as any[];
+        expect(questionForGrader(items[1], items)).toBe('Follow-up? [Follow-up to: Parent question?]');
+        expect(questionForGrader(items[0], items)).toBe('Parent question?');
+    });
+
+    it('does not let an unverified Live question= claim a real item — the after8 fabrication (fix round 1, I1: a paraphrase is checked against the interviewer STT before dispatch; an unverifiable question= is not, and is exactly where a fabrication lives)', () => {
+        const tl = { ...timeline, items: [
+            { id: 'M11', kind: 'spoken', level: 'medium', topic: 'Kubernetes', q: 'How do you manage GPU resources across multiple teams sharing one cluster?', playedAt: Date.parse('2026-09-07T07:36:12.968Z'), clipSecs: 5.3545 },
+        ] };
+        // Real after8 line (2026-09-07T07:36:26.044Z): Live invented a question 13 s after M11
+        // played. The 80-char anchor overlaps M11.q in one word ("multiple") — below threshold, so
+        // this must stay unclaimed. The full question= shares "multiple" and "cluster" with M11.q —
+        // enough to clear the threshold if scored — but verdict=unverifiable means that text was
+        // never checked against the interviewer's own STT, unlike a paraphrase.
+        const log = [
+            '2026-09-07T07:36:26.044Z [LOG] [Main] dispatch: answer source=live anchor="How would you approach deploying multiple versions of the same model in one clus" verdict=unverifiable question="How would you approach deploying multiple versions of the same model in one cluster?"',
+            '2026-09-07T07:36:28.000Z [LOG] [Answer] full: "You would use namespaces and resource quotas per team."',
+        ].join('\n');
+        expect(pairAnswers(log, tl).map((p) => p.id)).toEqual(['?']);
     });
 });
 

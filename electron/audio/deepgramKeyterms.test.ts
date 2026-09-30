@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DEEPGRAM_KEYTERMS, keytermsFor } from './deepgramKeyterms';
+import { DEEPGRAM_KEYTERMS, keytermsFor, isEnglishLanguage } from './deepgramKeyterms';
 
 /**
  * Every term here was LOST by Deepgram in two or more flights, measured by diffing each
@@ -56,5 +56,16 @@ describe('keytermsFor', () => {
         expect(keytermsFor('multi')).toBeUndefined();
         expect(keytermsFor('tr')).toBeUndefined();
         expect(keytermsFor('es-419')).toBeUndefined();
+    });
+});
+
+/**
+ * The boundary repair (deepgramBoundaryRepair.ts) is English-only too — its tokens are ASCII — and
+ * gates on the same predicate, so the two can never disagree about what "English" is.
+ */
+describe('isEnglishLanguage', () => {
+    it('is true for en and regional English, false for every other language and for multi', () => {
+        for (const code of ['en', 'en-US', 'en-GB']) expect(isEnglishLanguage(code)).toBe(true);
+        for (const code of ['multi', 'es', 'tr', 'es-419', 'ru', 'ja']) expect(isEnglishLanguage(code)).toBe(false);
     });
 });

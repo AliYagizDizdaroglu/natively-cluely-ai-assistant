@@ -1,0 +1,14 @@
+{
+  "S2Q07F#1": {"correctness": 2, "on_topic": 1, "delivery": 2, "reason": "Correct two-point check (retrieval pre-filter, re-verify at generation) but drifts into unasked ingestion validation."},
+  "S2Q07F#2": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Only checks at retrieval; never says where the mid-query revocation is re-checked; long ingestion drift."},
+  "S2Q07F#3": {"correctness": 0, "on_topic": 1, "delivery": 1, "reason": "Enforcing authorization via an LLM-as-judge cross-referencing session tokens is a security mischaracterisation; long, drifts to ingestion."},
+  "S2Q07F#4": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Two gates named, but claims retrieval 'naturally fails' mid-query, muddling the revocation case; long ingestion drift."},
+  "S2Q07F#5": {"correctness": 2, "on_topic": 1, "delivery": 1, "reason": "Correct pre-filter plus IAM re-check before prompt injection; drifts to ingestion and runs about 100 words."},
+  "S2Q07F#6": {"correctness": 2, "on_topic": 1, "delivery": 1, "reason": "Clear two-gate model with fail-safe exclusion; unasked ingestion section pushes it past 85 words."},
+  "S2Q08F#1": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Covers completeness counts and quality via golden set and shadow, but misses how currency is proven."},
+  "S2Q08F#2": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Record-parity check for completeness, CDC lag for currency, shadow quality comparison; concise."},
+  "S2Q08F#3": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Only quality comparison via shadow and golden set; completeness and currency not addressed; somewhat long."},
+  "S2Q08F#4": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Document-ID reconciliation, CDC lag for currency, and shadow top-k comparison directly answer the question."},
+  "S2Q08F#5": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Shadow quality comparison plus consumer-lag catch-up and document-count match cover completeness and currency."},
+  "S2Q08F#6": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Only shadow quality evaluation; says nothing about proving completeness or currency of the index."}
+}

@@ -48,16 +48,28 @@ const technical = (helper: LLMHelper) =>
 describe('NATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only', () => {
     const saved = process.env[VERBAL_PRIMARY_MODEL_ENV];
     const savedLevel = process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+    // This file checks the plain call, so it pins the hedge off with NATIVELY_VERBAL_HEDGE='0'. The
+    // hedge is the shipped default since h40c (2026-09-29): left unset it routes the two lite models
+    // through the hedge instead, changing which model answers (h40c review M2 saw the same from a
+    // flight or smoke shell that exported the flag) — same as LLMHelper.stallFallback.test.ts.
+    const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+    const savedTrigger = process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
     beforeEach(() => {
         generateContentStream.mockClear();
         delete process.env[VERBAL_PRIMARY_MODEL_ENV];
         delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+        process.env.NATIVELY_VERBAL_HEDGE = '0';
+        delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
     });
     afterEach(() => {
         if (saved === undefined) delete process.env[VERBAL_PRIMARY_MODEL_ENV];
         else process.env[VERBAL_PRIMARY_MODEL_ENV] = saved;
         if (savedLevel === undefined) delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
         else process.env.NATIVELY_GEMINI_THINKING_LEVEL = savedLevel;
+        if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE;
+        else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
+        if (savedTrigger === undefined) delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
+        else process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS = savedTrigger;
     });
 
     it('unset: the technical route answers on the selected model, exactly as today', async () => {

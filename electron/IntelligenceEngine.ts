@@ -13,6 +13,7 @@ import {
 } from './llm';
 import { getAnswerShapeGuidance, IntentResult } from './llm/IntentClassifier';
 import { pinSettledQuestion } from './llm/lastInterviewerTurn';
+import { withParentExchange } from './llm/followUpParent';
 
 // Mode types
 export type IntelligenceMode = 'idle' | 'assist' | 'what_to_say' | 'follow_up' | 'recap' | 'clarify' | 'manual' | 'follow_up_questions' | 'code_hint' | 'brainstorm';
@@ -329,11 +330,12 @@ export class IntelligenceEngine extends EventEmitter {
                 lastInterviewerTurn = question ?? null;
                 console.log('[IntelligenceEngine] runWhatShouldISay: using contextOverride snapshot');
             } else {
-                const transcriptTurns = contextItems.map(item => ({
+                const transcriptTurns = withParentExchange(contextItems.map(item => ({
                     role: item.role,
                     text: item.text,
                     timestamp: item.timestamp
-                }));
+                })), this.session.getAssistantResponseHistory());
+                if (transcriptTurns.length > contextItems.length) console.log('[IntelligenceEngine] runWhatShouldISay: previous exchange restored to the window (NATIVELY_FOLLOWUP_PARENT)');
 
                 preparedTranscript = prepareTranscriptForWhatToAnswer(transcriptTurns, 12);
                 if (settled) preparedTranscript = pinSettledQuestion(preparedTranscript, settled);
@@ -459,7 +461,7 @@ export class IntelligenceEngine extends EventEmitter {
                 fullAnswer = "Could you repeat that? I want to make sure I address your question properly.";
             }
 
-            this.session.addAssistantMessage(fullAnswer);
+            this.session.addAssistantMessage(fullAnswer, settled ?? undefined);
 
             this.session.pushUsage({
                 type: 'assist',

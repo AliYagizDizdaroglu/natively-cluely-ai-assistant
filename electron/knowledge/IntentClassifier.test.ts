@@ -5,6 +5,8 @@ import { IntentType } from './types';
 // classifications were "negotiation" — for Docker, Airflow and Kubernetes.
 // @ts-ignore — untyped ESM harness module
 import { INTERVIEW } from '../test/golden/interview60.questions.mjs';
+// @ts-ignore — untyped ESM harness module
+import { SPOKEN as HOLDOUT_SPOKEN } from '../test/golden/holdout40.questions.mjs';
 
 describe('classifyIntent — negotiation must need a negotiation word', () => {
     it('classifies none of the 76 spoken interview questions as negotiation', () => {
@@ -13,6 +15,51 @@ describe('classifyIntent — negotiation must need a negotiation word', () => {
         expect(spoken.length).toBe(76);
         const wrong = spoken.filter((i) => classifyIntent(i.q) === IntentType.NEGOTIATION).map((i) => i.id);
         expect(wrong).toEqual([]);
+    });
+    it('classifies none of holdout40\'s 45 spoken questions as negotiation (h40a R09 went to the coaching card on "salary", 2026-09-24)', () => {
+        expect((HOLDOUT_SPOKEN as any[]).length).toBe(45);
+        const wrong = (HOLDOUT_SPOKEN as any[]).filter((i) => classifyIntent(i.q) === IntentType.NEGOTIATION).map((i) => i.id);
+        expect(wrong).toEqual([]);
+    });
+    it('a technical question that mentions salary is technical, not negotiation (bare word or phrase, with a technical marker)', () => {
+        expect(classifyIntent('Give me the SQL for the second highest salary in each department.')).toBe(IntentType.TECHNICAL);
+    });
+    it('a technical marker beats any pay term (the h40a R09 class: a coaching card is unspeakable on a technical question)', () => {
+        for (const q of [
+            'For each department, write a query that returns the salary range: the minimum and the maximum salary.',
+            'Write a SQL query that joins each employee to the pay grade whose salary range contains their salary.',
+            "Compute each employee's total pay in SQL as base salary plus bonus.",
+            'Train a regression model that predicts expected salary from years of experience.',
+            'Write a query that computes total compensation per department.',
+            'Design a pipeline that ingests equity trades from three exchanges.',
+        ]) expect(classifyIntent(q)).not.toBe(IntentType.NEGOTIATION);
+    });
+    it('a pay question without a technical marker is still a negotiation', () => {
+        for (const q of [
+            "What's your expected salary?",
+            'What is your salary range for this level?',
+            'Is the compensation package negotiable?',
+        ]) expect(classifyIntent(q)).toBe(IntentType.NEGOTIATION);
+    });
+    it('a negotiation idiom is not a technical marker ("on the table", "join us")', () => {
+        for (const q of [
+            'A signing bonus is also on the table if that helps you decide.',
+            'What salary would it take for you to join us?',
+            'Is equity on the table for you, or would you rather have a higher base?',
+        ]) expect(classifyIntent(q)).toBe(IntentType.NEGOTIATION);
+    });
+    it('a plural technical marker vetoes too (queries, tables, functions)', () => {
+        for (const q of [
+            "Write queries that return each department's salary range.",
+            "Given the employees and departments tables, return each department's salary range.",
+            'Use window functions to rank employees by base salary within each department.',
+        ]) expect(classifyIntent(q)).not.toBe(IntentType.NEGOTIATION);
+    });
+    it('the transcript\'s spellings of SQL are markers too ("sequel", "Postgres")', () => {
+        for (const q of [
+            "Give me the sequel for each department's salary range.",
+            "Using Postgres, return each department's salary range.",
+        ]) expect(classifyIntent(q)).not.toBe(IntentType.NEGOTIATION);
     });
     it('still recognises real negotiation questions', () => {
         for (const q of [

@@ -12,6 +12,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { finalsFrom } from './interview60.turns-finals.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const [runDir, ttsDir] = process.argv.slice(2);
@@ -50,8 +51,8 @@ const items = tl.items.map((i) => {
     return { id: i.id, level: i.level, kind: i.kind ?? 'spoken', ...(i.long ? { long: true } : {}), q: i.q, playedAt, clipSecs: i.clipSecs, voice: voiceSegments(path.join(ttsDir, `${i.id}.wav`), playedAt) };
 });
 const since = tl.startedMs - 2000;
-const finals = [...dbg.matchAll(/^(\S+) \[LOG\] \[DeepgramStreaming\] Transcript event — isFinal=true, text="((?:[^"\\]|\\.)*)"/gm)]
-    .map((m) => ({ at: ts(m[1]), text: unq(m[2]).trim() })).filter((f) => f.text && f.at >= since);
+// As the turn tracker saw them: a boundary-repaired final carries its restored word(s) (interview60.turns-finals.mjs).
+const finals = finalsFrom(dbg, since);
 const dispatchRe = /^(\S+) \[LOG\] \[Main\] dispatch: (answer|chip|drop|extend|hold|mark|supersede) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)(?:[^\n]*? question="((?:[^"\\]|\\.)*)")?/gm;
 const actual = [...dbg.matchAll(dispatchRe)].map((m) => ({ at: ts(m[1]), action: m[2], source: m[3], anchor: unq(m[4]), verdict: m[5], question: m[6] ? unq(m[6]) : '' })).filter((d) => d.at >= since);
 // A "hold" dispatch was the OLD pipeline explicitly withholding on a fragmentary anchor

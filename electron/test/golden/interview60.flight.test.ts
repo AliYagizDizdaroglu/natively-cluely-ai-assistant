@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ANSWER_MODELS, CUE_RULE_MARK, FOCUSED_ONLY_BY_ROSTER, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, capturedOnly, chooseLiveModel, focusedOnlyFor, hasCueRule, newestRunDir } from './interview60.flight.mjs';
+import { ANSWER_MODELS, CUE_RULE_MARK, FOCUSED_MODELS, FOCUSED_ONLY_BY_ROSTER, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, capturedOnly, chooseLiveModel, focusedOnlyFor, hasCueRule, newestRunDir } from './interview60.flight.mjs';
 import { CUE_RULE } from '../../llm/prompts';
 
 describe('chooseLiveModel', () => {
@@ -99,6 +99,16 @@ describe('answersFileFor', () => {
     it('a tagged arm of the default model gets its own file, the way answers.mjs --tag names it', () => {
         expect(answersFileFor('gemini-3.1-flash-lite', 'low')).toBe('interview60.answers.gemini-3.1-flash-lite_low.json');
         expect(answersFileFor('gemini-3.1-flash-lite', 'captured-minimal')).toBe('interview60.answers.gemini-3.1-flash-lite_captured-minimal.json');
+    });
+});
+
+describe('ANSWER_MODELS', () => {
+    it('the flight answers with the two Flash Lites only: no Groq comparison arms (user, 2026-09-26)', () => {
+        expect(ANSWER_MODELS).toEqual(['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite']);
+    });
+
+    it('no id the flight can schedule runs on Groq: answer, focused and paired arms (user, 2026-09-26)', () => {
+        for (const m of [...ANSWER_MODELS, ...FOCUSED_MODELS, ...PAIRED_ARMS.map((a) => a.model)]) expect(m, m).not.toContain('/');
     });
 });
 

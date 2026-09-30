@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { collectPass, renderPassRecord, renderPassIndex, passRow, graderOf } from './interview60.pass-record.mjs';
+import { collectPass, renderPassRecord, renderPassIndex, passRow, graderOf, verbalHedgeFromLog } from './interview60.pass-record.mjs';
+import { describeVerbalHedgeAtStartup } from '../../llm/verbalHedge';
 
 /**
  * One record per pass, so a change to the pipeline can be read against the same golden
@@ -112,6 +113,32 @@ describe('renderPassRecord — one file holds the whole pass', () => {
         expect(out).toContain('The F1 of the extraction model rose from 0.72 to 0.84.');
         expect(out).not.toContain('undefined');
     });
+
+    it('h40c review M6: no verbal-hedge startup line (every run before da28f25) — renders exactly as before, no new line', () => {
+        expect(md).not.toContain('Verbal hedge');
+        expect(md).toContain('| answers | gemini-3.1-flash-lite (in-app) · arms: qwen/qwen3.8-27b |');
+    });
+
+    it('h40c review M6: verbal hedge off — one extra summary line names it, the answers row is unchanged', () => {
+        const md2 = renderPassRecord(pass({ meta: { ...pass().meta, verbalHedge: 'off' } }));
+        expect(md2).toContain('- Verbal hedge: off');
+        expect(md2).toContain('| answers | gemini-3.1-flash-lite (in-app) · arms: qwen/qwen3.8-27b |');
+    });
+
+    it('h40c review M6: verbal hedge on — the summary line names the trigger, and the answers row names both lites instead of 3.1-lite alone', () => {
+        const md2 = renderPassRecord(pass({ meta: { ...pass().meta, verbalHedge: 'on trigger=5000ms' } }));
+        expect(md2).toContain('- Verbal hedge: on trigger=5000ms (3.5-flash-lite front, 3.1-flash-lite back; answers name their model in the won-by lines)');
+        expect(md2).toContain('| answers | hedge (gemini-3.5-flash-lite front, gemini-3.1-flash-lite back) (in-app) · arms: qwen/qwen3.8-27b |');
+    });
+
+    it('h40c review M6 fix round 1 (Minor 3): the hedge can only engage on one of the two lites — a different answer model keeps its own name even with the hedge on', () => {
+        const md2 = renderPassRecord(pass({ meta: { ...pass().meta, verbalHedge: 'on trigger=5000ms', answerModel: 'gemini-3.5-flash' } }));
+        // The flag was still on for the run, so the summary bullet still names it.
+        expect(md2).toContain('- Verbal hedge: on trigger=5000ms (3.5-flash-lite front, 3.1-flash-lite back; answers name their model in the won-by lines)');
+        // But the hedge never raced for THIS primary, so the answers row keeps naming it, not the hedge pair.
+        expect(md2).toContain('| answers | gemini-3.5-flash (in-app) · arms: qwen/qwen3.8-27b |');
+        expect(md2).not.toContain('hedge (gemini-3.5-flash-lite front');
+    });
 });
 
 describe('renderPassIndex — the trend line across passes', () => {
@@ -191,6 +218,21 @@ describe('the grader model — a pass names the model that graded it', () => {
         expect(renderPassRecord(odd)).toContain('| grader | model\\|x, prompt e53dff6256aa |');
         const row = renderPassIndex([passRow(odd)]).split('\n').find((l) => l.startsWith('| 2026-'));
         expect(row).toMatch(/\| model\\\|x \+ unrecorded \|$/);
+    });
+});
+
+describe('verbalHedgeFromLog (h40c review, fix round 1, Minor 1): the regex M6 exists for, proved against the real describe function', () => {
+    // A debug log line looks like "<ISO> [LOG] <text>" — the timestamp and level prefix that
+    // M6's regex must see past, not just a hand-typed "[Main] verbal hedge: …" fixture.
+    const at = (line: string) => `2026-09-26T10:00:00.000Z [LOG] ${line}`;
+
+    it('reads off and on-trigger from the real describeVerbalHedgeAtStartup output', () => {
+        expect(verbalHedgeFromLog(at(describeVerbalHedgeAtStartup({ NATIVELY_VERBAL_HEDGE: '0' } as any)))).toBe('off');
+        expect(verbalHedgeFromLog(at(describeVerbalHedgeAtStartup({ NATIVELY_VERBAL_HEDGE: '1' } as any)))).toBe('on trigger=5000ms');
+    });
+
+    it('is null when the log holds no hedge line at all (every run before da28f25)', () => {
+        expect(verbalHedgeFromLog(at('=== Natively session started 2026-09-26T10:00:00.000Z ==='))).toBeNull();
     });
 });
 
