@@ -63,8 +63,8 @@ describe('runWhatShouldISay carries the cue block', () => {
     });
 
     it('a hedge-won answer: the sentinel-only chunk between the cues and the prose names the model and does not swallow the cues', async () => {
-        // The hedge announces its winner as its own chunk, yielded after onCues has fired and before the
-        // first prose token. The engine must skip that chunk before it reads pendingCues.
+        // The hedge's own head sentinel is stripped earlier, by stripModelSentinel. After onCues the engine gets nameStallSwitch's
+        // re-announce of the winner, on its own before the first prose chunk, and must skip it before it reads pendingCues.
         const logs = captureLogs();
         stubStream(['a', 'b'], ['__model_source:gemini-3.5-flash-lite (hedge)__', 'Ten million ', 'vectors take thirty gigabytes.']);
         const engine = new IntelligenceEngine(stubHelper(), new SessionTracker());

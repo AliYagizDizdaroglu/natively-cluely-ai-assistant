@@ -199,7 +199,12 @@ describe('PAIRED_ARMS', () => {
         // band has to be read on that model, not on 3.1-lite, which is only the back leg.
         const twins = PAIRED_ARMS.filter((a) => a.tag.startsWith('captured-no-cues'));
         expect(twins.map((a) => a.tag)).toEqual(['captured-no-cues-high', 'captured-no-cues-high-r2', 'captured-no-cues-high-r3']);
+        // The pairing is also derived from captured-high's own entry, so the two cannot drift apart: same
+        // model, same args plus --no-cues. Checked before the literals, so a drift fails on the pairing first.
+        const high = byTag('captured-high');
         for (const t of twins) {
+            expect(t.model, t.tag).toBe(high.model);
+            expect(t.args, t.tag).toEqual([...high.args, '--no-cues']);
             expect(t).toMatchObject({ model: ANSWER_MODELS[1], captured: true, args: ['--thinking', 'HIGH', '--no-cues'] });
             expect(t.when).toBe(hasCueRule);
         }

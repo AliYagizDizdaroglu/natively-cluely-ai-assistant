@@ -1,6 +1,7 @@
 // Pins the hedge x cue-mode seam: the real WhatToAnswerLLM over the real LLMHelper, with the hedge on
 // (MAIN's default) and only the Gemini SDK stubbed. A hedge-won answer loses its cue block from the
 // spoken text, reports its cues to onCues exactly once, and names the hedge winner.
+// The "[LLMHelper] ModesManager injection failed (non-fatal)" stderr line is by design: LLMHelper.streamChat.test.ts:20-26.
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('electron', () => ({
@@ -107,7 +108,7 @@ describe('hedge x cue mode', () => {
         expect(signals[0]?.aborted).toBe(true);
     });
 
-    it('C. both legs 503, the redirect re-enters the hedge and its answer carries the block: cues once', async () => {
+    it('C. both legs 503, the redirected answer carries the block: cues once', async () => {
         plan.push('error', 'error', CHUNKED);
         const onCues = vi.fn();
         const chunks = await run(onCues);
