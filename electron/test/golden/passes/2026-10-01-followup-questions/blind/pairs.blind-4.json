@@ -1,0 +1,270 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "C6#1",
+   "id": "C6",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Earlier you mentioned ablations. Which one would you run first, and why? [Follow-up to: What ablations would separate the contributions of OCR, classification, retrieval, prompting, and agent orchestration, and how would you check for LLM judge bias?]",
+   "heard": "Earlier you mentioned ablations. Which one would you run first, and why?",
+   "source": "answers-pass",
+   "answer": "I’d isolate the OCR and document ingestion layer first, comparing AWS Textract against a raw text baseline. Because our multi-agent RAG pipeline relies heavily on clean token extraction for downstream retrieval and reasoning, any upstream parsing errors compound across the agent graph. Testing that boundary tells us exactly how much lift comes from raw extraction versus our agentic routing."
+  },
+  {
+   "key": "C6#2",
+   "id": "C6",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Earlier you mentioned ablations. Which one would you run first, and why? [Follow-up to: What ablations would separate the contributions of OCR, classification, retrieval, prompting, and agent orchestration, and how would you check for LLM judge bias?]",
+   "heard": "Earlier you mentioned ablations. Which one would you run first, and why?",
+   "source": "answers-pass",
+   "answer": "I'd run the OCR and document parsing ablation first, comparing our layout-aware extraction against raw text or a baseline parser. Since garbage-in-garbage-out is the absolute bottleneck in document RAG, bounding the parser's contribution tells you whether downstream agent orchestration is even solving the right problem. If raw text drops F1 by twenty points, you know extraction fidelity is your primary ceiling before tweaking prompts or retrieval."
+  },
+  {
+   "key": "C6#3",
+   "id": "C6",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Earlier you mentioned ablations. Which one would you run first, and why? [Follow-up to: What ablations would separate the contributions of OCR, classification, retrieval, prompting, and agent orchestration, and how would you check for LLM judge bias?]",
+   "heard": "Earlier you mentioned ablations. Which one would you run first, and why?",
+   "source": "answers-pass",
+   "answer": "I’d run the retrieval ablation first — specifically comparing hybrid search against pure dense retrieval. Everything downstream in a multi-agent RAG pipeline depends on getting the right context chunks into the prompt. If your initial retrieval misses critical clauses, no amount of downstream reasoning or LLM-as-judge filtering can recover from that missing data."
+  },
+  {
+   "key": "C6#4",
+   "id": "C6",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Earlier you mentioned ablations. Which one would you run first, and why? [Follow-up to: What ablations would separate the contributions of OCR, classification, retrieval, prompting, and agent orchestration, and how would you check for LLM judge bias?]",
+   "heard": "Earlier you mentioned ablations. Which one would you run first, and why?",
+   "source": "answers-pass",
+   "answer": "I'd run the retrieval ablation first, comparing hybrid keyword-vector search against dense-only retrieval. Generation quality is strictly downstream of retrieval recall, so if the initial chunks miss the context, downstream agentic steps can't recover. Isolating retrieval gives you a clean baseline before testing query decomposition or prompt changes."
+  },
+  {
+   "key": "C6#5",
+   "id": "C6",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Earlier you mentioned ablations. Which one would you run first, and why? [Follow-up to: What ablations would separate the contributions of OCR, classification, retrieval, prompting, and agent orchestration, and how would you check for LLM judge bias?]",
+   "heard": "Earlier you mentioned ablations. Which one would you run first, and why?",
+   "source": "answers-pass",
+   "answer": "I'd run the query decomposition ablation first to measure whether breaking down multi-hop questions actually lifts retrieval recall or just adds unnecessary latency. In document intelligence systems, multi-step agent flows add overhead, so isolating the query decomposition step lets us see if hybrid search alone already captures the context without the extra round-trips."
+  },
+  {
+   "key": "C6#6",
+   "id": "C6",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Earlier you mentioned ablations. Which one would you run first, and why? [Follow-up to: What ablations would separate the contributions of OCR, classification, retrieval, prompting, and agent orchestration, and how would you check for LLM judge bias?]",
+   "heard": "Earlier you mentioned ablations. Which one would you run first, and why?",
+   "source": "answers-pass",
+   "answer": "I'd run the retrieval ablation first, swapping out hybrid search for pure vector or keyword retrieval to measure the impact on our multi-hop accuracy. Since downstream generation and agent reasoning depend entirely on context relevance, isolating retrieval immediately proves whether our query decomposition and hybrid setup are driving those gains or if the model is just compensating."
+  },
+  {
+   "key": "D1#1",
+   "id": "D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd apply standard B-tree indexes on primary keys, foreign keys, and high-cardinality columns like timestamps or IDs, plus GIN indexes for any JSON fields. If historical records get corrected after ingestion, I'd move to temporal tables with versioning or event sourcing, so we maintain a clean audit trail without breaking downstream analytical pipelines or feature stores."
+  },
+  {
+   "key": "D1#2",
+   "id": "D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd index those tables with a composite index on customer_id and snapshot_date in descending order to optimize latest-state and point-in-time queries. If historical records can be corrected, standard immutable append-only logs fail, so I'd implement a bitemporal model using effective start and end timestamps backed by GiST or range indexes to handle retrospective updates cleanly."
+  },
+  {
+   "key": "D1#3",
+   "id": "D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For those tables, I’d place B-tree indexes on the primary foreign keys and timestamp columns for fast range filtering, plus a GIN index on any JSON metadata columns. If historical records can be corrected after ingestion, standard in-place updates create stale read anomalies and break incremental pipelines. To handle that, I’d use an append-only event log or temporal table design with valid-time ranges, relying on a unique composite index on the entity ID and version to ensure correct state reconstruction."
+  },
+  {
+   "key": "D1#4",
+   "id": "D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd index those tables on a composite key of customer_id and snapshot timestamp. If historical records can be corrected after ingestion, mutating past rows destroys feature reproducibility for ML models. Instead, I'd use an append-only log with valid_from and valid_to columns, so corrections safely append a new record rather than overwriting history."
+  },
+  {
+   "key": "D1#5",
+   "id": "D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For snapshot tables, I'd set up a composite B-tree index on the entity ID and effective timestamp to optimize point-in-time queries, paired with a BRIN index on the timestamp for efficient range scans over large historical volumes. If historical records can be corrected after ingestion, pure append-only designs no longer work, so I'd move to a versioned schema using valid-from and valid-to timestamp ranges, updating our indexing strategy to include version flags or exclusion constraints to handle overlapping corrections cleanly."
+  },
+  {
+   "key": "D1#6",
+   "id": "D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd use B-tree indexes on primary keys, foreign keys, and high-frequency filter columns like timestamps, plus GIN indexes for any JSON fields. If historical records can be corrected after ingestion, standard mutable tables cause heavy write amplification and lose audit trails. Instead, I’d use temporal tables or an append-only event log where updates insert new versioned rows, preserving point-in-time accuracy while keeping indexes fast."
+  },
+  {
+   "key": "D2#1",
+   "id": "D2",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "A greedy selection policy fails during multi-hop queries, such as comparing Q3 revenue across two different companies, because it blindly picks the top chunks with the highest standalone similarity to the prompt, grabbing multiple overlapping pieces for the first company while missing the second entirely. To fix that and build in novelty, I use Maximal Marginal Relevance alongside an iterative query-decomposition loop that explicitly searches for missing entity angles. The key dependencies here are tuning the diversity trade-off weight so you do not dilute pure relevance, and ensuring your retrieval index supports fast iterative filtering as new context tokens are appended."
+  },
+  {
+   "key": "D2#2",
+   "id": "D2",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a multi-topic query about medical compliance where a greedy policy grabs the top five chunks all from the same introductory section, completely missing downstream chapters on edge cases. To fix that, I incorporate a Maximal Marginal Relevance score that penalizes semantic overlap with already selected chunks, actively forcing the system to pick novel content. The key dependencies running this are the underlying embedding model's semantic separation quality and a downstream cross-encoder re-ranker that balances information density before final context assembly."
+  },
+  {
+   "key": "D2#3",
+   "id": "D2",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a multi-hop query about a complex financial contract where a greedy similarity policy pulls the top three chunks from the exact same indemnity clause because they share keywords, completely missing the termination clause in a lower-scoring section. To fix that, I incorporate Maximal Marginal Relevance into the selection criteria, penalizing chunks that have high vector overlap with already-selected items to drive novelty. The key dependencies are the tuning parameter balancing raw relevance against diversity, the underlying embedding space granularity, and the strict token limits of the downstream context window."
+  },
+  {
+   "key": "D2#4",
+   "id": "D2",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a query about a contract's liability terms where the top five retrieved chunks all come from the exact same indemnity clause on page two; a greedy policy picks all five, completely missing the termination or payment conditions elsewhere. To fix that, I incorporate novelty and redundancy penalties using Maximum Marginal Relevance and agentic multi-hop decomposition, ensuring each newly selected chunk maximizes new information gain while minimizing overlap. The key dependencies driving this are a dense cross-encoder for initial relevance scoring, a vector store for pairwise embedding distance checks, and an iterative state graph to control the retrieval loop."
+  },
+  {
+   "key": "D2#5",
+   "id": "D2",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a document retrieval task where a greedy policy picks the top three chunks based purely on immediate similarity. If those chunks all cover the exact same financial quarter summary, we get high initial scores but poor overall coverage because we completely miss the operational risk and supply chain details needed for the final synthesis. To fix that, I incorporate novelty and multi-hop dependence by using a scoring framework like Maximal Marginal Relevance alongside agentic query decomposition, which explicitly penalizes chunks that overlap with already retrieved context to maximize information gain per step. The key dependencies here are embedding space granularity and the diversity penalty weight, because if you tune the penalty too high, you risk filtering out crucial supporting details."
+  },
+  {
+   "key": "D2#6",
+   "id": "D2",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "A greedy policy that picks top-scoring chunks for a broad query like 'compare cloud cost models' will grab multiple snippets all explaining AWS pricing, completely missing GCP and Azure. To fix that, I incorporate Maximal Marginal Relevance into the selection criteria, penalizing semantic redundancy while rewarding novelty and multi-hop dependence so subsequent chunks bridge information gaps. The key dependencies are the embedding model's distance metric for similarity scoring, a tuned diversity threshold, and the upstream query decomposition graph that defines what distinct sub-topics constitute complete coverage."
+  },
+  {
+   "key": "D3#1",
+   "id": "D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a shadow validation phase where both the old and replacement indexes receive live query traffic asynchronously, comparing top-k retrieval overlap and latency metrics. To prove completeness, I run an automated evaluation pipeline against a gold test set of queries to verify recall and hit rate parity. Finally, for currency, I ensure the ingestion pipeline's change-data-capture lag is zero by confirming the latest document timestamp in the source database matches the latest indexed vector."
+  },
+  {
+   "key": "D3#2",
+   "id": "D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate replacement indices by running an automated golden-set regression suite against both the current and new versions to ensure retrieval metrics like hit rate and multi-hop accuracy match or exceed the baseline. For currency, I check that the maximum document timestamp or ingestion lag matches our primary data store within a strict time window before pointing the alias over. Finally, I route a small percentage of live traffic to the new index as a canary deployment to verify real-world latency and stability under load before cutting over completely."
+  },
+  {
+   "key": "D3#3",
+   "id": "D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a shadow-comparison pipeline where the new index is queried alongside the live one, validating top-k overlap and retrieval metrics against an offline gold evaluation set. I also run automated completeness checks by reconciling document IDs and record counts directly against our primary database or S3 source of truth. Once freshness and parity pass our validation thresholds, I promote the index with a zero-downtime switch."
+  },
+  {
+   "key": "D3#4",
+   "id": "D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run automated reconciliation scripts comparing document counts and IDs directly against our primary database to verify complete coverage. Then, I run a golden evaluation set through both indices in parallel to confirm that retrieval overlap, semantic recall, and latency match before executing a seamless cutover."
+  },
+  {
+   "key": "D3#5",
+   "id": "D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate a replacement index by running a shadow evaluation on a golden query set, comparing top-k overlap and retrieval metrics against the live system. I verify completeness by running an ID-set checksum against the source database to ensure zero missing documents, and check freshness by confirming the ingestion delta lag is zero before switching the production alias."
+  },
+  {
+   "key": "D3#6",
+   "id": "D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate a replacement index using a three-stage canary gate before routing production traffic. First, I verify count parity and timestamp freshness against the primary document store to guarantee completeness. Next, I run an automated eval suite comparing retrieval precision and recall on a gold test set to check for quality regression. Finally, I promote the index only after running a shadow validation period to confirm latency and error rates meet our production SLAs."
+  }
+ ]
+}

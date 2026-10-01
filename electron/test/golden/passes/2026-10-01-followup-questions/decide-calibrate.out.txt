@@ -1,0 +1,32 @@
+OK   identical arms: gain 0: FAIL via c5=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:FAIL]
+OK   roster gain +1 (FAIL edge): FAIL via c5=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:FAIL]
+OK   roster gain +2: INCONCLUSIVE via c5=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:INCONCLUSIVE]
+OK   roster gain +3: INCONCLUSIVE via c5=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:INCONCLUSIVE]
+OK   roster gain +4 (PASS edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   roster gain +4 by ONE grader only: consensus gain 0: FAIL via c5=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:FAIL]
+OK   gain +6, one callback wrong in B by both graders: FAIL via c1=FAIL (expected FAIL)  [c1:FAIL c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, one callback wrong in B by ONE grader only: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, wrong in both arms of the same pair (no NEW wrong): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, one dropped-parent case off-topic in B by both graders: FAIL via c2=FAIL (expected FAIL)  [c1:holds c2:FAIL c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, B first token +1001 ms on every pair: FAIL via c3a=FAIL (expected FAIL)  [c1:holds c2:holds c3a:FAIL c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, B first token +1000 ms (not over the FAIL bar): INCONCLUSIVE via c3a=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:INCONCLUSIVE c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, B first token +501 ms: INCONCLUSIVE via c3a=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:INCONCLUSIVE c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, B first token +500 ms (holds edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, B +5000 ms on 6 pairs: median 0, p90 up: INCONCLUSIVE via c3b=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:INCONCLUSIVE c3c:holds c4:holds c5:PASS]
+OK   gain +6, 4 more B answers over 10 s: FAIL via c3c=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:FAIL c4:holds c5:PASS]
+OK   gain +6, 3 more B answers over 10 s (allowance edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, B +11 words on every pair: FAIL via c4=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:FAIL c5:PASS]
+OK   gain +6, B +10 words (not over the FAIL bar): INCONCLUSIVE via c4=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:INCONCLUSIVE c5:PASS]
+OK   gain +6, B +5 words (holds edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   roster gain +1 while every callback and dropped pair is weak in A (clause 5 counts roster pairs only): FAIL via c5=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:FAIL]
+OK   pooled shape (R=42), gain +8 (PASS edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   pooled shape (R=42), gain +7, not flagged pooled: INCONCLUSIVE via c5=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:INCONCLUSIVE]
+OK   pooled re-run (R=42), gain +7: a second INCONCLUSIVE is a FAIL: FAIL via c5=INCONCLUSIVE (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:INCONCLUSIVE]
+OK   pooled re-run (R=42), gain +3: FAIL via c5=INCONCLUSIVE (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:INCONCLUSIVE]
+OK   pooled re-run (R=42), gain +2 (FAIL edge): FAIL via c5=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:FAIL]
+OK   pooled shape (R=42), gain +3, not flagged pooled (above the scaled FAIL bar): INCONCLUSIVE via c5=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:INCONCLUSIVE]
+OK   refuses a pair without its second grader
+OK   refuses a pair with a 3 on a 0-2 scale
+OK   refuses a pair with no ttft
+
+CALIBRATION OK: every §7 branch and edge reads as pre-registered

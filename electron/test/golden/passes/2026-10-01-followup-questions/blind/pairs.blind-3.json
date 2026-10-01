@@ -1,0 +1,259 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "C2#1",
+   "id": "C2",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty?",
+   "source": "answers-pass",
+   "answer": "I'd extend the lookback window in the join condition from thirty days to ninety days by updating the interval filter. To keep performance efficient with three times the historical data, I'd rely on a composite index on customer ID and event time, ensuring the database uses a fast range scan rather than a full table scan."
+  },
+  {
+   "key": "C2#2",
+   "id": "C2",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty?",
+   "source": "answers-pass",
+   "answer": "I'd update the window function's frame clause, changing the lookback from thirty days to ninety days preceding while partitioning by the user ID and ordering by timestamp to prevent data leakage. To handle the wider window efficiently in PostgreSQL, I'd ensure we have a composite index on the user ID and timestamp columns so it avoids expensive sequential scans."
+  },
+  {
+   "key": "C2#3",
+   "id": "C2",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty?",
+   "source": "answers-pass",
+   "answer": "To extend the feature window from thirty to ninety days, I'd update the window frame clause in PostgreSQL from INTERVAL '30 days' to INTERVAL '90 days' preceding the target timestamp. I'd make sure the partition stays keyed by the subscriber ID and ordered by event time to guarantee point-in-time correctness and prevent lookahead bias. For larger volumes, I'd verify that a composite index on entity ID and timestamp supports the wider scan, or lean on daily pre-aggregated state tables if query latency creeps up."
+  },
+  {
+   "key": "C2#4",
+   "id": "C2",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty?",
+   "source": "answers-pass",
+   "answer": "I'd extend the window by changing the date interval condition in the temporal join from thirty to ninety days. Because scanning triple the historical data per snapshot can degrade query performance, I'd make sure the events table is partitioned by date and indexed jointly on customer ID and event time to keep partition pruning efficient."
+  },
+  {
+   "key": "C2#5",
+   "id": "C2",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty?",
+   "source": "answers-pass",
+   "answer": "To extend the window from thirty to ninety days, I'd modify the temporal framing in the window function, replacing the thirty-day interval with INTERVAL '90 days' PRECEDING relative to each observation timestamp. Because scanning a longer window increases data volume significantly, I'd make sure the table is partitioned by date and indexed on the entity ID and timestamp to avoid expensive full table scans. If performance bottlenecks still appear, I'd pre-aggregate daily rolling sums or leverage a feature store to avoid computing ninety-day lookbacks on the fly during training set generation."
+  },
+  {
+   "key": "C2#6",
+   "id": "C2",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty?",
+   "source": "answers-pass",
+   "answer": "I'd adjust the date arithmetic in the lateral join condition, changing the lower bound filter from thirty days back to ninety days. Because looking back three months scans significantly more historical event data per snapshot, I'd also verify that our composite index on customer ID and event time is properly utilized to keep query performance efficient."
+  },
+  {
+   "key": "C3#1",
+   "id": "C3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "You mentioned a retention campaign earlier. How would you measure its uplift? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]",
+   "heard": "You mentioned a retention campaign earlier. How would you measure its uplift?",
+   "source": "answers-pass",
+   "answer": "To measure true uplift, we use randomized control trials with a holdout group that receives no retention offer. By comparing the net churn rate delta between the treatment and control groups, we isolate the exact causal impact of the campaign. At Dream Ventures, this let us prove our interventions protected $3.7 million in annual revenue rather than just targeting users who would have stayed anyway."
+  },
+  {
+   "key": "C3#2",
+   "id": "C3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "You mentioned a retention campaign earlier. How would you measure its uplift? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]",
+   "heard": "You mentioned a retention campaign earlier. How would you measure its uplift?",
+   "source": "answers-pass",
+   "answer": "To measure true uplift, I run a randomized controlled trial where high-risk customers flagged by the model are split into treatment and control cohorts. The control group receives no intervention while the treatment group gets the retention offer. Comparing the churn rate difference between the two isolates the actual incremental impact from baseline customer trends or seasonality."
+  },
+  {
+   "key": "C3#3",
+   "id": "C3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "You mentioned a retention campaign earlier. How would you measure its uplift? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]",
+   "heard": "You mentioned a retention campaign earlier. How would you measure its uplift?",
+   "source": "answers-pass",
+   "answer": "I'd measure uplift by running a randomized control trial where we hold out a small percentage of the high-risk cohort as a control group that doesn't receive the retention offer. By comparing the churn rate of the treated group against this control group over thirty days, I can isolate the true causal impact of the campaign from normal seasonal churn."
+  },
+  {
+   "key": "C3#4",
+   "id": "C3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "You mentioned a retention campaign earlier. How would you measure its uplift? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]",
+   "heard": "You mentioned a retention campaign earlier. How would you measure its uplift?",
+   "source": "answers-pass",
+   "answer": "To isolate the campaign's true impact from natural churn, I'd set up a randomized control group where a small percentage of high-risk customers identified by the model receive no retention offer. By comparing the churn rate in that holdout group against the treated group, we measure true incremental lift rather than just rewarding customers who would have stayed anyway. We then combine that incremental retention rate with customer lifetime value and campaign costs to calculate the actual net ROI."
+  },
+  {
+   "key": "C3#5",
+   "id": "C3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "You mentioned a retention campaign earlier. How would you measure its uplift? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]",
+   "heard": "You mentioned a retention campaign earlier. How would you measure its uplift?",
+   "source": "answers-pass",
+   "answer": "I measure campaign uplift using a randomized control trial where we hold out a small percentage of high-risk subscribers from receiving the retention offer. By comparing the actual churn rate in the treated group against this control group over a sixty-day window, I isolate the true incremental impact of the intervention. That lets us calculate exact net savings by weighing the cost of incentives against the preserved customer lifetime value."
+  },
+  {
+   "key": "C3#6",
+   "id": "C3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "You mentioned a retention campaign earlier. How would you measure its uplift? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]",
+   "heard": "You mentioned a retention campaign earlier. How would you measure its uplift?",
+   "source": "answers-pass",
+   "answer": "I measure uplift using a randomized holdout control group where a small fraction of high-risk users receive no campaign. By comparing their churn rate over thirty days against the treated cohort, I isolate the true causal effect of the intervention. That way, our reported revenue impact reflects actual incremental savings rather than organic retention."
+  },
+  {
+   "key": "C4#1",
+   "id": "C4",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to what you said about the tie rule, would that still hold with float scores from two models? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to what you said about the tie rule, would that still hold with float scores from two models?",
+   "source": "answers-pass",
+   "answer": "Yes, the tie rule still applies, but you need a secondary deterministic key because raw float scores from two different models rarely collide naturally unless their outputs are normalized. When I combined model predictions in production, we always paired the probability score with a secondary sort key like a user ID or entity timestamp. That way, top-K cutoffs remain stable and reproducible even if floating-point representations happen to match."
+  },
+  {
+   "key": "C4#2",
+   "id": "C4",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to what you said about the tie rule, would that still hold with float scores from two models? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to what you said about the tie rule, would that still hold with float scores from two models?",
+   "source": "answers-pass",
+   "answer": "With float scores, exact numerical ties are rare, but near-ties happen constantly due to floating-point precision. To prevent unstable rankings, I use a tight epsilon threshold alongside a deterministic secondary tie-breaker like model confidence or source priority."
+  },
+  {
+   "key": "C4#3",
+   "id": "C4",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to what you said about the tie rule, would that still hold with float scores from two models? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to what you said about the tie rule, would that still hold with float scores from two models?",
+   "source": "answers-pass",
+   "answer": "No, it actually breaks down because floating-point representation makes exact equality checks unreliable. When comparing float scores from two different models, you need an epsilon threshold rather than a strict equality check. If the score difference falls within that tolerance window, I apply a deterministic secondary rule—like favoring the primary model or checking metadata—rather than letting floating-point noise dictate the ranking."
+  },
+  {
+   "key": "C4#4",
+   "id": "C4",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to what you said about the tie rule, would that still hold with float scores from two models? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to what you said about the tie rule, would that still hold with float scores from two models?",
+   "source": "answers-pass",
+   "answer": "Yes, it's even more critical with float scores from two models because uncalibrated probabilities often cluster. While exact float equality is rare, normalization can create identical scores that break sorting stability. I always pair the model score with a secondary deterministic key like an ID so the final ordering remains completely reproducible."
+  },
+  {
+   "key": "C4#5",
+   "id": "C4",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to what you said about the tie rule, would that still hold with float scores from two models? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to what you said about the tie rule, would that still hold with float scores from two models?",
+   "source": "answers-pass",
+   "answer": "With float scores from two models, exact numerical ties are rare, but minor precision variations can still lead to unstable sorting. To keep it deterministic, I always enforce a secondary tie-breaker—like a unique record ID or model priority—so the final ranking remains completely consistent across runs."
+  },
+  {
+   "key": "C4#6",
+   "id": "C4",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to what you said about the tie rule, would that still hold with float scores from two models? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to what you said about the tie rule, would that still hold with float scores from two models?",
+   "source": "answers-pass",
+   "answer": "Yes, that tie rule becomes even more critical with float scores because while exact mathematical ties are rare, near-ties happen constantly. When two models output continuous scores that fall within a narrow epsilon band, relying purely on the floating-point sort order causes unstable rankings. I address that by layering a deterministic secondary tie-breaker—like model priority or a metadata heuristic—so the pipeline remains completely reproducible."
+  },
+  {
+   "key": "C5#1",
+   "id": "C5",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to reciprocal rank fusion, how would you tune the constant c? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Going back to reciprocal rank fusion, how would you tune the constant c?",
+   "source": "answers-pass",
+   "answer": "I tune c empirically against our evaluation gold set by optimizing for NDCG. Lower values like 10 heavily favor items at the very top of individual retrieval lists, while higher values like the standard 60 flatten the curve and reward documents that appear consistently across both keyword and vector search. I run a quick grid search to find the balance that maximizes relevance for our corpus."
+  },
+  {
+   "key": "C5#2",
+   "id": "C5",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to reciprocal rank fusion, how would you tune the constant c? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Going back to reciprocal rank fusion, how would you tune the constant c?",
+   "source": "answers-pass",
+   "answer": "The constant c in Reciprocal Rank Fusion controls how heavily top-tier results dominate over items that appear further down multiple lists. A smaller value aggressively rewards documents that hit the very top of a single retriever, while a larger value smooths out the scoring so consensus across multiple retrievers matters more. I tune it empirically on a validation set using grid search against metrics like NDCG or MRR, typically landing between thirty and sixty depending on how noisy the initial retrieval is."
+  },
+  {
+   "key": "C5#3",
+   "id": "C5",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to reciprocal rank fusion, how would you tune the constant c? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Going back to reciprocal rank fusion, how would you tune the constant c?",
+   "source": "answers-pass",
+   "answer": "I tune the constant c by running a grid search against a validation set of queries, optimizing for evaluation metrics like NDCG or MRR. A smaller c heavily weights items that appear at the very top of both lists, whereas a larger c, like the standard 60, flattens the penalty curve so lower-ranked matches still contribute meaningfully. I usually start around 60 and adjust depending on whether I want strict multi-source agreement or broader recall."
+  },
+  {
+   "key": "C5#4",
+   "id": "C5",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to reciprocal rank fusion, how would you tune the constant c? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Going back to reciprocal rank fusion, how would you tune the constant c?",
+   "source": "answers-pass",
+   "answer": "I tune the constant c empirically using offline evaluation against our gold dataset, typically sweeping values between twenty and sixty. A smaller c heavily rewards documents that rank at the very top of any single list, whereas a larger c smooths the penalty and gives more weight to consensus among lower-ranked results. I select the value that maximizes our evaluation metrics like MRR or NDCG for our specific query distribution."
+  },
+  {
+   "key": "C5#5",
+   "id": "C5",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to reciprocal rank fusion, how would you tune the constant c? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Going back to reciprocal rank fusion, how would you tune the constant c?",
+   "source": "answers-pass",
+   "answer": "I tune c via grid search against our evaluation set, optimizing for NDCG@10. A lower constant aggressively rewards items at the very top of individual lists, while a higher value favors cross-method consensus. I typically start around the standard 60 and dial it in based on whether the pipeline needs rank-one precision or robust multi-source agreement."
+  }
+ ]
+}

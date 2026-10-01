@@ -1,0 +1,270 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "S1Q04F#1",
+   "id": "S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "To scale this for millions of customers, I’d avoid a full O(N log N) sort by using a partial sort like argpartition to isolate our target slice in linear time. For deterministic tie-breaking, I’d pack the score and an inverted secondary key—like customer ID—into a single composite float so standard sorting handles ties natively without custom comparator overhead. If a full global ranking is required, I’d push the workload to a distributed engine using a parallelized radix sort."
+  },
+  {
+   "key": "S1Q04F#2",
+   "id": "S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I'd switch from a full sort to a partial selection algorithm like argpartition or a bounded min-heap, which drops our complexity from O(N log N) down to O(N log k). To preserve deterministic ties, I'd combine the primary model score and a secondary unique key like customer ID into a composite tuple so identical scores break ties predictably."
+  },
+  {
+   "key": "S1Q04F#3",
+   "id": "S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "To avoid a costly full sort across millions of records, I use an O(N) partial sort like argpartition to isolate just the top K candidates. Then I run a stable sort exclusively on that small subset using a composite key of score and customer ID to preserve ties. This drops our complexity to linear time for the bulk data while keeping the sorting guarantees intact."
+  },
+  {
+   "key": "S1Q04F#4",
+   "id": "S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "Instead of a full sort on millions of customers, I'd use Quickselect to find the K-th score threshold in linear time. We then pass through the data once to collect everyone at or above that score, filtering out the rest. We only apply the stable row-index sort to the small boundary subset right at the threshold, reducing our overall complexity to O(N)."
+  },
+  {
+   "key": "S1Q04F#5",
+   "id": "S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "To handle millions of customers efficiently, I'd replace the full O(N log N) sort with a min-heap or introselect algorithm, bringing the complexity down to O(N log k). To preserve the exact tie rule without a full sort, I store scores as tuples with their negative original indices, ensuring a stable top-k extraction in a single linear pass over the data."
+  },
+  {
+   "key": "S1Q04F#6",
+   "id": "S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "Instead of a full O(N log N) sort, I’d use a linear-time partial sort like np.argpartition to isolate the top k candidates in O(N) time. To enforce the tie-breaking rule, I would pair the scores with negated original indices so lower row numbers win ties, and then run a standard sort exclusively on the small boundary partition around the k-th threshold."
+  },
+  {
+   "key": "S1Q06F#1",
+   "id": "S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd put a composite B-tree index on the customer ID and timestamp columns for both tables to handle time-window lookups efficiently. If historical records get corrected, I’d move to an event-sourced table structure with version numbers or temporal tables, ensuring our point-in-time feature calculations don't break when past data changes."
+  },
+  {
+   "key": "S1Q06F#2",
+   "id": "S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For the snapshots table, I'd create a composite index on customer ID and snapshot time, and for the events table, a multi-column index on customer ID, event time, and ingested at to efficiently handle that date range filter. If historical records can be corrected after ingestion, we'd need versioning or an append-only event log tracking valid time versus transaction time, ensuring our point-in-time feature calculations remain reproducible and immune to retrospective updates."
+  },
+  {
+   "key": "S1Q06F#3",
+   "id": "S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd put a composite index on customer ID and timestamp on the events table to optimize those time-window lookups, and a standard index on customer ID for the snapshots table. If historical records can be corrected after ingestion, standard updates cause race conditions and invalidate downstream caches, so I'd move to an append-only event log with temporal tables or versioning to safely track updates over time."
+  },
+  {
+   "key": "S1Q06F#4",
+   "id": "S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d put a composite index on the customer ID and timestamp columns of the events table to optimize those windowed joins, alongside a primary key index on the snapshots table. If historical records can be corrected after ingestion, I’d avoid mutable row updates by using an append-only event log with effective versioning, ensuring that retroactive fixes cleanly propagate through downstream feature pipelines without corrupting past training windows."
+  },
+  {
+   "key": "S1Q06F#5",
+   "id": "S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For the snapshots table, I'd create a composite index on customer ID and snapshot time, and for the events table, an index on customer ID, ingested at, and event time. If historical records can be corrected after ingestion, our ingestion timestamp logic breaks reproducibility, so we'd need versioned event logs or a temporal table pattern to track valid and transaction times."
+  },
+  {
+   "key": "S1Q06F#6",
+   "id": "S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For indexing, I'd create a composite index on the snapshots table for customer ID and snapshot time, and a corresponding index on the events table covering customer ID, event time, and ingested at to optimize those range scans. If historical records can be corrected after ingestion, standard ingestion timestamps cause silent feature drift. To handle that, I'd shift to an append-only event log with bi-temporal modeling, tracking both when an event happened and when it was finalized, ensuring our point-in-time training features remain reproducible and auditable."
+  },
+  {
+   "key": "S1Q08#1",
+   "id": "S1Q08",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+   "heard": "Now add delayed outcomes and experimentation. Extend that design so churn outcomes arrive thirty days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+   "source": "answers-pass",
+   "answer": "For prediction logging, every inference writes asynchronously to our feature store with the subscriber ID, timestamp, and frozen run ID so we preserve the exact model context. Experiment assignment happens deterministically by hashing the subscriber ID against an experiment salt, cleanly splitting users into treatment and control before feature retrieval. For the thirty-day outcome join, we merge billing and activity logs, capturing whether a retention offer was sent so we account for label contamination. Finally, for retraining data selection, we either filter out heavily intervened cohorts or include the treatment flag as a feature so the model learns organic churn separate from campaign impact."
+  },
+  {
+   "key": "S1Q08#2",
+   "id": "S1Q08",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+   "heard": "Now add delayed outcomes and experimentation. Extend that design so churn outcomes arrive thirty days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+   "source": "answers-pass",
+   "answer": "For prediction logging, every inference writes directly to PostgreSQL capturing the customer ID, timestamp, freeze run ID, and assigned treatment variant. Experiment assignment happens at scoring time using a deterministic hash on the customer ID to split users cleanly into control and treatment cohorts. For the thirty-day outcome join, a scheduled pipeline matches the lagged churn status back to the original inference log while preserving the offer flag so we track whether a retention incentive was sent. Finally, for retraining data selection, I use a rolling window that includes the treatment flag as a feature and applies propensity score weighting, ensuring the model accounts for the intervention rather than treating a saved customer as a natural churner."
+  },
+  {
+   "key": "S1Q08#3",
+   "id": "S1Q08",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+   "heard": "Now add delayed outcomes and experimentation. Extend that design so churn outcomes arrive thirty days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+   "source": "answers-pass",
+   "answer": "I log every inference event to PostgreSQL alongside the frozen run ID, customer ID, and timestamp at the moment of scoring. For experiment assignment, I hash the customer ID with a deterministic salt to split users into control or treatment tiers, logging that variant flag with the prediction. To handle the thirty-day outcome join, an asynchronous job links actual churn status while filtering out or down-weighting customers who received retention offers to prevent label contamination. Finally, for retraining, I train primarily on the unbiased control group or apply inverse propensity weighting so the model learns organic churn risk rather than campaign responsiveness."
+  },
+  {
+   "key": "S1Q08#4",
+   "id": "S1Q08",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+   "heard": "Now add delayed outcomes and experimentation. Extend that design so churn outcomes arrive thirty days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+   "source": "answers-pass",
+   "answer": "To handle delayed outcomes and experimentation, I log every prediction alongside the assigned experiment variant and feature snapshot to our data store. Thirty days later, an automated pipeline joins those prediction logs with actual subscriber status using a time-windowed query. Because retention campaigns directly alter the labels, I include the offer variant as a control feature so the model accounts for the intervention. For retraining, I select data by either filtering out actively treated cohorts or applying propensity score weighting to prevent the feedback loop from degrading model accuracy."
+  },
+  {
+   "key": "S1Q08#5",
+   "id": "S1Q08",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+   "heard": "Now add delayed outcomes and experimentation. Extend that design so churn outcomes arrive thirty days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+   "source": "answers-pass",
+   "answer": "For prediction logging, every inference writes a record containing the subscriber ID, run ID, timestamp, and model version directly to our data lake partition. Experiment assignment is handled deterministically at scoring time by hashing the subscriber ID against our variant split to ensure consistent treatment. For outcome joins, a thirty-day delayed batch job joins these logs with actual subscription states using the subscriber ID and cohort date. Finally, for retraining data selection, we apply inverse propensity scoring to filter out or down-weight users who received retention offers, ensuring the model doesn't learn false signals from interventions that successfully prevented churn."
+  },
+  {
+   "key": "S1Q08#6",
+   "id": "S1Q08",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+   "heard": "Now add delayed outcomes and experimentation. Extend that design so churn outcomes arrive thirty days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+   "source": "answers-pass",
+   "answer": "I log every prediction with a unique tracking ID, subscriber ID, timestamp, and model version right when the inference runs. For experimentation, I deterministically hash the subscriber ID against an experiment salt to assign them to control or treatment groups at prediction time. To handle the thirty-day delay, a scheduled daily pipeline joins our prediction logs with actual cancellation events using the subscriber ID and a time-bounded window. Finally, for retraining, I exclude or downweight users who received active retention offers to prevent label contamination from messing up our target variable, focusing our training set on organic behavior or modeling the intervention explicitly."
+  },
+  {
+   "key": "S2Q05F#1",
+   "id": "S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine searching a contract where the top three retrieved chunks all discuss indemnification using slightly different wording, causing a greedy policy to pick three redundant duplicates while missing the gross negligence definition in chunk four. To fix that, I incorporate novelty using Maximal Marginal Relevance to penalize chunks that are too semantically similar to already selected ones. The key dependencies are tuning the diversity trade-off parameter so you don't sacrifice critical relevance, and managing the extra compute overhead for pairwise similarity scoring."
+  },
+  {
+   "key": "S2Q05F#2",
+   "id": "S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a complex contract review where the top three retrieved chunks all target the exact same liability clause because of high keyword overlap, completely crowding out an amendment page that holds the actual payout terms. To incorporate novelty, I would layer in Maximum Marginal Relevance or a diversity penalty that down-weights chunks semantically similar to ones we have already selected, alongside a strict per-document cap. The key dependency here is balancing that diversity weight against your raw relevance scores; if the penalty is set too aggressively, you risk dropping critical high-scoring facts just for the sake of variety, so you have to tune your similarity threshold carefully against your total context window budget."
+  },
+  {
+   "key": "S2Q05F#3",
+   "id": "S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a multi-hop query comparing revenue across two different suppliers. A purely greedy relevance policy might grab three overlapping paragraphs all detailing the first supplier because they share high keyword overlap, completely missing the second supplier and leaving a coverage gap. To fix that, I incorporate novelty by using Maximum Marginal Relevance, where each next chunk is selected not just for high relevance to the query, but also for low similarity to the chunks already chosen, ensuring diverse coverage. The key dependencies here are the embedding space quality for accurate similarity measurement, and the hyperparameter tuning for the trade-off coefficient between pure relevance and diversity to prevent injecting irrelevant noise."
+  },
+  {
+   "key": "S2Q05F#4",
+   "id": "S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a query about a complex contract where the top-scoring chunks all duplicate the exact same indemnity clause, starving out payment terms or termination conditions located in other sections. To fix that, I incorporate Maximal Marginal Relevance by penalizing chunks that have high cosine similarity to already selected ones, ensuring true novelty across the budget. The key dependency is tuning the balance coefficient between raw relevance and diversity so you don't trade away high-precision evidence for irrelevant variety."
+  },
+  {
+   "key": "S2Q05F#5",
+   "id": "S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "A greedy relevance-first policy fails when the top scoring chunks both come from the same document and repeat the same background fact, completely crowding out a lower-scoring chunk from a second document that contains the critical second half of a multi-hop answer. To fix that, I incorporate Maximal Marginal Relevance scoring to penalize semantic redundancy, balancing individual chunk relevance against its distance to already selected embeddings. The key dependencies are the embedding space granularity, tuning the diversity weight so you don't sacrifice core relevance, and managing the remaining token budget to ensure diverse chunks actually fit."
+  },
+  {
+   "key": "S2Q05F#6",
+   "id": "S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a financial report where the top two chunks returned by a greedy relevance score are nearly identical executive summaries, both scoring highest; picking both wastes slots and misses chunk three, which holds the actual segment breakdown needed for a complete answer. To fix that, I incorporate novelty by using Maximal Marginal Relevance scoring, which penalizes chunks too similar to what's already selected. For multi-hop dependence, I use agentic query decomposition so follow-up retrieval steps explicitly target missing reasoning links rather than relying on a single-pass vector grab. The key dependencies are embedding space calibration, optimal chunk size, and tuning the balance parameter between pure relevance and informational novelty."
+  }
+ ]
+}

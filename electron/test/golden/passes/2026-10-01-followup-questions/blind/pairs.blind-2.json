@@ -1,0 +1,270 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "S2Q08#1",
+   "id": "S2Q08",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "source": "answers-pass",
+   "answer": "I handle the versioning by maintaining separate vector store collections or namespaces tagged by model and dimension, while an abstraction layer routes traffic based on configuration. For the backfill, I run an asynchronous batch process using parallel workers to stream historical documents, generate the new embeddings, and populate the new collection without blocking production writes. To keep updates synchronized while documents change, any incoming write triggers a dual-write to both collections, or a change data capture stream on PostgreSQL catches delta updates and pushes them to both indexes. For quality comparison, I run shadow evaluations on a golden validation set using retrieval metrics and LLM-as-judge relevance checks to verify performance before shifting traffic. The cutover happens via a canary release at the API gateway, gradually shifting traffic from the old collection to the new one while monitoring latency. Finally, rollback is instantaneous because the legacy collection remains untouched and fully populated, allowing us to revert the gateway routing flag immediately if any anomaly arises."
+  },
+  {
+   "key": "S2Q08#2",
+   "id": "S2Q08",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "source": "answers-pass",
+   "answer": "I namespace the vector collection and metadata schema with the model version, like docs_v2, so the application layer targets the active configuration via feature flags. I run an asynchronous Airflow backfill job to stream documents from PostgreSQL, generate the new embeddings in batch, and populate a parallel staging index. To keep updates synchronized during the backfill, Change Data Capture captures all document mutations, writing dual updates to both active and staging collections. For quality comparison, I run a shadow evaluation harness using a golden retrieval set to verify higher hit rates and MRR before switching traffic. For the cutover, I execute a blue-green switch at the gateway layer once staging sync lag hits zero. If metrics degrade, I roll back instantly by flipping the feature flag back to the previous collection, which I keep warm throughout the transition."
+  },
+  {
+   "key": "S2Q08#3",
+   "id": "S2Q08",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "source": "answers-pass",
+   "answer": "I namespace the vector collections by model version, maintaining separate indices like docs_v1 and docs_v2 to support different dimensionalities safely. For the backfill, I run a batch processing job through PostgreSQL to populate the new collection while the old one actively serves traffic. To handle documents changing during the migration, I set up a dual-write CDC pipeline that embeds and syncs updates to both collections simultaneously. For quality comparison, I run offline and shadow evaluations using Mean Reciprocal Rank and LLM-as-judge metrics to confirm retrieval parity. The final cutover is an atomic pointer switch in our API gateway layer, and if anomalies appear, our rollback plan is an instant switch back to the legacy index."
+  },
+  {
+   "key": "S2Q08#4",
+   "id": "S2Q08",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "source": "answers-pass",
+   "answer": "To migrate without downtime while changing dimensionality, I namespace our vector collections and metadata by model version, tagging every chunk explicitly. I run an asynchronous batch backfill job to compute the new vectors into a parallel index. To handle concurrent document changes, our ingestion pipeline dual-writes new and updated documents to both collections simultaneously. For quality comparison, I run shadow evaluations using our gold test set and LLM-as-judge metrics to verify retrieval performance. When parity is reached, the cutover happens instantly by updating the routing layer in our API gateway to point to the new collection. Finally, rollback is trivial because the legacy index remains fully warm and untouched behind the gateway, allowing an immediate switch back if any anomalies arise."
+  },
+  {
+   "key": "S2Q08#5",
+   "id": "S2Q08",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "source": "answers-pass",
+   "answer": "I namespace the vector database by model version and dimension, maintaining separate indices so the serving layer targets them explicitly. For the backfill, I run a background worker pipeline through Airflow to compute the new vectors in bulk without blocking active reads. To keep changes synchronized during migration, incoming document updates are dual-written to both models via our event stream. I evaluate retrieval quality using shadow traffic and golden test sets, measuring precision and relevance shifts before production. For the cutover, I flip the gateway routing rule to serve traffic entirely from the new index with zero downtime. If errors spike, I instantly roll back by toggling the gateway route back to the old namespace, which remains fully warmed."
+  },
+  {
+   "key": "S2Q08#6",
+   "id": "S2Q08",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "source": "answers-pass",
+   "answer": "I namespace collections in Pinecone by model version and dimension, storing both vector variants side by side with metadata schema tags in PostgreSQL. For the backfill, I run a background worker via Airflow to batch-generate and upsert the new embeddings without blocking active traffic. Incoming document updates write to PostgreSQL and dual-write to both old and new vector namespaces simultaneously to keep them fully synchronized. I validate retrieval quality using an LLM-as-judge evaluation pipeline on our internal gold set to measure relevance and MRR. For the cutover, I flip the active routing flag in our API gateway once the shadow metrics hit parity. If any anomalies appear, rollback is instantaneous by reverting the routing flag back to the original namespace."
+  },
+  {
+   "key": "S2Q08F#1",
+   "id": "S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run automated ID parity scripts to guarantee every document exists in the new collection. To prove currency, I stream live shadow traffic through both indexes and compare retrieval metrics on our golden evaluation set. Finally, I verify that our incremental sync lag from the pipeline queue is sitting at zero before flipping the router switch."
+  },
+  {
+   "key": "S2Q08F#2",
+   "id": "S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a dual verification check across completeness and currency before any traffic shift. For completeness, I cross-reference document counts and content hashes between the primary datastore and the new Pinecone index to confirm zero dropped records. For currency, I replay the recent change-capture stream to ensure every real-time update during the sync window was applied. Finally, I run a shadow evaluation comparing retrieval overlap against our golden query set to prove the replacement index is fully ready."
+  },
+  {
+   "key": "S2Q08F#3",
+   "id": "S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I prove completeness by reconciling source counts from PostgreSQL against the Pinecone namespace, running an automated delta script for any missing IDs. For currency, I run an evaluation pipeline on our golden test set, comparing retrieval overlap and precision between the indices to guarantee performance before cutting over traffic."
+  },
+  {
+   "key": "S2Q08F#4",
+   "id": "S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run automated parity checks comparing total record counts between the source PostgreSQL database and the vector store metadata, combined with an offline evaluation suite on a golden query set to verify retrieval recall. Before cutting over, I use a dual-read or shadow deployment phase where live queries hit both indices in parallel so I can monitor latency, hit rates, and embedding distribution drift under real load."
+  },
+  {
+   "key": "S2Q08F#5",
+   "id": "S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a side-by-side validation pipeline comparing document count parity between the source PostgreSQL store and the new vector collection. Then, I execute an automated golden-set evaluation using our LLM-as-judge framework to confirm retrieval quality, and I check timestamp metadata to ensure stream freshness before flipping the alias."
+  },
+  {
+   "key": "S2Q08F#6",
+   "id": "S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a dual-check process: first, I verify document counts and cryptographic checksums against our PostgreSQL source of truth to guarantee completeness. Second, I run our golden evaluation set through both indices to confirm retrieval recall hasn't regressed. Once those pass, we run a short shadow comparison period to verify real-time sync before final cutover."
+  },
+  {
+   "key": "S2Q09F#1",
+   "id": "S2Q09F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would your design change if the documents and their processing had to remain within an approved region? [Follow-up to: Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.]",
+   "heard": "How would your design change if the documents and their processing had to remain within an approved region?",
+   "source": "answers-pass",
+   "answer": "To enforce strict regional compliance, I'd lock every component to that region by using Locally Redundant Storage for Blob, pinning our AKS workers to a regional subnet, and using regional endpoints for Azure AI Search and Azure OpenAI. I'd disable geo-replication entirely and route internal traffic through regional private endpoints to guarantee data never leaves the boundary."
+  },
+  {
+   "key": "S2Q09F#2",
+   "id": "S2Q09F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would your design change if the documents and their processing had to remain within an approved region? [Follow-up to: Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.]",
+   "heard": "How would your design change if the documents and their processing had to remain within an approved region?",
+   "source": "answers-pass",
+   "answer": "Enforcing strict regional data residency doesn't change the core architecture, but it locks down our infrastructure configuration. I would pin every Azure service—Blob Storage, AI Search, AKS, and Azure OpenAI—to the approved region, using private endpoints to ensure data never traverses public networks. For the LLM layer, regional Azure OpenAI endpoints guarantee compliance and ensure our documents are never used for model training."
+  },
+  {
+   "key": "S2Q09F#3",
+   "id": "S2Q09F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would your design change if the documents and their processing had to remain within an approved region? [Follow-up to: Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.]",
+   "heard": "How would your design change if the documents and their processing had to remain within an approved region?",
+   "source": "answers-pass",
+   "answer": "To enforce strict regional residency, I would provision all Azure services—from Blob Storage and Azure AI Search to our AKS worker nodes and Azure OpenAI deployments—within a single matched region with local redundancy enabled, disabling geo-replication. I'd also configure private endpoints and VNet integration so that traffic never leaves the virtual network, ensuring all raw document parsing and LLM inference stay entirely within the approved boundary."
+  },
+  {
+   "key": "S2Q09F#4",
+   "id": "S2Q09F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would your design change if the documents and their processing had to remain within an approved region? [Follow-up to: Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.]",
+   "heard": "How would your design change if the documents and their processing had to remain within an approved region?",
+   "source": "answers-pass",
+   "answer": "To enforce regional compliance, I'd pin every architectural component to a single approved Azure region. All services—from Azure Blob Storage and Azure AI Search to regional Azure OpenAI deployments—would be provisioned locally within that boundary. I'd also enforce private link endpoints so data in transit never crosses regional boundaries or leaves our secure virtual network."
+  },
+  {
+   "key": "S2Q09F#5",
+   "id": "S2Q09F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would your design change if the documents and their processing had to remain within an approved region? [Follow-up to: Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.]",
+   "heard": "How would your design change if the documents and their processing had to remain within an approved region?",
+   "source": "answers-pass",
+   "answer": "To enforce regional compliance, I would restrict every component deployment to that specific Azure region. I'd configure regional-only endpoints for Azure OpenAI to guarantee data residency, provision local Azure Blob and AI Search instances with cross-region replication disabled, and run AKS node pools exclusively in that region. Finally, I'd use Azure Policy at the subscription level to automatically block any out-of-region resource creation."
+  },
+  {
+   "key": "S2Q09F#6",
+   "id": "S2Q09F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would your design change if the documents and their processing had to remain within an approved region? [Follow-up to: Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.]",
+   "heard": "How would your design change if the documents and their processing had to remain within an approved region?",
+   "source": "answers-pass",
+   "answer": "To enforce strict regional data residency, I would lock every component down to a single matched Azure region, from our Azure Blob Storage accounts and Azure AI Search instances to the regional node pools on Azure Kubernetes Service. For LLM inference, I'd route requests exclusively through regional Azure OpenAI endpoints with built-in residency guarantees. Finally, I'd use Azure Policy and virtual network service endpoints to block any cross-region data transit or public egress, ensuring raw documents and vector embeddings never cross compliance boundaries."
+  },
+  {
+   "key": "C1#1",
+   "id": "C1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to the evaluate top k function from earlier, how would you make it work for multi-class labels? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to the evaluate top k function from earlier, how would you make it work for multi-class labels?",
+   "source": "answers-pass",
+   "answer": "To adapt that for multi-class, I'd evaluate it per class using a one-versus-rest approach, binarizing the true labels for each class against the rest. For each class, we take its score column and binary indicator vector, sort by score, and compute precision and recall at k just like the binary case, then macro-average the results. Alternatively, we can measure top-k hit rate by checking if the true class label falls within the model's top-k highest probability predictions for each sample."
+  },
+  {
+   "key": "C1#2",
+   "id": "C1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to the evaluate top k function from earlier, how would you make it work for multi-class labels? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to the evaluate top k function from earlier, how would you make it work for multi-class labels?",
+   "source": "answers-pass",
+   "answer": "For multi-class, I'd sort the predicted probability vector for each sample to extract the indices of the top k highest-scoring classes. Then, I'd check if the ground truth label index is present within those top k indices for each instance. Averaging those boolean matches across the evaluation batch gives the overall top-k accuracy."
+  },
+  {
+   "key": "C1#3",
+   "id": "C1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to the evaluate top k function from earlier, how would you make it work for multi-class labels? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to the evaluate top k function from earlier, how would you make it work for multi-class labels?",
+   "source": "answers-pass",
+   "answer": "To handle multi-class labels, I'd sort the predicted class probabilities in descending order for each sample and extract the top-k class indices. Then, I'd check if the true class index is present in those top-k predictions, yielding a binary hit or miss per row. Finally, I'd average those indicators across the dataset to get the overall top-k accuracy."
+  },
+  {
+   "key": "C1#4",
+   "id": "C1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to the evaluate top k function from earlier, how would you make it work for multi-class labels? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to the evaluate top k function from earlier, how would you make it work for multi-class labels?",
+   "source": "answers-pass",
+   "answer": "For multi-class, I'd adapt it by tracking top-k accuracy—checking if the true class index falls anywhere within the top k predicted probabilities for each row. If we need per-class precision and recall at k, I'd use a One-vs-Rest approach, binarizing the multi-class targets for each class independently. That lets us run the same ranking logic per class and macro-average the final metrics."
+  },
+  {
+   "key": "C1#5",
+   "id": "C1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to the evaluate top k function from earlier, how would you make it work for multi-class labels? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to the evaluate top k function from earlier, how would you make it work for multi-class labels?",
+   "source": "answers-pass",
+   "answer": "To extend that to multi-class, I'd evaluate it on a per-class basis using a one-versus-rest approach. For each class, I sort the predicted probabilities, compute precision and recall at k, and then macro-average those metrics across all classes to get a balanced view of model performance."
+  },
+  {
+   "key": "C1#6",
+   "id": "C1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to the evaluate top k function from earlier, how would you make it work for multi-class labels? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to the evaluate top k function from earlier, how would you make it work for multi-class labels?",
+   "source": "answers-pass",
+   "answer": "To adapt top-k evaluation for multi-class, I'd take the predicted probability matrix and sort the class indices by probability for each sample to get the top k predictions. Then, I'd check whether the ground-truth integer label exists within those top k indices for every row. Finally, I'd average those boolean matches across the entire dataset to compute the overall top-k accuracy."
+  }
+ ]
+}

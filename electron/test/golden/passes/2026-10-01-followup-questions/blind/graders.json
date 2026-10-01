@@ -1,0 +1,17 @@
+{
+  "dispatched": "2026-10-01T11:29:00.000Z",
+  "modelAlias": "opus",
+  "instrument": "8564ba96369a",
+  "verifiedBy": "SP/h40c-grader-models.mjs (assistant-message model ids from each transcript; output in ../grader-models.out.txt)",
+  "graders": {
+    "blind-1.g1": { "agent": "a5413ac009fc5bd7a", "model": "claude-opus-5-5", "messages": 13 },
+    "blind-1.g2": { "agent": "a094c084cd34a3317", "model": "claude-opus-5-5", "messages": 13 },
+    "blind-2.g1": { "agent": "acc1be82feb2f0ca8", "model": "claude-opus-5-5", "messages": 12 },
+    "blind-2.g2": { "agent": "a25378e03b513e26f", "model": "claude-opus-5-5", "messages": 12 },
+    "blind-3.g1": { "agent": "a143672af5b84801e", "model": "claude-opus-5-5", "messages": 11 },
+    "blind-3.g2": { "agent": "a212dde33c5093f63", "model": "claude-opus-5-5", "messages": 10 },
+    "blind-4.g1": { "agent": "a142f78a1e07498ed", "model": "claude-opus-5-5", "messages": 13 },
+    "blind-4.g2": { "agent": "aa807280156c2e7a0", "model": "claude-opus-5-5", "messages": 16 }
+  },
+  "allPinned": true
+}
