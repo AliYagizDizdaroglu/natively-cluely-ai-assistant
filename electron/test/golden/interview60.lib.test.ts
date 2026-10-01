@@ -3,9 +3,14 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 // @ts-ignore — untyped ESM harness module; vitest resolves it, tsc has no declaration for it
-import { waitForLogLines, logSince, overlap, playStartFromStdout, playEndFromStdout } from './interview60.lib.mjs';
+import { waitForLogLines, logSince, overlap, playStartFromStdout, playEndFromStdout, resolveEnvKey } from './interview60.lib.mjs';
 
 const tmp = () => path.join(os.tmpdir(), `i60-lib-${Date.now()}-${Math.random().toString(36).slice(2)}.log`);
+const tmpProjDir = () => {
+    const d = path.join(os.tmpdir(), `i60-lib-env-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    fs.mkdirSync(d, { recursive: true });
+    return d;
+};
 
 describe('waitForLogLines', () => {
     it('resolves once every pattern has appeared after the offset', async () => {
@@ -59,5 +64,32 @@ describe('player stdout stamps (interview60.run.mjs playWav)', () => {
         expect(playStartFromStdout('')).toBeNull();
         expect(playStartFromStdout('PLAYST')).toBeNull();
         expect(playEndFromStdout('PLAYSTART 1788961933084\r\n')).toBeNull();
+    });
+});
+
+describe('resolveEnvKey', () => {
+    it('prefers a non-empty environment value over the project .env file', () => {
+        const dir = tmpProjDir();
+        fs.writeFileSync(path.join(dir, '.env'), 'GEMINI_API_KEY=from-file\n');
+        expect(resolveEnvKey('GEMINI_API_KEY', { GEMINI_API_KEY: 'from-env' }, dir)).toBe('from-env');
+    });
+    it('falls back to the project .env file when the environment does not have it', () => {
+        const dir = tmpProjDir();
+        fs.writeFileSync(path.join(dir, '.env'), 'GEMINI_API_KEY=from-file\n');
+        expect(resolveEnvKey('GEMINI_API_KEY', {}, dir)).toBe('from-file');
+    });
+    it('treats a blank environment value as unset and falls back to the file', () => {
+        const dir = tmpProjDir();
+        fs.writeFileSync(path.join(dir, '.env'), 'GEMINI_API_KEY=from-file\n');
+        expect(resolveEnvKey('GEMINI_API_KEY', { GEMINI_API_KEY: '  ' }, dir)).toBe('from-file');
+    });
+    it('is undefined, not a thrown ENOENT, when the project has no .env file at all (a worktree checkout)', () => {
+        const dir = tmpProjDir(); // no .env written here
+        expect(resolveEnvKey('GEMINI_API_KEY', {}, dir)).toBeUndefined();
+    });
+    it('is undefined, not a crash, when .env exists but lacks the named key', () => {
+        const dir = tmpProjDir();
+        fs.writeFileSync(path.join(dir, '.env'), 'OTHER_KEY=x\n');
+        expect(resolveEnvKey('GEMINI_API_KEY', {}, dir)).toBeUndefined();
     });
 });

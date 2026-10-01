@@ -88,6 +88,33 @@ export const VERBAL_CHECKS = {
     ok: /[.!?]["')]?$/.test(spoken.trim()),
     detail: JSON.stringify(spoken.trim().slice(-24)),
   }),
+
+  /** Cue mode (spec 2026-09-20): the answer opened with a cue block of at least one line. */
+  cues_present: ({ cues }) => ({ ok: Array.isArray(cues) && cues.length > 0, detail: `${Array.isArray(cues) ? cues.length : 0} cues` }),
+
+  /** 1 to cueMaxLines lines, each at most cueMaxWords words, labels not questions, never addressing the listener. */
+  cues_wellformed: ({ cues, cueMaxLines, cueMaxWords }) => {
+    const list = Array.isArray(cues) ? cues : [];
+    const bad = list.filter((c) => {
+      const t = String(c).trim();
+      return !t || t.includes('?') || /\byou\b/i.test(t) || (t.match(/\S+/g) || []).length > cueMaxWords;
+    });
+    return { ok: list.length >= 1 && list.length <= cueMaxLines && bad.length === 0, detail: `${list.length} cues, ${bad.length} malformed` };
+  },
+
+  /** Every number in a cue also appears in the prose — a cue must not promise a figure the answer never says. */
+  cues_grounded: ({ cues, spoken }) => {
+    const nums = (s) => (String(s).match(/\d+(?:[.,]\d+)*/g) || []);
+    const said = new Set(nums(spoken));
+    const missing = (Array.isArray(cues) ? cues : []).flatMap(nums).filter((n) => !said.has(n));
+    return { ok: missing.length === 0, detail: missing.length ? `numbers not in the prose: ${missing.join(', ')}` : 'grounded' };
+  },
+
+  /** The cue sentinel must never reach the listener — same guard as sentinel_clean for __MORE__. */
+  cues_clean: ({ spoken, cuesSentinel }) => ({
+    ok: !spoken.includes(cuesSentinel) && !/_{2}CUES/.test(spoken),
+    detail: 'no __CUES__ in spoken text',
+  }),
 };
 
 /**
@@ -107,4 +134,30 @@ export const NOTATION_CALIBRATION = {
     'This runs in logarithmic time, so it stays fast as the table grows.',
     '2.5 words per question word is the budget, and 30 days of history is enough.',
   ],
+};
+
+/** Calibration for the cue checks: each must flag these and pass those. */
+export const CUES_CALIBRATION = {
+  wellformed: {
+    mustFlag: [
+      [],                                                       // no line at all
+      ['a', 'b', 'c', 'd', 'e', 'f'],                           // six lines
+      ['one two three four five six seven eight nine'],          // nine words
+      ['would you shard by tenant?'],                            // a question
+      ['tell you about the registry'],                           // addresses the listener
+      [''],                                                      // an empty line
+    ],
+    mustPass: [
+      ['30 GB in float32'],
+      ['ingest: streaming and batch', 'store: Delta offline, Redis online', 'serve: point lookups under 10 ms', 'consistency: same transforms, point-in-time joins'],
+      ['Redis: rich types, persistence, replication'],
+    ],
+  },
+  grounded: {
+    mustFlag: [{ cues: ['30 GB', 'int8 to 7.5 GB'], spoken: 'About thirty gigabytes, and int eight halves it.' }],
+    mustPass: [
+      { cues: ['30 GB', 'int8 to 7.5 GB'], spoken: 'Roughly 30 gigabytes; int8 takes it to 7.5.' },
+      { cues: ['same transforms both sides'], spoken: 'Reuse the same transforms in training and serving.' },
+    ],
+  },
 };

@@ -133,4 +133,17 @@ describe('verbal fallback redirect', () => {
         // only a fallback-tagged sentinel would mean a redirect happened.
         expect(out).not.toContain('(fallback)');
     });
+
+    it('cue mode: when the primary dies before its first token, the fallback stream supplies the cues, once', async () => {
+        const { helper } = makeHelper({
+            streamChat: () => failsImmediately('boom'),
+            verbal: () => fromChunks(['__CUES__\n1| fall', 'back cue\nfallback answer.']),
+        });
+        const onCues = vi.fn();
+        const out = await drain(new WhatToAnswerLLM(helper).generateStream('Explain Docker layers.', undefined, VERBAL_INTENT, undefined, undefined, undefined, undefined, onCues));
+        expect(out).toContain('fallback answer.');
+        expect(out).not.toContain('__CUES__');
+        expect(onCues).toHaveBeenCalledTimes(1);
+        expect(onCues).toHaveBeenCalledWith(['fallback cue']);
+    });
 });

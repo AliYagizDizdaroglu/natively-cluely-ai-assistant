@@ -13,7 +13,7 @@ import { PhoneMirrorService } from "./services/PhoneMirrorService";
 
 import { RECOGNITION_LANGUAGES, AI_RESPONSE_LANGUAGES } from "./config/languages"
 import { classifyIntent } from "./llm/IntentClassifier"
-import { VERBAL_WHAT_TO_ANSWER_PROMPT } from "./llm/prompts"
+import { VERBAL_TYPED_PROMPT } from "./llm/prompts"
 
 export function initializeIpcHandlers(appState: AppState): void {
   const safeHandle = (channel: string, listener: (event: any, ...args: any[]) => Promise<any> | any) => {
@@ -541,7 +541,10 @@ export function initializeIpcHandlers(appState: AppState): void {
               // Knowledge-mode injection for the verbal Flash path. streamChat
               // does this internally; this branch bypasses streamChat, so we must
               // inject the resume/JD context here too.
-              let verbalSystemPrompt = VERBAL_WHAT_TO_ANSWER_PROMPT;
+
+              // A typed answer carries no cue block (spec 2026-09-30 §3.6): this path forwards raw
+              // tokens to the bubble, so it sends the verbal prompt WITHOUT the cue rule.
+              let verbalSystemPrompt = VERBAL_TYPED_PROMPT;
               let verbalContext = context;
               if (!options?.ignoreKnowledgeMode) {
                 try {
@@ -554,7 +557,7 @@ export function initializeIpcHandlers(appState: AppState): void {
                         // Typed follow-ups PREPEND the knowledge rules and keep the verbal prompt whole —
                         // not the swap the hands-free path had (knowledgePromptBudget.ts now keeps only the
                         // verbal prompt plus the identity line there). This shape is unmeasured; left as is.
-                        verbalSystemPrompt = `${kr.systemPromptInjection}\n\n${VERBAL_WHAT_TO_ANSWER_PROMPT}`;
+                        verbalSystemPrompt = `${kr.systemPromptInjection}\n\n${VERBAL_TYPED_PROMPT}`;
                       }
                       if (kr.contextBlock) {
                         verbalContext = verbalContext ? `${kr.contextBlock}\n\n${verbalContext}` : kr.contextBlock;

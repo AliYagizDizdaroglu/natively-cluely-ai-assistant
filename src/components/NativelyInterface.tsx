@@ -48,6 +48,7 @@ import { getOverlayAppearance, OVERLAY_OPACITY_DEFAULT } from '../lib/overlayApp
 import { applyAnswerToken, applyFinalAnswer, applyLiveQuestion, type AnswerMessage } from '../lib/answerMessages';
 import { useStreamMetrics, type StreamMetrics } from '../hooks/useStreamMetrics';
 import { MessageMetricsBar } from './MessageMetricsBar';
+import { CueBlock } from './CueBlock';
 import { DetectedQuestionsPanel } from './DetectedQuestionsPanel';
 
 interface Message {
@@ -55,6 +56,7 @@ interface Message {
     role: 'user' | 'system' | 'interviewer';
     text: string;
     isStreaming?: boolean;
+    cues?: string[];
     metrics?: StreamMetrics;
     hasScreenshot?: boolean;
     screenshotPreview?: string;
@@ -838,7 +840,9 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                         const lastMsg = prev[prev.length - 1];
                         if (lastMsg && lastMsg.isStreaming && lastMsg.intent === 'what_to_answer') {
                             const updated = [...prev];
-                            updated[prev.length - 1] = { ...lastMsg, text: data.token };
+                            // A reused bubble must not carry a superseded answer's cues onto
+                            // a coaching card (mirrors the R23 discipline below).
+                            updated[prev.length - 1] = { ...lastMsg, text: data.token, cues: undefined };
                             return updated;
                         }
                         return [...prev, {
@@ -855,7 +859,7 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                 // Not JSON — normal token, fall through.
             }
 
-            setMessages(prev => applyAnswerToken(prev as AnswerMessage[], data.token, data.replace === true, () => Date.now().toString()) as Message[]);
+            setMessages(prev => applyAnswerToken(prev as AnswerMessage[], data.token, data.replace === true, () => Date.now().toString(), data.cues) as Message[]);
         }));
 
         cleanups.push(window.electronAPI.onIntelligenceSuggestedAnswer((data) => {
@@ -891,6 +895,9 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                         isNegotiationCoaching: true,
                         negotiationCoachingData: coachingData,
                         text: '',
+                        // A reused streaming bubble must not carry a superseded answer's
+                        // cues onto a coaching card (mirrors the R23 discipline below).
+                        cues: undefined,
                         metrics: finalMetrics,
                     }
                     : {
@@ -2612,6 +2619,9 @@ Provide only the answer, nothing else.`;
                                                     >
                                                         <Copy className="w-3.5 h-3.5" />
                                                     </button>
+                                                )}
+                                                {msg.role === 'system' && msg.cues && msg.cues.length > 0 && (
+                                                    <CueBlock cues={msg.cues} className={`mb-2 pb-2 border-b ${isLightTheme ? 'border-black/10' : 'border-white/10'}`} />
                                                 )}
                                                 {renderMessageText(msg)}
                                                 {msg.role === 'system' && msg.metrics && (
