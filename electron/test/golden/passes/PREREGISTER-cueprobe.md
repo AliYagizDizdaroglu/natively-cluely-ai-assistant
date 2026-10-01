@@ -29,6 +29,36 @@ that?". The count now takes the spoken answer only, as the built `extractSuggest
 cases on made-up replies show the old and the new count side by side (a block plus offers: 5 before, 0 now).
 Calibration: 21 cases.
 
+**Amendment, 2026-10-01 09:30 (before the re-run's first call; no measure and no "read in advance" line changes).**
+It was written into the scratchpad copy first (mtime 09:30:47), before the re-run's first call. It was copied here
+at 09:34:45 (mtime), while the re-run ran: the scratchpad copy lacked the 16:10 note above, so this file is the one
+of record.
+- **The first counted run is VOID: its prompts asked two questions.** The run began at 09:16 on the combined build's
+  re-smoke prompts (`2026-10-01T02-37-41-cuesmoke`, runbook §10 "both on this build"). Its output is
+  `probe-shipped.resmoke2.out.txt` and its rows are `probe-shipped-both-2026-10-01T06-16-41-208Z.json`.
+  - That run's S1Q08F carries its question three times: in two `[INTERVIEWER]` lines (the question came in two
+    finals) and in the live listener's block (`THE LIVE LISTENER HEARD THE SAME QUESTION AS …`).
+  - The swap replaced only the first line, so every probe item still carried the base question. Most cue blocks
+    answered it ("Feedback loop bias").
+  - Its counts are kept as evidence and never read as the probe's result. Block-only answers 0 on both models.
+  - Found by reading the shown lines; confirmed by `probe-base-shape.mjs` and `probe-base-tail.mjs` (structure and
+    first words only).
+- **Spike 6 is not affected.** Its base (`2026-09-30T02-38-22-cuesmoke`, S1Q08F) has one `[INTERVIEWER]` line and no
+  live block.
+- **The v2 re-smoke named under Method would not have avoided it.** Its S1Q08F (prompts built at 09:2x from its
+  `verbal-prompts.log`) has one `[INTERVIEWER]` line but a live block holding the base question.
+- **The fix.** The swap makes the probe question the interviewer's ONLY question. In the transcript section, the
+  first `[INTERVIEWER]` line becomes the probe question, the section's other `[INTERVIEWER]` lines go, and other lines
+  stay. The live block's text becomes the probe question, the shape `WhatToAnswerLLM.ts` writes when both ears hear
+  one question. The system prompt and every other byte stay as captured.
+- **The check.** `swapProblems` refuses any item that keeps more than one `[INTERVIEWER]` line, keeps a live block
+  without the probe question, or keeps any old question text of 8 or more characters.
+- **Calibration: 29 cases** (`cal-probe-shipped.mjs`). They include the old swap on the real re-smoke base: caught.
+  The new swap on the same base: 13 clean items, each with its live block and 3 old lines replaced.
+- **The re-run.** The same input, items, models, reps and measures, before 10:00 if it fits (3.5-lite on the
+  2026-09-30 quota day: 202 + bench 117 + void run 52 + this 52 = 423 of 500); otherwise after the follow-up
+  replay's calls, never overlapping them.
+
 ## What it measures, and why
 
 The user's intent for cues is "small and fast": one or two words when that carries the answer, up to 3 lines of 5
