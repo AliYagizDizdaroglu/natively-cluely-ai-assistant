@@ -4,7 +4,8 @@ import path from 'node:path';
 import { createInterviewerTurn, DEFAULT_TURN_CONSTANTS, type TurnDecision } from './interviewerTurn';
 import { ChipDeduper } from './ChipDeduper';
 
-const FIXTURES = path.resolve(process.cwd(), 'electron/test/golden/fixtures');
+// Hangs off __dirname (this folder), not the cwd: vitest workers keep the caller's cwd, which is %TEMP% under the repo's test command, not --root.
+const FIXTURES = path.resolve(__dirname, '../test/golden/fixtures');
 const STOP = new Set(['the', 'a', 'an', 'and', 'or', 'of', 'to', 'in', 'on', 'for', 'with', 'is', 'are', 'be', 'that', 'this', 'it', 'as', 'at', 'by', 'from', 'your', 'you', 'we', 'our', 'my', 'i', 'would', 'how', 'what', 'which', 'when', 'where', 'why', 'do', 'does', 'can', 'could', 'should']);
 const words = (s: string): string[] => s.toLowerCase().match(/[a-z0-9']+/g) ?? [];
 const content = (s: string): Set<string> => new Set(words(s).filter((w) => w.length >= 3 && !STOP.has(w)));
