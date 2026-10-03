@@ -249,6 +249,27 @@ describe('stripSpokenNotation — formulas that start with a number are not curr
     });
 });
 
+describe('stripSpokenNotation — a payload is known by {", not by a bare "{" (same decision as cutAtWordBudget, c699638)', () => {
+    // A card is JSON.stringify of an object, which always starts with {" ; a spoken answer that
+    // opens on a brace literal is speech, and its notation must not reach the reader.
+    it('a spoken answer that OPENS on a brace literal is stripped, for every chunk size', async () => {
+        for (const lead of ['', ' \n']) {
+            const text = lead + '{} is `x` and **y**.';
+            for (const size of [1, 2, 3, text.length]) expect(await runNotation(text, size)).toBe(lead + '{} is x and y.');
+        }
+    });
+    it('a card still passes byte-identical at chunk sizes 1, 2 and 3, whole, and when blank-led', async () => {
+        const card = JSON.stringify({ __negotiationCoaching: { tacticalNote: 'Say `x` and **y**.\nAsk for $120k.' } });
+        for (const lead of ['', ' \n']) {
+            const text = lead + card;
+            for (const size of [1, 2, 3, text.length]) expect(await runNotation(text, size)).toBe(text);
+        }
+    });
+    it('a stream that is only "{" is emitted unchanged', async () => {
+        expect(await runNotation('{', 1)).toBe('{');
+    });
+});
+
 describe('extractSuggestions — splitting the spoken answer from its expansion offers', () => {
     const ANSWER = 'Consistent hashing keeps key movement small when a node joins.';
 

@@ -714,7 +714,8 @@ export function trimCues(raw: string[], maxLines: number, maxWords: number): { c
 /**
  * Streaming notation stripper. Holds back a single trailing '*', '$' or '\'
  * because each needs the following character before it can be judged — without
- * that, a chunk boundary landing inside "**" or before "$O(" would leak.
+ * that, a chunk boundary landing inside "**" or before "$O(" would leak. Also
+ * holds a leading blank or "{" until it can tell a JSON payload from speech.
  */
 export async function* stripSpokenNotation(
     source: AsyncIterable<string>
@@ -724,7 +725,9 @@ export async function* stripSpokenNotation(
     // short-circuit yields one JSON object ({"__negotiationCoaching":…}) in
     // place of speech; stripping the backslash from its "\n" escapes leaves
     // JSON that still parses but whose text has a stray "n" where each line
-    // break was. Decided once, on the first non-blank character.
+    // break was. Decided once, on {" — the start of JSON.stringify of an object, as in
+    // cutAtWordBudget. A bare "{" is not enough: a spoken answer may open "{} is `x`…" and
+    // must still be stripped. So text is held while all that has arrived is blank or one "{".
     let decided = false;
     let passthrough = false;
     // The last character already spoken: a span that opens with "$" or "*" right after a
@@ -740,9 +743,9 @@ export async function* stripSpokenNotation(
     for await (const chunk of source) {
         if (!decided) {
             const probe = (carry + chunk).trimStart();
-            if (!probe) { carry += chunk; continue; }
+            if (probe === '' || probe === '{') { carry += chunk; continue; }
             decided = true;
-            passthrough = probe.startsWith('{');
+            passthrough = probe.startsWith('{"');
             if (passthrough) { yield carry + chunk; carry = ''; continue; }
         }
         if (passthrough) { yield chunk; continue; }
