@@ -1,0 +1,391 @@
+# run.log — the ONE pooled s50l re-run (RUNBOOK.md). Every later line is appended with its full command line.
+
+[2026-10-02 23:38:55 TST] step 0a — the user's OK, quoted verbatim from chat (given after being shown the amendment's
+sha256 7957de0ef1a24444ee666542a3b6cbbc2139e8e9f37fec04632c424bd2fb3eee, mtime 2026-10-02 23:20:59, and the I1
+overlap): "OK, run it at 10:05, so we use the same set that failed on follow-ups?"
+Step 0b on the day must show the same sha256; any other hash = no OK.
+
+[2026-10-03 10:06:05] step 0b — AMENDMENT-s50l.fable.md sha256 7957de0ef1a24444ee666542a3b6cbbc2139e8e9f37fec04632c424bd2fb3eee, LastWriteTime 2026-10-02 23:20:59 -> EQUALS the approved hash
+[2026-10-03 10:06:05] step 0c — interview60.answers.* files in C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/followup-questions-s50l: none
+
+[2026-10-03 10:06:05] step 0d — (cwd C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-context) node stamp-s50l.mjs  -> exit 0
+earlierQuestions.ref.mjs	0459f578e47706424df0c41684a46c041fa52109923c1eb25df1c484d0dda256	15566 bytes
+gate-report-s50l.mjs	b4472648606056e643afa34d9b30e22797295f501e2475705da2c28bed1f68f2	20810 bytes
+s50l-gated.json	bfbf1e24ddd4a6a53173f0cc2ce119a851e6d30e41ef9cc314967b51793d889b	383533 bytes
+s50l-parity-fixture.json	fe0dc50d651156fb31a96f457c16cadb4bce1aae8ba682f6d116f8f42aa2e5aa	311462 bytes
+label chars: 164
+S1Q04F	roster	constraint	block 576	added 578	userA 4230	userB 4808	sha12 8a58894a5e5f	OK
+S1Q06F	roster	pronoun	block 556	added 558	userA 4205	userB 4763	sha12 03260be280dc	OK
+S1Q08	roster	reference	block 360	added 362	userA 4920	userB 5282	sha12 c4cd0f676d8b	OK
+S2Q05F	roster	pronoun	block 500	added 502	userA 4508	userB 5010	sha12 b2e08983d0f0	OK
+S2Q08	roster	reference	block 358	added 360	userA 4877	userB 5237	sha12 b6df1c5a0b43	OK
+S2Q08F	roster	pronoun	block 471	added 473	userA 4146	userB 4619	sha12 ebac9c55d83e	OK
+S2Q09F	roster	reference	block 284	added 286	userA 5642	userB 5928	sha12 5df9928795ce	OK
+C2	callback	callback	block 561	added 563	userA 5548	userB 6111	sha12 9252786884b9	OK
+C3	callback	callback	block 907	added 909	userA 4110	userB 5019	sha12 483a202d1bd9	OK
+C4	callback	callback	block 363	added 365	userA 5412	userB 5777	sha12 4d19e1abc3f4	OK
+C5	callback	callback	block 803	added 805	userA 4101	userB 4906	sha12 3753626255ad	OK
+D1	dropped	pronoun	block 289	added 291	userA 3956	userB 4247	sha12 cef7cd851c2d	OK
+D2	dropped	pronoun	block 296	added 298	userA 4259	userB 4557	sha12 1fadda53555d	OK
+D3	dropped	pronoun	block 272	added 274	userA 3897	userB 4171	sha12 617edb222ab3	OK
+ARMS OK: every userB = userA + block + "\n\n" at the marker, nothing else
+items: 14; mean added chars: 473; max block: 907
+PARITY FIXTURE OK: 46 entries re-derived (14 with a block, 32 empty)
+fixture check fails on a corrupted input: OK
+
+[2026-10-03 10:06:06] step 1 — (cwd C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad) node quota-ledger-today.mjs 2026-10-03T07:00:00.000Z  -> exit 0
+quota day starts 2026-10-03T07:00:00.000Z (10:00 local); generated 2026-10-03T07:06:05.578Z
+
+1. app logs, lines at/after the reset naming a lite model
+  natively_debug.log: last line 2026-10-02T11:39:42.316Z; 0 lines since the reset; lite mentions {}
+  .claude\worktrees\whole-turn\natively_debug.log: last line 2026-10-01T02:37:43.032Z; 0 lines since the reset; lite mentions {}
+
+2. files written since the reset that could hold model calls
+  0 file(s)
+
+[2026-10-03 10:06:06] step 2 — model row: "h40c PASS (2026-09-29) -> gemini-3.5-flash-lite, thinkingLevel HIGH, temperature 0.4"; common.mjs lines:
+// §4: h40c PASSED (2026-09-29), so the hedge is the default and its front leg is 3.5-lite at thinking HIGH.
+export const MODEL = 'gemini-3.5-flash-lite';
+export const THINKING = 'HIGH';
+export const fileFor = (arm, rep) => path.join(OUT_DIR, `interview60.answers.${MODEL}_fquestions-${arm}-r${rep}.json`);
+
+[2026-10-03 10:06:07] step 3a — (cwd C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad) node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-questions-s50l\followup-replay-build.precue.mjs C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-09-21T08-22-34-s50l C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-questions-s50l\cal --calibrate  -> exit 0
+CALIBRATION OK 39/39
+
+[2026-10-03 10:06:07] step 3b — (cwd C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad) REPLAY_BREAK=1 node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-questions-s50l\followup-replay-build.precue.mjs C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-09-21T08-22-34-s50l C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-questions-s50l\cal --calibrate  -> exit 1
+CALIBRATION MISMATCH 39/39: S1Q01F, S1Q02, S1Q02F, S1Q03, S1Q03F, S1Q04, S1Q04F, S1Q05, S1Q05F, S1Q06, S1Q06F, S1Q07, S1Q07F, S1Q08, S1Q08F, S1Q09, S1Q09F, S1Q10, S1Q10F, S2Q01, S2Q01F, S2Q02, S2Q02F, S2Q03, S2Q03F, S2Q04, S2Q04F, S2Q05, S2Q05F, S2Q06, S2Q06F, S2Q07, S2Q07F, S2Q08, S2Q08F, S2Q09, S2Q09F, S2Q10, S2Q10F
+
+[2026-10-03 10:06:07] step 4 — (cwd C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-context) node stamp.mjs  -> exit 0
+earlierQuestions.ref.mjs	0459f578e47706424df0c41684a46c041fa52109923c1eb25df1c484d0dda256	15566 bytes
+gate-report.mjs	b23b9219826b98d92a79465455b95e69d9c8d7ce35207ae67319f53dd463bf79	19891 bytes
+s50m-gated.json	1aa4b3a57eea2062357b4e80b57a914ffb2303772ec2a3273390f2b2382b70b5	440661 bytes
+parity-fixture.json	f61c4607697743a1058d9fc8be38fbec0783c459a1968a8972f343b6de505302	312424 bytes
+label chars: 164
+S1Q04F	roster	constraint	block 576	added 578	userA 4230	userB 4808	sha12 8a58894a5e5f	OK
+S1Q06F	roster	pronoun	block 556	added 558	userA 4205	userB 4763	sha12 03260be280dc	OK
+S1Q08	roster	reference	block 360	added 362	userA 4923	userB 5285	sha12 c4cd0f676d8b	OK
+S2Q05F	roster	pronoun	block 500	added 502	userA 4532	userB 5034	sha12 b2e08983d0f0	OK
+S2Q08	roster	reference	block 358	added 360	userA 5102	userB 5462	sha12 9d8317a2e9dc	OK
+S2Q08F	roster	pronoun	block 471	added 473	userA 4146	userB 4619	sha12 c30c95b3155a	OK
+S2Q09F	roster	reference	block 284	added 286	userA 5846	userB 6132	sha12 5df9928795ce	OK
+C1	callback	callback	block 562	added 564	userA 5568	userB 6132	sha12 2326893467f7	OK
+C2	callback	callback	block 561	added 563	userA 5490	userB 6053	sha12 9252786884b9	OK
+C3	callback	callback	block 908	added 910	userA 4110	userB 5020	sha12 022421810e54	OK
+C4	callback	callback	block 363	added 365	userA 5385	userB 5750	sha12 4d19e1abc3f4	OK
+C5	callback	callback	block 808	added 810	userA 4101	userB 4911	sha12 8b88b0c346ea	OK
+C6	callback	callback	block 613	added 615	userA 3901	userB 4516	sha12 e6d53217d410	OK
+D1	dropped	pronoun	block 289	added 291	userA 3956	userB 4247	sha12 cef7cd851c2d	OK
+D2	dropped	pronoun	block 301	added 303	userA 4283	userB 4586	sha12 ae548433d83d	OK
+D3	dropped	pronoun	block 272	added 274	userA 3897	userB 4171	sha12 617edb222ab3	OK
+ARMS OK: every userB = userA + block + "\n\n" at the marker, nothing else
+items: 16; mean added chars: 488; max block: 908
+PARITY FIXTURE OK: 48 entries re-derived (16 with a block, 32 empty)
+fixture check fails on a corrupted input: OK
+
+[2026-10-03 10:06:07] step 5a — (cwd C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad) node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-questions-s50l\scripts\followup-questions-decide-calibrate.mjs  -> exit 0
+OK   identical arms: gain 0: FAIL via c5=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:FAIL]
+OK   roster gain +1 (FAIL edge): FAIL via c5=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:FAIL]
+OK   roster gain +2: INCONCLUSIVE via c5=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:INCONCLUSIVE]
+OK   roster gain +3: INCONCLUSIVE via c5=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:INCONCLUSIVE]
+OK   roster gain +4 (PASS edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   roster gain +4 by ONE grader only: consensus gain 0: FAIL via c5=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:FAIL]
+OK   gain +6, one callback wrong in B by both graders: FAIL via c1=FAIL (expected FAIL)  [c1:FAIL c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, one callback wrong in B by ONE grader only: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, wrong in both arms of the same pair (no NEW wrong): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, one dropped-parent case off-topic in B by both graders: FAIL via c2=FAIL (expected FAIL)  [c1:holds c2:FAIL c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, B first token +1001 ms on every pair: FAIL via c3a=FAIL (expected FAIL)  [c1:holds c2:holds c3a:FAIL c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, B first token +1000 ms (not over the FAIL bar): INCONCLUSIVE via c3a=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:INCONCLUSIVE c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, B first token +501 ms: INCONCLUSIVE via c3a=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:INCONCLUSIVE c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, B first token +500 ms (holds edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, B +5000 ms on 6 pairs: median 0, p90 up: INCONCLUSIVE via c3b=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:INCONCLUSIVE c3c:holds c4:holds c5:PASS]
+OK   gain +6, 4 more B answers over 10 s: FAIL via c3c=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:FAIL c4:holds c5:PASS]
+OK   gain +6, 3 more B answers over 10 s (allowance edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   gain +6, B +11 words on every pair: FAIL via c4=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:FAIL c5:PASS]
+OK   gain +6, B +10 words (not over the FAIL bar): INCONCLUSIVE via c4=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:INCONCLUSIVE c5:PASS]
+OK   gain +6, B +5 words (holds edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   roster gain +1 while every callback and dropped pair is weak in A (clause 5 counts roster pairs only): FAIL via c5=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:FAIL]
+OK   pooled shape (R=42), gain +8 (PASS edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:PASS]
+OK   pooled shape (R=42), gain +7, not flagged pooled: INCONCLUSIVE via c5=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:INCONCLUSIVE]
+OK   pooled re-run (R=42), gain +7: a second INCONCLUSIVE is a FAIL: FAIL via c5=INCONCLUSIVE (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:INCONCLUSIVE]
+OK   pooled re-run (R=42), gain +3: FAIL via c5=INCONCLUSIVE (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:INCONCLUSIVE]
+OK   pooled re-run (R=42), gain +2 (FAIL edge): FAIL via c5=FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:FAIL]
+OK   pooled shape (R=42), gain +3, not flagged pooled (above the scaled FAIL bar): INCONCLUSIVE via c5=INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:INCONCLUSIVE]
+OK   refuses a pair without its second grader
+OK   refuses a pair with a 3 on a 0-2 scale
+OK   refuses a pair with no ttft
+
+CALIBRATION OK: every §7 branch and edge reads as pre-registered
+
+[2026-10-03 10:06:09] step 5b — (cwd C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad) node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-questions-s50l\scripts\mutate-decide.mjs  -> exit 0
+caught  clause 1 tolerates one new wrong  (BAD  gain +6, one callback wrong in B by both graders: PASS via c1=holds (expected FAIL)  [c1:holds c2:holds c)
+caught  clause 2 dropped  (BAD  gain +6, one dropped-parent case off-topic in B by both graders: PASS via c2=holds (expected FAIL)  [c1:h)
+caught  clause 3a FAIL bar at 1500  (BAD  gain +6, B first token +1001 ms on every pair: INCONCLUSIVE via c3a=INCONCLUSIVE (expected FAIL)  [c1:hol)
+caught  clause 3a holds bar at 600  (BAD  gain +6, B first token +501 ms: PASS via c3a=holds (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds )
+caught  clause 3b margin 5000  (BAD  gain +6, B +5000 ms on 6 pairs: median 0, p90 up: PASS via c3b=holds (expected INCONCLUSIVE)  [c1:holds c)
+caught  clause 3c allowance floored  (BAD  gain +6, 3 more B answers over 10 s (allowance edge): FAIL (expected PASS)  [c1:holds c2:holds c3a:holds )
+caught  clause 4 FAIL bar at 12  (BAD  gain +6, B +11 words on every pair: INCONCLUSIVE via c4=INCONCLUSIVE (expected FAIL)  [c1:holds c2:holds )
+caught  clause 5 counts every pair  (BAD  roster gain +2: FAIL via c5=FAIL (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:hold)
+caught  clause 5 fixed bars (no pooled scaling)  (BAD  pooled shape (R=42), gain +7, not flagged pooled: PASS via c5=PASS (expected INCONCLUSIVE)  [c1:holds c2:)
+caught  pooled INCONCLUSIVE not turned into FAIL  (BAD  pooled re-run (R=42), gain +7: a second INCONCLUSIVE is a FAIL: INCONCLUSIVE via c5=INCONCLUSIVE (expecte)
+caught  consensus wrong by either grader  (BAD  gain +6, one callback wrong in B by ONE grader only: FAIL (expected PASS)  [c1:FAIL c2:holds c3a:holds c3)
+caught  consensus acceptable by either grader  (BAD  roster gain +4 by ONE grader only: consensus gain 0: PASS via c5=PASS (expected FAIL)  [c1:holds c2:holds)
+caught  score validation off  (BAD  refuses a pair with a 3 on a 0-2 scale)
+
+EVERY MUTANT CAUGHT: the calibration can fail
+
+[2026-10-03 10:06:09] step 6a — (cwd C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad) node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-questions-s50l\pooled-decide.mjs --calibrate  -> exit 0
+n = 47 complete (item, rep) pairs; roster pairs R = 21
+1. no new wrong answers        consensus-wrong B 0 <= A 0: holds
+2. no rise in off-topic        consensus-off-topic B 3 <= A 9: holds
+3a. not later (median)         median paired TTFT B-A 97 ms (holds <= +500, FAIL > +1000): holds
+3b. not later (p90)            p90 B 10663 ms vs p90 A 10966 ms + 2000: holds
+3c. stalls                     TTFT > 10 s: B 7 <= A 6 + 3: holds
+4. not longer                  median paired words B-A 3 (holds <= +5, FAIL > +10): holds
+5. gain, roster pairs          consensus-acceptable B 13 - A 10 = +3 (PASS >= +4, FAIL <= +1): INCONCLUSIVE
+DECISION: INCONCLUSIVE
+CALIBRATION OK: all 9 rule lines equal Thursday's RESULT.txt block, in order
+
+[2026-10-03 10:06:10] step 6b — (cwd C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad) node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-questions-s50l\scripts\e2e-synthetic.mjs  -> exit 0
+pairs.blind-1.json  23 answers  S1Q04F,S1Q06F,S1Q08,S2Q05F
+pairs.blind-2.json  24 answers  S2Q08,S2Q08F,S2Q09F,C2
+pairs.blind-3.json  23 answers  C3,C4,C5,D1
+pairs.blind-4.json  12 answers  D2,D3
+4 files; not graded, pair incomplete (transient after retries): Ar3:S1Q04F; not graded, scored wrong (empty after the filters): Br2:C3; instrument 8564ba96369a (pre-registered 8564ba96369a)
+incomplete pairs (excluded): S1Q04F#3 (A missing)
+answers empty after the filters (scored 0/0/0): Br2:C3
+n = 41 complete (item, rep) pairs; roster pairs R = 20
+1. no new wrong answers        consensus-wrong B 1 <= A 0: FAIL
+2. no rise in off-topic        consensus-off-topic B 1 <= A 0: FAIL
+3a. not later (median)         median paired TTFT B-A 0 ms (holds <= +500, FAIL > +1000): holds
+3b. not later (p90)            p90 B 3030 ms vs p90 A 3030 ms + 2000: holds
+3c. stalls                     TTFT > 10 s: B 0 <= A 0 + 3: holds
+4. not longer                  median paired words B-A 0 (holds <= +5, FAIL > +10): holds
+5. gain, roster pairs          consensus-acceptable B 20 - A 16 = +4 (PASS >= +4, FAIL <= +1): PASS
+DECISION: FAIL
+
+either grader: wrong A 0 B 1; off-topic A 0 B 1; mean-of-graders acceptable (all pairs) A 37.0 B 40.0
+per item, reps 1-3 (Y both acceptable, X both correctness 0, o both on_topic <= 1, w otherwise):
+  roster
+    S1Q04F A YY-  B YY-
+    S1Q06F A wYY  B YYY
+    S1Q08  A YwY  B YYY
+    S2Q05F A wYY  B YYY
+    S2Q08  A YYw  B YYY
+    S2Q08F A YYY  B YYY
+    S2Q09F A YYY  B YYY
+  callback
+    C2     A YYY  B YYY
+    C3     A YYY  B YXY
+    C4     A YYY  B YYY
+    C5     A YYY  B YYY
+  dropped
+    D1     A YYY  B YYY
+    D2     A YYY  B YYY
+    D3     A YYY  B YYY
+OK  incomplete pair named
+OK  empty answer named and scored
+OK  R = 20 roster pairs
+OK  clause 1 FAIL on the emptied answer
+OK  clause 5 gain +4 of 20 reads PASS
+OK  decision FAIL
+OK  82 of 84 answers sent to graders (not the transient, not the empty one; s50l: 14 ids)
+OK  a grader file missing one key stops the merge (exit 2)
+E2E OK
+
+[2026-10-03 10:06:10] step 7 — (cwd C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad) node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-questions-s50l\scripts\check-grader-questions.mjs  -> exit 0
+S1Q04F roster   parent: Let's do some code: implement evaluation for a fixed campaign budget.  | How would you reduce the sorting cost for millions of customers while preserving
+S1Q06F roster   parent: Now a SQL one: construct a point-in-time feature. You have a snapshots | How would you index those tables, and what changes if historical records can be 
+S1Q08  roster   bare | Now add delayed outcomes and experimentation: extend that design so churn outcom
+S2Q05F roster   parent: Pack retrieved evidence into a context budget: implement a function ca | Construct an example where that greedy policy gives poor coverage, and tell me h
+S2Q08  roster   bare | Migrate the embedding model without an outage: extend that service to introduce 
+S2Q08F roster   parent: Migrate the embedding model without an outage: extend that service to  | How do you prove the replacement index is sufficiently complete and current befo
+S2Q09F roster   parent: Place the RAG components on Azure: choose Azure services for document  | How would your design change if the documents and their processing had to remain
+C2     callback parent: Now a SQL one: construct a point-in-time feature. You have a snapshots | Back to the point-in-time SQL feature you wrote: how would you compute it for a 
+C3     callback parent: Did the model actually reduce churn? Your CV reports churn decreasing  | You mentioned a retention campaign earlier. How would you measure its uplift? [F
+C4     callback parent: Let's do some code: implement evaluation for a fixed campaign budget.  | Going back to what you said about the tie rule, would that still hold with float
+C5     callback parent: Merge two retrieval result lists: implement reciprocal rank fusion for | Going back to reciprocal rank fusion, how would you tune the constant c? [Follow
+D1     dropped  parent: Now a SQL one: construct a point-in-time feature. You have a snapshots | How would you index those tables, and what changes if historical records can be 
+D2     dropped  parent: Pack retrieved evidence into a context budget: implement a function ca | Construct an example where that greedy policy gives poor coverage, and tell me h
+D3     dropped  parent: Migrate the embedding model without an outage: extend that service to  | How do you prove the replacement index is sufficiently complete and current befo
+instrument 8564ba96369a (pre-registered 8564ba96369a)
+
+[2026-10-03 10:06:10] step 8 — (cwd C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad) node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-questions-s50l\scripts\followup-questions-run.mjs --dry-run  -> exit 0
+FOLLOW-UP QUESTIONS REPLAY  model=gemini-3.5-flash-lite thinking=HIGH  14 items x 3 reps x 2 arms = 84 calls
+material s50l-gated.json (recorded hash) + earlierQuestions.ref.mjs (pre-registered hash) OK; filter C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\dist-snapshots\main-precue-73d7f01\dist-electron\electron\llm\verbalStreamFilter.js sha256 d8fee6ca0170 (must be d8fee6ca0170)
+A first in 21 pairs, B first in 21
+DRY # 1 S1Q04F roster   r1 B (first)  system 16223  user 4808
+DRY # 2 S1Q04F roster   r1 A (second)  system 16223  user 4230
+DRY # 3 S1Q04F roster   r2 A (first)  system 16223  user 4230
+DRY # 4 S1Q04F roster   r2 B (second)  system 16223  user 4808
+DRY # 5 S1Q04F roster   r3 B (first)  system 16223  user 4808
+DRY # 6 S1Q04F roster   r3 A (second)  system 16223  user 4230
+DRY # 7 S1Q06F roster   r1 A (first)  system 16223  user 4205
+DRY # 8 S1Q06F roster   r1 B (second)  system 16223  user 4763
+DRY # 9 S1Q06F roster   r2 B (first)  system 16223  user 4763
+DRY #10 S1Q06F roster   r2 A (second)  system 16223  user 4205
+DRY #11 S1Q06F roster   r3 A (first)  system 16223  user 4205
+DRY #12 S1Q06F roster   r3 B (second)  system 16223  user 4763
+DRY #13 S1Q08  roster   r1 B (first)  system 16223  user 5282
+DRY #14 S1Q08  roster   r1 A (second)  system 16223  user 4920
+DRY #15 S1Q08  roster   r2 A (first)  system 16223  user 4920
+DRY #16 S1Q08  roster   r2 B (second)  system 16223  user 5282
+DRY #17 S1Q08  roster   r3 B (first)  system 16223  user 5282
+DRY #18 S1Q08  roster   r3 A (second)  system 16223  user 4920
+DRY #19 S2Q05F roster   r1 A (first)  system 16223  user 4508
+DRY #20 S2Q05F roster   r1 B (second)  system 16223  user 5010
+DRY #21 S2Q05F roster   r2 B (first)  system 16223  user 5010
+DRY #22 S2Q05F roster   r2 A (second)  system 16223  user 4508
+DRY #23 S2Q05F roster   r3 A (first)  system 16223  user 4508
+DRY #24 S2Q05F roster   r3 B (second)  system 16223  user 5010
+DRY #25 S2Q08  roster   r1 B (first)  system 16223  user 5237
+DRY #26 S2Q08  roster   r1 A (second)  system 16223  user 4877
+DRY #27 S2Q08  roster   r2 A (first)  system 16223  user 4877
+DRY #28 S2Q08  roster   r2 B (second)  system 16223  user 5237
+DRY #29 S2Q08  roster   r3 B (first)  system 16223  user 5237
+DRY #30 S2Q08  roster   r3 A (second)  system 16223  user 4877
+DRY #31 S2Q08F roster   r1 A (first)  system 16223  user 4146
+DRY #32 S2Q08F roster   r1 B (second)  system 16223  user 4619
+DRY #33 S2Q08F roster   r2 B (first)  system 16223  user 4619
+DRY #34 S2Q08F roster   r2 A (second)  system 16223  user 4146
+DRY #35 S2Q08F roster   r3 A (first)  system 16223  user 4146
+DRY #36 S2Q08F roster   r3 B (second)  system 16223  user 4619
+DRY #37 S2Q09F roster   r1 B (first)  system 16223  user 5928
+DRY #38 S2Q09F roster   r1 A (second)  system 16223  user 5642
+DRY #39 S2Q09F roster   r2 A (first)  system 16223  user 5642
+DRY #40 S2Q09F roster   r2 B (second)  system 16223  user 5928
+DRY #41 S2Q09F roster   r3 B (first)  system 16223  user 5928
+DRY #42 S2Q09F roster   r3 A (second)  system 16223  user 5642
+DRY #43 C2     callback r1 A (first)  system 16223  user 5548
+DRY #44 C2     callback r1 B (second)  system 16223  user 6111
+DRY #45 C2     callback r2 B (first)  system 16223  user 6111
+DRY #46 C2     callback r2 A (second)  system 16223  user 5548
+DRY #47 C2     callback r3 A (first)  system 16223  user 5548
+DRY #48 C2     callback r3 B (second)  system 16223  user 6111
+DRY #49 C3     callback r1 B (first)  system 16223  user 5019
+DRY #50 C3     callback r1 A (second)  system 16223  user 4110
+DRY #51 C3     callback r2 A (first)  system 16223  user 4110
+DRY #52 C3     callback r2 B (second)  system 16223  user 5019
+DRY #53 C3     callback r3 B (first)  system 16223  user 5019
+DRY #54 C3     callback r3 A (second)  system 16223  user 4110
+DRY #55 C4     callback r1 A (first)  system 16223  user 5412
+DRY #56 C4     callback r1 B (second)  system 16223  user 5777
+DRY #57 C4     callback r2 B (first)  system 16223  user 5777
+DRY #58 C4     callback r2 A (second)  system 16223  user 5412
+DRY #59 C4     callback r3 A (first)  system 16223  user 5412
+DRY #60 C4     callback r3 B (second)  system 16223  user 5777
+DRY #61 C5     callback r1 B (first)  system 16223  user 4906
+DRY #62 C5     callback r1 A (second)  system 16223  user 4101
+DRY #63 C5     callback r2 A (first)  system 16223  user 4101
+DRY #64 C5     callback r2 B (second)  system 16223  user 4906
+DRY #65 C5     callback r3 B (first)  system 16223  user 4906
+DRY #66 C5     callback r3 A (second)  system 16223  user 4101
+DRY #67 D1     dropped  r1 A (first)  system 16223  user 3956
+DRY #68 D1     dropped  r1 B (second)  system 16223  user 4247
+DRY #69 D1     dropped  r2 B (first)  system 16223  user 4247
+DRY #70 D1     dropped  r2 A (second)  system 16223  user 3956
+DRY #71 D1     dropped  r3 A (first)  system 16223  user 3956
+DRY #72 D1     dropped  r3 B (second)  system 16223  user 4247
+DRY #73 D2     dropped  r1 B (first)  system 16223  user 4557
+DRY #74 D2     dropped  r1 A (second)  system 16223  user 4259
+DRY #75 D2     dropped  r2 A (first)  system 16223  user 4259
+DRY #76 D2     dropped  r2 B (second)  system 16223  user 4557
+DRY #77 D2     dropped  r3 B (first)  system 16223  user 4557
+DRY #78 D2     dropped  r3 A (second)  system 16223  user 4259
+DRY #79 D3     dropped  r1 A (first)  system 16223  user 3897
+DRY #80 D3     dropped  r1 B (second)  system 16223  user 4171
+DRY #81 D3     dropped  r2 B (first)  system 16223  user 4171
+DRY #82 D3     dropped  r2 A (second)  system 16223  user 3897
+DRY #83 D3     dropped  r3 A (first)  system 16223  user 3897
+DRY #84 D3     dropped  r3 B (second)  system 16223  user 4171
+DRY RUN: no key read, no call made
+[2026-10-03 10:06:10] preconditions 0b-8 all hold
+
+[2026-10-03 10:06:33] step 9 — node scripts/followup-questions-run.mjs (ONE pass, 84 calls)
+[2026-10-03 10:06:59] step 12 (done early, before grading) — one throwaway opus probe 'Reply with the single word OK.'; node validation-hour/h40d-grader-models.mjs --session 9c5886c7-cdbd-48af-b8bc-e9275012ec64 probe=a9d35e8deacac3eff -> probe: claude-opus-5-5 PINNED
+[2026-10-03 10:14:01] step 9 exit 0; output in run-pass.out.txt
+#62 C5     r1 A:  57w  ttft  3468ms  total  3688ms  thoughts 882  finish STOP
+#63 C5     r2 A:  60w  ttft  3892ms  total  4043ms  thoughts 1002  finish STOP
+#64 C5     r2 B:  58w  ttft  3823ms  total  3986ms  thoughts 983  finish STOP
+#65 C5     r3 B:  55w  ttft  3727ms  total  3887ms  thoughts 991  finish STOP
+#66 C5     r3 A:  62w  ttft  4301ms  total  4482ms  thoughts 1047  finish STOP
+#67 D1     r1 A:  77w  ttft  3663ms  total  3866ms  thoughts 835  finish STOP
+#68 D1     r1 B: 111w  ttft  3847ms  total  4310ms  thoughts 840  finish STOP
+#69 D1     r2 B:  84w  ttft  3901ms  total  4278ms  thoughts 828  finish STOP
+#70 D1     r2 A:  67w  ttft  3330ms  total  3489ms  thoughts 725  finish STOP
+#71 D1     r3 A:  52w  ttft  3529ms  total  3670ms  thoughts 897  finish STOP
+#72 D1     r3 B:  73w  ttft  4043ms  total  4302ms  thoughts 899  finish STOP
+#73 D2     r1 B:  83w  ttft  3559ms  total  3793ms  thoughts 924  finish STOP
+#74 D2     r1 A: 105w  ttft  3397ms  total  3621ms  thoughts 949  finish STOP
+#75 D2     r2 A:  90w  ttft  3244ms  total  3576ms  thoughts 888  finish STOP
+#76 D2     r2 B: 104w  ttft  3131ms  total  3411ms  thoughts 842  finish STOP
+#77 D2     r3 B:  86w  ttft  3459ms  total  3734ms  thoughts 903  finish STOP
+#78 D2     r3 A: 105w  ttft  3208ms  total  3482ms  thoughts 783  finish STOP
+#79 D3     r1 A:  61w  ttft  3249ms  total  3443ms  thoughts 613  finish STOP
+#80 D3     r1 B:  56w  ttft  3609ms  total  3774ms  thoughts 724  finish STOP
+#81 D3     r2 B:  58w  ttft  2780ms  total  2941ms  thoughts 650  finish STOP
+#82 D3     r2 A:  52w  ttft  3471ms  total  3597ms  thoughts 749  finish STOP
+#83 D3     r3 A:  55w  ttft  3582ms  total  3695ms  thoughts 707  finish STOP
+#84 D3     r3 B:  59w  ttft  3676ms  total  3810ms  thoughts 852  finish STOP
+arm A: answered 42/42  transient 0  ttft p50 3489ms p90 4014ms  words p50 63  empty spoken 0
+arm B: answered 42/42  transient 0  ttft p50 3675ms p90 4331ms  words p50 66  empty spoken 0
+
+[2026-10-03 10:14:29] step 10 — node scripts/followup-questions-blind.mjs -> exit 0
+pairs.blind-1.json  24 answers  S1Q04F,S1Q06F,S1Q08,S2Q05F
+pairs.blind-2.json  24 answers  S2Q08,S2Q08F,S2Q09F,C2
+pairs.blind-3.json  24 answers  C3,C4,C5,D1
+pairs.blind-4.json  12 answers  D2,D3
+4 files; not graded, pair incomplete (transient after retries): none; not graded, scored wrong (empty after the filters): none; instrument 8564ba96369a (pre-registered 8564ba96369a)
+
+[2026-10-03 10:14:29] step 11 — node move-keys.mjs out -> exit 0
+moved 4 key files OUT of the graders' folder; it now holds: pairs.blind-1.json, pairs.blind-2.json, pairs.blind-3.json, pairs.blind-4.json
+
+[2026-10-03 10:16:31] step 14a — node move-keys.mjs back -> exit 0
+moved 4 key files BACK into the graders' folder; it now holds: key.blind-1.json, key.blind-2.json, key.blind-3.json, key.blind-4.json, pairs.blind-1.json, pairs.blind-2.json, pairs.blind-3.json, pairs.blind-4.json, verdicts.blind-1.g1.json, verdicts.blind-1.g2.json, verdicts.blind-2.g1.json, verdicts.blind-2.g2.json, verdicts.blind-3.g1.json, verdicts.blind-3.g2.json, verdicts.blind-4.g1.json, verdicts.blind-4.g2.json
+
+[2026-10-03 10:16:51] step 15a — node pooled-decide.mjs -> exit 0
+additivity OK: n 47+42=89, R 21+21=42, wrongA 0+0, wrongB 0+1, offA 9+6, offB 3+0, slowA 6+0, slowB 7+0, accA 10+11, accB 13+16
+POOLED (s50m Thursday + s50l Saturday): 47 + 42 pairs; instrument 8564ba96369a; graders claude-opus-5-5
+incomplete pairs (excluded): m:C5#1
+answers empty after the filters (scored 0/0/0): none
+n = 89 complete (item, rep) pairs; roster pairs R = 42
+1. no new wrong answers        consensus-wrong B 1 <= A 0: FAIL
+2. no rise in off-topic        consensus-off-topic B 3 <= A 15: holds
+3a. not later (median)         median paired TTFT B-A 131 ms (holds <= +500, FAIL > +1000): holds
+3b. not later (p90)            p90 B 9610 ms vs p90 A 8771 ms + 2000: holds
+3c. stalls                     TTFT > 10 s: B 7 <= A 6 + 5: holds
+4. not longer                  median paired words B-A 3 (holds <= +5, FAIL > +10): holds
+5. gain, roster pairs          consensus-acceptable B 29 - A 21 = +8 (PASS >= +8, FAIL <= +2): PASS
+DECISION: FAIL
+
+[2026-10-03 10:16:51] step 15b (REPORTED ONLY) — node scripts/followup-questions-decide.mjs -> exit 0
+incomplete pairs (excluded): none
+answers empty after the filters (scored 0/0/0): none
+n = 42 complete (item, rep) pairs; roster pairs R = 21
+1. no new wrong answers        consensus-wrong B 1 <= A 0: FAIL
+2. no rise in off-topic        consensus-off-topic B 0 <= A 6: holds
+3a. not later (median)         median paired TTFT B-A 174 ms (holds <= +500, FAIL > +1000): holds
+3b. not later (p90)            p90 B 4331 ms vs p90 A 4014 ms + 2000: holds
+3c. stalls                     TTFT > 10 s: B 0 <= A 0 + 3: holds
+4. not longer                  median paired words B-A 3 (holds <= +5, FAIL > +10): holds
+5. gain, roster pairs          consensus-acceptable B 16 - A 11 = +5 (PASS >= +4, FAIL <= +1): PASS
+DECISION: FAIL
+
+either grader: wrong A 0 B 1; off-topic A 7 B 0; mean-of-graders acceptable (all pairs) A 23.0 B 32.0
+per item, reps 1-3 (Y both acceptable, X both correctness 0, o both on_topic <= 1, w otherwise):
+  roster
+    S1Q04F A www  B wYY
+    S1Q06F A www  B YwY
+    S1Q08  A wYY  B YYY
+    S2Q05F A wYw  B YYY
+    S2Q08  A YYY  B YYY
+    S2Q08F A YYo  B YwY
+    S2Q09F A YYY  B YXw
+  callback
+    C2     A wYY  B YYY
+    C3     A YYY  B YYY
+    C4     A Yww  B Yww
+    C5     A YYY  B YYY
+  dropped
+    D1     A ooo  B wwY
+    D2     A wYw  B www
+    D3     A ooY  B YYY

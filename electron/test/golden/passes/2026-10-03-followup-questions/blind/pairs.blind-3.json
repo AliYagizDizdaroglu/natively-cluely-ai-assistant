@@ -1,0 +1,270 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "C3#1",
+   "id": "C3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "You mentioned a retention campaign earlier. How would you measure its uplift? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]",
+   "heard": "You mentioned a retention campaign earlier. How would you measure its uplift?",
+   "source": "answers-pass",
+   "answer": "I measure true uplift by running randomized control trials where we hold out a random control group from the high-risk cohort who don't receive the retention offer. By comparing the churn rate of the treated group against this untreated control group, we isolate the causal impact of the campaign from normal customer behavior or seasonality."
+  },
+  {
+   "key": "C3#2",
+   "id": "C3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "You mentioned a retention campaign earlier. How would you measure its uplift? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]",
+   "heard": "You mentioned a retention campaign earlier. How would you measure its uplift?",
+   "source": "answers-pass",
+   "answer": "I measure uplift using a randomized control-treatment split within the high-risk subscriber bands. The treatment group receives the retention campaign while a holdout control group receives nothing, which lets me isolate the true incremental effect from organic retention. I then track the difference in renewal rates between the two groups to calculate the actual revenue saved."
+  },
+  {
+   "key": "C3#3",
+   "id": "C3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "You mentioned a retention campaign earlier. How would you measure its uplift? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]",
+   "heard": "You mentioned a retention campaign earlier. How would you measure its uplift?",
+   "source": "answers-pass",
+   "answer": "I measure uplift by running a randomized control group where a small percentage of high-risk users are held back from the retention campaign. By comparing the actual churn rate of the treated group against that control, I isolate the true incremental impact rather than capturing organic retention. This clean baseline lets us accurately calculate the net revenue saved from the intervention."
+  },
+  {
+   "key": "C3#4",
+   "id": "C3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "You mentioned a retention campaign earlier. How would you measure its uplift? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]",
+   "heard": "You mentioned a retention campaign earlier. How would you measure its uplift?",
+   "source": "answers-pass",
+   "answer": "I measure uplift using a randomized control trial where a holdout group of high-risk subscribers receives no retention offer while the treatment group gets the campaign. By comparing the actual retention rate of the treatment group against this control over a thirty-day window, I isolate the true causal impact from seasonality. That gives us a clean read on incremental revenue saved."
+  },
+  {
+   "key": "C3#5",
+   "id": "C3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "You mentioned a retention campaign earlier. How would you measure its uplift? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]",
+   "heard": "You mentioned a retention campaign earlier. How would you measure its uplift?",
+   "source": "answers-pass",
+   "answer": "I measure uplift using a randomized control group by withholding retention offers from a random subset of high-risk customers flagged by the model. Comparing the churn rate of the treated group against this control baseline isolates the true incremental impact, filtering out organic retention or seasonality. That lets us calculate precise incremental gain and true ROI for the campaign."
+  },
+  {
+   "key": "C3#6",
+   "id": "C3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "You mentioned a retention campaign earlier. How would you measure its uplift? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]",
+   "heard": "You mentioned a retention campaign earlier. How would you measure its uplift?",
+   "source": "answers-pass",
+   "answer": "I measure campaign uplift using a strict control group where a random subset of high-risk subscribers identified by my model receives no intervention. By comparing the churn rate in the treated group against this holdout control over a 30-to-90-day window, I isolate the true incremental savings. That lets us calculate precise metrics like net revenue retention and cost per saved user."
+  },
+  {
+   "key": "C4#1",
+   "id": "C4",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to what you said about the tie rule, would that still hold with float scores from two models? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to what you said about the tie rule, would that still hold with float scores from two models?",
+   "source": "answers-pass",
+   "answer": "No, exact float equality fails when combining scores from two different models due to floating-point precision and normalization differences. Instead of raw equality, I define a small epsilon threshold to identify practically tied scores, and then apply a deterministic secondary sort key—like model weight or recency—to break the tie cleanly."
+  },
+  {
+   "key": "C4#2",
+   "id": "C4",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to what you said about the tie rule, would that still hold with float scores from two models? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to what you said about the tie rule, would that still hold with float scores from two models?",
+   "source": "answers-pass",
+   "answer": "With float scores from two models, exact ties are rare, but near-ties within a tight epsilon happen frequently. You still need a deterministic tie rule because floating-point variance can cause identical or near-identical scores to flip rankings between runs. I usually enforce a secondary priority order—like prioritizing the primary model or falling back to a deterministic attribute—to keep the system's output completely reproducible."
+  },
+  {
+   "key": "C4#3",
+   "id": "C4",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to what you said about the tie rule, would that still hold with float scores from two models? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to what you said about the tie rule, would that still hold with float scores from two models?",
+   "source": "answers-pass",
+   "answer": "Yes, that tie rule becomes even more critical with float scores from two models because floating-point representation quirks can introduce unexpected ordering instability. To prevent non-deterministic sorting when scores match, I always apply a secondary sort key—such as a tie-breaking model priority or a unique entity ID—so the ranking remains completely reproducible."
+  },
+  {
+   "key": "C4#4",
+   "id": "C4",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to what you said about the tie rule, would that still hold with float scores from two models? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to what you said about the tie rule, would that still hold with float scores from two models?",
+   "source": "answers-pass",
+   "answer": "Float scores actually make tie-breaking even more critical because numerical precision issues or identical probabilities from different models frequently create unstable sort orders. When combining scores from two models, I always enforce a secondary deterministic tie-breaker—like a secondary model score or a unique record ID. Without that, you risk non-deterministic sorting whenever floats evaluate as equal or fall within machine epsilon."
+  },
+  {
+   "key": "C4#5",
+   "id": "C4",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to what you said about the tie rule, would that still hold with float scores from two models? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to what you said about the tie rule, would that still hold with float scores from two models?",
+   "source": "answers-pass",
+   "answer": "With float scores from two different models, raw ties are rare, but close scores happen often due to uncalibrated distributions. The tie rule still holds as long as I normalize the score ranges first and use a deterministic secondary sort key—like source confidence or recency—rather than relying on raw floating-point comparisons."
+  },
+  {
+   "key": "C4#6",
+   "id": "C4",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to what you said about the tie rule, would that still hold with float scores from two models? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "Going back to what you said about the tie rule, would that still hold with float scores from two models?",
+   "source": "answers-pass",
+   "answer": "Yes, it actually becomes even more critical with float scores from two models. Because outputs from different architectures have distinct scales and precision limits, score collisions happen frequently at decision boundaries. Without a deterministic secondary sorting key—like an ID or a base confidence score—ranking instability will silently corrupt your top-k evaluation."
+  },
+  {
+   "key": "C5#1",
+   "id": "C5",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to reciprocal rank fusion, how would you tune the constant c? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Going back to reciprocal rank fusion, how would you tune the constant c?",
+   "source": "answers-pass",
+   "answer": "I tune the constant c empirically using an offline evaluation set optimized for NDCG or MRR. A smaller c heavily prioritizes the top ranks, while a higher default like 60 smooths the distribution so lower-ranked matches still matter. I typically grid-search values between 10 and 100 against our gold queries to find the sweet spot."
+  },
+  {
+   "key": "C5#2",
+   "id": "C5",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to reciprocal rank fusion, how would you tune the constant c? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Going back to reciprocal rank fusion, how would you tune the constant c?",
+   "source": "answers-pass",
+   "answer": "I tune c empirically using grid search on a validation set optimized for NDCG against our gold labels. A smaller c heavily weights top-ranked items, while the standard value of 60 flattens the curve to favor consensus across multiple lists. I typically evaluate values between 10 and 100 to find the optimal balance for our specific query distribution."
+  },
+  {
+   "key": "C5#3",
+   "id": "C5",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to reciprocal rank fusion, how would you tune the constant c? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Going back to reciprocal rank fusion, how would you tune the constant c?",
+   "source": "answers-pass",
+   "answer": "I tune the constant c empirically using our gold evaluation set by optimizing for ranking metrics like MRR and NDCG. Since c controls how heavily top ranks are favored over lower ones—typically ranging between 10 and 60—I run a grid search to find the exact value that maximizes retrieval accuracy for our specific document distribution."
+  },
+  {
+   "key": "C5#4",
+   "id": "C5",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to reciprocal rank fusion, how would you tune the constant c? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Going back to reciprocal rank fusion, how would you tune the constant c?",
+   "source": "answers-pass",
+   "answer": "I tune the constant c empirically using a validation set optimized for NDCG or MRR. A smaller c heavily rewards top ranks, while a larger c flattens the curve to value cross-system consensus. I typically start around 60 and sweep between 20 and 100 depending on how much I want to penalize items missing the top tier."
+  },
+  {
+   "key": "C5#5",
+   "id": "C5",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to reciprocal rank fusion, how would you tune the constant c? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Going back to reciprocal rank fusion, how would you tune the constant c?",
+   "source": "answers-pass",
+   "answer": "I tune the constant c by running a grid search over a validation set to optimize for NDCG. A smaller c, around 10, strongly penalizes lower ranks and prioritizes top consensus, whereas a larger c, like 60, flattens the distribution to reward documents appearing across multiple retrievers. I calibrate it based on the empirical overlap between our lexical and vector search results."
+  },
+  {
+   "key": "C5#6",
+   "id": "C5",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Going back to reciprocal rank fusion, how would you tune the constant c? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]",
+   "heard": "Going back to reciprocal rank fusion, how would you tune the constant c?",
+   "source": "answers-pass",
+   "answer": "I tune the constant c empirically using a validation query set to optimize NDCG, since it controls the balance between top-rank dominance and consensus. A lower c around 20 heavily rewards items hitting the top of any single retriever, while a higher c like 60 smooths the curve and rewards items that rank consistently across both lexical and vector search."
+  },
+  {
+   "key": "D1#1",
+   "id": "D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d index those snapshot tables using a composite unique index on the customer ID and snapshot timestamp to guarantee point-in-time uniqueness and optimize time-series queries. For frequent filters and joins, I'd add targeted B-tree indexes, keeping the count minimal to protect write throughput during ingestion. \n\nIf historical records can be corrected post-ingestion, append-only structures stop working, so I'd implement a versioned or bi-temporal schema using effective date ranges and an active flag. That shifts our indexing strategy toward partial indexes on current records, like a unique index on customer ID where the record is active, while maintaining range indexes on temporal bounds to preserve audit history and handle late-arriving updates cleanly."
+  },
+  {
+   "key": "D1#2",
+   "id": "D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For indexing, I'd use standard B-trees on primary keys and foreign keys for quick relational lookups, alongside GIN indexes for any JSON metadata columns. If historical records can be corrected after ingestion, direct updates on large indexed tables create heavy write amplification and locking issues. To handle that, I'd move to an append-only event log or temporal tables with valid-time ranges, using a materialized view or asynchronous updates so downstream reads stay fast without blocking concurrent writes."
+  },
+  {
+   "key": "D1#3",
+   "id": "D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd use a composite index on the entity identifier and effective timestamp to optimize point-in-time lookups and range scans, alongside table partitioning by date for large analytical workloads. If historical records can be corrected after ingestion, I'd switch to a bitemporal design or add versioning columns to track both transaction time and valid time. That ensures we can retroactively fix data without causing silent drift or reproducibility issues in our ML training pipelines."
+  },
+  {
+   "key": "D1#4",
+   "id": "D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd index snapshot tables on a composite key of customer ID and effective timestamp using a B-tree, which makes point-in-time range scans for feature extraction fast. For current-state lookups, a partial index filtering for the latest active record avoids scanning historical partitions. If historical records can be corrected after ingestion, standard append-only tables fall apart, so I'd switch to versioned records with an update timestamp or event-sourcing. That ensures corrections trigger proper upserts and invalidate downstream feature pipelines rather than silently skewing training data."
+  },
+  {
+   "key": "D1#5",
+   "id": "D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd use B-tree indexes on primary and foreign keys, plus BRIN indexes for large chronological tables or GIN for JSONB payloads. If historical records can be corrected after ingestion, I'd implement row-level versioning or temporal tables to track mutations safely, and ensure downstream caches or materialized views are invalidated or incrementally updated."
+  },
+  {
+   "key": "D1#6",
+   "id": "D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd use standard B-tree indexes on primary keys, foreign keys, and timestamps for fast filtering, plus GIN indexes for any JSON columns. If historical records can be corrected after ingestion, frequent updates cause index bloat and dead tuples. To fix that, I'd transition to an append-only event log or use PostgreSQL temporal tables with valid time ranges, keeping our write path clean and avoiding random index updates."
+  }
+ ]
+}

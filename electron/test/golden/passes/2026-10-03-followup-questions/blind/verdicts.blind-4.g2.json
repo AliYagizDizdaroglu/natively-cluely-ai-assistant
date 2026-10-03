@@ -1,0 +1,14 @@
+{
+ "D2#1": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "MMR and query decomposition are sound, but the example of five chunks from one section ignores the policy's two-per-document cap."},
+ "D2#2": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Five chunks from one indemnification clause contradicts the two-per-document cap; MMR and decomposition fine; over 100 words."},
+ "D2#3": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Example of five chunks from one balance sheet ignores the per-document cap; remedies correct; too long for spoken delivery."},
+ "D2#4": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Five chunks from the same clause contradicts the two-per-document limit; MMR and agentic hops fine; over 100 words."},
+ "D2#5": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Plausible cross-entity coverage failure, correct MMR diversity remedy and sequential decomposition for multi-hop; about 85 words."},
+ "D2#6": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Top five from Appendix A ignores the two-per-document cap and budget packing; MMR and secondary hops are correct."},
+ "D3#1": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Covers completeness via count parity, freshness via sync timestamps, quality via shadow eval, then canary; concise."},
+ "D3#2": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Record counts and shadow eval cover completeness and quality but nothing proves the index is current."},
+ "D3#3": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Count parity, streaming ingestion lag for currency, and golden-set shadow evaluation; complete and concise."},
+ "D3#4": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "ID-level parity for completeness, consumer offset lag for currency, gold-set regression check; strong and specific."},
+ "D3#5": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "ID and count parity plus offline eval and shadowing, but no lag or watermark check for currency."},
+ "D3#6": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Gold-set shadow eval, ingestion watermark against primary for freshness and completeness, then canary; concise."}
+}

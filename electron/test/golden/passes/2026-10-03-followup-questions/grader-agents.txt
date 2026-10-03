@@ -1,0 +1,10 @@
+s50l pooled re-run graders, dispatched 2026-10-03 ~10:3x local, model alias opus (probe a9d35e8deacac3eff read claude-opus-5-5 first), h40d's frozen-instrument dispatch text verbatim (RUNBOOK step 13). The four key files were moved OUT of blind\ before dispatch (move-keys.mjs out).
+
+blind-1 g1  addb84e6bd55778d5
+blind-1 g2  a681f259dff0dae30
+blind-2 g1  a5eb230f8d7cb101a
+blind-2 g2  ab34ebe95114932db
+blind-3 g1  a83e3007ff2d0bc45
+blind-3 g2  ab605c210a849d667
+blind-4 g1  aa08ae8c058eb8aa9
+blind-4 g2  aa85ea6faa528f27c

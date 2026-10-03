@@ -1,0 +1,31 @@
+incomplete pairs (excluded): none
+answers empty after the filters (scored 0/0/0): none
+n = 42 complete (item, rep) pairs; roster pairs R = 21
+1. no new wrong answers        consensus-wrong B 1 <= A 0: FAIL
+2. no rise in off-topic        consensus-off-topic B 0 <= A 6: holds
+3a. not later (median)         median paired TTFT B-A 174 ms (holds <= +500, FAIL > +1000): holds
+3b. not later (p90)            p90 B 4331 ms vs p90 A 4014 ms + 2000: holds
+3c. stalls                     TTFT > 10 s: B 0 <= A 0 + 3: holds
+4. not longer                  median paired words B-A 3 (holds <= +5, FAIL > +10): holds
+5. gain, roster pairs          consensus-acceptable B 16 - A 11 = +5 (PASS >= +4, FAIL <= +1): PASS
+DECISION: FAIL
+
+either grader: wrong A 0 B 1; off-topic A 7 B 0; mean-of-graders acceptable (all pairs) A 23.0 B 32.0
+per item, reps 1-3 (Y both acceptable, X both correctness 0, o both on_topic <= 1, w otherwise):
+  roster
+    S1Q04F A www  B wYY
+    S1Q06F A www  B YwY
+    S1Q08  A wYY  B YYY
+    S2Q05F A wYw  B YYY
+    S2Q08  A YYY  B YYY
+    S2Q08F A YYo  B YwY
+    S2Q09F A YYY  B YXw
+  callback
+    C2     A wYY  B YYY
+    C3     A YYY  B YYY
+    C4     A Yww  B Yww
+    C5     A YYY  B YYY
+  dropped
+    D1     A ooo  B wwY
+    D2     A wYw  B www
+    D3     A ooY  B YYY
