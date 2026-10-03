@@ -844,6 +844,8 @@ const countWords = (s: string): number => (s.match(/\S+/g) ?? []).length;
  * request. A terminator at the end of a chunk waits for the next chunk, so
  * "3.5" or "e.g." split across chunks cannot end a sentence. onDone fires
  * once, on natural end or on a cut — never when the consumer stops early.
+ * A stream that opens with {" (the start of JSON.stringify of an object) is a
+ * structured payload, not speech: it passes through whole and counts no words.
  */
 export async function* cutAtWordBudget(
     source: AsyncGenerator<string>,
@@ -898,8 +900,27 @@ export async function* cutAtWordBudget(
     // ceiling however the provider chunks the stream, and an answer that ENDS at
     // exactly the ceiling is not reported as cut — nothing was dropped.
     const ceiling = opts.ceiling ?? 2 * limit;
-    for await (const chunk of source) {
+    // A structured payload in place of speech is not words either. streamChat's knowledge
+    // short-circuit yields a coaching card ({"__negotiationCoaching":…}) that stripSpokenNotation
+    // passes through untouched; stopped here like a runaway answer, a card whose texts ran past
+    // 200 words would reach the renderer as JSON that does not parse and be shown as raw text
+    // (reproduced in WhatToAnswerLLM.negotiationCard.test.ts; none that long seen by 2026-09-30).
+    // Decided once, on {" — the start of JSON.stringify of an object, after upstream cleanup. A bare
+    // "{" is not enough: a spoken answer may open "{} is the empty dict…" and must stay clamped. So
+    // text is held while all that has arrived is blank or one "{", then processed as one chunk.
+    let decided = false;
+    let payload = false;
+    let probe = '';
+    for await (let chunk of source) {
         if (SENTINEL_CHUNK.test(chunk)) { yield chunk; continue; } // not words — leaves carry/inWord alone
+        if (!decided) {
+            const head = (probe += chunk).trimStart();
+            if (head === '' || head === '{') continue;
+            decided = true;
+            payload = head.startsWith('{"');
+            chunk = probe;
+        }
+        if (payload) { yield chunk; continue; }
         let text = carry + chunk;
         carry = '';
         while (text.length > 0) {
@@ -950,6 +971,7 @@ export async function* cutAtWordBudget(
             }
         }
     }
+    if (!decided && probe) { emitted += track(probe); yield probe; } // only blanks or a lone "{" ever arrived
     if (carry) {
         if (mode === 'stream') {
             // Same trim as the loop: the held tail cannot push the answer past the ceiling.

@@ -637,6 +637,70 @@ describe('SPOKEN_WORD_GUARD — the verbal stream is clamped at 200 words and ne
         expect(out.join('').trim().split(/\s+/)).toHaveLength(200);
         expect(done).toMatchObject({ cut: true, words: 200 });
     });
+
+    // streamChat's knowledge short-circuit answers with one JSON object ({"__negotiationCoaching":…}),
+    // not speech. Stopped on a sentence end like a runaway answer, it would reach the renderer as
+    // JSON that does not parse, and be shown as raw text instead of the coaching card.
+    const payload = JSON.stringify({ __negotiationCoaching: { exactScript: [1, 2, 3, 4, 5].map((i) => sentence(46, i)).join(' ') } });
+    it('a structured payload in place of speech is not words: it passes whole past 200, and none of it is counted', async () => {
+        const { out, done } = await run(payload);
+        expect(out).toBe(payload);
+        expect(done).toEqual({ words: 0, cut: false, allowance: false });
+    });
+    it('a payload is known by its first non-blank characters ({"), not by its first chunk', async () => {
+        const src = (async function* () { yield ' '; yield '\n'; yield payload; })();
+        let out = '';
+        for await (const c of cutAtWordBudget(src, { ...SPOKEN_WORD_GUARD })) out += c;
+        expect(out).toBe(' \n' + payload);
+    });
+    it('a spoken answer that merely contains a brace is still clamped', async () => {
+        // 5 words, then sentences ending at 51, 97, 143, 189 and 235: the last would pass 200.
+        const text = 'The {} literal is empty. ' + [1, 2, 3, 4, 5].map((i) => sentence(46, i)).join(' ');
+        const { out, done } = await run(text);
+        expect(words(out)).toBe(189);
+        expect(done).toEqual({ words: 189, cut: true, allowance: false });
+    });
+    // A card is told from speech by "{\"" — the start of JSON.stringify of an object — not by a bare
+    // "{": an answer that opens on a brace-literal ("{} is the empty dict…") is speech and is clamped.
+    it('a spoken answer that OPENS on a brace literal is still clamped, for every chunk size', async () => {
+        const body = [1, 2, 3, 4, 5, 6].map((i) => sentence(46, i)).join(' ');   // 276 words
+        for (const lead of ['{} is empty. ', '{x} is a set. ']) {
+            for (const size of [1, 2, 3, 1e6]) {
+                const text = lead + body;
+                const src = (async function* () { for (let i = 0; i < text.length; i += size) yield text.slice(i, i + size); })();
+                let done: any = null;
+                let out = '';
+                for await (const c of cutAtWordBudget(src, { ...SPOKEN_WORD_GUARD, onDone: (r) => { done = r; } })) out += c;
+                expect(done.cut).toBe(true);
+                expect(done.words).toBeGreaterThan(180);
+                expect(done.words).toBeLessThanOrEqual(200);
+                expect(words(out)).toBe(done.words);
+                expect(out.startsWith(lead)).toBe(true);
+            }
+        }
+    });
+    it('a stream that is only "{" is emitted unchanged', async () => {
+        const src = (async function* () { yield '{'; })();
+        let done: any = null;
+        let out = '';
+        for await (const c of cutAtWordBudget(src, { ...SPOKEN_WORD_GUARD, onDone: (r) => { done = r; } })) out += c;
+        expect(out).toBe('{');
+        expect(done).toMatchObject({ cut: false });
+    });
+    it('a payload still passes whole at chunk sizes 1, 2 and 3, and when blank-led', async () => {
+        for (const size of [1, 2, 3]) {
+            for (const lead of ['', ' \n']) {
+                const text = lead + payload;
+                const src = (async function* () { for (let i = 0; i < text.length; i += size) yield text.slice(i, i + size); })();
+                let done: any = null;
+                let out = '';
+                for await (const c of cutAtWordBudget(src, { ...SPOKEN_WORD_GUARD, onDone: (r) => { done = r; } })) out += c;
+                expect(out).toBe(text);
+                expect(() => JSON.parse(out)).not.toThrow();
+                expect(done).toEqual({ words: 0, cut: false, allowance: false });
+            }
+        }
+    });
 });
 
 /**
