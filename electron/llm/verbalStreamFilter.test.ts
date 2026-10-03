@@ -210,6 +210,43 @@ describe('stripSpokenNotation — formulas that start with a number are not curr
             for (const size of [1, 2, 3, 4, 5, 7, 11]) expect(await runNotation(text, size)).toBe(ref);
         }
     });
+    it('is identical for every chunk size on a typeset fraction, a bare \\frac, money and a mix (2026-09-30)', async () => {
+        // Measured on the built filter 2026-09-30: at 1- and 2-character chunks the first
+        // case spoke "About $3000 over 9500 of it." and "\frac{a}{b}" spoke "frac{a}{b}",
+        // while the whole string was right. Each pair is [input, today's whole-string output],
+        // and the fix keeps every one of them.
+        const cases: [string, string][] = [
+            ['About $\\frac{3000}{9500}$ of it.', 'About 3000 over 9500 of it.'],
+            ['\\frac{a}{b}', 'a over b'],
+            ['$\\frac{3000}{9500}$', '3000 over 9500'],
+            ['$x^2$', 'x^2'],
+            // A full stop after a pair (review of 2026-10-03, Low 2): mid-stream and at the end of the stream.
+            ['That is $100,000$. Next.', 'That is 100,000. Next.'],
+            ['That is $100,000$.', 'That is 100,000.'],
+            ['about $120k a year', 'about $120k a year'],
+            // Today's reading, not an endorsement: money glued to the word before it loses its
+            // "$" (read as a closing delimiter), whole or chunked.
+            ['paid US$120k a year.', 'paid US120k a year.'],
+            ['About $\\frac{3000}{9500}$. That is $100,000$ a year, paid US$120k, so \\frac{a}{b} grows as $x^2$ at about $120k a year.',
+                'About 3000 over 9500. That is 100,000 a year, paid US120k, so a over b grows as x^2 at about $120k a year.'],
+        ];
+        const mismatches: string[] = [];
+        for (const [text, today] of cases) {
+            const whole = await runNotation(text, text.length);
+            if (whole !== today) mismatches.push(`whole ${JSON.stringify(text)} gave ${JSON.stringify(whole)}`);
+            for (const size of [1, 2, 3, 7]) {
+                const out = await runNotation(text, size);
+                if (out !== whole) mismatches.push(`${JSON.stringify(text)} at ${size} gave ${JSON.stringify(out)}`);
+            }
+        }
+        expect(mismatches).toEqual([]);
+    });
+    it('leaves a "$$" run after a pair split as it was: the closing-dollar fix must not reach display math', async () => {
+        // "$$" runs are chunk-sensitive before and after the fix above (display math is not
+        // handled); the fix must not add a chunk size to them. This one is right at 7 today.
+        const text = 'it was $\\sim$$$5 more.';
+        expect(await runNotation(text, 7)).toBe(await runNotation(text, text.length));
+    });
 });
 
 describe('extractSuggestions — splitting the spoken answer from its expansion offers', () => {

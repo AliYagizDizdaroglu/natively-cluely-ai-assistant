@@ -768,7 +768,17 @@ export async function* stripSpokenNotation(
         // "$," let a closing delimiter pair with the comma that follows it, so the hold
         // released "$\frac{3,000}{9,500}" and kept "$," — splitting the very pair the
         // cleanNotation rule needs to see whole.
-        const held = s.match(/(\*\*|[*\\]|\$\\[A-Za-z]*(?:\{[^{}]{0,40}\}?)*\$?|\$(?:\d[\d,]*)?(?:\.\d*)?\$?\s*[/^\\]?\s*|\\[a-z]*(?:\{[^}]{0,40})?)$/);
+        // The comma was one case of a wider split: whenever the character after a pair broke
+        // the pair's own branch (a space after "$\frac{…}$", a "." after any pair), the money
+        // branch claimed the pair's CLOSING "$" as a new hold, and "$\frac{3000}{9500}$ of it"
+        // spoke "$3000 over 9500" at 1-character chunks (2026-09-30). So a "$" that closes a
+        // pair (the lookbehind is cleanNotation's pair rule, ending at this "$") opens no hold,
+        // unless a second "$" follows: a "$$" run keeps its old hold, since closingDelimiterFirst
+        // slices a single "$" and the next one would read as money. The lookbehind runs only
+        // once a "$" is consumed; before it, it scanned back from every position. "\frac" is
+        // held until its second group closes: the bare-command branch holds one open brace, so
+        // it released "\frac{a}" where the fraction rule could not match it.
+        const held = s.match(/(\*\*|[*\\]|\$\\[A-Za-z]*(?:\{[^{}]{0,40}\}?)*\$?|\$(?:(?<!\$(?:\d[\d,]*(?:\.\d+)?|\\[A-Za-z]+(?:\{[^{}]*\})*)\$)|(?=\$))(?:\d[\d,]*)?(?:\.\d*)?\$?\s*[/^\\]?\s*|\\frac\{[^{}]{0,40}\}(?:\{[^{}]{0,40})?|\\[a-z]*(?:\{[^}]{0,40})?)$/);
         if (held) {
             carry = held[0];
             s = s.slice(0, -carry.length);
