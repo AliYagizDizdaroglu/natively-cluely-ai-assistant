@@ -1,0 +1,162 @@
+{
+ "s50m:D3#1": {
+  "key": "s50m:D3",
+  "hour": "s50m",
+  "id": "D3",
+  "arm": "B",
+  "rep": 5,
+  "leg": "front"
+ },
+ "s50m:D3#2": {
+  "key": "s50m:D3",
+  "hour": "s50m",
+  "id": "D3",
+  "arm": "A",
+  "rep": 2,
+  "leg": "front"
+ },
+ "s50m:D3#3": {
+  "key": "s50m:D3",
+  "hour": "s50m",
+  "id": "D3",
+  "arm": "B",
+  "rep": 1,
+  "leg": "front"
+ },
+ "s50m:D3#4": {
+  "key": "s50m:D3",
+  "hour": "s50m",
+  "id": "D3",
+  "arm": "B",
+  "rep": 2,
+  "leg": "front"
+ },
+ "s50m:D3#5": {
+  "key": "s50m:D3",
+  "hour": "s50m",
+  "id": "D3",
+  "arm": "A",
+  "rep": 1,
+  "leg": "front"
+ },
+ "s50m:D3#6": {
+  "key": "s50m:D3",
+  "hour": "s50m",
+  "id": "D3",
+  "arm": "B",
+  "rep": 4,
+  "leg": "front"
+ },
+ "s50m:D3#7": {
+  "key": "s50m:D3",
+  "hour": "s50m",
+  "id": "D3",
+  "arm": "A",
+  "rep": 4,
+  "leg": "front"
+ },
+ "s50m:D3#8": {
+  "key": "s50m:D3",
+  "hour": "s50m",
+  "id": "D3",
+  "arm": "A",
+  "rep": 3,
+  "leg": "front"
+ },
+ "s50m:D3#9": {
+  "key": "s50m:D3",
+  "hour": "s50m",
+  "id": "D3",
+  "arm": "B",
+  "rep": 3,
+  "leg": "front"
+ },
+ "s50m:D3#10": {
+  "key": "s50m:D3",
+  "hour": "s50m",
+  "id": "D3",
+  "arm": "A",
+  "rep": 5,
+  "leg": "front"
+ },
+ "s50l:S1Q04F#1": {
+  "key": "s50l:S1Q04F",
+  "hour": "s50l",
+  "id": "S1Q04F",
+  "arm": "A",
+  "rep": 5,
+  "leg": "front"
+ },
+ "s50l:S1Q04F#2": {
+  "key": "s50l:S1Q04F",
+  "hour": "s50l",
+  "id": "S1Q04F",
+  "arm": "A",
+  "rep": 4,
+  "leg": "front"
+ },
+ "s50l:S1Q04F#3": {
+  "key": "s50l:S1Q04F",
+  "hour": "s50l",
+  "id": "S1Q04F",
+  "arm": "B",
+  "rep": 3,
+  "leg": "front"
+ },
+ "s50l:S1Q04F#4": {
+  "key": "s50l:S1Q04F",
+  "hour": "s50l",
+  "id": "S1Q04F",
+  "arm": "A",
+  "rep": 3,
+  "leg": "front"
+ },
+ "s50l:S1Q04F#5": {
+  "key": "s50l:S1Q04F",
+  "hour": "s50l",
+  "id": "S1Q04F",
+  "arm": "A",
+  "rep": 2,
+  "leg": "front"
+ },
+ "s50l:S1Q04F#6": {
+  "key": "s50l:S1Q04F",
+  "hour": "s50l",
+  "id": "S1Q04F",
+  "arm": "B",
+  "rep": 1,
+  "leg": "front"
+ },
+ "s50l:S1Q04F#7": {
+  "key": "s50l:S1Q04F",
+  "hour": "s50l",
+  "id": "S1Q04F",
+  "arm": "A",
+  "rep": 1,
+  "leg": "front"
+ },
+ "s50l:S1Q04F#8": {
+  "key": "s50l:S1Q04F",
+  "hour": "s50l",
+  "id": "S1Q04F",
+  "arm": "B",
+  "rep": 5,
+  "leg": "front"
+ },
+ "s50l:S1Q04F#9": {
+  "key": "s50l:S1Q04F",
+  "hour": "s50l",
+  "id": "S1Q04F",
+  "arm": "B",
+  "rep": 2,
+  "leg": "front"
+ },
+ "s50l:S1Q04F#10": {
+  "key": "s50l:S1Q04F",
+  "hour": "s50l",
+  "id": "S1Q04F",
+  "arm": "B",
+  "rep": 4,
+  "leg": "front"
+ }
+}

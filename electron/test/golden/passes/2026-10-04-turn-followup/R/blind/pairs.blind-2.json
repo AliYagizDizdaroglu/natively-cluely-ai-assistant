@@ -1,0 +1,226 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "s50m:S2Q05F#1",
+   "id": "s50m:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a multi-hop query asking about both a vendor's liability cap and their payment terms in a long contract. If a greedy relevance policy fills our entire context budget with three overlapping chunks just about liability caps because of high keyword overlap, we completely miss the payment terms section. To fix that, I incorporate novelty by switching to a Maximal Marginal Relevance scoring approach, penalizing candidate chunks based on their similarity to already selected ones. The key dependencies to manage are the penalty weight hyperparameter and ensuring the deduplication thresholds don't accidentally starve crucial multi-hop context."
+  },
+  {
+   "key": "s50m:S2Q05F#2",
+   "id": "s50m:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a multi-hop question where the top chunks all come from the exact same financial table because they have the highest keyword relevance, completely missing the operational risk report in another document that explains the root cause. To fix that, I incorporate novelty using Maximal Marginal Relevance, which penalizes chunks that are semantically redundant with already-selected ones. The key dependency is tuning that diversity threshold carefully against the token budget so you do not crowd out essential background facts."
+  },
+  {
+   "key": "s50m:S2Q05F#3",
+   "id": "s50m:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a query about a company's full-year financial health where a greedy policy pulls the top five chunks all from the same executive summary paragraph because they share high keyword overlap, completely missing the detailed risk factors or regional breakdowns in later sections. To fix that, I incorporate novelty by using Maximal Marginal Relevance, which scores candidate chunks not just on their direct query relevance, but penalizes them based on how similar they are to chunks we have already selected. The key dependencies here are the tuning parameter that trades off raw relevance against diversity, the embedding space quality for measuring semantic overlap, and our strict token budget constraints."
+  },
+  {
+   "key": "s50m:S2Q05F#4",
+   "id": "s50m:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a financial compliance audit where three different sections of a lengthy contract discuss liability limits using completely different legal phrasing; a greedy relevance-first sort might pull the top three scoring chunks from the exact same paragraph because they share the highest semantic overlap with the query, leaving the other two critical clauses out. To fix that, I modify the selection loop to score candidates using Maximal Marginal Relevance, penalizing chunks that are too textually or semantically similar to ones already picked so every added piece introduces fresh coverage. The key dependencies driving this are your embedding model's distance threshold for novelty and the inference latency overhead of running pairwise similarity checks across the candidate pool on the fly."
+  },
+  {
+   "key": "s50m:S2Q05F#5",
+   "id": "s50m:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a query about a contract's termination clause across multiple amendments. If the first amendment scores slightly higher on simple keyword match due to repetitive boilerplate text, a pure greedy relevance-first policy might pack two redundant chunks from that exact document, exhausting our token budget and completely missing the actual termination terms in the other amendments. To fix that, I incorporate a Maximal Marginal Relevance score that penalizes chunks too similar to already-selected ones, forcing the selector to bring in novel perspectives. The key dependencies here are the embedding model's semantic space for calculating cosine distances, the strict token budget constraint, and the document ID grouping logic to prevent redundancy from bypassing per-document caps."
+  },
+  {
+   "key": "s50m:S2Q05F#6",
+   "id": "s50m:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a query about a contract's liability terms where the top five chunks all come from the exact same introductory section because of high keyword overlap, completely missing the actual indemnity clause in addendum two. To fix that poor coverage, I incorporate diversity by applying Maximal Marginal Relevance or graph-based multi-hop traversal, which penalizes chunks textually redundant with already-selected ones and rewards novelty. The key dependencies here are the embedding space's ability to separate semantic nuances and the penalty weight hyperparameter that balances raw relevance against distinct topical coverage."
+  },
+  {
+   "key": "s50m:S2Q05F#7",
+   "id": "s50m:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a multi-hop query where the top-scoring chunks all extract the exact same background fact from the introductory section of a single document, starving the context budget of the second document needed for the actual answer. To fix that, I incorporate novelty by applying a diversity penalty or Maximal Marginal Relevance, scoring candidate chunks based on how much new information they add relative to what's already selected. The key dependencies are the embedding-space similarity threshold for redundancy, the remaining token budget, and the document-level caps to prevent any single source from crowding out the rest."
+  },
+  {
+   "key": "s50m:S2Q05F#8",
+   "id": "s50m:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a query comparing two distinct sections of a financial contract, like a liability clause in Section 3 and an indemnity clause in Section 12. A pure greedy policy might grab the top three overlapping chunks from Section 3 because they score highest individually, completely missing Section 12 and creating a coverage gap. To fix that, I incorporate novelty by using Maximal Marginal Relevance, which penalizes candidate chunks that are too semantically similar to ones already selected. The key technical dependencies are the underlying embedding vector space used to calculate pairwise cosine similarities and a tunable lambda parameter that lets me balance raw relevance against diversity."
+  },
+  {
+   "key": "s50m:S2Q05F#9",
+   "id": "s50m:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Imagine a multi-hop query about a tax footnote in a corporate filing; a purely greedy policy might grab the top three chunks from the executive summary just because they have high keyword overlap, completely missing the actual tax section. To fix that, I incorporate novelty by using Maximal Marginal Relevance, which penalizes new candidate chunks if their semantic embedding too closely mirrors what's already selected. The key dependencies driving this are the similarity threshold parameter that balances relevance against diversity, the embedding model used for the penalty calculation, and our strict token budget limit."
+  },
+  {
+   "key": "s50m:S2Q05F#10",
+   "id": "s50m:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependence",
+   "source": "answers-pass",
+   "answer": "Picture a multi-hop financial audit where a greedy policy selects three chunks from the exact same earnings summary paragraph due to high keyword overlap, completely missing the footnote table needed for the second hop. To fix that, I incorporate Maximal Marginal Relevance into the selection step to penalize semantic redundancy and reward novel information across retrieved passages. The key dependencies here are the embedding space alignment and carefully tuning the diversity trade-off parameter so you don't accidentally filter out low-scoring contextual links required for multi-hop reasoning."
+  },
+  {
+   "key": "s50m:S2Q08F#1",
+   "id": "s50m:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run an automated Airflow reconciliation script that diffs the primary database IDs against the vector collection metadata to verify zero missing items. To ensure it's current, I stream live CDC updates to both indexes and run a dual-read shadow test comparing top-k recall over 48 hours. Once our LLM-as-judge pipeline confirms semantic parity on a golden test set, I route production traffic."
+  },
+  {
+   "key": "s50m:S2Q08F#2",
+   "id": "s50m:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run an automated evaluation pipeline using a golden test set to benchmark the replacement index against the active one before any traffic shifts. I compare retrieval recall, faithfulness, and latency metrics across both, and only route production requests once the new index matches or exceeds baseline performance across every slice."
+  },
+  {
+   "key": "s50m:S2Q08F#3",
+   "id": "s50m:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run shadow validation by re-running our golden evaluation set against both indexes in parallel to verify parity on retrieval hit rates and precision. I also check metadata counts and ingestion logs to guarantee that every document from the source partition is indexed before we route traffic."
+  },
+  {
+   "key": "s50m:S2Q08F#4",
+   "id": "s50m:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I verify completeness by running a document ID checksum diff between the primary data store and the new Pinecone collection. For currency, I check that our incremental sync stream has zero lag. Finally, I run our LLM-as-judge evaluation suite on a golden test set against the shadow index to confirm parity before cutting over live traffic."
+  },
+  {
+   "key": "s50m:S2Q08F#5",
+   "id": "s50m:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run automated reconciliation checks comparing source PostgreSQL document counts and unique IDs directly against the vector collection metadata. To prove currency, I use a shadow dual-write pipeline where live updates hit both indices, verifying consistency through an automated golden query set that compares top-k overlap and semantic similarity scores before cutting over traffic."
+  },
+  {
+   "key": "s50m:S2Q08F#6",
+   "id": "s50m:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a document-ID diff between the source database and the replacement index to verify 100% completeness. For currency, I stream incremental updates that occurred during the backfill and monitor ingestion lag until it hits zero. Finally, I run shadow evaluations comparing retrieval metrics between both indices on a live query sample before cutting over."
+  },
+  {
+   "key": "s50m:S2Q08F#7",
+   "id": "s50m:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run automated parity checks comparing source database IDs directly against the new vector collection to verify complete coverage. For currency, I validate that our ingestion stream lag is near zero and run a retrieval golden-set evaluation to confirm quality. Once those checks pass, I atomic-swap the collection pointer in the gateway to route production traffic safely."
+  },
+  {
+   "key": "s50m:S2Q08F#8",
+   "id": "s50m:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I use a dual validation gate before cutting over. First, I run automated checks comparing document counts and checksums against the primary data store to verify completeness. Then, I evaluate our golden test set across both indices in parallel, confirming that retrieval metrics like Hit Rate and MRR match or exceed the baseline before switching live traffic."
+  },
+  {
+   "key": "s50m:S2Q08F#9",
+   "id": "s50m:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate the replacement index using an automated parity check against our golden evaluation set, comparing retrieval overlap and hallucination rates side-by-side with the active index. I also run a count and metadata validation pipeline via Airflow to confirm zero missing chunks before executing a canary rollout with shadow traffic."
+  },
+  {
+   "key": "s50m:S2Q08F#10",
+   "id": "s50m:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run automated ID parity checks between PostgreSQL and the vector store to verify completeness, while a dual-write pipeline ensures freshness by mirroring ongoing document mutations. Before cutting over, I run an offline evaluation on a golden query set, comparing Hit@K and LLM-as-judge relevance scores against the current production baseline to guarantee performance."
+  }
+ ]
+}

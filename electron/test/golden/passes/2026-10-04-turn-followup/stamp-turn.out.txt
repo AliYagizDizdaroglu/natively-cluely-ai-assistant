@@ -1,0 +1,89 @@
+--- hashes (section 2) ---
+followup-turn/earlierQuestion.ref.mjs	328216aa3153dd9a4e1e3cf9560a782259b154dabdc7d2d1fb6ca1224e6401bb	4799 bytes
+followup-turn/earlierQuestion.ref.test.mjs	54df49cea7772edb3ed678073a6af338a2629bb959ec226b6f855b9a71e1be2e	22685 bytes
+followup-turn/gate-report-turn.mjs	faac7fb770e4af57429936b7fbd48b9264310bd49fcd9d6b93763b9e7dc1aa0b	20466 bytes
+followup-turn/stamp-turn.mjs	69619a0ed86ea69f5d64b36280b5c8d62baa6772a7105fc5a562d80aad5f945e	8363 bytes
+R/s50m-gated-turn.json	897d18cd99433d7a8cd801b6754d1f7d51e7ae7b82e1982b9e9d550c15b1e50c	185181 bytes
+R/s50l-gated-turn.json	ea9464fef039790f65e95cf55b9e73271967d554feb5f4d7aff264b132693992	185049 bytes
+R/s50k-gated-turn.json	86b4927f59b054dce63770c92dadacdbbfa360ed29d1d597078eac239d7dcbed	185041 bytes
+R/turn-parity-s50m.json	1e1a445e72359b91dfa540b4a68aa6daec8b25f4923edce2c50a0b3f386a710f	65405 bytes
+R/turn-parity-s50l.json	579de7a193f2134747a592a508db021169180397f582d0efa1416b2b4e0d64a9	65553 bytes
+R/turn-parity-s50k.json	62ed44d037dd00170a41a31b58955af0918fe6c527a6ab6eb552d824c96273ac	65555 bytes
+design-2 reference imported for the gate: sha256 0459f578... equals the hashed 0459f578...
+label chars: 125 (registered 125)
+
+=== s50m ===
+s50m:S1Q04F	roster	constraint	block 537	added 539	userA 4230	userB 4769	sha12 1517a406f91a	sha256 1517a406f91a6fd7e9269637fb54f3acc7b32405d584f560d94cdc5d1aa6392c	OK
+s50m:S1Q06F	roster	pronoun	block 517	added 519	userA 4205	userB 4724	sha12 7b56db720d4a	sha256 7b56db720d4a7e81b4ae093a168d438750f1b40da508864d51906513a1d28064	OK
+s50m:S2Q05F	roster	pronoun	block 461	added 463	userA 4532	userB 4995	sha12 14f0bdf3225d	sha256 14f0bdf3225d2634b3daf9c729fd71ca447193b6e1f9be00c34e2ff17bcb4145	OK
+s50m:S2Q08F	roster	pronoun	block 432	added 434	userA 4146	userB 4580	sha12 1023c0fe5a55	sha256 1023c0fe5a550f08ec492bb55883185bf5ab9ace872ed1e5e36e0f5a2db6e229	OK
+s50m:D1	dropped	pronoun	block 250	added 252	userA 3956	userB 4208	sha12 f6ad3669b3ff	sha256 f6ad3669b3fff21cebf2eb2fb52a3ac48697bfa3b7e6e55b5d2ec9386375844c	OK
+s50m:D2	dropped	pronoun	block 262	added 264	userA 4283	userB 4547	sha12 6ea69e3d2ba2	sha256 6ea69e3d2ba2f883cf3d0155d1275a3802b414af42d140b5612b8dc9329ecbbf	OK
+s50m:D3	dropped	pronoun	block 233	added 235	userA 3897	userB 4132	sha12 08567b93635d	sha256 08567b93635d9d84b89a246223a835c48ed16f890d5a39ab706842b237147262	OK
+ARMS OK (s50m): 4 roster + 3 D; every userB = userA + block + "\n\n" at the marker, nothing else
+items: 7; mean added chars: 387; max block: 537
+s50m: PARITY FIXTURE OK: 42 entries re-derived (7 with a block = 4 roster + 3 D, 35 empty)
+s50m:S2Q09F -> '' (empty)  cue reference, why parent-in-prompt
+s50m:S1Q08 -> '' (empty)  cue reference, why parent-in-prompt
+s50m:S2Q08 -> '' (empty)  cue reference, why parent-in-prompt
+s50m:S2Q01F -> '' (empty)  cue pronoun, why parent-in-prompt
+  corrupted parent text: detected
+  corrupted turnId null: detected
+  corrupted supersede true: detected
+  corrupted parent added to promptLines: detected
+  silent entry S2Q09F with its prompt lines emptied: now a block (detected)
+s50m: gated file equals a fresh rebuild from the logs; parity fixture equals a fresh rebuild
+
+=== s50l ===
+s50l:S1Q04F	roster	constraint	block 537	added 539	userA 4230	userB 4769	sha12 1517a406f91a	sha256 1517a406f91a6fd7e9269637fb54f3acc7b32405d584f560d94cdc5d1aa6392c	OK
+s50l:S1Q06F	roster	pronoun	block 517	added 519	userA 4205	userB 4724	sha12 7b56db720d4a	sha256 7b56db720d4a7e81b4ae093a168d438750f1b40da508864d51906513a1d28064	OK
+s50l:S2Q05F	roster	pronoun	block 461	added 463	userA 4508	userB 4971	sha12 14f0bdf3225d	sha256 14f0bdf3225d2634b3daf9c729fd71ca447193b6e1f9be00c34e2ff17bcb4145	OK
+s50l:S2Q08F	roster	pronoun	block 432	added 434	userA 4146	userB 4580	sha12 6e6f2f50ae27	sha256 6e6f2f50ae27096952a175601cc61fc7055028f10eeab5f0f398709711675f0d	OK
+s50l:D1	dropped	pronoun	block 250	added 252	userA 3956	userB 4208	sha12 f6ad3669b3ff	sha256 f6ad3669b3fff21cebf2eb2fb52a3ac48697bfa3b7e6e55b5d2ec9386375844c	OK
+s50l:D2	dropped	pronoun	block 257	added 259	userA 4259	userB 4518	sha12 0dc1568434da	sha256 0dc1568434da6b7687d0b40b46fd4fb2e508532df4b2caf70fd631c48aa84bd1	OK
+s50l:D3	dropped	pronoun	block 233	added 235	userA 3897	userB 4132	sha12 08567b93635d	sha256 08567b93635d9d84b89a246223a835c48ed16f890d5a39ab706842b237147262	OK
+ARMS OK (s50l): 4 roster + 3 D; every userB = userA + block + "\n\n" at the marker, nothing else
+items: 7; mean added chars: 386; max block: 537
+s50l: PARITY FIXTURE OK: 42 entries re-derived (7 with a block = 4 roster + 3 D, 35 empty)
+s50l:S2Q09F -> '' (empty)  cue reference, why parent-in-prompt
+s50l:S1Q08 -> '' (empty)  cue reference, why parent-in-prompt
+s50l:S2Q08 -> '' (empty)  cue reference, why parent-in-prompt
+s50l:S2Q01F -> '' (empty)  cue pronoun, why parent-in-prompt
+  corrupted parent text: detected
+  corrupted turnId null: detected
+  corrupted supersede true: detected
+  corrupted parent added to promptLines: detected
+  silent entry S2Q09F with its prompt lines emptied: now a block (detected)
+s50l: gated file equals a fresh rebuild from the logs; parity fixture equals a fresh rebuild
+
+=== s50k ===
+s50k:S1Q04F	roster	constraint	block 535	added 537	userA 4230	userB 4767	sha12 7beee26f9f8f	sha256 7beee26f9f8f41c59fa8b59c1a16291f33aacad00d3dce054e863cbb3ef826af	OK
+s50k:S1Q06F	roster	pronoun	block 518	added 520	userA 4205	userB 4725	sha12 907c4fd34ca1	sha256 907c4fd34ca16c649f72c2c45c99fc111e6ec1df938ae13a1fb5245de1693d37	OK
+s50k:S2Q05F	roster	pronoun	block 461	added 463	userA 4496	userB 4959	sha12 14f0bdf3225d	sha256 14f0bdf3225d2634b3daf9c729fd71ca447193b6e1f9be00c34e2ff17bcb4145	OK
+s50k:S2Q08F	roster	pronoun	block 432	added 434	userA 4146	userB 4580	sha12 1023c0fe5a55	sha256 1023c0fe5a550f08ec492bb55883185bf5ab9ace872ed1e5e36e0f5a2db6e229	OK
+s50k:D1	dropped	pronoun	block 250	added 252	userA 3956	userB 4208	sha12 f6ad3669b3ff	sha256 f6ad3669b3fff21cebf2eb2fb52a3ac48697bfa3b7e6e55b5d2ec9386375844c	OK
+s50k:D2	dropped	pronoun	block 262	added 264	userA 4247	userB 4511	sha12 6ea69e3d2ba2	sha256 6ea69e3d2ba2f883cf3d0155d1275a3802b414af42d140b5612b8dc9329ecbbf	OK
+s50k:D3	dropped	pronoun	block 233	added 235	userA 3897	userB 4132	sha12 08567b93635d	sha256 08567b93635d9d84b89a246223a835c48ed16f890d5a39ab706842b237147262	OK
+ARMS OK (s50k): 4 roster + 3 D; every userB = userA + block + "\n\n" at the marker, nothing else
+items: 7; mean added chars: 386; max block: 535
+s50k: PARITY FIXTURE OK: 42 entries re-derived (7 with a block = 4 roster + 3 D, 35 empty)
+s50k:S2Q09F -> '' (empty)  cue reference, why parent-in-prompt
+s50k:S1Q08 -> '' (empty)  cue reference, why parent-in-prompt
+s50k:S2Q08 -> '' (empty)  cue reference, why parent-in-prompt
+s50k:S2Q01F -> '' (empty)  cue pronoun, why parent-in-prompt
+  corrupted parent text: detected
+  corrupted turnId null: detected
+  corrupted supersede true: detected
+  corrupted parent added to promptLines: detected
+  silent entry S2Q09F with its prompt lines emptied: now a block (detected)
+s50k: gated file equals a fresh rebuild from the logs; parity fixture equals a fresh rebuild
+
+ARMS OK (primary run, s50m + s50l): 8 roster + 6 D
+fixture check fails on a corrupted input: OK
+OK   valid replaces= is removed-and-pushed (4 lines, 3 turns: alpha, merged bravo, charlie; the head entry is gone)
+OK   corrupted replaces= (0 matches) refused
+OK   replaces= matching 2 earlier entries refused
+OK   replaces= naming a skipped dispatch refused
+corrupted replaces= refused: OK
+
+STAMP OK

@@ -1,0 +1,52 @@
+FOLLOW-UP TURN REPLAY  leg=back  model=gemini-3.1-flash-lite  thinkingLevel=LOW  temperature=0.4  hours=s50m,s50l  8 items x 3 reps x 2 arms = 48 calls
+section 2 verified (section2-filled.md); filter main-precue-73d7f01/dist-electron/electron/llm/verbalStreamFilter.js sha256/12 d8fee6ca0170
+A first in 12 pairs, B first in 12
+DRY #  1 s50m:S1Q04F roster   r1 B (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4769
+DRY #  2 s50m:S1Q04F roster   r1 A (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4230
+DRY #  3 s50m:S1Q04F roster   r2 A (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4230
+DRY #  4 s50m:S1Q04F roster   r2 B (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4769
+DRY #  5 s50m:S1Q04F roster   r3 B (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4769
+DRY #  6 s50m:S1Q04F roster   r3 A (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4230
+DRY #  7 s50m:S1Q06F roster   r1 A (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4205
+DRY #  8 s50m:S1Q06F roster   r1 B (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4724
+DRY #  9 s50m:S1Q06F roster   r2 B (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4724
+DRY # 10 s50m:S1Q06F roster   r2 A (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4205
+DRY # 11 s50m:S1Q06F roster   r3 A (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4205
+DRY # 12 s50m:S1Q06F roster   r3 B (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4724
+DRY # 13 s50m:S2Q05F roster   r1 B (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4995
+DRY # 14 s50m:S2Q05F roster   r1 A (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4532
+DRY # 15 s50m:S2Q05F roster   r2 A (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4532
+DRY # 16 s50m:S2Q05F roster   r2 B (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4995
+DRY # 17 s50m:S2Q05F roster   r3 B (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4995
+DRY # 18 s50m:S2Q05F roster   r3 A (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4532
+DRY # 19 s50m:S2Q08F roster   r1 A (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4146
+DRY # 20 s50m:S2Q08F roster   r1 B (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4580
+DRY # 21 s50m:S2Q08F roster   r2 B (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4580
+DRY # 22 s50m:S2Q08F roster   r2 A (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4146
+DRY # 23 s50m:S2Q08F roster   r3 A (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4146
+DRY # 24 s50m:S2Q08F roster   r3 B (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4580
+DRY # 25 s50l:S1Q04F roster   r1 B (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4769
+DRY # 26 s50l:S1Q04F roster   r1 A (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4230
+DRY # 27 s50l:S1Q04F roster   r2 A (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4230
+DRY # 28 s50l:S1Q04F roster   r2 B (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4769
+DRY # 29 s50l:S1Q04F roster   r3 B (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4769
+DRY # 30 s50l:S1Q04F roster   r3 A (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4230
+DRY # 31 s50l:S1Q06F roster   r1 A (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4205
+DRY # 32 s50l:S1Q06F roster   r1 B (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4724
+DRY # 33 s50l:S1Q06F roster   r2 B (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4724
+DRY # 34 s50l:S1Q06F roster   r2 A (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4205
+DRY # 35 s50l:S1Q06F roster   r3 A (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4205
+DRY # 36 s50l:S1Q06F roster   r3 B (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4724
+DRY # 37 s50l:S2Q05F roster   r1 B (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4971
+DRY # 38 s50l:S2Q05F roster   r1 A (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4508
+DRY # 39 s50l:S2Q05F roster   r2 A (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4508
+DRY # 40 s50l:S2Q05F roster   r2 B (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4971
+DRY # 41 s50l:S2Q05F roster   r3 B (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4971
+DRY # 42 s50l:S2Q05F roster   r3 A (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4508
+DRY # 43 s50l:S2Q08F roster   r1 A (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4146
+DRY # 44 s50l:S2Q08F roster   r1 B (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4580
+DRY # 45 s50l:S2Q08F roster   r2 B (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4580
+DRY # 46 s50l:S2Q08F roster   r2 A (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4146
+DRY # 47 s50l:S2Q08F roster   r3 A (first)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4146
+DRY # 48 s50l:S2Q08F roster   r3 B (second)  model gemini-3.1-flash-lite thinkingLevel LOW  system 16223  user 4580
+DRY RUN: 48 calls on gemini-3.1-flash-lite LOW; no key read, no call made

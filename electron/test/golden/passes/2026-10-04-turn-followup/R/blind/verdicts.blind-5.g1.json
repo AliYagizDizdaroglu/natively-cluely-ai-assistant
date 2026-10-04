@@ -1,0 +1,22 @@
+{
+ "s50l:S1Q06F#1": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Query-matched composite indexes on both tables and bitemporal append-only versioning for corrections."},
+ "s50l:S1Q06F#2": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Valid-time effective dating alone misses transaction time needed for as-known point-in-time; locking aside drifts."},
+ "s50l:S1Q06F#3": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Generic single index ignoring snapshots table and ingested_at; versioning idea sound but thin."},
+ "s50l:S1Q06F#4": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Generic indexing; picking latest corrected record would leak future corrections instead of as-of-snapshot version."},
+ "s50l:S1Q06F#5": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Specific composite indexes for join and filters plus bitemporal correction timestamp for reproducibility."},
+ "s50l:S1Q06F#6": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct composite index and separates transaction time from valid time for deterministic point-in-time."},
+ "s50l:S1Q06F#7": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct indexes on both tables; append-only log with transaction time preserves what was known."},
+ "s50l:S1Q06F#8": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Technically strong indexes and transaction-time versioning, but runs well over 85 words."},
+ "s50l:S1Q06F#9": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Frames correction problem as row-locking rather than point-in-time leakage; index generic."},
+ "s50l:S1Q06F#10": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Generic separate B-tree/BRIN indexes rather than query-matched composite; versioning answer is reasonable."},
+ "s50l:S2Q05F#1": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Example of three chunks from one document contradicts the two-per-document cap; fixes are sound."},
+ "s50l:S2Q05F#2": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Five duplicate paragraphs from one document ignores dedup and per-document cap; MMR and decomposition fine."},
+ "s50l:S2Q05F#3": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Five paragraphs from one contract violates the cap; good fixes but over 85 words."},
+ "s50l:S2Q05F#4": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Valid example where cap plus redundancy starves the key section; solid fixes but slightly long."},
+ "s50l:S2Q05F#5": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "No concrete example constructed as asked; fixes named only at a high level."},
+ "s50l:S2Q05F#6": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Bridging-fact example shows multi-hop failure; MMR and decomposition address both asks concisely."},
+ "s50l:S2Q05F#7": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Concrete redundant-overview example; MMR plus first-hop entities driving second lookup is right."},
+ "s50l:S2Q05F#8": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sound example and fixes, but about 100 words is too long to speak."},
+ "s50l:S2Q05F#9": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Vague example and proposes per-document caps the policy already has."},
+ "s50l:S2Q05F#10": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Example grabs the same chunk twice, which chunk-id dedup prevents; also over 85 words."}
+}

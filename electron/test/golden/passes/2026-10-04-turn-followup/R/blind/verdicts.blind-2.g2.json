@@ -1,0 +1,22 @@
+{
+ "s50m:S2Q05F#1": {"correctness": 0, "on_topic": 2, "delivery": 1, "reason": "Example has three chunks from one contract, impossible under the two-per-document cap just implemented; MMR fix fine; over 85 words."},
+ "s50m:S2Q05F#2": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Valid multi-hop coverage failure across documents and correct MMR redundancy fix, concise and spoken."},
+ "s50m:S2Q05F#3": {"correctness": 0, "on_topic": 2, "delivery": 1, "reason": "Top five chunks from one paragraph contradicts the two-per-document cap; MMR explanation correct; too long."},
+ "s50m:S2Q05F#4": {"correctness": 0, "on_topic": 2, "delivery": 1, "reason": "Three chunks from the same paragraph is impossible under the per-document cap; MMR fix correct; very long."},
+ "s50m:S2Q05F#5": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Example respects the two-per-document cap and shows budget exhaustion; MMR fix sound; well over 85 words."},
+ "s50m:S2Q05F#6": {"correctness": 0, "on_topic": 2, "delivery": 1, "reason": "Five chunks from one section violates the cap, and graph traversal is wrongly described as a redundancy penalty; slightly long."},
+ "s50m:S2Q05F#7": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Plausible budget-starvation example of second hop with correct MMR fix and doc caps; a bit over 85 words."},
+ "s50m:S2Q05F#8": {"correctness": 0, "on_topic": 2, "delivery": 1, "reason": "Three chunks from Section 3 of one contract contradicts the two-per-document cap; MMR and lambda correct; long."},
+ "s50m:S2Q05F#9": {"correctness": 0, "on_topic": 2, "delivery": 1, "reason": "Three chunks from one filing's summary is impossible under the per-document cap; MMR fix correct; slightly long."},
+ "s50m:S2Q05F#10": {"correctness": 0, "on_topic": 2, "delivery": 2, "reason": "Three chunks from the same paragraph violates the two-per-document cap the policy enforces; MMR fix correct."},
+ "s50m:S2Q08F#1": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Covers completeness via ID diff, currency via CDC dual streaming, and quality parity before cutover."},
+ "s50m:S2Q08F#2": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Only quality benchmarking; never proves completeness or currency of the new index."},
+ "s50m:S2Q08F#3": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Completeness via counts and quality parity covered, but currency against ongoing updates is not addressed."},
+ "s50m:S2Q08F#4": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "ID checksum diff for completeness, zero sync lag for currency, golden-set parity; crisp."},
+ "s50m:S2Q08F#5": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Reconciles IDs for completeness, dual-write for currency, golden-query overlap for quality."},
+ "s50m:S2Q08F#6": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "ID diff, catch-up of backfill-time updates until lag is zero, and shadow retrieval comparison."},
+ "s50m:S2Q08F#7": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "ID parity, near-zero ingestion lag, golden-set eval, then atomic pointer swap; directly answers."},
+ "s50m:S2Q08F#8": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Counts and checksums against primary store prove completeness and freshness; golden-set parity gate."},
+ "s50m:S2Q08F#9": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Covers count validation and quality parity but never shows the index is current with ongoing updates."},
+ "s50m:S2Q08F#10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "ID parity for completeness, dual-write mirroring for freshness, golden-set Hit@K comparison."}
+}

@@ -1,0 +1,36 @@
+DIFF CHECK (12.4) OK: the filled copy differs from the registered file only in section 2 cells, 2 inserted row(s), the Gated block hashes table and the dated I3 note (317 normalized lines identical)
+wrote section2-filled.md (42018 chars); registered file sha256 a91b3c773799fa4d4d11424d12a2da906b4645c7a32ff8500fb01ac4f575f830 (untouched)
+section 2 of the copy: 33 hashed files, 21 gated block hashes -> VERIFIES against the files on disk
+earlierQuestion.ref.mjs	328216aa3153dd9a...	4799 bytes
+../followup-context/earlierQuestions.ref.mjs	0459f578e4770642...	15566 bytes
+earlierQuestion.ref.test.mjs	54df49cea7772edb...	22685 bytes
+gate-report-turn.mjs	faac7fb770e4af57...	20466 bytes
+stamp-turn.mjs	69619a0ed86ea69f...	8363 bytes
+R/s50m-gated-turn.json	897d18cd99433d7a...	185181 bytes
+R/s50l-gated-turn.json	ea9464fef039790f...	185049 bytes
+R/s50k-gated-turn.json	86b4927f59b054dc...	185041 bytes
+R/turn-parity-s50m.json	1e1a445e72359b91...	65405 bytes
+R/turn-parity-s50l.json	579de7a193f21347...	65553 bytes
+R/turn-parity-s50k.json	62ed44d037dd0017...	65555 bytes
+R/scripts/check-grader-questions.mjs	0e4baa064bf616e6...	2614 bytes
+R/scripts/common.mjs	b8dcdf91445c8597...	12950 bytes
+R/scripts/e2e-synthetic.mjs	117f0a90b8dca3e6...	35572 bytes
+R/scripts/followup-turn-blind.mjs	12cabd23cabad531...	7934 bytes
+R/scripts/followup-turn-run.mjs	4df7f424041066e4...	14443 bytes
+R/scripts/gemini.mjs	542538d936feb455...	6276 bytes
+R/scripts/grader-session-calibrate.mjs	4edde71da0e9baaf...	91645 bytes
+R/scripts/legs-decide-calibrate.mjs	eada55047937ae8c...	41277 bytes
+R/scripts/mutate-decide.mjs	018eb4fe759bfdb8...	16517 bytes
+R/scripts/runner-selftest.mjs	a1491da95ac92482...	27728 bytes
+R/audit-graders.mjs	07833cf41bcc1c6e...	24989 bytes
+R/check-grader-memory.mjs	119ea78a433ba47d...	6974 bytes
+R/day-pre.mjs	28f4b5a5aff84dc2...	11033 bytes
+R/day-steps.mjs	ebc46651c8840bcb...	5523 bytes
+R/h40d-grader-models.mjs	3626e263f3fac5ba...	10587 bytes
+R/launch-grader.mjs	2f096c38016161ed...	23020 bytes
+R/legs-decide.mjs	e00a46c0b1cd9dc2...	36778 bytes
+R/move-keys.mjs	764a2e8b4b7667b6...	2017 bytes
+../followup-questions-s50l/followup-replay-build.precue.mjs	ca1383276b4a5a64...	10156 bytes
+../dist-snapshots/main-precue-73d7f01/dist-electron/electron/llm/verbalStreamFilter.js	d8fee6ca01707568...	16100 bytes
+MAIN/electron/test/golden/interview60.judge.mjs	f5dba64f66469587...	25201 bytes
+../validation-hour/h40d-grader-dispatch.txt	f8d646701e6ee3b1...	9064 bytes

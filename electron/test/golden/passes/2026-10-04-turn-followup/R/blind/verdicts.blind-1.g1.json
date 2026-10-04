@@ -1,0 +1,22 @@
+{
+ "s50m:S1Q04F#1": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Argpartition plus boundary sort is right, but uses customer ID instead of original row order as the tie key."},
+ "s50m:S1Q04F#2": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Argpartition idea right but ignores ties straddling the k boundary and overstates reaching pure O(N)."},
+ "s50m:S1Q04F#3": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correctly finds the threshold by linear partition and sorts only the tied boundary bucket by secondary key."},
+ "s50m:S1Q04F#4": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Notes partition ignores ties and stably sorts the boundary slice by row index; precise and correct."},
+ "s50m:S1Q04F#5": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Vague mix of argpartition and Python tuple sorting; does not explain how boundary ties are resolved."},
+ "s50m:S1Q04F#6": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Sorts selected subset by index but misses ties crossing the partition boundary, the key mechanism."},
+ "s50m:S1Q04F#7": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Wrongly claims ties matter only within the winning group, missing boundary ties at the k-th score."},
+ "s50m:S1Q04F#8": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Composite key idea works, but claims quickselect partition stably maintains order, which it does not."},
+ "s50m:S1Q04F#9": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Bounded heap is sound, but tie key is customer ID rather than row order; Postgres/PySpark aside drifts."},
+ "s50m:S1Q04F#10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Bounded heap keyed on score and row index gives exact tie rule in O(N log k)."},
+ "s50m:S1Q06F#1": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Primary key on snapshot customer ID is wrong for multi-snapshot data, and 'latest valid state' leaks future corrections."},
+ "s50m:S1Q06F#2": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sound composite indexes and bitemporal versioning for as-known-at-snapshot queries; runs about 90 words."},
+ "s50m:S1Q06F#3": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Append-only log is reasonable, but resolving 'latest valid state' breaks point-in-time correctness."},
+ "s50m:S1Q06F#4": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Indexes fine; correction handling is vague (caches, re-aggregation) and misses as-of-ingestion versioning."},
+ "s50m:S1Q06F#5": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Good indexes on both tables and append-only or temporal tables to preserve states as ingested."},
+ "s50m:S1Q06F#6": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Frames corrections as bloat/lock issue rather than point-in-time leakage, though versioned rows are proposed."},
+ "s50m:S1Q06F#7": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Treats corrections purely as MVCC bloat, missing feature correctness; snapshots table not indexed."},
+ "s50m:S1Q06F#8": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct indexes and bitemporal recompute, but parenthesized snake_case column lists read awkwardly aloud."},
+ "s50m:S1Q06F#9": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Sound indexes on both tables and versioned or valid-time log to recompute against historical states."},
+ "s50m:S1Q06F#10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Good events index for window and cutoff, plus version or valid-time tracking with recompute."}
+}

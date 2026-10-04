@@ -1,0 +1,226 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "s50l:S2Q08F#1",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run an automated dual-write pipeline where the replacement index shadows live traffic, then evaluate both against a gold validation set using our LLM-as-judge pipeline to measure retrieval parity. I also run automated document count checks and data integrity assertions against the source store to verify completeness before switching the read alias over."
+  },
+  {
+   "key": "s50l:S2Q08F#2",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a differential ID reconciliation job to verify that document counts and keys match exactly across both indices. Then I route a shadow traffic stream to the replacement index to compare its top-k retrieval precision and latency against production using automated LLM-as-judge evals."
+  },
+  {
+   "key": "s50l:S2Q08F#3",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I prove completeness and freshness by running a shadow evaluation pipeline against our live query logs. I compare the retrieval outputs of the new index and the legacy index using a golden dataset and semantic overlap metrics, verifying that hit rate and MRR meet or exceed our baseline. Once consistency is confirmed and sync lag drops to zero, I safely cut over production traffic."
+  },
+  {
+   "key": "s50l:S2Q08F#4",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate the replacement index by running it in shadow mode against our golden test set, comparing retrieval recall and faithfulness metrics side-by-side with the legacy index. For completeness, I run an automated ID-diff pipeline that verifies every document from the latest sync window is indexed before flipping the traffic."
+  },
+  {
+   "key": "s50l:S2Q08F#5",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run an automated completeness diff by comparing the primary key set in PostgreSQL against the vector index metadata to verify zero missing documents. For currency, I set up shadow traffic to dual-read queries against both indices in parallel, comparing top-k overlap and latency metrics to prove parity before the final cutover."
+  },
+  {
+   "key": "s50l:S2Q08F#6",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I verify completeness through a direct SQL-to-vector count diff and ID set intersection against our primary PostgreSQL database. To ensure it's current, I run a dual-routing shadow phase where live queries hit both indices in parallel, and I use a retrieval evaluation pipeline to confirm top-k overlap and precision parity before the final cutover."
+  },
+  {
+   "key": "s50l:S2Q08F#7",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate a replacement index by running a shadow evaluation pipeline against our golden test set, comparing metrics like multi-hop accuracy and retrieval recall directly against the legacy index. To ensure completeness, I run an automated parity check verifying that the total document count and ID sets match our primary PostgreSQL store. Finally, I confirm currency by checking ingestion stream offsets to guarantee zero lag before shifting traffic over."
+  },
+  {
+   "key": "s50l:S2Q08F#8",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a dual-validation pipeline: an automated golden set evaluation comparing retrieval metrics like hit rate and MRR against the legacy index, alongside a metadata watermark check to guarantee zero sync lag with the primary document store. Once those pass, I route a ten percent canary slice to shadow-test downstream extraction accuracy before the full cutover."
+  },
+  {
+   "key": "s50l:S2Q08F#9",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate the replacement index using dual-write parity checks and shadow traffic comparison to ensure complete coverage. I run an automated evaluation pipeline that replays production query streams against both indices, measuring overlap in top-k retrieval results and verifying entity counts. For currency, I monitor event ingestion lag down to zero before updating the API gateway router to point to the new index."
+  },
+  {
+   "key": "s50l:S2Q08F#10",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate completeness by running a direct count-parity check against our PostgreSQL source of truth to ensure zero documents were missed during the backfill. For currency, I run the new index in shadow mode alongside the legacy one, using our golden evaluation set and automated LLM-as-judge checks to confirm retrieval parity before cutting over production traffic."
+  },
+  {
+   "key": "s50l:D1#1",
+   "id": "s50l:D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For indexing, I'd put B-tree indexes on primary and foreign keys along with high-cardinality filter columns, and use partial indexes for active rows to keep overhead low. If historical records can be corrected, in-place updates cause severe index bloat and write amplification. To handle that cleanly, I'd switch to an append-only or temporal table pattern with valid-time ranges, where updates insert new versions rather than overwriting existing data."
+  },
+  {
+   "key": "s50l:D1#2",
+   "id": "s50l:D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d use standard B-tree indexes on high-cardinality keys like customer ID and timestamps for quick lookups, and BRIN indexes for large historical snapshot tables. If records can be corrected after ingestion, we shift to bi-temporal modeling with valid-time ranges. That changes our indexing strategy to handle range queries rather than single points, while requiring us to actively manage the update overhead and index bloat on past partitions."
+  },
+  {
+   "key": "s50l:D1#3",
+   "id": "s50l:D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For indexing, I’d use a composite B-tree index on entity ID and timestamp, since most analytical queries filter by both, alongside BRIN indexes if the table grows massively append-only. If historical records can be corrected post-ingestion, I’d move away from in-place updates to a versioned schema using valid_from and valid_to timestamps. That preserves point-in-time correctness so our ML models don't suffer from silent data leakage during retraining."
+  },
+  {
+   "key": "s50l:D1#4",
+   "id": "s50l:D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd index the primary foreign keys and timestamp columns with B-trees for efficient joins and time-range filters, and use BRIN indexes for massive append-only tables. If historical records can be corrected, in-place updates break point-in-time correctness, so I'd shift to temporal tables with effective date ranges or an append-only event log. That way, corrections append a new record version rather than mutating history, preserving audit trails."
+  },
+  {
+   "key": "s50l:D1#5",
+   "id": "s50l:D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd put standard B-tree indexes on high-frequency join columns and foreign keys, plus a GIN index if we're querying unstructured JSONB payloads. If historical records can be corrected after ingestion, I'd implement temporal tables or an append-only event log. That ensures we preserve point-in-time correctness for feature stores and analytics while cleanly tracking retroactive updates."
+  },
+  {
+   "key": "s50l:D1#6",
+   "id": "s50l:D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d use standard B-tree indexes on foreign keys and frequently filtered columns, alongside BRIN indexes if we're dealing with massive time-series tables. If historical records can be corrected after ingestion, I'd move to temporal tables or event-sourcing to track version history, ensuring that updates don't silently break downstream analytical queries, audit trails, or cached aggregates."
+  },
+  {
+   "key": "s50l:D1#7",
+   "id": "s50l:D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d index those tables on a composite key of customer ID and timestamp for efficient time-series lookups, plus a unique index on the record ID. If historical records can be corrected, I'd implement a bitemporal model tracking both valid time and transaction time. That ensures corrections update ingestion views without breaking reproducibility for past audit snapshots."
+  },
+  {
+   "key": "s50l:D1#8",
+   "id": "s50l:D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For indexing, I’d place a composite B-tree index on the entity ID and timestamp columns since queries almost always filter by entity and time range, plus a GIN index if we're querying JSON payloads. If historical records can be corrected after ingestion, I’d use a bi-temporal or versioned table design with valid-time ranges instead of in-place updates. That avoids expensive random writes and index fragmentation while keeping a clean audit trail of corrections."
+  },
+  {
+   "key": "s50l:D1#9",
+   "id": "s50l:D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd start with standard B-tree indexes on primary keys, foreign keys, and frequently filtered timestamp or status fields, adding GIN indexes if we're storing JSON payloads. If historical records can be updated after ingestion, those in-place updates cause severe index bloat and write amplification. To handle that, I partition tables by time range so active indexes stay lean, and I use append-only event-sourcing patterns or tuned fillfactors to minimize costly page splits."
+  },
+  {
+   "key": "s50l:D1#10",
+   "id": "s50l:D1",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd use B-tree indexes on foreign keys and timestamps for fast point lookups, and BRIN indexes if it's a massive append-only log. If historical records can be corrected, in-place updates cause table bloat and slow scans. I'd switch to temporal tables with effective date ranges, turning corrections into new row versions so historical queries stay accurate without locking contention."
+  }
+ ]
+}

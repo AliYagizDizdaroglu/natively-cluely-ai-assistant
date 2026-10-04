@@ -1,0 +1,19 @@
+blind-1.g1 (a45c2d9d-170a-4b8f): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-1.g2 (30cb136b-cf95-4a53): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-2.g1 (78f4e325-30bd-4eef): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-2.g2 (fd780cb9-52da-4681): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-3.g1 (8a7440e2-c748-4afe): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-3.g2 (19b5e9dd-57eb-4318): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-4.g1 (c12b0db5-ea20-494e): 3 tool inputs [Readx2 Writex1]; clean; bash=[]; dispatch=match
+blind-4.g2 (912a5658-25eb-4d15): 3 tool inputs [Readx2 Writex1]; clean; bash=[]; dispatch=match
+blind-5.g1 (1b3a6e82-2cfa-4d1b): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-5.g2 (89fa4be1-088e-40fc): 5 tool inputs [Readx4 Writex1]; clean; bash=[]; dispatch=match
+blind-6.g1 (3d300b3e-1461-4d22): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-6.g2 (cdfe204a-ebea-49b2): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-7.g1 (b04c5f46-c7a1-46f3): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-7.g2 (4ed6f85e-63a6-4705): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-8.g1 (7171b429-95e8-4d00): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-8.g2 (b04f852a-c737-4d67): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-9.g1 (152841aa-398e-4d8c): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+blind-9.g2 (8a695f72-6bfc-4386): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+AUDIT: all graders clean

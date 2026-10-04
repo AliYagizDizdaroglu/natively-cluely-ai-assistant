@@ -1,0 +1,226 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "s50l:S1Q06F#1",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd index the events table on customer ID, event time, and ingested at, and index snapshots on customer ID and snapshot time. If historical records can be corrected, standard ingestion timestamps break because updates rewrite past data. I'd use append-only event versioning or bitemporal tracking so queries can accurately reconstruct the exact state known at each snapshot moment."
+  },
+  {
+   "key": "s50l:S1Q06F#2",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd put a composite index on customer ID and timestamp for the events table to optimize time-range scans, and a primary key on customer ID plus snapshot date for the snapshots table. If historical records can be corrected after ingestion, I'd move away from direct updates and use effective-dating with valid-time columns so we can recompute state cleanly without locking large tables or losing audit history."
+  },
+  {
+   "key": "s50l:S1Q06F#3",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd put a composite index on customer ID and timestamp since range queries and timeline filtering drive most of our reads. If historical records get corrected after ingestion, I'd switch to an append-only model with effective-date versioning instead of in-place updates, so we can re-evaluate past states correctly without breaking downstream analytics or model features."
+  },
+  {
+   "key": "s50l:S1Q06F#4",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd put B-tree indexes on foreign keys and lookup IDs, and a BRIN index on timestamp columns for append-heavy tables. If historical records can be corrected after ingestion, I'd avoid in-place updates and use a versioned pattern where corrections insert a new row with a later timestamp. Downstream queries then use a window function partitioned by the entity ID to pull the latest valid record."
+  },
+  {
+   "key": "s50l:S1Q06F#5",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For the events table, I'd build a composite B-tree index on customer ID, event time, and ingested at time to make those range scans and point-in-time filters fast. For the snapshots table, an index on customer ID and snapshot time covers the join. If historical records can be corrected after ingestion, we need a bitemporal approach. I'd add a version or correction timestamp to the events table and filter by that correction window so our point-in-time features remain fully reproducible."
+  },
+  {
+   "key": "s50l:S1Q06F#6",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For indexing, I'd build a composite index on the events table covering customer ID, event time, and ingested at, alongside a primary key on snapshots. If historical records can be corrected, I'd switch to a temporal or event-sourced pattern, tracking transaction time separately from valid time so our point-in-time views stay deterministic."
+  },
+  {
+   "key": "s50l:S1Q06F#7",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For the snapshots table, I’d index customer ID and snapshot time, and for the events table, a composite index on customer ID, event time, and ingested at. If historical records get corrected after ingestion, standard timestamps fail because past data mutates. I’d switch to an append-only event log with transaction times, ensuring point-in-time features reflect exactly what the system knew at the snapshot moment."
+  },
+  {
+   "key": "s50l:S1Q06F#8",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For the snapshots table, I'd create a composite index on customer ID and snapshot time, and for the events table, a composite index on customer ID, event time, and ingested at to make that rolling 30-day window scan efficient. If historical records can be corrected after ingestion, our standard ingested-at logic breaks point-in-time reproducibility because past data changes underneath us. To handle that, I'd use an append-only log with a transaction-time column or PostgreSQL temporal tables, ensuring corrections are tracked as new versions rather than mutating past states."
+  },
+  {
+   "key": "s50l:S1Q06F#9",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d use a composite index on the customer ID and timestamp columns for fast per-customer range scans. If historical records can be corrected after ingestion, standard table updates cause heavy row-locking, so I'd shift to an append-only event log or temporal tables with effective date ranges to safely handle backfills."
+  },
+  {
+   "key": "s50l:S1Q06F#10",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd put standard B-tree indexes on foreign keys like customer ID and timestamps for fast joins, and a BRIN index on massive chronological tables to keep scans light. If historical records can be corrected after ingestion, I'd use versioned rows with valid time ranges or an append-only event log rather than in-place updates, ensuring past analytics remain fully reproducible."
+  },
+  {
+   "key": "s50l:S2Q05F#1",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "Imagine a financial audit where greedy relevance pulls three chunks all from the Q3 executive summary on revenue, completely missing a critical Q4 restructuring footnote. To fix coverage, I incorporate redundancy using Maximal Marginal Relevance reranking to penalize semantic overlap and force topical diversity. For multi-hop dependencies, I use agentic query decomposition where the model breaks questions into sequential steps, feeding facts retrieved from hop one directly into the query for hop two."
+  },
+  {
+   "key": "s50l:S2Q05F#2",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "Imagine a financial audit where a greedy relevance pull grabs five duplicate paragraphs about total assets while missing the liability table on page ten entirely. To fix coverage gaps, I apply Maximal Marginal Relevance to penalize semantic redundancy and enforce diversity. For multi-hop dependencies, I use agentic query decomposition where the first retrieval step extracts entity links, which then trigger targeted follow-up queries for the downstream facts."
+  },
+  {
+   "key": "s50l:S2Q05F#3",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "Imagine a query asking about two separate clauses in a multi-page contract; a greedy relevance approach might pull five paragraphs about the first clause because they share heavy keyword overlap, completely crowding out the second clause. To fix that, I incorporate diversity by using Maximum Marginal Relevance during reranking to penalize chunks that are semantically redundant with already selected ones. For multi-hop dependencies, I use agentic query decomposition where an orchestrator breaks the original question into sequential sub-tasks, ensuring the retrieval for the second hop explicitly depends on the entities found in the first."
+  },
+  {
+   "key": "s50l:S2Q05F#4",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "Imagine a financial contract where the top two retrieved chunks both cover the exact same indemnity clause with slightly different wording, completely starving out the liability cap section buried on page forty. To fix that, I incorporate diversity by applying Maximal Marginal Relevance to penalize redundant chunks and surface complementary context. For multi-hop dependencies, I use agentic query decomposition in LangGraph, where an initial retrieval step triggers a reasoning agent to break the question down and execute subsequent targeted searches until all dependent facts are chained together."
+  },
+  {
+   "key": "s50l:S2Q05F#5",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "A greedy relevance approach fails when top chunks cluster in the same document section, starving the context of necessary background. To fix that, I apply Maximal Marginal Relevance to enforce diversity and reduce redundancy. For multi-hop dependencies, I use agentic query decomposition to pull supporting evidence step-by-step before finalizing the context budget."
+  },
+  {
+   "key": "s50l:S2Q05F#6",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "A greedy approach fails in multi-hop queries when top chunks all describe the exact same primary entity, hogging the budget and missing the bridging fact needed to connect them. To fix that, I use Maximal Marginal Relevance to penalize redundant chunks for diversity, paired with agentic query decomposition to break the question down and fetch multi-hop dependencies across separate steps."
+  },
+  {
+   "key": "s50l:S2Q05F#7",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "A greedy relevance approach fails when the top chunks are semantically redundant—like three paragraphs all stating the same policy overview while missing the specific exemption clause. To incorporate redundancy control, I apply Maximal Marginal Relevance or penalize similarity against already-selected chunks to force diversity. For multi-hop dependencies, I use agentic query decomposition where the first retrieval step surfaces entity IDs or prerequisites needed to drive the second lookup."
+  },
+  {
+   "key": "s50l:S2Q05F#8",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "Imagine a query about a complex contract dispute where the top three retrieved chunks all highlight the exact same fee definition due to high lexical overlap; a purely greedy relevance-first approach would pack all three and completely miss the exemption clause hiding in a lower-scoring section. To incorporate redundancy and prevent that, I apply diversity penalties or Maximal Marginal Relevance during selection so we don't waste token budget on semantic duplicates. For multi-hop dependencies, I use agentic query decomposition to break the main question into sequential sub-queries, gathering evidence iteratively across hops before synthesizing the final answer."
+  },
+  {
+   "key": "s50l:S2Q05F#9",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "A greedy relevance approach fails when the top-scoring chunks all repeat the same background details from a single document, missing the specific operational metrics needed for a complete answer. To fix this, I enforce diversity using per-document caps and maximal marginal relevance to filter out redundant text. For multi-hop dependencies, I use agentic query decomposition to break the question into sequential sub-queries, gathering evidence step-by-step across multiple retrieval passes."
+  },
+  {
+   "key": "s50l:S2Q05F#10",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "Imagine a financial audit query requiring two distinct subsidiary revenue figures buried in separate footnotes; a greedy retriever might grab the same high-level executive summary chunk twice because it matches global keyword density, missing the second subsidiary entirely. To fix coverage gaps, I incorporate redundancy by applying Maximal Marginal Relevance to penalize semantic duplication, ensuring top-k results introduce fresh information rather than repeating adjacent text. For multi-hop dependencies, I use agentic query decomposition where an intermediate reasoning node evaluates the first retrieved chunk to dynamically generate a follow-up sub-query for the remaining evidence."
+  }
+ ]
+}

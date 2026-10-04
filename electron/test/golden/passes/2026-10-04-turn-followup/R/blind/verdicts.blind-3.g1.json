@@ -1,0 +1,22 @@
+{
+ "s50m:D1#1": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Composite entity-plus-timestamp index, BRIN for append-only, and bitemporal modeling for corrections; concise and correct."},
+ "s50m:D1#2": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Generic PK/FK B-trees and irrelevant GIN-on-JSON; misses composite customer/time index; temporal versioning for corrections is sound."},
+ "s50m:D1#3": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Composite customer/time index, BRIN on ingestion time, and bi-temporal schema directly fit the point-in-time tables."},
+ "s50m:D1#4": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Generic B-tree/BRIN without the composite customer/time key; append-only temporal pattern for corrections is reasonable."},
+ "s50m:D1#5": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Entity/timestamp B-trees and notes corrections break point-in-time joins, handled with append-only validity ranges."},
+ "s50m:D1#6": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Generic indexing advice with JSON GIN not tied to these tables; temporal design for corrections is fine."},
+ "s50m:D1#7": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Generic PK and GIN indexes miss the customer/event-time composite; valid-from/valid-to temporal pattern is correct."},
+ "s50m:D1#8": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Generic indexing, irrelevant JSON GIN and vector embedding invalidation; versioned rows for corrections is right in substance."},
+ "s50m:D1#9": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Vague composite indexes on unspecified columns; append-only or temporal versioning for corrections is sound."},
+ "s50m:D1#10": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Generic PK/FK and JSON GIN indexing misses the point-in-time access pattern; temporal tables for corrections is fine."},
+ "s50m:D2#1": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Example of three chunks from one section ignores the two-per-document cap; MMR plus decomposition is sound but long."},
+ "s50m:D2#2": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Plausible redundancy example, MMR novelty penalty and sub-question state tracking; over 85 words."},
+ "s50m:D2#3": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Three chunks from the same section contradicts the per-document cap; MMR fix is right; too long."},
+ "s50m:D2#4": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Two redundant top chunks missing an exception clause fits the policy; MMR remedy correct; over 85 words."},
+ "s50m:D2#5": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Two overlapping fee chunks missing termination clause, MMR plus per-hop missing-evidence tracking; too long."},
+ "s50m:D2#6": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Three paragraphs from one clause ignores the two-per-document cap; MMR and decomposition are sound; slightly long."},
+ "s50m:D2#7": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Five paragraphs from one section is impossible under the two-per-document cap; MMR fix correct; long."},
+ "s50m:D2#8": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Three chunks from one document's table ignores the cap; MMR plus multi-hop decomposition is sound; over 85 words."},
+ "s50m:D2#9": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Multi-hop revenue/cost example with redundant variants, MMR and query decomposition; correct but too long."},
+ "s50m:D2#10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Keyword-redundant revenue chunks example and MMR redundancy penalty are correct; slightly over 85 words."}
+}

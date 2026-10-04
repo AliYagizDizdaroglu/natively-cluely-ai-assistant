@@ -1,0 +1,22 @@
+{
+"s50m:D3#1": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Covers completeness via count diff, currency via watermark, plus shadow retrieval eval."},
+"s50m:D3#2": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Count reconciliation, sync watermark for currency, and golden-set metrics before blue-green shift."},
+"s50m:D3#3": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Completeness via count and ID parity, but never addresses currency while documents keep changing."},
+"s50m:D3#4": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Parity counts, CDC timestamps for currency, and side-by-side gold-set NDCG and recall."},
+"s50m:D3#5": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Vector count and golden eval, but no currency or sync-lag check."},
+"s50m:D3#6": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Count and ID reconciliation, high-water mark for currency, shadow golden comparison."},
+"s50m:D3#7": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Golden eval, count parity, metadata freshness against source, then shadow deployment."},
+"s50m:D3#8": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "ID checksum and count parity for completeness, but currency is never addressed."},
+"s50m:D3#9": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Counts and max timestamps against Postgres cover completeness and freshness, plus eval."},
+"s50m:D3#10": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Count parity, eval and canary, but no check for currency under ongoing updates."},
+"s50l:S1Q04F#1": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Partial selection is right, but ties are broken by customer ID, not original row order."},
+"s50l:S1Q04F#2": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Partial selection is right, but tie key is user ID or timestamp, not original row order."},
+"s50l:S1Q04F#3": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "argpartition plus stable sort on the boundary ties correctly preserves row-order tie rule."},
+"s50l:S1Q04F#4": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Heap or quickselect is fine, but tie-break uses customer ID instead of original row order."},
+"s50l:S1Q04F#5": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Quickselect is right, but tie key is customer ID or timestamp, not row order."},
+"s50l:S1Q04F#6": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "argpartition with row index as secondary key, sorting only cutoff ties, preserves the rule."},
+"s50l:S1Q04F#7": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Uses customer ID instead of row order for ties and calls the heap linear."},
+"s50l:S1Q04F#8": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Size-k min-heap keyed on score and negative index correctly keeps earlier rows on ties."},
+"s50l:S1Q04F#9": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Composite key of score and negated row index preserves original-order tie-breaking."},
+"s50l:S1Q04F#10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Size-k heap with inverted row index as secondary key; correct and concise."}
+}

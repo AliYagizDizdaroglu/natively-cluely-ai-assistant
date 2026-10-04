@@ -1,0 +1,48 @@
+ok   3.6 row: ledger empty (first question)
+ok   3.6 row: settled null (manual with nothing dispatched)
+ok   3.6 row: settled blank
+ok   3.6 row: flag off
+ok   3.6 row: evicted parent + cue: the block (control for every silent row below)
+ok   3.6 row: parent in the prompt (short gap)
+ok   3.6 row: parent in the prompt, older question absent: the grandparent is never read (S2Q09F shape)
+ok   3.6 row: parent contained in the pinned line (Live merge)
+ok   3.6 row: re-ask of the parent (same text, earlier copy evicted)
+ok   3.6 row: quick follow-up < 60 s sharing a frame word ("Why that one?"), parent in the prompt
+ok   3.6 row: quick follow-up, its 90 s control: identical inputs, identical output (the reference holds no clock)
+ok   3.6 row: supersede, continuation of the same question
+ok   3.6 row: two questions in one turn: supersede of a different question, older parent absent
+ok   3.6 row: two questions in one turn, control without supersede: the same inputs would add the previous turn
+ok   3.6 row: R21 supersede re-entering as answer, head dropped by the deduper (duplicate of an answered question still in the prompt)
+ok   3.6 row: R21 supersede, head dropped by isFragment (Live-sourced, under 4 words): the normal gated block, parent = the previous turn
+ok   3.6 row: supersede after an answer-now re-ran the head (turnId null entry newer than the head): remove + push newest
+ok   3.6 row: double dispatch past the deduper: duplicate entry, parent unchanged
+ok   3.6 row: chip click / answer-now / manual in auto mode (turnId null): ledger written, block ""
+ok   3.6 row: late Live echo of Q dispatched at 61 s (before the next question R): harmless duplicate parent
+ok   3.6 row: late Live echo of Q at 76 s AFTER the next question R: the WRONG referent, bounded by the label (ledger [Q, R, Q-echo])
+ok   3.6 row: never-dispatched parent: the previous DISPATCHED question becomes the referent (measured by the D-cases)
+ok   3.6 row: suggest/off mode: click Q1, skip Q2 and Q3, click a follow-up chip: ledger [Q1], turnId null -> ""
+ok   3.6 row: parent over 450 chars: head 150 + ellipsis + tail 299
+ok   3.6 row: parent present only as a tail fragment after the sparsify cut counts as present
+ok   3.6 row: no cue: a standalone question gets nothing
+ok   3.6 row: blank parent text
+ok   3.6 row: exception in select (a null prompt line) -> "" and gate=error, never a throw
+ok   3.6 row: exception: ledger missing
+ok   ledger: a settled call whose turnId the ledger does not hold pushes
+ok   ledger: the 8 s supersede (turnId held) removes the head and pushes the merged text newest
+ok   ledger: turnId null never removes (two null entries coexist)
+ok   ledger: no text dedup (a follow-up sharing a frame word does not replace its parent; review C1)
+ok   3.6 row: aborted or stalled parent is recorded (the write happens at dispatch, before any answer exists), so its follow-up gets it
+ok   ledger: depth is 3, oldest dropped
+ok   ledger: settled null / blank text writes nothing
+ok   ledger: flag off writes nothing
+ok   ledger: the write does not mutate its input
+ok   label: 125 chars, says asked earlier and context only and do not answer it again, not "answered"
+ok   clip: exactly 450 stays whole, 451 is cut to head 150 + ellipsis + tail 299 (length 450)
+ok   clip: the tail keeps the referent of a long parent
+ok   clip: whitespace is collapsed before measuring
+ok   formatBlock: label, newline, dash, parent
+ok   insertBlock: ${block}\n\n immediately before INTERVIEWER JUST SAID:\n; "" block is identity; a missing marker throws
+ok   gate: 19 must-fire sentences fire with their cue
+ok   gate: 10 must-not sentences stay silent
+ok   gate: the turn reference uses the imported gate (a cue-less question never gets a block)
+EARLIER-QUESTION REF TESTS: 47/47 passed

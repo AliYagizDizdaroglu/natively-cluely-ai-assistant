@@ -1,0 +1,22 @@
+{
+ "s50l:S2Q08F#1": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Count checks cover completeness, but currency is only implied by dual-write; no lag or watermark proof."},
+ "s50l:S2Q08F#2": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Strong ID reconciliation for completeness, but no explicit freshness check such as sync lag or watermark."},
+ "s50l:S2Q08F#3": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Mentions zero sync lag, but completeness rests on quality metrics with no ID or count reconciliation."},
+ "s50l:S2Q08F#4": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "ID-diff over the latest sync window proves completeness and currency, plus shadow quality comparison."},
+ "s50l:S2Q08F#5": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Primary-key diff is solid, but top-k overlap shadow reads do not actually prove currency."},
+ "s50l:S2Q08F#6": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Good ID set diff, but currency claimed via top-k overlap rather than lag or version checks."},
+ "s50l:S2Q08F#7": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Covers quality shadow eval, ID/count parity, and stream offset lag check for currency."},
+ "s50l:S2Q08F#8": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Watermark check for zero sync lag plus golden-set retrieval comparison and canary; solid."},
+ "s50l:S2Q08F#9": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Replay comparison, entity counts, and ingestion lag to zero cover completeness and currency."},
+ "s50l:S2Q08F#10": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Count parity for completeness, but currency proven by golden-set eval, which does not measure freshness."},
+ "s50l:D1#1": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Generic PK/FK indexing misses the composite customer-time index; append-only versioning for corrections is right."},
+ "s50l:D1#2": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Separate indexes rather than composite customer-time; bi-temporal modeling for corrections is correct."},
+ "s50l:D1#3": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Composite entity-timestamp index and versioned validity ranges preserving point-in-time correctness."},
+ "s50l:D1#4": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Indexes columns separately, no composite; correctly notes corrections break point-in-time and need versions."},
+ "s50l:D1#5": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Generic join indexes plus irrelevant GIN; temporal tables answer the correction part vaguely."},
+ "s50l:D1#6": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Generic B-tree and BRIN advice with no composite key; temporal tables for corrections is fine."},
+ "s50l:D1#7": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Composite customer-timestamp index and bitemporal valid/transaction time model directly fit the problem."},
+ "s50l:D1#8": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Composite entity-time B-tree and bi-temporal versioned design instead of in-place updates."},
+ "s50l:D1#9": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Treats corrections only as bloat and fillfactor tuning, missing the point-in-time correctness impact."},
+ "s50l:D1#10": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Separate FK and timestamp indexes, no composite; temporal row versions for corrections is right."}
+}

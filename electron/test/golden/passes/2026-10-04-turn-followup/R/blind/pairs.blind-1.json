@@ -1,0 +1,226 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "s50m:S1Q04F#1",
+   "id": "s50m:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I’d avoid a full O(N log N) sort by using a partial selection algorithm like argpartition to isolate the top k candidates in linear time. For the tie rule, I’d sort only the small boundary subset where scores overlap, using the customer ID as a deterministic secondary key. This drops our complexity down to near-linear while keeping tie-handling completely strict."
+  },
+  {
+   "key": "s50m:S1Q04F#2",
+   "id": "s50m:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "Instead of a full global sort, I'd use argpartition to extract the top K customers in linear time. We pair each score with its original index as a tuple, which guarantees a deterministic tie-break. Then we only sort that small subset, reducing complexity from N log N down to O(N)."
+  },
+  {
+   "key": "s50m:S1Q04F#3",
+   "id": "s50m:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I'd use a linear-time partition algorithm to find the top-K score threshold without a full global sort. For the small boundary bucket where scores tie, I'd sort just that subset locally using the secondary key to strictly enforce the tie rule. That drops our overall complexity from O(N log N) down to near O(N) for millions of customers."
+  },
+  {
+   "key": "s50m:S1Q04F#4",
+   "id": "s50m:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "Instead of a full sort, I’d use quickselect via np.argpartition to isolate the top k candidates in linear time. Because partition doesn't preserve order or handle ties, I’d take the boundary slice of elements around the k-th threshold and apply a stable sort on just that small subset using original row indices as the secondary key."
+  },
+  {
+   "key": "s50m:S1Q04F#5",
+   "id": "s50m:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "Instead of a full O(N log N) sort for millions of rows, I'd use a partial sort like np.argpartition to find the top k in linear time. To preserve the tie rule, I'd pack scores and row indices into tuples so Python natively handles descending scores and ascending indices without sorting the entire array."
+  },
+  {
+   "key": "s50m:S1Q04F#6",
+   "id": "s50m:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "To avoid a full sort on millions of records, I use linear-time partial selection like argpartition to isolate just the top candidates. I attach the original index as a secondary key for deterministic tie-breaking. Then, we only run a full sort on that small subset, cutting our compute cost while preserving the exact tie rules."
+  },
+  {
+   "key": "s50m:S1Q04F#7",
+   "id": "s50m:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "Instead of a full O(N log N) sort across millions of records, I’d use a linear-time partial sort like np.argpartition to isolate the top k scores. Since we only care about tie-breaking within that winning group, I’d fully sort just that small subset using their original row indices. That brings our overall complexity down to O(N + k log k), keeping it fast and memory-efficient at scale."
+  },
+  {
+   "key": "s50m:S1Q04F#8",
+   "id": "s50m:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "Instead of a full O(N log N) sort across millions of customers, I’d use a partial sort or quickselect algorithm to drop complexity down to linear time. To preserve the deterministic tie rule, I pair each score with its original index so relative order is stably maintained during the partition without paying the full sorting cost."
+  },
+  {
+   "key": "s50m:S1Q04F#9",
+   "id": "s50m:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I'd avoid a full global sort by using a min-heap to extract the top K items in O(N log K) time. To preserve ties deterministically, I'd pair each score with a secondary key like customer ID into a comparable tuple. For millions of records, I'd push the computation down with a Postgres index or parallelize it in PySpark."
+  },
+  {
+   "key": "s50m:S1Q04F#10",
+   "id": "s50m:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "Instead of a full sort across millions of rows, I'd use a bounded min-heap or selection algorithm to find the top k in O(N log k) time. To preserve the exact tie rule, I'd attach the original row index as a secondary key to each score, ensuring a completely deterministic stable order without the overhead of full sorting."
+  },
+  {
+   "key": "s50m:S1Q06F#1",
+   "id": "s50m:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d put a composite index on the customer ID and timestamp columns in the events table to fast-track time-window lookups, and a primary key on the snapshots table customer ID. If historical records can change after ingestion, mutable updates get expensive, so I’d switch to an append-only event log with a versioning pattern, querying the latest valid state using window functions."
+  },
+  {
+   "key": "s50m:S1Q06F#2",
+   "id": "s50m:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For the events table, I’d build a composite index on customer ID, event time, and ingested-at time, and index the snapshots table on customer ID and snapshot time to keep those window scans efficient. If historical records can be corrected after ingestion, our standard point-in-time queries break because past events can mutate. To fix that, we’d move to a versioned event log or a bitemporal table structure so we can query what the system actually ingested and knew at the exact snapshot time, keeping our training features strictly valid."
+  },
+  {
+   "key": "s50m:S1Q06F#3",
+   "id": "s50m:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd put a composite index on the events table using customer ID and event timestamp to speed up both the join and the date filter, alongside a primary key index on the snapshots table. If historical records can be corrected after ingestion, naive updates become expensive and messy, so I'd use an append-only event log combined with window functions to always resolve the latest valid state without locking rows."
+  },
+  {
+   "key": "s50m:S1Q06F#4",
+   "id": "s50m:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd place a composite B-tree index on customer ID and timestamp in the events table for fast filtered joins, and a primary index on customer ID for snapshots. If historical records get corrected after ingestion, I'd use event sourcing or updated-at partitioning so we can invalidate caches and re-aggregate only the affected time windows."
+  },
+  {
+   "key": "s50m:S1Q06F#5",
+   "id": "s50m:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For the snapshots table, I’d index customer ID and snapshot time, and for events, a composite index on customer ID, ingested at, and event time. If historical records can be corrected post-ingestion, standard point-in-time queries break because past rows mutate. To handle that, I’d use an append-only event log or temporal tables to preserve historical states at ingestion time."
+  },
+  {
+   "key": "s50m:S1Q06F#6",
+   "id": "s50m:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd add a composite B-tree index on customer ID and timestamp for events, and a unique index on customer ID and snapshot date for snapshots. If historical records change after ingestion, standard in-place updates cause row bloat and lock contention. Instead, I’d use an append-only temporal design with valid time ranges so corrections insert new versioned rows cleanly."
+  },
+  {
+   "key": "s50m:S1Q06F#7",
+   "id": "s50m:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd use a composite index on customer ID and timestamp for fast range joins. If historical records get corrected, in-place updates cause Postgres index bloat and overhead. I’d handle that with an append-only event pattern where corrections append a new version, keeping our indexes clean and avoiding MVCC write amplification."
+  },
+  {
+   "key": "s50m:S1Q06F#8",
+   "id": "s50m:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For the snapshots table, I’d index (customer_id, snapshot_time), and for the events table, a composite index on (customer_id, ingested_at, event_time) handles the join and time filtering efficiently. If historical records can be corrected after ingestion, simple ingestion timestamps aren't enough because past data mutates. I'd shift to a bi-temporal schema with an update timestamp, and set up an event-driven pipeline to automatically re-compute affected feature rows when historical records change."
+  },
+  {
+   "key": "s50m:S1Q06F#9",
+   "id": "s50m:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "For indexing, I’d put a composite index on snapshots using customer ID and snapshot time, and another on events using customer ID, event time, and ingested at. If historical records can be corrected after ingestion, our ingestion-time filters break because past rows shift. To handle that, I’d move to an append-only versioned event log or use valid-time tracking, allowing us to accurately recompute features against corrected historical states."
+  },
+  {
+   "key": "s50m:S1Q06F#10",
+   "id": "s50m:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d index the events table with a composite B-tree on customer ID, event time, and ingestion time to make that thirty-day window and cutoff filter efficient. If historical records get corrected after ingestion, a simple timestamp breaks, so we'd need version tracking or valid-time columns to automatically invalidate and recompute affected customer snapshots."
+  }
+ ]
+}

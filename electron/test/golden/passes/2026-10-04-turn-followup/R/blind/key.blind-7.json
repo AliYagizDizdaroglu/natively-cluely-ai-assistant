@@ -1,0 +1,162 @@
+{
+ "s50l:D2#1": {
+  "key": "s50l:D2",
+  "hour": "s50l",
+  "id": "D2",
+  "arm": "B",
+  "rep": 3,
+  "leg": "front"
+ },
+ "s50l:D2#2": {
+  "key": "s50l:D2",
+  "hour": "s50l",
+  "id": "D2",
+  "arm": "B",
+  "rep": 5,
+  "leg": "front"
+ },
+ "s50l:D2#3": {
+  "key": "s50l:D2",
+  "hour": "s50l",
+  "id": "D2",
+  "arm": "A",
+  "rep": 5,
+  "leg": "front"
+ },
+ "s50l:D2#4": {
+  "key": "s50l:D2",
+  "hour": "s50l",
+  "id": "D2",
+  "arm": "B",
+  "rep": 2,
+  "leg": "front"
+ },
+ "s50l:D2#5": {
+  "key": "s50l:D2",
+  "hour": "s50l",
+  "id": "D2",
+  "arm": "B",
+  "rep": 1,
+  "leg": "front"
+ },
+ "s50l:D2#6": {
+  "key": "s50l:D2",
+  "hour": "s50l",
+  "id": "D2",
+  "arm": "A",
+  "rep": 4,
+  "leg": "front"
+ },
+ "s50l:D2#7": {
+  "key": "s50l:D2",
+  "hour": "s50l",
+  "id": "D2",
+  "arm": "A",
+  "rep": 3,
+  "leg": "front"
+ },
+ "s50l:D2#8": {
+  "key": "s50l:D2",
+  "hour": "s50l",
+  "id": "D2",
+  "arm": "B",
+  "rep": 4,
+  "leg": "front"
+ },
+ "s50l:D2#9": {
+  "key": "s50l:D2",
+  "hour": "s50l",
+  "id": "D2",
+  "arm": "A",
+  "rep": 1,
+  "leg": "front"
+ },
+ "s50l:D2#10": {
+  "key": "s50l:D2",
+  "hour": "s50l",
+  "id": "D2",
+  "arm": "A",
+  "rep": 2,
+  "leg": "front"
+ },
+ "s50l:D3#1": {
+  "key": "s50l:D3",
+  "hour": "s50l",
+  "id": "D3",
+  "arm": "A",
+  "rep": 4,
+  "leg": "front"
+ },
+ "s50l:D3#2": {
+  "key": "s50l:D3",
+  "hour": "s50l",
+  "id": "D3",
+  "arm": "B",
+  "rep": 5,
+  "leg": "front"
+ },
+ "s50l:D3#3": {
+  "key": "s50l:D3",
+  "hour": "s50l",
+  "id": "D3",
+  "arm": "A",
+  "rep": 1,
+  "leg": "front"
+ },
+ "s50l:D3#4": {
+  "key": "s50l:D3",
+  "hour": "s50l",
+  "id": "D3",
+  "arm": "A",
+  "rep": 3,
+  "leg": "front"
+ },
+ "s50l:D3#5": {
+  "key": "s50l:D3",
+  "hour": "s50l",
+  "id": "D3",
+  "arm": "B",
+  "rep": 1,
+  "leg": "front"
+ },
+ "s50l:D3#6": {
+  "key": "s50l:D3",
+  "hour": "s50l",
+  "id": "D3",
+  "arm": "A",
+  "rep": 2,
+  "leg": "front"
+ },
+ "s50l:D3#7": {
+  "key": "s50l:D3",
+  "hour": "s50l",
+  "id": "D3",
+  "arm": "B",
+  "rep": 3,
+  "leg": "front"
+ },
+ "s50l:D3#8": {
+  "key": "s50l:D3",
+  "hour": "s50l",
+  "id": "D3",
+  "arm": "B",
+  "rep": 2,
+  "leg": "front"
+ },
+ "s50l:D3#9": {
+  "key": "s50l:D3",
+  "hour": "s50l",
+  "id": "D3",
+  "arm": "B",
+  "rep": 4,
+  "leg": "front"
+ },
+ "s50l:D3#10": {
+  "key": "s50l:D3",
+  "hour": "s50l",
+  "id": "D3",
+  "arm": "A",
+  "rep": 5,
+  "leg": "front"
+ }
+}

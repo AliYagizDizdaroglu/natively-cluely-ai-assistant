@@ -1,0 +1,22 @@
+{
+"s50m:S2Q05F#1": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Example puts three chunks from one contract despite the two-per-document cap; MMR covers redundancy but multi-hop is misread as 'dependencies'; ~96 words."},
+"s50m:S2Q05F#2": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Example ignores the two-per-document cap; MMR handles redundancy but no concrete multi-hop dependency mechanism."},
+"s50m:S2Q05F#3": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Five chunks from one paragraph violates the per-document cap; multi-hop not addressed; over 100 words."},
+"s50m:S2Q05F#4": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Three chunks from the same paragraph ignores the cap; MMR only, no multi-hop handling; well over 85 words."},
+"s50m:S2Q05F#5": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Valid cap-respecting example and MMR, but multi-hop dependencies never incorporated; over 100 words."},
+"s50m:S2Q05F#6": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Five chunks from one section violates the cap; graph multi-hop named but conflated with redundancy penalty; ~89 words."},
+"s50m:S2Q05F#7": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Single-document crowding contradicts the two-per-document cap; MMR fine but multi-hop not incorporated; ~96 words."},
+"s50m:S2Q05F#8": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Three chunks from one contract section ignores the cap; MMR with lambda explained, multi-hop missing; ~100 words."},
+"s50m:S2Q05F#9": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Three chunks from one executive summary violates the cap; MMR only, no multi-hop mechanism; ~91 words."},
+"s50m:S2Q05F#10": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Same-paragraph example ignores the cap; MMR plus a nod to multi-hop links but no actual dependency mechanism."},
+"s50m:S2Q08F#1": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "ID reconciliation for completeness, CDC to both indexes for currency, shadow recall and golden-set parity."},
+"s50m:S2Q08F#2": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Only quality benchmarking; never proves completeness or currency under ongoing document changes."},
+"s50m:S2Q08F#3": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Counts and golden-set parity cover completeness, but currency with documents still changing is not addressed."},
+"s50m:S2Q08F#4": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "ID checksum diff, zero sync lag for currency, and golden-set parity before cutover; concise."},
+"s50m:S2Q08F#5": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Count and ID reconciliation plus dual-write for currency and golden-query top-k overlap; solid."},
+"s50m:S2Q08F#6": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Document-ID diff, catch-up of backfill-window updates to zero lag, and shadow retrieval comparison."},
+"s50m:S2Q08F#7": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "ID parity, near-zero ingestion lag, golden-set quality check, and atomic pointer swap."},
+"s50m:S2Q08F#8": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Counts, checksums and golden-set metrics, but currency against ongoing writes is not explicitly proven."},
+"s50m:S2Q08F#9": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Golden-set parity and count validation, but no mechanism showing the index is current with live changes."},
+"s50m:S2Q08F#10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "ID parity for completeness, dual-write for freshness, Hit@K and judge scores versus baseline."}
+}

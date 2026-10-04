@@ -1,0 +1,10 @@
+# command: node R/audit-graders.mjs --blind-dir <SP>/followup-questions-s50l/blind --session 9c5886c7-... blind-1.g1=addb84e6bd55778d5 ... blind-4.g2=aa85ea6faa528f27c   (DEFAULT mode, point 15: graders have no Bash -- the 8 real s50l graders are a HISTORICAL shape, flagged by design)
+blind-1.g1 (addb84e6bd55778d5): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+blind-1.g2 (a681f259dff0dae30): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+blind-2.g1 (a5eb230f8d7cb101a): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+blind-2.g2 (ab34ebe95114932db): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+blind-3.g1 (a83e3007ff2d0bc45): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+blind-3.g2 (ab605c210a849d667): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+blind-4.g1 (aa08ae8c058eb8aa9): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+blind-4.g2 (aa85ea6faa528f27c): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+AUDIT: FLAGGED (see lines above)

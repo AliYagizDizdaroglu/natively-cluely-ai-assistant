@@ -1,0 +1,22 @@
+{
+"s50l:D2#1": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "MMR and decomposition sound, but example has greedy taking five chunks from one report, ignoring the two-per-document cap."},
+"s50l:D2#2": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Good remedies, but five chunks from one filing contradicts the policy's two-per-document cap."},
+"s50l:D2#3": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Example of three chunks from one contract ignores the two-per-document cap; over 85 words with resume aside."},
+"s50l:D2#4": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Top three chunks from one section ignores the two-per-document cap; MMR and decomposition are sound."},
+"s50l:D2#5": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Five chunks from the same table contradicts the two-per-document cap; remedies are correct."},
+"s50l:D2#6": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Five paragraphs from one contract ignores the per-document cap; answer runs over 85 words."},
+"s50l:D2#7": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Three hits in one section ignores the two-per-document cap; long, over 100 words."},
+"s50l:D2#8": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Five chunks from one section conflicts with the two-per-document cap; MMR and decomposition fine."},
+"s50l:D2#9": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Three snippets from one section ignores the per-document cap; over 100 words."},
+"s50l:D2#10": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Three near-duplicates from one contract ignores the two-per-document cap; remedies correct and concise."},
+"s50l:D3#1": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Covers ID parity for completeness, timestamp freshness against event stream for currency, and golden-query quality."},
+"s50l:D3#2": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Count parity and shadowing are good, but no check that the index is current with ongoing writes."},
+"s50l:D3#3": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Count and ID reconciliation proves completeness, but currency under ongoing updates is not addressed."},
+"s50l:D3#4": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Uses golden-set recall as completeness proof instead of record reconciliation; currency check via timestamp delta is good."},
+"s50l:D3#5": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Count reconciliation and shadowing, but omits any freshness or sync-lag check for currency."},
+"s50l:D3#6": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Counts plus checksums against source verify completeness and content currency; golden eval and canary sound."},
+"s50l:D3#7": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Record-count parity and sync lag cover completeness and currency; metric regression checks before cutover."},
+"s50l:D3#8": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Document-count audit plus sync timestamp within freshness SLA, with gold-set recall and blue-green switch."},
+"s50l:D3#9": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Claims to prove currency but only offers count parity and shadow metrics, no freshness check."},
+"s50l:D3#10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Record counts and max timestamps against source prove completeness and currency; golden set and shadow period."}
+}

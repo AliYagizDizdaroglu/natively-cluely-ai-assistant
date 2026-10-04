@@ -1,0 +1,270 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "s50l:S1Q04F#1",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I would avoid a full sort, which is O(N log N), and instead use a min-heap of size K to track the top candidates, which brings the complexity down to O(N log K). To handle the tie rule, I’d store a tuple of (score, secondary_key) in the heap, where the secondary key is a unique ID. This ensures the ordering is deterministic and stable without needing to sort the entire dataset."
+  },
+  {
+   "key": "s50l:S1Q04F#2",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "To handle millions of customers, I’d move away from full-list sorting and implement a top-K selection algorithm, like a min-heap or quickselect, which reduces complexity from O(N log N) to O(N log K). For the tie-breaking rule, I’d include a secondary sort key—like a unique customer ID or a timestamp—directly in the comparison logic so the heap maintains a deterministic order without needing a secondary pass. If latency is still a bottleneck, I’d partition the data and process chunks in parallel, then merge the top-K candidates from each partition."
+  },
+  {
+   "key": "s50l:S1Q04F#3",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I’d switch from a full sort to a min-heap approach, which drops the complexity from O(N log N) to O(N log K). For the tie-breaking, I’d store tuples of (score, tie-breaker-value) in the heap; the comparison logic naturally handles the tie-breaker when the primary score matches. If the dataset is too large for memory, I’d partition the data and use a distributed approach or database-level indexing to handle the heavy lifting before the final merge."
+  },
+  {
+   "key": "s50l:S1Q04F#4",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "To handle millions of customers efficiently, I’d move away from a full sort and use a partial sort algorithm like heapq.nlargest or a selection algorithm like Quickselect. Since I need to preserve the original row order for ties, I would augment each score with its index—creating a tuple of (score, -index)—so that the sorting algorithm naturally treats the index as a tie-breaker, ensuring stable behavior without a full O(N log N) sort. For massive datasets, I’d also consider partitioning the data or using a vectorized approach in NumPy, which pushes the sorting logic down to C and is significantly faster than standard Python loops."
+  },
+  {
+   "key": "s50l:S1Q04F#5",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "For millions of records, I’d avoid a full sort if I only need the top-K. I’d use a partial sort algorithm, like a heap-based approach, which brings complexity down to O(N log K). To preserve the tie-breaking rule, I’d create a composite key using the score and the negative index. This forces the sort to treat the original row position as the secondary criteria, ensuring deterministic stability without the overhead of a full sort."
+  },
+  {
+   "key": "s50l:S1Q04F#6",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I’d leverage the stability of Python’s built-in Timsort. Because it’s a stable sort, it naturally preserves the original input order for tied scores, so I don't need to modify the data structure. If I only need the top K, I’d use heapq.nlargest, which reduces complexity to O(N log K) while maintaining that same stability."
+  },
+  {
+   "key": "s50l:S1Q06F#1",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d index snapshots on (customer_id, snapshot_time) and events on (customer_id, event_time, ingested_at) to optimize the join and range scans. If historical records change, ingested_at is insufficient. I’d implement a bi-temporal schema or add a valid_at column, ensuring the query joins against the record version active at the snapshot time, rather than just ingestion time."
+  },
+  {
+   "key": "s50l:S1Q06F#2",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d start with B-tree indexes on the foreign keys—specifically customer_id—to optimize the joins. If we're frequently filtering by time, I’d add a composite index on (customer_id, timestamp) to cover those range queries efficiently. For massive, time-ordered tables, I might consider a BRIN index to save space.\n\nRegarding corrections, if we need to handle updates, I’d use PostgreSQL’s ON CONFLICT clause for upserts. If auditability is required, I’d move to a versioned approach, like SCD Type 2, where we keep the historical record and insert a new row with an is_current flag, rather than overwriting data in place."
+  },
+  {
+   "key": "s50l:S1Q06F#3",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d use a composite index on (customer_id, snapshot_time) for snapshots. For events, I’d index (customer_id, event_time, ingested_at) to optimize the range scan. If records can be corrected, ingested_at isn't sufficient; I’d add valid_from and valid_to columns to track versioning, and update the query to filter by the record's validity window at the snapshot time."
+  },
+  {
+   "key": "s50l:S1Q06F#4",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I'd start by indexing the snapshots table on customer_id and snapshot_time to support the join and filtering. For the events table, I’d use a composite index on (customer_id, event_time, ingested_at)—this covers the join, the thirty-day window filter, and the ingestion time constraint efficiently.\n\nIf historical records can be corrected, the ingested_at column alone isn't enough to guarantee point-in-time accuracy. I’d switch to a bi-temporal model where we track both the event time and the system time of the correction. My query would then need to filter for the latest version of any record as of the snapshot time, likely using a window function like ROW_NUMBER() partitioned by the event ID to select the most recent valid version before the snapshot occurred."
+  },
+  {
+   "key": "s50l:S1Q06F#5",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d prioritize a composite index on customer_id and timestamp to optimize both join performance and time-series lookups. For historical corrections, I’d implement an UPSERT strategy using ON CONFLICT in PostgreSQL. This ensures incoming data updates existing records rather than duplicating them, maintaining integrity without requiring full table rebuilds or complex cleanup."
+  },
+  {
+   "key": "s50l:S1Q06F#6",
+   "id": "s50l:S1Q06F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]",
+   "heard": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+   "source": "answers-pass",
+   "answer": "I’d start with a composite index on customer_id and timestamp to optimize those time-series range lookups. If historical records can be corrected, I’d implement a Slowly Changing Dimension Type 2 pattern. Instead of overwriting, I’d add valid_from and valid_to timestamps, which lets us maintain full auditability and reconstruct the exact state of the data for any past inference."
+  },
+  {
+   "key": "s50l:S2Q05F#1",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "Greedy selection often leads to redundancy bias, where the top-k chunks are semantically identical. For instance, if I ask to compare Product A and Product B's revenue, but the top results all focus on Product A, the model lacks the context for Product B. To fix this, I use Maximal Marginal Relevance—or MMR—to penalize similarity to previously selected chunks, forcing diversity. For multi-hop dependencies, I avoid flat retrieval entirely; I use agentic query decomposition to break the prompt into sub-questions, or a graph-based retrieval that traverses relationships between entities to ensure we actually capture the full path needed for the answer."
+  },
+  {
+   "key": "s50l:S2Q05F#2",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "A classic failure is a query like \"What are the company's policies on remote work and benefits?\" If your top three chunks are all about remote work because they share high semantic similarity, you’ve completely missed the benefits section. You’ve saturated your context window with redundant information about one topic while ignoring the other half of the user's intent.\n\nTo fix coverage, I’d switch to Maximal Marginal Relevance, or MMR, which penalizes chunks that are too similar to what we’ve already picked, forcing diversity. For multi-hop dependencies, I move away from single-pass retrieval entirely. I use an agentic workflow, similar to what I built at Koolay, where the model breaks the query into sub-questions, retrieves for each, and then synthesizes the final answer. This ensures we aren't just grabbing the most similar text, but actively hunting for the specific pieces of information needed to bridge the logical gap."
+  },
+  {
+   "key": "s50l:S2Q05F#3",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "If a user asks a nuanced question about a specific technical edge case, a greedy policy might fill the entire context window with high-relevance chunks from a single, broad overview document. This leaves no room for the specific, lower-scoring chunks from other documents that actually contain the answer, effectively silencing the necessary context.\n\nTo fix this, I’d implement a diversity-aware re-ranking step, like Maximal Marginal Relevance, which penalizes chunks that are too similar to what we’ve already selected. Alternatively, I’d enforce a hard cap on chunks per document, ensuring we pull evidence from a wider set of sources rather than just the most \"relevant\" one.\n\nFor multi-hop dependencies, I wouldn't rely on a single retrieval pass. I’d use an agentic workflow—like the ones I built at Koolay—to decompose the complex question into sub-queries, retrieve evidence for each step, and then synthesize the final answer. This ensures we explicitly fetch the intermediate facts required to bridge the gap between the initial question and the final conclusion."
+  },
+  {
+   "key": "s50l:S2Q05F#4",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "Greedy selection often collapses into redundancy. If you ask for a comparison between two products, the top-k might just grab five paragraphs about the first product because they share high keyword overlap, leaving nothing for the second. To fix this, I’d switch to Maximal Marginal Relevance, or MMR, which penalizes new chunks that are too similar to what's already selected. For multi-hop dependencies, I’d move to an agentic workflow using LangGraph to decompose the question into sub-queries, retrieve context for each, and then synthesize the final answer."
+  },
+  {
+   "key": "s50l:S2Q05F#5",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "Greedy selection often creates \"information redundancy,\" where the top chunks all come from the same document, ignoring the diverse evidence needed for complex answers. I’d fix this with Maximal Marginal Relevance to enforce diversity. For multi-hop dependencies, I use agentic query decomposition to break the prompt into sub-questions, retrieving evidence for each step to ensure full coverage."
+  },
+  {
+   "key": "s50l:S2Q05F#6",
+   "id": "s50l:S2Q05F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]",
+   "heard": "An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.",
+   "source": "answers-pass",
+   "answer": "Greedy selection fails when top chunks are redundant, like grabbing five paragraphs about product features while missing the crucial, lower-scoring paragraph about history. I use Maximal Marginal Relevance to penalize similarity to selected chunks. For multi-hop, I use agentic decomposition to break the query into sub-tasks, retrieving context for each step to ensure full coverage."
+  },
+  {
+   "key": "s50l:S2Q08F#1",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I use a dual-validation approach: first, I run a shadow-traffic comparison where the new index processes the same incoming document stream as the production index, and I use an LLM-as-judge pipeline to verify that the retrieved context and resulting answers are statistically equivalent or better. Second, I perform a deterministic count-check and schema validation against the source database to ensure the document IDs and metadata timestamps in the new index perfectly match the source of truth before I flip the traffic."
+  },
+  {
+   "key": "s50l:S2Q08F#2",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I use a shadow deployment where the new index processes live traffic in parallel, using an LLM-as-judge pipeline to compare retrieved context and answer quality against the legacy index. Simultaneously, I run a regression suite against a verified gold set of queries to ensure retrieval recall and latency metrics meet or exceed our production baseline before cutover."
+  },
+  {
+   "key": "s50l:S2Q08F#3",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I use a dual-validation approach. I run a golden set of queries against both indices, using LLM-as-judge to ensure the new index matches or exceeds the old one's retrieval quality. Simultaneously, I verify ingestion lag by comparing the latest document timestamp in the index against the source database to confirm freshness before flipping traffic."
+  },
+  {
+   "key": "s50l:S2Q08F#4",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate the new index by running it in shadow mode alongside the production one, capturing real-world queries to compare retrieval performance. I use an LLM-as-judge pipeline to evaluate the recall and relevance of the retrieved chunks against a gold set, while simultaneously running deterministic checks to ensure the document count and metadata coverage match the source database. I only cut over once the new index demonstrates parity or improvement in both retrieval accuracy and latency metrics."
+  },
+  {
+   "key": "s50l:S2Q08F#5",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a shadow pipeline where I dual-write incoming documents to both indices. I then use an automated evaluation suite, comparing top-k retrieval results using Reciprocal Rank and semantic similarity against a golden set of queries. Finally, I use an LLM-as-judge to verify that the retrieved context from the new index maintains or improves answer quality before the cutover."
+  },
+  {
+   "key": "s50l:S2Q08F#6",
+   "id": "s50l:S2Q08F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run shadow-traffic validation, querying both indices in parallel and using an LLM-as-judge to compare relevance scores. I also perform a checksum audit between the source database and vector store to confirm zero missing records. Finally, I run a regression suite on our golden set to verify that recall and F1 metrics meet or exceed the baseline before cutover."
+  }
+ ]
+}

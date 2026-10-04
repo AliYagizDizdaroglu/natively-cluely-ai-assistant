@@ -1,0 +1,226 @@
+{
+ "model": "claude-opus-5",
+ "rubric": "You grade answers that an interview copilot generated for a candidate to say OUT LOUD, in real time, in a live technical interview (MLOps, cloud, Kubernetes, data engineering). You see the interviewer's scripted question, what the app actually heard, and the answer the candidate was given to read.\n\nScore three things, each 0, 1 or 2:\n- correctness: 0 = technically wrong, fabricated, or would embarrass the candidate; 1 = partly right, vague, or missing the key point; 2 = technically correct and shows real understanding.\n- on_topic: 0 = answers a different question than the scripted one; 1 = partially addresses it or drifts; 2 = directly answers the question asked.\n- delivery: 0 = unusable when spoken (markdown, bullet lists, code, \"Time: O(n)\" lines, offers like \"would you like me to\", or questions back to the interviewer); 1 = usable with small edits, which includes an answer that is merely too long — length alone is NEVER 0; 2 = a natural first-person spoken answer of roughly 40-80 words that an interviewer would accept.\n\nGrade against the scripted question. If the app misheard and the answer fits what was heard but not what was asked, on_topic is 0 or 1. Reason in at most 25 words.",
+ "items": [
+  {
+   "key": "s50m:D3#1",
+   "id": "s50m:D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate completeness by running a strict diff between the source store's document count and the vector index's indexed chunks, and currency by checking the latest ingestion timestamp against our event log watermark. Before routing production traffic, I run a shadow retrieval evaluation against our gold test set to confirm that relevance metrics and recall match or exceed the current index."
+  },
+  {
+   "key": "s50m:D3#2",
+   "id": "s50m:D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run an automated evaluation pipeline that compares retrieval metrics like Hit Rate and MRR against a golden test set. To verify completeness, I cross-reference source document counts with the total vector count in Pinecone to ensure zero dropped records. For currency, I check the synchronization watermark against our upstream ingestion logs before performing a blue-green traffic shift."
+  },
+  {
+   "key": "s50m:D3#3",
+   "id": "s50m:D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate completeness by verifying document count parity and ID matching against our PostgreSQL source of truth. Then, I run our automated retrieval eval suite to ensure precision and recall match or exceed the live index. Once those parity gates pass, I execute the cutover via a zero-downtime blue-green deployment."
+  },
+  {
+   "key": "s50m:D3#4",
+   "id": "s50m:D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a two-part validation gate checking both parity and retrieval quality before any cutover. First, I verify document and chunk counts against our PostgreSQL source registry to ensure zero missing records, and check CDC sync timestamps to confirm currency. Second, I run our gold evaluation set through both indexes to prove that the replacement index matches or exceeds the active NDCG and recall benchmarks."
+  },
+  {
+   "key": "s50m:D3#5",
+   "id": "s50m:D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run an automated validation pipeline comparing the vector count against our primary database source-of-truth and execute our golden evaluation suite to check retrieval metrics. Once those pass, I handle the cutover using an alias swap or shadow deployment to verify query distribution and p95 latency under live conditions before directing production traffic."
+  },
+  {
+   "key": "s50m:D3#6",
+   "id": "s50m:D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I use a three-step validation gate before cutting over traffic. First, I reconcile document counts and IDs against our PostgreSQL source of truth for completeness. Second, I verify the ingestion high-water mark for currency. Finally, I run a golden evaluation set through a shadow comparison to confirm retrieval accuracy matches or exceeds the live index."
+  },
+  {
+   "key": "s50m:D3#7",
+   "id": "s50m:D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run an automated golden query test suite comparing retrieval metrics like hit rate and NDCG between the old and new index. Then, I verify document count parity and metadata freshness against our PostgreSQL source of truth to ensure completeness. Finally, I shadow-deploy the new index to validate real-world latency and stability before shifting production traffic over."
+  },
+  {
+   "key": "s50m:D3#8",
+   "id": "s50m:D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I run a dual-check validation pipeline before cutting live traffic to a replacement vector index. First, I execute a strict ID-checksum and document-count sync against our PostgreSQL source of truth to guarantee structural completeness. Then, I run our regression test suite using an LLM-as-judge gold set to verify that retrieval precision and recall match or exceed the current index without latency regression."
+  },
+  {
+   "key": "s50m:D3#9",
+   "id": "s50m:D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I prove completeness and freshness by running automated parity checks against the source database and executing a golden retrieval test suite. First, I verify that document counts and maximum timestamps match PostgreSQL. Then, I run our regression eval set comparing hit rate and NDCG against the live index to confirm retrieval quality before switching the alias."
+  },
+  {
+   "key": "s50m:D3#10",
+   "id": "s50m:D3",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]",
+   "heard": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+   "source": "answers-pass",
+   "answer": "I validate a replacement index through count parity, evaluation regressions, and canary routing. First, I verify document and vector counts match the source store. Second, I run a golden test set to ensure retrieval metrics like Hit Rate don't regress. Finally, I canary a fraction of live traffic to monitor real-world performance before full cutover."
+  },
+  {
+   "key": "s50l:S1Q04F#1",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I'd avoid full global sorting by using a min-heap or quickselect to pull top customer rankings in linear time instead of O(N log N). To preserve the tie rule, I tack on the customer ID as a stable secondary key so identical scores always resolve deterministically. If the dataset is massive, I'd use parallel local partition sorting followed by a k-way merge."
+  },
+  {
+   "key": "s50l:S1Q04F#2",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "To scale to millions of customers without the overhead of full sorting, I'd use partial sorting algorithms like Quickselect or min-heaps to drop time complexity to linear. To preserve the tie rule, I append a secondary sort key like a user ID or timestamp to the score tuple, which guarantees deterministic and stable tie-breaking."
+  },
+  {
+   "key": "s50l:S1Q04F#3",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "To handle millions of customers without paying the full O(N log N) sorting cost, I'd use partial selection via np.argpartition to isolate the top k scores in linear time. To preserve the original row-order tie rule, I only run a stable sort on the boundary slice where scores equal the k-th threshold. This keeps the overall operation efficient while guaranteeing deterministic ordering for ties."
+  },
+  {
+   "key": "s50l:S1Q04F#4",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I'd avoid full O(N log N) sorting by using a min-heap or quickselect when we only need the top risk percentiles, which cuts complexity to O(N log K). To preserve the tie rule, I include the customer ID as a deterministic secondary key in the comparison logic so ties break consistently without running a full secondary sort."
+  },
+  {
+   "key": "s50l:S1Q04F#5",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I would avoid a full global sort and instead use a partition-based selection algorithm like Quickselect to isolate the top-k in linear time. To preserve the tie rule deterministically, I'd pack the secondary attribute—like customer ID or timestamp—into a composite key alongside the score during the partitioning phase."
+  },
+  {
+   "key": "s50l:S1Q04F#6",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "To avoid a full O(N log N) sort over millions of customers, I'd use a linear-time partial selection like np.argpartition to isolate the top-k candidates in O(N) time. To maintain the exact tie rule, I'd pre-attach original row indices as a secondary sort key, meaning we only need to sort the small subset of elements sharing the exact cutoff score."
+  },
+  {
+   "key": "s50l:S1Q04F#7",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "To scale to millions of customers, I’d avoid full sorting and use partial sorting via argpartition or a min-heap, which reduces complexity from O(N log N) to linear O(N). To preserve ties deterministically, I attach a secondary key like a unique customer ID to the score tuple so the ordering stays stable. I'd execute this using vectorized Polars or NumPy operations to avoid memory bottlenecks at scale."
+  },
+  {
+   "key": "s50l:S1Q04F#8",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "To handle millions of customers without a full O(N log N) sort, I'd use a min-heap of size k storing tuples of the score and the negative original index. Because k is typically small compared to N, this reduces complexity to O(N log k) while naturally enforcing stable tie-breaking where earlier rows win. We then only perform a precise sort on that tiny extracted top-k subset rather than the entire customer base."
+  },
+  {
+   "key": "s50l:S1Q04F#9",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "I'd avoid a full sort by using a min-heap or Quickselect to pull the top k items in O(N log k) time instead of O(N log N). To keep the tie rule intact, I use a composite key of the score and the negated row index, which lets the selection algorithm break ties deterministically by original order."
+  },
+  {
+   "key": "s50l:S1Q04F#10",
+   "id": "s50l:S1Q04F",
+   "kind": "spoken",
+   "level": null,
+   "topic": null,
+   "question": "How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]",
+   "heard": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+   "source": "answers-pass",
+   "answer": "Instead of a full O(N log N) sort for millions of customers, I'd use a min-heap of size k to find the top scores in O(N log k) time. To handle ties deterministically using the original row order, I append the inverted row index as a secondary sort key, ensuring stable selection without the overhead of a full sort."
+  }
+ ]
+}
