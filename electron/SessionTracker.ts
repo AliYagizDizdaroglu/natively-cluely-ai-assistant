@@ -4,6 +4,7 @@
 
 import { RecapLLM } from './llm';
 import { isVerboseLogging } from './verboseLog';
+import { recordAsked, type AskedQuestion } from './llm/earlierQuestion';
 
 export interface TranscriptSegment {
     marker?: string;
@@ -46,6 +47,13 @@ export class SessionTracker {
 
     // Temporal RAG: Track all assistant responses in session for anti-repetition
     private assistantResponseHistory: AssistantResponse[] = [];
+
+    // Turn-based follow-up context (spec 2026-10-03 §3.1): the last LEDGER_DEPTH questions
+    // runWhatShouldISay was dispatched with, newest last, keyed by machine turn id (null off the
+    // auto turn path). Written at dispatch, not at answer completion: an aborted answer still
+    // leaves the question the interviewer asked.
+    private askedQuestions: readonly AskedQuestion[] = [];
+    private askedSeq: number = 0;
 
     // Meeting metadata
     private currentMeetingMetadata: {
@@ -357,6 +365,18 @@ export class SessionTracker {
         return this.assistantResponseHistory;
     }
 
+    /** Spec §3.1: push, or remove-and-push when `turnId` is already held (the 8 s supersede). Blank text writes nothing. */
+    recordAskedQuestion(text: string, turnId: number | null): void {
+        const next = recordAsked(this.askedQuestions, { text, turnId, seq: this.askedSeq + 1 });
+        if (next === this.askedQuestions) return;
+        this.askedQuestions = next;
+        this.askedSeq++;
+    }
+
+    getAskedQuestions(): readonly AskedQuestion[] {
+        return this.askedQuestions;
+    }
+
     getLastInterimInterviewer(): TranscriptSegment | null {
         return this.lastInterimInterviewer;
     }
@@ -489,6 +509,8 @@ export class SessionTracker {
         this.codingQuestionSource = null;
         this.codingQuestionSetAt = null;
         this.recentInterviewerBuffer = [];
+        this.askedQuestions = [];
+        this.askedSeq = 0;
     }
 
     // ============================================
