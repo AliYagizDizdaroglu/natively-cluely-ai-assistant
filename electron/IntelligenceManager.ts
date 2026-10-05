@@ -346,6 +346,7 @@ export class IntelligenceManager extends EventEmitter {
             forceFastModel?: boolean;
             liveTexts?: string[];
             replaceAnswer?: boolean;
+            turnId?: number | null;
         } = {}
     ): Promise<string | null> {
         return this.engine.runWhatShouldISay(question, confidence, imagePaths, options);

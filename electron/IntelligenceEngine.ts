@@ -14,6 +14,7 @@ import {
 import { getAnswerShapeGuidance, IntentResult } from './llm/IntentClassifier';
 import { pinSettledQuestion } from './llm/lastInterviewerTurn';
 import { withParentExchange } from './llm/followUpParent';
+import { earlierQuestionEnabled, buildEarlierQuestion, interviewerLinesBefore } from './llm/earlierQuestion';
 import { CUE_MAX_LINES, CUE_MAX_WORDS } from './llm/prompts';
 import { trimCues } from './llm/verbalStreamFilter';
 
@@ -256,6 +257,8 @@ export class IntelligenceEngine extends EventEmitter {
             liveTexts?: string[];
             /** This answer replaces the one shown for the same turn — main.ts supersede. */
             replaceAnswer?: boolean;
+            /** The machine turn's id on the auto turn path (main.ts turn dispatch/supersede); absent or null elsewhere. Spec 2026-10-03 §3.1. */
+            turnId?: number | null;
         } = {}
     ): Promise<string | null> {
         const now = Date.now();
@@ -355,6 +358,33 @@ export class IntelligenceEngine extends EventEmitter {
             // line to prove chip and answer carry one text (spec §2.3, §6.2).
             if (settled) console.log(`[IntelligenceEngine] runWhatShouldISay: pinned question ${JSON.stringify(settled)}`);
 
+            // Turn-based follow-up context (spec 2026-10-03 §3.5). The block is built from the ledger
+            // BEFORE this call's own write, then the write, then ONE diag line — all synchronous, with
+            // no await between them, so overlapping calls keep call order and a write can never change
+            // the bytes of the call that makes it. Flag off: this step returns before anything is read,
+            // built, logged or written (today's path). Any failure in here is today's prompt: the
+            // answer, the history and the UI are untouched (§3.6). The diag line carries counts only:
+            // `chars` is the block BUILT here; WhatToAnswerLLM drops it on the coding framing, which is
+            // decided by classifyIntent after this line on the non-override path, so a coding call can
+            // read `gate=block chars=N` with nothing inserted (plan review m3; STATES.md says so).
+            let earlierQuestionBlock = '';
+            try {
+                if (earlierQuestionEnabled()) {
+                    const t0 = Date.now();
+                    const turnId = options.turnId ?? null;
+                    const earlier = buildEarlierQuestion({
+                        question: settled, turnId, supersede: options.replaceAnswer === true,
+                        ledger: this.session.getAskedQuestions(), promptLines: interviewerLinesBefore(preparedTranscript),
+                    });
+                    if (settled) this.session.recordAskedQuestion(settled, turnId);
+                    earlierQuestionBlock = earlier.block;
+                    console.log(`[IntelligenceEngine] earlier question: gate=${earlier.why || 'block'} cue=${earlier.cue} chars=${earlier.block.length} turn=${turnId ?? 'none'} ms=${Date.now() - t0}`);
+                }
+            } catch (e) {
+                earlierQuestionBlock = '';
+                console.log(`[IntelligenceEngine] earlier question: gate=error cue=none chars=0 turn=${options.turnId ?? 'none'} ms=0 error=${JSON.stringify((e as Error)?.message ?? String(e))}`);
+            }
+
             // temporalContext uses live state — this is a deliberate, accepted tradeoff
             // even when contextOverride is set (chip-click flow). Rationale:
             //   - Historical assistant responses (avoid-repetition signal) SHOULD reflect
@@ -421,7 +451,7 @@ export class IntelligenceEngine extends EventEmitter {
                 console.log(`[Answer] cues: ${JSON.stringify(t.cues)}`);
                 if (t.cues.length) pendingCues = t.cues;
             };
-            const stream = this.whatToAnswerLLM.generateStream(preparedTranscript, temporalContext, intentResult, imagePaths, options.forceFastModel, undefined, options.liveTexts, onCues);
+            const stream = this.whatToAnswerLLM.generateStream(preparedTranscript, temporalContext, intentResult, imagePaths, options.forceFastModel, undefined, options.liveTexts, onCues, earlierQuestionBlock);
             let streamAborted = false;
             // R30 (final review I2): every token used to carry `replaceAnswer` as-is, which
             // left the renderer unable to tell "this streaming message IS the head being
