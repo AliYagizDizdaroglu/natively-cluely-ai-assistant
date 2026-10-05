@@ -65,8 +65,17 @@ const CASES: Case[] = [
     { row: 'turnId 0 is a valid turn: the block is built', input: { question: F_THOSE, turnId: 0, ledger: L(P_SHARD), promptLines: [] }, expect: { block: block(P_SHARD), why: '' },
       ledgerWrite: { text: `${P_SHARD} And the hot tenants?`, turnId: 0, seq: 3, before: [{ text: P_QUEUE, turnId: 1, seq: 1 }, { text: P_SHARD, turnId: 0, seq: 2 }], after: [{ text: P_QUEUE, turnId: 1, seq: 1 }, { text: `${P_SHARD} And the hot tenants?`, turnId: 0, seq: 3 }] } },
     // Review Focus 2: a joined whole-turn text with a line break inside.
-    { row: 'parent with a line break (two joined finals): present in the prompt by overlap -> ""', input: { question: F_THOSE, turnId: 2, ledger: [{ text: 'Describe how you would shard\nthe telemetry store by tenant.', turnId: 1, seq: 1 }], promptLines: ['describe how you would shard the telemetry store by tenant.'] }, expect: { block: '', why: 'parent-in-prompt' } },
-    { row: 'parent with a line break, evicted: the block line is ONE line (whitespace collapsed)', input: { question: F_THOSE, turnId: 2, ledger: [{ text: 'Describe how you would shard\nthe telemetry store by tenant.', turnId: 1, seq: 1 }], promptLines: [] }, expect: { block: block(P_SHARD), why: '' } },
+    // The ledger stores the text exactly as dispatched, line break included (audit / diag fidelity); only the block line collapses it.
+    { row: 'parent with a line break (two joined finals): present in the prompt by overlap -> ""', input: { question: F_THOSE, turnId: 2, ledger: [{ text: 'Describe how you would shard\nthe telemetry store by tenant.', turnId: 1, seq: 1 }], promptLines: ['describe how you would shard the telemetry store by tenant.'] }, expect: { block: '', why: 'parent-in-prompt' },
+      ledgerWrite: { text: 'Describe how you would shard\nthe telemetry store by tenant.', turnId: 1, seq: 1, before: [], after: [{ text: 'Describe how you would shard\nthe telemetry store by tenant.', turnId: 1, seq: 1 }] } },
+    { row: 'parent with a line break, evicted: the block line is ONE line (whitespace collapsed)', input: { question: F_THOSE, turnId: 2, ledger: [{ text: 'Describe how you would shard\nthe telemetry store by tenant.', turnId: 1, seq: 1 }], promptLines: [] }, expect: { block: block(P_SHARD), why: '' },
+      ledgerWrite: { text: 'Describe how you would shard\nthe telemetry store by tenant.', turnId: 1, seq: 1, before: [], after: [{ text: 'Describe how you would shard\nthe telemetry store by tenant.', turnId: 1, seq: 1 }] } },
+    // parent-in-pinned compares lowercased, whitespace-collapsed text, and only for a parent of 3+ chars (review finding 3).
+    { row: 'parent contained in the pinned line in other CASE only -> parent-in-pinned', input: { question: 'DESCRIBE how you would shard the telemetry store by tenant. Then how would your design change if a tenant doubled in size?', turnId: 2, ledger: L(P_SHARD), promptLines: [] }, expect: { block: '', why: 'parent-in-pinned', cue: 'reference' } },
+    { row: 'parent contained in the pinned line with other WHITESPACE only (line break, runs of spaces) -> parent-in-pinned', input: { question: 'Describe how you would shard\n  the telemetry   store by tenant. Then how would your design change if a tenant doubled in size?', turnId: 2, ledger: L(P_SHARD), promptLines: [] }, expect: { block: '', why: 'parent-in-pinned', cue: 'reference' } },
+    { row: 'parent contained in the pinned line in other case AND whitespace -> parent-in-pinned', input: { question: 'describe how you would SHARD\nthe telemetry store by tenant. Then how would your design change if a tenant doubled in size?', turnId: 2, ledger: L(P_SHARD), promptLines: [] }, expect: { block: '', why: 'parent-in-pinned', cue: 'reference' } },
+    { row: 'a 3-char parent contained in the question counts (the boundary: np.length >= 3)', input: { question: 'Why would your design change if a tenant doubled in size?', turnId: 2, ledger: L('Why'), promptLines: [] }, expect: { block: '', why: 'parent-in-pinned', cue: 'reference' } },
+    { row: 'a 2-char parent contained in the question does NOT count: the block is built', input: { question: 'Is it ok to do that, and how would your design change if a tenant doubled in size?', turnId: 2, ledger: L('Ok'), promptLines: [] }, expect: { block: block('Ok'), why: '', cue: 'reference' } },
 ];
 
 describe('buildEarlierQuestion — spec §3.6 rows', () => {
@@ -123,6 +132,8 @@ describe('recordAsked — spec §3.1 ledger table', () => {
 describe('label, clip, formatBlock', () => {
     it('label: 125 chars, says asked earlier / context only / do not answer it again, never "answered"', () => {
         expect(LABEL).toHaveLength(125);
+        // The exact string (plan Global Constraints / spec §3.4): every block() expectation above is built from LABEL itself, so only this pins the wording.
+        expect(LABEL).toBe('EARLIER QUESTION (asked earlier; context only, do not answer it again; answer only the question under INTERVIEWER JUST SAID):');
         expect(LABEL).toContain('asked earlier'); expect(LABEL).toContain('context only'); expect(LABEL).toContain('do not answer it again');
         expect(/answered/i.test(LABEL)).toBe(false);
     });
