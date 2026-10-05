@@ -20,10 +20,16 @@ const REF_PATH = DIR ? path.join(DIR, '..', 'earlierQuestion.ref.mjs') : '';
 // The reference runs in a plain node child, not through vite-node: vite-node percent-encodes a non-ASCII
 // path (the Masaüstü folder) and cannot load it, and a vm-context dynamic import has no callback. The child
 // reads the inputs as JSON on stdin and writes the reference's results as JSON on stdout (never printed).
-const REF_RUNNER = 'const u=process.argv[1];const m=await import(u);let s="";for await(const c of process.stdin)s+=c;process.stdout.write(JSON.stringify(JSON.parse(s).map(i=>{const r=m.buildEarlierQuestion(i);return{block:r.block,cue:r.cue,why:r.why};})))';
+const REF_RUNNER = 'const u=process.argv[1];const m=await import(u);process.stdin.setEncoding("utf8");let s="";for await(const c of process.stdin)s+=c;process.stdout.write(JSON.stringify(JSON.parse(s).map(i=>{const r=m.buildEarlierQuestion(i);return{block:r.block,cue:r.cue,why:r.why};})))';
 function runReference(inputs: unknown[]): Array<{ block: string; cue: string; why: string }> {
-    const out = execFileSync(process.execPath, ['--input-type=module', '-e', REF_RUNNER, pathToFileURL(REF_PATH).href], { input: JSON.stringify(inputs), maxBuffer: 64 * 1024 * 1024 });
-    return JSON.parse(out.toString('utf8'));
+    // timeout: a sync call stops vitest's testTimeout from firing, so a hanging reference would block the worker forever (120 s is far above a run: the whole file takes under 1 s).
+    const out = execFileSync(process.execPath, ['--input-type=module', '-e', REF_RUNNER, pathToFileURL(REF_PATH).href], { input: JSON.stringify(inputs), maxBuffer: 64 * 1024 * 1024, timeout: 120_000 });
+    try {
+        return JSON.parse(out.toString('utf8'));
+    } catch {
+        // V8's parse message quotes the start of the text, and this output could carry captured prompt text: report only its size.
+        throw new Error(`reference output is not JSON (${out.length} bytes)`);
+    }
 }
 
 describe.skipIf(FILES.length === 0)('parity with the replay reference (local fixtures)', () => {
