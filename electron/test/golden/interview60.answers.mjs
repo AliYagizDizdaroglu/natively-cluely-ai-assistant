@@ -321,7 +321,7 @@ if (CAPTURED) {
     }
     if (NO_BLOCK) {
         for (const id of ids) {
-            if (splitEarlierQuestion(CAPTURED[id].user, EQ_LABEL) === null) { console.error(`--no-block: the captured prompt for ${id} carries no EARLIER QUESTION block immediately before INTERVIEWER JUST SAID — the id is not in G; run with --only <the gated ids>`); process.exit(2); }
+            if (splitEarlierQuestion(CAPTURED[id].user, EQ_LABEL) === null) { console.error(`--no-block: the captured prompt for ${id} carries no single well-formed EARLIER QUESTION block immediately before INTERVIEWER JUST SAID — the id is not in G; run with --only <the gated ids>`); process.exit(2); }
         }
     }
 }

@@ -38,6 +38,9 @@ describe('--no-block: the EARLIER QUESTION block of a captured user turn, remove
         // a second label the one-parent-line rule cannot see: after the marker, or inside the single parent line
         expect(splitEarlierQuestion(`${withEarlierQuestion(OFF_BARE, BLOCK)}\n${LABEL}`, LABEL)).toBeNull();
         expect(splitEarlierQuestion(withEarlierQuestion(OFF_BARE, `${LABEL}\n- quotes ${LABEL} inline`), LABEL)).toBeNull();
+        // the block's own shape: one "\n" (not "\n\n") before the marker, and a label not followed by "\n- "
+        expect(splitEarlierQuestion(`${BLOCK}\nINTERVIEWER JUST SAID:\n${TRANSCRIPT}`, LABEL)).toBeNull();
+        expect(splitEarlierQuestion(`${LABEL}\n${PARENT}\n\nINTERVIEWER JUST SAID:\n${TRANSCRIPT}`, LABEL)).toBeNull();
     });
     it('the stripped turn ends with the untouched transcript and trailer; an empty block is identity', () => {
         expect(splitEarlierQuestion(withEarlierQuestion(OFF_CTX, BLOCK), LABEL)!.user.endsWith(`INTERVIEWER JUST SAID:\n${TRANSCRIPT}${TRAILER}`)).toBe(true);
