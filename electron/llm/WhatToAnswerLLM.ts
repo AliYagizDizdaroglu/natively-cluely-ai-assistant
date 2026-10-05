@@ -199,6 +199,11 @@ export class WhatToAnswerLLM {
         // which has no cue rule and nothing waiting on the callback. The spoken text yielded
         // by this generator never contains the block — see stripCueBlock.
         onCues?: (cues: string[]) => void,
+        // Turn-based follow-up context (spec 2026-10-03 §3.4): the one-line EARLIER QUESTION block,
+        // already gated by IntelligenceEngine; '' or undefined = today's bytes. Verbal framing only —
+        // the coding path ignores it. Its own argument, so cleanedTranscript (the classifier's input
+        // and the knowledge lookup's last line) and temporalContext stay byte-identical.
+        earlierQuestionBlock?: string,
     ): AsyncGenerator<string> {
         // The model the verbal error fallback went to, for the last-resort message below —
         // unset when none ran: a failure after the first words, the coding path, a refused override.
@@ -222,6 +227,12 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 // Just dump it in context if possible
                 const history = temporalContext.previousResponses.map((r, i) => `${i + 1}. "${r}"`).join('\n');
                 contextParts.push(`PREVIOUS RESPONSES (Avoid Repetition):\n${history}`);
+            }
+
+            // The last context part before INTERVIEWER JUST SAID (spec §3.4 placement; m5: the
+            // coding check is made here because isCodingForFraming is declared after the join).
+            if (intentResult?.intent !== 'coding' && earlierQuestionBlock) {
+                contextParts.push(earlierQuestionBlock);
             }
 
             const extraContext = contextParts.join('\n\n');
