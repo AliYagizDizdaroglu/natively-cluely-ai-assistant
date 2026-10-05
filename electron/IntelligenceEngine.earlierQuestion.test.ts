@@ -84,7 +84,9 @@ describe('runWhatShouldISay and the EARLIER QUESTION block (spec 2026-10-03 §3.
         process.env[EARLIER_QUESTION_ENV] = '1';
         const { session } = await sessionAfterGap(156_000);
         await new IntelligenceEngine(stubHelper(), session).runWhatShouldISay(FOLLOWUP, 1.0, undefined, { ...AUTO, turnId: 2 });
-        for (const l of diagLines(logSpy)) { expect(l).not.toContain('shard'); expect(l).not.toContain('rebalance'); }
+        const lines = diagLines(logSpy);
+        expect(lines.length).toBeGreaterThan(0);   // m3: an empty list would pass the loop below vacuously
+        for (const l of lines) { expect(l).not.toContain('shard'); expect(l).not.toContain('rebalance'); }
     });
     it('flag on, short gap (60 s): the parent is in the prompt -> "" and gate=parent-in-prompt', async () => {
         process.env[EARLIER_QUESTION_ENV] = '1';
@@ -100,6 +102,14 @@ describe('runWhatShouldISay and the EARLIER QUESTION block (spec 2026-10-03 §3.
         expect(calls[1][8]).toBe('');
         expect(diagLines(logSpy).at(-1)).toContain('gate=no-turn cue=pronoun chars=0 turn=none');
         expect(session.getAskedQuestions().at(-1)).toEqual({ text: FOLLOWUP, turnId: null, seq: 2 });
+    });
+    it('flag on, turn id 0 (falsy but a real id): the block is built and the diag line says turn=0, not no-turn (m2: `??`, not `||`, at the engine seam)', async () => {
+        process.env[EARLIER_QUESTION_ENV] = '1';
+        const { session, calls } = await sessionAfterGap(156_000);
+        await new IntelligenceEngine(stubHelper(), session).runWhatShouldISay(FOLLOWUP, 1.0, undefined, { ...AUTO, turnId: 0 });
+        expect(calls[1][8]).toBe(formatBlock(PARENT));
+        expect(diagLines(logSpy).at(-1)).toMatch(/^\[IntelligenceEngine\] earlier question: gate=block cue=pronoun chars=\d+ turn=0 ms=\d+$/);
+        expect(session.getAskedQuestions().at(-1)).toEqual({ text: FOLLOWUP, turnId: 0, seq: 2 });
     });
     it('flag on, supersede (replaceAnswer, same turn id as the head): "" and the ledger removes the head, pushes the merged text newest', async () => {
         process.env[EARLIER_QUESTION_ENV] = '1';
