@@ -307,8 +307,10 @@ async function main() {
     // Which stimulus produced this folder. Without it a run folder is uninterpretable
     // the moment a second roster exists.
     log(`ROSTER ${rosterLabel()}`);
+    // One read of the env value: it gates the arms (focusedOnly) and decides the FOCUSED log line below.
+    const focusedEnv = { NATIVELY_FLIGHT_FOCUSED: process.env.NATIVELY_FLIGHT_FOCUSED };
     let focusedOnly;
-    try { focusedOnly = focusedFor(ROSTER_NAME, process.env); } catch (e) { log(`ABORT ${e.message}`); return 2; }
+    try { focusedOnly = focusedFor(ROSTER_NAME, focusedEnv); } catch (e) { log(`ABORT ${e.message}`); return 2; }
     if (!fs.existsSync(path.join(PROJ, '.env'))) { log('ABORT no .env beside package.json — the probe and the passes read the Gemini key from it'); return 2; }
 
     // 1. Which Live ear.
@@ -343,7 +345,7 @@ async function main() {
     const promptsExit = await run([path.join(HERE, 'interview60.prompts.mjs'), runDir], { dry });
     const focusedCaptured = dry || (promptsExit === 0 && fs.existsSync(promptsFile));
     if (!focusedCaptured) log('WARN  no captured prompts — the focused arms will send their own framing, NOT the app\'s call');
-    if (process.env.NATIVELY_FLIGHT_FOCUSED === 'off') log(`FOCUSED  off by NATIVELY_FLIGHT_FOCUSED=off - skipping the ${FOCUSED_MODELS.length} focused arms`);
+    if (focusedEnv.NATIVELY_FLIGHT_FOCUSED === 'off') log(`FOCUSED  off by NATIVELY_FLIGHT_FOCUSED=off - skipping the ${FOCUSED_MODELS.length} focused arms`);
     else if (!focusedOnly) log(`FOCUSED  roster ${ROSTER_NAME} has no focused five — skipping the ${FOCUSED_MODELS.length} focused arms`);
     const focusedArgs = ['--only', focusedOnly ?? '', ...(focusedCaptured ? ['--captured', promptsFile] : [])];
     const capturedJson = focusedCaptured && !dry ? JSON.parse(fs.readFileSync(promptsFile, 'utf8')) : null;
