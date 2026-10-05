@@ -103,6 +103,19 @@ export const FOCUSED_ONLY_BY_ROSTER = { scenario50: 'S1Q02,S1Q08,S2Q02,S1Q07,S1Q
  * re-picked from s50j.
  */
 export const focusedOnlyFor = (roster) => FOCUSED_ONLY_BY_ROSTER[roster] ?? null;
+
+/**
+ * The focused five for this hour, honouring NATIVELY_FLIGHT_FOCUSED (flight-eq ruling 3, the
+ * earlier-question hour spends no full-Flash quota): exactly 'off' skips the focused arms (null);
+ * unset or empty is focusedOnlyFor(roster), unchanged; any other value throws, so a typo can
+ * neither fly nor silently skip the arms. main() turns the throw into exit 2.
+ */
+export const focusedFor = (roster, env) => {
+    const v = env.NATIVELY_FLIGHT_FOCUSED;
+    if (v === 'off') return null;
+    if (v === undefined || v === '') return focusedOnlyFor(roster);
+    throw new Error(`NATIVELY_FLIGHT_FOCUSED=${JSON.stringify(v)} is not recognised: set it to "off" or leave it unset`);
+};
 export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
 
 /**
@@ -294,6 +307,8 @@ async function main() {
     // Which stimulus produced this folder. Without it a run folder is uninterpretable
     // the moment a second roster exists.
     log(`ROSTER ${rosterLabel()}`);
+    let focusedOnly;
+    try { focusedOnly = focusedFor(ROSTER_NAME, process.env); } catch (e) { log(`ABORT ${e.message}`); return 2; }
     if (!fs.existsSync(path.join(PROJ, '.env'))) { log('ABORT no .env beside package.json — the probe and the passes read the Gemini key from it'); return 2; }
 
     // 1. Which Live ear.
@@ -328,8 +343,8 @@ async function main() {
     const promptsExit = await run([path.join(HERE, 'interview60.prompts.mjs'), runDir], { dry });
     const focusedCaptured = dry || (promptsExit === 0 && fs.existsSync(promptsFile));
     if (!focusedCaptured) log('WARN  no captured prompts — the focused arms will send their own framing, NOT the app\'s call');
-    const focusedOnly = focusedOnlyFor(ROSTER_NAME);
-    if (!focusedOnly) log(`FOCUSED  roster ${ROSTER_NAME} has no focused five — skipping the ${FOCUSED_MODELS.length} focused arms`);
+    if (process.env.NATIVELY_FLIGHT_FOCUSED === 'off') log(`FOCUSED  off by NATIVELY_FLIGHT_FOCUSED=off - skipping the ${FOCUSED_MODELS.length} focused arms`);
+    else if (!focusedOnly) log(`FOCUSED  roster ${ROSTER_NAME} has no focused five — skipping the ${FOCUSED_MODELS.length} focused arms`);
     const focusedArgs = ['--only', focusedOnly ?? '', ...(focusedCaptured ? ['--captured', promptsFile] : [])];
     const capturedJson = focusedCaptured && !dry ? JSON.parse(fs.readFileSync(promptsFile, 'utf8')) : null;
     const capturedIds = capturedJson ? capturedOnly(capturedJson) : [];
