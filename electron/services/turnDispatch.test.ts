@@ -53,7 +53,7 @@ describe('turnDispatchInput — the DetectionInput a turn dispatch/supersede sen
             finals: 2,
             fromLive: false,
         };
-        const input = turnDispatchInput(base, decision);
+        const input = turnDispatchInput(base, decision, null);
         expect(input.intent).toBe('coding');
         expect(input.source).toBe('live');
         expect(input.verdict).toBe('paraphrase');
@@ -73,9 +73,20 @@ describe('turnDispatchInput — the DetectionInput a turn dispatch/supersede sen
             replaces: 'What is a DAG?',
             finals: 3,
         };
-        const input = turnDispatchInput(base, decision);
+        const input = turnDispatchInput(base, decision, null);
         expect(input.question).toBe('the fuller joined transcript');
         expect(input.anchor).toBe('the fuller joined transcript');
         expect(input.liveTexts).toEqual([]);
+    });
+});
+
+describe('turnDispatchInput — the machine turn id rides the DetectionInput (spec 2026-10-03 §3.1)', () => {
+    const dispatch = { kind: 'dispatch', text: 'What is a DAG?', live: [], finished: true, gateMs: 1200, finals: 1, fromLive: false } as Extract<TurnDecision, { kind: 'dispatch' }>;
+    it('carries the turn id when the machine has one', () => {
+        expect(turnDispatchInput(detection(), dispatch, 7).turnId).toBe(7);
+        expect(turnDispatchInput(detection(), dispatch, 0).turnId).toBe(0);
+    });
+    it('carries no turnId key at all when the id is null', () => {
+        expect('turnId' in turnDispatchInput(detection(), dispatch, null)).toBe(false);
     });
 });
