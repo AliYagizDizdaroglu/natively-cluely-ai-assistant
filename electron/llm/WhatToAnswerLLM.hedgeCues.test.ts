@@ -198,4 +198,18 @@ describe('hedge x cue mode', () => {
         expect(onCues).toHaveBeenCalledWith(CUES);
         expect(spoken(chunks)).toBe(PROSE);
     });
+
+    it('F. every leg of one answer receives the same contents, EARLIER QUESTION block included (plan review m10)', async () => {
+        vi.useFakeTimers();
+        plan.push('silent', CHUNKED);                                   // the front stalls, the back answers after the trigger
+        const block = 'EARLIER QUESTION (asked earlier; context only, do not answer it again; answer only the question under INTERVIEWER JUST SAID):\n- Which index would you add first?';
+        const out = drain(new WhatToAnswerLLM(new LLMHelper('fake-gemini-key')).generateStream('How much memory does it take?', undefined, TECHNICAL, undefined, undefined, undefined, undefined, vi.fn(), block));
+        await vi.advanceTimersByTimeAsync(5000);
+        await out;
+        expect(asked()).toEqual(['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite']);
+        const texts = generateContentStream.mock.calls.map((c) => JSON.stringify(c[0].contents));
+        expect(texts[1]).toBe(texts[0]);
+        expect(texts[0]).toContain('EARLIER QUESTION (asked earlier');
+        expect(texts[0].indexOf('EARLIER QUESTION')).toBeLessThan(texts[0].indexOf('INTERVIEWER JUST SAID'));
+    });
 });

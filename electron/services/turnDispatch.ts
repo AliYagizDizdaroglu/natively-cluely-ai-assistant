@@ -10,7 +10,7 @@ export function pickTurnDetection<T extends MarkedDetection>(current: T | null, 
     return !verified(current.verdict) && verified(incoming.verdict) ? incoming : current;
 }
 
-/** The DetectionInput the turn's dispatch/supersede sends through dispatchDetection. */
-export function turnDispatchInput<T extends MarkedDetection>(base: T, d: Extract<TurnDecision, { kind: 'dispatch' | 'supersede' }>): T & { anchor: string; liveTexts: string[]; turnDispatch: true; resolving: true } {
-    return { ...base, question: d.text, anchor: d.text, liveTexts: d.live, turnDispatch: true, resolving: true };
+/** The DetectionInput the turn's dispatch/supersede sends through dispatchDetection. `turnId` is the machine turn's id, captured here at dispatch (spec 2026-10-03 §3.1): the answer call's ledger key and the only path that gets an EARLIER QUESTION block. */
+export function turnDispatchInput<T extends MarkedDetection>(base: T, d: Extract<TurnDecision, { kind: 'dispatch' | 'supersede' }>, turnId: number | null): T & { anchor: string; liveTexts: string[]; turnDispatch: true; resolving: true; turnId?: number } {
+    return { ...base, question: d.text, anchor: d.text, liveTexts: d.live, turnDispatch: true, resolving: true, ...(turnId != null ? { turnId } : {}) };
 }

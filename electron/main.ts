@@ -226,6 +226,8 @@ interface DetectionInput {
   liveTexts?: string[];
   /** The turn's own dispatch/supersede, arriving through actOnTurn — skips dispatchDetection's marking block. */
   turnDispatch?: true;
+  /** Set on a turn dispatch/supersede: the machine turn's id at dispatch (spec 2026-10-03 §3.1) — runWhatShouldISay's ledger key; absent on every other path, which then gets no EARLIER QUESTION block. */
+  turnId?: number;
 }
 
 // Knowledge modules (open-source build)
@@ -257,6 +259,7 @@ import { createInterviewerTurn, turnConstantsFromEnv, InterviewerTurn, TurnDecis
 import { pickTurnDetection, turnDispatchInput } from './services/turnDispatch'
 import { describeVerbalHedgeAtStartup } from './llm/verbalHedge'
 import { describeFollowUpParentAtStartup } from './llm/followUpParent'
+import { describeEarlierQuestionAtStartup } from './llm/earlierQuestion'
 
 export class AppState {
   private static instance: AppState | null = null
@@ -1002,7 +1005,7 @@ export class AppState {
         const base = this.turnDetectionOr(d);
         const gate = this.lastVoiceOffAt === null ? d.gateMs : Date.now() - this.lastVoiceOffAt;
         console.log(`[Main] turn: gate=${gate} finals=${d.finals} live=${d.live.length} finished=${d.finished}`);
-        this.dispatchDetection(turnDispatchInput(base, d));
+        this.dispatchDetection(turnDispatchInput(base, d, this.turn.snapshot().id));
         return;
       }
       case 'supersede': {
@@ -1014,10 +1017,10 @@ export class AppState {
         // through dispatchDetection exactly like a fresh dispatch: the deduper decides
         // again, dropping it if it's still a duplicate or answering it as a new bubble.
         if (this.turnDedupId === undefined) {
-          this.dispatchDetection(turnDispatchInput(base, d));
+          this.dispatchDetection(turnDispatchInput(base, d, this.turn.snapshot().id));
           return;
         }
-        const input = turnDispatchInput(base, d);
+        const input = turnDispatchInput(base, d, this.turn.snapshot().id);
         const anchorLog = JSON.stringify(d.text.slice(0, 80));
         // R31/m4: a supersede only ever fires at the same quiet a dispatch does — log the
         // same `turn: gate=` line dispatch already does, so the flight log always carries
@@ -2191,7 +2194,7 @@ export class AppState {
         console.warn(`[Main] screen reference: capture failed (${err?.message ?? err}); answering from the transcript`);
       }
     }
-    await this.intelligenceManager.runWhatShouldISay(d.question, 1.0, imagePaths, { intentOverride: intent, bypassCooldown: true, ...(d.liveTexts?.length ? { liveTexts: d.liveTexts } : {}), ...(opts.replace ? { replaceAnswer: true } : {}) });
+    await this.intelligenceManager.runWhatShouldISay(d.question, 1.0, imagePaths, { intentOverride: intent, bypassCooldown: true, ...(d.liveTexts?.length ? { liveTexts: d.liveTexts } : {}), ...(opts.replace ? { replaceAnswer: true } : {}), ...(d.turnId != null ? { turnId: d.turnId } : {}) });
   }
 
   private startLiveRouter(): void {
@@ -3446,6 +3449,7 @@ async function initializeApp() {
   try {
     console.log(describeVerbalHedgeAtStartup())
     console.log(`[Main] ${describeFollowUpParentAtStartup()}`)
+    console.log(`[Main] ${describeEarlierQuestionAtStartup()}`)
   } catch (e) {
     console.error(`[Main] ${(e as Error).message} — refusing to start`)
     app.exit(1)

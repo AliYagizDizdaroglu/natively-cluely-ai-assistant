@@ -26,6 +26,7 @@ import { fileURLToPath } from 'url';
 import { INTERVIEW, ROSTER_ITEMS, ROSTER_NAME } from './roster.mjs';
 import { VERBAL_CHECKS } from './problems.verbal.mjs';
 import { carriesCueRule, withCueRule, withoutCueRule } from './cueArm.mjs';
+import { splitEarlierQuestion } from './earlierQuestionArm.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
@@ -107,6 +108,18 @@ const cueVariant = (captured) => !captured ? captured
     : CUES_ADD ? { ...captured, system: withCueRule(captured.system, P.CUE_RULE, P.SPOKEN_LENGTH_AND_DEPTH) }
     : CUES_STRIP ? { ...captured, system: withoutCueRule(captured.system, P.CUE_RULE) }
     : captured;
+// --no-block (PREREGISTER-flight-eq §7 b4): the captured user turn with the EARLIER QUESTION block
+// removed byte for byte — a flag-on hour's same-bytes control. Needs --captured and --tag, is one
+// prompt variable per arm (exclusive with --cues/--no-cues), and refuses any captured prompt that
+// carries no block, so it runs with --only <the gated ids>. The label is read from the BUILT module,
+// lazily: an older dist without it still runs every other arm.
+const NO_BLOCK = process.argv.includes('--no-block');
+if (NO_BLOCK && !CAPTURED) { console.error('--no-block needs --captured: the plain arm sends no block to strip'); process.exit(2); }
+if (NO_BLOCK && !TAG) { console.error('--no-block needs --tag <name>, or the variant would overwrite the plain arm'); process.exit(2); }
+if (NO_BLOCK && (CUES_ADD || CUES_STRIP)) { console.error('--no-block and --cues/--no-cues are exclusive: one prompt variable per arm'); process.exit(2); }
+if (NO_BLOCK && IS_GROQ) { console.error('--no-block replays captured Gemini bytes; the Groq arms have no captured prompt'); process.exit(2); }
+const EQ_LABEL = NO_BLOCK ? require(path.join(PROJ, 'dist-electron/electron/llm/earlierQuestion.js')).LABEL : null;
+const blockVariant = (captured) => !captured || !NO_BLOCK ? captured : { ...captured, user: splitEarlierQuestion(captured.user, EQ_LABEL).user };
 // --thinking <MINIMAL|LOW|MEDIUM|HIGH> puts thinkingConfig.thinkingLevel on the Gemini request
 // (needs --tag): the arm at a thinking level. Without it the request carries no thinkingConfig,
 // the provider default — MINIMAL on the lites — which is what every arm through s50h sent and
@@ -306,16 +319,21 @@ if (CAPTURED) {
             if (CUES_ADD && withCueRule(CAPTURED[id].system, P.CUE_RULE, P.SPOKEN_LENGTH_AND_DEPTH) === null) { console.error(`--cues: the captured prompt for ${id} has no structured rule to anchor the cue rule to`); process.exit(2); }
         }
     }
+    if (NO_BLOCK) {
+        for (const id of ids) {
+            if (splitEarlierQuestion(CAPTURED[id].user, EQ_LABEL) === null) { console.error(`--no-block: the captured prompt for ${id} carries no single well-formed EARLIER QUESTION block immediately before INTERVIEWER JUST SAID — the id is not in G; run with --only <the gated ids>`); process.exit(2); }
+        }
+    }
 }
 const todo = mains.filter((i) => !ONLY || ONLY.has(i.id)).slice(0, LIMIT);
-console.log(`ANSWER-ONLY PASS  model=${MODEL}${TAG ? `  variant=${TAG} (prompt suffix ${PROMPT_SUFFIX.length} chars)` : ''}${THINKING ? `  thinking=${THINKING}` : ''}${CAPTURED ? '  prompts=captured (the app\'s own system + user turn, replayed)' : ''}${CUES_ADD ? '  cues=inserted into the captured prompt' : CUES_STRIP ? '  cues=stripped from the captured prompt' : ''}  ${todo.length} spoken questions\n`);
+console.log(`ANSWER-ONLY PASS  model=${MODEL}${TAG ? `  variant=${TAG} (prompt suffix ${PROMPT_SUFFIX.length} chars)` : ''}${THINKING ? `  thinking=${THINKING}` : ''}${CAPTURED ? '  prompts=captured (the app\'s own system + user turn, replayed)' : ''}${CUES_ADD ? '  cues=inserted into the captured prompt' : CUES_STRIP ? '  cues=stripped from the captured prompt' : ''}${NO_BLOCK ? '  block=stripped from the captured prompt' : ''}  ${todo.length} spoken questions\n`);
 
 for (const item of todo) {
     if (store[item.id]?.spoken) { continue; }
     let r, lastErr, dropRetried = false;
     for (let a = 0; a < 4; a++) {
         try {
-            r = await answerStreamed(item.q, cueVariant(CAPTURED?.[item.id] ?? null));
+            r = await answerStreamed(item.q, blockVariant(cueVariant(CAPTURED?.[item.id] ?? null)));
             // A stream that ends with no finish reason was cut by the provider mid-answer
             // (2026-09-11: gemini-3.8-flash free tier, three of eight answers cut after 1-3
             // minutes). One more try; a second cut is kept as the truncated answer it is.
