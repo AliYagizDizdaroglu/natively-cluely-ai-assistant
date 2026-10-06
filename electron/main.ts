@@ -160,6 +160,10 @@ import { MicrophoneCapture } from "./audio/MicrophoneCapture"
 import { GoogleSTT } from "./audio/GoogleSTT"
 import { RestSTT } from "./audio/RestSTT"
 import { GeminiLiveRouter } from "./audio/GeminiLiveRouter"
+import { LiveRouterSession } from "./audio/LiveRouterSession"
+import { RouterArbiter, type Outbound } from "./services/routerArbiter"
+import { createRouterWiring } from "./services/routerWiring"
+import { routerDiag } from "./services/routerDiag"
 import { ChipDeduper } from "./services/ChipDeduper"
 import { SttChannel } from "./audio/SttChannel"
 import { DeepgramStreamingSTT } from "./audio/DeepgramStreamingSTT"
@@ -915,6 +919,12 @@ export class AppState {
   //   'auto'    — detected question is answered immediately (hands-free)
   private liveRouter: GeminiLiveRouter | null = null;
   private liveMode: 'off' | 'suggest' | 'auto' = 'off';
+  // The 3.8 Live router (router-default): a second Live session beside the ear, an arbiter that decides which
+  // answer is shown, and the wiring module that holds the glue. All of it is inert unless NATIVELY_LIVE_ROUTER=1.
+  private readonly routerEnabled = process.env.NATIVELY_LIVE_ROUTER === '1';
+  private routerSession: LiveRouterSession | null = null;
+  private routerArbiter!: RouterArbiter;                          // built in setupIntelligenceEvents (constructor time)
+  private routerWiring!: ReturnType<typeof createRouterWiring>;
   /** Shared across whisper→Groq and Live so one question yields one chip. */
   private readonly chipDeduper = new ChipDeduper();
   /**
@@ -1038,6 +1048,7 @@ export class AppState {
         console.log(`[Main] turn: close reason=${d.reason}`);
         this.turnDetection = null;
         this.turnDedupId = undefined;
+        this.routerWiring.turnIdentity(this.turnSeenId, null);
         this.turnSeenId = null;
         return;
     }
@@ -1064,6 +1075,7 @@ export class AppState {
   private syncTurnIdentity(): void {
     const id = this.turn.snapshot().id;
     if (id === this.turnSeenId) return;
+    this.routerWiring.turnIdentity(this.turnSeenId, id);   // before turnSeenId is reassigned: closes the old turn, opens the new
     this.turnSeenId = id;
     this.turnDetection = null;
     this.turnDedupId = undefined;
@@ -1074,6 +1086,7 @@ export class AppState {
     this.turn.reset();
     this.turnDetection = null;
     this.turnDedupId = undefined;
+    this.routerWiring.turnIdentity(this.turnSeenId, null);
     this.turnSeenId = null;
     this.interviewerVad = null;
     this.lastVoiceOffAt = null;
@@ -1376,6 +1389,7 @@ export class AppState {
           this.onInterviewerAudio(chunk);
           // Live Mode tee — no-ops unless the live router is connected.
           this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
+          this.routerSession?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);   // the 3.8 router's own tee (flag on only)
         });
         this.systemAudioCapture.on('sample_rate_changed', (rate: number) => {
           console.log(`[Main] SystemAudioCapture rate updated dynamically to ${rate}Hz`);
@@ -1493,6 +1507,7 @@ export class AppState {
         this.onInterviewerAudio(chunk);
         // Live Mode tee — no-ops unless the live router is connected.
         this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
+        this.routerSession?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);   // the 3.8 router's own tee (flag on only)
       });
       this.systemAudioCapture.on('sample_rate_changed', (rate: number) => {
         console.log(`[Main] (Reconfigured) SystemAudioCapture rate updated dynamically to ${rate}Hz`);
@@ -1535,6 +1550,7 @@ export class AppState {
           this.onInterviewerAudio(chunk);
           // Live Mode tee — no-ops unless the live router is connected.
           this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
+          this.routerSession?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);   // the 3.8 router's own tee (flag on only)
         });
         this.systemAudioCapture.on('sample_rate_changed', (rate: number) => {
           console.log(`[Main] (Reconfigured Default) SystemAudioCapture rate updated dynamically to ${rate}Hz`);
@@ -2018,6 +2034,7 @@ export class AppState {
         // the UI; the whisper→detector→chip chain keeps running regardless.
         if (this.liveMode !== 'off') {
           this.startLiveRouter();
+          this.startRouterSession();
         }
 
         // Start Microphone
@@ -2062,6 +2079,7 @@ export class AppState {
     if (next !== 'auto') this.resetTurn();
     if (next === 'off') {
       this.stopLiveRouter();
+      this.stopRouterSession();
       this.liveHold.cancel();
       this.fragmentHold.cancel();
       this.broadcast('live-mode-status', { state: 'idle' });
@@ -2069,6 +2087,7 @@ export class AppState {
       // off → suggest/auto during a meeting: bring the router up. suggest↔auto
       // needs no reconnect — the mode is read live in the question handler.
       this.startLiveRouter();
+      this.startRouterSession();
     }
   }
 
@@ -2165,6 +2184,7 @@ export class AppState {
     this.turnDedupId = verdict.id;
     this.chipDeduper.markAnswered(verdict.id);
     this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source, replace: false });
+    this.routerWiring.answered(d.turnId);   // the arbiter's Q: before the pipeline request, so the engine's events find the turn dispatched
     void this.answerDetection(d)
       .catch((err: any) => console.error('[Main] auto-answer failed:', err?.message ?? err));
   }
@@ -2220,7 +2240,36 @@ export class AppState {
       if (this.isMeetingActive) console.log(`[LiveCaption] fragment ${JSON.stringify(c.text)}`);
     });
     this.liveRouter = router;
+    this.routerWiring.onEarModel(router.getModel());   // M5: `[Router] ear model=<id>` (Task 13's preflight) + the arbiter's ear for the log
     void router.start();
+  }
+
+  /**
+   * The 3.8 Live router session (flag on only). Started and stopped beside the ear at meeting start, mode change and
+   * endMeeting, but never inside startLiveRouter: the ear's failover (Task 11) restarts the ear and must not restart this.
+   */
+  private startRouterSession(): void {
+    if (!this.routerEnabled || this.routerSession) return;
+    const { CredentialsManager } = require('./services/CredentialsManager');
+    const s = new LiveRouterSession({
+      getApiKey: () => CredentialsManager.getInstance().getGeminiApiKey() || process.env.GEMINI_API_KEY,
+      getContext: () => { try { return this.knowledgeOrchestrator?.getRouterProfileSummary?.() ?? ''; } catch { return ''; } },
+      log: routerDiag,
+    });
+    s.on('state', (e: { up: boolean; at: number }) => this.routerWiring.onRouterState(e.up, e.at));
+    s.on('turn', (ev) => this.routerWiring.onRouterTurn(ev));
+    s.on('failed', (e: { reason: string }) => this.routerWiring.onRouterFailed(e.reason));
+    this.routerSession = s;
+    void s.start();
+  }
+
+  private stopRouterSession(): void {
+    const s = this.routerSession;
+    if (!s) return;
+    s.stop();                 // closes the open router turn and reports down before its listeners go
+    s.removeAllListeners();
+    this.routerSession = null;
+    this.routerWiring.onRouterState(false, Date.now());
   }
 
   /**
@@ -2294,6 +2343,7 @@ export class AppState {
     this.systemAudioCapture?.stop();
     this.microphoneCapture?.stop();
     this.stopLiveRouter();
+    this.stopRouterSession();
     this.liveHold.cancel();
     this.fragmentHold.cancel();
     this.resetTurn();
@@ -2416,32 +2466,47 @@ export class AppState {
       helper.getOverlayWindow()?.webContents.send('intelligence-assist-update', { insight });
     })
 
-    this.intelligenceManager.on('suggested_answer', (answer: string, question: string, confidence: number, replace?: boolean) => {
+    // router-default: every pipeline answer event goes through the arbiter. Flag off, the arbiter is built
+    // `enabled: false` and passes each one straight to `send` — today's payload, plus turnId/origin when the engine gave a turnId.
+    const send = (o: Outbound) => {
       const win = mainWindow()
-      if (win) {
-        win.webContents.send('intelligence-suggested-answer', { answer, question, confidence, replace: replace === true })
-      }
+      if (!win) return
+      if (o.ch === 'token') win.webContents.send('intelligence-suggested-answer-token', o.p)
+      else if (o.ch === 'final') win.webContents.send('intelligence-suggested-answer', o.p)
+      else if (o.turnId !== undefined) win.webContents.send('intelligence-suggested-answer-source', o.label, o.turnId)
+      else win.webContents.send('intelligence-suggested-answer-source', o.label)   // today's call, byte for byte
+    }
+    this.routerArbiter = new RouterArbiter({
+      enabled: this.routerEnabled, now: Date.now,
+      setTimer: (fn, ms) => setTimeout(fn, ms), clearTimer: (h) => clearTimeout(h as NodeJS.Timeout),
+      send, addHistory: (text, q) => this.intelligenceManager.addAssistantMessage(text, q),
+      diag: routerDiag, capture: (line) => console.log(line),
+    })
+    this.routerWiring = createRouterWiring({ arbiter: this.routerArbiter, now: Date.now, speechEnd: () => this.turn.speechEnd(), diag: routerDiag })
+    console.log(`[Router] flag NATIVELY_LIVE_ROUTER=${this.routerEnabled ? 'on' : 'off'}`)
+    // Flag on: the engine hands each turn's history text to the arbiter, which adds it to the session only when its turn shows the pipeline answer.
+    if (this.routerEnabled) this.intelligenceManager.setTurnHistorySink((turnId, text, q) => this.routerArbiter.forward({ ch: 'history', turnId, text, question: q }))
 
+    this.intelligenceManager.on('suggested_answer', (answer: string, question: string, confidence: number, replace?: boolean, turnId?: number) => {
+      this.routerWiring.onFinal(answer, question, confidence, replace, turnId)
     })
 
-    this.intelligenceManager.on('suggested_answer_token', (token: string, question: string, confidence: number, replace?: boolean, cues?: string[]) => {
-      const win = mainWindow()
-      if (win) {
-        // `cues` rides the first prose token of a stream that opened with a cue block (cue mode).
-        win.webContents.send('intelligence-suggested-answer-token', { token, question, confidence, replace: replace === true, ...(cues ? { cues } : {}) })
-      }
+    this.intelligenceManager.on('suggested_answer_token', (token: string, question: string, confidence: number, replace?: boolean, cues?: string[], turnId?: number) => {
+      // `cues` rides the first prose token of a stream that opened with a cue block (cue mode).
+      this.routerWiring.onToken(token, question, confidence, replace, cues, turnId)
     })
 
     // Which model actually produced the verbal answer. The renderer used to
     // hardcode "Gemini Flash 3.1" here, so a fallback redirect was invisible.
-    this.intelligenceManager.on('suggested_answer_source', (label: string) => {
+    this.intelligenceManager.on('suggested_answer_source', (label: string, turnId?: number) => {
       // The only place the label the renderer receives is visible to a log reader — the h40c
       // smoke check and a flight both read it off natively_debug.log.
       console.log(`[Main] answer source: ${label}`)
-      const win = mainWindow()
-      if (win) {
-        win.webContents.send('intelligence-suggested-answer-source', label)
-      }
+      this.routerWiring.onSource(label, turnId)
+    })
+
+    this.intelligenceManager.on('suggested_answer_end', (turnId: number | null, kind: 'completed' | 'aborted' | 'failed') => {
+      this.routerWiring.onEnd(turnId, kind)   // the third argument (generationId) is not used here
     })
 
     this.intelligenceManager.on('refined_answer_token', (token: string, intent: string) => {
