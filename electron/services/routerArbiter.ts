@@ -365,11 +365,14 @@ export class RouterArbiter {
     }
     if (t.mode === 'live' || t.mode === 'appended') {
       if (t.live.phase === 'streaming') {      // stop the Live display: no more Live tokens, no Live final, no history
+        t.superseded = true;                   // fix2: the live capture written here must already read superseded
         this.writeLiveCapture(t);              // I-1: what the user saw is still captured, as shown so far
         t.live.phase = 'done'; if (t.decider) t.decider.frozen = true;
         if (t.live.capTimer !== undefined) { this.deps.clearTimer(t.live.capTimer); t.live.capTimer = undefined; }
       }
+      const src = [...t.held].reverse().find((o) => o.ch === 'source');   // fix2 (Task 8 I2): the replacing stream's source was held in live mode; keep the latest, as pending mode does
       t.superseded = true; t.held = []; t.mode = 'pipeline';
+      if (src) this.sendPipeline(t, src);
     }
   }
 
@@ -389,7 +392,7 @@ export class RouterArbiter {
   // ---------------------------------------------------------------- capture (item 15) and the decision line (item 16)
 
   private writeCapture(t: Turn, kind: 'live' | 'shadow' | 'appended', text: string, firstMs: number | null, endMs: number | null): void {
-    this.deps.capture('[RouterAnswer] ' + JSON.stringify({ turn: t.id, kind, text, words: tokensOf(text).length, firstMs, endMs, q_src: t.qSrc }));
+    this.deps.capture('[RouterAnswer] ' + JSON.stringify({ turn: t.id, kind, text, words: tokensOf(text).length, firstMs, endMs, q_src: t.qSrc, superseded: t.superseded }));
   }
 
   private writeLiveCapture(t: Turn): void {
@@ -433,7 +436,7 @@ export class RouterArbiter {
     const liveFirst = dec.shown === 'live' ? String(t.live.V! - t.q) : d && d.firstWordAt !== null ? String(d.firstWordAt - t.q) : '-';
     const liveWords = d ? String(tokensOf(d.text).length) : '-';
     const shadow = t.pipeFirstAt !== null ? String(t.pipeFirstAt - t.dispatchedAt!) : '-';
-    this.deps.diag(`[Router] turn=${t.id} route=${route} reason=${reason} live_first_ms=${liveFirst} live_words=${liveWords} shown=${dec.shown} shadow=${shadow} ear=${t.earAtQ} router=${t.routerUpAtQ ? 'up' : 'down'} q_src=${t.qSrc} q_at=${t.q} sent=${t.sent}`);
+    this.deps.diag(`[Router] turn=${t.id} route=${route} reason=${reason} live_first_ms=${liveFirst} live_words=${liveWords} shown=${dec.shown} shadow=${shadow} ear=${t.earAtQ} router=${t.routerUpAtQ ? 'up' : 'down'} q_src=${t.qSrc} q_at=${t.q} sent=${t.sent} superseded=${t.superseded ? 'yes' : 'no'}`);
     this.evict();
   }
 

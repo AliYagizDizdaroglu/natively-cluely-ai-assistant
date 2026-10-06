@@ -340,6 +340,7 @@ describe('RouterArbiter: supersede (case E, Review Focus 4)', () => {
     h.a.forward(fin(1, 'New answer', { replace: true })); h.a.forward(hist(1, 'New answer')); h.a.forward(end(1));
     expect(sigs(h)).toEqual([
       `src:${LIVE_LABEL}@1`, `tok:${words(10)} |live@1`,
+      'src:gemini@1',   // fix2: the held source is forwarded at the supersede
       'tok:New |pipeline|replace@1', 'tok:answer|pipeline@1', 'fin:New answer|pipeline|replace@1',
     ]);
     expect(h.history.map((x) => x.text)).toEqual(['New answer']);
@@ -633,5 +634,47 @@ describe('RouterArbiter: fix round 1', () => {
     h.a.forward(tok(1, '', { cues: ['c1'] })); h.a.forward(tok(1, '')); h.a.forward(tok(1, 'Hello'));
     expect(sigs(h)).toEqual(['tok:|pipeline@1', 'tok:Hello|pipeline@1']);
     expect((h.sent[0] as { p: { cues?: string[] } }).p.cues).toEqual(['c1']);
+  });
+});
+
+describe('RouterArbiter: fix2 superseded flag (capture and decision line)', () => {
+  it('a supersede during Live: live and shadow captures read superseded:true, the line ends superseded=yes', () => {
+    const h = boot();
+    dispatch(h);
+    h.a.forward(src(1, 'gemini')); h.a.forward(tok(1, 'Old '));
+    h.go(Q + 500); h.a.routerTurn(rt(1, `${words(10)} `, Q + 500));
+    h.go(Q + 1500);
+    h.a.forward(tok(1, 'New ', { replace: true })); h.a.forward(tok(1, 'answer'));
+    h.a.routerTurn(rt(1, words(30), Q + 500, done(Q + 2000)));
+    h.a.forward(fin(1, 'New answer', { replace: true })); h.a.forward(hist(1, 'New answer')); h.a.forward(end(1));
+    const c = caps(h);
+    expect(c.map((x) => [x.kind, x.superseded])).toEqual([['live', true], ['shadow', true]]);
+    expect(lines(h)).toHaveLength(1);
+    expect(lines(h)[0].endsWith(' superseded=yes')).toBe(true);
+  });
+
+  it('a normal Live turn: captures read superseded:false, the line ends superseded=no', () => {
+    const h = boot();
+    dispatch(h);
+    h.a.forward(src(1, 'gemini')); h.a.forward(tok(1, 'Ans ')); h.a.forward(fin(1, 'Ans')); h.a.forward(hist(1, 'Ans'));
+    h.go(Q + 500); h.a.routerTurn(rt(1, words(30), Q + 500, done(Q + 1000)));
+    h.go(Q + 3000); h.a.forward(end(1));
+    expect(caps(h).map((x) => [x.kind, x.superseded])).toEqual([['live', false], ['shadow', false]]);
+    expect(lines(h)).toHaveLength(1);
+    expect(lines(h)[0].endsWith(' superseded=no')).toBe(true);
+  });
+});
+
+describe('RouterArbiter: fix2 held source at a supersede (Task 8 I2)', () => {
+  it('after a finished Live answer, a replacing stream with a source and a final-only replace sends that source; a later source is forwarded too', () => {
+    const h = boot();
+    dispatch(h);
+    h.go(Q + 500); h.a.routerTurn(rt(1, words(30), Q + 500, done(Q + 1000)));   // Live answer finished
+    h.a.forward(src(1, 'gemini-new'));                                         // held: the turn is still in live mode
+    expect(sigs(h)).not.toContain('src:gemini-new@1');
+    h.a.forward(fin(1, 'New', { replace: true }));
+    expect(sigs(h)).toContain('src:gemini-new@1');
+    h.a.forward(src(1, 'gemini-later'));
+    expect(sigs(h)).toContain('src:gemini-later@1');
   });
 });
