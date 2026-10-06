@@ -5,6 +5,8 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { LIVE40 } from './live40.questions.mjs';
+import { questionForGrader } from './interview60.judge.mjs';
+import { gradeable } from './interview60.metrics.mjs';
 
 /**
  * live40 harness (spec 7.4, plan Task 12). Every case that spawns a CLI does it in a
@@ -55,21 +57,37 @@ afterAll(() => {
 describe('live40.questions.mjs (generated)', () => {
     it('has 47 items in items.json chain order, parents before children, classes E20 H11 QF9 AF7, gapMs 20000', () => {
         expect(LIVE40).toHaveLength(47);
-        expect(new Set(LIVE40.map((x: any) => x.chain)).size).toBe(31);
+        expect(new Set(LIVE40.map((x: any) => x.topic)).size).toBe(31);
         const seen = new Map<string, number>();
         LIVE40.forEach((x: any, i: number) => {
             if (x.parent) {
                 expect(seen.has(x.parent), `${x.id}'s parent ${x.parent} must come first`).toBe(true);
-                expect(LIVE40[seen.get(x.parent)!].chain).toBe(x.chain);
+                expect(LIVE40[seen.get(x.parent)!].topic).toBe(x.topic);
             }
             seen.set(x.id, i);
         });
         const count = (c: string) => LIVE40.filter((x: any) => x.class === c).length;
         expect([count('E'), count('H'), count('QF'), count('AF')]).toEqual([20, 11, 9, 7]);
         expect(LIVE40.every((x: any) => x.gapMs === 20000)).toBe(true);
-        // run.mjs computeOffsets copies level and topic into the timeline
-        expect(LIVE40.every((x: any) => x.level === x.route && x.topic === x.chain && (x.route === 'EASY' || x.route === 'HARD'))).toBe(true);
+        // run.mjs computeOffsets copies level, topic and chain into the timeline; the harness reads
+        // chain = the PARENT's item id and level 'followup' (I1): route stays its own field
+        expect(LIVE40.every((x: any) => x.route === 'EASY' || x.route === 'HARD')).toBe(true);
+        expect(LIVE40.every((x: any) => (x.parent ? x.level === 'followup' && x.chain === x.parent : x.level === 'main' && x.chain === undefined))).toBe(true);
         expect(LIVE40.every((x: any) => typeof x.q === 'string' && x.q.length > 0)).toBe(true);
+    });
+
+    it('all 16 follow-ups resolve their parent through the judge\'s own questionForGrader (0 of 47 before I1)', () => {
+        const follow = LIVE40.filter((x: any) => x.parent);
+        expect(follow).toHaveLength(16);
+        let resolved = 0;
+        for (const f of follow as any[]) {
+            const parent = LIVE40.find((x: any) => x.id === f.parent) as any;
+            if (questionForGrader(f, LIVE40).includes(`[Follow-up to: ${parent.q}]`)) resolved++;
+        }
+        expect(resolved).toBe(16);
+        for (const m of LIVE40.filter((x: any) => !x.parent) as any[]) expect(questionForGrader(m, LIVE40)).toBe(m.q);
+        // metrics reads level: the 31 mains are the gradeable base
+        expect(gradeable(LIVE40)).toBe(31);
     });
 
     it.skipIf(!HAVE_SOURCES)('follows items.json order and records its source sha in the header', () => {
@@ -163,7 +181,7 @@ describe.skipIf(!HAVE_SOURCES)('live40 builder and wav:check', () => {
         fs.writeFileSync(path.join(g2, 'live40-tts-local', 'RE01.txt'), 'something else');
         const r = node([path.join(g2, 'interview60.build-audio-local.mjs')], g2, env);
         expect(r.code).not.toBe(0);
-        expect(r.out).toContain("would re-render RE01 — refused (live40 reuses router40's clips)");
+        expect(r.out).toContain("would re-render RE01 — refused (live40 reuses router40's clips) — run live40.clips.mjs first");
         expect(fs.existsSync(path.join(g2, 'live40.wav'))).toBe(false);
     });
 

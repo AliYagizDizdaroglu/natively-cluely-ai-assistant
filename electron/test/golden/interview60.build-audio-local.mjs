@@ -50,7 +50,7 @@ function speak(item) {
     const stamp = path.join(TTS_DIR, `${item.id}.txt`);
     const cachedText = fs.existsSync(stamp) ? fs.readFileSync(stamp, 'utf8') : null;
     if (fs.existsSync(out) && cachedText === item.q) return out;
-    if (TTS_NO_RENDER) throw new Error(`would re-render ${item.id} — refused (live40 reuses router40's clips)`);
+    if (TTS_NO_RENDER) throw new Error(`would re-render ${item.id} — refused (live40 reuses router40's clips) — run live40.clips.mjs first`);
     if (fs.existsSync(out)) console.log(`  ${item.id.padEnd(6)} text changed — re-rendering`);
     const ps = `
 $ErrorActionPreference = 'Stop'
