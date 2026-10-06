@@ -40,7 +40,9 @@ export function routerPreflight(logSinceStart, env) {
     const status = last([...log.matchAll(/Live Mode status: (\w+)/g)]);
     row(status?.[1] === 'connected', 'Live Mode status connected', `last status ${status?.[1] ?? 'none'}`);
 
-    const closes = [...log.matchAll(/\[Router\] session close\b/g)];
+    // Only stale=no closes count: a goAway logs one (stale=no) and the old socket's late onclose logs a stale=yes
+    // one, which can land after the new session's `up` on a healthy router.
+    const closes = [...log.matchAll(/\[Router\] session close\b[^\n]*\bstale=no\b/g)];
     const lastClose = last(closes);
     row(!(lastUp && lastClose && lastClose.index > lastUp.index), 'no router session close after the last up',
         lastUp && lastClose && lastClose.index > lastUp.index ? 'the router session closed after it came up' : '');
@@ -58,8 +60,8 @@ export function routerPreflight(logSinceStart, env) {
  *  - `[Router] turn=<id> … shown=live|pipeline … q_at=<ms>`: the turn's decision line; its q_at picks the item.
  *  - `[RouterAnswer] {json}`: one capture line per kind (live | shadow | appended).
  * The item is the one whose play window holds q_at: from startedMs + offsetMs + startSec*1000 up to the next
- * item's start. `live` holds kind=live; `shadow` holds the pipeline's text (kind=shadow, and kind=appended with
- * appended:true). Entries whose turn has no decision line, or whose q_at precedes the first window (the probe's
+ * item's start. `live` holds kind=live; `shadow` holds the pipeline's text (kind=shadow with appended:false, and
+ * kind=appended with appended:true). Entries whose turn has no decision line, or whose q_at precedes the first window (the probe's
  * turns), are returned in `unmapped`, and malformed or duplicate capture lines in `problems`: the caller prints
  * them, nothing is dropped silently and nothing throws after the hour is spent.
  */
@@ -86,7 +88,7 @@ export function buildCaptureFiles(debugLogText, timeline, offsetMs = 1150) {
         const qAt = qAtByTurn.get(a.turn);
         const id = qAt === undefined ? null : idFor(qAt);
         const entry = { id, turn: a.turn, text: a.text, words: a.words, firstMs: a.firstMs, endMs: a.endMs, q_src: a.q_src };
-        if (a.kind === 'appended') entry.appended = true;
+        if (a.kind !== 'live') entry.appended = a.kind === 'appended';   // SPEC §5: shadow entries say appended true|false
         if (id === null) { out.unmapped.push({ ...entry, kind: a.kind, why: qAt === undefined ? 'no decision line for the turn' : 'q_at before the first play window' }); continue; }
         (a.kind === 'live' ? out.live : out.shadow).push(entry);
     }

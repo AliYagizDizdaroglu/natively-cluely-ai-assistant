@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { probeSettled, waitProbeSettled, parseProbeOffset } from './probeWait.mjs';
+import { probeSettled, waitProbeSettled, parseProbeOffset, PROBE_QUIET_MS } from './probeWait.mjs';
 import { buildCaptureFiles, routerPreflight } from './routerCapture.mjs';
 import { selectArms, flightPlan, PAIRED_ARMS, ANSWER_MODELS, FOCUSED_MODELS, answersFileFor, CUE_RULE_MARK } from './interview60.flight.mjs';
 import { logSince } from './interview60.lib.mjs';
@@ -56,6 +56,12 @@ describe('probeSettled (flag off)', () => {
     it('an end logged BEFORE the dispatch does not count for it', () => {
         expect(probeSettled([ansEnd(0), mainAns, close].join('\n'), { flagOn: false })).toMatchObject({ settled: false, open: 1 });
     });
+    it('a supersede is a dispatch: the replacing stream keeps the wait open until its own end (M2)', () => {
+        const sup = '[Main] dispatch: supersede source=live anchor="x" verdict=question replaces=["a"] question="why"';
+        const aborted = '[IntelligenceEngine] answer end turn=1 kind=aborted';
+        expect(probeSettled([mainAns, sup, aborted, close].join('\n'), { flagOn: false })).toMatchObject({ settled: false, open: 1 });
+        expect(probeSettled([mainAns, sup, aborted, ansEnd(1), close].join('\n'), { flagOn: false })).toMatchObject({ settled: true, open: 0 });
+    });
     it('a Router decision line does not settle a flag-off wait', () => {
         expect(probeSettled([mainAns, decision(1), close].join('\n'), { flagOn: false }).settled).toBe(false);
     });
@@ -82,12 +88,37 @@ describe('the probe offset (I8: probe() can retry and replay the wav)', () => {
 });
 
 describe('waitProbeSettled', () => {
-    it('returns true as soon as the log settles', async () => {
-        let reads = 0;
+    it('returns true once the log has settled AND stayed quiet for PROBE_QUIET_MS', async () => {
+        let reads = 0, slept = 0;
         const logs = [dispatch(1), [dispatch(1), decision(1), close].join('\n')];
-        const ok = await waitProbeSettled({ readLog: () => logs[Math.min(reads++, 1)], sleep: async () => {}, flagOn: true });
+        const ok = await waitProbeSettled({ readLog: () => logs[Math.min(reads++, 1)], sleep: async (ms: number) => { slept += ms; }, flagOn: true });
         expect(ok).toBe(true);
-        expect(reads).toBe(2);
+        expect(slept).toBeGreaterThanOrEqual(PROBE_QUIET_MS);
+    });
+    it('an empty log is not settled (review I1: no dispatch yet)', async () => {
+        expect(probeSettled('', { flagOn: true }).settled).toBe(false);
+        expect(probeSettled('', { flagOn: false }).settled).toBe(false);
+        expect(probeSettled(close, { flagOn: true }).why).toMatch(/no dispatch/);
+        let slept = 0;
+        expect(await waitProbeSettled({ readLog: () => '', sleep: async (ms: number) => { slept += ms; }, flagOn: true })).toBe(false);
+        expect(slept).toBeGreaterThanOrEqual(120000);
+    });
+    it('question 1 done with question 2\'s gate still to come is not accepted until the quiet period passes', async () => {
+        const q1 = [dispatch(1), decision(1), close].join('\n');
+        expect(probeSettled(q1, { flagOn: true }).settled).toBe(true);            // reads settled once ...
+        const q2gate = [q1, '[Main] turn: gate=hold finals=1 live=1 finished=true', dispatch(2)].join('\n');
+        let polls = 0, slept = 0;
+        const readLog = () => (slept < 4000 ? q1 : q2gate + (polls++, ''));     // q2's gate and dispatch land 4 s in: before the 6 s quiet period ends
+        const ok = await waitProbeSettled({ readLog, sleep: async (ms: number) => { slept += ms; }, flagOn: true, capMs: 20000 });
+        expect(ok).toBe(false);                                                    // q2 never gets its decision line: unsettled, quiet reset
+        // and with the decision arriving, it is accepted only PROBE_QUIET_MS after the last new line
+        slept = 0;
+        const q2done = [q2gate, decision(2), close].join('\n');
+        let landed = -1;
+        const read2 = () => { if (slept >= 4000) { if (landed < 0) landed = slept; return q2done; } return q1; };
+        const ok2 = await waitProbeSettled({ readLog: read2, sleep: async (ms: number) => { slept += ms; }, flagOn: true });
+        expect(ok2).toBe(true);
+        expect(slept - landed).toBeGreaterThanOrEqual(PROBE_QUIET_MS);
     });
     it('gives up after the 120 s cap with a fake clock (auto would exit 1)', async () => {
         let slept = 0;
@@ -135,7 +166,7 @@ describe('buildCaptureFiles', () => {
     it('flags the appended turn and only that one', () => {
         const r = buildCaptureFiles(log, timeline);
         expect(r.shadow.find((e: any) => e.turn === 2)).toMatchObject({ appended: true, text: 'full two answer' });
-        expect(r.shadow.find((e: any) => e.turn === 1).appended).toBeUndefined();
+        expect(r.shadow.find((e: any) => e.turn === 1).appended).toBe(false);   // SPEC §5: true|false
         expect(r.live.some((e: any) => e.appended)).toBe(false);
     });
     it('a hidden shadow reaches the file whole: its words equal the turn\'s [Answer] budget line', () => {
@@ -212,6 +243,13 @@ describe('routerPreflight', () => {
         expect(routerPreflight(closed.join('\n'), env).ok).toBe(false);
         const reopened = [good[0], '[Router] session up setup_ms=1', '[Router] session close gen=1 code=1011 reason=x stale=no quota=no', '[Router] session up setup_ms=2', good[2], good[3]];
         expect(routerPreflight(reopened.join('\n'), env).ok).toBe(true);
+    });
+    it('a goAway close (stale=no) then up, then the old socket\'s late stale=yes close, still passes (M3)', () => {
+        const log = [good[0], '[Router] session up setup_ms=1', '[Router] session close gen=1 code=- reason=goAway stale=no quota=no',
+            '[Router] session up setup_ms=2', '[Router] session close gen=1 code=1000 reason=x stale=yes quota=no', good[2], good[3]];
+        expect(routerPreflight(log.join('\n'), env).ok).toBe(true);
+        const real = [...log.slice(0, 4), '[Router] session close gen=2 code=1011 reason=x stale=no quota=no', good[2], good[3]];
+        expect(routerPreflight(real.join('\n'), env).ok).toBe(false);
     });
     it('fails any ear failover line', () => {
         const r = routerPreflight([...good, '[Router] ear failover from=3.1 to=2.5 reason=- dispatches_before=0'].join('\n'), env);
