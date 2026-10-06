@@ -116,6 +116,53 @@ describe('NativelyInterface answer handlers', () => {
         expect(b[0]).not.toContain('gemini-3.8-live');
     });
 
+    it('N1: a token-stream supersede shows the forwarded replacing source on the bar', () => {
+        render(<NativelyInterface />);
+        liveQ();
+        src('gemini-3.8-live', 5);
+        tok({ token: 'Live answer.', turnId: 5, origin: 'live' });
+        fin({ answer: 'Live answer.', turnId: 5, origin: 'live' });
+        src('Replacer Model X', 5);                      // the arbiter forwards the replacing stream's source first
+        tok({ token: 'NEW ', replace: true, turnId: 5, origin: 'pipeline' });
+        tok({ token: 'text', turnId: 5, origin: 'pipeline' });
+        fin({ answer: 'NEW text', replace: true, turnId: 5, origin: 'pipeline' });
+        expect(count('NEW text')).toBe(1);
+        const b = bars();
+        expect(b).toHaveLength(1);
+        expect(b[0]).toContain('Replacer Model X');
+        expect(b[0]).toContain('TTFT');
+    });
+
+    it('N1: with no source for the replacing stream the bar shows the neutral placeholder, not Live', () => {
+        render(<NativelyInterface />);
+        liveQ();
+        src('gemini-3.8-live', 5);
+        tok({ token: 'Live answer.', turnId: 5, origin: 'live' });
+        fin({ answer: 'Live answer.', turnId: 5, origin: 'live' });
+        tok({ token: 'NEW ', replace: true, turnId: 5, origin: 'pipeline' });
+        fin({ answer: 'NEW.', replace: true, turnId: 5, origin: 'pipeline' });
+        const b = bars();
+        expect(b).toHaveLength(1);
+        expect(b[0]).toContain('…');
+        expect(b[0]).not.toContain('gemini-3.8-live');
+    });
+
+    it('N2: case C then a final-only replace with no source does not wear the append stream\'s label', () => {
+        render(<NativelyInterface />);
+        liveQ();
+        src('gemini-3.8-live', 6);
+        tok({ token: 'Live answer.', turnId: 6, origin: 'live' });
+        fin({ answer: 'Live answer.', turnId: 6, origin: 'live' });
+        src('Gemini Flash 3.1', 6);
+        tok({ token: 'Full', turnId: 6, origin: 'pipeline', append: true, label: '(full answer)' });
+        fin({ answer: 'Full answer.', turnId: 6, origin: 'pipeline', append: true });
+        fin({ answer: 'Replacement.', replace: true, turnId: 6, origin: 'pipeline' });
+        const b = bars();
+        expect(b).toHaveLength(1);
+        expect(b[0]).toContain('…');
+        expect(b[0]).not.toContain('Gemini Flash 3.1');
+    });
+
     it('M2: a Live final with no Live token still registers its turn, so the pipeline source reaches the append bubble', () => {
         render(<NativelyInterface />);
         liveQ();

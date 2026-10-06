@@ -545,6 +545,56 @@ describe('fix1 I1: today\'s path never joins or finalizes a keyed (append / live
     });
 });
 
+describe('fix2 R1: a replace on today\'s path skips keyed bubbles', () => {
+    const mk = (o: Partial<AnswerMessage>): AnswerMessage => ({ id: 'x', role: 'system', intent: 'what_to_answer', text: '', ...o });
+    const base = (pStreaming: boolean): AnswerMessage[] => [
+        { id: 'qk', role: 'user', text: '🎙 k' },
+        mk({ id: 'Lk', text: 'Live k.', isStreaming: false, turnId: 1, origin: 'live' }),
+        { id: 'qk1', role: 'user', text: '🎙 k+1' },
+        mk({ id: 'P', text: 'P1 ', isStreaming: pStreaming, turnId: 2, origin: 'pipeline' }),
+        mk({ id: 'Ak', text: 'FULL k ', isStreaming: true, turnId: 1, origin: 'pipeline', append: true, label: '(full answer)' }),
+    ];
+    it('turn k+1\'s replace token rewrites k+1\'s own bubble, never turn k\'s "(full answer)" or Live bubble', () => {
+        const s = base(true);
+        const r = applyAnswerToken(s, 'NEW ', true, makeNewId(), undefined, pipe(2));
+        expect(r.find((m) => m.id === 'Ak')).toBe(s[4]);
+        expect(r.find((m) => m.id === 'Lk')).toBe(s[1]);
+        expect(r.find((m) => m.id === 'P')).toMatchObject({ text: 'NEW ', isStreaming: true });
+    });
+    it('a replace final likewise finalizes k+1\'s bubble, not turn k\'s append bubble', () => {
+        const s = base(false);
+        const r = applyFinalAnswer(s, true, fin('NEW.'), pipe(2));
+        expect(r.find((m) => m.id === 'Ak')).toBe(s[4]);
+        expect(r.find((m) => m.id === 'P')).toMatchObject({ text: 'NEW.', isStreaming: false });
+    });
+    it('with only keyed answer bubbles, a replace token opens a new bubble', () => {
+        const s = base(false).filter((m) => m.id !== 'P');
+        const r = applyAnswerToken(s, 'NEW ', true, makeNewId('n'), undefined, pipe(2));
+        expect(r).toHaveLength(s.length + 1);
+        expect(r[0]).toBe(s[0]); expect(r.find((m) => m.id === 'Ak')).toBe(s.find((m) => m.id === 'Ak'));
+        expect(r[r.length - 1]).toMatchObject({ id: 'n-0', text: 'NEW ', turnId: 2 });
+    });
+});
+
+describe('fix2 N3: a token or final with no turnId never reaches back past a keyed last bubble', () => {
+    const orphan: AnswerMessage = { id: 'O', role: 'system', intent: 'what_to_answer', text: 'aborted j', isStreaming: true };
+    const s = (): AnswerMessage[] => [orphan,
+        { id: 'Lk', role: 'system', intent: 'what_to_answer', text: 'Live k.', isStreaming: false, turnId: 1, origin: 'live' },
+        { id: 'Ak', role: 'system', intent: 'what_to_answer', text: 'FULL k ', isStreaming: true, turnId: 1, origin: 'pipeline', append: true }];
+    it('a manual token opens a new bubble', () => {
+        const r = applyAnswerToken(s(), 'manual', false, makeNewId('n'), undefined, undefined);
+        expect(r[0]).toBe(orphan);
+        expect(r).toHaveLength(4);
+        expect(r[3]).toMatchObject({ text: 'manual', isStreaming: true });
+    });
+    it('a manual final appends finalize(null)', () => {
+        const r = applyFinalAnswer(s(), false, fin('manual.'), undefined);
+        expect(r[0]).toBe(orphan);
+        expect(r).toHaveLength(4);
+        expect(r[3]).toMatchObject({ text: 'manual.' });
+    });
+});
+
 describe('fix1 I2: a replace final applies the replacing stream\'s origin and source', () => {
     const liveB = (): AnswerMessage => ({ id: 'L', role: 'system', intent: 'what_to_answer', text: 'Live.', isStreaming: false, turnId: 8, origin: 'live', sourceLabel: 'gemini-3.8-live', label: undefined });
     const appB = (): AnswerMessage => ({ id: 'A', role: 'system', intent: 'what_to_answer', text: 'Full.', isStreaming: false, turnId: 8, origin: 'pipeline', append: true, label: '(full answer)', sourceLabel: 'S' });
