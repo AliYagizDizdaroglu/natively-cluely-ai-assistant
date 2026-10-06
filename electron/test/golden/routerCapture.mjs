@@ -88,6 +88,7 @@ export function buildCaptureFiles(debugLogText, timeline, offsetMs = 1150) {
         const qAt = qAtByTurn.get(a.turn);
         const id = qAt === undefined ? null : idFor(qAt);
         const entry = { id, turn: a.turn, text: a.text, words: a.words, firstMs: a.firstMs, endMs: a.endMs, q_src: a.q_src };
+        if (a.superseded !== undefined) entry.superseded = a.superseded;   // copied as logged; absent stays absent (never defaulted)
         if (a.kind !== 'live') entry.appended = a.kind === 'appended';   // SPEC §5: shadow entries say appended true|false
         if (id === null) { out.unmapped.push({ ...entry, kind: a.kind, why: qAt === undefined ? 'no decision line for the turn' : 'q_at before the first play window' }); continue; }
         (a.kind === 'live' ? out.live : out.shadow).push(entry);

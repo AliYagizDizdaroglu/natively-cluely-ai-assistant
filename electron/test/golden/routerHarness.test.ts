@@ -175,6 +175,24 @@ describe('buildCaptureFiles', () => {
         expect(shadow.words).toBe(budget);
         expect(shadow.text).toBe(shadowText);
     });
+    it('copies superseded into live and shadow entries, and leaves it out when the line lacks it; a decision line ending in superseded=yes still maps', () => {
+        const edge = [
+            ra({ turn: 1, kind: 'live', text: 'x', words: 1, firstMs: 1, endMs: 2, q_src: 'vad', superseded: true }),
+            ra({ turn: 1, kind: 'shadow', text: 'y', words: 1, firstMs: 1, endMs: 2, q_src: 'vad', superseded: false }),
+            ra({ turn: 2, kind: 'live', text: 'z', words: 1, firstMs: 1, endMs: 2, q_src: 'vad' }),
+            dec(1, T0 + 1150 + 5000, 'live') + ' sent=3 superseded=yes',
+            dec(2, T0 + 1150 + 25000, 'live') + ' sent=3 superseded=no',
+        ].join('\n');
+        const r = buildCaptureFiles(edge, timeline);
+        expect(r.live.find((e: any) => e.turn === 1)).toMatchObject({ id: 'A1', superseded: true });
+        expect(r.shadow[0]).toMatchObject({ id: 'A1', superseded: false });
+        expect('superseded' in r.live.find((e: any) => e.turn === 2)).toBe(false);
+        expect(r.live.find((e: any) => e.turn === 2).id).toBe('B2');
+    });
+    it('probeSettled accepts a decision line ending in superseded=yes', () => {
+        const d = decision(1) + ' superseded=yes';
+        expect(probeSettled([dispatch(1), d, close].join('\n'), { flagOn: true }).settled).toBe(true);
+    });
     it('a turn before the first window is reported as unmapped, not attributed', () => {
         const r = buildCaptureFiles(log, timeline);
         expect(r.live.some((e: any) => e.turn === 9)).toBe(false);
