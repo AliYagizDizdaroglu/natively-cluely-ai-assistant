@@ -94,9 +94,11 @@ function unkeyedStreamingTarget(prev: AnswerMessage[], meta?: BubbleMeta): numbe
     const m = prev[last];
     if (!m || !m.isStreaming || m.intent !== 'what_to_answer') return -1;
     if (!isKeyedBubble(m)) return last;
+    // fix2 N3: an event with no turnId (typed / manual) never reaches back past a keyed last bubble.
+    if (meta?.turnId == null) return -1;
     return lastIndexWhere(prev, (b) =>
         b.isStreaming === true && b.intent === 'what_to_answer' && !isKeyedBubble(b)
-        && (meta?.turnId == null || b.turnId == null || b.turnId === meta.turnId));
+        && (b.turnId == null || b.turnId === meta.turnId));
 }
 
 /** What today's (non-keyed) path stores from the meta: the turnId and origin, nothing else. */
@@ -181,7 +183,8 @@ export function applyAnswerToken(
 
     const tag = storedTag(meta);
     if (replace) {
-        const i = lastIndexWhere(prev, (m) => m.intent === 'what_to_answer');
+        // fix2 R1: a restart on today's path never rewrites a Live or "(full answer)" bubble (another turn's).
+        const i = lastIndexWhere(prev, (m) => m.intent === 'what_to_answer' && !isKeyedBubble(m));
         if (i !== -1) {
             const updated = [...prev];
             // A restart is a NEW answer under the same id (R23) — build it fresh
@@ -244,7 +247,7 @@ export function applyFinalAnswer(
     }
 
     if (replace) {
-        const i = lastIndexWhere(prev, (m) => m.intent === 'what_to_answer');
+        const i = lastIndexWhere(prev, (m) => m.intent === 'what_to_answer' && !isKeyedBubble(m));   // fix2 R1
         if (i !== -1) {
             const updated = [...prev];
             updated[i] = finalize(prev[i]);

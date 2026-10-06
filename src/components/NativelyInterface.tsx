@@ -151,10 +151,10 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
     const sourceForBubble = (key: string, turnId: number, supersede: boolean): string | undefined => {
         if (!bubbleSourceRef.current.has(key)) {
             let label = pendingSourceByTurnRef.current.get(turnId);
-            if (supersede) {
-                if (label === LIVE_SOURCE_LABEL) label = undefined;
-                pendingSourceByTurnRef.current.delete(turnId);
-            }
+            // A pending label is consumed by the bubble that takes it (fix2 N2), so a later stream sees only a
+            // source sent after this bubble opened; "no source" then means the neutral placeholder.
+            if (supersede && label === LIVE_SOURCE_LABEL) label = undefined;
+            pendingSourceByTurnRef.current.delete(turnId);
             bubbleSourceRef.current.set(key, label);
         }
         return bubbleSourceRef.current.get(key);
@@ -876,7 +876,13 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                     bubbleMetricsRef.current!.start(key);   // M1: a no-op when the turn's Live source already started it
                     bubbleMetricsRef.current!.first(key);
                     if (data.origin === 'live') liveTurnsRef.current.add(data.turnId);
-                    else if (data.replace === true) liveTurnsRef.current.delete(data.turnId);   // the replace rewrites the Live bubble into a pipeline one
+                    else if (data.replace === true) {
+                        liveTurnsRef.current.delete(data.turnId);   // the replace rewrites the Live bubble into a pipeline one
+                        // Later tokens and the final of this stream run through `sm` (off the keyed path): give it the
+                        // replacing stream's source and first-token time (fix2 N1).
+                        sm.setSource(meta.sourceLabel ?? '…');
+                        sm.markFirstToken(data.token);
+                    }
                 }
             }
 
