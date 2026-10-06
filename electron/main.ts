@@ -164,7 +164,7 @@ import { LiveRouterSession } from "./audio/LiveRouterSession"
 import { RouterArbiter, type Outbound } from "./services/routerArbiter"
 import { createRouterWiring } from "./services/routerWiring"
 import { routerDiag } from "./services/routerDiag"
-import { shouldFailOver, EAR_FAILOVER_MODEL } from "./services/earFailover"
+import { shouldFailOver, shouldRestartEar, EAR_FAILOVER_MODEL } from "./services/earFailover"
 import { ChipDeduper } from "./services/ChipDeduper"
 import { SttChannel } from "./audio/SttChannel"
 import { DeepgramStreamingSTT } from "./audio/DeepgramStreamingSTT"
@@ -2243,9 +2243,14 @@ export class AppState {
       })) {
         this.earFailedOver = true;
         routerDiag(`[Router] ear failover from=3.1 to=2.5 reason=${s.reason ?? '-'} dispatches_before=${this.routerArbiter.dispatchCount()}`);
-        this.routerArbiter.setEar('2.5');
-        // startLiveRouter -> onEarModel then writes `[Router] ear model=<2.5 id>`. Skipped if the meeting ended meanwhile.
-        setImmediate(() => { if (this.isMeetingActive && this.liveMode !== 'off') this.startLiveRouter(EAR_FAILOVER_MODEL); });
+        // Deferred a tick. The restart (and the arbiter's ear) happen only if the failed ear is still THE ear: endMeeting,
+        // a mode toggle or any other restart replaces/nulls this.liveRouter before this runs, and must not be undone.
+        // startLiveRouter -> onEarModel then writes `[Router] ear model=<2.5 id>` and sets the arbiter's ear.
+        setImmediate(() => {
+          if (!shouldRestartEar({ failedEarIsCurrent: this.liveRouter === router, meetingActive: this.isMeetingActive, liveModeOff: this.liveMode === 'off' })) return;
+          this.routerArbiter.setEar('2.5');
+          this.startLiveRouter(EAR_FAILOVER_MODEL);
+        });
       }
     });
     router.on('question', (q: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => {

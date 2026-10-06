@@ -22,3 +22,11 @@ export function shouldFailOver(s: {
     && s.reason !== NO_KEY_REASON
     && !s.alreadyFailedOver;
 }
+
+/**
+ * The deferred restart's guard (review I1). Run inside the setImmediate that follows a failover: the ear that failed
+ * must still be the current ear (endMeeting / a mode toggle null or replace it), and the meeting must still be live.
+ */
+export function shouldRestartEar(s: { failedEarIsCurrent: boolean; meetingActive: boolean; liveModeOff: boolean }): boolean {
+  return s.failedEarIsCurrent && s.meetingActive && !s.liveModeOff;
+}

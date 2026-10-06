@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { shouldFailOver, EAR_FAILOVER_MODEL, EAR_PRIMARY_MODEL } from './earFailover';
+import { shouldFailOver, shouldRestartEar, EAR_FAILOVER_MODEL, EAR_PRIMARY_MODEL } from './earFailover';
+
+describe('shouldRestartEar (review I1: the deferred restart guard)', () => {
+  const ok = { failedEarIsCurrent: true, meetingActive: true, liveModeOff: false };
+  it('restarts when the failed ear is still current in a live meeting', () => { expect(shouldRestartEar(ok)).toBe(true); });
+  it('not when the failed ear was replaced or nulled (endMeeting, mode toggle)', () => { expect(shouldRestartEar({ ...ok, failedEarIsCurrent: false })).toBe(false); });
+  it('not when the meeting is no longer active', () => { expect(shouldRestartEar({ ...ok, meetingActive: false })).toBe(false); });
+  it('not when live mode is off', () => { expect(shouldRestartEar({ ...ok, liveModeOff: true })).toBe(false); });
+});
 
 const base = { flag: true, model: EAR_PRIMARY_MODEL, state: 'failed', reason: 'quick reconnects exhausted', alreadyFailedOver: false };
 
