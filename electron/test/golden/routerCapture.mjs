@@ -47,7 +47,9 @@ export function routerPreflight(logSinceStart, env) {
     row(!(lastUp && lastClose && lastClose.index > lastUp.index), 'no router session close after the last up',
         lastUp && lastClose && lastClose.index > lastUp.index ? 'the router session closed after it came up' : '');
 
-    row(!/\[Router\] ear failover\b/.test(log), 'no ear failover', /\[Router\] ear failover\b/.test(log) ? 'a [Router] ear failover line is present' : '');
+    // `ear failover from=` only: main.ts also logs `ear failover disabled reason=NATIVELY_LIVE_MODEL`, which is not a failover (m-5)
+    const failover = /\[Router\] ear failover from=/.test(log);
+    row(!failover, 'no ear failover', failover ? 'a [Router] ear failover line is present' : '');
 
     const ear = last([...log.matchAll(/\[Router\] ear model=(\S+)/g)]);
     row(ear?.[1] === EAR_DEFAULT, `ear on ${EAR_DEFAULT}`, `last ear model=${ear?.[1] ?? 'none'}`);

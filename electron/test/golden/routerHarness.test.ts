@@ -273,6 +273,11 @@ describe('routerPreflight', () => {
         const r = routerPreflight([...good, '[Router] ear failover from=3.1 to=2.5 reason=- dispatches_before=0'].join('\n'), env);
         expect(r.ok).toBe(false);
     });
+    it('m-5: an "ear failover disabled" line (NATIVELY_LIVE_MODEL set) is not a failover', () => {
+        const r = routerPreflight([...good, '[Router] ear failover disabled reason=NATIVELY_LIVE_MODEL model=gemini-3.1-flash-live-preview'].join('\n'), env);
+        expect(r.lines.find((l) => l.includes('no ear failover'))?.startsWith('PASS')).toBe(true);
+        expect(r.ok).toBe(true);
+    });
     it('fails when the last Live Mode status is not connected', () => {
         const r = routerPreflight([...good, '[Main] Live Mode status: reconnecting'].join('\n'), env);
         expect(r.ok).toBe(false);
