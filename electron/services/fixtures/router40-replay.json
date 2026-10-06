@@ -1,0 +1,1849 @@
+[
+ {
+  "id": "RE01",
+  "route": "EASY",
+  "text": "Mutable types can be modified after creation, like lists or dictionaries, meaning their contents can change without altering their memory address. Immutable types, such as integers, strings, and tuples, cannot be changed once created; any operation that appears to modify them actually creates a new object in memory.",
+  "chunks": [
+   {
+    "atMs": 1191,
+    "text": "Mutable types can be "
+   },
+   {
+    "atMs": 1479,
+    "text": "modified after creation,"
+   },
+   {
+    "atMs": 1674,
+    "text": " like lists"
+   },
+   {
+    "atMs": 1902,
+    "text": " or dictionaries,"
+   },
+   {
+    "atMs": 2295,
+    "text": " meaning their contents"
+   },
+   {
+    "atMs": 2452,
+    "text": " can change without"
+   },
+   {
+    "atMs": 2678,
+    "text": " altering their memory address."
+   },
+   {
+    "atMs": 2891,
+    "text": " Immutable"
+   },
+   {
+    "atMs": 3150,
+    "text": " types, such"
+   },
+   {
+    "atMs": 3394,
+    "text": " as integers, strings,"
+   },
+   {
+    "atMs": 3673,
+    "text": " and tuples, cannot"
+   },
+   {
+    "atMs": 3859,
+    "text": " be changed once created;"
+   },
+   {
+    "atMs": 4200,
+    "text": " any operation"
+   },
+   {
+    "atMs": 4296,
+    "text": " that appears"
+   },
+   {
+    "atMs": 4593,
+    "text": " to modify them actually"
+   },
+   {
+    "atMs": 4791,
+    "text": " creates a new object"
+   },
+   {
+    "atMs": 5034,
+    "text": " in memory."
+   }
+  ],
+  "generationCompleteMs": 5451,
+  "turnCompleteMs": 19006
+ },
+ {
+  "id": "RH01",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 427,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 557,
+  "turnCompleteMs": 1146
+ },
+ {
+  "id": "RE02",
+  "route": "EASY",
+  "text": "A Docker image is a read-only template containing instructions for creating a Docker container. It includes the application code, libraries, dependencies, and environment variables needed to run the application. Images are built in layers, where each layer represents an instruction in the Dockerfile, optimizing storage and sharing. They serve as the blueprint from which containers are instantiated and executed.",
+  "chunks": [
+   {
+    "atMs": 682,
+    "text": "A Docker image "
+   },
+   {
+    "atMs": 970,
+    "text": "is a read-only"
+   },
+   {
+    "atMs": 1189,
+    "text": " template containing instructions"
+   },
+   {
+    "atMs": 1373,
+    "text": " for creating a Docker"
+   },
+   {
+    "atMs": 1667,
+    "text": " container. It includes"
+   },
+   {
+    "atMs": 1867,
+    "text": " the application"
+   },
+   {
+    "atMs": 2178,
+    "text": " code, libraries,"
+   },
+   {
+    "atMs": 2416,
+    "text": " dependencies,"
+   },
+   {
+    "atMs": 2587,
+    "text": " and environment variables"
+   },
+   {
+    "atMs": 2886,
+    "text": " needed to run the application."
+   },
+   {
+    "atMs": 3118,
+    "text": " Images"
+   },
+   {
+    "atMs": 3326,
+    "text": " are built in layers,"
+   },
+   {
+    "atMs": 3545,
+    "text": " where each layer represents"
+   },
+   {
+    "atMs": 3748,
+    "text": " an instruction"
+   },
+   {
+    "atMs": 4024,
+    "text": " in the Dockerfile, optimizing"
+   },
+   {
+    "atMs": 4238,
+    "text": " storage"
+   },
+   {
+    "atMs": 4541,
+    "text": " and sharing. They serve"
+   },
+   {
+    "atMs": 4760,
+    "text": " as the blueprint"
+   },
+   {
+    "atMs": 4994,
+    "text": " from which containers are instantiated"
+   },
+   {
+    "atMs": 5212,
+    "text": " and executed."
+   }
+  ],
+  "generationCompleteMs": 5673,
+  "turnCompleteMs": 21847
+ },
+ {
+  "id": "EF01",
+  "route": "HARD",
+  "text": "Hard.",
+  "chunks": [
+   {
+    "atMs": 1082,
+    "text": "Hard."
+   }
+  ],
+  "generationCompleteMs": 1174,
+  "turnCompleteMs": 1854
+ },
+ {
+  "id": "RH03",
+  "route": "HARD",
+  "text": "Hard.",
+  "chunks": [
+   {
+    "atMs": 1028,
+    "text": "Hard."
+   }
+  ],
+  "generationCompleteMs": 1242,
+  "turnCompleteMs": 1855
+ },
+ {
+  "id": "RE03",
+  "route": "EASY",
+  "text": "You can run code using AWS Lambda, a serverless compute service that executes your code in response to events and automatically manages the underlying compute resources for you. You simply upload your code, and Lambda handles all the administration, scaling from a few requests per day to thousands per second.",
+  "chunks": [
+   {
+    "atMs": 1004,
+    "text": "You can run code "
+   },
+   {
+    "atMs": 1335,
+    "text": "using AWS Lambda,"
+   },
+   {
+    "atMs": 1478,
+    "text": " a serverless compute"
+   },
+   {
+    "atMs": 1704,
+    "text": " service that executes"
+   },
+   {
+    "atMs": 1986,
+    "text": " your code in response"
+   },
+   {
+    "atMs": 2203,
+    "text": " to events and automatically"
+   },
+   {
+    "atMs": 2400,
+    "text": " manages"
+   },
+   {
+    "atMs": 2648,
+    "text": " the underlying compute"
+   },
+   {
+    "atMs": 2915,
+    "text": " resources for you."
+   },
+   {
+    "atMs": 3165,
+    "text": " You simply"
+   },
+   {
+    "atMs": 3382,
+    "text": " upload your code, and Lambda"
+   },
+   {
+    "atMs": 3590,
+    "text": " handles all"
+   },
+   {
+    "atMs": 3883,
+    "text": " the administration,"
+   },
+   {
+    "atMs": 4118,
+    "text": " scaling from a few"
+   },
+   {
+    "atMs": 4289,
+    "text": " requests per day"
+   },
+   {
+    "atMs": 4553,
+    "text": " to thousands per second."
+   }
+  ],
+  "generationCompleteMs": 4921,
+  "turnCompleteMs": 17872
+ },
+ {
+  "id": "EF02",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 424,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 479,
+  "turnCompleteMs": 1201
+ },
+ {
+  "id": "RE08",
+  "route": "EASY",
+  "text": "A Pod is the smallest deployable unit in Kubernetes, representing a single instance of a running process or a tightly coupled group of containers. A Deployment is a higher-level controller that manages a set of identical Pods, handling scaling, rollouts, and self-healing to maintain the desired state.",
+  "chunks": [
+   {
+    "atMs": 618,
+    "text": "A Pod is "
+   },
+   {
+    "atMs": 831,
+    "text": "the smallest deployable"
+   },
+   {
+    "atMs": 1086,
+    "text": " unit in Kubernetes,"
+   },
+   {
+    "atMs": 1270,
+    "text": " representing a single"
+   },
+   {
+    "atMs": 1526,
+    "text": " instance of a running"
+   },
+   {
+    "atMs": 1822,
+    "text": " process or a tightly"
+   },
+   {
+    "atMs": 1987,
+    "text": " coupled group"
+   },
+   {
+    "atMs": 2289,
+    "text": " of containers. A Deployment"
+   },
+   {
+    "atMs": 2561,
+    "text": " is a"
+   },
+   {
+    "atMs": 2755,
+    "text": " higher-level controller"
+   },
+   {
+    "atMs": 3044,
+    "text": " that manages a set"
+   },
+   {
+    "atMs": 3235,
+    "text": " of identical Pods,"
+   },
+   {
+    "atMs": 3411,
+    "text": " handling scaling,"
+   },
+   {
+    "atMs": 3645,
+    "text": " rollouts, and self-healing"
+   },
+   {
+    "atMs": 3938,
+    "text": " to maintain"
+   },
+   {
+    "atMs": 4195,
+    "text": " the desired state."
+   }
+  ],
+  "generationCompleteMs": 4462,
+  "turnCompleteMs": 17081
+ },
+ {
+  "id": "RE04",
+  "route": "EASY",
+  "text": "A Python decorator is a function that takes another function as an argument, extends its behavior without explicitly modifying the original function's source code, and returns the modified function. They are commonly used for tasks like logging, access control, or caching by wrapping the target function with additional functionality.",
+  "chunks": [
+   {
+    "atMs": 1165,
+    "text": "A Python decorator "
+   },
+   {
+    "atMs": 1333,
+    "text": "is a function"
+   },
+   {
+    "atMs": 1629,
+    "text": " that takes another function"
+   },
+   {
+    "atMs": 1786,
+    "text": " as an argument,"
+   },
+   {
+    "atMs": 2062,
+    "text": " extends its behavior"
+   },
+   {
+    "atMs": 2936,
+    "text": " without explicitly"
+   },
+   {
+    "atMs": 3130,
+    "text": " modifying the original"
+   },
+   {
+    "atMs": 3233,
+    "text": " function's source"
+   },
+   {
+    "atMs": 3346,
+    "text": " code, and returns the modified"
+   },
+   {
+    "atMs": 3390,
+    "text": " function. They are"
+   },
+   {
+    "atMs": 3483,
+    "text": " commonly used for tasks"
+   },
+   {
+    "atMs": 3796,
+    "text": " like logging,"
+   },
+   {
+    "atMs": 3947,
+    "text": " access control,"
+   },
+   {
+    "atMs": 4152,
+    "text": " or caching by wrapping"
+   },
+   {
+    "atMs": 4447,
+    "text": " the target function"
+   },
+   {
+    "atMs": 4677,
+    "text": " with additional functionality."
+   }
+  ],
+  "generationCompleteMs": 5072,
+  "turnCompleteMs": 18260
+ },
+ {
+  "id": "EF03",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 1060,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 1276,
+  "turnCompleteMs": 1840
+ },
+ {
+  "id": "RE05",
+  "route": "EASY",
+  "text": "The Global Interpreter Lock is a mutex that prevents multiple native threads from executing Python bytecodes at once. This lock ensures thread safety for internal objects, but it effectively limits CPU bound tasks to a single core.",
+  "chunks": [
+   {
+    "atMs": 614,
+    "text": "The Global Interpreter Lock "
+   },
+   {
+    "atMs": 1011,
+    "text": "is a mutex"
+   },
+   {
+    "atMs": 1084,
+    "text": " that prevents"
+   },
+   {
+    "atMs": 1287,
+    "text": " multiple native"
+   },
+   {
+    "atMs": 1481,
+    "text": " threads from executing"
+   },
+   {
+    "atMs": 1678,
+    "text": " Python bytecodes"
+   },
+   {
+    "atMs": 1965,
+    "text": " at once. This lock"
+   },
+   {
+    "atMs": 2249,
+    "text": " ensures thread safety"
+   },
+   {
+    "atMs": 2450,
+    "text": " for internal objects,"
+   },
+   {
+    "atMs": 2689,
+    "text": " but it effectively"
+   },
+   {
+    "atMs": 2865,
+    "text": " limits CPU"
+   },
+   {
+    "atMs": 3173,
+    "text": " bound tasks"
+   },
+   {
+    "atMs": 3390,
+    "text": " to a single core."
+   }
+  ],
+  "generationCompleteMs": 3697,
+  "turnCompleteMs": 14206
+ },
+ {
+  "id": "RH04",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 1028,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 1070,
+  "turnCompleteMs": 1863
+ },
+ {
+  "id": "RE06",
+  "route": "EASY",
+  "text": "Docker layers matter because Docker caches each step of the build process. If a layer's instructions and dependencies haven't changed, Docker reuses the cached layer, significantly speeding up subsequent builds. By ordering layers from least frequently to most frequently changing, you minimize cache invalidation and drastically reduce overall build times.",
+  "chunks": [
+   {
+    "atMs": 834,
+    "text": "Docker layers matter "
+   },
+   {
+    "atMs": 1231,
+    "text": "because Docker caches"
+   },
+   {
+    "atMs": 1388,
+    "text": " each step of the build"
+   },
+   {
+    "atMs": 1530,
+    "text": " process. If a"
+   },
+   {
+    "atMs": 1763,
+    "text": " layer's instructions"
+   },
+   {
+    "atMs": 2056,
+    "text": " and dependencies haven't"
+   },
+   {
+    "atMs": 2322,
+    "text": " changed, Docker"
+   },
+   {
+    "atMs": 2545,
+    "text": " reuses the cached"
+   },
+   {
+    "atMs": 2804,
+    "text": " layer, significantly"
+   },
+   {
+    "atMs": 3009,
+    "text": " speeding up subsequent"
+   },
+   {
+    "atMs": 3243,
+    "text": " builds. By ordering"
+   },
+   {
+    "atMs": 3435,
+    "text": " layers from least"
+   },
+   {
+    "atMs": 3720,
+    "text": " frequently to most"
+   },
+   {
+    "atMs": 3911,
+    "text": " frequently changing,"
+   },
+   {
+    "atMs": 4250,
+    "text": " you minimize cache"
+   },
+   {
+    "atMs": 4444,
+    "text": " invalidation and drastically"
+   },
+   {
+    "atMs": 4740,
+    "text": " reduce overall"
+   },
+   {
+    "atMs": 4869,
+    "text": " build times."
+   }
+  ],
+  "generationCompleteMs": 5327,
+  "turnCompleteMs": 19929
+ },
+ {
+  "id": "RH07",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 2002,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 2173,
+  "turnCompleteMs": 2735
+ },
+ {
+  "id": "RH08",
+  "route": "HARD",
+  "text": "hard\".hard\".hard",
+  "chunks": [
+   {
+    "atMs": 476,
+    "text": "hard\".hard\".hard"
+   }
+  ],
+  "generationCompleteMs": 675,
+  "turnCompleteMs": 1309
+ },
+ {
+  "id": "RE07",
+  "route": "EASY",
+  "text": "A readiness probe in Kubernetes determines when a container is ready to start accepting traffic. If the probe fails, the endpoint controller removes the pod from all services, preventing users from reaching a container that is not fully initialized.",
+  "chunks": [
+   {
+    "atMs": 650,
+    "text": "A readiness probe "
+   },
+   {
+    "atMs": 951,
+    "text": "in Kubernetes determines"
+   },
+   {
+    "atMs": 1125,
+    "text": " when a container"
+   },
+   {
+    "atMs": 1409,
+    "text": " is ready to start accepting"
+   },
+   {
+    "atMs": 1661,
+    "text": " traffic. If the"
+   },
+   {
+    "atMs": 1813,
+    "text": " probe fails, the endpoint"
+   },
+   {
+    "atMs": 2107,
+    "text": " controller"
+   },
+   {
+    "atMs": 2292,
+    "text": " removes the pod from"
+   },
+   {
+    "atMs": 2524,
+    "text": " all services, preventing"
+   },
+   {
+    "atMs": 2817,
+    "text": " users from"
+   },
+   {
+    "atMs": 2980,
+    "text": " reaching a container"
+   },
+   {
+    "atMs": 3302,
+    "text": " that is not fully initialized."
+   }
+  ],
+  "generationCompleteMs": 3727,
+  "turnCompleteMs": 13749
+ },
+ {
+  "id": "EF04",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 461,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 635,
+  "turnCompleteMs": 1227
+ },
+ {
+  "id": "RH05",
+  "route": "HARD",
+  "text": "Startup probes verify if an application has finished initializing, allowing you to delay other checks until the model finishes its ninety second loading sequence. Readiness probes then confirm the server is fully operational and safely able to process incoming inference requests without causing errors. Finally, liveness probes check if the container is still running, which triggers a restart only if the server crashes unexpectedly rather than during the long startup phase.",
+  "chunks": [
+   {
+    "atMs": 1178,
+    "text": "Startup probes verify "
+   },
+   {
+    "atMs": 1350,
+    "text": "if an application"
+   },
+   {
+    "atMs": 1856,
+    "text": " has finished initializing,"
+   },
+   {
+    "atMs": 2020,
+    "text": " allowing"
+   },
+   {
+    "atMs": 2315,
+    "text": " you to delay other checks"
+   },
+   {
+    "atMs": 2555,
+    "text": " until the model finishes"
+   },
+   {
+    "atMs": 2760,
+    "text": " its ninety"
+   },
+   {
+    "atMs": 3066,
+    "text": " second loading sequence."
+   },
+   {
+    "atMs": 3240,
+    "text": " Readiness"
+   },
+   {
+    "atMs": 3468,
+    "text": " probes then confirm"
+   },
+   {
+    "atMs": 3738,
+    "text": " the server is"
+   },
+   {
+    "atMs": 3931,
+    "text": " fully operational"
+   },
+   {
+    "atMs": 4223,
+    "text": " and safely able"
+   },
+   {
+    "atMs": 4469,
+    "text": " to process incoming"
+   },
+   {
+    "atMs": 4662,
+    "text": " inference requests"
+   },
+   {
+    "atMs": 4853,
+    "text": " without causing errors."
+   },
+   {
+    "atMs": 5115,
+    "text": " Finally,"
+   },
+   {
+    "atMs": 5394,
+    "text": " liveness"
+   },
+   {
+    "atMs": 5584,
+    "text": " probes check if the"
+   },
+   {
+    "atMs": 5889,
+    "text": " container is still"
+   },
+   {
+    "atMs": 6067,
+    "text": " running, which triggers"
+   },
+   {
+    "atMs": 6313,
+    "text": " a restart only if"
+   },
+   {
+    "atMs": 6553,
+    "text": " the server crashes unexpectedly"
+   },
+   {
+    "atMs": 6774,
+    "text": " rather"
+   },
+   {
+    "atMs": 7030,
+    "text": " than during the long startup"
+   },
+   {
+    "atMs": 7268,
+    "text": " phase."
+   }
+  ],
+  "generationCompleteMs": 7583,
+  "turnCompleteMs": 27463
+ },
+ {
+  "id": "RH06",
+  "route": "HARD",
+  "text": "Hard.",
+  "chunks": [
+   {
+    "atMs": 1029,
+    "text": "Hard."
+   }
+  ],
+  "generationCompleteMs": 1130,
+  "turnCompleteMs": 1789
+ },
+ {
+  "id": "RH09",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 1629,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 1715,
+  "turnCompleteMs": 2379
+ },
+ {
+  "id": "RH10",
+  "route": "HARD",
+  "text": "hard.hard",
+  "chunks": [
+   {
+    "atMs": 723,
+    "text": "hard.hard"
+   }
+  ],
+  "generationCompleteMs": 921,
+  "turnCompleteMs": 1515
+ },
+ {
+  "id": "RH11",
+  "route": "HARD",
+  "text": "hard.",
+  "chunks": [
+   {
+    "atMs": 863,
+    "text": "hard."
+   }
+  ],
+  "generationCompleteMs": 1035,
+  "turnCompleteMs": 1688
+ },
+ {
+  "id": "RE09",
+  "route": "EASY",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 606,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 759,
+  "turnCompleteMs": 1424
+ },
+ {
+  "id": "RH19",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 815,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 850,
+  "turnCompleteMs": 1673
+ },
+ {
+  "id": "RE10",
+  "route": "EASY",
+  "text": "The Azure equivalent of AWS Lambda is Azure Functions. It is a serverless compute service that enables you to execute event triggered code without provisioning or managing underlying virtual servers.",
+  "chunks": [
+   {
+    "atMs": 592,
+    "text": "The Azure equivalent "
+   },
+   {
+    "atMs": 825,
+    "text": "of AWS Lambda"
+   },
+   {
+    "atMs": 1067,
+    "text": " is Azure Functions."
+   },
+   {
+    "atMs": 1367,
+    "text": " It is a serverless"
+   },
+   {
+    "atMs": 1495,
+    "text": " compute service"
+   },
+   {
+    "atMs": 1780,
+    "text": " that enables you to"
+   },
+   {
+    "atMs": 2029,
+    "text": " execute event triggered"
+   },
+   {
+    "atMs": 2232,
+    "text": " code without"
+   },
+   {
+    "atMs": 2541,
+    "text": " provisioning or managing"
+   },
+   {
+    "atMs": 2750,
+    "text": " underlying virtual"
+   },
+   {
+    "atMs": 2907,
+    "text": " servers."
+   }
+  ],
+  "generationCompleteMs": 3347,
+  "turnCompleteMs": 12358
+ },
+ {
+  "id": "RE11",
+  "route": "EASY",
+  "text": "Overfitting occurs when a machine learning model learns the training data too well, including its noise and outliers, to the point that it performs poorly on new, unseen data. This happens when the model is too complex relative to the amount of data, capturing random fluctuations rather than the underlying true distribution.",
+  "chunks": [
+   {
+    "atMs": 499,
+    "text": "Overfitting occurs when a "
+   },
+   {
+    "atMs": 712,
+    "text": "machine learning model"
+   },
+   {
+    "atMs": 953,
+    "text": " learns the training data"
+   },
+   {
+    "atMs": 1244,
+    "text": " too well, including"
+   },
+   {
+    "atMs": 1413,
+    "text": " its noise and outliers,"
+   },
+   {
+    "atMs": 1643,
+    "text": " to the point"
+   },
+   {
+    "atMs": 1898,
+    "text": " that it performs poorly"
+   },
+   {
+    "atMs": 2127,
+    "text": " on new, unseen"
+   },
+   {
+    "atMs": 2405,
+    "text": " data. This happens"
+   },
+   {
+    "atMs": 2604,
+    "text": " when the model is too"
+   },
+   {
+    "atMs": 2870,
+    "text": " complex relative"
+   },
+   {
+    "atMs": 3140,
+    "text": " to the amount of data,"
+   },
+   {
+    "atMs": 3378,
+    "text": " capturing"
+   },
+   {
+    "atMs": 3590,
+    "text": " random fluctuations"
+   },
+   {
+    "atMs": 3769,
+    "text": " rather than the"
+   },
+   {
+    "atMs": 4025,
+    "text": " underlying true distribution."
+   }
+  ],
+  "generationCompleteMs": 4437,
+  "turnCompleteMs": 17355
+ },
+ {
+  "id": "EF05",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 616,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 766,
+  "turnCompleteMs": 1481
+ },
+ {
+  "id": "RH12",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 974,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 991,
+  "turnCompleteMs": 1791
+ },
+ {
+  "id": "RH13",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 422,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 613,
+  "turnCompleteMs": 1232
+ },
+ {
+  "id": "RH14",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 1215,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 1359,
+  "turnCompleteMs": 2031
+ },
+ {
+  "id": "RE12",
+  "route": "EASY",
+  "text": "Precision measures the accuracy of positive predictions, calculated as true positives divided by the sum of true positives and false positives. Recall measures the model's ability to find all actual positive instances, calculated as true positives divided by the sum of true positives and false negatives. The trade-off is that maximizing precision often reduces recall by being more conservative, while maximizing recall often lowers precision by casting a wider net.",
+  "chunks": [
+   {
+    "atMs": 977,
+    "text": "Precision measures the "
+   },
+   {
+    "atMs": 1166,
+    "text": "accuracy of positive"
+   },
+   {
+    "atMs": 1419,
+    "text": " predictions, calculated"
+   },
+   {
+    "atMs": 1626,
+    "text": " as true positives"
+   },
+   {
+    "atMs": 1967,
+    "text": " divided by the"
+   },
+   {
+    "atMs": 2152,
+    "text": " sum of true positives"
+   },
+   {
+    "atMs": 2458,
+    "text": " and false positives."
+   },
+   {
+    "atMs": 2594,
+    "text": " Recall measures"
+   },
+   {
+    "atMs": 2805,
+    "text": " the model's ability"
+   },
+   {
+    "atMs": 3058,
+    "text": " to find all actual"
+   },
+   {
+    "atMs": 3297,
+    "text": " positive instances,"
+   },
+   {
+    "atMs": 3580,
+    "text": " calculated as true"
+   },
+   {
+    "atMs": 3813,
+    "text": " positives divided"
+   },
+   {
+    "atMs": 4027,
+    "text": " by the sum of true"
+   },
+   {
+    "atMs": 4258,
+    "text": " positives and false"
+   },
+   {
+    "atMs": 4579,
+    "text": " negatives. The trade-off"
+   },
+   {
+    "atMs": 4779,
+    "text": " is that maximizing"
+   },
+   {
+    "atMs": 4999,
+    "text": " precision"
+   },
+   {
+    "atMs": 5225,
+    "text": " often reduces recall"
+   },
+   {
+    "atMs": 5498,
+    "text": " by being more conservative,"
+   },
+   {
+    "atMs": 5699,
+    "text": " while maximizing"
+   },
+   {
+    "atMs": 5911,
+    "text": " recall"
+   },
+   {
+    "atMs": 6228,
+    "text": " often lowers precision"
+   },
+   {
+    "atMs": 6390,
+    "text": " by casting a wider"
+   },
+   {
+    "atMs": 6616,
+    "text": " net."
+   }
+  ],
+  "generationCompleteMs": 6896,
+  "turnCompleteMs": 26304
+ },
+ {
+  "id": "RE13",
+  "route": "EASY",
+  "text": "Data drift refers to changes in the distribution of your input features over time, whereas concept drift means the underlying relationship between the input data and the target variable has changed.",
+  "chunks": [
+   {
+    "atMs": 716,
+    "text": "Data drift refers "
+   },
+   {
+    "atMs": 1244,
+    "text": "to changes"
+   },
+   {
+    "atMs": 1291,
+    "text": " in the distribution of your"
+   },
+   {
+    "atMs": 1412,
+    "text": " input features over time,"
+   },
+   {
+    "atMs": 1665,
+    "text": " whereas concept"
+   },
+   {
+    "atMs": 1766,
+    "text": " drift means the underlying"
+   },
+   {
+    "atMs": 2033,
+    "text": " relationship"
+   },
+   {
+    "atMs": 2270,
+    "text": " between the input data"
+   },
+   {
+    "atMs": 2493,
+    "text": " and the target variable"
+   },
+   {
+    "atMs": 2732,
+    "text": " has changed."
+   }
+  ],
+  "generationCompleteMs": 2898,
+  "turnCompleteMs": 10715
+ },
+ {
+  "id": "RH17",
+  "route": "HARD",
+  "text": "Hard.",
+  "chunks": [
+   {
+    "atMs": 2025,
+    "text": "Hard."
+   }
+  ],
+  "generationCompleteMs": 2258,
+  "turnCompleteMs": 2933
+ },
+ {
+  "id": "RE14",
+  "route": "EASY",
+  "text": "Parquet is a columnar storage format that provides efficient compression and encoding, leading to faster read times for specific columns. CSV is a row-based text format which is easy to read but less efficient for large datasets due to larger file sizes and slower parsing. Parquet also preserves data types, whereas CSV requires type inference upon loading.",
+  "chunks": [
+   {
+    "atMs": 813,
+    "text": "Parquet is a "
+   },
+   {
+    "atMs": 986,
+    "text": "columnar storage format"
+   },
+   {
+    "atMs": 1199,
+    "text": " that provides efficient"
+   },
+   {
+    "atMs": 1512,
+    "text": " compression and encoding,"
+   },
+   {
+    "atMs": 1664,
+    "text": " leading"
+   },
+   {
+    "atMs": 1904,
+    "text": " to faster read times"
+   },
+   {
+    "atMs": 2120,
+    "text": " for specific columns."
+   },
+   {
+    "atMs": 2409,
+    "text": " CSV"
+   },
+   {
+    "atMs": 2605,
+    "text": " is a row-based"
+   },
+   {
+    "atMs": 2925,
+    "text": " text format"
+   },
+   {
+    "atMs": 3091,
+    "text": " which is easy to read"
+   },
+   {
+    "atMs": 3349,
+    "text": " but less efficient"
+   },
+   {
+    "atMs": 3543,
+    "text": " for large datasets"
+   },
+   {
+    "atMs": 3929,
+    "text": " due to larger file sizes"
+   },
+   {
+    "atMs": 4106,
+    "text": " and slower"
+   },
+   {
+    "atMs": 4307,
+    "text": " parsing. Parquet"
+   },
+   {
+    "atMs": 4568,
+    "text": " also preserves"
+   },
+   {
+    "atMs": 4744,
+    "text": " data types,"
+   },
+   {
+    "atMs": 5210,
+    "text": " whereas CSV"
+   },
+   {
+    "atMs": 5265,
+    "text": " requires type inference"
+   },
+   {
+    "atMs": 5583,
+    "text": " upon loading."
+   }
+  ],
+  "generationCompleteMs": 5785,
+  "turnCompleteMs": 22358
+ },
+ {
+  "id": "RH02",
+  "route": "HARD",
+  "text": "Hard.",
+  "chunks": [
+   {
+    "atMs": 376,
+    "text": "Hard."
+   }
+  ],
+  "generationCompleteMs": 390,
+  "turnCompleteMs": 1224
+ },
+ {
+  "id": "RE15",
+  "route": "EASY",
+  "text": "An inner join returns only the rows with matching values in both tables. A left join returns all rows from the left table and the matched rows from the right table, filling missing matches with null values.",
+  "chunks": [
+   {
+    "atMs": 630,
+    "text": "An inner join returns "
+   },
+   {
+    "atMs": 874,
+    "text": "only the rows"
+   },
+   {
+    "atMs": 1012,
+    "text": " with matching values"
+   },
+   {
+    "atMs": 1339,
+    "text": " in both tables."
+   },
+   {
+    "atMs": 1502,
+    "text": " A left join returns"
+   },
+   {
+    "atMs": 1747,
+    "text": " all rows from the"
+   },
+   {
+    "atMs": 1991,
+    "text": " left table and the matched"
+   },
+   {
+    "atMs": 2266,
+    "text": " rows from the right table,"
+   },
+   {
+    "atMs": 2488,
+    "text": " filling missing matches"
+   },
+   {
+    "atMs": 2766,
+    "text": " with null values."
+   }
+  ],
+  "generationCompleteMs": 3089,
+  "turnCompleteMs": 11303
+ },
+ {
+  "id": "RH15",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 438,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 582,
+  "turnCompleteMs": 1272
+ },
+ {
+  "id": "RH16",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 378,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 449,
+  "turnCompleteMs": 1202
+ },
+ {
+  "id": "RE16",
+  "route": "EASY",
+  "text": "A database index is a data structure that significantly improves the speed of data retrieval operations on a table. It functions like an index in a book, allowing the database system to find specific rows without scanning the entire table, though it requires additional storage space and may slow down write operations.",
+  "chunks": [
+   {
+    "atMs": 1061,
+    "text": "A database index is "
+   },
+   {
+    "atMs": 1254,
+    "text": "a data structure"
+   },
+   {
+    "atMs": 1435,
+    "text": " that significantly"
+   },
+   {
+    "atMs": 1620,
+    "text": " improves the speed"
+   },
+   {
+    "atMs": 1893,
+    "text": " of data retrieval operations"
+   },
+   {
+    "atMs": 2189,
+    "text": " on a table."
+   },
+   {
+    "atMs": 2346,
+    "text": " It functions like an"
+   },
+   {
+    "atMs": 2661,
+    "text": " index in a book, allowing"
+   },
+   {
+    "atMs": 2850,
+    "text": " the database system"
+   },
+   {
+    "atMs": 3316,
+    "text": " to find specific rows"
+   },
+   {
+    "atMs": 4020,
+    "text": " without scanning"
+   },
+   {
+    "atMs": 4055,
+    "text": " the entire table, though"
+   },
+   {
+    "atMs": 4104,
+    "text": " it requires additional"
+   },
+   {
+    "atMs": 4134,
+    "text": " storage space"
+   },
+   {
+    "atMs": 4283,
+    "text": " and may slow down write"
+   },
+   {
+    "atMs": 4503,
+    "text": " operations."
+   }
+  ],
+  "generationCompleteMs": 4817,
+  "turnCompleteMs": 17595
+ },
+ {
+  "id": "EF06",
+  "route": "HARD",
+  "text": "Hard.",
+  "chunks": [
+   {
+    "atMs": 797,
+    "text": "Hard."
+   }
+  ],
+  "generationCompleteMs": 888,
+  "turnCompleteMs": 1492
+ },
+ {
+  "id": "RE17",
+  "route": "EASY",
+  "text": "Git merge combines the history of two branches by creating a new merge commit, preserving the complete branching history but potentially cluttering the commit log. Git rebase rewrites the commit history by applying your changes onto the tip of another branch, resulting in a clean, linear history that is easy to follow.",
+  "chunks": [
+   {
+    "atMs": 655,
+    "text": "Git merge combines "
+   },
+   {
+    "atMs": 834,
+    "text": "the history"
+   },
+   {
+    "atMs": 1040,
+    "text": " of two branches by creating"
+   },
+   {
+    "atMs": 1340,
+    "text": " a new merge commit,"
+   },
+   {
+    "atMs": 1538,
+    "text": " preserving"
+   },
+   {
+    "atMs": 1780,
+    "text": " the complete branching history"
+   },
+   {
+    "atMs": 1964,
+    "text": " but potentially"
+   },
+   {
+    "atMs": 2190,
+    "text": " cluttering the commit"
+   },
+   {
+    "atMs": 2448,
+    "text": " log. Git"
+   },
+   {
+    "atMs": 2748,
+    "text": " rebase rewrites"
+   },
+   {
+    "atMs": 2962,
+    "text": " the commit history"
+   },
+   {
+    "atMs": 3171,
+    "text": " by applying your changes"
+   },
+   {
+    "atMs": 3458,
+    "text": " onto the tip of another"
+   },
+   {
+    "atMs": 3676,
+    "text": " branch, resulting"
+   },
+   {
+    "atMs": 4035,
+    "text": " in a clean,"
+   },
+   {
+    "atMs": 4110,
+    "text": " linear history"
+   },
+   {
+    "atMs": 4358,
+    "text": " that is easy to follow."
+   }
+  ],
+  "generationCompleteMs": 4827,
+  "turnCompleteMs": 18599
+ },
+ {
+  "id": "EF07",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 424,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 531,
+  "turnCompleteMs": 1108
+ },
+ {
+  "id": "RH18",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 564,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 608,
+  "turnCompleteMs": 1407
+ },
+ {
+  "id": "RE18",
+  "route": "EASY",
+  "text": "To undo the last commit in Git while keeping your changes staged, you use git reset soft head followed by a tilde one. If you want to discard the changes completely, you use git reset hard head followed by a tilde one.",
+  "chunks": [
+   {
+    "atMs": 708,
+    "text": "To undo the last "
+   },
+   {
+    "atMs": 963,
+    "text": "commit in Git"
+   },
+   {
+    "atMs": 1137,
+    "text": " while keeping your changes"
+   },
+   {
+    "atMs": 1364,
+    "text": " staged, you use"
+   },
+   {
+    "atMs": 1739,
+    "text": " git reset soft"
+   },
+   {
+    "atMs": 1896,
+    "text": " head followed by"
+   },
+   {
+    "atMs": 2114,
+    "text": " a tilde one. If"
+   },
+   {
+    "atMs": 2408,
+    "text": " you want to discard"
+   },
+   {
+    "atMs": 2601,
+    "text": " the changes completely,"
+   },
+   {
+    "atMs": 2808,
+    "text": " you use git"
+   },
+   {
+    "atMs": 3097,
+    "text": " reset hard"
+   },
+   {
+    "atMs": 3262,
+    "text": " head followed by a tilde"
+   },
+   {
+    "atMs": 3527,
+    "text": " one."
+   }
+  ],
+  "generationCompleteMs": 3633,
+  "turnCompleteMs": 13350
+ },
+ {
+  "id": "RH20",
+  "route": "HARD",
+  "text": "hard",
+  "chunks": [
+   {
+    "atMs": 758,
+    "text": "hard"
+   }
+  ],
+  "generationCompleteMs": 900,
+  "turnCompleteMs": 1442
+ },
+ {
+  "id": "RE19",
+  "route": "EASY",
+  "text": "An idempotent API endpoint ensures that making multiple identical requests has the same side effect on the server as making a single request. For example, a DELETE request to remove a specific resource will delete it the first time, and subsequent identical requests will have no additional effect and will not change the resource state further.",
+  "chunks": [
+   {
+    "atMs": 879,
+    "text": "An idempotent API "
+   },
+   {
+    "atMs": 1240,
+    "text": "endpoint ensures"
+   },
+   {
+    "atMs": 1393,
+    "text": " that making multiple"
+   },
+   {
+    "atMs": 1860,
+    "text": " identical requests"
+   },
+   {
+    "atMs": 1973,
+    "text": " has the same"
+   },
+   {
+    "atMs": 2094,
+    "text": " side effect on the server"
+   },
+   {
+    "atMs": 2314,
+    "text": " as making a single"
+   },
+   {
+    "atMs": 2508,
+    "text": " request. For example,"
+   },
+   {
+    "atMs": 2843,
+    "text": " a DELETE request"
+   },
+   {
+    "atMs": 2992,
+    "text": " to remove a specific"
+   },
+   {
+    "atMs": 3286,
+    "text": " resource will delete"
+   },
+   {
+    "atMs": 3639,
+    "text": " it the first time,"
+   },
+   {
+    "atMs": 3751,
+    "text": " and subsequent identical"
+   },
+   {
+    "atMs": 4024,
+    "text": " requests will have"
+   },
+   {
+    "atMs": 4252,
+    "text": " no additional effect"
+   },
+   {
+    "atMs": 4463,
+    "text": " and will not change the resource"
+   },
+   {
+    "atMs": 4757,
+    "text": " state further."
+   }
+  ],
+  "generationCompleteMs": 5094,
+  "turnCompleteMs": 18970
+ },
+ {
+  "id": "RE20",
+  "route": "EASY",
+  "text": "A 400 Bad Request status code is returned when the client makes an invalid request, indicating a client-side error like malformed JSON or missing parameters. A 500 Internal Server Error status code is returned when the server encounters an unexpected condition that prevents it from fulfilling the request, indicating a server-side failure.",
+  "chunks": [
+   {
+    "atMs": 1259,
+    "text": "A 400 Bad "
+   },
+   {
+    "atMs": 1487,
+    "text": "Request status code"
+   },
+   {
+    "atMs": 1708,
+    "text": " is returned when the client"
+   },
+   {
+    "atMs": 1890,
+    "text": " makes an invalid"
+   },
+   {
+    "atMs": 2219,
+    "text": " request, indicating"
+   },
+   {
+    "atMs": 2379,
+    "text": " a client-side"
+   },
+   {
+    "atMs": 3061,
+    "text": " error like malformed"
+   },
+   {
+    "atMs": 3154,
+    "text": " JSON"
+   },
+   {
+    "atMs": 3316,
+    "text": " or missing parameters."
+   },
+   {
+    "atMs": 3395,
+    "text": " A 500"
+   },
+   {
+    "atMs": 3819,
+    "text": " Internal Server"
+   },
+   {
+    "atMs": 3913,
+    "text": " Error status code"
+   },
+   {
+    "atMs": 4333,
+    "text": " is returned when the server"
+   },
+   {
+    "atMs": 4579,
+    "text": " encounters"
+   },
+   {
+    "atMs": 4598,
+    "text": " an unexpected condition"
+   },
+   {
+    "atMs": 4727,
+    "text": " that prevents it from"
+   },
+   {
+    "atMs": 5037,
+    "text": " fulfilling the request,"
+   },
+   {
+    "atMs": 5206,
+    "text": " indicating"
+   },
+   {
+    "atMs": 5508,
+    "text": " a server-side failure."
+   }
+  ],
+  "generationCompleteMs": 5951,
+  "turnCompleteMs": 21353
+ }
+]

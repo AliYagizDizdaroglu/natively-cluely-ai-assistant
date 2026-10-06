@@ -259,12 +259,19 @@ export class GeminiLiveRouter extends EventEmitter {
   private recentQuestions: Array<{ text: string; at: number }> = [];
   private gapBuffer: Buffer[] = [];
   private gapBufferBytes = 0;
+  /** Bumped on every connect, goAway and stop; a callback from an older generation is stale (DIAG Q1). */
+  private generation = 0;
 
   constructor(
     private readonly getApiKey: () => string | undefined,
-    private readonly connectFn: LiveConnectFn = defaultConnect
+    private readonly connectFn: LiveConnectFn = defaultConnect,
+    private readonly model: string = LIVE_ROUTER_MODEL
   ) {
     super();
+  }
+
+  public getModel(): string {
+    return this.model;
   }
 
   public getState(): LiveRouterState {
@@ -279,6 +286,7 @@ export class GeminiLiveRouter extends EventEmitter {
 
   public stop(): void {
     this.stopping = true;
+    this.generation++;
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
@@ -354,6 +362,7 @@ export class GeminiLiveRouter extends EventEmitter {
   }
 
   private async connect(): Promise<void> {
+    const gen = ++this.generation;
     const apiKey = this.getApiKey();
     if (!apiKey) {
       // Visible failure, but keep the slow retry alive — the user may paste a
@@ -373,7 +382,7 @@ export class GeminiLiveRouter extends EventEmitter {
     try {
       const session = await this.connectFn({
         apiKey,
-        model: LIVE_ROUTER_MODEL,
+        model: this.model,
         config: {
           // AUDIO is the only modality live models accept; the listener prompt
           // keeps the model silent, so no audio is actually generated.
@@ -388,21 +397,25 @@ export class GeminiLiveRouter extends EventEmitter {
         },
         callbacks: {
           onopen: () => {
+            if (gen !== this.generation) return;
             this.reconnectAttempts = 0;
             this.inSlowRetry = false;
             this.setState('connected');
             // Replay anything spoken while we were disconnected.
             this.maybeFlushGapBuffer();
           },
-          onmessage: (msg) => this.handleMessage(msg),
+          onmessage: (msg) => {
+            if (gen !== this.generation) return;
+            this.handleMessage(msg);
+          },
           onerror: (e: any) => {
             console.warn('[LiveRouter] ws error:', e?.message ?? e);
           },
-          onclose: (e: any) => this.handleClose(e),
+          onclose: (e: any) => this.handleClose(e, gen),
         },
       });
-      if (this.stopping) {
-        // stop() raced the async connect — close the late session immediately.
+      if (this.stopping || gen !== this.generation) {
+        // stop() or a newer connect raced the async connect — close the late session immediately.
         try {
           session.close();
         } catch {
@@ -415,7 +428,7 @@ export class GeminiLiveRouter extends EventEmitter {
       // now that both conditions (connected + session) can hold.
       this.maybeFlushGapBuffer();
     } catch (err: any) {
-      this.handleClose({ reason: err?.message ?? String(err) });
+      this.handleClose({ reason: err?.message ?? String(err) }, gen);
     }
   }
 
@@ -432,6 +445,7 @@ export class GeminiLiveRouter extends EventEmitter {
     if (msg?.goAway) {
       const session = this.session;
       this.session = null;
+      this.generation++; // the closing session's onclose is now stale: one reconnect, not two
       try {
         session?.close();
       } catch {
@@ -495,10 +509,13 @@ export class GeminiLiveRouter extends EventEmitter {
     return false;
   }
 
-  private handleClose(e: any): void {
+  private handleClose(e: any, gen: number): void {
+    const stale = gen !== this.generation;
+    const reason = e?.reason ? String(e.reason) : 'connection closed';
+    console.log(`[LiveRouter] close gen=${gen} code=${e?.code ?? '-'} reason=${reason} stale=${stale ? 'yes' : 'no'}`);
+    if (stale) return;
     this.session = null;
     if (this.stopping) return; // stop() already set the terminal state
-    const reason = e?.reason ? String(e.reason) : 'connection closed';
     if (/quota|resource_exhausted/i.test(reason)) {
       this.quotaCloses++;
       this.resumptionHandle = null;
@@ -529,6 +546,7 @@ export class GeminiLiveRouter extends EventEmitter {
 
   private scheduleReconnect(reason: string): void {
     if (this.stopping) return;
+    if (this.reconnectTimer) return; // a reconnect is already pending
     if (this.reconnectAttempts >= QUICK_RECONNECT_ATTEMPTS) {
       // Hard-fail VISIBLE (red chip + reason) — but stay alive for the whole
       // meeting: keep retrying on a slow cadence and resurrect on success.

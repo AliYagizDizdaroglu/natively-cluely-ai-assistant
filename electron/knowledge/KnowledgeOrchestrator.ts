@@ -533,6 +533,20 @@ export class KnowledgeOrchestrator {
         return `${levelStr} ${jd.title} at ${jd.company}${jd.location ? ` (${jd.location})` : ''}. Tech: ${techFocus}. Themes: ${keyThemes}.`;
     }
 
+    /** Spec 4.1a (user ruling A): a fixed profile summary for the 3.8 router's CONTEXT. Deterministic, no model call. */
+    getRouterProfileSummary(): string {
+        if (!this.isKnowledgeMode() || !this.activeResume) return '';
+        const r = this.activeResume.structured_data as StructuredResume;
+        const lines: string[] = [];
+        const who = [r?.identity?.name?.trim(), r?.experience?.[0]?.role?.trim()].filter(Boolean);
+        if (who.length) lines.push(`Candidate: ${who.join(', ')}.`);
+        const skills = (r?.skills ?? []).map((s) => String(s).trim()).filter(Boolean).slice(0, 15);
+        if (skills.length) lines.push(`Skills: ${skills.join(', ')}.`);
+        const jd = this.getCompactJDHeader();
+        if (jd) lines.push(`Target role: ${jd}`);
+        return lines.join('\n');
+    }
+
     getProfileData(): any {
         if (!this.activeResume) return null;
         try {
