@@ -592,7 +592,7 @@ describe('GeminiLiveRouter generation guard (DIAG Q1)', () => {
     expect(h.sessions[1].sent).toBe(1);                              // audio still reaches the live session
   });
 
-  // regression pin: may already pass on today's code (stopping flag); broken once in the task report
+  // regression pin of the `stopping` path only: passes without the generation terms; S1/S2 below isolate those
   it('a late session from a stale connect is closed, never adopted', async () => {
     let resolveFirst: (s: LiveSessionLike) => void = () => {};
     const late = { sendRealtimeInput: vi.fn(), sendToolResponse: vi.fn(), close: vi.fn() };
@@ -606,7 +606,7 @@ describe('GeminiLiveRouter generation guard (DIAG Q1)', () => {
     expect(late.close).toHaveBeenCalledTimes(1);
   });
 
-  // regression pin: may already pass on today's code (stopping flag); broken once in the task report
+  // regression pin of the `stopping` path only: passes without the generation terms; S1/S2 below isolate those
   it('stop makes late callbacks stale (Review Focus 5)', async () => {
     vi.useFakeTimers();
     const h = multiSessionHarness();
@@ -633,5 +633,65 @@ describe('GeminiLiveRouter generation guard (DIAG Q1)', () => {
     await r.start();
     expect(calls[0].model).toBe('gemini-2.5-flash-native-audio-latest');
     expect(r.getModel()).toBe('gemini-2.5-flash-native-audio-latest');
+  });
+
+  const mk = () => ({ sendRealtimeInput: vi.fn(), sendToolResponse: vi.fn(), close: vi.fn() });
+
+  it('S1 a connect that resolves after a newer connect started is closed, not adopted (no stop involved)', async () => {
+    vi.useFakeTimers();
+    let resolveFirst: (s: LiveSessionLike) => void = () => {};
+    let firstCbs: any;
+    const B = mk(); const A = mk();
+    const connectFn: LiveConnectFn = vi.fn()
+      .mockImplementationOnce((p: any) => { firstCbs = p.callbacks; return new Promise<LiveSessionLike>((r) => { resolveFirst = r; }); })
+      .mockImplementation(async (p: any) => { setTimeout(() => p.callbacks.onopen(), 0); return B as any; }) as any;
+    const router = new GeminiLiveRouter(() => 'k', connectFn);
+    const p = router.start();
+    firstCbs.onclose({ reason: 'setup failed', code: 1011 });
+    await vi.advanceTimersByTimeAsync(400);
+    expect(connectFn).toHaveBeenCalledTimes(2);
+    resolveFirst(A as any); await p;
+    expect(A.close).toHaveBeenCalledTimes(1);
+    router.write(Buffer.alloc(320), 16000);
+    expect(B.sendRealtimeInput).toHaveBeenCalled();
+    expect(A.sendRealtimeInput).not.toHaveBeenCalled();
+  });
+
+  it('S2 after stop, a late onopen and a late toolCall do nothing', async () => {
+    let cbs: any;
+    const connectFn: LiveConnectFn = vi.fn(async (p: any) => { cbs = p.callbacks; return mk() as any; }) as any;
+    const router = new GeminiLiveRouter(() => 'k', connectFn);
+    await router.start();
+    cbs.onopen();
+    router.stop();
+    const q = vi.fn(); router.on('question', q);
+    cbs.onopen();
+    cbs.onmessage({ toolCall: { functionCalls: [{ id: '1', name: 'handle_question', args: { question: 'How does a hash map handle collisions?', category: 'verbal_technical' } }] } });
+    expect(router.getState()).toBe('stopped');
+    expect(q).not.toHaveBeenCalled();
+  });
+
+  it('S4 the goAway-closed session logs stale=yes and its close touches nothing', async () => {
+    vi.useFakeTimers();
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+    let cbs: any[] = [];
+    const connectFn: LiveConnectFn = vi.fn(async (p: any) => { const i = cbs.length; cbs.push(p.callbacks); return { ...mk(), close: () => cbs[i].onclose({ reason: 'connection closed', code: 1000 }) } as any; }) as any;
+    const router = new GeminiLiveRouter(() => 'k', connectFn);
+    await router.start();
+    cbs[0].onopen();
+    cbs[0].onmessage({ goAway: {} });
+    const lines = log.mock.calls.map((c) => String(c[0]));
+    log.mockRestore();
+    expect(lines.some((l) => /^\[LiveRouter\] close gen=1 code=1000 reason=connection closed stale=yes$/.test(l))).toBe(true);
+  });
+
+  it('S3a second scheduleReconnect while one is pending adds no connect', async () => {
+    vi.useFakeTimers();
+    const connectFn: LiveConnectFn = vi.fn(async () => mk() as any) as any;
+    const router = new GeminiLiveRouter(() => 'k', connectFn);
+    await router.start();
+    (router as any).scheduleReconnect('a'); (router as any).scheduleReconnect('b');
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(connectFn).toHaveBeenCalledTimes(2);
   });
 });
