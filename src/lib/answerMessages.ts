@@ -77,6 +77,28 @@ function lastIndexWhere<T>(items: T[], predicate: (item: T) => boolean): number 
     return -1;
 }
 
+/** A bubble owned by the keyed path: a Live bubble or a "(full answer)" append bubble. */
+function isKeyedBubble(m: AnswerMessage): boolean {
+    return m.append === true || m.origin === 'live';
+}
+
+/**
+ * The streaming bubble today's (non-keyed) path may join or finalize (fix1 I1): the last message when it is a
+ * streaming, unkeyed what_to_answer bubble (today's rule, unchanged). If the last message is a keyed bubble —
+ * e.g. turn k's "(full answer)" opened after turn k+1's 🎙 — fall back to the last streaming UNKEYED bubble of
+ * the same turn, so a keyed bubble never takes another turn's tokens. Flag-off has no keyed bubbles, so this
+ * always returns exactly the last message there.
+ */
+function unkeyedStreamingTarget(prev: AnswerMessage[], meta?: BubbleMeta): number {
+    const last = prev.length - 1;
+    const m = prev[last];
+    if (!m || !m.isStreaming || m.intent !== 'what_to_answer') return -1;
+    if (!isKeyedBubble(m)) return last;
+    return lastIndexWhere(prev, (b) =>
+        b.isStreaming === true && b.intent === 'what_to_answer' && !isKeyedBubble(b)
+        && (meta?.turnId == null || b.turnId == null || b.turnId === meta.turnId));
+}
+
 /** What today's (non-keyed) path stores from the meta: the turnId and origin, nothing else. */
 function storedTag(meta?: BubbleMeta): Partial<AnswerMessage> {
     if (!meta || meta.turnId == null) return {};
@@ -170,12 +192,11 @@ export function applyAnswerToken(
         }
     }
 
-    const lastMsg = prev[prev.length - 1];
-
     // Already streaming and not a restart: this token belongs to that bubble.
-    if (lastMsg && lastMsg.isStreaming && lastMsg.intent === 'what_to_answer') {
+    const target = unkeyedStreamingTarget(prev, meta);
+    if (target !== -1) {
         const updated = [...prev];
-        updated[updated.length - 1] = { ...lastMsg, text: lastMsg.text + token, ...withCues };
+        updated[target] = { ...prev[target], text: prev[target].text + token, ...withCues };
         return updated;
     }
 
@@ -202,16 +223,23 @@ export function applyFinalAnswer(
         }
         if (replace) {
             const first = prev.findIndex((m) => m.turnId === meta.turnId);
-            if (first !== -1) return replaceFirstOfTurn(prev, first, meta.turnId, finalize(prev[first]));
+            if (first !== -1) {
+                // fix1 I2: the rewritten bubble is the replacing stream's, not a Live one: take its origin and source
+                // (explicitly, so an absent source clears the Live label instead of keeping it).
+                return replaceFirstOfTurn(prev, first, meta.turnId, {
+                    ...finalize(prev[first]), ...keyedFields(meta), label: meta.label, sourceLabel: meta.sourceLabel,
+                });
+            }
         }
-        return [...prev, { ...finalize(null), ...keyedFields(meta) }];
+        // fix1 M3: an append bubble always opens under its header, even when no append token came first.
+        const label = meta.label ?? (meta.append ? '(full answer)' : undefined);
+        return [...prev, { ...finalize(null), ...keyedFields({ ...meta, label }) }];
     }
 
-    const lastMsg = prev[prev.length - 1];
-
-    if (lastMsg && lastMsg.isStreaming && lastMsg.intent === 'what_to_answer') {
+    const target = unkeyedStreamingTarget(prev, meta);
+    if (target !== -1) {
         const updated = [...prev];
-        updated[updated.length - 1] = finalize(lastMsg);
+        updated[target] = finalize(prev[target]);
         return updated;
     }
 

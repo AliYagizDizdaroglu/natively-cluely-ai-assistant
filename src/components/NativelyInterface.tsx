@@ -45,7 +45,7 @@ import { analytics, detectProviderType } from '../lib/analytics/analytics.servic
 import { useShortcuts } from '../hooks/useShortcuts';
 import { useResolvedTheme } from '../hooks/useResolvedTheme';
 import { getOverlayAppearance, OVERLAY_OPACITY_DEFAULT } from '../lib/overlayAppearance';
-import { applyAnswerToken, applyFinalAnswer, applyLiveQuestion, usesKeyedPathFor, usesKeyedSourceFor, type AnswerMessage, type BubbleMeta } from '../lib/answerMessages';
+import { applyAnswerToken, applyFinalAnswer, applyLiveQuestion, usesKeyedPathFor, usesKeyedSourceFor, LIVE_SOURCE_LABEL, type AnswerMessage, type BubbleMeta } from '../lib/answerMessages';
 import { bubbleKey, createBubbleMetrics } from '../lib/bubbleMetrics';
 import { useStreamMetrics, type StreamMetrics } from '../hooks/useStreamMetrics';
 import { MessageMetricsBar } from './MessageMetricsBar';
@@ -143,6 +143,22 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
     const pendingSourceByTurnRef = useRef<Map<number, string>>(new Map());
     /** The source label each keyed bubble took at creation, until its final reads it for the metrics. */
     const bubbleSourceRef = useRef<Map<string, string | undefined>>(new Map());
+    /**
+     * The source label a keyed bubble takes at creation (once per key). A supersede (replace, non-Live origin)
+     * starts a new stream: the Live label no longer applies, so it is dropped, and the pending label is consumed
+     * (fix1 I2). Without a source event the bubble has no label (the bar shows today's neutral "…").
+     */
+    const sourceForBubble = (key: string, turnId: number, supersede: boolean): string | undefined => {
+        if (!bubbleSourceRef.current.has(key)) {
+            let label = pendingSourceByTurnRef.current.get(turnId);
+            if (supersede) {
+                if (label === LIVE_SOURCE_LABEL) label = undefined;
+                pendingSourceByTurnRef.current.delete(turnId);
+            }
+            bubbleSourceRef.current.set(key, label);
+        }
+        return bubbleSourceRef.current.get(key);
+    };
 
     // Sync transcript setting
     useEffect(() => {
@@ -856,8 +872,7 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                 meta = { turnId: data.turnId, origin: data.origin, append: data.append, label: data.label };
                 if (usesKeyedPathFor(liveTurnsRef.current, meta)) {
                     key = bubbleKey(meta);
-                    if (!bubbleSourceRef.current.has(key)) bubbleSourceRef.current.set(key, pendingSourceByTurnRef.current.get(data.turnId));
-                    meta.sourceLabel = bubbleSourceRef.current.get(key);
+                    meta.sourceLabel = sourceForBubble(key, data.turnId, data.replace === true && data.origin !== 'live');
                     bubbleMetricsRef.current!.start(key);   // M1: a no-op when the turn's Live source already started it
                     bubbleMetricsRef.current!.first(key);
                     if (data.origin === 'live') liveTurnsRef.current.add(data.turnId);
@@ -917,14 +932,15 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                 meta = { turnId: data.turnId, origin: data.origin, append: data.append };
                 if (usesKeyedPathFor(liveTurnsRef.current, meta)) {
                     key = bubbleKey(meta);
-                    if (!bubbleSourceRef.current.has(key)) bubbleSourceRef.current.set(key, pendingSourceByTurnRef.current.get(data.turnId));
-                    meta.sourceLabel = bubbleSourceRef.current.get(key);
+                    const supersede = data.replace === true && data.origin !== 'live';
+                    meta.sourceLabel = sourceForBubble(key, data.turnId, supersede);
                     bubbleMetricsRef.current!.start(key);
-                    if (data.origin !== 'live' && data.replace === true) liveTurnsRef.current.delete(data.turnId);
+                    if (data.origin === 'live') liveTurnsRef.current.add(data.turnId);   // a Live final alone creates a Live bubble too
+                    else if (supersede) liveTurnsRef.current.delete(data.turnId);        // the keyed replace branch rewrites the Live bubble into a pipeline one
                 }
             }
             const finalMetrics = key !== null
-                ? bubbleMetricsRef.current!.done(key, data.answer, bubbleSourceRef.current.get(key) ?? null)
+                ? bubbleMetricsRef.current!.done(key, data.answer, bubbleSourceRef.current.get(key) ?? (data.replace === true && data.origin !== 'live' ? '…' : null))
                 : sm.markDone(data.answer);
             if (key !== null) bubbleSourceRef.current.delete(key);
 

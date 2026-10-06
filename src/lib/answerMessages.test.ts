@@ -415,7 +415,8 @@ describe('keyed applyFinalAnswer', () => {
         const first: AnswerMessage = { id: 'F', role: 'system', intent: 'what_to_answer', text: 'rewritten', isStreaming: false, turnId: 6, origin: 'live' };
         const app: AnswerMessage = { id: 'A', role: 'system', intent: 'what_to_answer', text: 'full', isStreaming: false, turnId: 6, origin: 'pipeline', append: true };
         const r = applyFinalAnswer([first, app], true, fin('final'), pipe(6));
-        expect(r).toEqual([{ ...first, text: 'final', isStreaming: false }]);
+        // fix1 I2: the rewritten bubble takes the replacing stream's origin (it is no longer a Live bubble)
+        expect(r).toEqual([{ ...first, origin: 'pipeline', text: 'final', isStreaming: false }]);
     });
 
     it('with no streaming match and no replace, appends finalize(null) with the meta stored', () => {
@@ -495,5 +496,82 @@ describe('source labels at bubble creation', () => {
         expect(r[0]).toMatchObject({ text: 'xy', sourceLabel: 'gemini-3.8-live' });
         const f = applyFinalAnswer(r, false, fin('xy.'), { ...live(2), sourceLabel: 'Gemini Flash 3.1' });
         expect(f[0]).toMatchObject({ text: 'xy.', sourceLabel: 'gemini-3.8-live' });
+    });
+});
+
+// ---- fix1 (review of 95ed5a6) -------------------------------------------------------------------------
+
+describe('fix1 I1: today\'s path never joins or finalizes a keyed (append / live) bubble', () => {
+    const mk = (o: Partial<AnswerMessage>): AnswerMessage => ({ id: 'x', role: 'system', intent: 'what_to_answer', text: '', ...o });
+    // turn k's Live bubble, then turn k+1's 🎙 and its streaming pipeline bubble, then k's orphaned "(full answer)" opens last
+    const state = (): AnswerMessage[] => {
+        let s: AnswerMessage[] = [
+            { id: 'qk', role: 'user', text: '🎙 k' },
+            mk({ id: 'Lk', text: 'Live k.', isStreaming: false, turnId: 1, origin: 'live' }),
+            { id: 'qk1', role: 'user', text: '🎙 k+1' },
+            mk({ id: 'P', text: 'P1 ', isStreaming: true, turnId: 2, origin: 'pipeline' }),
+        ];
+        s = applyAnswerToken(s, 'FULL k ', false, makeNewId('n'), undefined, appendMeta(1));
+        return s;
+    };
+
+    it('k+1\'s tokens and final land in k+1\'s own bubble; k\'s "(full answer)" bubble keeps its text', () => {
+        let s = state();
+        expect(s[s.length - 1]).toMatchObject({ append: true, text: 'FULL k ', isStreaming: true });
+        s = applyAnswerToken(s, 'P2', false, makeNewId('n'), undefined, pipe(2));
+        s = applyFinalAnswer(s, false, fin('P1 P2.'), pipe(2));
+        expect(s.find((m) => m.id === 'P')).toMatchObject({ text: 'P1 P2.', isStreaming: false, turnId: 2 });
+        expect(s.filter((m) => m.append)).toEqual([expect.objectContaining({ text: 'FULL k ', isStreaming: true, label: '(full answer)', turnId: 1 })]);
+        expect(s).toHaveLength(5);
+    });
+
+    it('with no unkeyed streaming bubble to join, a token opens a new bubble and a final appends finalize(null)', () => {
+        const s0 = state().filter((m) => m.id !== 'P');
+        const s1 = applyAnswerToken(s0, 'Q1', false, makeNewId('n'), undefined, pipe(2));
+        expect(s1[s1.length - 1]).toMatchObject({ text: 'Q1', turnId: 2, isStreaming: true });
+        expect(s1.find((m) => m.append)).toMatchObject({ text: 'FULL k ' });
+        const s2 = applyFinalAnswer(s0, false, fin('Done.'), pipe(2));
+        expect(s2.find((m) => m.append)).toMatchObject({ text: 'FULL k ', isStreaming: true });
+        expect(s2[s2.length - 1]).toMatchObject({ text: 'Done.', turnId: 2 });
+    });
+
+    it('a streaming Live bubble is not joined or finalized by an unkeyed event either', () => {
+        const s0: AnswerMessage[] = [mk({ id: 'L', text: 'live ', isStreaming: true, turnId: 1, origin: 'live' })];
+        const s1 = applyAnswerToken(s0, 'pipe', false, makeNewId('n'), undefined, undefined);
+        expect(s1[0]).toBe(s0[0]);
+        expect(s1).toHaveLength(2);
+        const s2 = applyFinalAnswer(s0, false, fin('x'), undefined);
+        expect(s2[0]).toBe(s0[0]);
+    });
+});
+
+describe('fix1 I2: a replace final applies the replacing stream\'s origin and source', () => {
+    const liveB = (): AnswerMessage => ({ id: 'L', role: 'system', intent: 'what_to_answer', text: 'Live.', isStreaming: false, turnId: 8, origin: 'live', sourceLabel: 'gemini-3.8-live', label: undefined });
+    const appB = (): AnswerMessage => ({ id: 'A', role: 'system', intent: 'what_to_answer', text: 'Full.', isStreaming: false, turnId: 8, origin: 'pipeline', append: true, label: '(full answer)', sourceLabel: 'S' });
+
+    it('with no source event the rewritten bubble carries no Live label and the append is gone', () => {
+        const r = applyFinalAnswer([liveB(), appB()], true, fin('Replacement.'), pipe(8));
+        expect(r).toHaveLength(1);
+        expect(r[0]).toMatchObject({ id: 'L', text: 'Replacement.', origin: 'pipeline', isStreaming: false });
+        expect(r[0].sourceLabel).toBeUndefined();
+        expect(r[0].label).toBeUndefined();
+    });
+
+    it('with a source it carries that label', () => {
+        const r = applyFinalAnswer([liveB()], true, fin('Replacement.'), { ...pipe(8), sourceLabel: 'Gemini Flash 3.1' });
+        expect(r[0]).toMatchObject({ origin: 'pipeline', sourceLabel: 'Gemini Flash 3.1' });
+    });
+});
+
+describe('fix1 M3: an append final with no append token still gets the header', () => {
+    it('finalize(null) of an append event carries "(full answer)"', () => {
+        const live1: AnswerMessage = { id: 'L', role: 'system', intent: 'what_to_answer', text: 'Live.', isStreaming: false, turnId: 3, origin: 'live' };
+        const r = applyFinalAnswer([live1], false, fin('Full.'), { turnId: 3, origin: 'pipeline', append: true });
+        expect(r).toHaveLength(2);
+        expect(r[1]).toMatchObject({ text: 'Full.', append: true, label: '(full answer)' });
+    });
+    it('a non-append final gets no label', () => {
+        const r = applyFinalAnswer([], false, fin('x'), live(3));
+        expect(r[0].label).toBeUndefined();
     });
 });
