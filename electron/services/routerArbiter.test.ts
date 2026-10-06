@@ -343,6 +343,8 @@ describe('RouterArbiter: supersede (case E, Review Focus 4)', () => {
       'tok:New |pipeline|replace@1', 'tok:answer|pipeline@1', 'fin:New answer|pipeline|replace@1',
     ]);
     expect(h.history.map((x) => x.text)).toEqual(['New answer']);
+    expect(caps(h).map((c) => c.kind)).toEqual(['live', 'shadow']);   // I-1 (P4)
+    expect(caps(h)[0]).toMatchObject({ text: `${words(10)} `, firstMs: 500, endMs: 1500 });
   });
 
   it('while the decision is pending: only the replacing stream is released, its first token keeping replace:true', () => {
@@ -560,5 +562,76 @@ describe('RouterArbiter: sent= (M3)', () => {
     dispatch(h);
     h.a.forward(end(1, 'failed')); h.a.turnClosed(1, Q + 100);
     expect(one(h).sent).toBe('0');
+  });
+});
+
+describe('RouterArbiter: fix round 1', () => {
+  it('I-2 (P7): a restarted router session reuses seq 1; its valid easy answer is shown', () => {
+    const h = boot();
+    dispatch(h);
+    h.go(Q + 500); h.a.routerTurn(rt(1, `Docker is ${words(12)} `, Q + 500));
+    h.a.routerTurn(rt(1, `Docker is ${words(12)} `, Q + 500, done(Q + 900)));
+    h.a.forward(end(1)); h.a.turnClosed(1, Q + 1000);
+    h.a.turnOpened(2, Q + 1000);
+    dispatch(h, Q + 6000, 2, Q + 6000);
+    h.go(Q + 6500); h.a.routerTurn(rt(1, `Kubernetes is ${words(12)} `, Q + 6500));
+    expect(sigs(h)).toContain(`src:${LIVE_LABEL}@2`);
+    expect(sigs(h)).toContain(`tok:Kubernetes is ${words(12)} |live@2`);
+  });
+  it('I-3 (P2): the router is down until setRouterUp(true): row 1 at once, router=down', () => {
+    const h = harness(); h.go(Q - 4000); h.a.turnOpened(1, Q - 4000);
+    h.a.forward(src(1, 'gemini')); h.a.forward(tok(1, 'Hello '));
+    dispatch(h);
+    expect(sigs(h)).toEqual(['src:gemini@1', 'tok:Hello |pipeline@1']);
+    h.a.forward(end(1)); h.a.turnClosed(1, Q + 100);
+    expect(one(h)).toMatchObject({ router: 'down', reason: 'router-down' });
+  });
+  it('M-1 (P1): two supersedes before any end: both stale aborts dropped, line and shadow capture wait for the real end', () => {
+    const h = boot();
+    dispatch(h);
+    h.go(Q + 500); h.a.routerTurn(rt(1, `${words(12)} `, Q + 500));
+    h.go(Q + 900); h.a.routerTurn(rt(1, `${words(12)} `, Q + 500, done(Q + 900)));
+    h.a.forward(tok(1, 'A ', { replace: true })); h.a.forward(tok(1, 'B ', { replace: true }));
+    h.a.forward(end(1, 'aborted')); h.a.forward(end(1, 'aborted'));
+    expect(h.diag.filter((l) => l.startsWith('[Router] end dropped'))).toHaveLength(2);
+    h.a.forward(tok(1, 'C')); h.a.turnClosed(1, Q + 3000);
+    expect(lines(h)).toHaveLength(0);
+    h.a.forward(end(1, 'completed'));
+    expect(lines(h)).toHaveLength(1);
+    expect(caps(h).filter((c) => c.kind === 'shadow').map((c) => c.text)).toEqual(['B C']);
+  });
+  it('M-2 (P3): a token appended to a Live bubble never carries replace', () => {
+    const h = boot();
+    dispatch(h);
+    h.a.forward(tok(1, 'Old ')); h.a.forward(tok(1, 'New ', { replace: true })); h.a.forward(tok(1, 'more'));
+    h.go(Q + 500); h.a.routerTurn(rt(1, 'one two three four ', Q + 500));
+    h.go(Q + 900); h.a.routerTurn(rt(1, 'one two three four <b> five', Q + 500));
+    const app = sigs(h).filter((s) => s.includes('|append'));
+    expect(app).toEqual(['tok:New |pipeline|append|(full answer)@1', 'tok:more|pipeline|append@1']);
+  });
+  it('M-3 (P5): live_words counts only the text up to the Live final', () => {
+    const h = boot();
+    dispatch(h);
+    h.go(Q + 500); h.a.routerTurn(rt(1, `${words(10)} `, Q + 500));
+    h.a.routerTurn(rt(1, words(10), Q + 500, done(Q + 900)));
+    h.a.routerTurn(rt(1, `${words(10)} ${words(7, 'z')}`, Q + 500, { ...done(Q + 900), afterComplete: true }));
+    h.a.forward(end(1)); h.a.turnClosed(1, Q + 2000);
+    expect(one(h)).toMatchObject({ shown: 'live', live_words: '10' });
+  });
+  it('M-4a: a replacing stream with only a replace:true final still stops Live and is forwarded', () => {
+    const h = boot();
+    dispatch(h);
+    h.go(Q + 500); h.a.routerTurn(rt(1, `${words(10)} `, Q + 500));
+    h.go(Q + 900); h.a.forward(fin(1, 'New', { replace: true }));
+    h.a.routerTurn(rt(1, `${words(30)} `, Q + 500));
+    expect(sigs(h)).toEqual([`src:${LIVE_LABEL}@1`, `tok:${words(10)} |live@1`, 'fin:New|pipeline|replace@1']);
+  });
+  it('M-4b: an empty pipeline token that carries cues is kept with its cues', () => {
+    const h = boot();
+    h.a.setRouterUp(false, Q - 3000);
+    dispatch(h);
+    h.a.forward(tok(1, '', { cues: ['c1'] })); h.a.forward(tok(1, '')); h.a.forward(tok(1, 'Hello'));
+    expect(sigs(h)).toEqual(['tok:|pipeline@1', 'tok:Hello|pipeline@1']);
+    expect((h.sent[0] as { p: { cues?: string[] } }).p.cues).toEqual(['c1']);
   });
 });

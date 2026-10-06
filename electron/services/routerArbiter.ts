@@ -41,6 +41,7 @@ interface RT {
   firstWordAt: number | null;       // W: now() at the first update where the first word was complete
   turn: Turn | null; role: 'pending' | 'decider' | 'dup' | 'unpaired';
   lineWritten: boolean; capped: boolean;
+  frozen: boolean;                  // the Live display is over: later text no longer changes what the line reads
 }
 interface Decision { row: 1 | 2 | 3 | 4 | 5; shown: 'pipeline' | 'live'; reason: string }
 interface Turn {
@@ -53,7 +54,7 @@ interface Turn {
   pQuestion: string | null; pConf: number | null;
   live: { phase: 'idle' | 'streaming' | 'done'; stripper: ReturnType<typeof createUnknownMarkerStripper>; shownRaw: number; shownText: string; V: number | null; capTimer: unknown };
   appended: boolean; appendReason: string | null; superseded: boolean; lineWritten: boolean;
-  replacedAt: number | null; staleEndPending: boolean;
+  replacedAt: number | null; staleEnds: number; replaceSeen: boolean;
   liveCaptured: boolean; shadowCaptured: boolean; appendedCaptured: boolean;
   appendLabelPending: boolean;      // the first pipeline token sent after an append carries the "(full answer)" label
   sent: number;
@@ -63,7 +64,7 @@ export class RouterArbiter {
   private turns: Turn[] = [];
   private rts = new Map<number, RT>();
   private dispatched = new Set<number>();
-  // Never set means up: with no router session there are no router turns, and the decision falls to row 2 (pipeline) anyway.
+  // Spec 4.1: down until setupComplete, so a router that never connects reads router-down (row 1) at once.
   private routerStates: { at: number; up: boolean }[] = [];
   private earStates: { at: number; model: '3.1' | '2.5' }[] = [];
 
@@ -119,12 +120,13 @@ export class RouterArbiter {
     if (!this.deps.enabled) return;
     const now = this.deps.now();
     let r = this.rts.get(ev.seq);
+    if (r && r.firstTextAt !== ev.firstTextAt) r = undefined;   // a restarted router session reuses seq: a new first-text time is a new router turn
     if (r?.capped) return;                    // item 10(c): a capped decider's later events are ignored
     if (!r) {
-      r = { seq: ev.seq, firstTextAt: ev.firstTextAt, arrivedAt: now, text: '', completed: false, ended: false, firstWordAt: null, turn: null, role: 'pending', lineWritten: false, capped: false };
+      r = { seq: ev.seq, firstTextAt: ev.firstTextAt, arrivedAt: now, text: '', completed: false, ended: false, firstWordAt: null, turn: null, role: 'pending', lineWritten: false, capped: false, frozen: false };
       this.rts.set(ev.seq, r);
     }
-    r.text = ev.text; r.completed = ev.completed;
+    if (!r.frozen) { r.text = ev.text; r.completed = ev.completed; }
     if (ev.endKind !== undefined && !r.ended) { r.ended = true; r.endKind = ev.endKind; r.endedAt = ev.endedAt ?? now; }
     if (r.firstWordAt === null && completeFirstWord(r.text, r.ended) !== null) r.firstWordAt = now;   // item 6
     if (r.turn === null && r.role === 'pending') this.pair(r);
@@ -264,7 +266,7 @@ export class RouterArbiter {
   private closeLive(t: Turn): void {
     const L = t.live;
     this.sendLiveToken(t, L.stripper.flush());
-    L.phase = 'done';
+    L.phase = 'done'; if (t.decider) t.decider.frozen = true;
     if (L.capTimer !== undefined) { this.deps.clearTimer(L.capTimer); L.capTimer = undefined; }
     this.emit(t, { ch: 'final', p: { answer: L.shownText, question: t.pQuestion ?? '', confidence: t.pConf ?? 1, replace: false, turnId: t.id, origin: 'live' } });
   }
@@ -314,7 +316,7 @@ export class RouterArbiter {
       case 'source': t.pipeSource = ev.label; this.route(t, ev); break;
       case 'token': {
         if (ev.p.replace) this.onSupersede(t);
-        if (ev.p.token === '' && !ev.p.replace) break;                 // filtered away: nothing to hold or show
+        if (ev.p.token === '' && !ev.p.replace && !ev.p.cues?.length) break;   // filtered away; cues must survive                 // filtered away: nothing to hold or show
         if (ev.p.token !== '') {
           t.pipeText += ev.p.token;
           if (t.pipeFirstAt === null) t.pipeFirstAt = this.deps.now();
@@ -323,7 +325,8 @@ export class RouterArbiter {
         this.route(t, ev);
         break;
       }
-      case 'final': t.finalText = ev.p.answer; this.route(t, ev); break;
+      case 'final': if (ev.p.replace && !t.replaceSeen) this.onSupersede(t);   // a replacing stream with no tokens
+        t.finalText = ev.p.answer; this.route(t, ev); break;
       case 'history': {
         t.historyText = ev.text; t.historyQuestion = ev.question;
         if (t.mode === 'pipeline') { t.historyAdded = true; this.deps.addHistory(ev.text, ev.question); }
@@ -341,7 +344,7 @@ export class RouterArbiter {
   }
 
   private sendPipeline(t: Turn, o: Outbound, label = false): void {
-    const app = t.mode === 'appended' ? ({ append: true } as const) : {};
+    const app = t.mode === 'appended' ? ({ append: true, replace: false } as const) : {};   // an append never replaces the Live bubble
     if (o.ch === 'source') this.emit(t, { ch: 'source', label: o.label, turnId: t.id });
     else if (o.ch === 'token') {
       if (label) t.appendLabelPending = false;
@@ -351,8 +354,8 @@ export class RouterArbiter {
 
   /** Item 13, case E: runs when a token with replace:true arrives, before the token itself is routed. */
   private onSupersede(t: Turn): void {
-    t.replacedAt = this.deps.now();
-    t.staleEndPending = !t.pipeEnded;          // the old stream's aborted end may still be on its way (item 20)
+    t.replacedAt = this.deps.now(); t.replaceSeen = true;
+    if (!t.pipeEnded) t.staleEnds++;           // the old stream's aborted end may still be on its way (item 20); one per unfinished stream
     t.pipeText = ''; t.finalText = null; t.historyText = null; t.historyAdded = false;
     t.pipeEnded = false; t.pipeEndAt = null; t.pipeEndKind = null;
     if (t.mode === 'pending') {
@@ -362,7 +365,8 @@ export class RouterArbiter {
     }
     if (t.mode === 'live' || t.mode === 'appended') {
       if (t.live.phase === 'streaming') {      // stop the Live display: no more Live tokens, no Live final, no history
-        t.live.phase = 'done';
+        this.writeLiveCapture(t);              // I-1: what the user saw is still captured, as shown so far
+        t.live.phase = 'done'; if (t.decider) t.decider.frozen = true;
         if (t.live.capTimer !== undefined) { this.deps.clearTimer(t.live.capTimer); t.live.capTimer = undefined; }
       }
       t.superseded = true; t.held = []; t.mode = 'pipeline';
@@ -370,12 +374,12 @@ export class RouterArbiter {
   }
 
   private onEnd(t: Turn, kind: 'completed' | 'aborted' | 'failed'): void {
-    if ((kind === 'aborted' || kind === 'failed') && t.staleEndPending) {     // item 20: one stale end per replace
-      t.staleEndPending = false;
+    if ((kind === 'aborted' || kind === 'failed') && t.staleEnds > 0) {     // item 20: one stale end per superseded stream
+      t.staleEnds--;
       this.deps.diag(`[Router] end dropped turn=${t.id} kind=${kind} reason=superseded`);
       return;
     }
-    t.staleEndPending = false;
+    t.staleEnds = 0; t.replaceSeen = false;
     if (t.pipeEnded) return;                    // a second end for the same stream is idempotent: kind and capture stay
     t.pipeEnded = true; t.pipeEndAt = this.deps.now(); t.pipeEndKind = kind;
     this.settle(t);
@@ -446,7 +450,7 @@ export class RouterArbiter {
       held: [], pipeSource: null, pipeText: '', finalText: null, pipeFirstAt: null, pipeEnded: false, pipeEndAt: null, pipeEndKind: null,
       historyText: null, historyAdded: false, pQuestion: null, pConf: null,
       live: { phase: 'idle', stripper: createUnknownMarkerStripper(), shownRaw: 0, shownText: '', V: null, capTimer: undefined },
-      appended: false, appendReason: null, superseded: false, lineWritten: false, replacedAt: null, staleEndPending: false,
+      appended: false, appendReason: null, superseded: false, lineWritten: false, replacedAt: null, staleEnds: 0, replaceSeen: false,
       liveCaptured: false, shadowCaptured: false, appendedCaptured: false, appendLabelPending: true, sent: 0,
     };
     this.turns.push(t);
@@ -463,7 +467,7 @@ export class RouterArbiter {
   }
 
   private routerUpAt(time: number): boolean {
-    let up = true;
+    let up = false;
     for (const s of this.routerStates) if (s.at <= time) up = s.up;
     return up;
   }
