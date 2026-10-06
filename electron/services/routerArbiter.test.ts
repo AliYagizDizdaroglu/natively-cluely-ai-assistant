@@ -353,7 +353,7 @@ describe('RouterArbiter: supersede (case E, Review Focus 4)', () => {
     h.a.forward(src(1, 'gemini')); h.a.forward(tok(1, 'Old ')); h.a.forward(tok(1, 'stream')); h.a.forward(fin(1, 'Old stream'));
     h.a.forward(src(1, 'gemini-new')); h.a.forward(tok(1, 'New ', { replace: true })); h.a.forward(tok(1, 'one')); h.a.forward(fin(1, 'New one', { replace: true }));
     h.go(Q + 600); h.a.routerTurn(rt(1, 'hard', Q + 600, done(Q + 600)));
-    expect(sigs(h)).toEqual(['src:gemini-new@1', 'tok:New |pipeline|replace@1', 'tok:one|pipeline@1', 'fin:New one|pipeline|replace@1']);
+    expect(sigs(h)).toEqual(['src:gemini-new@1', 'tok:New |pipeline@1', 'tok:one|pipeline@1', 'fin:New one|pipeline|replace@1']);   // fix4: nothing of this turn was shown, so the first token must not replace
   });
 
   it('I1: a stale aborted end after a supersede is dropped; one decision line, written after the completed end; capture holds the new text only', () => {
@@ -733,5 +733,28 @@ describe('RouterArbiter: fix3 (review I-1, I-2, pipeFirstAt)', () => {
     h.go(Q + 900); h.a.forward(tok(1, 'New ', { replace: true })); h.a.forward(fin(1, 'New', { replace: true })); h.a.forward(end(1));
     h.go(Q + 1000); h.a.routerTurn(rt(1, 'hard', Q + 1000, done(Q + 1000)));
     expect(one(h).shadow).toBe('900');
+  });
+});
+
+describe('RouterArbiter: fix4 (R2) replace only when this turn has visible text', () => {
+  it('supersede while pending: the first released token and a final-only replace carry replace:false', () => {
+    const h = boot(); dispatch(h);
+    h.a.forward(tok(1, 'Old ')); h.a.forward(tok(1, 'New ', { replace: true })); h.a.forward(tok(1, 'one'));
+    h.go(Q + 600); h.a.routerTurn(rt(1, 'hard', Q + 600, done(Q + 600)));
+    expect(sigs(h)).toEqual(['tok:New |pipeline@1', 'tok:one|pipeline@1']);
+    const h2 = boot(); dispatch(h2);
+    h2.a.forward(tok(1, 'Old ')); h2.a.forward(fin(1, 'New', { replace: true }));
+    h2.go(Q + 600); h2.a.routerTurn(rt(1, 'hard', Q + 600, done(Q + 600)));
+    expect(sigs(h2)).toEqual(['fin:New|pipeline@1']);
+  });
+
+  // The plan's second case (a Live decision with zero Live tokens sent) cannot be reached through the public API: a Live decision needs a
+  // complete first word, and the display always shows that word (a marker or a hard word reads row 3/4, not Live). The guard is keyed on
+  // visible text, so it covers that case too; it is pinned by the pending cases here and by the shown-text case below.
+  it('supersede after Live text was shown: the replacing token keeps replace:true', () => {
+    const h = boot(); dispatch(h);
+    h.go(Q + 500); h.a.routerTurn(rt(1, `${words(10)} `, Q + 500));
+    h.go(Q + 1500); h.a.forward(tok(1, 'New ', { replace: true }));
+    expect(sigs(h)).toContain('tok:New |pipeline|replace@1');
   });
 });

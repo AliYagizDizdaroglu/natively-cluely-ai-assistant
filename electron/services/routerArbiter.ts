@@ -58,6 +58,7 @@ interface Turn {
   liveCaptured: boolean; shadowCaptured: boolean; appendedCaptured: boolean;
   appendLabelPending: boolean;      // the first pipeline token sent after an append carries the "(full answer)" label
   sent: number;
+  visible: boolean;                 // fix4: this turn has already sent visible text (a token or a final)
 }
 
 export class RouterArbiter {
@@ -345,6 +346,8 @@ export class RouterArbiter {
 
   private sendPipeline(t: Turn, o: Outbound, label = false): void {
     const app = t.mode === 'appended' ? ({ append: true, replace: false } as const) : {};   // an append never replaces the Live bubble
+    // fix4 (R2): replace:true overwrites the previous bubble, so it is kept only when this turn already has visible text
+    if (!t.visible && (o.ch === 'token' || o.ch === 'final') && o.p.replace) o = { ...o, p: { ...o.p, replace: false } } as Outbound;
     if (o.ch === 'source') this.emit(t, { ch: 'source', label: o.label, turnId: t.id });
     else if (o.ch === 'token') {
       if (label) t.appendLabelPending = false;
@@ -446,7 +449,10 @@ export class RouterArbiter {
 
   // ---------------------------------------------------------------- records
 
-  private emit(t: Turn, o: Outbound): void { t.sent++; this.deps.send(o); }
+  private emit(t: Turn, o: Outbound): void {
+    if ((o.ch === 'token' && o.p.token !== '') || (o.ch === 'final' && o.p.answer !== '')) t.visible = true;
+    t.sent++; this.deps.send(o);
+  }
 
   private turn(id: number): Turn {
     let t = this.turns.find((x) => x.id === id);
@@ -458,7 +464,7 @@ export class RouterArbiter {
       historyText: null, historyAdded: false, pQuestion: null, pConf: null,
       live: { phase: 'idle', stripper: createUnknownMarkerStripper(), shownRaw: 0, shownText: '', V: null, capTimer: undefined },
       appended: false, appendReason: null, superseded: false, lineWritten: false, replacedAt: null, staleEnds: 0, replaceSeen: false,
-      liveCaptured: false, shadowCaptured: false, appendedCaptured: false, appendLabelPending: true, sent: 0,
+      liveCaptured: false, shadowCaptured: false, appendedCaptured: false, appendLabelPending: true, sent: 0, visible: false,
     };
     this.turns.push(t);
     return t;
