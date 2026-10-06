@@ -164,6 +164,7 @@ import { LiveRouterSession } from "./audio/LiveRouterSession"
 import { RouterArbiter, type Outbound } from "./services/routerArbiter"
 import { createRouterWiring } from "./services/routerWiring"
 import { routerDiag } from "./services/routerDiag"
+import { shouldFailOver, EAR_FAILOVER_MODEL } from "./services/earFailover"
 import { ChipDeduper } from "./services/ChipDeduper"
 import { SttChannel } from "./audio/SttChannel"
 import { DeepgramStreamingSTT } from "./audio/DeepgramStreamingSTT"
@@ -923,6 +924,8 @@ export class AppState {
   // answer is shown, and the wiring module that holds the glue. All of it is inert unless NATIVELY_LIVE_ROUTER=1.
   private readonly routerEnabled = process.env.NATIVELY_LIVE_ROUTER === '1';
   private routerSession: LiveRouterSession | null = null;
+  private earFailedOver = false;          // Task 11: the ear moved 3.1 -> 2.5 once this meeting; reset in endMeeting, no fail-back
+  private earOverrideLogged = false;      // the NATIVELY_LIVE_MODEL "failover disabled" line is written once per process
   private routerArbiter!: RouterArbiter;                          // built in setupIntelligenceEvents (constructor time)
   private routerWiring!: ReturnType<typeof createRouterWiring>;
   /** Shared across whisper→Groq and Live so one question yields one chip. */
@@ -2217,15 +2220,33 @@ export class AppState {
     await this.intelligenceManager.runWhatShouldISay(d.question, 1.0, imagePaths, { intentOverride: intent, bypassCooldown: true, ...(d.liveTexts?.length ? { liveTexts: d.liveTexts } : {}), ...(opts.replace ? { replaceAnswer: true } : {}), ...(d.turnId != null ? { turnId: d.turnId } : {}) });
   }
 
-  private startLiveRouter(): void {
+  private startLiveRouter(model?: string): void {
     this.stopLiveRouter();
     const { CredentialsManager } = require('./services/CredentialsManager');
     const router = new GeminiLiveRouter(
-      () => CredentialsManager.getInstance().getGeminiApiKey() || process.env.GEMINI_API_KEY
+      () => CredentialsManager.getInstance().getGeminiApiKey() || process.env.GEMINI_API_KEY,
+      undefined,   // connectFn: the default
+      model ?? (this.earFailedOver ? EAR_FAILOVER_MODEL : undefined)   // no fail-back: a mode-change restart after the failover stays on 2.5; undefined = today's LIVE_ROUTER_MODEL
     );
+    // A NATIVELY_LIVE_MODEL override means the user picked the ear: the failover never swaps it.
+    const modelOverridden = !!process.env.NATIVELY_LIVE_MODEL;
+    if (this.routerEnabled && modelOverridden && !this.earOverrideLogged) {
+      this.earOverrideLogged = true;
+      routerDiag(`[Router] ear failover disabled reason=NATIVELY_LIVE_MODEL model=${router.getModel()}`);
+    }
     router.on('status', (s: { state: string; reason?: string }) => {
       console.log(`[Main] Live Mode status: ${s.state}${s.reason ? ` (${s.reason})` : ''}`);
       this.broadcast('live-mode-status', s);
+      if (this.liveRouter === router && shouldFailOver({
+        flag: this.routerEnabled, model: router.getModel(), state: s.state, reason: s.reason,
+        alreadyFailedOver: this.earFailedOver, modelOverridden,
+      })) {
+        this.earFailedOver = true;
+        routerDiag(`[Router] ear failover from=3.1 to=2.5 reason=${s.reason ?? '-'} dispatches_before=${this.routerArbiter.dispatchCount()}`);
+        this.routerArbiter.setEar('2.5');
+        // startLiveRouter -> onEarModel then writes `[Router] ear model=<2.5 id>`. Skipped if the meeting ended meanwhile.
+        setImmediate(() => { if (this.isMeetingActive && this.liveMode !== 'off') this.startLiveRouter(EAR_FAILOVER_MODEL); });
+      }
     });
     router.on('question', (q: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => {
       if (!this.isMeetingActive || this.liveMode === 'off') return;
@@ -2344,6 +2365,7 @@ export class AppState {
     this.microphoneCapture?.stop();
     this.stopLiveRouter();
     this.stopRouterSession();
+    this.earFailedOver = false;
     this.liveHold.cancel();
     this.fragmentHold.cancel();
     this.resetTurn();
