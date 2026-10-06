@@ -253,6 +253,69 @@ export function answersFileFor(model, tag = '') {
     return arm === ANSWER_MODELS[0] ? 'interview60.answers.json' : `interview60.answers.${arm.replace(/\//g, '_')}.json`;
 }
 
+/**
+ * NATIVELY_FLIGHT_ARMS (live-router plan Task 13): a comma list of paired-arm tags. Set, it returns exactly those
+ * arms from `arms` in that order; unset or empty returns `arms` unchanged. An unknown, duplicated or empty tag
+ * throws, so a typo can neither fly the wrong arm nor silently skip one. main() calls it before anything is spent.
+ */
+export function selectArms(arms, env) {
+    const raw = env.NATIVELY_FLIGHT_ARMS;
+    if (raw === undefined || raw === '') return arms;
+    const known = new Map(arms.map((a) => [a.tag, a]));
+    const seen = new Set();
+    return raw.split(',').map((t) => {
+        const tag = t.trim();
+        if (!known.has(tag)) throw new Error(`NATIVELY_FLIGHT_ARMS names ${JSON.stringify(tag)}, which is not an arm tag. Known: ${[...known.keys()].join(', ')}`);
+        if (seen.has(tag)) throw new Error(`NATIVELY_FLIGHT_ARMS names ${JSON.stringify(tag)} twice`);
+        seen.add(tag);
+        return known.get(tag);
+    });
+}
+
+/**
+ * Everything main() derives from the arms, as one pure function, so the selection (I5) reaches the file moves, the
+ * arms loop, the judge exports and done.toGrade from the SAME list.
+ *   arms       the answers.mjs passes to run, in order ({ model, args, tag? }; untagged = ANSWER_MODELS / focused)
+ *   paired     the tagged arms among them (done.pairedArms and the judge pair files come from it)
+ *   skipped    selected-or-default paired arms that cannot fly this hour: [{ tag, why: 'no-capture' | 'no-cue-rule' }]
+ *   moveAside  answers file NAMES to move aside before the passes (the passes resume from an existing file)
+ *   toGrade    judge pair file names to grade
+ * NATIVELY_FLIGHT_ARMS set: only the selected paired arms; no ANSWER_MODELS, focused or chains pass; their files only.
+ * Unset: byte-identical to what main() built inline before this function existed (pinned against a snapshot).
+ * `capturedJson` is the hour's captured prompts, or null when there are none (not a dry run); `dry` skips the capture gates.
+ * @param {Record<string, string | undefined>} env
+ * @param {Record<string, any> | null} capturedJson
+ * @param {boolean} dry
+ * @param {{ promptsFile: string, roster?: string }} opts
+ */
+export function flightPlan(env, capturedJson, dry, { promptsFile, roster = ROSTER_NAME }) {
+    const selected = env.NATIVELY_FLIGHT_ARMS ? selectArms(PAIRED_ARMS, env) : null;
+    const candidates = selected ?? PAIRED_ARMS;
+    const focusedOnly = focusedFor(roster, env);
+    const focusedCaptured = dry || capturedJson !== null;
+    const focusedArgs = ['--only', focusedOnly ?? '', ...(focusedCaptured ? ['--captured', promptsFile] : [])];
+    const capturedIds = capturedJson ? capturedOnly(capturedJson) : [];
+    const replayable = (a) => !a.captured || (focusedCaptured && (dry || capturedIds.length));
+    const wanted = (a) => !a.when || dry || a.when(capturedJson);
+    const skipped = candidates.flatMap((a) => (!replayable(a) ? [{ tag: a.tag, why: 'no-capture' }] : !wanted(a) ? [{ tag: a.tag, why: 'no-cue-rule' }] : []));
+    const paired = candidates.filter((a) => replayable(a) && wanted(a))
+        .map((a) => ({ model: a.model, tag: a.tag, args: ['--tag', a.tag, ...a.args, ...(a.captured ? ['--captured', promptsFile, ...(dry ? [] : ['--only', capturedIds.join(',')])] : [])] }));
+    const pairFile = (a) => `interview60.judge.pairs.${a.model}_${a.tag}.json`;
+    if (selected) {
+        return {
+            arms: paired, paired, skipped,
+            moveAside: selected.map((a) => answersFileFor(a.model, a.tag)),
+            toGrade: ['interview60.judge.pairs.json', ...paired.map(pairFile)],
+        };
+    }
+    return {
+        arms: [...ANSWER_MODELS.map((model) => ({ model, args: [] })), ...(focusedOnly ? FOCUSED_MODELS.map((model) => ({ model, args: focusedArgs })) : []), ...paired],
+        paired, skipped,
+        moveAside: [...ANSWER_MODELS.map((m) => answersFileFor(m)), ...FOCUSED_MODELS.map((m) => answersFileFor(m)), ...PAIRED_ARMS.map((a) => answersFileFor(a.model, a.tag)), 'interview60.chains.json'],
+        toGrade: ['interview60.judge.pairs.json', ...ANSWER_MODELS.map((m) => `interview60.judge.pairs.${m}.json`), ...paired.map(pairFile)],
+    };
+}
+
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
 const RUNS_DIR = path.join(HERE, 'interview60.runs');
@@ -311,6 +374,9 @@ async function main() {
     const focusedEnv = { NATIVELY_FLIGHT_FOCUSED: process.env.NATIVELY_FLIGHT_FOCUSED };
     let focusedOnly;
     try { focusedOnly = focusedFor(ROSTER_NAME, focusedEnv); } catch (e) { log(`ABORT ${e.message}`); return 2; }
+    // NATIVELY_FLIGHT_ARMS names are checked before anything is spent: a typo aborts here, not after the hour.
+    try { selectArms(PAIRED_ARMS, process.env); } catch (e) { log(`ABORT ${e.message}`); return 2; }
+    const armsEnv = process.env.NATIVELY_FLIGHT_ARMS || null;
     if (!fs.existsSync(path.join(PROJ, '.env'))) { log('ABORT no .env beside package.json — the probe and the passes read the Gemini key from it'); return 2; }
 
     // 1. Which Live ear.
@@ -333,7 +399,6 @@ async function main() {
     log(`RUN-DIR ${runDir}   (auto exit ${autoExit}; 1 means the gate failed — its table is above)`);
 
     // 3. Answer arms (full, then the focused Flash arms) + chains, into the run folder.
-    if (!dry) for (const f of [...ANSWER_MODELS.map((m) => answersFileFor(m)), ...FOCUSED_MODELS.map((m) => answersFileFor(m)), ...PAIRED_ARMS.map((a) => answersFileFor(a.model, a.tag)), 'interview60.chains.json']) moveAside(path.join(HERE, f), stamp);
     const answersFiles = [];
     // The focused arms replay the app's OWN call for those questions — same system
     // instruction, same user turn, same résumé context and transcript, only the model id
@@ -347,25 +412,26 @@ async function main() {
     if (!focusedCaptured) log('WARN  no captured prompts — the focused arms will send their own framing, NOT the app\'s call');
     if (focusedEnv.NATIVELY_FLIGHT_FOCUSED === 'off') log(`FOCUSED  off by NATIVELY_FLIGHT_FOCUSED=off - skipping the ${FOCUSED_MODELS.length} focused arms`);
     else if (!focusedOnly) log(`FOCUSED  roster ${ROSTER_NAME} has no focused five — skipping the ${FOCUSED_MODELS.length} focused arms`);
-    const focusedArgs = ['--only', focusedOnly ?? '', ...(focusedCaptured ? ['--captured', promptsFile] : [])];
     const capturedJson = focusedCaptured && !dry ? JSON.parse(fs.readFileSync(promptsFile, 'utf8')) : null;
     const capturedIds = capturedJson ? capturedOnly(capturedJson) : [];
     if (focusedCaptured && !dry) log(`paired captured arm: ${capturedIds.length} spoken items have a replayable prompt this hour`);
-    const replayable = (a) => !a.captured || (focusedCaptured && (dry || capturedIds.length));
-    const wanted = (a) => !a.when || dry || a.when(capturedJson);
+    // One plan for the arms loop, the file moves, the judge exports and done.toGrade (I5): with NATIVELY_FLIGHT_ARMS
+    // set they all use the SAME selected list. Moving files aside here rather than before the prompts step changes
+    // nothing: prompts.mjs writes into the run folder, not into the answers files that are moved.
+    const plan = flightPlan(process.env, capturedJson, dry, { promptsFile });
+    if (!dry) for (const f of plan.moveAside) moveAside(path.join(HERE, f), stamp);
     // Named in numbers, once, rather than per arm: how many of the replayable captured prompts
     // carry the rule at all (0 on a pre-cue hour) or how many of them lack it (a mixed hour).
     const ruleCount = capturedIds.filter((id) => String(capturedJson[id].system ?? '').includes(CUE_RULE_MARK)).length;
     const ruleSummary = ruleCount === 0
         ? `0 of ${capturedIds.length} carry the cue rule`
         : `${capturedIds.length - ruleCount} of ${capturedIds.length} lack it`;
-    for (const a of PAIRED_ARMS) {
-        if (!replayable(a)) log(`WARN  paired arm ${a.tag} skipped — it replays the hour's captured prompts and there are none`);
-        else if (!wanted(a)) log(`paired arm ${a.tag} skipped — ${ruleSummary}, so --no-cues would refuse an id mid-flight instead`);
+    for (const s of plan.skipped) {
+        if (s.why === 'no-capture') log(`WARN  paired arm ${s.tag} skipped — it replays the hour's captured prompts and there are none`);
+        else log(`paired arm ${s.tag} skipped — ${ruleSummary}, so --no-cues would refuse an id mid-flight instead`);
     }
-    const paired = PAIRED_ARMS.filter((a) => replayable(a) && wanted(a))
-        .map((a) => ({ model: a.model, tag: a.tag, args: ['--tag', a.tag, ...a.args, ...(a.captured ? ['--captured', promptsFile, ...(dry ? [] : ['--only', capturedIds.join(',')])] : [])] }));
-    const arms = [...ANSWER_MODELS.map((model) => ({ model, args: [] })), ...(focusedOnly ? FOCUSED_MODELS.map((model) => ({ model, args: focusedArgs })) : []), ...paired];
+    const { arms, paired } = plan;
+    if (armsEnv) log(`ARMS  ${arms.map((a) => a.tag).join(',')} (NATIVELY_FLIGHT_ARMS); untagged arms and chains skipped`);
     for (const { model, tag, args } of arms) {
         await run([path.join(HERE, 'interview60.answers.mjs'), '--model', model, ...args], { dry });
         const src = path.join(HERE, answersFileFor(model, tag));
@@ -375,9 +441,11 @@ async function main() {
         fs.copyFileSync(src, dest);
         answersFiles.push(dest);
     }
-    await run([path.join(HERE, 'interview60.chains.mjs')], { dry });
-    const chains = path.join(HERE, 'interview60.chains.json');
-    if (!dry && fs.existsSync(chains)) fs.copyFileSync(chains, path.join(runDir, 'interview60.chains.json'));
+    if (!armsEnv) {
+        await run([path.join(HERE, 'interview60.chains.mjs')], { dry });
+        const chains = path.join(HERE, 'interview60.chains.json');
+        if (!dry && fs.existsSync(chains)) fs.copyFileSync(chains, path.join(runDir, 'interview60.chains.json'));
+    }
 
     // 4. Judge exports: the hour's own answers, then each arm.
     const judge = path.join(HERE, 'interview60.judge.mjs');
@@ -389,9 +457,10 @@ async function main() {
         commit, stt: process.env.NATIVELY_STT_PROVIDER ?? null,
         // 'captured' = the focused arms replayed the app's own system + user turn; 'own-framing'
         // = they sent the arm's bare question text, which is not the same experiment.
-        focusedPrompts: focusedCaptured ? 'captured' : 'own-framing', focusedOnly,
+        focusedPrompts: focusedCaptured ? 'captured' : 'own-framing', focusedOnly: armsEnv ? null : focusedOnly,
+        ...(armsEnv ? { arms: armsEnv } : {}),
         pairedArms: paired.map((a) => a.tag),
-        toGrade: ['interview60.judge.pairs.json', ...ANSWER_MODELS.map((m) => `interview60.judge.pairs.${m}.json`), ...paired.map((a) => `interview60.judge.pairs.${a.model}_${a.tag}.json`)],
+        toGrade: plan.toGrade,
         next: 'grade each pairs file with its rubric into interview60.judge.verdicts[.<model>].json, then interview60.judge.mjs <run> [--answers <file>] --verdicts <that file> --model <the exact model id the grading agent ran on, from its transcript>',
     };
     if (!dry) fs.writeFileSync(path.join(runDir, 'interview60.flight.done.json'), JSON.stringify(done, null, 1));

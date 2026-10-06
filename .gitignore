@@ -276,4 +276,9 @@ electron/test/golden/scenario50-tts-local/
 electron/test/golden/holdout40.wav
 electron/test/golden/holdout40-tts/
 electron/test/golden/holdout40-tts-local/
+
+# live40 roster — router40's clips copied in (live40.clips.mjs) and the wav built from them
+electron/test/golden/live40.wav
+electron/test/golden/live40-tts/
+electron/test/golden/live40-tts-local/
 electron/test/golden/*.stale-*.json
