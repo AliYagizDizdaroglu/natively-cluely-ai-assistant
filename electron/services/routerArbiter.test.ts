@@ -70,6 +70,18 @@ const kv = (l: string): Record<string, string> => Object.fromEntries([...l.match
 const one = (h: H): Record<string, string> => { const ls = lines(h); expect(ls).toHaveLength(1); return kv(ls[0]); };
 const caps = (h: H) => h.capture.map((l) => { expect(l.startsWith('[RouterAnswer] ')).toBe(true); return JSON.parse(l.slice('[RouterAnswer] '.length)); });
 
+describe('RouterArbiter: I-1 a letterless leading token does not hide a hard first word', () => {
+  it.each(['" hard', '... hard hard hard hard hard hard hard hard'])('%s routes hard: no Live, the word never shown', (text) => {
+    const h = boot();
+    dispatch(h);
+    h.go(Q + 600); h.a.routerTurn(rt(1, text, Q + 600, done(Q + 600)));
+    h.a.forward(tok(1, 'Answer ')); h.a.forward(fin(1, 'Answer')); h.a.forward(end(1));
+    expect(sigs(h)).toEqual(['tok:Answer |pipeline@1', 'fin:Answer|pipeline@1']);
+    const k = one(h);
+    expect(k.route).toBe('hard'); expect(k.shown).toBe('pipeline');
+  });
+});
+
 describe('RouterArbiter: flag off (item 1, 2)', () => {
   it('passes every Outbound through unchanged, in order; history passes; end ignored; nothing logged', () => {
     const h = harness(false);

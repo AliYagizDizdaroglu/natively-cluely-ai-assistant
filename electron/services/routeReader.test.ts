@@ -34,6 +34,20 @@ describe('routeReader edge cases (spec 9.1)', () => {
     expect(completeFirstWord('hard', true)).toBe('hard');
     expect(completeFirstWord('', true)).toBeNull();
   });
+  it('I-1: the first word is the first token with a letter; letterless leading tokens are skipped', () => {
+    expect(completeFirstWord('" hard', true)).toBe('hard');
+    expect(completeFirstWord('... hard', true)).toBe('hard');
+    expect(completeFirstWord('- Hard.', true)).toBe('Hard.');
+    expect(completeFirstWord('1. hard', true)).toBe('hard');   // "1." has no letter either
+    expect(completeFirstWord('— " ... hard x', false)).toBe('hard');
+    expect(completeFirstWord('" hard', false)).toBeNull();     // the letter token is still arriving
+    expect(completeFirstWord('" ', false)).toBeNull();         // no letter token yet
+    expect(completeFirstWord('...', true)).toBeNull();         // never one
+    expect(routeFirstWord(completeFirstWord('... hard hard hard hard hard hard hard hard', true)!).route).toBe('hard');
+    expect(decisionRoute('" hard', true, true)).toBe('hard');
+    expect(decisionRoute('... hard hard hard hard hard hard hard hard', true, true)).toBe('hard');
+    expect(decisionRoute('"Mutable lists are changed in place by many operations here', true, true)).toBe('easy-answer');
+  });
   it('markers', () => {
     for (const t of ['a <b> c d e f g h', 'x [y] z a b c d e', 'one __CUES__ two three four five six seven']) expect(checkCompleted(t, true, true).reason).toBe('marker');
   });

@@ -8,11 +8,17 @@ export function lettersOnly(tok: string): string { return tok.toLowerCase().repl
 export function isHardWord(tok: string): boolean { return /^(hard)+$/.test(lettersOnly(tok)); }
 export function isCleanHard(tok: string): boolean { return lettersOnly(tok) === 'hard'; }
 
-/** The first token once it is complete: whitespace follows it, or the turn has ended. */
+/**
+ * The first word is the first token with a letter (review I-1): letterless leading tokens such as `"`, `...` or `1.`
+ * are skipped. It is complete once whitespace follows it, or the turn has ended.
+ */
 export function completeFirstWord(text: string, ended: boolean): string | null {
-    const m = /^\s*(\S+)(\s)?/.exec(text);
-    if (!m) return null;
-    return m[2] !== undefined || ended ? m[1] : null;
+    const re = /\S+/g; let m: RegExpExecArray | null;
+    while ((m = re.exec(text))) {
+        if (lettersOnly(m[0]) === '') continue;
+        return m.index + m[0].length < text.length || ended ? m[0] : null;
+    }
+    return null;
 }
 
 export function routeFirstWord(word: string): { route: 'hard' | 'live'; reason: '-' | 'garbled-hard' } {
