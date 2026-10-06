@@ -194,9 +194,9 @@ export interface ElectronAPI {
 
   // Intelligence Mode Events
   onIntelligenceAssistUpdate: (callback: (data: { insight: string }) => void) => () => void
-  onIntelligenceSuggestedAnswerToken: (callback: (data: { token: string; question: string; confidence: number; replace?: boolean; cues?: string[] }) => void) => () => void
-  onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number; replace?: boolean }) => void) => () => void
-  onIntelligenceSuggestedAnswerSource: (callback: (label: string) => void) => () => void
+  onIntelligenceSuggestedAnswerToken: (callback: (data: { token: string; question: string; confidence: number; replace?: boolean; cues?: string[]; turnId?: number; origin?: 'live' | 'pipeline'; append?: boolean; label?: string }) => void) => () => void
+  onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number; replace?: boolean; turnId?: number; origin?: 'live' | 'pipeline'; append?: boolean }) => void) => () => void
+  onIntelligenceSuggestedAnswerSource: (callback: (label: string, turnId?: number) => void) => () => void
   onDetectedQuestion: (callback: (chip: {
     id: string;
     question: string;
