@@ -30,6 +30,14 @@ import net from 'net';
 import { INTERVIEW, TTS_LOCAL_DIR, WAV_NAME, rosterLabel } from './roster.mjs';
 import { logSize as libLogSize, logSince as libLogSince, waitForLogLines, snapshotRun, sleep as libSleep, playStartFromStdout, playEndFromStdout, resolveEnvKey } from './interview60.lib.mjs';
 import { computeRun, computeRunFromFiles, evaluateGate } from './interview60.metrics.mjs';
+import { parseProbeOffset, waitProbeSettled } from './probeWait.mjs';
+import { buildCaptureFiles, routerPreflight } from './routerCapture.mjs';
+
+// NATIVELY_LIVE_ROUTER=1: the router session, its gates and its capture files (live-router plan Task 13).
+const ROUTER_ON = process.env.NATIVELY_LIVE_ROUTER === '1';
+// Byte offset of natively_debug.log right before the LAST preflight's probe wav played (I8: probe() can retry and replay it).
+// preflight() sets it when it runs in this process; probe() sets it from the `PROBE_LOG_OFFSET` line of the preflight child it ran.
+let lastProbeOffset = null;
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.resolve(HERE, '../../..');
@@ -138,7 +146,11 @@ function wavMismatch() {
     fs.closeSync(fd);
     const i = head.subarray(0, n).indexOf(Buffer.from('data', 'ascii'), 12);
     if (i < 0) return `${WAV_NAME} has no data chunk in its header`;
-    const actual = head.readUInt32LE(i + 4) / BYTES_PER_SEC;
+    const dataLen = head.readUInt32LE(i + 4);
+    // The header alone can be intact on a physically cut file (review M2): the audio chunk must also fill the file.
+    const size = fs.statSync(wav).size;
+    if (size - (i + 8) !== dataLen) return `${WAV_NAME} is ${size} bytes but its header promises ${dataLen} bytes of audio after offset ${i + 8} (${i + 8 + dataLen} in all) — truncated or padded; rebuild the audio`;
+    const actual = dataLen / BYTES_PER_SEC;
     const expected = computeOffsets().reduce((s, o, k) => s + o.clipSecs + INTERVIEW[k].gapMs / 1000, 0);
     if (Math.abs(actual - expected) <= 1) return null;
     return `${WAV_NAME} holds ${(actual / 60).toFixed(1)} min but ${rosterLabel()} needs ${(expected / 60).toFixed(1)} min — rebuild the audio with the same NATIVELY_ROSTER / NATIVELY_SCENARIOS`;
@@ -357,6 +369,7 @@ async function probe() {
     }
     const out = runPreflight();
     console.log(out);
+    lastProbeOffset = parseProbeOffset(out);
     return /READY — safe to start the hour/.test(out) ? { ready: true } : { ready: false, reason: 'preflight not green' };
 }
 
@@ -388,6 +401,8 @@ async function preflight() {
     // silently detects nothing (see playWav).
     const probe = path.join(HERE, 'probe-continuous.wav');
     const before = logSize(DEBUG_LOG);
+    lastProbeOffset = before;
+    console.log(`PROBE_LOG_OFFSET ${before}`);   // auto() runs this preflight as a child process and reads the offset from its output
     console.log('\n  playing a 34s continuous probe to prove the audio chain...');
     let playErr = null;
     try { await playWav(probe, () => {}); } catch (e) { playErr = e.message; }
@@ -414,6 +429,12 @@ async function preflight() {
         const using = [...logSince(DEBUG_LOG, 0).matchAll(/\[Main\] Using ([^\n]+?) for interviewer/g)].pop();
         ok('STT provider is the one requested', !!using && using[1].toLowerCase().includes(wantedStt.toLowerCase()),
             using ? `${using[1]} (NATIVELY_STT_PROVIDER=${wantedStt})` : `no [Main] Using <Class> for interviewer line for NATIVELY_STT_PROVIDER=${wantedStt}`);
+    }
+
+    // Router gates (plan Task 13): the sessions exist only once the app runs, so they are checked here, not at T-6.
+    if (ROUTER_ON) {
+        const rp = routerPreflight(logSince(DEBUG_LOG, 0), process.env);
+        for (const l of rp.lines) ok(l.slice(5), l.startsWith('PASS'));
     }
 
     console.log(`\n  ${fail.length ? 'NOT READY — ' + fail.join('; ') : 'READY — safe to start the hour'}`);
@@ -558,6 +579,20 @@ async function auto(label = 'after') {
         console.log(`AUTO  not ready (${p.reason}) — retrying in 2 min.`);
         await sleep(120000);
     }
+    // The probe clip is answered too: the hour must not start while those answers are still streaming (I8).
+    // Only the log from the LAST attempt's probe play counts: probe() can retry and replay the wav.
+    if (lastProbeOffset === null) { console.log('AUTO  the preflight printed no PROBE_LOG_OFFSET line — cannot tell which log lines are the probe\'s. The hour was NOT spent.'); process.exit(1); }
+    const settled = await waitProbeSettled({
+        readLog: () => logSince(DEBUG_LOG, lastProbeOffset), sleep, flagOn: ROUTER_ON,
+        log: (why) => console.log(`AUTO  probe not settled: ${why}`),
+    });
+    if (!settled) { console.log('AUTO  probe answers not finished in 120 s — The hour was NOT spent.'); process.exit(1); }
+    // The gates are re-read here, after the wait, and not only inside preflight().
+    if (ROUTER_ON) {
+        const rp = routerPreflight(logSince(DEBUG_LOG, 0), process.env);
+        for (const l of rp.lines) console.log(`AUTO  router gate ${l}`);
+        if (!rp.ok) { console.log('AUTO  router gates failed after the probe settled — The hour was NOT spent.'); process.exit(1); }
+    }
     await appPass();
     report();
     const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
@@ -578,6 +613,14 @@ async function auto(label = 'after') {
     if (skipped.length) console.log(`AUTO  snapshot skipping stale (older than this run): ${skipped.join(', ')}`);
     const copied = snapshotRun(dest, files);
     console.log(`AUTO  snapshot ${dest}: ${copied.join(', ')}`);
+    if (ROUTER_ON) {
+        // The router capture files (live = what the router showed, shadow = the pipeline's answer to the same turn,
+        // appended ones flagged), read from the SNAPSHOT's own copy of the log and timeline.
+        const cap = buildCaptureFiles(fs.readFileSync(path.join(dest, path.basename(DEBUG_LOG)), 'utf8'), JSON.parse(fs.readFileSync(path.join(dest, path.basename(TIMELINE)), 'utf8')));
+        fs.writeFileSync(path.join(dest, 'interview60.answers.router-live.json'), JSON.stringify(cap.live, null, 1));
+        fs.writeFileSync(path.join(dest, 'interview60.answers.router-shadow.json'), JSON.stringify(cap.shadow, null, 1));
+        console.log(`AUTO  router capture: ${cap.live.length} live, ${cap.shadow.length} shadow (${cap.shadow.filter((e) => e.appended).length} appended); ${cap.unmapped.length} unmapped; ${cap.problems.length} problems${cap.problems.length ? ': ' + cap.problems.join('; ') : ''}`);
+    }
     gate(dest);
 }
 

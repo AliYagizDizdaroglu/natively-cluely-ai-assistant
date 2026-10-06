@@ -193,8 +193,15 @@ describe.skipIf(!HAVE_SOURCES)('live40 builder and wav:check', () => {
         expect(ok.code).toBe(0);
         expect(ok.out).toContain('live40.wav matches live40  47 items');
 
-        // Cut 2 s of PCM AND fix the header: the check reads the header's data length.
+        // Review M2: a file physically cut with its header left intact must fail too (the header alone used to pass it).
         const wav = fs.readFileSync(path.join(g, 'live40.wav'));
+        fs.writeFileSync(path.join(g, 'live40.wav'), wav.subarray(0, wav.length - 2 * 24000 * 2));
+        const cut = node([path.join(g, 'interview60.run.mjs'), 'wav:check'], g, env);
+        expect(cut.code).toBe(1);
+        expect(cut.out).toMatch(/live40\.wav is \d+ bytes but its header promises \d+ bytes of audio/);
+        fs.writeFileSync(path.join(g, 'live40.wav'), wav);
+
+        // Cut 2 s of PCM AND fix the header: the check reads the header's data length.
         const short = Buffer.from(wav.subarray(0, wav.length - 2 * 24000 * 2));
         short.writeUInt32LE(short.length - 8, 4);
         short.writeUInt32LE(short.length - 44, 40);
