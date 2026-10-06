@@ -63,6 +63,7 @@ interface Turn {
 
 export class RouterArbiter {
   private turns: Turn[] = [];
+  private undispatchedLogged = new Set<number>();
   private rts = new Map<number, RT>();
   private dispatched = new Set<number>();
   // Spec 4.1: down until setupComplete, so a router that never connects reads router-down (row 1) at once.
@@ -312,12 +313,19 @@ export class RouterArbiter {
     }
     const turnId = ev.ch === 'source' ? ev.turnId : ev.ch === 'token' || ev.ch === 'final' ? ev.p.turnId : ev.turnId;
     if (turnId === undefined) { if (ev.ch !== 'end' && ev.ch !== 'history') this.deps.send(ev); return; }   // item 2
-    const t = this.turn(turnId);
+    const known = this.turns.find((x) => x.id === turnId);
+    if (!known) {   // m-2: a turn this arbiter never saw (or evicted): nothing will ever dispatch or decide it, so it must not be held. A turn that is opened, not yet dispatched, is held as before.
+      if (!this.undispatchedLogged.has(turnId)) { this.undispatchedLogged.add(turnId); this.deps.diag(`[Router] undispatched turn=${turnId} kind=${ev.ch}`); }   // one set entry per turn id: fine for a meeting
+      if (ev.ch === 'history') this.deps.addHistory(ev.text, ev.question);
+      else if (ev.ch !== 'end') this.deps.send(ev);
+      return;
+    }
+    const t = known;
     switch (ev.ch) {
       case 'source': t.pipeSource = ev.label; this.route(t, ev); break;
       case 'token': {
         if (ev.p.replace) this.onSupersede(t);
-        if (ev.p.token === '' && !ev.p.replace && !ev.p.cues?.length) break;   // filtered away; cues must survive                 // filtered away: nothing to hold or show
+        if (ev.p.token === '' && !ev.p.replace && !ev.p.cues?.length) break;   // filtered away: nothing to hold or show; cues must survive
         if (ev.p.token !== '') {
           t.pipeText += ev.p.token;
           if (t.pipeFirstAt === null) t.pipeFirstAt = this.deps.now();
@@ -450,7 +458,7 @@ export class RouterArbiter {
   // ---------------------------------------------------------------- records
 
   private emit(t: Turn, o: Outbound): void {
-    if ((o.ch === 'token' && o.p.token !== '') || (o.ch === 'final' && o.p.answer !== '')) t.visible = true;
+    if ((o.ch === 'token' && (o.p.token !== '' || !!o.p.cues?.length)) || (o.ch === 'final' && o.p.answer !== '')) t.visible = true;   // m-3: a cue-only token is on screen too
     t.sent++; this.deps.send(o);
   }
 

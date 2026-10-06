@@ -82,6 +82,40 @@ describe('RouterArbiter: I-1 a letterless leading token does not hide a hard fir
   });
 });
 
+describe('RouterArbiter: m-2 events of a turn never dispatched pass straight through', () => {
+  it('logs one undispatched line per turn and sends every event as the flag-off path would; nothing is held', () => {
+    const h = boot();   // turn 7 was never seen at all
+    const id = 7;
+    h.a.forward(src(id, 'gemini')); h.a.forward(tok(id, 'A ')); h.a.forward(tok(id, 'B')); h.a.forward(fin(id, 'A B')); h.a.forward(hist(id, 'A B')); h.a.forward(end(id));
+    expect(sigs(h)).toEqual([`src:gemini@${id}`, `tok:A |-@${id}`, `tok:B|-@${id}`, `fin:A B|-@${id}`]);
+    expect(h.history.map((x) => x.text)).toEqual(['A B']);
+    expect(h.diag.filter((l) => l.startsWith('[Router] undispatched'))).toEqual(['[Router] undispatched turn=7 kind=source']);
+    expect(h.a.dispatchCount()).toBe(0);
+  });
+  it('a turn that is opened but not yet dispatched is still held, with no undispatched line', () => {
+    const h = boot();   // turn 1 opened
+    h.a.forward(src(1, 'gemini')); h.a.forward(tok(1, 'A '));
+    expect(sigs(h)).toEqual([]);
+    expect(h.diag.filter((l) => l.startsWith('[Router] undispatched'))).toEqual([]);
+  });
+  it('a turn that is dispatched keeps the normal path (held until the decision), and no undispatched line', () => {
+    const h = boot(); dispatch(h);
+    h.a.forward(tok(1, 'A '));
+    expect(sigs(h)).toEqual([]);
+    expect(h.diag.filter((l) => l.startsWith('[Router] undispatched'))).toEqual([]);
+  });
+});
+
+describe('RouterArbiter: m-3 a cue-only token counts as visible', () => {
+  it('a replacing token after a shown empty token with cues keeps replace:true', () => {
+    const h = boot(); dispatch(h);
+    h.a.forward(tok(1, '', { cues: ['c1'] }));
+    h.go(Q + 600); h.a.routerTurn(rt(1, 'hard', Q + 600, done(Q + 600)));
+    h.a.forward(tok(1, 'New ', { replace: true }));
+    expect(sigs(h).at(-1)).toBe('tok:New |pipeline|replace@1');
+  });
+});
+
 describe('RouterArbiter: flag off (item 1, 2)', () => {
   it('passes every Outbound through unchanged, in order; history passes; end ignored; nothing logged', () => {
     const h = harness(false);
@@ -359,7 +393,7 @@ describe('RouterArbiter: supersede (case E, Review Focus 4)', () => {
     expect(caps(h)[0]).toMatchObject({ text: `${words(10)} `, firstMs: 500, endMs: 1500 });
   });
 
-  it('while the decision is pending: only the replacing stream is released, its first token keeping replace:true', () => {
+  it('while the decision is pending: only the replacing stream is released, its first token sent with replace:false (nothing shown yet)', () => {
     const h = boot();
     dispatch(h);
     h.a.forward(src(1, 'gemini')); h.a.forward(tok(1, 'Old ')); h.a.forward(tok(1, 'stream')); h.a.forward(fin(1, 'Old stream'));
