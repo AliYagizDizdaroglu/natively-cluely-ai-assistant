@@ -89,7 +89,7 @@ export class LiveRouterSession extends EventEmitter {
     try {
       const pcm = resampleTo16kMono(chunk, sampleRate, numChannels);
       if (pcm.length) this.session.sendRealtimeInput({ audio: { data: pcm.toString('base64'), mimeType: 'audio/pcm;rate=16000' } });
-    } catch (err: any) { console.warn('[Router] write failed:', err?.message ?? err); }
+    } catch (err: any) { this.log(`[Router] write failed: ${err?.message ?? err}`); }
   }
 
   private setUp(up: boolean): void {
@@ -119,7 +119,7 @@ export class LiveRouterSession extends EventEmitter {
         callbacks: {
           onopen: () => { /* up comes at setupComplete only */ },
           onmessage: (msg) => { if (gen === this.generation) this.handleMessage(msg); },
-          onerror: (e: any) => { console.warn('[Router] ws error:', e?.message ?? e); },
+          onerror: (e: any) => { this.log(`[Router] ws error: ${e?.message ?? e}`); },
           onclose: (e: any) => this.handleClose(e, gen),
         },
       });
@@ -132,13 +132,15 @@ export class LiveRouterSession extends EventEmitter {
 
   private handleMessage(msg: any): void {
     const sc = msg?.serverContent;
-    if (this.quotaCloses && (sc || msg?.setupComplete)) this.quotaCloses = 0;
+    // Same as the ear (GeminiLiveRouter): only content proves the quota is back; setupComplete does not.
+    if (this.quotaCloses && sc) this.quotaCloses = 0;
     if (msg?.setupComplete) {
       this.reconnectAttempts = 0; this.inSlowRetry = false;
       this.log(`[Router] session up setup_ms=${this.now() - this.connectStartedAt}`);
       this.setUp(true);
     }
     if (msg?.goAway) {
+      this.log(`[Router] session close gen=${this.generation} code=- reason=goAway stale=no quota=no`);
       const s = this.session; this.session = null; this.generation++; // its own onclose is now stale
       try { s?.close(); } catch { /* noop */ }
       this.endTurn('closed', false); this.cur = null; this.setUp(false);
@@ -177,7 +179,7 @@ export class LiveRouterSession extends EventEmitter {
     if (quota) {
       this.quotaCloses++;
       const delay = Math.min(QUOTA_BACKOFF_MAX_MS, QUOTA_BACKOFF_BASE_MS * 2 ** (this.quotaCloses - 1));
-      this.log(`[Router] session reconnect attempt=quota-${this.quotaCloses} reason=quota backoff ${delay}ms`);
+      this.log(`[Router] session reconnect attempt=${this.quotaCloses} reason=quota backoff ${delay}ms`);
       if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
       this.reconnectTimer = setTimeout(() => { this.reconnectTimer = null; void this.connect(); }, delay);
       this.reconnectTimer.unref?.();
@@ -190,6 +192,8 @@ export class LiveRouterSession extends EventEmitter {
     if (this.stopping || this.reconnectTimer) return;
     if (this.reconnectAttempts >= QUICK_RECONNECT_ATTEMPTS) {
       if (!this.inSlowRetry) { this.inSlowRetry = true; this.emit('failed', { reason }); } // once, on the transition
+      this.reconnectAttempts++;
+      this.log(`[Router] session reconnect attempt=${this.reconnectAttempts} reason=${reason}`);
       this.reconnectTimer = setTimeout(() => { this.reconnectTimer = null; void this.connect(); }, SLOW_RETRY_INTERVAL_MS);
       this.reconnectTimer.unref?.();
       return;

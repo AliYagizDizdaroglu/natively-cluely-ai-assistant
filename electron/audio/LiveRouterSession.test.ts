@@ -123,10 +123,10 @@ describe('LiveRouterSession', () => {
     h.clock.t = 2000;
     h.cb(0).onmessage({ serverContent: { generationComplete: true } });
     expect(h.turns.length).toBe(3);
-    expect(h.turns[2]).toMatchObject({ seq: 1, text: 'Mutable is', completed: true, endKind: 'generationComplete', endedAt: 2000 });
+    expect(h.turns[2]).toMatchObject({ seq: 1, text: 'Mutable is', completed: true, endKind: 'generationComplete', endedAt: 2000, firstTextAt: 1000 });
     h.text(0, ' mutable');
     expect(h.turns.length).toBe(4);
-    expect(h.turns[3]).toMatchObject({ seq: 1, text: 'Mutable is mutable', afterComplete: true });
+    expect(h.turns[3]).toMatchObject({ seq: 1, text: 'Mutable is mutable', afterComplete: true, firstTextAt: 1000, completed: true, endKind: 'generationComplete', endedAt: 2000 });
     h.cb(0).onmessage({ serverContent: { turnComplete: true } });
     expect(h.turns.length).toBe(4);
     h.text(0, 'Next');
@@ -277,6 +277,85 @@ describe('LiveRouterSession', () => {
     ]);
     expect(h.conns.length).toBe(1);
     expect(h.logs.find((l) => l.startsWith('[Router] session connect'))).toContain('context_chars=1');
+    h.s.stop();
+  });
+
+  it('14. stop(): the open turn gets its closed end; a late setupComplete, text and close from the old session do nothing', async () => {
+    const h = harness();
+    await h.s.start(); h.up(0);
+    h.text(0, 'Half');
+    const old = h.cb(0);
+    const before = h.turns.length;
+    h.s.stop();
+    expect(h.turns.length).toBe(before + 1);
+    expect(h.turns[before]).toMatchObject({ seq: 1, text: 'Half', completed: false, endKind: 'closed' });
+    expect(h.states[h.states.length - 1].up).toBe(false);
+    expect(h.conns[0].closed).toBe(1);
+    const nTurns = h.turns.length, nStates = h.states.length;
+    old.onmessage({ setupComplete: {} });
+    expect(h.s.isUp()).toBe(false);
+    old.onmessage({ serverContent: { outputTranscription: { text: 'late' } } });
+    old.onclose({ code: 1006, reason: 'late' });
+    await vi.advanceTimersByTimeAsync(20000);
+    expect(h.turns.length).toBe(nTurns);
+    expect(h.states.length).toBe(nStates);
+    expect(h.conns.length).toBe(1);
+  });
+
+  it('15. a setupComplete between quota closes does not reset the backoff: it still doubles', async () => {
+    const h = harness();
+    await h.s.start(); h.up(0);
+    const quota = { code: 1011, reason: 'You exceeded your current quota' };
+    h.cb(0).onclose(quota);
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(h.conns.length).toBe(2);
+    h.up(1);
+    h.cb(1).onclose(quota);
+    await vi.advanceTimersByTimeAsync(9999);
+    expect(h.conns.length).toBe(2);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(h.conns.length).toBe(3);
+    h.s.stop();
+  });
+
+  it('16a. spec 5 lines: ws error in the log, a stale=no close on goAway, attempt=<n> on a quota reconnect', async () => {
+    const h = harness();
+    await h.s.start(); h.up(0);
+    h.cb(0).onerror({ message: 'sock' });
+    expect(h.logs).toContain('[Router] ws error: sock');
+    h.cb(0).onmessage({ goAway: {} });
+    expect(h.logs).toContain('[Router] session close gen=1 code=- reason=goAway stale=no quota=no');
+    await vi.advanceTimersByTimeAsync(300);
+    h.cb(1).onclose({ code: 1011, reason: 'You exceeded your current quota' });
+    expect(h.logs.some((l) => /^\[Router\] session reconnect attempt=1 reason=quota/.test(l))).toBe(true);
+    h.s.stop();
+  });
+
+  it('16b. spec 5 lines: every retry, slow ones included, logs attempt=<n>', async () => {
+    let n = 0;
+    const h = harness({ connectFn: async () => { n++; throw new Error('down'); } });
+    await h.s.start();
+    await vi.advanceTimersByTimeAsync(300 + 600 + 900);
+    expect(n).toBe(4);
+    await vi.advanceTimersByTimeAsync(15000);
+    expect(n).toBe(5);
+    expect(h.logs.filter((l) => l.startsWith('[Router] session reconnect attempt='))).toEqual([
+      '[Router] session reconnect attempt=1 reason=down',
+      '[Router] session reconnect attempt=2 reason=down',
+      '[Router] session reconnect attempt=3 reason=down',
+      '[Router] session reconnect attempt=4 reason=down',
+      '[Router] session reconnect attempt=5 reason=down',
+    ]);
+    h.s.stop();
+  });
+
+  it('16c. a write failure goes to the log', async () => {
+    let cbs: any;
+    const h = harness({ connectFn: async (params: any) => { cbs = params.callbacks; return { sendRealtimeInput: () => { throw new Error('send boom'); }, sendToolResponse: () => {}, close: () => {} }; } });
+    await h.s.start();
+    cbs.onmessage({ setupComplete: {} });
+    h.s.write(PCM, 16000);
+    expect(h.logs).toContain('[Router] write failed: send boom');
     h.s.stop();
   });
 });
