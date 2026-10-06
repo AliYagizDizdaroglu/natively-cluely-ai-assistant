@@ -1,0 +1,284 @@
+[
+ {
+  "id": "RE01",
+  "route": "EASY",
+  "class": "E",
+  "text": "Mutable types can be modified after creation, like lists or dictionaries, meaning their contents can change without altering their memory address. Immutable types, such as integers, strings, and tuples, cannot be changed once created; any operation that appears to modify them actually creates a new object in memory."
+ },
+ {
+  "id": "RH01",
+  "route": "HARD",
+  "class": "QF",
+  "text": "hard"
+ },
+ {
+  "id": "RE02",
+  "route": "EASY",
+  "class": "E",
+  "text": "A Docker image is a read-only template containing instructions for creating a Docker container. It includes the application code, libraries, dependencies, and environment variables needed to run the application. Images are built in layers, where each layer represents an instruction in the Dockerfile, optimizing storage and sharing. They serve as the blueprint from which containers are instantiated and executed."
+ },
+ {
+  "id": "EF01",
+  "route": "HARD",
+  "class": "QF",
+  "text": "Hard."
+ },
+ {
+  "id": "RH03",
+  "route": "HARD",
+  "class": "H",
+  "text": "Hard."
+ },
+ {
+  "id": "RE03",
+  "route": "EASY",
+  "class": "E",
+  "text": "You can run code using AWS Lambda, a serverless compute service that executes your code in response to events and automatically manages the underlying compute resources for you. You simply upload your code, and Lambda handles all the administration, scaling from a few requests per day to thousands per second."
+ },
+ {
+  "id": "EF02",
+  "route": "HARD",
+  "class": "AF",
+  "text": "hard"
+ },
+ {
+  "id": "RE08",
+  "route": "EASY",
+  "class": "E",
+  "text": "A Pod is the smallest deployable unit in Kubernetes, representing a single instance of a running process or a tightly coupled group of containers. A Deployment is a higher-level controller that manages a set of identical Pods, handling scaling, rollouts, and self-healing to maintain the desired state."
+ },
+ {
+  "id": "RE04",
+  "route": "EASY",
+  "class": "E",
+  "text": "A Python decorator is a function that takes another function as an argument, extends its behavior without explicitly modifying the original function's source code, and returns the modified function. They are commonly used for tasks like logging, access control, or caching by wrapping the target function with additional functionality."
+ },
+ {
+  "id": "EF03",
+  "route": "HARD",
+  "class": "QF",
+  "text": "hard"
+ },
+ {
+  "id": "RE05",
+  "route": "EASY",
+  "class": "E",
+  "text": "The Global Interpreter Lock is a mutex that prevents multiple native threads from executing Python bytecodes at once. This lock ensures thread safety for internal objects, but it effectively limits CPU bound tasks to a single core."
+ },
+ {
+  "id": "RH04",
+  "route": "HARD",
+  "class": "H",
+  "text": "hard"
+ },
+ {
+  "id": "RE06",
+  "route": "EASY",
+  "class": "E",
+  "text": "Docker layers matter because Docker caches each step of the build process. If a layer's instructions and dependencies haven't changed, Docker reuses the cached layer, significantly speeding up subsequent builds. By ordering layers from least frequently to most frequently changing, you minimize cache invalidation and drastically reduce overall build times."
+ },
+ {
+  "id": "RH07",
+  "route": "HARD",
+  "class": "H",
+  "text": "hard"
+ },
+ {
+  "id": "RH08",
+  "route": "HARD",
+  "class": "QF",
+  "text": "hard\".hard\".hard"
+ },
+ {
+  "id": "RE07",
+  "route": "EASY",
+  "class": "E",
+  "text": "A readiness probe in Kubernetes determines when a container is ready to start accepting traffic. If the probe fails, the endpoint controller removes the pod from all services, preventing users from reaching a container that is not fully initialized."
+ },
+ {
+  "id": "EF04",
+  "route": "HARD",
+  "class": "QF",
+  "text": "hard"
+ },
+ {
+  "id": "RH05",
+  "route": "HARD",
+  "class": "H",
+  "text": "Startup probes verify if an application has finished initializing, allowing you to delay other checks until the model finishes its ninety second loading sequence. Readiness probes then confirm the server is fully operational and safely able to process incoming inference requests without causing errors. Finally, liveness probes check if the container is still running, which triggers a restart only if the server crashes unexpectedly rather than during the long startup phase."
+ },
+ {
+  "id": "RH06",
+  "route": "HARD",
+  "class": "QF",
+  "text": "Hard."
+ },
+ {
+  "id": "RH09",
+  "route": "HARD",
+  "class": "H",
+  "text": "hard"
+ },
+ {
+  "id": "RH10",
+  "route": "HARD",
+  "class": "AF",
+  "text": "hard.hard"
+ },
+ {
+  "id": "RH11",
+  "route": "HARD",
+  "class": "QF",
+  "text": "hard."
+ },
+ {
+  "id": "RE09",
+  "route": "EASY",
+  "class": "E",
+  "text": "hard"
+ },
+ {
+  "id": "RH19",
+  "route": "HARD",
+  "class": "H",
+  "text": "hard"
+ },
+ {
+  "id": "RE10",
+  "route": "EASY",
+  "class": "E",
+  "text": "The Azure equivalent of AWS Lambda is Azure Functions. It is a serverless compute service that enables you to execute event triggered code without provisioning or managing underlying virtual servers."
+ },
+ {
+  "id": "RE11",
+  "route": "EASY",
+  "class": "E",
+  "text": "Overfitting occurs when a machine learning model learns the training data too well, including its noise and outliers, to the point that it performs poorly on new, unseen data. This happens when the model is too complex relative to the amount of data, capturing random fluctuations rather than the underlying true distribution."
+ },
+ {
+  "id": "EF05",
+  "route": "HARD",
+  "class": "QF",
+  "text": "hard"
+ },
+ {
+  "id": "RH12",
+  "route": "HARD",
+  "class": "H",
+  "text": "hard"
+ },
+ {
+  "id": "RH13",
+  "route": "HARD",
+  "class": "AF",
+  "text": "hard"
+ },
+ {
+  "id": "RH14",
+  "route": "HARD",
+  "class": "AF",
+  "text": "hard"
+ },
+ {
+  "id": "RE12",
+  "route": "EASY",
+  "class": "E",
+  "text": "Precision measures the accuracy of positive predictions, calculated as true positives divided by the sum of true positives and false positives. Recall measures the model's ability to find all actual positive instances, calculated as true positives divided by the sum of true positives and false negatives. The trade-off is that maximizing precision often reduces recall by being more conservative, while maximizing recall often lowers precision by casting a wider net."
+ },
+ {
+  "id": "RE13",
+  "route": "EASY",
+  "class": "E",
+  "text": "Data drift refers to changes in the distribution of your input features over time, whereas concept drift means the underlying relationship between the input data and the target variable has changed."
+ },
+ {
+  "id": "RH17",
+  "route": "HARD",
+  "class": "H",
+  "text": "Hard."
+ },
+ {
+  "id": "RE14",
+  "route": "EASY",
+  "class": "E",
+  "text": "Parquet is a columnar storage format that provides efficient compression and encoding, leading to faster read times for specific columns. CSV is a row-based text format which is easy to read but less efficient for large datasets due to larger file sizes and slower parsing. Parquet also preserves data types, whereas CSV requires type inference upon loading."
+ },
+ {
+  "id": "RH02",
+  "route": "HARD",
+  "class": "AF",
+  "text": "Hard."
+ },
+ {
+  "id": "RE15",
+  "route": "EASY",
+  "class": "E",
+  "text": "An inner join returns only the rows with matching values in both tables. A left join returns all rows from the left table and the matched rows from the right table, filling missing matches with null values."
+ },
+ {
+  "id": "RH15",
+  "route": "HARD",
+  "class": "H",
+  "text": "hard"
+ },
+ {
+  "id": "RH16",
+  "route": "HARD",
+  "class": "AF",
+  "text": "hard"
+ },
+ {
+  "id": "RE16",
+  "route": "EASY",
+  "class": "E",
+  "text": "A database index is a data structure that significantly improves the speed of data retrieval operations on a table. It functions like an index in a book, allowing the database system to find specific rows without scanning the entire table, though it requires additional storage space and may slow down write operations."
+ },
+ {
+  "id": "EF06",
+  "route": "HARD",
+  "class": "QF",
+  "text": "Hard."
+ },
+ {
+  "id": "RE17",
+  "route": "EASY",
+  "class": "E",
+  "text": "Git merge combines the history of two branches by creating a new merge commit, preserving the complete branching history but potentially cluttering the commit log. Git rebase rewrites the commit history by applying your changes onto the tip of another branch, resulting in a clean, linear history that is easy to follow."
+ },
+ {
+  "id": "EF07",
+  "route": "HARD",
+  "class": "AF",
+  "text": "hard"
+ },
+ {
+  "id": "RH18",
+  "route": "HARD",
+  "class": "H",
+  "text": "hard"
+ },
+ {
+  "id": "RE18",
+  "route": "EASY",
+  "class": "E",
+  "text": "To undo the last commit in Git while keeping your changes staged, you use git reset soft head followed by a tilde one. If you want to discard the changes completely, you use git reset hard head followed by a tilde one."
+ },
+ {
+  "id": "RH20",
+  "route": "HARD",
+  "class": "H",
+  "text": "hard"
+ },
+ {
+  "id": "RE19",
+  "route": "EASY",
+  "class": "E",
+  "text": "An idempotent API endpoint ensures that making multiple identical requests has the same side effect on the server as making a single request. For example, a DELETE request to remove a specific resource will delete it the first time, and subsequent identical requests will have no additional effect and will not change the resource state further."
+ },
+ {
+  "id": "RE20",
+  "route": "EASY",
+  "class": "E",
+  "text": "A 400 Bad Request status code is returned when the client makes an invalid request, indicating a client-side error like malformed JSON or missing parameters. A 500 Internal Server Error status code is returned when the server encounters an unexpected condition that prevents it from fulfilling the request, indicating a server-side failure."
+ }
+]
