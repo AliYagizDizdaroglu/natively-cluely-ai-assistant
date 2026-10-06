@@ -554,3 +554,84 @@ describe('GeminiLiveRouter quota backoff', () => {
     expect(h.connectCalls.length).toBe(2);
   });
 });
+
+describe('GeminiLiveRouter generation guard (DIAG Q1)', () => {
+  function multiSessionHarness() {
+    const sessions: Array<{ cbs: any; closed: number; sent: number }> = [];
+    const connectFn: LiveConnectFn = vi.fn(async (params: any) => {
+      const rec = { cbs: params.callbacks, closed: 0, sent: 0 };
+      sessions.push(rec);
+      return { sendRealtimeInput: () => { rec.sent++; }, sendToolResponse: () => {}, close: () => { rec.closed++; rec.cbs.onclose({ reason: 'connection closed', code: 1000 }); } } as LiveSessionLike;
+    }) as any;
+    const router = new GeminiLiveRouter(() => 'k', connectFn);
+    return { router, sessions, connectFn };
+  }
+
+  it('a goAway gives exactly one reconnect, not two', async () => {
+    vi.useFakeTimers();
+    const h = multiSessionHarness();
+    await h.router.start();
+    h.sessions[0].cbs.onopen();
+    h.sessions[0].cbs.onmessage({ goAway: { timeLeft: '10s' } });   // closes s0 -> its onclose must be stale
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(h.connectFn).toHaveBeenCalledTimes(2);                   // start + ONE reconnect
+  });
+
+  it("a stale session's onclose schedules no reconnect and leaves the live session in place", async () => {
+    vi.useFakeTimers();
+    const h = multiSessionHarness();
+    await h.router.start();
+    h.sessions[0].cbs.onmessage({ goAway: {} });
+    await vi.advanceTimersByTimeAsync(1000);
+    h.sessions[1].cbs.onopen();
+    h.sessions[0].cbs.onclose({ reason: 'The operation was aborted.', code: 1006 }); // the orphan dies later
+    await vi.advanceTimersByTimeAsync(20000);
+    expect(h.connectFn).toHaveBeenCalledTimes(2);
+    expect(h.router.getState()).toBe('connected');
+    h.router.write(Buffer.alloc(320), 16000);
+    expect(h.sessions[1].sent).toBe(1);                              // audio still reaches the live session
+  });
+
+  // regression pin: may already pass on today's code (stopping flag); broken once in the task report
+  it('a late session from a stale connect is closed, never adopted', async () => {
+    let resolveFirst: (s: LiveSessionLike) => void = () => {};
+    const late = { sendRealtimeInput: vi.fn(), sendToolResponse: vi.fn(), close: vi.fn() };
+    const connectFn: LiveConnectFn = vi.fn()
+      .mockImplementationOnce(() => new Promise<LiveSessionLike>((r) => { resolveFirst = r; }))
+      .mockImplementation(async () => ({ sendRealtimeInput: vi.fn(), sendToolResponse: vi.fn(), close: vi.fn() })) as any;
+    const router = new GeminiLiveRouter(() => 'k', connectFn);
+    const p = router.start();
+    router.stop();                    // generation moves on
+    resolveFirst(late as any); await p;
+    expect(late.close).toHaveBeenCalledTimes(1);
+  });
+
+  // regression pin: may already pass on today's code (stopping flag); broken once in the task report
+  it('stop makes late callbacks stale (Review Focus 5)', async () => {
+    vi.useFakeTimers();
+    const h = multiSessionHarness();
+    await h.router.start();
+    const cbs = h.sessions[0].cbs;
+    h.router.stop();
+    cbs.onclose({ reason: 'x', code: 1006 });
+    await vi.advanceTimersByTimeAsync(20000);
+    expect(h.connectFn).toHaveBeenCalledTimes(1);
+  });
+
+  it('logs the close code', async () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const h = multiSessionHarness();
+    await h.router.start();
+    h.sessions[0].cbs.onclose({ reason: 'boom', code: 1011 });
+    expect(log.mock.calls.map((c) => String(c[0])).some((l) => /^\[LiveRouter\] close gen=1 code=1011 reason=boom stale=no$/.test(l))).toBe(true);
+    log.mockRestore();
+  });
+
+  it('takes the model from its constructor', async () => {
+    const calls: any[] = [];
+    const r = new GeminiLiveRouter(() => 'k', (async (p: any) => { calls.push(p); return { sendRealtimeInput() {}, sendToolResponse() {}, close() {} }; }) as any, 'gemini-2.5-flash-native-audio-latest');
+    await r.start();
+    expect(calls[0].model).toBe('gemini-2.5-flash-native-audio-latest');
+    expect(r.getModel()).toBe('gemini-2.5-flash-native-audio-latest');
+  });
+});
