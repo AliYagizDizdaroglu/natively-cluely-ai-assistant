@@ -359,3 +359,96 @@ describe('LiveRouterSession', () => {
     h.s.stop();
   });
 });
+
+// Smoke fix (checkpoint 3): the native capture thins its stream during silence (one 60 ms frame per 100 ms), and Gemini
+// Live counts silence in AUDIO time. The router input must carry real-time audio, so the session pads the deficit.
+describe('LiveRouterSession real-time padding', () => {
+  const ms = (sent: any[]) => sent.reduce((a, i) => a + Buffer.from(i.audio.data, 'base64').length / 32, 0);
+  const chunk = (n: number) => Buffer.alloc(n * 32); // n ms of 16 kHz mono int16
+  const loud = (n: number) => Buffer.alloc(n * 32, 1);
+  // advance the injected clock and the fake timers together, in 100 ms steps (the timer's own cadence)
+  async function step(h: ReturnType<typeof harness>, total: number, each?: () => void) {
+    for (let t = 0; t < total; t += 100) { h.clock.t += 100; await vi.advanceTimersByTimeAsync(100); each?.(); }
+  }
+
+  it('P1. a suppressed-shaped stream (speech, then one 60 ms frame per 100 ms for 2 s) sends audio equal to wall-clock time', async () => {
+    const h = harness();
+    await h.s.start(); h.up(0); // t = 1000
+    await step(h, 1000, () => h.s.write(loud(100), 16000));
+    await step(h, 2000, () => h.s.write(chunk(60), 16000));
+    const total = ms(h.conns[0].sent);
+    expect(Math.abs(total - 3000)).toBeLessThanOrEqual(100);
+  });
+
+  it('P2. a continuous real-time stream gets no padding, exact or jittered', async () => {
+    const h = harness();
+    await h.s.start(); h.up(0);
+    await step(h, 3000, () => h.s.write(loud(100), 16000));
+    expect(h.conns[0].sent.length).toBe(30);
+    expect(ms(h.conns[0].sent)).toBe(3000);
+    const j = harness();
+    await j.s.start(); j.up(0);
+    for (let i = 0; i < 30; i++) { j.clock.t += i % 2 ? 110 : 90; j.s.write(loud(100), 16000); }
+    expect(ms(j.conns[0].sent)).toBe(3000); // 10 ms of jitter is below the pad floor
+  });
+
+  it('P3. the timer fills silence when writes stop, and what it sends is zeros', async () => {
+    const h = harness();
+    await h.s.start(); h.up(0);
+    await step(h, 100, () => h.s.write(loud(100), 16000));
+    const before = h.conns[0].sent.length;
+    await step(h, 2000);
+    const total = ms(h.conns[0].sent);
+    expect(total).toBeGreaterThanOrEqual(2100 - 200);
+    expect(total).toBeLessThanOrEqual(2100);
+    for (const i of h.conns[0].sent.slice(before)) expect(Buffer.from(i.audio.data, 'base64').every((b) => b === 0)).toBe(true);
+    expect(h.conns[0].sent[0].audio.mimeType).toBe('audio/pcm;rate=16000');
+  });
+
+  it('P4. a pad never exceeds 1000 ms, however long the pause (a long pause or a resumed session)', async () => {
+    const h = harness();
+    await h.s.start(); h.up(0);
+    await step(h, 100, () => h.s.write(loud(100), 16000));
+    h.clock.t += 10_000; // no timer tick: a stalled event loop, or the first write of a resumed session
+    h.s.write(loud(100), 16000);
+    const sizes = h.conns[0].sent.map((i: any) => Buffer.from(i.audio.data, 'base64').length / 32);
+    expect(Math.max(...sizes)).toBeLessThanOrEqual(1100); // 1000 ms pad + the 100 ms chunk
+    expect(sizes[sizes.length - 1]).toBeGreaterThan(1000);
+  });
+
+  it('P5. nothing is sent before up, after stop(), or by an old generation', async () => {
+    const h = harness();
+    await h.s.start();
+    await step(h, 1000); // not up yet
+    h.s.write(loud(100), 16000);
+    expect(h.conns[0].sent.length).toBe(0);
+    h.up(0);
+    await step(h, 500);
+    const n0 = h.conns[0].sent.length;
+    expect(n0).toBeGreaterThan(0); // control: the timer does send while up
+    h.cb(0).onmessage({ goAway: {} }); // generation changes; the session is down
+    await step(h, 200);
+    expect(h.conns[0].sent.length).toBe(n0);
+    await vi.advanceTimersByTimeAsync(300); // reconnect
+    h.up(1);
+    await step(h, 500);
+    expect(h.conns[0].sent.length).toBe(n0);
+    expect(h.conns[1].sent.length).toBeGreaterThan(0);
+    const n1 = h.conns[1].sent.length;
+    h.s.stop();
+    await step(h, 1000);
+    h.s.write(loud(100), 16000);
+    expect(h.conns[1].sent.length).toBe(n1);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('P6. a failing send from the timer goes to the log and does not throw', async () => {
+    let cbs: any;
+    const h = harness({ connectFn: async (params: any) => { cbs = params.callbacks; return { sendRealtimeInput: () => { throw new Error('send boom'); }, sendToolResponse: () => {}, close: () => {} }; } });
+    await h.s.start();
+    cbs.onmessage({ setupComplete: {} });
+    await step(h, 500);
+    expect(h.logs).toContain('[Router] write failed: send boom');
+    h.s.stop();
+  });
+});
