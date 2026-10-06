@@ -340,7 +340,6 @@ describe('RouterArbiter: supersede (case E, Review Focus 4)', () => {
     h.a.forward(fin(1, 'New answer', { replace: true })); h.a.forward(hist(1, 'New answer')); h.a.forward(end(1));
     expect(sigs(h)).toEqual([
       `src:${LIVE_LABEL}@1`, `tok:${words(10)} |live@1`,
-      'src:gemini@1',   // fix2: the held source is forwarded at the supersede
       'tok:New |pipeline|replace@1', 'tok:answer|pipeline@1', 'fin:New answer|pipeline|replace@1',
     ]);
     expect(h.history.map((x) => x.text)).toEqual(['New answer']);
@@ -352,9 +351,9 @@ describe('RouterArbiter: supersede (case E, Review Focus 4)', () => {
     const h = boot();
     dispatch(h);
     h.a.forward(src(1, 'gemini')); h.a.forward(tok(1, 'Old ')); h.a.forward(tok(1, 'stream')); h.a.forward(fin(1, 'Old stream'));
-    h.a.forward(tok(1, 'New ', { replace: true })); h.a.forward(tok(1, 'one')); h.a.forward(fin(1, 'New one', { replace: true }));
+    h.a.forward(src(1, 'gemini-new')); h.a.forward(tok(1, 'New ', { replace: true })); h.a.forward(tok(1, 'one')); h.a.forward(fin(1, 'New one', { replace: true }));
     h.go(Q + 600); h.a.routerTurn(rt(1, 'hard', Q + 600, done(Q + 600)));
-    expect(sigs(h)).toEqual(['src:gemini@1', 'tok:New |pipeline|replace@1', 'tok:one|pipeline@1', 'fin:New one|pipeline|replace@1']);
+    expect(sigs(h)).toEqual(['src:gemini-new@1', 'tok:New |pipeline|replace@1', 'tok:one|pipeline@1', 'fin:New one|pipeline|replace@1']);
   });
 
   it('I1: a stale aborted end after a supersede is dropped; one decision line, written after the completed end; capture holds the new text only', () => {
@@ -676,5 +675,63 @@ describe('RouterArbiter: fix2 held source at a supersede (Task 8 I2)', () => {
     expect(sigs(h)).toContain('src:gemini-new@1');
     h.a.forward(src(1, 'gemini-later'));
     expect(sigs(h)).toContain('src:gemini-later@1');
+  });
+});
+
+describe('RouterArbiter: fix3 (review I-1, I-2, pipeFirstAt)', () => {
+  const sup = (h: H) => h.diag.filter((l) => l.startsWith('[Router] superseded '));
+  const liveDone = (h: H) => { dispatch(h); h.go(Q + 500); h.a.routerTurn(rt(1, words(30), Q + 500, done(Q + 1000))); };
+
+  it('I-1 streaming: diag line phase=streaming line_written=no, both captures true', () => {
+    const h = boot(); dispatch(h);
+    h.go(Q + 500); h.a.routerTurn(rt(1, `${words(10)} `, Q + 500));
+    h.go(Q + 1500); h.a.forward(tok(1, 'New ', { replace: true }));
+    expect(sup(h)).toEqual(['[Router] superseded turn=1 phase=streaming line_written=no']);
+    expect(caps(h).map((c) => c.superseded)).toEqual([true]);
+  });
+
+  it('I-1 after Live finished, old pipeline not yet ended: diag phase=done line_written=no; shadow reads true', () => {
+    const h = boot(); liveDone(h);
+    h.a.forward(src(1, 'gemini')); h.a.forward(tok(1, 'Old '));
+    h.go(Q + 2000); h.a.forward(tok(1, 'New ', { replace: true })); h.a.forward(fin(1, 'New', { replace: true })); h.a.forward(end(1));
+    expect(sup(h)).toEqual(['[Router] superseded turn=1 phase=done line_written=no']);
+    expect(caps(h).map((c) => [c.kind, c.superseded])).toEqual([['live', false], ['shadow', true]]);   // the live capture predates the supersede: the diag line is the record
+    expect(lines(h)).toHaveLength(1);
+    expect(lines(h)[0].endsWith(' superseded=yes')).toBe(true);
+  });
+
+  it('I-1 after Live finished and the old pipeline ended (line already written): diag phase=done line_written=yes', () => {
+    const h = boot(); liveDone(h);
+    h.a.forward(src(1, 'gemini')); h.a.forward(tok(1, 'Old ')); h.a.forward(fin(1, 'Old')); h.a.forward(end(1));
+    expect(lines(h)).toHaveLength(1);
+    h.go(Q + 3000); h.a.forward(tok(1, 'New ', { replace: true }));
+    expect(sup(h)).toEqual(['[Router] superseded turn=1 phase=done line_written=yes']);
+  });
+
+  it('I-1 pending-mode supersede (no Live shown): no diag line, superseded=no', () => {
+    const h = boot(); dispatch(h);
+    h.a.forward(tok(1, 'Old ')); h.a.forward(tok(1, 'New ', { replace: true })); h.a.forward(fin(1, 'New', { replace: true }));
+    h.go(Q + 600); h.a.routerTurn(rt(1, 'hard', Q + 600, done(Q + 600))); h.a.forward(end(1));
+    expect(sup(h)).toEqual([]);
+    expect(lines(h)[0].endsWith(' superseded=no')).toBe(true);
+  });
+
+  it('I-2 live mode: a source that is not the last held item is not forwarded; the one right before the replace is', () => {
+    const h = boot(); liveDone(h);
+    h.a.forward(src(1, 'old')); h.a.forward(tok(1, 'Old '));
+    h.a.forward(tok(1, 'New ', { replace: true }));
+    expect(sigs(h).filter((s) => s.startsWith('src:'))).toEqual([`src:${LIVE_LABEL}@1`]);
+    const h2 = boot(); liveDone(h2);
+    h2.a.forward(src(1, 'old')); h2.a.forward(tok(1, 'Old ')); h2.a.forward(src(1, 'new'));
+    h2.a.forward(tok(1, 'New ', { replace: true }));
+    expect(sigs(h2).filter((s) => s.startsWith('src:'))).toEqual([`src:${LIVE_LABEL}@1`, 'src:new@1']);
+  });
+
+  it('pipeFirstAt resets at a supersede: shadow= and the shadow capture firstMs come from the replacing stream', () => {
+    const h = boot(); dispatch(h);
+    h.go(Q + 400); h.a.forward(tok(1, 'Old '));
+    h.go(Q + 900); h.a.forward(tok(1, 'New ', { replace: true })); h.a.forward(fin(1, 'New', { replace: true })); h.a.forward(end(1));
+    h.go(Q + 1000); h.a.routerTurn(rt(1, 'hard', Q + 1000, done(Q + 1000)));
+    expect(one(h).shadow).toBe('900');
   });
 });

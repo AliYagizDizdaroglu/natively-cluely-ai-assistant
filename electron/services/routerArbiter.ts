@@ -357,10 +357,14 @@ export class RouterArbiter {
     t.replacedAt = this.deps.now(); t.replaceSeen = true;
     if (!t.pipeEnded) t.staleEnds++;           // the old stream's aborted end may still be on its way (item 20); one per unfinished stream
     t.pipeText = ''; t.finalText = null; t.historyText = null; t.historyAdded = false;
-    t.pipeEnded = false; t.pipeEndAt = null; t.pipeEndKind = null;
+    t.pipeEnded = false; t.pipeEndAt = null; t.pipeEndKind = null; t.pipeFirstAt = null;   // fix3: shadow= and the capture's firstMs describe the replacing stream
+    if (t.decision?.shown === 'live') {         // fix3 (review I-1): the authoritative record, whatever the Live phase; set before any capture is written
+      t.superseded = true;
+      this.deps.diag(`[Router] superseded turn=${t.id} phase=${t.live.phase === 'streaming' ? 'streaming' : 'done'} line_written=${t.lineWritten ? 'yes' : 'no'}`);
+    }
     if (t.mode === 'pending') {
-      const src = [...t.held].reverse().find((o) => o.ch === 'source');
-      t.held = src ? [src] : [];               // the old stream's tokens and final go; the latest source stays
+      const last = t.held[t.held.length - 1];   // fix3 (review I-2): the replacing stream's announce directly precedes its replace token; an earlier source is the old stream's
+      t.held = last && last.ch === 'source' ? [last] : [];
       return;
     }
     if (t.mode === 'live' || t.mode === 'appended') {
@@ -370,9 +374,9 @@ export class RouterArbiter {
         t.live.phase = 'done'; if (t.decider) t.decider.frozen = true;
         if (t.live.capTimer !== undefined) { this.deps.clearTimer(t.live.capTimer); t.live.capTimer = undefined; }
       }
-      const src = [...t.held].reverse().find((o) => o.ch === 'source');   // fix2 (Task 8 I2): the replacing stream's source was held in live mode; keep the latest, as pending mode does
-      t.superseded = true; t.held = []; t.mode = 'pipeline';
-      if (src) this.sendPipeline(t, src);
+      const last = t.held[t.held.length - 1];   // fix2 (Task 8 I2) + fix3: forward the held source only if it is the last held item
+      t.held = []; t.mode = 'pipeline';
+      if (last && last.ch === 'source') this.sendPipeline(t, last);
     }
   }
 
