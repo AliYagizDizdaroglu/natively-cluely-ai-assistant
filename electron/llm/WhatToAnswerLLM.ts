@@ -4,6 +4,7 @@ import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
 import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, stripCueBlock, SPOKEN_WORD_GUARD, type Suggestion } from "./verbalStreamFilter";
 import { lastInterviewerTurn } from "./lastInterviewerTurn";
+import { stripUnknownMarkers } from "./unknownMarkerFilter";
 import { tapFirstToken } from "./streamTaps";
 import { verbalPrimaryModel } from "./verbalPrimaryModel";
 import * as fs from "fs";
@@ -371,8 +372,8 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 // stripSuggestionBlock is OUTERMOST so the __MORE__ block never reaches
                 //   the bubble even for a token-boundary split; the labels it captures are
                 //   handed to onSuggestions for the UI to render as chips.
-                // stripSpokenNotation is OUTERMOST: it runs after the suggestion
-                // block is consumed, so it can never damage the __MORE__ sentinel.
+                // stripSpokenNotation runs after the suggestion block is consumed, so it
+                // can never damage the __MORE__ sentinel. stripUnknownMarkers is OUTERMOST.
                 // This answer is read aloud — "`ModelLatency`" would otherwise be
                 // spoken as "backtick ModelLatency backtick".
                 // stripSuggestionBlock fires onSuggestions once per stream, and the
@@ -395,11 +396,15 @@ ANSWER SHAPE: ${intentResult.answerShape}
                     cuesSent = true;
                     onCues?.(c);
                 };
+                // stripUnknownMarkers is OUTERMOST (spec 7.1): a stray __WORD__ the model invents is
+                // dropped from the display; the model label is re-inserted outside `filtered`.
                 const filtered = (raw: AsyncGenerator<string>) =>
-                    stripSpokenNotation(
-                        stripSuggestionBlock(
-                            filterVerbalLines(filterCodeFences(stripCueBlock(this.stripModelSentinel(raw), onCuesOnce))),
-                            onSuggestionsOnce,
+                    stripUnknownMarkers(
+                        stripSpokenNotation(
+                            stripSuggestionBlock(
+                                filterVerbalLines(filterCodeFences(stripCueBlock(this.stripModelSentinel(raw), onCuesOnce))),
+                                onSuggestionsOnce,
+                            ),
                         ),
                     );
 

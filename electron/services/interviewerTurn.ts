@@ -79,6 +79,8 @@ export interface InterviewerTurn {
     tick(now: number): TurnDecision;
     nextTimerAt(now: number): number | null;
     reset(): void;
+    /** When the open turn's voice last stopped; src 'vad' iff VAD was seen on the turn, else the last final stood in. null: no turn open, or no stop yet. */
+    speechEnd(): { at: number; src: 'vad' | 'final' } | null;
     snapshot(): { open: boolean; finals: number; live: number; detected: boolean; dispatched: boolean; speaking: boolean; id: number | null };
 }
 
@@ -309,6 +311,11 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
 
         reset(): void {
             turn = null;
+        },
+
+        speechEnd() {
+            if (!turn || turn.lastSpeechAt === -Infinity) return null;
+            return { at: turn.lastSpeechAt, src: turn.vadSeen ? 'vad' : 'final' };
         },
 
         snapshot() {

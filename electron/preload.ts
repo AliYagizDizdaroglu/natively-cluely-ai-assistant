@@ -141,8 +141,8 @@ interface ElectronAPI {
 
   // Intelligence Mode Events
   onIntelligenceAssistUpdate: (callback: (data: { insight: string }) => void) => () => void
-  onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number; replace?: boolean }) => void) => () => void
-  onIntelligenceSuggestedAnswerSource: (callback: (label: string) => void) => () => void
+  onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number; replace?: boolean; turnId?: number; origin?: 'live' | 'pipeline'; append?: boolean }) => void) => () => void
+  onIntelligenceSuggestedAnswerSource: (callback: (label: string, turnId?: number) => void) => () => void
   onIntelligenceRefinedAnswer: (callback: (data: { answer: string; intent: string }) => void) => () => void
   onIntelligenceRecap: (callback: (data: { summary: string }) => void) => () => void
   onIntelligenceClarify: (callback: (data: { clarification: string }) => void) => () => void
@@ -777,21 +777,21 @@ contextBridge.exposeInMainWorld("electronAPI", {
       ipcRenderer.removeListener("intelligence-assist-update", subscription)
     }
   },
-  onIntelligenceSuggestedAnswerToken: (callback: (data: { token: string; question: string; confidence: number; replace?: boolean; cues?: string[] }) => void) => {
+  onIntelligenceSuggestedAnswerToken: (callback: (data: { token: string; question: string; confidence: number; replace?: boolean; cues?: string[]; turnId?: number; origin?: 'live' | 'pipeline'; append?: boolean; label?: string }) => void) => {
     const subscription = (_: any, data: any) => callback(data)
     ipcRenderer.on("intelligence-suggested-answer-token", subscription)
     return () => {
       ipcRenderer.removeListener("intelligence-suggested-answer-token", subscription)
     }
   },
-  onIntelligenceSuggestedAnswerSource: (callback: (label: string) => void) => {
-    const subscription = (_: any, label: string) => callback(label)
+  onIntelligenceSuggestedAnswerSource: (callback: (label: string, turnId?: number) => void) => {
+    const subscription = (_: any, label: string, turnId?: number) => callback(label, turnId)
     ipcRenderer.on("intelligence-suggested-answer-source", subscription)
     return () => {
       ipcRenderer.removeListener("intelligence-suggested-answer-source", subscription)
     }
   },
-  onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number; replace?: boolean }) => void) => {
+  onIntelligenceSuggestedAnswer: (callback: (data: { answer: string; question: string; confidence: number; replace?: boolean; turnId?: number; origin?: 'live' | 'pipeline'; append?: boolean }) => void) => {
     const subscription = (_: any, data: any) => callback(data)
     ipcRenderer.on("intelligence-suggested-answer", subscription)
     return () => {

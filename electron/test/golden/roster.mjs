@@ -8,6 +8,7 @@
  *   NATIVELY_ROSTER=scenario50            the 5-scenario AI/ML platform screen
  *   NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1,S2   just those scenarios
  *   NATIVELY_ROSTER=holdout40             the technical-breadth holdout — never tuned on
+ *   NATIVELY_ROSTER=live40                router40's 47 clips, 20 s gaps — the live-router hour (clips copied, never rendered)
  *   (unset)                               interview60, exactly as before
  *
  * interview60 stays the DEFAULT on purpose: after7/after8/after9 are only
@@ -23,11 +24,15 @@
 import { INTERVIEW as INTERVIEW60 } from './interview60.questions.mjs';
 import { SCENARIO50 } from './scenario50.questions.mjs';
 import { HOLDOUT40 } from './holdout40.questions.mjs';
+import { LIVE40 } from './live40.questions.mjs';
 
 const ROSTERS = {
     interview60: { items: INTERVIEW60, ttsLocal: 'interview60-tts-local', ttsGemini: 'interview60-tts', wav: 'interview60.wav' },
     scenario50: { items: SCENARIO50, ttsLocal: 'scenario50-tts-local', ttsGemini: 'scenario50-tts', wav: 'scenario50.wav' },
     holdout40: { items: HOLDOUT40, ttsLocal: 'holdout40-tts-local', ttsGemini: 'holdout40-tts', wav: 'holdout40.wav' },
+    // live40 reuses router40's rendered clips (live40.clips.mjs copies them in); noRender makes the
+    // local builder refuse to render a clip instead of speaking something the clips do not say.
+    live40: { items: LIVE40, ttsLocal: 'live40-tts-local', ttsGemini: 'live40-tts', wav: 'live40.wav', noRender: true },
 };
 
 // Blank counts as unset. `NATIVELY_ROSTER=` is how a shell or a scheduled task
@@ -77,6 +82,9 @@ const SAMPLES = {
     // spoken SQL, R23 reads numerals and "float 32", R31 reads the invented CV figures.
     // R25 and R29 carry product names (SageMaker, Unity Catalog) no keyterm covers.
     holdout40: ['R02', 'R09', 'R13', 'R23', 'R25', 'R26', 'R29', 'R31'],
+    // RE11 and EF06 are the two SUSPECT-rate clips (1.57 and 1.58 w/s); RH05 and RE12 carry the
+    // two longest answers' questions.
+    live40: ['RE11', 'EF06', 'RH05', 'RE12'],
 };
 
 /**
@@ -106,6 +114,8 @@ export const SPOKEN = INTERVIEW.filter((x) => x.kind !== 'screenshot');
 export const TTS_LOCAL_DIR = chosen.ttsLocal;
 export const TTS_GEMINI_DIR = chosen.ttsGemini;
 export const WAV_NAME = chosen.wav;
+/** True when the roster's clips are supplied, never rendered (live40): the local builder must refuse to speak. */
+export const TTS_NO_RENDER = chosen.noRender === true;
 
 /**
  * One line naming the stimulus, for the top of a run log — so a flight says what

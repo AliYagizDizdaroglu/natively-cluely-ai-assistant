@@ -1,0 +1,1163 @@
+{
+ "spoken": [
+  "W01",
+  "W02",
+  "W03"
+ ],
+ "cases": {
+  "captured-with-cue-rule": {
+   "arms": [
+    {
+     "model": "gemini-3.1-flash-lite",
+     "args": []
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "args": []
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "low",
+     "args": [
+      "--tag",
+      "low",
+      "--thinking",
+      "LOW"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-minimal",
+     "args": [
+      "--tag",
+      "captured-minimal",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low",
+     "args": [
+      "--tag",
+      "captured-low",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low-r2",
+     "args": [
+      "--tag",
+      "captured-low-r2",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low-r3",
+     "args": [
+      "--tag",
+      "captured-low-r3",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high",
+     "args": [
+      "--tag",
+      "captured-high",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high-r2",
+     "args": [
+      "--tag",
+      "captured-high-r2",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high-r3",
+     "args": [
+      "--tag",
+      "captured-high-r3",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "high",
+     "args": [
+      "--tag",
+      "high",
+      "--thinking",
+      "HIGH"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-no-cues-high",
+     "args": [
+      "--tag",
+      "captured-no-cues-high",
+      "--thinking",
+      "HIGH",
+      "--no-cues",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-no-cues-high-r2",
+     "args": [
+      "--tag",
+      "captured-no-cues-high-r2",
+      "--thinking",
+      "HIGH",
+      "--no-cues",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-no-cues-high-r3",
+     "args": [
+      "--tag",
+      "captured-no-cues-high-r3",
+      "--thinking",
+      "HIGH",
+      "--no-cues",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    }
+   ],
+   "moveAside": [
+    "interview60.answers.json",
+    "interview60.answers.gemini-3.5-flash-lite.json",
+    "interview60.answers.gemini-3.8-flash.json",
+    "interview60.answers.gemini-3.7-flash.json",
+    "interview60.answers.gemini-3.6-flash.json",
+    "interview60.answers.gemini-3.5-flash.json",
+    "interview60.answers.gemini-3.1-flash-lite_low.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-minimal.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+    "interview60.answers.gemini-3.5-flash-lite_high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r2.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r3.json",
+    "interview60.chains.json"
+   ],
+   "pairedTags": [
+    "low",
+    "captured-minimal",
+    "captured-low",
+    "captured-low-r2",
+    "captured-low-r3",
+    "captured-high",
+    "captured-high-r2",
+    "captured-high-r3",
+    "high",
+    "captured-no-cues-high",
+    "captured-no-cues-high-r2",
+    "captured-no-cues-high-r3"
+   ],
+   "toGrade": [
+    "interview60.judge.pairs.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_low.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-minimal.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r2.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r3.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r2.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r3.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high-r2.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high-r3.json"
+   ]
+  },
+  "captured-no-cue-rule": {
+   "arms": [
+    {
+     "model": "gemini-3.1-flash-lite",
+     "args": []
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "args": []
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "low",
+     "args": [
+      "--tag",
+      "low",
+      "--thinking",
+      "LOW"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-minimal",
+     "args": [
+      "--tag",
+      "captured-minimal",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low",
+     "args": [
+      "--tag",
+      "captured-low",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low-r2",
+     "args": [
+      "--tag",
+      "captured-low-r2",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low-r3",
+     "args": [
+      "--tag",
+      "captured-low-r3",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high",
+     "args": [
+      "--tag",
+      "captured-high",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high-r2",
+     "args": [
+      "--tag",
+      "captured-high-r2",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high-r3",
+     "args": [
+      "--tag",
+      "captured-high-r3",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "high",
+     "args": [
+      "--tag",
+      "high",
+      "--thinking",
+      "HIGH"
+     ]
+    }
+   ],
+   "moveAside": [
+    "interview60.answers.json",
+    "interview60.answers.gemini-3.5-flash-lite.json",
+    "interview60.answers.gemini-3.8-flash.json",
+    "interview60.answers.gemini-3.7-flash.json",
+    "interview60.answers.gemini-3.6-flash.json",
+    "interview60.answers.gemini-3.5-flash.json",
+    "interview60.answers.gemini-3.1-flash-lite_low.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-minimal.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+    "interview60.answers.gemini-3.5-flash-lite_high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r2.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r3.json",
+    "interview60.chains.json"
+   ],
+   "pairedTags": [
+    "low",
+    "captured-minimal",
+    "captured-low",
+    "captured-low-r2",
+    "captured-low-r3",
+    "captured-high",
+    "captured-high-r2",
+    "captured-high-r3",
+    "high"
+   ],
+   "toGrade": [
+    "interview60.judge.pairs.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_low.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-minimal.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r2.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r3.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r2.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r3.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_high.json"
+   ]
+  },
+  "dry-run": {
+   "arms": [
+    {
+     "model": "gemini-3.1-flash-lite",
+     "args": []
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "args": []
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "low",
+     "args": [
+      "--tag",
+      "low",
+      "--thinking",
+      "LOW"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-minimal",
+     "args": [
+      "--tag",
+      "captured-minimal",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low",
+     "args": [
+      "--tag",
+      "captured-low",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low-r2",
+     "args": [
+      "--tag",
+      "captured-low-r2",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low-r3",
+     "args": [
+      "--tag",
+      "captured-low-r3",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high",
+     "args": [
+      "--tag",
+      "captured-high",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high-r2",
+     "args": [
+      "--tag",
+      "captured-high-r2",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high-r3",
+     "args": [
+      "--tag",
+      "captured-high-r3",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "high",
+     "args": [
+      "--tag",
+      "high",
+      "--thinking",
+      "HIGH"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-no-cues-high",
+     "args": [
+      "--tag",
+      "captured-no-cues-high",
+      "--thinking",
+      "HIGH",
+      "--no-cues",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-no-cues-high-r2",
+     "args": [
+      "--tag",
+      "captured-no-cues-high-r2",
+      "--thinking",
+      "HIGH",
+      "--no-cues",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-no-cues-high-r3",
+     "args": [
+      "--tag",
+      "captured-no-cues-high-r3",
+      "--thinking",
+      "HIGH",
+      "--no-cues",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    }
+   ],
+   "moveAside": [
+    "interview60.answers.json",
+    "interview60.answers.gemini-3.5-flash-lite.json",
+    "interview60.answers.gemini-3.8-flash.json",
+    "interview60.answers.gemini-3.7-flash.json",
+    "interview60.answers.gemini-3.6-flash.json",
+    "interview60.answers.gemini-3.5-flash.json",
+    "interview60.answers.gemini-3.1-flash-lite_low.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-minimal.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+    "interview60.answers.gemini-3.5-flash-lite_high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r2.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r3.json",
+    "interview60.chains.json"
+   ],
+   "pairedTags": [
+    "low",
+    "captured-minimal",
+    "captured-low",
+    "captured-low-r2",
+    "captured-low-r3",
+    "captured-high",
+    "captured-high-r2",
+    "captured-high-r3",
+    "high",
+    "captured-no-cues-high",
+    "captured-no-cues-high-r2",
+    "captured-no-cues-high-r3"
+   ],
+   "toGrade": [
+    "interview60.judge.pairs.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_low.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-minimal.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r2.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r3.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r2.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r3.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high-r2.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high-r3.json"
+   ]
+  },
+  "no-capture": {
+   "arms": [
+    {
+     "model": "gemini-3.1-flash-lite",
+     "args": []
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "args": []
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "low",
+     "args": [
+      "--tag",
+      "low",
+      "--thinking",
+      "LOW"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "high",
+     "args": [
+      "--tag",
+      "high",
+      "--thinking",
+      "HIGH"
+     ]
+    }
+   ],
+   "moveAside": [
+    "interview60.answers.json",
+    "interview60.answers.gemini-3.5-flash-lite.json",
+    "interview60.answers.gemini-3.8-flash.json",
+    "interview60.answers.gemini-3.7-flash.json",
+    "interview60.answers.gemini-3.6-flash.json",
+    "interview60.answers.gemini-3.5-flash.json",
+    "interview60.answers.gemini-3.1-flash-lite_low.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-minimal.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+    "interview60.answers.gemini-3.5-flash-lite_high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r2.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r3.json",
+    "interview60.chains.json"
+   ],
+   "pairedTags": [
+    "low",
+    "high"
+   ],
+   "toGrade": [
+    "interview60.judge.pairs.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_low.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_high.json"
+   ]
+  },
+  "scenario50-focused": {
+   "arms": [
+    {
+     "model": "gemini-3.1-flash-lite",
+     "args": []
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "args": []
+    },
+    {
+     "model": "gemini-3.8-flash",
+     "args": [
+      "--only",
+      "S1Q02,S1Q08,S2Q02,S1Q07,S1Q06",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.7-flash",
+     "args": [
+      "--only",
+      "S1Q02,S1Q08,S2Q02,S1Q07,S1Q06",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.6-flash",
+     "args": [
+      "--only",
+      "S1Q02,S1Q08,S2Q02,S1Q07,S1Q06",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash",
+     "args": [
+      "--only",
+      "S1Q02,S1Q08,S2Q02,S1Q07,S1Q06",
+      "--captured",
+      "P:/prompts.json"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "low",
+     "args": [
+      "--tag",
+      "low",
+      "--thinking",
+      "LOW"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-minimal",
+     "args": [
+      "--tag",
+      "captured-minimal",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low",
+     "args": [
+      "--tag",
+      "captured-low",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low-r2",
+     "args": [
+      "--tag",
+      "captured-low-r2",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low-r3",
+     "args": [
+      "--tag",
+      "captured-low-r3",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high",
+     "args": [
+      "--tag",
+      "captured-high",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high-r2",
+     "args": [
+      "--tag",
+      "captured-high-r2",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high-r3",
+     "args": [
+      "--tag",
+      "captured-high-r3",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "high",
+     "args": [
+      "--tag",
+      "high",
+      "--thinking",
+      "HIGH"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-no-cues-high",
+     "args": [
+      "--tag",
+      "captured-no-cues-high",
+      "--thinking",
+      "HIGH",
+      "--no-cues",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-no-cues-high-r2",
+     "args": [
+      "--tag",
+      "captured-no-cues-high-r2",
+      "--thinking",
+      "HIGH",
+      "--no-cues",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-no-cues-high-r3",
+     "args": [
+      "--tag",
+      "captured-no-cues-high-r3",
+      "--thinking",
+      "HIGH",
+      "--no-cues",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    }
+   ],
+   "moveAside": [
+    "interview60.answers.json",
+    "interview60.answers.gemini-3.5-flash-lite.json",
+    "interview60.answers.gemini-3.8-flash.json",
+    "interview60.answers.gemini-3.7-flash.json",
+    "interview60.answers.gemini-3.6-flash.json",
+    "interview60.answers.gemini-3.5-flash.json",
+    "interview60.answers.gemini-3.1-flash-lite_low.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-minimal.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+    "interview60.answers.gemini-3.5-flash-lite_high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r2.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r3.json",
+    "interview60.chains.json"
+   ],
+   "pairedTags": [
+    "low",
+    "captured-minimal",
+    "captured-low",
+    "captured-low-r2",
+    "captured-low-r3",
+    "captured-high",
+    "captured-high-r2",
+    "captured-high-r3",
+    "high",
+    "captured-no-cues-high",
+    "captured-no-cues-high-r2",
+    "captured-no-cues-high-r3"
+   ],
+   "toGrade": [
+    "interview60.judge.pairs.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_low.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-minimal.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r2.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r3.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r2.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r3.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high-r2.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high-r3.json"
+   ]
+  },
+  "scenario50-focused-off": {
+   "arms": [
+    {
+     "model": "gemini-3.1-flash-lite",
+     "args": []
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "args": []
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "low",
+     "args": [
+      "--tag",
+      "low",
+      "--thinking",
+      "LOW"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-minimal",
+     "args": [
+      "--tag",
+      "captured-minimal",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low",
+     "args": [
+      "--tag",
+      "captured-low",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low-r2",
+     "args": [
+      "--tag",
+      "captured-low-r2",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.1-flash-lite",
+     "tag": "captured-low-r3",
+     "args": [
+      "--tag",
+      "captured-low-r3",
+      "--thinking",
+      "LOW",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high",
+     "args": [
+      "--tag",
+      "captured-high",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high-r2",
+     "args": [
+      "--tag",
+      "captured-high-r2",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-high-r3",
+     "args": [
+      "--tag",
+      "captured-high-r3",
+      "--thinking",
+      "HIGH",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "high",
+     "args": [
+      "--tag",
+      "high",
+      "--thinking",
+      "HIGH"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-no-cues-high",
+     "args": [
+      "--tag",
+      "captured-no-cues-high",
+      "--thinking",
+      "HIGH",
+      "--no-cues",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-no-cues-high-r2",
+     "args": [
+      "--tag",
+      "captured-no-cues-high-r2",
+      "--thinking",
+      "HIGH",
+      "--no-cues",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    },
+    {
+     "model": "gemini-3.5-flash-lite",
+     "tag": "captured-no-cues-high-r3",
+     "args": [
+      "--tag",
+      "captured-no-cues-high-r3",
+      "--thinking",
+      "HIGH",
+      "--no-cues",
+      "--captured",
+      "P:/prompts.json",
+      "--only",
+      "W01,W02,W03"
+     ]
+    }
+   ],
+   "moveAside": [
+    "interview60.answers.json",
+    "interview60.answers.gemini-3.5-flash-lite.json",
+    "interview60.answers.gemini-3.8-flash.json",
+    "interview60.answers.gemini-3.7-flash.json",
+    "interview60.answers.gemini-3.6-flash.json",
+    "interview60.answers.gemini-3.5-flash.json",
+    "interview60.answers.gemini-3.1-flash-lite_low.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-minimal.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+    "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+    "interview60.answers.gemini-3.5-flash-lite_high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r2.json",
+    "interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r3.json",
+    "interview60.chains.json"
+   ],
+   "pairedTags": [
+    "low",
+    "captured-minimal",
+    "captured-low",
+    "captured-low-r2",
+    "captured-low-r3",
+    "captured-high",
+    "captured-high-r2",
+    "captured-high-r3",
+    "high",
+    "captured-no-cues-high",
+    "captured-no-cues-high-r2",
+    "captured-no-cues-high-r3"
+   ],
+   "toGrade": [
+    "interview60.judge.pairs.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_low.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-minimal.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r2.json",
+    "interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r3.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r2.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r3.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high-r2.json",
+    "interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high-r3.json"
+   ]
+  }
+ }
+}
