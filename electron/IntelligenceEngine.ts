@@ -46,8 +46,15 @@ function detectRefinementIntent(userText: string): { isRefinement: boolean; inte
 // Events emitted by IntelligenceEngine
 export interface IntelligenceModeEvents {
     'assist_update': (insight: string) => void;
-    'suggested_answer': (answer: string, question: string, confidence: number) => void;
-    'suggested_answer_token': (token: string, question: string, confidence: number, replace?: boolean, cues?: string[]) => void;
+    'suggested_answer': (answer: string, question: string, confidence: number, replace?: boolean, turnId?: number) => void;
+    'suggested_answer_token': (token: string, question: string, confidence: number, replace?: boolean, cues?: string[], turnId?: number) => void;
+    'suggested_answer_source': (label: string, turnId?: number) => void;
+    /**
+     * Fired from a finally on every exit of runWhatShouldISay that carries a turnId (plan rev 2 I2). `generationId` is the
+     * stream's own generation (rev 2 I1): a superseded stream's end can arrive after the replacing stream started, and
+     * carries a different id from the replacing stream's end. null when the call left before a stream's generation existed.
+     */
+    'suggested_answer_end': (turnId: number | null, kind: 'completed' | 'aborted' | 'failed', generationId?: number | null) => void;
     'refined_answer': (answer: string, intent: string) => void;
     'refined_answer_token': (token: string, intent: string) => void;
     'recap': (summary: string) => void;
@@ -82,6 +89,8 @@ export class IntelligenceEngine extends EventEmitter {
     // Concurrency tracking
     private assistCancellationToken: AbortController | null = null;
     private currentGenerationId: number = 0;
+    /** Where a turn's finished answer goes instead of the session (the router arbiter, main.ts). null = today's path. */
+    private turnHistorySink: ((turnId: number, text: string, question?: string) => void) | null = null;
 
     // Keep reference to LLMHelper for client access
     private llmHelper: LLMHelper;
@@ -102,6 +111,10 @@ export class IntelligenceEngine extends EventEmitter {
         this.llmHelper = llmHelper;
         this.session = session;
         this.initializeLLMs();
+    }
+
+    setTurnHistorySink(sink: ((turnId: number, text: string, question?: string) => void) | null): void {
+        this.turnHistorySink = sink;
     }
 
     getLLMHelper(): LLMHelper {
@@ -261,6 +274,12 @@ export class IntelligenceEngine extends EventEmitter {
             turnId?: number | null;
         } = {}
     ): Promise<string | null> {
+        // Plan rev 2 I2: with a turnId, EVERY exit below ends in exactly one suggested_answer_end, from the outer finally.
+        // Default 'failed' covers a throw anywhere (including before the stream); the other kinds are set at their exits.
+        // (The body is wrapped, not re-indented, to keep the diff to the lines that changed.)
+        let endKind: 'completed' | 'aborted' | 'failed' = 'failed';
+        let endGeneration: number | null = null;
+        try {
         const now = Date.now();
 
         // Bypass cooldown for explicit user actions: attached images (capture-and-
@@ -272,6 +291,7 @@ export class IntelligenceEngine extends EventEmitter {
         const isExplicitAction =
             (imagePaths && imagePaths.length > 0) || !!options.contextOverride || !!options.bypassCooldown;
         if (!isExplicitAction && now - this.lastTriggerTime < this.triggerCooldown) {
+            endKind = 'aborted';
             return null;
         }
 
@@ -286,6 +306,7 @@ export class IntelligenceEngine extends EventEmitter {
         try {
             if (!this.whatToAnswerLLM) {
                 if (!this.answerLLM) {
+                    endKind = 'aborted';
                     this.setMode('idle');
                     return "Please configure your API Keys in Settings to use this feature.";
                 }
@@ -293,7 +314,8 @@ export class IntelligenceEngine extends EventEmitter {
                 const answer = await this.answerLLM.generate(question || '', context);
                 if (answer) {
                     this.session.addAssistantMessage(answer);
-                    this.emit('suggested_answer', answer, question || 'inferred', confidence, options.replaceAnswer === true);
+                    this.emit('suggested_answer', answer, question || 'inferred', confidence, options.replaceAnswer === true, options.turnId ?? undefined);
+                    endKind = 'completed';
                 }
                 this.setMode('idle');
                 return answer || "Could you repeat that? I want to make sure I address your question properly.";
@@ -432,6 +454,7 @@ export class IntelligenceEngine extends EventEmitter {
             console.log(`[IntelligenceEngine] Temporal RAG: ${temporalContext.previousResponses.length} responses, tone: ${temporalContext.toneSignals[0]?.type || 'neutral'}, intent: ${intentResult.intent}${imagePaths?.length ? `, with ${imagePaths.length} image(s)` : ''}`);
 
             const generationId = ++this.currentGenerationId;
+            endGeneration = generationId;
             let fullAnswer = "";
             // RC-03 fix: hold a reference to the generator so we can call .return()
             // to properly terminate the network request when a new generation starts.
@@ -472,14 +495,14 @@ export class IntelligenceEngine extends EventEmitter {
                 // so use regex replace rather than exact startsWith/endsWith check.
                 if (token.includes('__model_source:')) {
                     const match = token.match(/__model_source:([^_]+)__/);
-                    if (match) this.emit('suggested_answer_source', match[1]);
+                    if (match) this.emit('suggested_answer_source', match[1], options.turnId ?? undefined);
                     const stripped = token.replace(/__model_source:[^_]*__/, '').trimStart();
                     if (!stripped) continue;
                     const replace = firstReplaceToken;
                     firstReplaceToken = false;
                     const cues = pendingCues ?? undefined;
                     pendingCues = null;
-                    this.emit('suggested_answer_token', stripped, question || 'inferred', confidence, replace, cues);
+                    this.emit('suggested_answer_token', stripped, question || 'inferred', confidence, replace, cues, options.turnId ?? undefined);
                     fullAnswer += stripped;
                     continue;
                 }
@@ -487,12 +510,13 @@ export class IntelligenceEngine extends EventEmitter {
                 firstReplaceToken = false;
                 const cues = pendingCues ?? undefined;
                 pendingCues = null;
-                this.emit('suggested_answer_token', token, question || 'inferred', confidence, replace, cues);
+                this.emit('suggested_answer_token', token, question || 'inferred', confidence, replace, cues, options.turnId ?? undefined);
                 fullAnswer += token;
             }
 
             if (streamAborted) {
                 // Aborted mid-stream — don't update session or emit final event
+                endKind = 'aborted';
                 this.setMode('idle');
                 return null;
             }
@@ -501,7 +525,10 @@ export class IntelligenceEngine extends EventEmitter {
                 fullAnswer = "Could you repeat that? I want to make sure I address your question properly.";
             }
 
-            this.session.addAssistantMessage(fullAnswer, settled ?? undefined);
+            // A turn's answer goes to the router's history sink, which adds it only once the turn's route is
+            // decided (the hidden shadow never enters the history: plan rev 2 I3). No turnId, no sink: today's path.
+            if (this.turnHistorySink && options.turnId != null) this.turnHistorySink(options.turnId, fullAnswer, settled ?? undefined);
+            else this.session.addAssistantMessage(fullAnswer, settled ?? undefined);
 
             this.session.pushUsage({
                 type: 'assist',
@@ -512,8 +539,9 @@ export class IntelligenceEngine extends EventEmitter {
 
             // CQ-05 fix: only emit the "complete" event after a non-aborted stream.
             // The renderer already has all tokens — this is for metadata only (e.g. copying, history).
-            this.emit('suggested_answer', fullAnswer, question || 'What to Answer', confidence, options.replaceAnswer === true);
+            this.emit('suggested_answer', fullAnswer, question || 'What to Answer', confidence, options.replaceAnswer === true, options.turnId ?? undefined);
 
+            endKind = 'completed';
             this.setMode('idle');
             return fullAnswer;
 
@@ -521,6 +549,12 @@ export class IntelligenceEngine extends EventEmitter {
             this.emit('error', error as Error, 'what_to_say');
             this.setMode('idle');
             return "Could you repeat that? I want to make sure I address your question properly.";
+        }
+        } finally {
+            if (options.turnId != null) {
+                console.log(`[IntelligenceEngine] answer end turn=${options.turnId} kind=${endKind}`);
+                this.emit('suggested_answer_end', options.turnId, endKind, endGeneration);
+            }
         }
     }
 

@@ -45,7 +45,8 @@ import { analytics, detectProviderType } from '../lib/analytics/analytics.servic
 import { useShortcuts } from '../hooks/useShortcuts';
 import { useResolvedTheme } from '../hooks/useResolvedTheme';
 import { getOverlayAppearance, OVERLAY_OPACITY_DEFAULT } from '../lib/overlayAppearance';
-import { applyAnswerToken, applyFinalAnswer, applyLiveQuestion, type AnswerMessage } from '../lib/answerMessages';
+import { applyAnswerToken, applyFinalAnswer, applyLiveQuestion, usesKeyedPathFor, usesKeyedSourceFor, LIVE_SOURCE_LABEL, type AnswerMessage, type BubbleMeta } from '../lib/answerMessages';
+import { bubbleKey, createBubbleMetrics } from '../lib/bubbleMetrics';
 import { useStreamMetrics, type StreamMetrics } from '../hooks/useStreamMetrics';
 import { MessageMetricsBar } from './MessageMetricsBar';
 import { CueBlock } from './CueBlock';
@@ -57,6 +58,12 @@ interface Message {
     text: string;
     isStreaming?: boolean;
     cues?: string[];
+    /** Router-default (spec §4.5): the interviewer turn, who produced the bubble, and its header/source. */
+    turnId?: number;
+    origin?: 'live' | 'pipeline';
+    append?: boolean;
+    label?: string;
+    sourceLabel?: string;
     metrics?: StreamMetrics;
     hasScreenshot?: boolean;
     screenshotPreview?: string;
@@ -125,6 +132,34 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
     const streamingMsgIdRef = useRef<string | null>(null);
     const smAccumRef = useRef<string>('');
 
+    // Router-default (spec §4.5), the keyed path's bookkeeping. Kept in refs, updated synchronously when an
+    // event arrives, because the choice between `sm` and `bubbleMetrics` is made before React applies the
+    // event to `messages`.
+    const bubbleMetricsRef = useRef<ReturnType<typeof createBubbleMetrics> | null>(null);
+    if (!bubbleMetricsRef.current) bubbleMetricsRef.current = createBubbleMetrics(() => performance.now());
+    /** Turns that hold a Live bubble: a mirror of `usesKeyedPath`'s third condition. */
+    const liveTurnsRef = useRef<Set<number>>(new Set());
+    /** The latest source label per turn; a bubble takes it at creation. */
+    const pendingSourceByTurnRef = useRef<Map<number, string>>(new Map());
+    /** The source label each keyed bubble took at creation, until its final reads it for the metrics. */
+    const bubbleSourceRef = useRef<Map<string, string | undefined>>(new Map());
+    /**
+     * The source label a keyed bubble takes at creation (once per key). A supersede (replace, non-Live origin)
+     * starts a new stream: the Live label no longer applies, so it is dropped, and the pending label is consumed
+     * (fix1 I2). Without a source event the bubble has no label (the bar shows today's neutral "…").
+     */
+    const sourceForBubble = (key: string, turnId: number, supersede: boolean): string | undefined => {
+        if (!bubbleSourceRef.current.has(key)) {
+            let label = pendingSourceByTurnRef.current.get(turnId);
+            if (supersede) {
+                if (label === LIVE_SOURCE_LABEL) label = undefined;
+                pendingSourceByTurnRef.current.delete(turnId);
+            }
+            bubbleSourceRef.current.set(key, label);
+        }
+        return bubbleSourceRef.current.get(key);
+    };
+
     // Sync transcript setting
     useEffect(() => {
         const handleStorage = () => {
@@ -163,6 +198,11 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
             msg.id === id ? { ...msg, metrics: sm.metrics } : msg
         ));
     }, [sm.metrics]);
+
+    // A cleared chat holds no Live bubbles (turn ids may restart in the next meeting).
+    useEffect(() => {
+        if (messages.length === 0) liveTurnsRef.current.clear();
+    }, [messages]);
 
     const [rollingTranscript, setRollingTranscript] = useState('');  // For interviewer rolling text bar
     const [isInterviewerSpeaking, setIsInterviewerSpeaking] = useState(false);  // Track if actively speaking
@@ -824,9 +864,25 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
         }
 
         cleanups.push(window.electronAPI.onIntelligenceSuggestedAnswerToken((data) => {
+            // Router-default (spec §4.5): an event takes the keyed path (per-bubble metrics, per-bubble source) only
+            // under the B2 gate; every other event runs today's code, `sm` metrics included.
+            let meta: BubbleMeta | undefined;
+            let key: string | null = null;
+            if (data.turnId != null) {
+                meta = { turnId: data.turnId, origin: data.origin, append: data.append, label: data.label };
+                if (usesKeyedPathFor(liveTurnsRef.current, meta)) {
+                    key = bubbleKey(meta);
+                    meta.sourceLabel = sourceForBubble(key, data.turnId, data.replace === true && data.origin !== 'live');
+                    bubbleMetricsRef.current!.start(key);   // M1: a no-op when the turn's Live source already started it
+                    bubbleMetricsRef.current!.first(key);
+                    if (data.origin === 'live') liveTurnsRef.current.add(data.turnId);
+                    else if (data.replace === true) liveTurnsRef.current.delete(data.turnId);   // the replace rewrites the Live bubble into a pipeline one
+                }
+            }
+
             // First-token marker for TTFT — fires on the first arriving token of this stream.
             // markFirstToken is idempotent (early-returns if firstTokenTs is already set).
-            sm.markFirstToken(data.token);
+            if (key === null) sm.markFirstToken(data.token);
 
             // Progressive update for 'what_to_answer' mode
             // Mirrors the guard in onGeminiStreamToken: if this token is the negotiation
@@ -859,7 +915,7 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                 // Not JSON — normal token, fall through.
             }
 
-            setMessages(prev => applyAnswerToken(prev as AnswerMessage[], data.token, data.replace === true, () => Date.now().toString(), data.cues) as Message[]);
+            setMessages(prev => applyAnswerToken(prev as AnswerMessage[], data.token, data.replace === true, () => Date.now().toString(), data.cues, meta) as Message[]);
         }));
 
         cleanups.push(window.electronAPI.onIntelligenceSuggestedAnswer((data) => {
@@ -869,7 +925,24 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
             // Finalize stream metrics — TTFT was captured on first token, this gives totalMs/tok/s.
             // markDone returns the computed snapshot synchronously so we can attach to the message
             // without waiting for React state to settle.
-            const finalMetrics = sm.markDone(data.answer);
+            // Router-default (spec §4.5): a keyed bubble closes its own metrics (source = the label it took at creation).
+            let meta: BubbleMeta | undefined;
+            let key: string | null = null;
+            if (data.turnId != null) {
+                meta = { turnId: data.turnId, origin: data.origin, append: data.append };
+                if (usesKeyedPathFor(liveTurnsRef.current, meta)) {
+                    key = bubbleKey(meta);
+                    const supersede = data.replace === true && data.origin !== 'live';
+                    meta.sourceLabel = sourceForBubble(key, data.turnId, supersede);
+                    bubbleMetricsRef.current!.start(key);
+                    if (data.origin === 'live') liveTurnsRef.current.add(data.turnId);   // a Live final alone creates a Live bubble too
+                    else if (supersede) liveTurnsRef.current.delete(data.turnId);        // the keyed replace branch rewrites the Live bubble into a pipeline one
+                }
+            }
+            const finalMetrics = key !== null
+                ? bubbleMetricsRef.current!.done(key, data.answer, bubbleSourceRef.current.get(key) ?? (data.replace === true && data.origin !== 'live' ? '…' : null))
+                : sm.markDone(data.answer);
+            if (key !== null) bubbleSourceRef.current.delete(key);
 
             // If the final answer is a negotiation coaching JSON sentinel, route it
             // to the proper card UI instead of dumping raw JSON into the message bubble.
@@ -928,7 +1001,7 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
                         isNegotiationCoaching: undefined,
                         negotiationCoachingData: undefined,
                         metrics: finalMetrics,
-                    }))) as Message[]);
+                    })), meta) as Message[]);
         }));
 
         // STREAMING: Refinement
@@ -1378,7 +1451,15 @@ const NativelyInterface: React.FC<NativelyInterfaceProps> = ({ onEndMeeting, ove
         // is not the assumed default — i.e. on a fallback redirect — so the bar
         // stops claiming a model that did not answer.
         if (window.electronAPI.onIntelligenceSuggestedAnswerSource) {
-            cleanups.push(window.electronAPI.onIntelligenceSuggestedAnswerSource((label: string) => {
+            cleanups.push(window.electronAPI.onIntelligenceSuggestedAnswerSource((label: string, turnId?: number) => {
+                // Router-default (spec §4.5 rule 3): on the keyed path a source event records the turn's pending label
+                // (a bubble takes it at creation; an existing bubble is never relabelled) and starts the turn's bubble
+                // metrics (M1). Any other source event is today's `sm.setSource`.
+                if (turnId != null && usesKeyedSourceFor(liveTurnsRef.current, label, turnId)) {
+                    pendingSourceByTurnRef.current.set(turnId, label);
+                    bubbleMetricsRef.current!.start(bubbleKey({ turnId, origin: 'live', append: false }));
+                    return;
+                }
                 sm.setSource(label);
             }));
         }
@@ -2619,6 +2700,9 @@ Provide only the answer, nothing else.`;
                                                     >
                                                         <Copy className="w-3.5 h-3.5" />
                                                     </button>
+                                                )}
+                                                {msg.role === 'system' && msg.label && (
+                                                    <div className="mb-1 pr-7 text-[11px] font-semibold overlay-text-muted">{msg.label}</div>
                                                 )}
                                                 {msg.role === 'system' && msg.cues && msg.cues.length > 0 && (
                                                     <CueBlock cues={msg.cues} className={`mb-2 pb-2 border-b ${isLightTheme ? 'border-black/10' : 'border-white/10'}`} />
