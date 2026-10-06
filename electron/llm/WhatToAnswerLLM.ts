@@ -372,8 +372,8 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 // stripSuggestionBlock is OUTERMOST so the __MORE__ block never reaches
                 //   the bubble even for a token-boundary split; the labels it captures are
                 //   handed to onSuggestions for the UI to render as chips.
-                // stripSpokenNotation is OUTERMOST: it runs after the suggestion
-                // block is consumed, so it can never damage the __MORE__ sentinel.
+                // stripSpokenNotation runs after the suggestion block is consumed, so it
+                // can never damage the __MORE__ sentinel. stripUnknownMarkers is OUTERMOST.
                 // This answer is read aloud — "`ModelLatency`" would otherwise be
                 // spoken as "backtick ModelLatency backtick".
                 // stripSuggestionBlock fires onSuggestions once per stream, and the

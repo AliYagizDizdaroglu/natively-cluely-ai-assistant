@@ -1,7 +1,12 @@
-/** Spec 7.1: strip unknown __WORD__ markers from the displayed stream; __MORE__, __CUES__ and __model_source:…__ are left alone. */
+/**
+ * Spec 7.1: strip unknown __WORD__ markers from the displayed stream; __MORE__, __CUES__ and __model_source:…__ are left alone.
+ * WORD is UPPERCASE only (controller ruling, Task 9 review): every leak seen is uppercase (__S1Q05__, __ANS__,
+ * __PROMPT_RESPONSE__), while Python dunders (__init__, __name__) and __emphasis__ must reach the answer unchanged.
+ * A held partial that turns out lowercase is released unchanged: the hold pattern only keeps uppercase partials, `__` and `_`.
+ */
 const KNOWN = new Set(['MORE', 'CUES']);
-const UNKNOWN = /__([A-Za-z][A-Za-z0-9_]*)__/g;
-const PARTIAL_TAIL = /(?:__[A-Za-z][A-Za-z0-9_]*_?|__|_)$/;
+const UNKNOWN = /__([A-Z][A-Z0-9_]*)__/g;
+const PARTIAL_TAIL = /(?:__[A-Z][A-Z0-9_]*_?|__|_)$/;
 
 export function createUnknownMarkerStripper(): { push(s: string): string; flush(): string } {
     let buf = '';
