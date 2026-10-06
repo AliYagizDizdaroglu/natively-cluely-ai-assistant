@@ -428,3 +428,32 @@ describe('interviewerTurn — continuation, supersede, close', () => {
         expect(turn.snapshot()).toMatchObject({ open: false });
     });
 });
+
+describe('speechEnd() (plan Task 7, spec §4.3 Q)', () => {
+    it('is the last voice stop, src vad, once VAD has been seen', () => {
+        const turn = createInterviewerTurn();
+        turn.speech(true, 100);
+        turn.speech(false, 900);
+        expect(turn.speechEnd()).toEqual({ at: 900, src: 'vad' });
+    });
+
+    it('with no VAD, the last final stands in for it, src final', () => {
+        const turn = createInterviewerTurn();
+        turn.final('x', 1200);
+        expect(turn.speechEnd()).toEqual({ at: 1200, src: 'final' });
+    });
+
+    it('is null with no turn open', () => {
+        const turn = createInterviewerTurn();
+        expect(turn.speechEnd()).toBeNull();
+        turn.final('x', 1200);
+        turn.reset();
+        expect(turn.speechEnd()).toBeNull();
+    });
+
+    it('is null while the voice has not yet stopped (lastSpeechAt is -Infinity)', () => {
+        const turn = createInterviewerTurn();
+        turn.speech(true, 100);
+        expect(turn.speechEnd()).toBeNull();
+    });
+});

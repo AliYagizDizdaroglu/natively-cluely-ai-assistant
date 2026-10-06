@@ -223,7 +223,7 @@ export class IntelligenceManager extends EventEmitter {
     private forwardEngineEvents(): void {
         const events = [
             'assist_update', 'suggested_answer', 'suggested_answer_token',
-            'suggested_answer_source',
+            'suggested_answer_source', 'suggested_answer_end',
             'refined_answer', 'refined_answer_token',
             'recap', 'recap_token', 'clarify', 'clarify_token',
             'follow_up_questions_update', 'follow_up_questions_token',
@@ -271,8 +271,12 @@ export class IntelligenceManager extends EventEmitter {
         }
     }
 
-    addAssistantMessage(text: string): void {
-        this.session.addAssistantMessage(text);
+    addAssistantMessage(text: string, questionContext?: string): void {
+        this.session.addAssistantMessage(text, questionContext);
+    }
+
+    setTurnHistorySink(sink: ((turnId: number, text: string, question?: string) => void) | null): void {
+        this.engine.setTurnHistorySink(sink);
     }
 
     getContext(lastSeconds: number = 120) {
