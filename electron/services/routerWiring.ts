@@ -10,6 +10,8 @@ export interface WiringDeps {
   arbiter: Pick<RouterArbiter, 'turnOpened' | 'turnClosed' | 'turnDispatched' | 'forward' | 'setRouterUp' | 'routerTurn' | 'dispatchCount' | 'setEar'>;
   now(): number;
   speechEnd(): { at: number; src: 'vad' | 'final' } | null;
+  /** The turn machine's current turn id: speechEnd() describes that turn only. */
+  currentTurnId(): number | null;
   diag(line: string): void;
 }
 
@@ -33,7 +35,7 @@ export function createRouterWiring(deps: WiringDeps) {
       if (turnId == null || dispatched.has(turnId)) return;
       dispatched.add(turnId);
       const at = deps.now();
-      const se = deps.speechEnd();
+      const se = deps.currentTurnId() === turnId ? deps.speechEnd() : null;   // m-1: another turn's speech end is not this turn's Q
       arbiter.turnDispatched(turnId, at, se?.at ?? at, se?.src ?? 'final');
     },
 

@@ -2509,7 +2509,7 @@ export class AppState {
       send, addHistory: (text, q) => this.intelligenceManager.addAssistantMessage(text, q),
       diag: routerDiag, capture: (line) => console.log(line),
     })
-    this.routerWiring = createRouterWiring({ arbiter: this.routerArbiter, now: Date.now, speechEnd: () => this.turn.speechEnd(), diag: routerDiag })
+    this.routerWiring = createRouterWiring({ arbiter: this.routerArbiter, now: Date.now, speechEnd: () => this.turn.speechEnd(), currentTurnId: () => this.turn.snapshot().id, diag: routerDiag })
     console.log(`[Router] flag NATIVELY_LIVE_ROUTER=${this.routerEnabled ? 'on' : 'off'}`)
     // Flag on: the engine hands each turn's history text to the arbiter, which adds it to the session only when its turn shows the pipeline answer.
     if (this.routerEnabled) this.intelligenceManager.setTurnHistorySink((turnId, text, q) => this.routerArbiter.forward({ ch: 'history', turnId, text, question: q }))

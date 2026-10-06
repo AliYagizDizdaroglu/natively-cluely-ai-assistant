@@ -13,12 +13,12 @@ function fake(count = 0) {
   };
   return { calls, arbiter };
 }
-function setup(opts: { speechEnd?: { at: number; src: 'vad' | 'final' } | null; now?: number; dispatches?: number } = {}) {
+function setup(opts: { speechEnd?: { at: number; src: 'vad' | 'final' } | null; now?: number; dispatches?: number; current?: number | null } = {}) {
   const f = fake(opts.dispatches ?? 0);
   const lines: string[] = [];
   const w = createRouterWiring({
     arbiter: f.arbiter, now: () => opts.now ?? 1000,
-    speechEnd: () => (opts.speechEnd === undefined ? null : opts.speechEnd), diag: (l) => lines.push(l),
+    speechEnd: () => (opts.speechEnd === undefined ? null : opts.speechEnd), currentTurnId: () => (opts.current === undefined ? 3 : opts.current), diag: (l) => lines.push(l),
   });
   return { w, calls: f.calls, lines };
 }
@@ -51,6 +51,13 @@ describe('answered: the dispatch feed', () => {
     const { w, calls } = setup({ now: 5000, speechEnd: { at: 900, src: 'vad' } });
     w.answered(3);
     expect(calls).toEqual([['turnDispatched', 3, 5000, 900, 'vad']]);
+  });
+  it('m-1: a speechEnd that belongs to another turn (or to none) is not used: the dispatch time stands in', () => {
+    for (const current of [4, null]) {
+      const { w, calls } = setup({ now: 5000, speechEnd: { at: 900, src: 'vad' }, current });
+      w.answered(3);
+      expect(calls).toEqual([['turnDispatched', 3, 5000, 5000, 'final']]);
+    }
   });
   it('falls back to (now, now, final) when speechEnd is null', () => {
     const { w, calls } = setup({ now: 5000, speechEnd: null });
@@ -118,7 +125,7 @@ describe('flag-off identity: a disabled arbiter gives exactly today\'s IPC paylo
       enabled: false, now: () => 0, setTimer: () => 0, clearTimer: () => {},
       send: (o) => sent.push(o), addHistory: (t, q) => history.push([t, q]), diag: () => {}, capture: () => {},
     });
-    const w = createRouterWiring({ arbiter, now: () => 0, speechEnd: () => null, diag: () => {} });
+    const w = createRouterWiring({ arbiter, now: () => 0, speechEnd: () => null, currentTurnId: () => null, diag: () => {} });
     return { w, sent, arbiter };
   }
   it('token / final / source without a turnId equal main.ts 2419-2445 payloads', () => {
