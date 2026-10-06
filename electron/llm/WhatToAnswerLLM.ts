@@ -4,6 +4,7 @@ import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
 import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, stripCueBlock, SPOKEN_WORD_GUARD, type Suggestion } from "./verbalStreamFilter";
 import { lastInterviewerTurn } from "./lastInterviewerTurn";
+import { stripUnknownMarkers } from "./unknownMarkerFilter";
 import { tapFirstToken } from "./streamTaps";
 import { verbalPrimaryModel } from "./verbalPrimaryModel";
 import * as fs from "fs";
@@ -395,11 +396,15 @@ ANSWER SHAPE: ${intentResult.answerShape}
                     cuesSent = true;
                     onCues?.(c);
                 };
+                // stripUnknownMarkers is OUTERMOST (spec 7.1): a stray __WORD__ the model invents is
+                // dropped from the display; the model label is re-inserted outside `filtered`.
                 const filtered = (raw: AsyncGenerator<string>) =>
-                    stripSpokenNotation(
-                        stripSuggestionBlock(
-                            filterVerbalLines(filterCodeFences(stripCueBlock(this.stripModelSentinel(raw), onCuesOnce))),
-                            onSuggestionsOnce,
+                    stripUnknownMarkers(
+                        stripSpokenNotation(
+                            stripSuggestionBlock(
+                                filterVerbalLines(filterCodeFences(stripCueBlock(this.stripModelSentinel(raw), onCuesOnce))),
+                                onSuggestionsOnce,
+                            ),
                         ),
                     );
 
