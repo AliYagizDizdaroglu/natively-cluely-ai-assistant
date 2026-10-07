@@ -14,6 +14,7 @@ import {
     SPOKEN_WORD_TARGET,
     SPOKEN_WORD_CEILING,
     CUE_RULE, CUE_SHAPE_RULE, CUES_SENTINEL, CUE_MAX_LINES, CUE_MAX_WORDS, VERBAL_TYPED_PROMPT,
+    SPOKEN_LENGTH_AND_DEPTH, cueRuleApplies, verbalPromptFor,
     resolveGemmaSystemPrompt,
     resolveStyleSuffix,
 } from './prompts';
@@ -236,6 +237,54 @@ describe('spoken word budget', () => {
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT.indexOf('[ANSWER THE QUESTION\'S STRUCTURE')).toBeGreaterThan(VERBAL_WHAT_TO_ANSWER_PROMPT.indexOf('Rules for that block:'));
         // Since cue mode (spec 2026-09-20) the cue rule follows the structured rule; nothing else may.
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.' + CUE_RULE)).toBe(true);
+    });
+});
+
+const SHORT_ANSWER_RULE = 'If the question can be answered in one or two words — yes or no, a choice between options it names, a name or a number — say exactly that first, then one supporting sentence: about 15 to 25 words in all. A question with several parts follows the structure rule below instead.';
+
+describe('short-answer rule (bundle-1 SPEC 2)', () => {
+    it('is in SPOKEN_LENGTH_AND_DEPTH exactly once, right after the "read aloud" line and before the structure rule', () => {
+        expect(SPOKEN_LENGTH_AND_DEPTH.split(SHORT_ANSWER_RULE).length - 1).toBe(1);
+        const at = SPOKEN_LENGTH_AND_DEPTH.indexOf(SHORT_ANSWER_RULE);
+        expect(at).toBeGreaterThan(SPOKEN_LENGTH_AND_DEPTH.indexOf('Your spoken answer is read aloud'));
+        expect(at).toBeLessThan(SPOKEN_LENGTH_AND_DEPTH.indexOf("[ANSWER THE QUESTION'S STRUCTURE"));
+        expect(at).toBeLessThan(SPOKEN_LENGTH_AND_DEPTH.indexOf('If, and ONLY if, there is genuinely substantive depth'));
+    });
+    it('reaches both verbal prompts (typed chat included, D5) and the knowledge-budget check still matches', () => {
+        expect(VERBAL_TYPED_PROMPT).toContain(SHORT_ANSWER_RULE);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain(SHORT_ANSWER_RULE);
+        expect(VERBAL_TYPED_PROMPT.includes(SPOKEN_LENGTH_AND_DEPTH)).toBe(true);
+    });
+    it('the structure rule still overrides length, and the tail pins hold', () => {
+        expect(VERBAL_TYPED_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.')).toBe(true);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.' + CUE_RULE)).toBe(true);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain("[ANSWER THE QUESTION'S STRUCTURE — THIS OVERRIDES THE LENGTH RULE ABOVE WHEN THE QUESTION HAS SEVERAL PARTS]");
+    });
+});
+
+describe('cueRuleApplies / verbalPromptFor — cues by question shape (bundle-1 SPEC 3)', () => {
+    // Invented questions of the table's shapes; the gate reads the heard question, never the router.
+    it.each([
+        ['a short definition', 'What is a vector database?', false],
+        ['a choice joined by "or"', 'Should we pick Redis or Memcached for this?', false],
+        ['a "difference between X and Y"', 'What is the difference between a mutex and a semaphore?', true],
+        ['"X, and why Y"', 'Walk me through caching, and why it matters', true],
+        ['a comma list', 'Name the layers, the caches, the queues', true],
+        ['a semicolon', 'Describe the cache; then the queue', true],
+        ['exactly 12 words, no markers', 'Can you describe how the system handles a sudden spike in traffic', false],
+        ['a 13-word single clause', 'Can you describe how the system handles a sudden spike in traffic overnight', true],
+        ['two question marks', 'What is a mutex? What is a semaphore?', true],
+        ['one question mark', 'What is a mutex?', false],
+        ['"and" inside a word is not a marker', 'What is a sandbox?', false],
+        ['upper-case AND', 'Compare Kafka AND Pulsar', true],
+        ['empty', '', false],
+    ])('%s -> %s', (_label, q, applies) => {
+        expect(cueRuleApplies(q as string)).toBe(applies);
+    });
+    it('verbalPromptFor sends the cue rule only when the gate says so', () => {
+        expect(verbalPromptFor('What is a vector database?')).toBe(VERBAL_TYPED_PROMPT);
+        expect(verbalPromptFor('Name the layers, the caches, the queues')).toBe(VERBAL_WHAT_TO_ANSWER_PROMPT);
+        expect(verbalPromptFor('')).toBe(VERBAL_TYPED_PROMPT);
     });
 });
 

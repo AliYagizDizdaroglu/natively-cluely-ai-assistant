@@ -281,6 +281,8 @@ export const SPOKEN_LENGTH_AND_DEPTH = `
 [SPOKEN LENGTH + OPTIONAL DEPTH]
 Your spoken answer is read aloud in a live conversation. Keep it to AT MOST ${SPOKEN_WORD_TARGET} words — roughly 30 seconds. Say the single most important thing completely and correctly; do not try to cover every angle. Never sacrifice the core technical claim to save words.
 
+If the question can be answered in one or two words — yes or no, a choice between options it names, a name or a number — say exactly that first, then one supporting sentence: about 15 to 25 words in all. A question with several parts follows the structure rule below instead.
+
 If, and ONLY if, there is genuinely substantive depth you had to leave out, list it after the answer in this exact form, on its own lines:
 ${SUGGESTIONS_SENTINEL}
 1| <3-8 word noun phrase naming the omitted depth>
@@ -2442,6 +2444,25 @@ ${SPOKEN_LENGTH_AND_DEPTH}`;
  * block is one text.
  */
 export const VERBAL_WHAT_TO_ANSWER_PROMPT = `${VERBAL_TYPED_PROMPT}${CUE_RULE}`;
+
+/**
+ * Cues by question shape (bundle-1 SPEC 3, user ruling 3): a short single-part question gets no cue
+ * rule, because its cue block would only repeat the answer's first words. The gate reads the HEARD
+ * question's shape and never the router's route (the route is known before the pipeline prompt is
+ * built on only 16 of 49 r1 turns, and does not exist with the router flag off).
+ * No cue rule iff: at most 12 words, no "," or ";", no standalone "and", at most one "?".
+ * "or" is not a marker: a choice is a one-word answer. The 12-word cutoff is fitted on live40
+ * (the 2026-10-07 probe: 23 of 47 live40 dispatches take no cue rule); it is not validated elsewhere.
+ */
+export function cueRuleApplies(q: string): boolean {
+    const words = q.match(/\S+/g)?.length ?? 0;
+    const questionMarks = q.split('?').length - 1;
+    const singlePartShort = words <= 12 && !/[,;]/.test(q) && !/\band\b/i.test(q) && questionMarks <= 1;
+    return !singlePartShort;
+}
+
+/** The verbal system prompt for a heard question: with the cue rule only when the question's shape asks for cues. */
+export const verbalPromptFor = (q: string): string => (cueRuleApplies(q) ? VERBAL_WHAT_TO_ANSWER_PROMPT : VERBAL_TYPED_PROMPT);
 
 /**
  * UNIVERSAL: Recap / Summary
