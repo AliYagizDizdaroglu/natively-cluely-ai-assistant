@@ -1,5 +1,5 @@
 import { LLMHelper, GEMINI_FLASH_FALLBACK_MODEL, GEMINI_FLASH_MODEL, VERBAL_PRIMARY_MODELS } from "../LLMHelper";
-import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT } from "./prompts";
+import { UNIVERSAL_WHAT_TO_ANSWER_PROMPT, verbalPromptFor, cueRuleApplies } from "./prompts";
 import { TemporalContext } from "./TemporalContextBuilder";
 import { IntentResult } from "./IntentClassifier";
 import { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation, cutAtWordBudget, filterCodeFences, stripCueBlock, SPOKEN_WORD_GUARD, type Suggestion } from "./verbalStreamFilter";
@@ -316,6 +316,12 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 // s50m's answers gemini-3.1-flash-lite while 3.5-lite wrote them. (Ollama, custom
                 // providers and Groq fast-text answer before streamChat's Gemini branch and keep
                 // whatever id the selection holds, as they always have.)
+                // Cues by question shape (bundle-1 SPEC 3): chosen once, from the heard question, so the
+                // fallback below sends the same prompt as the primary. One log line per verbal answer.
+                const verbalPrompt = verbalPromptFor(knowledgeQuestion);
+                const cueRuleLine = `cue rule: ${cueRuleApplies(knowledgeQuestion) ? 'sent' : 'skipped'} words=${knowledgeQuestion.match(/\S+/g)?.length ?? 0}`;
+                console.log(`[Answer] ${cueRuleLine}`);
+                diagLog(cueRuleLine);
                 const selected = useDeepModel ? this.llmHelper.getCurrentModelId() : GEMINI_FLASH_MODEL;
                 const primaryModel = /^(gemini-|models\/)/.test(selected) ? verbalPrimaryModel(selected, VERBAL_PRIMARY_MODELS) : selected;
                 yield `__model_source:${primaryModel}__`;
@@ -331,7 +337,7 @@ ANSWER SHAPE: ${intentResult.answerShape}
                         fullMessage,
                         undefined, // no images on verbal path — reduces prefill latency
                         undefined,
-                        VERBAL_WHAT_TO_ANSWER_PROMPT,
+                        verbalPrompt,
                         undefined,
                         undefined,
                         knowledgeQuestion
@@ -342,7 +348,7 @@ ANSWER SHAPE: ${intentResult.answerShape}
                     try {
                         rawStream = this.llmHelper.streamVerbalWithGeminiFlash(
                             fullMessage,
-                            VERBAL_WHAT_TO_ANSWER_PROMPT,
+                            verbalPrompt,
                             undefined
                         );
                         diagLog(`fast verbal path: routed to Gemini Flash Lite`);
@@ -353,7 +359,7 @@ ANSWER SHAPE: ${intentResult.answerShape}
                             fullMessage,
                             undefined,
                             undefined,
-                            VERBAL_WHAT_TO_ANSWER_PROMPT,
+                            verbalPrompt,
                             undefined,
                             undefined,
                             knowledgeQuestion
@@ -428,7 +434,7 @@ ANSWER SHAPE: ${intentResult.answerShape}
                             (model) => filteredAndNamed(
                                 this.llmHelper.streamVerbalWithGeminiFlash(
                                     fullMessage,
-                                    VERBAL_WHAT_TO_ANSWER_PROMPT,
+                                    verbalPrompt,
                                     undefined,
                                     model,
                                 ),
