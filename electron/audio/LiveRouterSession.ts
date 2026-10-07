@@ -72,6 +72,15 @@ export class LiveRouterSession extends EventEmitter {
   }
 
   isUp(): boolean { return this.up; }
+
+  /**
+   * Fault drill `router-drop` (bundle-1 SPEC 7.2; main.ts only calls it when the drill gate passed). Closes the live
+   * session so the REAL onclose -> handleClose -> scheduleReconnect path runs, exactly as a dropped socket would.
+   */
+  drillDrop(): void {
+    this.log('[Drill] router-drop');
+    try { this.session?.close(); } catch { /* already closed */ }
+  }
   contextInfo(): { sha12: string; chars: number } | null { return this.context === null ? null : { sha12: sha256(this.context).slice(0, 12), chars: this.context.length }; }
 
   async start(): Promise<void> {

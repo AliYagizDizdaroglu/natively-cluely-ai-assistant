@@ -490,3 +490,34 @@ describe('LiveRouterSession real-time padding', () => {
     expect(c.conns[0].sent.length).toBeGreaterThan(6);
   });
 });
+
+describe('bundle-1 drillDrop (fault drill router-drop)', () => {
+  it('closes the live session through the real onclose path: one close line, exactly one reconnect scheduled, then a new connect', async () => {
+    const conns: any[] = [];
+    const connectFn: LiveConnectFn = async (params: any) => {
+      const rec: any = { params, closed: 0 };
+      conns.push(rec);
+      // like the SDK: close() ends in the onclose callback
+      return { sendRealtimeInput: () => {}, sendToolResponse: () => {}, close: () => { rec.closed++; params.callbacks.onclose({ code: 1000, reason: 'client close' }); } } as any;
+    };
+    const h = harness({ connectFn });
+    await h.s.start();
+    conns[0].params.callbacks.onmessage({ setupComplete: {} });
+    expect(h.s.isUp()).toBe(true);
+    h.s.drillDrop();
+    expect(conns[0].closed).toBe(1);
+    expect(h.s.isUp()).toBe(false);
+    expect(h.logs).toContain('[Drill] router-drop');
+    expect(h.logs).toContain('[Router] session close gen=1 code=1000 reason=client close stale=no quota=no');
+    expect(h.logs.filter((l) => l.startsWith('[Router] session reconnect attempt='))).toEqual(['[Router] session reconnect attempt=1 reason=client close']);
+    await vi.advanceTimersByTimeAsync(300);
+    expect(conns.length).toBe(2);
+    conns[1].params.callbacks.onmessage({ setupComplete: {} });
+    expect(h.s.isUp()).toBe(true);
+    expect(h.logs.filter((l) => l.includes('session failed'))).toEqual([]);
+  });
+  it('with no live session it is a logged no-op', async () => {
+    const h = harness();
+    expect(() => h.s.drillDrop()).not.toThrow();
+  });
+});

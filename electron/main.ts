@@ -165,6 +165,8 @@ import { RouterArbiter, type Outbound } from "./services/routerArbiter"
 import { createRouterWiring } from "./services/routerWiring"
 import { routerDiag } from "./services/routerDiag"
 import { shouldFailOver, shouldRestartEar, EAR_FAILOVER_MODEL } from "./services/earFailover"
+import { createEarSilenceWatch, EAR_SILENCE_GRACE_MS, type EarSilenceWatch } from "./services/earSilence"
+import { parseDrill, muteChunk } from "./services/faultDrill"
 import { ChipDeduper } from "./services/ChipDeduper"
 import { SttChannel } from "./audio/SttChannel"
 import { DeepgramStreamingSTT } from "./audio/DeepgramStreamingSTT"
@@ -926,6 +928,9 @@ export class AppState {
   private routerSession: LiveRouterSession | null = null;
   private earFailedOver = false;          // Task 11: the ear moved 3.1 -> 2.5 once this meeting; reset in endMeeting, no fail-back
   private earOverrideLogged = false;      // the NATIVELY_LIVE_MODEL "failover disabled" line is written once per process
+  private earSilence: EarSilenceWatch | null = null;   // bundle-1 SPEC 5: silent-listener watch, one per ear instance, router flag on only
+  private drillMutedEar: GeminiLiveRouter | null = null;   // bundle-1 SPEC 7.2: the ear instance the fault drill muted
+  private drillTimers: NodeJS.Timeout[] = [];
   private routerArbiter!: RouterArbiter;                          // built in setupIntelligenceEvents (constructor time)
   private routerWiring!: ReturnType<typeof createRouterWiring>;
   /** Shared across whisper→Groq and Live so one question yields one chip. */
@@ -1261,8 +1266,17 @@ export class AppState {
       // The turn's own VAD signal (energyVad over the desktop-audio PCM) is the
       // primary clock; Deepgram's endpointing events are logged alongside it so
       // the golden harness can see whether the two agree (main.ts turn: … lines).
-      (stt as NodeJS.EventEmitter).on('speech-started', () => console.log(`[Main] turn: deepgram speech-started vad=${this.interviewerVad?.speaking() ?? 'n/a'}`));
-      (stt as NodeJS.EventEmitter).on('utterance-end', () => console.log(`[Main] turn: deepgram utterance-end vad=${this.interviewerVad?.speaking() ?? 'n/a'}`));
+      (stt as NodeJS.EventEmitter).on('speech-started', () => {
+        console.log(`[Main] turn: deepgram speech-started vad=${this.interviewerVad?.speaking() ?? 'n/a'}`);
+        this.earSilence?.utteranceStart(Date.now());
+      });
+      (stt as NodeJS.EventEmitter).on('utterance-end', () => {
+        console.log(`[Main] turn: deepgram utterance-end vad=${this.interviewerVad?.speaking() ?? 'n/a'}`);
+        if (!this.earSilence) return;
+        this.earSilence.utteranceEnd(Date.now());
+        // judged once its caption window (end + grace) has closed; the watch ignores a tick that is too early
+        setTimeout(() => this.checkEarSilence(), EAR_SILENCE_GRACE_MS + 250).unref?.();
+      });
     }
 
     stt.on('error', (err: Error) => {
@@ -1391,7 +1405,7 @@ export class AppState {
           this.writeInterviewerStt(chunk);
           this.onInterviewerAudio(chunk);
           // Live Mode tee — no-ops unless the live router is connected.
-          this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
+          this.liveRouter?.write(this.earPcm(chunk), this.systemAudioCapture?.getSampleRate() ?? 16000);
           this.routerSession?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);   // the 3.8 router's own tee (flag on only)
         });
         this.systemAudioCapture.on('sample_rate_changed', (rate: number) => {
@@ -1509,7 +1523,7 @@ export class AppState {
         this.writeInterviewerStt(chunk);
         this.onInterviewerAudio(chunk);
         // Live Mode tee — no-ops unless the live router is connected.
-        this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
+        this.liveRouter?.write(this.earPcm(chunk), this.systemAudioCapture?.getSampleRate() ?? 16000);
         this.routerSession?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);   // the 3.8 router's own tee (flag on only)
       });
       this.systemAudioCapture.on('sample_rate_changed', (rate: number) => {
@@ -1552,7 +1566,7 @@ export class AppState {
           this.writeInterviewerStt(chunk);
           this.onInterviewerAudio(chunk);
           // Live Mode tee — no-ops unless the live router is connected.
-          this.liveRouter?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);
+          this.liveRouter?.write(this.earPcm(chunk), this.systemAudioCapture?.getSampleRate() ?? 16000);
           this.routerSession?.write(chunk, this.systemAudioCapture?.getSampleRate() ?? 16000);   // the 3.8 router's own tee (flag on only)
         });
         this.systemAudioCapture.on('sample_rate_changed', (rate: number) => {
@@ -2038,6 +2052,7 @@ export class AppState {
         if (this.liveMode !== 'off') {
           this.startLiveRouter();
           this.startRouterSession();
+          this.armFaultDrill();
         }
 
         // Start Microphone
@@ -2234,23 +2249,18 @@ export class AppState {
       this.earOverrideLogged = true;
       routerDiag(`[Router] ear failover disabled reason=NATIVELY_LIVE_MODEL model=${router.getModel()}`);
     }
+    // Silent-listener watch (bundle-1 SPEC 5): a fresh one per ear instance, counting from this ear's first `connected` status.
+    const silence = this.routerEnabled ? createEarSilenceWatch() : null;
+    this.earSilence = silence;
     router.on('status', (s: { state: string; reason?: string }) => {
       console.log(`[Main] Live Mode status: ${s.state}${s.reason ? ` (${s.reason})` : ''}`);
       this.broadcast('live-mode-status', s);
+      if (s.state === 'connected') silence?.arm();
       if (this.liveRouter === router && shouldFailOver({
         flag: this.routerEnabled, model: router.getModel(), state: s.state, reason: s.reason,
         alreadyFailedOver: this.earFailedOver, modelOverridden,
       })) {
-        this.earFailedOver = true;
-        routerDiag(`[Router] ear failover from=3.1 to=2.5 reason=${s.reason ?? '-'} dispatches_before=${this.routerArbiter.dispatchCount()}`);
-        // Deferred a tick. The restart (and the arbiter's ear) happen only if the failed ear is still THE ear: endMeeting,
-        // a mode toggle or any other restart replaces/nulls this.liveRouter before this runs, and must not be undone.
-        // startLiveRouter -> onEarModel then writes `[Router] ear model=<2.5 id>` and sets the arbiter's ear.
-        setImmediate(() => {
-          if (!shouldRestartEar({ failedEarIsCurrent: this.liveRouter === router, meetingActive: this.isMeetingActive, liveModeOff: this.liveMode === 'off' })) return;
-          this.routerArbiter.setEar('2.5');
-          this.startLiveRouter(EAR_FAILOVER_MODEL);
-        });
+        this.failOverEar(router, s.reason);
       }
     });
     router.on('question', (q: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => {
@@ -2263,11 +2273,89 @@ export class AppState {
     // the STT transcript (interview60 harness). Not fed anywhere; the
     // transcript still comes from STT. Fragments, not sentences — join offline.
     router.on('caption', (c: { text: string }) => {
+      silence?.caption(Date.now());
       if (this.isMeetingActive) console.log(`[LiveCaption] fragment ${JSON.stringify(c.text)}`);
     });
     this.liveRouter = router;
     this.routerWiring.onEarModel(router.getModel());   // M5: `[Router] ear model=<id>` (Task 13's preflight) + the arbiter's ear for the log
     void router.start();
+  }
+
+  /**
+   * The one-time ear failover 3.1 -> 2.5, shared by the ear's `failed` status and the silent-listener watch.
+   * The caller has already passed shouldFailOver.
+   */
+  private failOverEar(router: GeminiLiveRouter, reason: string | undefined): void {
+    this.earFailedOver = true;
+    routerDiag(`[Router] ear failover from=3.1 to=2.5 reason=${reason ?? '-'} dispatches_before=${this.routerArbiter.dispatchCount()}`);
+    // Deferred a tick. The restart (and the arbiter's ear) happen only if the failed ear is still THE ear: endMeeting,
+    // a mode toggle or any other restart replaces/nulls this.liveRouter before this runs, and must not be undone.
+    // startLiveRouter -> onEarModel then writes `[Router] ear model=<2.5 id>` and sets the arbiter's ear.
+    setImmediate(() => {
+      if (!shouldRestartEar({ failedEarIsCurrent: this.liveRouter === router, meetingActive: this.isMeetingActive, liveModeOff: this.liveMode === 'off' })) return;
+      this.routerArbiter.setEar('2.5');
+      this.startLiveRouter(EAR_FAILOVER_MODEL);
+    });
+  }
+
+  /**
+   * Silent-listener failover (bundle-1 SPEC 5.2), router flag on only. Runs shortly after each interviewer utterance ends;
+   * the watch judges only utterances whose caption window has closed and answers 'silent' once per ear instance.
+   * Through shouldFailOver (same guards as the `failed` path); on 2.5, already failed over or an overridden ear there is
+   * nothing left to fall back to, so it is logged once and nothing else happens.
+   */
+  private checkEarSilence(): void {
+    const router = this.liveRouter;
+    if (!router || !this.earSilence || this.earSilence.tick(Date.now()) !== 'silent') return;
+    if (shouldFailOver({
+      flag: this.routerEnabled, model: router.getModel(), state: 'failed', reason: 'silent-listener',
+      alreadyFailedOver: this.earFailedOver, modelOverridden: !!process.env.NATIVELY_LIVE_MODEL,
+    })) {
+      this.failOverEar(router, 'silent-listener');
+    } else {
+      routerDiag(`[Router] ear silent model=${router.getModel() === EAR_FAILOVER_MODEL ? '2.5' : '3.1'} no-failover-left`);
+    }
+  }
+
+  /** The ear's PCM: zero PCM of the same length while the fault drill has muted THIS ear instance, else the chunk (bundle-1 SPEC 7.2). */
+  private earPcm(chunk: Buffer): Buffer {
+    return muteChunk(chunk, this.drillMutedEar !== null && this.drillMutedEar === this.liveRouter);
+  }
+
+  /**
+   * Fault drill (bundle-1 SPEC 7), armed at meeting start. parseDrill refuses unless unpackaged + harness start + router flag;
+   * a refusal arms nothing and says why. router-drop closes the router session's socket; ear-mute feeds the current ear zeros.
+   */
+  private armFaultDrill(): void {
+    const spec = process.env.NATIVELY_FAULT_DRILL;
+    if (!spec) return;
+    const r = parseDrill(spec, { packaged: app.isPackaged, harness: process.env.NATIVELY_AUTOSTART_MEETING === '1', routerOn: this.routerEnabled });
+    if (!r.ok || !r.faults) {
+      console.log(`[Drill] refused reason=${r.reason}${r.reason === 'parse' ? ` ${r.token}` : ''}`);
+      return;
+    }
+    this.clearFaultDrill();
+    console.log(`[Drill] armed ${spec}`);
+    for (const f of r.faults) {
+      const t = setTimeout(() => {
+        if (!this.isMeetingActive) return;
+        if (f.kind === 'router-drop') {
+          if (this.routerSession) this.routerSession.drillDrop();
+          else console.log('[Drill] router-drop skipped: no router session');
+        } else {
+          this.drillMutedEar = this.liveRouter;
+          console.log(`[Drill] ear-mute model=${this.liveRouter?.getModel() ?? '-'}`);
+        }
+      }, f.atSec * 1000);
+      t.unref?.();
+      this.drillTimers.push(t);
+    }
+  }
+
+  private clearFaultDrill(): void {
+    for (const t of this.drillTimers) clearTimeout(t);
+    this.drillTimers = [];
+    this.drillMutedEar = null;
   }
 
   /**
@@ -2348,6 +2436,7 @@ export class AppState {
     this.liveRouter.stop();
     this.liveRouter.removeAllListeners();
     this.liveRouter = null;
+    this.earSilence = null;
   }
 
   public async endMeeting(): Promise<void> {
@@ -2370,6 +2459,7 @@ export class AppState {
     this.microphoneCapture?.stop();
     this.stopLiveRouter();
     this.stopRouterSession();
+    this.clearFaultDrill();
     this.earFailedOver = false;
     this.liveHold.cancel();
     this.fragmentHold.cancel();
