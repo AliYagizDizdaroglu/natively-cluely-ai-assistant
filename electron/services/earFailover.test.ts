@@ -28,3 +28,13 @@ describe('shouldFailOver (SPEC 4.4)', () => {
   it('the no-key reason does not', () => { expect(shouldFailOver({ ...base, reason: 'No Gemini API key configured' })).toBe(false); });
   it('a NATIVELY_LIVE_MODEL override disables it', () => { expect(shouldFailOver({ ...base, modelOverridden: true })).toBe(false); });
 });
+
+// bundle-1 SPEC 5.2: the silent-listener path reuses the one-time failover with state 'failed', reason 'silent-listener', guards unchanged.
+describe("shouldFailOver for reason 'silent-listener' (bundle-1)", () => {
+  const silent = { ...base, reason: 'silent-listener' };
+  it('fails over under the same guards', () => { expect(shouldFailOver(silent)).toBe(true); });
+  it('not with the flag off', () => { expect(shouldFailOver({ ...silent, flag: false })).toBe(false); });
+  it('not on 2.5', () => { expect(shouldFailOver({ ...silent, model: EAR_FAILOVER_MODEL })).toBe(false); });
+  it('not when already failed over', () => { expect(shouldFailOver({ ...silent, alreadyFailedOver: true })).toBe(false); });
+  it('not when the ear model was overridden', () => { expect(shouldFailOver({ ...silent, modelOverridden: true })).toBe(false); });
+});
