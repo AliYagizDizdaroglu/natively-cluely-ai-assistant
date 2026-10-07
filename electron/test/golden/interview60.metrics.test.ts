@@ -646,7 +646,7 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
     });
 
     it('cueBlocks — counts the blocks, the trims and an empty displayed cue; the row fails when one answer opened without a block', () => {
-        expect(m.cueBlocks).toEqual({ n: 3, present: 2, wellformed: 1, trimmed: 2 });
+        expect(m.cueBlocks).toEqual({ n: 3, present: 2, wellformed: 1, trimmed: 2, skipped: 0 });
         const row = evaluateGate(m).rows.find((r) => r.label === 'Cue block above every spoken answer');
         expect(row.pass).toBe(false);
         expect(row.value).toBe('2/3 present, 1 well-formed, 2 trimmed');
@@ -844,7 +844,48 @@ describe("the cue row's limits track CUE_MAX_LINES and CUE_MAX_WORDS", () => {
     afterAll(() => { if (dir) fs.rmSync(dir, { recursive: true, force: true }); });
 
     it('a block at exactly CUE_MAX_LINES/CUE_MAX_WORDS is wellformed; one line over and one word over are not', () => {
-        expect(m.cueBlocks).toEqual({ n: 3, present: 3, wellformed: 1, trimmed: 0 });
+        expect(m.cueBlocks).toEqual({ n: 3, present: 3, wellformed: 1, trimmed: 0, skipped: 0 });
+    });
+});
+
+/**
+ * bundle-1 SPEC 3.2: the cue gate sends no cue rule for a short single-part question, so the engine logs
+ * `[Answer] cues: []` for it right after `[Answer] cue rule: skipped`. That empty block is EXPECTED and must not fail the
+ * cueBlocks row; any other `[]` (after `sent`, or with no rule line at all) still does.
+ */
+describe('cueBlocks: a cues: [] right after "cue rule: skipped" is expected (bundle-1)', () => {
+    const T0 = Date.parse('2026-01-01T00:00:00.000Z');
+    const iso = (ms: number) => new Date(ms).toISOString();
+    const compute = (body: string[]) => {
+        const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'i60-cue-skip-'));
+        try {
+            const timeline = { startedAt: iso(T0 - 1000), startedMs: T0 - 1000, startDebug: 0, endDebug: 1e9, startDiag: 0, endDiag: 1e9, endedAt: iso(T0 + 60000), items: [] as any[] };
+            fs.writeFileSync(path.join(dir, 'interview60.timeline.json'), JSON.stringify(timeline, null, 1));
+            fs.writeFileSync(path.join(dir, 'natively_debug.log'), body.map((l, i) => `${iso(T0 + i * 1000)} [LOG] ${l}`).join('\n') + '\n');
+            fs.writeFileSync(path.join(dir, 'verbal-diag.log'), '');
+            return computeRunFromFiles({ debugLog: path.join(dir, 'natively_debug.log'), diagLog: path.join(dir, 'verbal-diag.log'), timelinePath: path.join(dir, 'interview60.timeline.json'), answersPath: path.join(dir, 'x.json') });
+        } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+    };
+    const good = '["thirty gigabytes in float32","int8, then shard"]';
+
+    it('counts a skipped answer\'s empty block as expected, not as a missing block', () => {
+        const m = compute(['[Answer] cue rule: sent words=14', `[Answer] cues: ${good}`, '[Answer] cue rule: skipped words=5', '[Answer] cues: []']);
+        expect(m.cueBlocks).toEqual({ n: 2, present: 1, wellformed: 1, trimmed: 0, skipped: 1 });
+    });
+    it('an empty block after "sent", or with no rule line (an older log), is not expected', () => {
+        expect(compute(['[Answer] cue rule: sent words=14', '[Answer] cues: []']).cueBlocks.skipped).toBe(0);
+        expect(compute(['[Answer] cues: []']).cueBlocks.skipped).toBe(0);
+        // a rule line belongs to the NEXT cues line only: skipped, then a real block, then an empty one with no rule line
+        expect(compute(['[Answer] cue rule: skipped words=5', `[Answer] cues: ${good}`, '[Answer] cues: []']).cueBlocks.skipped).toBe(0);
+    });
+    it('the gate row: present + skipped must cover every cue line, and the present blocks must all be well-formed', () => {
+        const row = GATE.find((g) => g.key === 'cueBlocks')!;
+        const base = { cueBlocks: { n: 10, present: 6, wellformed: 6, trimmed: 0, skipped: 4 }, delivered: 10 } as any;
+        expect(row.pass(base)).toBe(true);
+        expect(row.show(base)).toBe('6/6 present, 6 well-formed, 0 trimmed, 4 skipped by the gate');
+        expect(row.pass({ ...base, cueBlocks: { ...base.cueBlocks, present: 5, wellformed: 5 } })).toBe(false);   // one unexpected empty block
+        expect(row.pass({ ...base, cueBlocks: { ...base.cueBlocks, wellformed: 5 } })).toBe(false);
+        expect(row.pass({ ...base, cueBlocks: { n: 10, present: 0, wellformed: 0, trimmed: 0, skipped: 10 } })).toBe(true);
     });
 });
 
