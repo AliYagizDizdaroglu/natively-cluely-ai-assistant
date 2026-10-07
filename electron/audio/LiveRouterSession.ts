@@ -78,8 +78,10 @@ export class LiveRouterSession extends EventEmitter {
    * session so the REAL onclose -> handleClose -> scheduleReconnect path runs, exactly as a dropped socket would.
    */
   drillDrop(): void {
+    const s = this.session;
+    if (!s) { this.log('[Drill] router-drop skipped: router already down'); return; }
     this.log('[Drill] router-drop');
-    try { this.session?.close(); } catch { /* already closed */ }
+    try { s.close(); } catch { /* already closed */ }
   }
   contextInfo(): { sha12: string; chars: number } | null { return this.context === null ? null : { sha12: sha256(this.context).slice(0, 12), chars: this.context.length }; }
 

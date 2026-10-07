@@ -516,8 +516,11 @@ describe('bundle-1 drillDrop (fault drill router-drop)', () => {
     expect(h.s.isUp()).toBe(true);
     expect(h.logs.filter((l) => l.includes('session failed'))).toEqual([]);
   });
-  it('with no live session it is a logged no-op', async () => {
+  it('review fix: with no live session (router already down) it logs a distinct line and NOT "[Drill] router-drop"', async () => {
     const h = harness();
     expect(() => h.s.drillDrop()).not.toThrow();
+    expect(h.logs).toContain('[Drill] router-drop skipped: router already down');
+    expect(h.logs).not.toContain('[Drill] router-drop');
+    expect(h.logs.some((l) => l.includes('session close'))).toBe(false);
   });
 });
