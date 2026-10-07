@@ -281,7 +281,7 @@ export const SPOKEN_LENGTH_AND_DEPTH = `
 [SPOKEN LENGTH + OPTIONAL DEPTH]
 Your spoken answer is read aloud in a live conversation. Keep it to AT MOST ${SPOKEN_WORD_TARGET} words — roughly 30 seconds. Say the single most important thing completely and correctly; do not try to cover every angle. Never sacrifice the core technical claim to save words.
 
-If the question can be answered in one or two words — yes or no, a choice between options it names, a name or a number — say exactly that first, then one supporting sentence: about 15 to 25 words in all. A question with several parts follows the structure rule below instead.
+If the question can be answered in one or two words (yes or no, a choice between named options, a number, a name), your FIRST words are that answer itself, never a restatement of the question, then at most one short sentence of reason. At most 25 words in total. Example: asked "Is Parquet or CSV better for a large training set?", say "Parquet. It is columnar and compressed, so reads are faster and files smaller." A question with several parts is not covered by this rule: it follows the structure rule below, which takes precedence.
 
 If, and ONLY if, there is genuinely substantive depth you had to leave out, list it after the answer in this exact form, on its own lines:
 ${SUGGESTIONS_SENTINEL}

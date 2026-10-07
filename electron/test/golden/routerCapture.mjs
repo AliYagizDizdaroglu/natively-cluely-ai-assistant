@@ -7,7 +7,7 @@
  */
 
 export const EXPECTED_BLOCK_SHA12 = '3a1da134e4c7';
-export const EXPECTED_INSTRUCTION_SHA12 = '79ad0f464d95';
+export const EXPECTED_INSTRUCTION_SHA12 = 'c01eff6ff48e';
 export const EAR_DEFAULT = 'gemini-3.1-flash-live-preview';
 
 const last = (arr) => (arr.length ? arr[arr.length - 1] : null);

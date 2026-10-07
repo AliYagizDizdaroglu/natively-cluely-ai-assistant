@@ -212,7 +212,7 @@ describe('buildCaptureFiles', () => {
 });
 
 describe('routerPreflight', () => {
-    const connect = (o: Partial<Record<string, string>> = {}) => `[Router] session connect model=gemini-3.8-live block_sha12=${o.block ?? '3a1da134e4c7'} instruction_sha12=${o.instr ?? '79ad0f464d95'} context_sha12=${o.ctx ?? 'abc123abc123'} context_chars=${o.chars ?? '812'}`;
+    const connect = (o: Partial<Record<string, string>> = {}) => `[Router] session connect model=gemini-3.8-live block_sha12=${o.block ?? '3a1da134e4c7'} instruction_sha12=${o.instr ?? 'c01eff6ff48e'} context_sha12=${o.ctx ?? 'abc123abc123'} context_chars=${o.chars ?? '812'}`;
     const good = [
         connect(),
         '[Router] session up setup_ms=412',
