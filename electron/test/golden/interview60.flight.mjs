@@ -174,17 +174,15 @@ export const FOCUSED_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3
  * import of the built prompts, so the flight plans without a dist; the flight test pins it
  * against the real constant.
  *
- * Fails closed: reads only the ids capturedOnly would actually replay (spoken, with both a
- * system and a user turn) and requires ALL of them to carry the mark, not merely one. A mixed
- * hour — some captured prompts with the rule, some without — must gate the arms closed; waving
- * them through on any single match would leave answers.mjs --no-cues to refuse the first id
- * that lacks the rule, mid-flight, instead of the flight skipping cleanly.
+ * Per id (bundle-1 SPEC 3.2, R6): since the cue gate (cueRuleApplies) sends no cue rule for a short
+ * single-part question, EVERY real hour is mixed on purpose. cueRuleIds is the replayable ids
+ * (what capturedOnly would replay) whose captured system carries the mark; the no-cue twins are
+ * pointed at exactly those with --only, so answers.mjs --no-cues never meets an id without the
+ * rule. hasCueRule is true when there is at least one such id; with none the twins skip cleanly.
  */
 export const CUE_RULE_MARK = '[CUES FIRST]';
-export const hasCueRule = (captured) => {
-    const ids = capturedOnly(captured);
-    return ids.length > 0 && ids.every((id) => String(captured[id].system ?? '').includes(CUE_RULE_MARK));
-};
+export const cueRuleIds = (captured) => capturedOnly(captured).filter((id) => String(captured[id].system ?? '').includes(CUE_RULE_MARK));
+export const hasCueRule = (captured) => cueRuleIds(captured).length > 0;
 
 export const PAIRED_ARMS = [
     { model: ANSWER_MODELS[0], tag: 'low', captured: false, args: ['--thinking', 'LOW'] },
@@ -203,9 +201,9 @@ export const PAIRED_ARMS = [
     // leg (the doc block above says why). Gated on the bytes: on a pre-cue hour captured-high
     // already is the no-cue band, and answers.mjs would refuse the variant anyway; the flight
     // skips the arms with one log line instead.
-    { model: ANSWER_MODELS[1], tag: 'captured-no-cues-high', captured: true, args: ['--thinking', 'HIGH', '--no-cues'], when: hasCueRule },
-    { model: ANSWER_MODELS[1], tag: 'captured-no-cues-high-r2', captured: true, args: ['--thinking', 'HIGH', '--no-cues'], when: hasCueRule },
-    { model: ANSWER_MODELS[1], tag: 'captured-no-cues-high-r3', captured: true, args: ['--thinking', 'HIGH', '--no-cues'], when: hasCueRule },
+    { model: ANSWER_MODELS[1], tag: 'captured-no-cues-high', captured: true, args: ['--thinking', 'HIGH', '--no-cues'], when: hasCueRule, only: cueRuleIds },
+    { model: ANSWER_MODELS[1], tag: 'captured-no-cues-high-r2', captured: true, args: ['--thinking', 'HIGH', '--no-cues'], when: hasCueRule, only: cueRuleIds },
+    { model: ANSWER_MODELS[1], tag: 'captured-no-cues-high-r3', captured: true, args: ['--thinking', 'HIGH', '--no-cues'], when: hasCueRule, only: cueRuleIds },
 ];
 
 /**
@@ -299,7 +297,7 @@ export function flightPlan(env, capturedJson, dry, { promptsFile, roster = ROSTE
     const wanted = (a) => !a.when || dry || a.when(capturedJson);
     const skipped = candidates.flatMap((a) => (!replayable(a) ? [{ tag: a.tag, why: 'no-capture' }] : !wanted(a) ? [{ tag: a.tag, why: 'no-cue-rule' }] : []));
     const paired = candidates.filter((a) => replayable(a) && wanted(a))
-        .map((a) => ({ model: a.model, tag: a.tag, args: ['--tag', a.tag, ...a.args, ...(a.captured ? ['--captured', promptsFile, ...(dry ? [] : ['--only', capturedIds.join(',')])] : [])] }));
+        .map((a) => ({ model: a.model, tag: a.tag, args: ['--tag', a.tag, ...a.args, ...(a.captured ? ['--captured', promptsFile, ...(dry ? [] : ['--only', (a.only ? a.only(capturedJson) : capturedIds).join(',')])] : [])] }));
     const pairFile = (a) => `interview60.judge.pairs.${a.model}_${a.tag}.json`;
     if (selected) {
         return {
@@ -422,10 +420,9 @@ async function main() {
     if (!dry) for (const f of plan.moveAside) moveAside(path.join(HERE, f), stamp);
     // Named in numbers, once, rather than per arm: how many of the replayable captured prompts
     // carry the rule at all (0 on a pre-cue hour) or how many of them lack it (a mixed hour).
-    const ruleCount = capturedIds.filter((id) => String(capturedJson[id].system ?? '').includes(CUE_RULE_MARK)).length;
-    const ruleSummary = ruleCount === 0
-        ? `0 of ${capturedIds.length} carry the cue rule`
-        : `${capturedIds.length - ruleCount} of ${capturedIds.length} lack it`;
+    const ruleCount = capturedJson ? cueRuleIds(capturedJson).length : 0;
+    if (focusedCaptured && !dry) log(`paired no-cues twins: ${ruleCount} of ${capturedIds.length} replayable prompts carry the cue rule; the twins replay those ids only`);
+    const ruleSummary = `${ruleCount} of ${capturedIds.length} carry the cue rule`;
     for (const s of plan.skipped) {
         if (s.why === 'no-capture') log(`WARN  paired arm ${s.tag} skipped — it replays the hour's captured prompts and there are none`);
         else log(`paired arm ${s.tag} skipped — ${ruleSummary}, so --no-cues would refuse an id mid-flight instead`);

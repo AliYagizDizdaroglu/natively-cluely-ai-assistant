@@ -342,6 +342,27 @@ describe('flightPlan (I5: the selection reaches the file moves and the grading l
     it('an unknown tag throws', () => {
         expect(() => flightPlan({ NATIVELY_FLIGHT_ARMS: 'nope' }, captured, false, { promptsFile: PROMPTS, roster: 'interview60' })).toThrow(/nope/);
     });
+    // bundle-1 R6: the no-cue twins replay only the ids whose captured system carries the cue rule.
+    const onlyOf = (arm: any) => { const i = arm.args.indexOf('--only'); return i < 0 ? null : arm.args[i + 1]; };
+    const twinTags = ['captured-no-cues-high', 'captured-no-cues-high-r2', 'captured-no-cues-high-r3'];
+    it('a MIXED capture: the twins fly with --only the ids that carry the rule; the other captured arms keep every id', () => {
+        const unmarked = new Set(spoken.slice(0, 1));
+        const mixed = Object.fromEntries(spoken.map((id) => [id, { system: `sys ${unmarked.has(id) ? '' : CUE_RULE_MARK}`, user: 'u' }]));
+        const p = flightPlan({}, mixed, false, { promptsFile: PROMPTS, roster: 'interview60' });
+        const twins = p.arms.filter((a: any) => twinTags.includes(a.tag));
+        expect(twins.map((a: any) => a.tag)).toEqual(twinTags);
+        for (const t of twins) expect(onlyOf(t).split(',')).toEqual(spoken.filter((id) => !unmarked.has(id)));
+        const high = p.arms.find((a: any) => a.tag === 'captured-high');
+        expect(onlyOf(high).split(',')).toEqual(spoken);
+        expect(p.skipped.map((s: any) => s.tag)).not.toEqual(expect.arrayContaining(twinTags));
+    });
+    it('NO id carries the rule: the twins are skipped with their log reason; ALL carry it: every id', () => {
+        const none = flightPlan({}, mk(false), false, { promptsFile: PROMPTS, roster: 'interview60' });
+        expect(none.arms.some((a: any) => twinTags.includes(a.tag))).toBe(false);
+        expect(none.skipped.filter((s: any) => twinTags.includes(s.tag)).map((s: any) => s.why)).toEqual(['no-cue-rule', 'no-cue-rule', 'no-cue-rule']);
+        const all = flightPlan({}, mk(true), false, { promptsFile: PROMPTS, roster: 'interview60' });
+        for (const t of all.arms.filter((a: any) => twinTags.includes(a.tag))) expect(onlyOf(t).split(',')).toEqual(spoken);
+    });
     it('a focused-arms env does not add focused arms when the variable is set', () => {
         const p = flightPlan(SET, captured, false, { promptsFile: PROMPTS, roster: 'scenario50' });
         expect(p.arms.some((a: any) => FOCUSED_MODELS.includes(a.model) && a.tag === undefined)).toBe(false);

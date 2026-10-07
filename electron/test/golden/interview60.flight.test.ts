@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ANSWER_MODELS, CUE_RULE_MARK, FOCUSED_MODELS, FOCUSED_ONLY_BY_ROSTER, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, capturedOnly, chooseLiveModel, focusedOnlyFor, hasCueRule, newestRunDir } from './interview60.flight.mjs';
+import { ANSWER_MODELS, CUE_RULE_MARK, FOCUSED_MODELS, FOCUSED_ONLY_BY_ROSTER, LIVE_DEFAULT, LIVE_FALLBACK, PAIRED_ARMS, answersFileFor, capturedOnly, chooseLiveModel, cueRuleIds, focusedOnlyFor, hasCueRule, newestRunDir } from './interview60.flight.mjs';
 import { CUE_RULE } from '../../llm/prompts';
 
 describe('chooseLiveModel', () => {
@@ -207,8 +207,9 @@ describe('PAIRED_ARMS', () => {
             expect(t.args, t.tag).toEqual([...high.args, '--no-cues']);
             expect(t).toMatchObject({ model: ANSWER_MODELS[1], captured: true, args: ['--thinking', 'HIGH', '--no-cues'] });
             expect(t.when).toBe(hasCueRule);
+            expect(t.only).toBe(cueRuleIds);   // bundle-1 R6: the twins replay only the ids that carry the rule
         }
-        expect(PAIRED_ARMS.filter((a) => !a.tag.startsWith('captured-no-cues')).every((a) => a.when === undefined)).toBe(true);
+        expect(PAIRED_ARMS.filter((a) => !a.tag.startsWith('captured-no-cues')).every((a) => a.when === undefined && a.only === undefined)).toBe(true);
     });
 
     it('hasCueRule reads the shipped rule\'s header out of the captured system prompts', () => {
@@ -221,12 +222,26 @@ describe('PAIRED_ARMS', () => {
         // real interview60 ids (both spoken); C01 is real too but kind: 'screenshot'.
         expect(hasCueRule({ W01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' } })).toBe(true);
         expect(hasCueRule({ W01: { system: 'prompt without it', user: 'u' } })).toBe(false);
-        // MIXED: one replayable prompt carries the rule, the other does not — this is the case
-        // that tells .every() apart from .some(); a .some() reading would wrongly say true here.
-        expect(hasCueRule({ W01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' }, W02: { system: 'no rule here', user: 'u' } })).toBe(false);
+        // MIXED (bundle-1 R6, per-id): a short single-part question's capture carries no cue rule by design,
+        // so an hour is mixed on purpose. The twins still fly, on exactly the ids that carry the rule.
+        expect(hasCueRule({ W01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' }, W02: { system: 'no rule here', user: 'u' } })).toBe(true);
         expect(hasCueRule({})).toBe(false);
         // C01 is a screenshot cue — capturedOnly never replays it, so a rule-carrying capture of
         // it alone must not count either; a .some() over every entry would wrongly say true here.
         expect(hasCueRule({ C01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' } })).toBe(false);
+    });
+
+    it('cueRuleIds: the replayable spoken ids whose system carries the rule, in roster order (bundle-1 R6)', () => {
+        const mixed = {
+            W01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' },
+            W02: { system: 'no rule here', user: 'u' },
+            W03: { system: `x ${CUE_RULE_MARK}` },                        // no user turn: not replayable even with the rule
+            C01: { system: `prompt ${CUE_RULE_MARK} more`, user: 'u' },   // a screenshot cue: never replayed
+        };
+        expect(cueRuleIds(mixed)).toEqual(['W01']);
+        expect(cueRuleIds({ W01: { system: 'a', user: 'u' } })).toEqual([]);
+        expect(cueRuleIds({})).toEqual([]);
+        const all = { W01: { system: CUE_RULE_MARK, user: 'u' }, W02: { system: CUE_RULE_MARK, user: 'u' } };
+        expect(cueRuleIds(all)).toEqual(capturedOnly(all));
     });
 });
