@@ -4,8 +4,8 @@ import { resampleTo16kMono, type LiveConnectFn, type LiveSessionLike } from './G
 import { ROUTER_INSTRUCTION, ROUTER_BLOCK_B } from './routerInstruction';
 
 export const ROUTER_MODEL = 'gemini-3.8-live';
-export const INSTRUCTION_SHA256 = 'e29bf3810128854c115214a50205ac7aa992e84bfcf35dd13147340a8cd41f3f';
-export const BLOCK_B_SHA256 = 'e11c240063eae0f258a1424fe49224aff5e6ffda0aafd2d6be6b553379379ad8';
+export const INSTRUCTION_SHA256 = '79ad0f464d95ca7e977cdcda829e5e853389c8ea84dcae9253e0127a91bc9a91';
+export const BLOCK_B_SHA256 = '3a1da134e4c7f9ad00a948d4e487eaf38e35b8def8f110b4a055387d1be9364c';
 const sha256 = (s: string) => createHash('sha256').update(s).digest('hex');
 /** Checked once at module load (spec 4.1); a mismatch makes start() refuse, so the flag has no effect. */
 export const ROUTER_SHAS_OK = sha256(ROUTER_INSTRUCTION) === INSTRUCTION_SHA256 && sha256(ROUTER_BLOCK_B) === BLOCK_B_SHA256;
