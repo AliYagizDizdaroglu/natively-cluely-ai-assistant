@@ -104,17 +104,17 @@ describe('runWhatShouldISay carries the cue block', () => {
         const engine = new IntelligenceEngine(stubHelper(), new SessionTracker());
         const emits = listen(engine);
         await engine.runWhatShouldISay(QUESTION, 1.0, undefined, { intentOverride: 'verbal', bypassCooldown: true });
-        expect(emits[0].cues).toEqual(['Batch/Online Architecture: Feature Store and']);
+        expect(emits[0].cues).toEqual(['Batch/Online Architecture: Feature Store']);
         const trimmedAt = logs.findIndex((l) => l.startsWith('[Answer] cues trimmed: '));
         expect(trimmedAt).toBeGreaterThan(-1);
-        expect(logs.indexOf('[Answer] cues: ["Batch/Online Architecture: Feature Store and"]')).toBeGreaterThan(trimmedAt);
+        expect(logs.indexOf('[Answer] cues: ["Batch/Online Architecture: Feature Store"]')).toBeGreaterThan(trimmedAt);
         expect(JSON.parse(logs[trimmedAt].slice('[Answer] cues trimmed: '.length))).toEqual({ rawLines: 1, dropped: [], cut: [seven], cleaned: [] });
     });
 
     it('spec 2026-09-30: dropped and cut together — an 8-line block with a 7-word line is displayed as 3 lines of 5 words, both cuts logged first', async () => {
         const logs = captureLogs();
         const eight = ['Blob Storage for data', 'Azure ML for training and registry work', 'Model Registry for versioning', 'ACR for images', 'AKS for inference', 'Data Factory for orchestration', 'Entra ID for security', 'Azure Monitor for observability'];
-        const shown = ['Blob Storage for data', 'Azure ML for training and', 'Model Registry for versioning'];
+        const shown = ['Blob Storage for data', 'Azure ML for training', 'Model Registry for versioning'];
         stubStream(eight, ['Ten million ', 'vectors take thirty gigabytes.']);
         const engine = new IntelligenceEngine(stubHelper(), new SessionTracker());
         const emits = listen(engine);

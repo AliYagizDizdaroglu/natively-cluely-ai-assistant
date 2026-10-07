@@ -951,7 +951,7 @@ describe('trimCues — the cue block as DISPLAYED: notation cleaned, then at mos
     it('a 7-word line is cut to its first 5 words and reported raw; a 5-word line is not', () => {
         const seven = 'Batch/Online Architecture: Feature Store and Shared Logic';
         const r = trimCues([seven, '60% precision and 31.6% recall'], L, W);
-        expect(r.cues).toEqual(['Batch/Online Architecture: Feature Store and', '60% precision and 31.6% recall']);
+        expect(r.cues).toEqual(['Batch/Online Architecture: Feature Store', '60% precision and 31.6% recall']);
         expect(r).toMatchObject({ rawLines: 2, dropped: [], cut: [seven], cleaned: [] });
     });
 
@@ -974,6 +974,41 @@ describe('trimCues — the cue block as DISPLAYED: notation cleaned, then at mos
         expect(trimCues(['** Parquet'], L, W)).toMatchObject({ cues: ['Parquet'], cleaned: ['** Parquet'] });
         // the parser can hand over a line with a space on both sides, `1| " padded "`
         expect(trimCues([' padded '], L, W)).toMatchObject({ cues: ['padded'], cleaned: [' padded '] });
+    });
+
+    describe('a cut line never ends on a dangling word (graded weak twice on 2026-10-07)', () => {
+        it('a 6+ word line whose 5th word is a connective loses it', () => {
+            const r = trimCues(['Latency budget per stage and throughput'], L, W);
+            expect(r.cues).toEqual(['Latency budget per stage']);
+            expect(r.cut).toEqual(['Latency budget per stage and throughput']);
+        });
+        it('the shape "X like PSI and ..." does not end hanging on "and" or "like"', () => {
+            const r = trimCues(['Drift metrics like PSI and KS tests', 'Monitor drift like PSI and KL divergence'], L, W);
+            expect(r.cues).toEqual(['Drift metrics like PSI', 'Monitor drift like PSI']);
+            const g = trimCues(['Track drift with metrics like and more'], L, W);
+            expect(g.cues).toEqual(['Track drift with metrics']);
+        });
+        it('a line cut at 5 words ending on "the" loses it; several trailing connectives all go', () => {
+            expect(trimCues(['Cache results to avoid the repeated work'], L, W).cues).toEqual(['Cache results to avoid']);
+            expect(trimCues(['Retries with backoff and the rest here'], L, W).cues).toEqual(['Retries with backoff']);
+        });
+        it('matching is case-insensitive and ignores trailing punctuation', () => {
+            expect(trimCues(['Scale out nodes And, The extra'], L, W).cues).toEqual(['Scale out nodes']);
+        });
+        it('a cut line made only of connectives displays empty (the existing empty-line convention) and is still logged as cut', () => {
+            const line = 'and the of for to extra words';
+            const r = trimCues([line, 'Parquet'], L, W);
+            expect(r.cues).toEqual(['', 'Parquet']);
+            expect(r.cut).toEqual([line]);
+        });
+        it('lines of 5 words or fewer are untouched, even when they end on a connective', () => {
+            const r = trimCues(['Pros and', 'Throughput versus latency and', 'Use the'], L, W);
+            expect(r.cues).toEqual(['Pros and', 'Throughput versus latency and', 'Use the']);
+            expect(r.cut).toEqual([]);
+        });
+        it('a cut that already ends on a content word is unchanged', () => {
+            expect(trimCues(['Feature store online offline parity checks'], L, W).cues).toEqual(['Feature store online offline parity']);
+        });
     });
 
     it('applies exactly the limits it is given (the engine passes CUE_MAX_LINES / CUE_MAX_WORDS)', () => {
