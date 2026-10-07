@@ -121,17 +121,18 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
     // lines the engine logs (first, one per block the display changed: dropped, cut or cleaned):
     // shown in the row, never gated — the winning wording overruns sometimes by its own
     // pre-registered rule, and every changed line is in the log verbatim for the result note.
-    // bundle-1 (SPEC 3.2): the cue gate sends no cue rule for a short single-part question; WhatToAnswerLLM logs
-    // `[Answer] cue rule: sent|skipped words=<n>` when the answer starts, and the engine's `cues: []` follows it. An empty
-    // block whose most recent rule line said `skipped` is EXPECTED (counted in `skipped`); any other empty block is not.
-    let lastCueRule = null;
-    const cueLines = [...dbg.matchAll(/^(\S+) \[LOG\] \[Answer\] (?:cue rule: (sent|skipped) words=\d+|cues: (\[.*\]))$/gm)].flatMap((m) => {
-        if (m[3] === undefined) { lastCueRule = m[2]; return []; }
+    // bundle-1 (SPEC 3.2): the cue gate sends no cue rule for a short single-part question. For such an answer that wrote
+    // no block, WhatToAnswerLLM logs `[Answer] cue block: expected-empty …` immediately before the engine's `cues: []` (one
+    // synchronous callback), so the pair is per answer and survives a supersede. An empty block right after that marker is
+    // EXPECTED (counted in `skipped`); any other empty block is not.
+    let markerPending = false;
+    const cueLines = [...dbg.matchAll(/^(\S+) \[LOG\] \[Answer\] (?:(cue block: expected-empty[^\n]*)|cues: (\[.*\]))$/gm)].flatMap((m) => {
+        if (m[3] === undefined) { markerPending = true; return []; }
         let cues = [];
         try { cues = JSON.parse(m[3]); } catch { /* a malformed line is an answer with no cues */ }
         cues = Array.isArray(cues) ? cues : [];
-        const rule = lastCueRule; lastCueRule = null;
-        return [{ at: ts(m[1]), cues, expectedEmpty: cues.length === 0 && rule === 'skipped' }];
+        const marked = markerPending; markerPending = false;
+        return [{ at: ts(m[1]), cues, expectedEmpty: cues.length === 0 && marked }];
     });
     const trimLines = [...dbg.matchAll(/^(\S+) \[LOG\] \[Answer\] cues trimmed: (\{.*\})$/gm)];
     const wellformedCues = (c) => c.length >= 1 && c.length <= 3 && c.every((x) => typeof x === 'string' && x.trim() !== '' && (x.match(/\S+/g) || []).length <= 5 && !x.includes('?') && !/\byou\b/i.test(x));

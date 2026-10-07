@@ -867,16 +867,30 @@ describe('cueBlocks: a cues: [] right after "cue rule: skipped" is expected (bun
         } finally { fs.rmSync(dir, { recursive: true, force: true }); }
     };
     const good = '["thirty gigabytes in float32","int8, then shard"]';
+    const EXPECTED_EMPTY = '[Answer] cue block: expected-empty (cue rule skipped)';
 
     it('counts a skipped answer\'s empty block as expected, not as a missing block', () => {
-        const m = compute(['[Answer] cue rule: sent words=14', `[Answer] cues: ${good}`, '[Answer] cue rule: skipped words=5', '[Answer] cues: []']);
+        const m = compute(['[Answer] cue rule: sent words=14', `[Answer] cues: ${good}`, '[Answer] cue rule: skipped words=5', EXPECTED_EMPTY, '[Answer] cues: []']);
         expect(m.cueBlocks).toEqual({ n: 2, present: 1, wellformed: 1, trimmed: 0, skipped: 1 });
     });
-    it('an empty block after "sent", or with no rule line (an older log), is not expected', () => {
+    it('an empty block with no marker right before it (after "sent", or an older log) is not expected', () => {
         expect(compute(['[Answer] cue rule: sent words=14', '[Answer] cues: []']).cueBlocks.skipped).toBe(0);
         expect(compute(['[Answer] cues: []']).cueBlocks.skipped).toBe(0);
-        // a rule line belongs to the NEXT cues line only: skipped, then a real block, then an empty one with no rule line
-        expect(compute(['[Answer] cue rule: skipped words=5', `[Answer] cues: ${good}`, '[Answer] cues: []']).cueBlocks.skipped).toBe(0);
+        // the marker belongs to the NEXT cues line only
+        expect(compute([EXPECTED_EMPTY, `[Answer] cues: ${good}`, '[Answer] cues: []']).cueBlocks.skipped).toBe(0);
+    });
+    it('review fix: after a supersede the pairing is per answer, not by the most recent rule line', () => {
+        // answer A (skipped) starts, answer B (sent) starts and logs its rule line, then A's stream ends: its marker + empty block
+        // come AFTER B's rule line. B's own block follows. A's empty block is expected; the old "latest rule line" pairing called it unexpected.
+        const m = compute([
+            '[Answer] cue rule: skipped words=5', '[Answer] cue rule: sent words=14',
+            EXPECTED_EMPTY, '[Answer] cues: []',
+            `[Answer] cues: ${good}`,
+        ]);
+        expect(m.cueBlocks).toEqual({ n: 2, present: 1, wellformed: 1, trimmed: 0, skipped: 1 });
+        // and the reverse: B (sent) wrote no block; its empty block must NOT be excused by A's earlier skipped rule line
+        const r = compute(['[Answer] cue rule: skipped words=5', '[Answer] cue rule: sent words=14', '[Answer] cues: []']);
+        expect(r.cueBlocks.skipped).toBe(0);
     });
     it('the gate row: present + skipped must cover every cue line, and the present blocks must all be well-formed', () => {
         const row = GATE.find((g) => g.key === 'cueBlocks')!;

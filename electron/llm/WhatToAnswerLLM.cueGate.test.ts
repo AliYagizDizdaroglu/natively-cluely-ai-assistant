@@ -79,6 +79,24 @@ describe('WhatToAnswerLLM cue gate', () => {
         expect(logs.filter((l) => l.startsWith('[Answer] cue rule:'))).toHaveLength(2);
     });
 
+    it('review fix: a gate-skipped answer with no block logs the expected-empty marker IMMEDIATELY before the cues callback (pairs per answer, survives a supersede)', async () => {
+        const logs: string[] = [];
+        vi.spyOn(console, 'log').mockImplementation((...a: any[]) => { logs.push(a.map(String).join(' ')); });
+        const onCues = vi.fn((c: string[]) => { logs.push(`ONCUES ${JSON.stringify(c)}`); });
+        await drain(new WhatToAnswerLLM(makeHelper()).generateStream(`[INTERVIEWER]: ${SHORT_Q}`, undefined, GENERAL, undefined, undefined, undefined, undefined, onCues));
+        const i = logs.indexOf('ONCUES []');
+        expect(i).toBeGreaterThan(0);
+        expect(logs[i - 1]).toBe('[Answer] cue block: expected-empty (cue rule skipped)');
+        // a long question (rule sent), or a skipped one that nevertheless wrote a block: no marker
+        logs.length = 0;
+        await drain(new WhatToAnswerLLM(makeHelper()).generateStream(`[INTERVIEWER]: ${LONG_Q}`, undefined, GENERAL, undefined, undefined, undefined, undefined, onCues));
+        expect(logs.some((l) => l.includes('expected-empty'))).toBe(false);
+        logs.length = 0;
+        const withBlock = makeHelper(); withBlock.streamChat.mockImplementation(async function* () { yield `__CUES__\n1| a b\n${PROSE}`; });
+        await drain(new WhatToAnswerLLM(withBlock).generateStream(`[INTERVIEWER]: ${SHORT_Q}`, undefined, GENERAL, undefined, undefined, undefined, undefined, onCues));
+        expect(logs.some((l) => l.includes('expected-empty'))).toBe(false);
+    });
+
     it('coding path is untouched: no verbal prompt, no cue-rule line', async () => {
         const logs: string[] = [];
         vi.spyOn(console, 'log').mockImplementation((...a: any[]) => { logs.push(a.map(String).join(' ')); });

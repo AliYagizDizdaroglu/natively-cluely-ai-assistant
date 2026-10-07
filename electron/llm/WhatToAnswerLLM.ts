@@ -319,7 +319,8 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 // Cues by question shape (bundle-1 SPEC 3): chosen once, from the heard question, so the
                 // fallback below sends the same prompt as the primary. One log line per verbal answer.
                 const verbalPrompt = verbalPromptFor(knowledgeQuestion);
-                const cueRuleLine = `cue rule: ${cueRuleApplies(knowledgeQuestion) ? 'sent' : 'skipped'} words=${knowledgeQuestion.match(/\S+/g)?.length ?? 0}`;
+                const cueRuleSent = cueRuleApplies(knowledgeQuestion);
+                const cueRuleLine = `cue rule: ${cueRuleSent ? 'sent' : 'skipped'} words=${knowledgeQuestion.match(/\S+/g)?.length ?? 0}`;
                 console.log(`[Answer] ${cueRuleLine}`);
                 diagLog(cueRuleLine);
                 const selected = useDeepModel ? this.llmHelper.getCurrentModelId() : GEMINI_FLASH_MODEL;
@@ -400,6 +401,10 @@ ANSWER SHAPE: ${intentResult.answerShape}
                 const onCuesOnce = (c: string[]) => {
                     if (cuesSent) return;
                     cuesSent = true;
+                    // The engine logs `[Answer] cues: …` synchronously inside onCues, so this marker sits IMMEDIATELY before
+                    // THIS answer's cues line. The smoke check and the metrics pair on that adjacency, per answer: pairing by
+                    // "the latest rule line" crossed answers after a supersede (review of bundle-1, finding 1).
+                    if (!cueRuleSent && c.length === 0) console.log('[Answer] cue block: expected-empty (cue rule skipped)');
                     onCues?.(c);
                 };
                 // stripUnknownMarkers is OUTERMOST (spec 7.1): a stray __WORD__ the model invents is
