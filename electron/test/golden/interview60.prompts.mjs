@@ -9,6 +9,10 @@
  * dispatch it follows — which is why the app logs the dispatch before issuing the request.
  *
  *   node electron/test/golden/interview60.prompts.mjs <run-dir>
+ *   node electron/test/golden/interview60.prompts.mjs --check <run-dir>
+ *
+ * --check writes nothing: it reads an existing prompts.json and exits 1 if any id holds a
+ * prompt that asks none of its dispatched questions (shifted) or has no dispatch.
  *
  * Exit 0 with a file written, or 1 with nothing written and the reason on stderr; the flight
  * treats a failure as "run the focused arms the old way" and says so in its log.
@@ -16,7 +20,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { pairCapturesToDispatches } from '../../../dist-electron/electron/llm/promptCapture.js';
+import { pairCapturesToDispatches, captureAsksQuestion } from '../../../dist-electron/electron/llm/promptCapture.js';
 
 // answer AND supersede: a supersede regenerates the answer and replaces it on screen, so it
 // has a prompt behind it and is the answer that question ended up with — the judge pairs it
@@ -42,20 +46,43 @@ export function idsForDispatches(dispatches, timeline) {
     return dispatches.map((d) => {
         const at = Date.parse(d.at);
         const w = windows.find((x) => at >= x.from && at < x.to);
-        return w ? { id: w.id, dispatchedAt: d.at } : null;
+        return w ? { id: w.id, dispatchedAt: d.at, question: d.question } : null;
     }).filter(Boolean);
+}
+
+/** Ids whose captured prompt asks none of their dispatched questions (an id may have several:
+ *  answer + supersede), and ids in the prompts with no dispatch at all. */
+export function findShiftedIds(prompts, dispatches) {
+    const shifted = [];
+    const noDispatch = [];
+    for (const [id, p] of Object.entries(prompts)) {
+        const qs = dispatches.filter((d) => d.id === id);
+        if (qs.length === 0) noDispatch.push(id);
+        else if (!qs.some((d) => captureAsksQuestion(p, d.question))) shifted.push(id);
+    }
+    return { shifted, noDispatch };
 }
 
 // Importable for tests: the CLI below runs only when this file IS the entry point, the same
 // guard interview60.judge.mjs uses.
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-const dir = process.argv[2];
-if (!dir) { console.error('usage: interview60.prompts.mjs <run-dir>'); process.exit(1); }
+const check = process.argv[2] === '--check';
+const dir = process.argv[check ? 3 : 2];
+if (!dir) { console.error('usage: interview60.prompts.mjs [--check] <run-dir>'); process.exit(1); }
 const capturePath = path.join(dir, 'verbal-prompts.log');
 const debugPath = path.join(dir, 'natively_debug.log');
 const timelinePath = path.join(dir, 'interview60.timeline.json');
-for (const f of [capturePath, debugPath, timelinePath]) {
+const promptsPath = path.join(dir, 'interview60.prompts.json');
+for (const f of check ? [promptsPath, debugPath, timelinePath] : [capturePath, debugPath, timelinePath]) {
     if (!fs.existsSync(f)) { console.error(`PROMPTS  missing ${path.basename(f)} — no captured prompts for this run`); process.exit(1); }
+}
+
+if (check) {
+    const prompts = JSON.parse(fs.readFileSync(promptsPath, 'utf8'));
+    const ds = idsForDispatches(readDispatches(fs.readFileSync(debugPath, 'utf8')), JSON.parse(fs.readFileSync(timelinePath, 'utf8')));
+    const { shifted, noDispatch } = findShiftedIds(prompts, ds);
+    console.log(`PROMPTS-CHECK  ${Object.keys(prompts).length} ids, ${shifted.length} shifted${shifted.length ? `: ${shifted.join(', ')}` : ''}${noDispatch.length ? `; ${noDispatch.length} without a dispatch: ${noDispatch.join(', ')}` : ''}`);
+    process.exit(shifted.length || noDispatch.length ? 1 : 0);
 }
 
 const captures = fs.readFileSync(capturePath, 'utf8').split('\n').filter((l) => l.trim()).map((l) => {
@@ -66,9 +93,11 @@ const paired = pairCapturesToDispatches(captures, dispatches);
 
 const out = {};
 for (const [id, c] of Object.entries(paired)) out[id] = { system: c.system, user: c.user, model: c.model, at: c.at };
-const file = path.join(dir, 'interview60.prompts.json');
+const file = promptsPath;
 fs.writeFileSync(file, JSON.stringify(out, null, 1));
 const n = Object.keys(out).length;
+const uncaptured = [...new Set(dispatches.map((d) => d.id))].filter((id) => !(id in out));
+if (uncaptured.length) console.log(`PROMPTS  ${uncaptured.length} dispatched ids have no capture: ${uncaptured.join(', ')}`);
 console.log(`PROMPTS  ${n} of ${dispatches.length} dispatched answers captured → ${file}`);
 if (n === 0) { console.error('PROMPTS  nothing paired — was NATIVELY_CAPTURE_PROMPTS=1 set for the hour?'); process.exit(1); }
 }

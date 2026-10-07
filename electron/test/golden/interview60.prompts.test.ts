@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readDispatches, idsForDispatches } from './interview60.prompts.mjs';
+import { readDispatches, idsForDispatches, findShiftedIds } from './interview60.prompts.mjs';
 
 const T0 = Date.parse('2026-09-14T07:10:00.000Z');
 const iso = (ms: number) => new Date(ms).toISOString();
@@ -57,8 +57,8 @@ describe('idsForDispatches', () => {
             { at: iso(T0 + 95_000), question: 'the follow-up as heard' },
         ];
         expect(idsForDispatches(d, timeline)).toEqual([
-            { id: 'S1Q01', dispatchedAt: iso(T0 + 25_000) },
-            { id: 'S1Q01F', dispatchedAt: iso(T0 + 95_000) },
+            { id: 'S1Q01', dispatchedAt: iso(T0 + 25_000), question: 'heard something quite different' },
+            { id: 'S1Q01F', dispatchedAt: iso(T0 + 95_000), question: 'the follow-up as heard' },
         ]);
     });
 
@@ -68,11 +68,44 @@ describe('idsForDispatches', () => {
 
     it('keeps the last question open for a while, so its answer is not lost to the end of the timeline', () => {
         expect(idsForDispatches([{ at: iso(T0 + 150_000), question: 'last' }], timeline))
-            .toEqual([{ id: 'S1Q02', dispatchedAt: iso(T0 + 150_000) }]);
+            .toEqual([{ id: 'S1Q02', dispatchedAt: iso(T0 + 150_000), question: 'last' }]);
     });
 
     it('ignores screenshot cues in the timeline, which are never spoken questions', () => {
         const withCue = { items: [{ id: 'CUE1', kind: 'screenshot', playedAt: T0 }, ...timeline.items] };
         expect(idsForDispatches([{ at: iso(T0 + 25_000), question: 'q' }], withCue)[0].id).toBe('S1Q01');
+    });
+});
+
+describe('findShiftedIds', () => {
+    const p = (q: string) => ({ system: 's', user: `[INTERVIEWER]: older
+[INTERVIEWER]: ${q}
+
+YOUR RESPONSE:`, model: 'm', at: iso(T0) });
+    const d = (id: string, question: string) => ({ id, dispatchedAt: iso(T0), question });
+
+    it('flags an id that holds the prompt of another id (the r1 shift)', () => {
+        const prompts = { A: p('question b'), B: p('question c') };
+        const dispatches = [d('A', 'question a'), d('B', 'question b'), d('C', 'question c')];
+        expect(findShiftedIds(prompts, dispatches)).toEqual({ shifted: ['A', 'B'], noDispatch: [] });
+    });
+
+    it('flags nothing when every id holds its own prompt', () => {
+        const prompts = { A: p('question a'), B: p('question b') };
+        expect(findShiftedIds(prompts, [d('A', 'question a'), d('B', 'question b')])).toEqual({ shifted: [], noDispatch: [] });
+    });
+
+    it('does not flag an id whose prompt equals the supersede question exactly, though not the answer one', () => {
+        const prompts = { A: p('how do pods scale under load'), B: p('question b') };
+        const dispatches = [d('A', 'how do pods'), d('A', 'how do pods scale under load'), d('B', 'something else'), d('B', 'question b')];
+        expect(findShiftedIds(prompts, dispatches)).toEqual({ shifted: [], noDispatch: [] });
+    });
+
+    it('flags an id whose prompt is only a word-prefix of its dispatched question', () => {
+        expect(findShiftedIds({ A: p('how do pods') }, [d('A', 'how do pods scale under load')])).toEqual({ shifted: ['A'], noDispatch: [] });
+    });
+
+    it('reports an id in the prompts with no dispatch at all', () => {
+        expect(findShiftedIds({ A: p('question a'), Z: p('zed') }, [d('A', 'question a')])).toEqual({ shifted: [], noDispatch: ['Z'] });
     });
 });

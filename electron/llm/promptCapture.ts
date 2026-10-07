@@ -52,31 +52,65 @@ export function capturePrompt(
 }
 
 /**
- * Pairs captures to question ids by dispatch time: a capture belongs to the dispatch it
- * FOLLOWS, within `windowMs`. The app logs the dispatch first and issues the request a few
- * milliseconds later, so a capture that precedes every dispatch (a warm-up, a typed chat
- * before the hour) belongs to none of them and is dropped rather than guessed at.
+ * Pairs captures to question ids: a capture belongs to the dispatch it FOLLOWS, within
+ * `windowMs`, and only if its pinned question is the dispatched one (captureAsksQuestion).
+ * The app logs the dispatch first and issues the request a few milliseconds later, so a
+ * capture that precedes every dispatch (a warm-up, a typed chat before the hour) belongs
+ * to none of them and is dropped rather than guessed at.
+ * A dispatch with no eligible capture gets no entry: in router-default-r1 five dispatches
+ * (the behavioural verbal route never captures) took the NEXT turn's capture, 23 s later,
+ * and the shift chained until 17 of 42 ids held another question's prompt. The text match is
+ * what stops that shift; there is no next-dispatch bound, because an answer's capture can
+ * land after its own supersede was dispatched. Limit: the same question text dispatched
+ * twice within the window, the first uncaptured, still hands the first the second's capture.
  */
 export function pairCapturesToDispatches(
     captures: CapturedPrompt[],
-    dispatches: { id: string; dispatchedAt: string }[],
+    dispatches: { id: string; dispatchedAt: string; question: string }[],
     windowMs = 30_000,
 ): Record<string, CapturedPrompt> {
     const byTime = [...captures].sort((a, b) => Date.parse(a.at) - Date.parse(b.at));
     const out: Record<string, CapturedPrompt> = {};
     const used = new Set<CapturedPrompt>();
-    for (const d of dispatches) {
+    // In time order, so an id's LAST dispatch decides its entry: a later dispatch with no
+    // capture (a supersede on the behavioural route) drops the replaced answer's capture.
+    const inOrder = [...dispatches].sort((a, b) => Date.parse(a.dispatchedAt) - Date.parse(b.dispatchedAt));
+    for (const d of inOrder) {
         const at = Date.parse(d.dispatchedAt);
         if (Number.isNaN(at)) continue;
         const hit = byTime.find((c) => {
             if (used.has(c)) return false;
             const delta = Date.parse(c.at) - at;
-            return delta >= -1_000 && delta <= windowMs;
+            return delta >= -1_000 && delta <= windowMs && captureAsksQuestion(c, d.question);
         });
         if (hit) {
             used.add(hit);
             out[d.id] = hit;
+        } else {
+            delete out[d.id];
         }
     }
     return out;
+}
+
+/** Text of the last `[INTERVIEWER]:` line of a captured user turn (the pinned question), or null. */
+export function lastInterviewerLine(user: string): string | null {
+    const lines = [...user.matchAll(/^\[INTERVIEWER\]:\s*(.*)$/gm)];
+    return lines.length ? lines[lines.length - 1][1] : null;
+}
+
+const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+/**
+ * True iff the capture's pinned question is the dispatched question. Measured 2026-10-07
+ * over 18 runs: each capture's last interviewer line equals its own dispatch's question,
+ * answer+supersede pairs included (there the answer's capture can land after the supersede
+ * is dispatched, so a capture is matched by text, not by order).
+ */
+export function captureAsksQuestion(capture: CapturedPrompt, question: string): boolean {
+    const line = lastInterviewerLine(capture.user);
+    if (line === null) return false;
+    const l = norm(line);
+    const q = norm(question);
+    return l !== "" && l === q;
 }
