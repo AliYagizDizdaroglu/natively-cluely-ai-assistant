@@ -679,6 +679,26 @@ function cleanNotation(s: string): string {
 }
 
 /**
+ * Words a displayed cue line must not END on (2026-10-07: two cues graded weak for ending
+ * "like PSI and" / "...and": the 5-word cut landed mid-phrase). The cut is by count, so the
+ * minimal repair is local: after cutting, drop trailing connectives, prepositions and
+ * articles until the line ends on a content word. Only a CUT line is touched; a line of
+ * maxWords or fewer is what the model wrote and stays as it is. A line made only of such
+ * words ends empty, which trimCues already displays (and the smoke check flags) rather than
+ * hiding. No semantic parsing: a fixed list, matched case-insensitively with trailing
+ * punctuation ignored; extend the list if a graded cue ends on another word.
+ * Not in the list, on purpose: "a", "in" and "on" end real phrases ("Plan A", "log in", "opt in",
+ * "turn on"). "&" and "w/" are matched on the raw lowercased token, BEFORE trailing non-letters are
+ * stripped, because stripping turns "&" into "" and "w/" into "w" (bundle-1, SPEC 6).
+ */
+const DANGLING_CUE_WORDS = new Set(['and', 'or', 'but', 'with', 'like', 'of', 'for', 'to', 'the', 'an', 'via', 'by', 'from', 'as', 'vs', '&', 'w/']);
+
+const isDanglingCueWord = (w: string): boolean => {
+    const raw = w.toLowerCase();
+    return DANGLING_CUE_WORDS.has(raw) || DANGLING_CUE_WORDS.has(raw.replace(/[^a-z]+$/, ''));
+};
+
+/**
  * The cue block as DISPLAYED (spec 2026-09-30): each line through the spoken-notation cleanup
  * above — a cue came out as raw LaTeX, `$O(\log n)$`, in spike 4; the prose gets this cleanup in
  * stripSpokenNotation and the cues skipped it — then the block cut to `maxLines` lines and each
@@ -697,18 +717,6 @@ function cleanNotation(s: string): string {
  * nothing is neither hidden nor repaired: it displays empty, and the smoke check and the
  * metrics row flag it.
  */
-/**
- * Words a displayed cue line must not END on (2026-10-07: two cues graded weak for ending
- * "like PSI and" / "...and": the 5-word cut landed mid-phrase). The cut is by count, so the
- * minimal repair is local: after cutting, drop trailing connectives, prepositions and
- * articles until the line ends on a content word. Only a CUT line is touched; a line of
- * maxWords or fewer is what the model wrote and stays as it is. A line made only of such
- * words ends empty, which trimCues already displays (and the smoke check flags) rather than
- * hiding. No semantic parsing: a fixed list, matched case-insensitively with trailing
- * punctuation ignored; extend the list if a graded cue ends on another word.
- */
-const DANGLING_CUE_WORDS = new Set(['and', 'or', 'but', 'with', 'like', 'of', 'for', 'to', 'the', 'a', 'an', 'via', 'in', 'on', 'by', 'from', 'as', 'vs']);
-
 export function trimCues(raw: string[], maxLines: number, maxWords: number): { cues: string[]; rawLines: number; dropped: string[]; cut: string[]; cleaned: string[] } {
     const cut: string[] = [];
     const cleaned: string[] = [];
@@ -719,7 +727,7 @@ export function trimCues(raw: string[], maxLines: number, maxWords: number): { c
         if (words.length <= maxWords) return clean;
         cut.push(line);
         const kept = words.slice(0, maxWords);
-        while (kept.length > 0 && DANGLING_CUE_WORDS.has(kept[kept.length - 1].toLowerCase().replace(/[^a-z]+$/, ''))) kept.pop();
+        while (kept.length > 0 && isDanglingCueWord(kept[kept.length - 1])) kept.pop();
         return kept.join(' ');
     });
     return { cues, rawLines: raw.length, dropped: raw.slice(maxLines), cut, cleaned };

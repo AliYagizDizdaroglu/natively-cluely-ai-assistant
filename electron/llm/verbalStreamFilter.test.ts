@@ -1009,6 +1009,19 @@ describe('trimCues — the cue block as DISPLAYED: notation cleaned, then at mos
         it('a cut that already ends on a content word is unchanged', () => {
             expect(trimCues(['Feature store online offline parity checks'], L, W).cues).toEqual(['Feature store online offline parity']);
         });
+        it('bundle-1: a cut line ending on "&" or "w/" loses it (matched on the raw token, before trailing non-letters are stripped)', () => {
+            expect(trimCues(['Batch layer Feature Store & Offline'], L, W).cues).toEqual(['Batch layer Feature Store']);
+            expect(trimCues(['Online store Redis cache w/ TTL eviction'], L, W).cues).toEqual(['Online store Redis cache']);
+        });
+        it('bundle-1: "a", "in" and "on" end real phrases ("Plan A", "log in") and are kept', () => {
+            expect(trimCues(['Fallback to the Plan A here'], L, W).cues).toEqual(['Fallback to the Plan A']);
+            expect(trimCues(['Users then must log in again'], L, W).cues).toEqual(['Users then must log in']);
+            expect(trimCues(['Teams can easily opt in later'], L, W).cues).toEqual(['Teams can easily opt in']);
+            expect(trimCues(['Then always just turn on logging'], L, W).cues).toEqual(['Then always just turn on']);
+        });
+        it('bundle-1: an uncut line ending in "and", "&" or "w/" is unchanged', () => {
+            expect(trimCues(['Pros &', 'Cache w/', 'Speed and'], L, W).cues).toEqual(['Pros &', 'Cache w/', 'Speed and']);
+        });
     });
 
     it('applies exactly the limits it is given (the engine passes CUE_MAX_LINES / CUE_MAX_WORDS)', () => {
