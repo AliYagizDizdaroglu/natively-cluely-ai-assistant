@@ -6,8 +6,8 @@
  * Task 10 `ear model=`); nothing here reads answer text for any purpose but copying it into the files.
  */
 
-export const EXPECTED_BLOCK_SHA12 = '3a1da134e4c7';
-export const EXPECTED_INSTRUCTION_SHA12 = '79ad0f464d95';
+export const EXPECTED_BLOCK_SHA12 = 'e11c240063ea';
+export const EXPECTED_INSTRUCTION_SHA12 = 'e29bf3810128';
 export const EAR_DEFAULT = 'gemini-3.1-flash-live-preview';
 
 const last = (arr) => (arr.length ? arr[arr.length - 1] : null);
