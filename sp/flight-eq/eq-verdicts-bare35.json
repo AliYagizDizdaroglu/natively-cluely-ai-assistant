@@ -1,0 +1,18 @@
+{
+ "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Covers data fit, missing values, latency, and a regularized logistic regression baseline concisely."},
+ "S1Q02": {"correctness": 0, "on_topic": 2, "delivery": 1, "reason": "Recall 31.6% matches the 30% capture within rounding, yet answer wrongly declares figures inconsistent."},
+ "S1Q04": {"correctness": 1, "on_topic": 2, "delivery": 0, "reason": "Leading __SPEECH__ markup; empty-input handling is vague 'zeros or appropriate defaults'."},
+ "S1Q06": {"correctness": 1, "on_topic": 2, "delivery": 0, "reason": "Leading markup tag; omits support-call event_type filter and is ambiguous where ingestion filter goes."},
+ "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sound shared feature store design covering all stages, but far over 85 words."},
+ "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Stray __DATES markup; content on exposure logging, delayed joins, propensity weighting is sound."},
+ "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Markdown header prefix; Azure service mapping is correct and complete."},
+ "S1Q10": {"correctness": 1, "on_topic": 2, "delivery": 0, "reason": "Markup tag; claims Azure RBAC authorizes PostgreSQL data access instead of Entra-mapped database roles."},
+ "S2Q01": {"correctness": 1, "on_topic": 2, "delivery": 0, "reason": "Markdown instruction header; generic stages, ingesting into vector DB before parsing is muddled."},
+ "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct RRF with deterministic tie-break, but reads a symbolic formula aloud."},
+ "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Markup tag prefix; greedy, skip, dedupe and per-document cap all correct."},
+ "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct pool, timeout race, ordered results and per-case error capture; too long."},
+ "S2Q07": {"correctness": 1, "on_topic": 2, "delivery": 0, "reason": "Markup tag; enforcement only by tenant filter, ignores per-document ACLs, updates/deletions barely addressed."},
+ "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Contains __CUES__ numbered list; migration plan covers all asked parts soundly."},
+ "S2Q09": {"correctness": 1, "on_topic": 2, "delivery": 0, "reason": "Markup tag; never names an Azure service for the workers."},
+ "S2Q10": {"correctness": 1, "on_topic": 2, "delivery": 0, "reason": "Markup tag; relies on duplicate detection and Durable Functions rather than idempotent keyed embedding upserts."}
+}

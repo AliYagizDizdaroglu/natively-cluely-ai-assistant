@@ -1,0 +1,11 @@
+feat(cues): enforce 3×5 at the display boundary, log every display edit, count trims
+
+The engine trims the raw block (trimCues) before it logs it and hands it to
+the first prose token; a block the display changed logs `[Answer] cues
+trimmed:` first — raw line count, every dropped, cut or cleaned line verbatim,
+one engine case per condition — then the displayed block on the `[Answer]
+cues:` line the row and the smoke check read. The metrics count the trimmed
+lines and show them in the cue row without gating on them, and an empty
+displayed cue is no longer well-formed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

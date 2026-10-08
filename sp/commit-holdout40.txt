@@ -1,0 +1,24 @@
+feat(golden): holdout40 — the technical-breadth roster the app is never tuned on
+
+33 mains + 12 follow-ups across seven areas (algorithms, backend, system design,
+classical ML, DL and LLMs, MLOps and data engineering with AWS and Databricks
+named, résumé reconciliation). Measured on the rendered set: p50 14 words
+against scenario50's 56, and 7 of 33 mains asking two things against 39 of 40.
+Shapes no roster has exercised: a redirect inside one turn, a false premise,
+questions at and below the STT detector's word floor, a follow-up chained two
+deep, a long-form design, a false-intro distractor, fillers, an estimation.
+
+The three reconciliation items carry {{SLOT}} markers the candidate fills from
+their own CV (metrics only). roster.mjs refuses the roster at load while any
+survives, so an hour cannot be spent speaking the markers aloud.
+
+The flight's focused five is now keyed by roster (FOCUSED_ONLY_BY_ROSTER,
+focusedOnlyFor): answers.mjs exits 2 on --only ids outside its roster, so
+scenario50's ids on any other roster would fail all four focused arms by
+accident and read as four missing-arm WARNs. A roster without a pick skips the
+arms with one log line. Proven by --dry-run: interview60 skips them, scenario50
+keeps its unchanged --only list. holdout40 picks its five after its baseline.
+
+Worktree only until s50m has flown: MAIN is what the 10:10 task runs.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

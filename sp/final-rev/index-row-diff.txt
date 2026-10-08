@@ -1,0 +1,27 @@
+﻿2026-09-26T11-39-51-h40b: INDEX row differs in delivered 43 -> 44
+2026-09-26T11-39-51-h40b: per-pass record would differ on 2364 line(s)
+   - - Heard 45/45 · answered 43 · delivered 43 · 0 doubles · 0 extends · 0 supersedes · long whole 1 of 1 · TTFT p90 13.6 s · detect p50 1.5 s · Live reconnects 25 
+   + - Heard 45/45 · answered 44 · delivered 44 · 0 doubles · 0 extends · 0 supersedes · long whole 1 of 1 · TTFT p90 13.6 s · detect p50 1.5 s · Live reconnects 25 
+   - | FAIL | Answered hands-free | 43/43 dispatched, 1 to nobody |
+   + | PASS | Answered hands-free | 44/44 dispatched, 0 to nobody |
+   - | FAIL | Surfaced detections per question | 0 doubles, 0 extended, 0 superseded, 2 caught, 1 unclaimed |
+   + | PASS | Surfaced detections per question | 0 doubles, 0 extended, 0 superseded, 2 caught, 0 unclaimed |
+   - ### R07F · followup · 9 words · clip 3.4 s · first detection +4.0 s from the end of the clip · coverage 0 %
+   + ### R07F · followup · 9 words · clip 3.4 s · first detection +4.0 s from the end of the clip · coverage 100 %
+   - _No in-app answer was dispatched for this question._
+   + **In-app answer 1** — live, +7.7 s → _not graded_
+   - **Arm gemini-3.1-flash-lite_captured-low-r2** — TTFT 4.8 s, 58 words → **acceptable** (correctness 2 · on_topic 2 · delivery 2)
+   + heard: "In the scenario where two workers are picking up jobs from a queue, what happens"
+   - _grader: Correct: no ack means the visibility timeout expires and the job reappears, tied sensibly to idempotent task design._
+   + 
+   - 
+   + > If the worker crashes, it never sends the acknowledgement or delete signal back to the queue. Once the visibility timeout expires, the queue automatically mak
+   - > If the worker crashes, it never sends the acknowledgment back to the queue. Once that visibility timeout expires, the queue automatically makes the message vi
+   + 
+   - 
+   + **Arm gemini-3.1-flash-lite_captured-low-r2** — TTFT 4.8 s, 58 words → **acceptable** (correctness 2 · on_topic 2 · delivery 2)
+   - **Arm gemini-3.1-flash-lite_captured-low-r3** — TTFT 20.4 s, 72 words → **acceptable** (correctness 2 · on_topic 2 · delivery 2)
+   + _grader: Correct: no ack means the visibility timeout expires and the job reappears, tied sensibly to idempotent task design._
+   - _grader: Correct: lease expiry triggers redelivery, and idempotent tasks make the crashed partial attempt safe to rerun._
+   + 
+runs: 27; INDEX rows that would change: 1; per-pass records that would render differently: 1

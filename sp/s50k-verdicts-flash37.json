@@ -1,0 +1,26 @@
+{
+ "S1Q06": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Correct left join with all predicates in the ON clause and COUNT of an event column; 86 words, just over the spoken band."
+ },
+ "S1Q07": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Covers every requested layer plus the shared feature-store and registry components, but 158 words is far too long to say aloud."
+ },
+ "S1Q08": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "All four sub-parts sound, including holdout and inverse propensity weighting against policy feedback loops; 102 words is over-length."
+ },
+ "S2Q02": {
+  "correctness": 1,
+  "on_topic": 1,
+  "delivery": 1,
+  "reason": "Gives units and denominators but states no uncertainty for any metric and only gestures at dataset construction, drifting into how it was achieved."
+ }
+}

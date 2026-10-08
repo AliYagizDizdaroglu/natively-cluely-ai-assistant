@@ -1,0 +1,48 @@
+h40d grading-agent dispatch text. Written 2026-10-01 {{WRITTEN}}, BEFORE any h40d data existed (the flight is
+Friday 2026-10-02 13:30). It is h40c's dispatch text verbatim (itself h40b's in-app dispatch text verbatim,
+agent-a75bedc970d3f2404, claude-opus-5-5, 2026-09-26), with only the paths and the tag changed per arm. Dispatch
+with model "opus"; read the model field of each transcript afterwards with h40d-grader-models.mjs and require
+claude-opus-5-5 (PREREGISTER-h40d.r4.md section 2 and section 6: grader pinned).
+
+SP = {{SP}}
+VH = SP\validation-hour
+RUN = MAIN\electron\test\golden\interview60.runs\<stamp>-h40d
+
+Rulings, made before the data:
+- ONE grading agent per graded arm: ten agents, all in ONE session (r4 section 2; review Q1), as h40c's seven and
+  h40b's eighteen were one per arm. The in-app arm's single grade is the rule-3 grade. There is no second in-app
+  grader: the pre-registration names none and no way to combine two, and h40c's 35, the floor, came from one grader.
+- Arms graded (ten): inapp (rule 3); captured-high, -r2, -r3 (the cue twins); captured-no-cues-high, -r2, -r3 (the
+  no-cue twins, the control); captured-low, -r2, -r3 (the back leg's cue twins, always graded, r4 section 2). The
+  bare, low, high and minimal arms are run by the flight and are not graded, as on h40c.
+- Tags and files. Each tag's PAIRS file is in RUN, its VERDICTS file in VH (RUN and VERDICTS below are substituted
+  with the full paths):
+{{TABLE}}
+- Merge: cwd MAIN, h40d-merge.cmd <model id> <run dir>, only after the flight task has ended.
+
+GRADER DRIFT, in order (r4 section 6). The pre-registration's own text, verbatim:
+
+{{R4_DRIFT}}
+
+The order that text fixes (derived from it; r4 governs wherever this paraphrase differs):
+1. FIRST, before any h40d grader is dispatched: ONE throwaway probe agent, model "opus", a one-line task (for example:
+   Reply with the single word OK.), and its model read from its own transcript with h40d-grader-models.mjs. Once more
+   at arming, r4 section 11.
+2. It reads claude-opus-5-5: no drift. Dispatch the ten graders with the text below, model "opus", read each grader's
+   model from its own transcript, and pass --model claude-opus-5-5 to every merge.
+3. It reads anything else: GRADER DRIFT. The choice written into section 11 BEFORE arming decides, and is never made
+   after h40d's 3a number is known. (ii), the controller's default: grade anyway with the new model; every merge
+   names it; the transcripts and the result note name it; 3b and 3c still gate; 3a's floor of 35 is reported, not
+   gated; the verdict word carries the modifier, for example "PASS EXCEPT 3a (GRADER DRIFT)", which is not a
+   validation; re-fly once a pinned grader exists. (i), the user's alternative: a dated re-pin amendment is written
+   BEFORE grading; h40c's own in-app pairs file (interview60.judge.pairs.json of h40c's run folder) is re-graded by
+   the new model with the same dispatch text BEFORE h40d's in-app pairs are graded, in the same session, and that
+   count becomes 3a's floor under the new grader. r4 does not fix that re-grade's tag or verdicts file name: the
+   amendment names them.
+
+Counting rulings (r4 section 4, "Counting rulings, before any verdict", verbatim; they stand before any verdict
+comes back):
+
+{{R4_COUNTING}}
+
+{{H40C_TAIL}}

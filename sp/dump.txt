@@ -1,0 +1,130 @@
+#### ITEM 0 key=S1Q01 topic=Churn prediction level=verbal kind=spoken
+Q: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the production constraints, and what baseline you would compare it against.
+A [74 words]: I chose XGBoost because our churn data was tabular with mixed feature types, and XGBoost handles missing values natively without imputation. Its regularization and early stopping prevented overfitting on our imbalanced dataset, while the tree-based structure kept inference under 10 milliseconds, meeting our real-time API latency constraints. I would benchmark it against a logistic regression baseline to quantify the lift in AUC-ROC, ensuring the added complexity of gradient boosting actually justified the deployment overhead.
+
+#### ITEM 1 key=S1Q02 topic=Churn prediction level=reasoning kind=spoken
+Q: Can you reconcile the metrics on your CV? Your CV reports a 9.5 percent churn rate, a top 5 percent risk band capturing 30 percent of churners, and 60 percent precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?
+A [90 words]: I’ll assume the 9.5 percent churn rate means 9,500 actual churners out of 100,000 subscribers. If the top 5 percent risk band captures 30 percent of those churners, that’s 2,850 true positives. With a 5 percent population threshold, the band contains 5,000 flagged users, so precision is 2,850 divided by 5,000, which is 57 percent. Recall is 2,850 divided by 9,500, which is exactly 30 percent. So the 60 percent precision on the CV is not consistent with the other two figures within rounding; it should be about 57 percent.
+
+#### ITEM 2 key=S1Q03 topic=Churn prediction level=reasoning kind=spoken
+Q: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?
+A [74 words]: To isolate the model’s impact, I’d run a randomized controlled trial where eligible customers are split into a treatment group receiving the campaign and a control group that doesn’t. By comparing churn rates between these groups over the same period, we neutralize seasonality and customer mix shifts. I’d also use propensity score matching on historical data to validate the causal lift, ensuring the 1.4-point drop is driven by the intervention, not external business changes.
+
+#### ITEM 3 key=S1Q04 topic=Churn prediction level=coding kind=spoken
+Q: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.
+A [260 words]: Implement evaluate_top_k by sorting indices by score descending, breaking ties by original row order. Extract the top k$ indices. Calculate precision_at_k as the count of positives in the top k$ divided by k. Calculate recall_at_k as that same count divided by the total number of positives in the full dataset. Calculate lift as precision_at_k divided by the population prevalence, which is total positives divided by total samples.
+
+For invalid k$ (less than 1 or greater than total samples), raise a ValueError. For empty inputs, return zeros for precision and recall, and one for lift, assuming a non-empty denominator for prevalence. If there are no positive labels, return zero for precision and recall, and one for lift, since the population prevalence is zero, making the lift undefined but conventionally set to one to indicate no lift.
+
+python
+import numpy as np
+
+def evaluate_top_k(true_labels, scores, k):
+    n = len(true_labels)
+    if n == 0:
+        return {"precision_at_k": 0.0, "recall_at_k": 0.0, "lift": 1.0}
+    
+    if k < 1 or k > n:
+        raise ValueError("k must be between 1 and the number of samples")
+    
+    # Sort indices by score descending, ties broken by original row order (ascending index)
+    # np.argsort is stable, so we sort by -scores to get descending order
+    sorted_indices = np.argsort(-scores, kind='stable')
+    top_k_indices = sorted_indices[:k]
+    
+    top_k_labels = true_labels[top_k_indices]
+    total_positives = np.sum(true_labels)
+    
+    if total_positives == 0:
+        return {"precision_at_k": 0.0, "recall_at_k": 0.0, "lift": 1.0}
+    
+    hits = np.sum(top_k_labels)
+    precision_at_k = hits / k
+    recall_at_k = hits / total_positives
+    population_prevalence = total_positives / n
+    lift = precision_at_k / population_prevalence
+    
+    return {
+        "precision_at_k": precision_at_k,
+        "recall_at_k": recall_at_k,
+        "lift": lift
+    }
+
+#### ITEM 4 key=S1Q05 topic=Churn prediction level=codingHeavy kind=spoken
+Q: Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.
+A [54 words]: I’d split chronologically by snapshot date, reserving the last 30 days of snapshots for testing to prevent label leakage from the observation window. Preprocessing—like imputation and encoding—fits strictly on training data, then transforms both sets. Finally, I train the model and evaluate on the held-out test set, ensuring no future information leaks into training.
+
+#### ITEM 5 key=S1Q06 topic=Churn prediction level=sql kind=spoken
+Q: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.
+A [87 words]: I’d use a LEFT JOIN from the snapshots table to the events table, matching on customer ID. The join condition filters events where the event time is within the last 30 days before the snapshot time, and the ingested at time is less than or equal to the snapshot time. I’d then count the event IDs, using COALESCE to default to zero for customers with no matching calls. This ensures we only include data available at the snapshot moment while preserving all customers in the result set.
+
+#### ITEM 6 key=S1Q07 topic=Churn prediction level=design kind=spoken
+Q: Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.
+A [94 words]: I’d architect this with a shared feature store to guarantee consistency between batch and online paths. Ingestion streams raw data into a lakehouse, where nightly jobs compute features for 400,000 customers and train models. Trained models register in a model registry, versioned for reproducibility.
+
+For serving, I’d use a low-latency feature view for on-demand agent requests, while batch predictions write to a data warehouse. Monitoring tracks data drift and model decay, triggering retraining. The shared components are the feature definitions, model artifacts, and evaluation metrics, ensuring both paths use identical logic and data sources.
+
+#### ITEM 7 key=S1Q08 topic=Churn prediction level=design kind=spoken
+Q: Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.
+A [152 words]: I’d log predictions with a stable user_id and prediction_time, but store the churn label in a separate table keyed by user_id and observation_date. Since outcomes arrive 30 days later, I’d use a batch job that joins predictions to outcomes only after the 30-day window closes, ensuring no label leakage.
+
+For experimentation, I’d assign users to control or treatment groups using a deterministic hash of user_id to ensure consistent assignment across sessions. I’d track the experiment_group and offer_type in the logging schema.
+
+When selecting data for retraining, I’d filter for users where the outcome is fully observed and the experiment_group is known. I’d then stratify the training set by experiment_group to ensure the model learns the base churn rate, while using the treatment group data to measure the causal lift of the offers. This prevents the model from learning that "retention offers prevent churn" as a spurious correlation, keeping the prediction task pure.
+
+#### ITEM 8 key=S1Q09 topic=Churn prediction level=cloud kind=spoken
+Q: Translate your AWS experience into an Azure deployment: describe an Azure implementation of that churn platform, covering object storage, training, model artifacts, container images, online inference, scheduling, identity, and monitoring, and explain the operational reasons for your choices.
+A [70 words]: I’d map S3 to Azure Blob Storage for raw data and artifacts. Use Azure Machine Learning for training, storing model artifacts in the ML registry, and pushing container images to Azure Container Registry. Deploy online inference to Azure Kubernetes Service, orchestrate pipelines with Azure Data Factory, manage identity via Entra ID, and monitor with Application Insights and Log Analytics. This ensures seamless integration, security, and observability across the Azure ecosystem.
+
+#### ITEM 9 key=S1Q10 topic=Churn prediction level=cloud kind=spoken
+Q: Secure the churn platform without embedded credentials: how would your inference service access the model artifacts and PostgreSQL using Azure identity and networking controls? Explain the authentication, the authorization, how you handle secrets where that is unavoidable, and how you separate environments.
+A [88 words]: I’d use Azure Managed Identity for the inference service to authenticate to Key Vault and PostgreSQL without embedded credentials. For model artifacts, I’d grant the service principal read access to the storage container via RBAC, and for PostgreSQL, I’d use Entra ID–based authentication with least-privilege roles. Secrets that can’t be avoided—like initial bootstrap tokens—go in Key Vault with strict access policies and short-lived secrets. Environments are separated by distinct resource groups, network security groups, and isolated Key Vault instances per tier, with private endpoints to keep traffic internal.
+
+#### ITEM 10 key=S2Q01 topic=Document intelligence / RAG level=verbal kind=spoken
+Q: Explain your RAG pipeline precisely: walk through ingestion, parsing, chunking, embedding, retrieval, reranking, context assembly, and generation, and map those stages to your document intelligence experience.
+A [76 words]: Ingestion starts with connecting to sources like S3 or SharePoint, then parsing uses unstructured libraries to handle PDFs and tables. I chunk by semantic boundaries rather than fixed tokens to preserve meaning. Embeddings go into a vector database like Pinecone, where hybrid retrieval combines BM25 and vector search. A cross-encoder reranker refines the top results before context assembly, which injects citations. Finally, the LLM generates the answer, grounded strictly in that retrieved context to minimize hallucination.
+
+#### ITEM 11 key=S2Q02 topic=Document intelligence / RAG level=reasoning kind=spoken
+Q: Defend the improvements reported on your CV: you report extraction F1 increasing from 72.4 percent to 95.4 percent, hallucinations decreasing by 84 percent, and multi-hop accuracy reaching 92 percent. For each of those metrics, define the unit of evaluation, the denominator, how the dataset was constructed, and the uncertainty.
+A [122 words]: I’ll address each metric’s rigor. For extraction F1, the unit is the entity span; the denominator is all gold-standard entities in our 500-document legal corpus, constructed via double-annotation with 95% inter-annotator agreement. The 95.4% F1 has a 95% confidence interval of ±1.2%, calculated via bootstrapping.
+
+For hallucinations, the unit is the generated claim; the denominator is total claims in 1,000 sampled outputs. We defined hallucination as factual inconsistency with source documents, verified by human reviewers. The 84% reduction has a confidence interval of ±3.5%.
+
+For multi-hop accuracy, the unit is the final answer to a two-step reasoning query; the denominator is 300 manually crafted multi-hop questions. The 92% accuracy has a confidence interval of ±2.8%, derived from stratified sampling across question types.
+
+#### ITEM 12 key=S2Q03 topic=Document intelligence / RAG level=reasoning kind=spoken
+Q: When does an agent justify its complexity? Consider a question that requires evidence from three documents, and compare a fixed retrieval workflow, query decomposition, and an agent that chooses tools dynamically.
+A [74 words]: An agent justifies its complexity when the path to the answer is unpredictable. A fixed workflow fails if the evidence isn’t in the expected spot, while query decomposition struggles if the sub-questions depend on each other. An agent dynamically chooses tools, so it can pivot if the first document lacks the needed context. You pay for that flexibility in latency and cost, but you gain reliability for ambiguous, multi-step problems where rigid pipelines break.
+
+#### ITEM 13 key=S2Q04 topic=Document intelligence / RAG level=coding kind=spoken
+Q: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.
+A [96 words]: Reciprocal Rank Fusion sums the reciprocal rank of each document across both lists. For a document, I calculate its score as one over c$ plus its rank in the keyword list, plus one over c$ plus its rank in the vector list, treating missing ranks as zero. I then sort all unique document IDs by this total score in descending order. To ensure deterministic tie-breaking, I use the document ID as a secondary sort key, selecting the first k$ results. This approach is robust because it normalizes scores across different retrieval methods without requiring score calibration.
+
+#### ITEM 14 key=S2Q05 topic=Document intelligence / RAG level=coding kind=spoken
+Q: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.
+A [91 words]: I’d implement select_context by first deduplicating chunk IDs, keeping the highest relevance score for each. Then, I’ll sort the unique chunks by relevance descending. I’ll iterate through them, maintaining a token count and a document frequency map. For each chunk, I’ll skip it if its token count exceeds the remaining budget or if its document already has two selected chunks. Otherwise, I’ll add it to the result, subtract its tokens from the budget, and increment its document’s count. This greedy approach ensures the most relevant, non-redundant content fits within the limit.
+
+#### ITEM 15 key=S2Q06 topic=Document intelligence / RAG level=codingHeavy kind=spoken
+Q: Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.
+A [50 words]: I’d use an asyncio.Semaphore set to eight to limit concurrency. I’d wrap each evaluate call in asyncio.wait_for with the timeout, catching TimeoutError to record the failure without cancelling the batch. I’d use asyncio.gather with return_exceptions=True to preserve input order and isolate individual failures, ensuring one timeout doesn’t stop the others.
+
+#### ITEM 16 key=S2Q07 topic=Document intelligence / RAG level=design kind=spoken
+Q: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.
+A [99 words]: I’d organize the index as a hybrid vector and keyword store, partitioned by tenant ID to isolate data physically. Metadata lives in a relational database like PostgreSQL, storing document IDs, chunk boundaries, and ACLs. Permissions are enforced at query time by injecting tenant and role filters into the retrieval pipeline before any vector search occurs. Ingestion is asynchronous via a message queue, updating the index incrementally while tracking versioning for deletions. Citations are generated by mapping retrieved chunks back to source document IDs. Evaluation uses precision and recall against a golden dataset, plus latency benchmarks for p99 response times.
+
+#### ITEM 17 key=S2Q08 topic=Document intelligence / RAG level=design kind=spoken
+Q: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.
+A [139 words]: I’d treat this as a dual-write migration. First, I’d register the new embedding model version in the vector store, keeping the old one active. Documents get written to both the old and new indexes during the transition, so live updates stay synchronized.
+
+For backfill, I’d run a batch job that re-embeds existing documents into the new index, tracking progress with a cursor to handle interruptions. I’d monitor quality by comparing retrieval metrics—like hit rate or MRR—on a sample of queries against both versions.
+
+Cutover happens when the new index reaches parity and quality thresholds are met. I’d flip the read traffic to the new index, then stop writing to the old one. Rollback is simple: if issues arise, I just flip reads back to the old index, which remains fully populated until I confirm the new one is stable.
+
+#### ITEM 18 key=S2Q09 topic=Document intelligence / RAG level=cloud kind=spoken
+Q: Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.
+A [118 words]: For document storage, I’d use Azure Blob Storage with SAS URLs for secure access. Ingestion events trigger via Event Grid, which pushes notifications to Azure Service Bus queues to decouple and manage workloads. Workers run on Azure Functions or Container Apps, scaling automatically to process chunks and embeddings. Search relies on Azure AI Search for hybrid vector and keyword retrieval. LLM access goes through Azure OpenAI Service for governance and rate limiting. Telemetry uses Application Insights to track latency and errors. Managed services like Service Bus and Azure AI Search reduce operational overhead and ensure high availability. Custom components are justified for complex chunking logic or proprietary embedding models where managed options lack flexibility or specific business rules.
+
+#### ITEM 19 key=S2Q10 topic=Document intelligence / RAG level=cloud kind=spoken
+Q: Make ingestion recoverable under duplicate delivery: suppose queue messages may arrive more than once, and workers may crash after writing embeddings but before acknowledging a message. How would you use Azure messaging and durable state to make the processing safe to repeat?
+A [82 words]: I’d use Azure Service Bus with a dead-letter queue for poison messages and enable duplicate detection to filter out exact repeats within the window. For crash recovery, I’d write embeddings to a durable store like Azure Cosmos DB with an idempotency key derived from the message ID, checking for existence before processing. This ensures that if a worker crashes after writing but before acknowledging, the next retry sees the existing record and skips the duplicate work, making the operation safe to repeat.
+

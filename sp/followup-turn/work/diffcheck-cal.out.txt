@@ -1,0 +1,11 @@
+OK  diff check: the real filled copy equals the registered file once §2 cells, the new rows, the block table and the I3 note are normalized away
+OK  ... a changed line in section 1 is a DIFFERENCE
+OK  ... a changed bar in section 7 is a DIFFERENCE
+OK  ... an edited first cell of a §2 row is a DIFFERENCE
+OK  ... an added line OUTSIDE the I3 note (appended text) is a DIFFERENCE
+OK  ... a different sha256 in a hash cell is NOT a difference (that is what the table is for)
+OK  ... a longer I3 note is NOT a difference
+OK  check-grader-questions on the filled registration: exit 0, both rows OK
+OK  ... a flipped judge.mjs row: exit non-zero  [exit 1]
+OK  ... a flipped dispatch text row: exit non-zero  [exit 1]
+DIFFCHECK / CGQ CALIBRATION OK

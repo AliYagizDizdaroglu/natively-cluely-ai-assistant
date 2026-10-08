@@ -1,0 +1,28 @@
+===== cuesmoke S1Q08 [fix]
+2026-09-30T13-46-52-cuesmoke [fix jitter=50]: 20/20 once; doubles []; never []; drops 0; absorbed 1 (whisper 0); subs 1; unmatched 0; reorders 3; supersedes 1
+trace S1Q08: {"n":1,"lat":1200,"budget":1700,"path":"gate","finished":true,"fromLive":false,"finals":5,"cov":"1.00","closes":["continuation-expired"],"live":[],"logFirst":"13:37:15.989","logGate":1220,"vadDev":11,"blips":0,"voiceOff":"13:37:14.756"}
+  13:36:57.296 voice ON
+  13:36:59.856 voice OFF
+  13:37:00.296 voice ON
+  13:37:01.147 final "Now add delayed outcomes and experimentation."
+  13:37:03.676 voice OFF
+  13:37:04.096 voice ON
+  13:37:05.421 final "Extend that design so churn outcomes arrive thirty days later,"
+  13:37:06.656 voice OFF
+  13:37:07.441 final "and retention offers affect the labels you observe."
+  13:37:07.616 voice ON
+  13:37:09.096 voice OFF
+  13:37:09.556 voice ON
+  13:37:10.876 voice OFF
+  13:37:11.336 voice ON
+  13:37:12.376 voice OFF
+  13:37:12.815 final "Design the prediction logging, the experiment assignment,"
+  13:37:12.816 voice ON
+  13:37:14.756 voice OFF
+  13:37:15.534 final "the outcome joins, and how you select data for retraining."
+  13:37:15.956 dispatch finals=5 fromLive=false live=0 path=gate "Now add delayed outcomes and experimentation. Extend that de"
+  13:37:23.956 close continuation-expired
+  13:37:15.273 <whisper rv=match> {"kind":"marked"} q="Now add delayed outcomes and experimentation. Exte"
+  13:37:17.816 <whisper rv=match> {"kind":"marked"} q="Design the prediction logging, the experiment assi"
+  13:38:28.725 <live rv=unverifiable> {"kind":"absorbed","source":"live","of":"Now add delayed outcomes and experimentation. Extend that design so churn outcomes arrive thirty days later, and retention offers affect the labels you observe q="Extend that design so churn outcomes arrive 30 day"
+

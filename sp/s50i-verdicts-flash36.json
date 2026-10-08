@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic correct both ways (2,850 TP, 57% precision, 30% recall; and 3,000 TP at 60%), though calling 57 vs 60 'fully consistent' slightly overstates."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Join logic and ingested-at guard are right, but it never writes the asked-for PostgreSQL and skips the count-of-a-column trap that preserves zeros."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers index, metadata, ACL pre-filtering and evaluation accurately, but around 110 words is too long for a spoken reply."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure mapping for every component asked plus the managed-versus-custom tradeoff, but roughly 120 words overruns the spoken budget."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-Lock plus deterministic chunk-hash upsert and ack-after-write is exactly the right idempotency story, tightly spoken."
+  }
+}

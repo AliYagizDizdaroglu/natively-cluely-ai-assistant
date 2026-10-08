@@ -1,0 +1,60 @@
+run 2026-10-01T02-37-41-cuesmoke
+log window 2026-10-01T02:01:12.480Z .. 2026-10-01T02:37:39.234Z; timeline items 20
+
+cue blocks: 22
+  02:02:40Z  ?       2 line(s), words 2/2:  ["Layer caching","Instruction ordering"]
+  02:02:59Z  ?       3 line(s), words 4/3/4:  ["KEDA with custom metrics","HPA stabilization windows","Cluster autoscaler GPU provisioning"]
+  02:03:25Z  S1Q01   3 line(s), words 5/5/4:  ["XGBoost for tabular churn data","Fast inference and low latency","Simple logistic regression baseline"]
+  02:04:34Z  S1Q01F  3 line(s), words 5/5/5:  ["Logistic regression for linear baselines","Neural networks for unstructured data","Rules for deterministic safety checks"]
+  02:05:59Z  S1Q02   3 line(s), words 3/3/3:  ["True positives calculation","Capture rate check","Consistency within rounding"]
+  02:07:24Z  S1Q02F  3 line(s), words 5/4/5:  ["PR-AUC 0.38 lift over baseline","ROC-AUC 0.88 ranking ability","Business ROI and intervention cost"]
+  02:08:40Z  S1Q03   2 line(s), words 4/5:  ["Randomized holdout control groups","Controlling for cohort mix and"]
+  02:10:03Z  S1Q03F  2 line(s), words 4/4:  ["Lost causes vs persuadables","Uplift modeling and ROI"]
+  02:11:34Z  S1Q04   2 line(s), words 4/5:  ["Sort, slice, compute metrics","Handle edge cases and ties"]
+  02:14:11Z  S1Q04F  1 line(s), words 5:  ["Partial selection with index tie-breaking"]
+  02:15:36Z  S1Q05   3 line(s), words 4/3/5:  ["Chronological split with buffer","Scikit-learn ColumnTransformer pipeline","Fit transformers on train only"]
+  02:18:44Z  S1Q05F  2 line(s), words 5/5:  ["Legitimate for recurring time-series panels","Required when customer features cause"]
+  02:20:12Z  S1Q06   3 line(s), words 4/5/5:  ["Left join snapshots table","Thirty day window and ingestion","Group by snapshot and count"]
+  02:22:48Z  S1Q06F  2 line(s), words 5/5:  ["Composite index on snapshot date","Append-only event sourcing for historical"]
+  02:24:14Z  S1Q07   3 line(s), words 4/5/5:  ["Ingestion and feature store","Airflow training and Model Registry","FastAPI serving and drift monitoring"]
+  02:26:57Z  S1Q07F  2 line(s), words 3/4:  ["Idempotent state tracking","Pinned model version hashes"]
+  02:28:08Z  S1Q08   3 line(s), words 5/3/4:  ["Prediction logging with model hash","Deterministic experiment assignment","30-day delayed outcome joins"]
+  02:30:48Z  S1Q08F  3 line(s), words 3/3/3:  ["Feedback loop creation","Intervention label distortion","Control group mitigation"]
+  02:32:08Z  S1Q09   3 line(s), words 5/5/5:  ["Blob storage and Azure ML","ACR, AKS, and Airflow scheduling","Entra ID and Azure Monitor"]
+  02:33:45Z  S1Q09F  3 line(s), words 5/5/5:  ["Azure ML Managed Endpoints for","Azure App Service for lightweight","AKS for complex multi-container platforms"]
+  02:35:06Z  S1Q10   3 line(s), words 4/5/5:  ["Managed identities authenticate services","RBAC and database roles authorize","Key Vault isolates environments securely"]
+  02:36:47Z  S1Q10F  3 line(s), words 5/5/5:  ["Check token and Entra ID","Verify Azure RBAC and database","Inspect VNet rules and Private"]
+
+shape: empty 0, one line 1, two lines 7, three lines 14, more than three 0
+words per cue line: n 57, median 5, max 5, lines over 5 words 0; words per block: median 11.5
+items with more than one block: ? x2; items with no block: none
+
+cues trimmed lines: 7
+  02:08:40Z  S1Q03   [cut 1]  {"rawLines":2,"dropped":[],"cut":["Controlling for cohort mix and seasonality"],"cleaned":[]}
+  02:18:44Z  S1Q05F  [cut 1]  {"rawLines":2,"dropped":[],"cut":["Required when customer features cause leakage"],"cleaned":[]}
+  02:20:12Z  S1Q06   [cut 1]  {"rawLines":3,"dropped":[],"cut":["Thirty day window and ingestion filter"],"cleaned":[]}
+  02:22:48Z  S1Q06F  [cut 2]  {"rawLines":2,"dropped":[],"cut":["Composite index on snapshot date and user ID","Append-only event sourcing for historical corrections"],"cleaned":[]}
+  02:28:08Z  S1Q08   [dropped 1]  {"rawLines":4,"dropped":["Inverse propensity weighting for retraining"],"cut":[],"cleaned":[]}
+  02:33:45Z  S1Q09F  [cut 2]  {"rawLines":3,"dropped":[],"cut":["Azure ML Managed Endpoints for inference","Azure App Service for lightweight APIs"],"cleaned":[]}
+  02:36:47Z  S1Q10F  [cut 3]  {"rawLines":3,"dropped":[],"cut":["Check token and Entra ID logs","Verify Azure RBAC and database grants","Inspect VNet rules and Private Link"],"cleaned":[]}
+
+answers: full lines 22 (failed 0), superseded streams 0
+hedge: gemini-3.5-flash-lite won 22 (at median 3912 ms, max 5379 ms)
+lines with "Knowledge mode (stream): returning generated intro response": 0
+lines with "__negotiationCoaching": 0
+lines with "turn: close reason=not-a-question": 2
+lines with "boundary repair: restored": 1
+
+first token (diag, this run): n 22, median 4722.5 ms, p90 5744 ms, max 5999 ms
+
+report rows:
+  - PASS  Answered hands-free: 20/20 dispatched, 0 to nobody   (before: 26/52)
+  - PASS  Heard by either detector: 20/20   (before: 51/52)
+  - PASS  Surfaced detections per question: 0 doubles, 0 extended, 0 superseded, 0 caught, 0 unclaimed   (before: 12 doubles, 1 invented)
+  - PASS  Long questions answered whole: 8 of 8 (dispatched text covers ≥ 80% of the question)   (before: not in the roster)
+  - PASS  Answer TTFT p90 · detect p50: 5.8 s · 1.4 s   (before: 3.7 s (answer-only pass) · 4.1 s)
+  - PASS  Cue block above every spoken answer: 20/20 present, 20 well-formed, 7 trimmed   (before: not logged (before cue mode))
+  **GATE FAILED — STT socket closes / lost utterances / fragment chips; Interview-acceptable answers (Opus 5 judge)**
+
+dist now: main.js written 2026-09-30T21:03:29.295Z; limits 3 x 5; CUE_RULE sha256/12 8e15e4e7dd41
+dist CUE_SHAPE_RULE: - At most 3 lines, each at most 5 words. The first line is the answer itself in the fewest words that carry it: one or two words when that is enough (asked "Tabs or spaces?", the whole block is 1| Spaces). A one-part question gets exactly one line. Add a line only for another part the QUESTION names, never for a point you add on your own; when it names more than 3 parts, group related parts into themes so every part is still covered in 3 lines.

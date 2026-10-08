@@ -1,0 +1,224 @@
+h40d-hascuerule-check.mjs calibration (brief C, r4 section 7.6)
+written by instruments\run-cal-C.mjs on 2026-10-01T13:44:28.379Z; every expectation below was written from the brief and r4 BEFORE the run
+instrument calibrated: h40d-hascuerule-check.mjs  sha256/16 4a697be922fa9d60  6933 bytes  (compare before relying on it: a changed instrument is an uncalibrated one)
+
+================================================================
+CASE H1  MAIN's OWN flight module (the default path), which now HAS hasCueRule: the merge has landed
+expected: the TRUE case through MAIN's own copy: true, N of N, exit 0
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json   [env NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1]
+----------------------------------------------------------------
+roster environment: NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1
+flight module: C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.flight.mjs
+roster in force: scenario50 [S1]  20 items
+flight CUE_RULE_MARK: [CUES FIRST] (same as r4's)
+prompts file: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json (435971 bytes, 19 entries)
+capturedOnly ids: 19
+carry [CUES FIRST]: 19 of 19
+hasCueRule: true
+CONSISTENT: hasCueRule equals "at least one id, and every one carries the mark"
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /capturedOnly ids: ([1-9]\d*)\r?\ncarry \[CUES FIRST\]: \1 of \1\r?\nhasCueRule: true/; ok: text-leak check: 0 of 20 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE H2  the TRUE case: the 05:00 re-smoke's prompts file under NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1, the worktree's flight module
+expected: hasCueRule true, N of N carry the mark (N > 0), exit 0
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json --flight C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs   [env NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1]
+----------------------------------------------------------------
+roster environment: NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1
+flight module: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs
+roster in force: scenario50 [S1]  20 items
+flight CUE_RULE_MARK: [CUES FIRST] (same as r4's)
+prompts file: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json (435971 bytes, 19 entries)
+capturedOnly ids: 19
+carry [CUES FIRST]: 19 of 19
+hasCueRule: true
+CONSISTENT: hasCueRule equals "at least one id, and every one carries the mark"
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /capturedOnly ids: ([1-9]\d*)\r?\ncarry \[CUES FIRST\]: \1 of \1\r?\nhasCueRule: true/; ok: has /CONSISTENT/; ok: has /roster in force: scenario50 \[S1\]/; ok: text-leak check: 0 of 20 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE H3  the MIXED hour: the same file with ONE id's system text stripped of the mark in memory (--mutate-one)
+expected: hasCueRule false, N-1 of N carry the mark, exit 1 (a mixed hour gates closed)
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json --flight C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs --mutate-one   [env NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1]
+----------------------------------------------------------------
+roster environment: NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1
+flight module: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs
+roster in force: scenario50 [S1]  20 items
+flight CUE_RULE_MARK: [CUES FIRST] (same as r4's)
+prompts file: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json (435971 bytes, 19 entries)
+--mutate-one: S1Q01F's system text stripped of the mark IN MEMORY (nothing is written)
+capturedOnly ids: 19
+carry [CUES FIRST]: 18 of 19
+hasCueRule: false
+CONSISTENT: hasCueRule equals "at least one id, and every one carries the mark"
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /--mutate-one: \S+'s system text stripped of the mark IN MEMORY \(nothing is written\)/; ok: has /hasCueRule: false/; ok: text-leak check: 0 of 20 sensitive strings found in the output (must be 0); ok: N-1 of N carry the mark]
+
+================================================================
+CASE H4  the 05:00 re-smoke file read under NATIVELY_ROSTER=holdout40 (the check depends on the roster environment)
+expected: hasCueRule false with 0 ids, exit 1
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json --flight C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs   [env NATIVELY_ROSTER=holdout40]
+----------------------------------------------------------------
+roster environment: NATIVELY_ROSTER=holdout40 NATIVELY_SCENARIOS=(unset)
+flight module: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs
+roster in force: holdout40  45 items
+flight CUE_RULE_MARK: [CUES FIRST] (same as r4's)
+prompts file: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json (435971 bytes, 19 entries)
+capturedOnly ids: 0
+carry [CUES FIRST]: 0 of 0
+hasCueRule: false
+NOTE: capturedOnly returned 0 ids: none of the file's ids is a spoken item of the roster in force (is NATIVELY_ROSTER / NATIVELY_SCENARIOS the run's?)
+CONSISTENT: hasCueRule equals "at least one id, and every one carries the mark"
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /capturedOnly ids: 0\r?\ncarry \[CUES FIRST\]: 0 of 0\r?\nhasCueRule: false/; ok: has /roster in force: holdout40/; ok: has /NOTE: capturedOnly returned 0 ids/; ok: text-leak check: 0 of 20 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE H5  h40c's prompts file under NATIVELY_ROSTER=holdout40 (a pre-cue hour)
+expected: hasCueRule false, 0 of 44, exit 1
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c\interview60.prompts.json --flight C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs   [env NATIVELY_ROSTER=holdout40]
+----------------------------------------------------------------
+roster environment: NATIVELY_ROSTER=holdout40 NATIVELY_SCENARIOS=(unset)
+flight module: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs
+roster in force: holdout40  45 items
+flight CUE_RULE_MARK: [CUES FIRST] (same as r4's)
+prompts file: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c\interview60.prompts.json (951498 bytes, 44 entries)
+capturedOnly ids: 44
+carry [CUES FIRST]: 0 of 44
+hasCueRule: false
+CONSISTENT: hasCueRule equals "at least one id, and every one carries the mark"
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /capturedOnly ids: 44\r?\ncarry \[CUES FIRST\]: 0 of 44\r?\nhasCueRule: false/; ok: has /CONSISTENT/; ok: text-leak check: 0 of 37 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE H6  an invalid roster environment (NATIVELY_ROSTER=nonsense)
+expected: exit 2 naming the bad roster
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json --flight C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs   [env NATIVELY_ROSTER=nonsense]
+----------------------------------------------------------------
+roster environment: NATIVELY_ROSTER=nonsense NATIVELY_SCENARIOS=(unset)
+flight module: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs
+[stderr] h40d-hascuerule-check: importing the flight module failed: NATIVELY_ROSTER=nonsense is not a roster. Known: interview60, scenario50, holdout40
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /NATIVELY_ROSTER=nonsense is not a roster/]
+
+================================================================
+CASE H7  a LYING flight module (hasCueRule always true) on h40c's pre-cue prompts: the independent count must catch it
+expected: DISAGREE, exit 3
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c\interview60.prompts.json --flight C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\hascuerule-stubs\flight-lies.mjs   [env NATIVELY_ROSTER=holdout40]
+----------------------------------------------------------------
+roster environment: NATIVELY_ROSTER=holdout40 NATIVELY_SCENARIOS=(unset)
+flight module: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\hascuerule-stubs\flight-lies.mjs
+roster in force: (roster label unavailable)
+flight CUE_RULE_MARK: (not exported)
+prompts file: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c\interview60.prompts.json (951498 bytes, 44 entries)
+capturedOnly ids: 44
+carry [CUES FIRST]: 0 of 44
+hasCueRule: true
+DISAGREE: hasCueRule says true, an independent count says false (every captured id must carry the mark, and at least one id must exist)
+exit code: 3
+reads as expected: YES   [ok: exit 3; ok: has /capturedOnly ids: 44\r?\ncarry \[CUES FIRST\]: 0 of 44\r?\nhasCueRule: true/; ok: has /DISAGREE: hasCueRule says true, an independent count says false/; ok: text-leak check: 0 of 37 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE H8  a flight module whose CUE_RULE_MARK is not r4's literal, with an honest hasCueRule, on the real cue prompts
+expected: MARK DIFFERS, exit 3
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json --flight C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\hascuerule-stubs\flight-markdiff.mjs   [env NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1]
+----------------------------------------------------------------
+roster environment: NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1
+flight module: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\hascuerule-stubs\flight-markdiff.mjs
+roster in force: (roster label unavailable)
+flight CUE_RULE_MARK: [CUE FIRST] (NOT r4's [CUES FIRST])
+prompts file: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json (435971 bytes, 19 entries)
+capturedOnly ids: 19
+carry [CUES FIRST]: 19 of 19
+hasCueRule: true
+MARK DIFFERS: the flight module reads [CUE FIRST], r4 section 7.6 reads [CUES FIRST]
+exit code: 3
+reads as expected: YES   [ok: exit 3; ok: has /flight CUE_RULE_MARK: \[CUE FIRST\] \(NOT r4's \[CUES FIRST\]\)/; ok: has /MARK DIFFERS: the flight module reads \[CUE FIRST\], r4 section 7\.6 reads \[CUES FIRST\]/; ok: text-leak check: 0 of 20 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE H9  a usage error: no prompts file
+expected: exit 2
+command: node h40d-hascuerule-check.mjs    [env NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1]
+----------------------------------------------------------------
+[stderr] h40d-hascuerule-check: usage: node h40d-hascuerule-check.mjs <interview60.prompts.json> [--flight <interview60.flight.mjs>] [--mutate-one]
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /usage: node h40d-hascuerule-check\.mjs/]
+
+================================================================
+CASE H10  a prompts file that is not JSON: the error must not echo its text (the file holds the marker SECRET-SNIPPET)
+expected: exit 2, "is not valid JSON", the marker absent from the output
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\hascuerule-stubs\not-json.txt --flight C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs   [env NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1]
+----------------------------------------------------------------
+roster environment: NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1
+flight module: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs
+roster in force: scenario50 [S1]  20 items
+flight CUE_RULE_MARK: [CUES FIRST] (same as r4's)
+[stderr] h40d-hascuerule-check: prompts file is not valid JSON
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /prompts file is not valid JSON/; ok: has not /SECRET-SNIPPET/]
+
+================================================================
+CASE H11  --mutate-one on a pre-cue file (h40c's, under holdout40): no id carries the mark, so there is nothing to strip
+expected: says so, hasCueRule false, 0 of 44, exit 1
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c\interview60.prompts.json --flight C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs --mutate-one   [env NATIVELY_ROSTER=holdout40]
+----------------------------------------------------------------
+roster environment: NATIVELY_ROSTER=holdout40 NATIVELY_SCENARIOS=(unset)
+flight module: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs
+roster in force: holdout40  45 items
+flight CUE_RULE_MARK: [CUES FIRST] (same as r4's)
+prompts file: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c\interview60.prompts.json (951498 bytes, 44 entries)
+--mutate-one: no id carries the mark, nothing to strip
+capturedOnly ids: 44
+carry [CUES FIRST]: 0 of 44
+hasCueRule: false
+CONSISTENT: hasCueRule equals "at least one id, and every one carries the mark"
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /--mutate-one: no id carries the mark, nothing to strip/; ok: has /carry \[CUES FIRST\]: 0 of 44/; ok: has /hasCueRule: false/; ok: text-leak check: 0 of 37 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE H12  a prompts file that does not exist
+expected: exit 2
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\hascuerule-stubs\no-such-file.json --flight C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs   [env NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1]
+----------------------------------------------------------------
+[stderr] h40d-hascuerule-check: prompts file not found: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\hascuerule-stubs\no-such-file.json
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /prompts file not found/]
+
+================================================================
+CASE H13  a prompts file that is valid JSON but not an object keyed by item id (an array)
+expected: exit 2
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\hascuerule-stubs\array.json --flight C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs   [env NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1]
+----------------------------------------------------------------
+roster environment: NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1
+flight module: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.flight.mjs
+roster in force: scenario50 [S1]  20 items
+flight CUE_RULE_MARK: [CUES FIRST] (same as r4's)
+[stderr] h40d-hascuerule-check: prompts file is not an object keyed by item id
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /prompts file is not an object keyed by item id/]
+
+================================================================
+CASE H14  a --flight path that does not exist
+expected: exit 2
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json --flight C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\hascuerule-stubs\no-such-flight.mjs   [env NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1]
+----------------------------------------------------------------
+[stderr] h40d-hascuerule-check: flight module not found: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\hascuerule-stubs\no-such-flight.mjs
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /flight module not found/; ok: text-leak check: 0 of 20 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE H15  the leak check's POSITIVE CONTROL: a stub flight module that deliberately prints 40 characters of a captured prompt, on the real cue prompts
+expected: the runner's leak scan FINDS the planted slice in the output (at least 1 of the sensitive strings); this proves the scan can fail
+command: node h40d-hascuerule-check.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\interview60.prompts.json --flight C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\hascuerule-stubs\flight-leaks.mjs   [env NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1]
+----------------------------------------------------------------
+(output not saved: it carries the sensitive text on purpose)
+exit code: 3
+reads as expected: YES   [ok: positive control: 1 of 20 sensitive strings found in the output (must be at least 1)]
+
+================================================================
+NOTES
+- the leak scans: every case that reads a real prompts file asserts that none of its 20 (05:00 file) / 37 (h40c file) 40-character slices of the captured system and user text appears in the output; H15 is the positive control (a stub that prints a slice on purpose must be caught; its output is not saved).
+- the cases that pass --flight use the worktree's flight module (sha256/16 f61605f3aaf27ce6) or a stub (H7, H8, H15); the worktree's module stands in for MAIN's, which today has sha256/16 f61605f3aaf27ce6 and hasCueRule present. After the merge MAIN's default path serves the same code (H1 then reads the TRUE case through MAIN's own copy).
+- the 05:00 re-smoke file is the one r4 section 7.6 names; its content is never read by a person.
+
+================================================================
+SUMMARY hascuerule: 15 of 15 cases read as expected

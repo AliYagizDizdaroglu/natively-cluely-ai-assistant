@@ -1,0 +1,250 @@
+h40d-grader-models.mjs calibration (brief C, r4 section 7.4 bullet "h40d-grader-models.mjs")
+written by instruments\run-cal-C.mjs on 2026-10-01T12:00:07.448Z; every expectation below was written from the brief and r4 BEFORE the run
+instrument calibrated: h40d-grader-models.mjs  sha256/16 b09b8b84a77335fa  7896 bytes  (compare before relying on it: a changed instrument is an uncalibrated one)
+
+================================================================
+CASE G1  one of h40c's seven grader agents (Opus), named session
+expected: PINNED, found by session path, exit 0
+command: node h40d-grader-models.mjs --session 9c5886c7-cdbd-48af-b8bc-e9275012ec64 inapp=abcb62d968375290e
+----------------------------------------------------------------
+inapp: {"claude-opus-5-5":23} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-abcb62d968375290e.jsonl)
+ALL GRADERS claude-opus-5-5 (1 of 1 agents)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /inapp: \{"claude-opus-5-5":\d+\} PINNED {2}\(found by session path:/; ok: has /ALL GRADERS claude-opus-5-5 \(1 of 1 agents\)/]
+
+================================================================
+CASE G2  all seven of h40c's grader agents in one call (the real use)
+expected: 7 of 7 PINNED, exit 0
+command: node h40d-grader-models.mjs --session 9c5886c7-cdbd-48af-b8bc-e9275012ec64 inapp=abcb62d968375290e captured-low=a120a26826e549013 captured-low-r2=a28b3b9edce65f468 captured-low-r3=a3e0a73e74fb788db captured-high=acfef039513d3fb5a captured-high-r2=af854b505d08406ca captured-high-r3=a3def826df863fc91
+----------------------------------------------------------------
+inapp: {"claude-opus-5-5":23} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-abcb62d968375290e.jsonl)
+captured-low: {"claude-opus-5-5":16} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a120a26826e549013.jsonl)
+captured-low-r2: {"claude-opus-5-5":16} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a28b3b9edce65f468.jsonl)
+captured-low-r3: {"claude-opus-5-5":13} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a3e0a73e74fb788db.jsonl)
+captured-high: {"claude-opus-5-5":15} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-acfef039513d3fb5a.jsonl)
+captured-high-r2: {"claude-opus-5-5":18} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-af854b505d08406ca.jsonl)
+captured-high-r3: {"claude-opus-5-5":14} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a3def826df863fc91.jsonl)
+ALL GRADERS claude-opus-5-5 (7 of 7 agents)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /ALL GRADERS claude-opus-5-5 \(7 of 7 agents\)/; ok: has not /NOT PINNED/; ok: has not /NO TRANSCRIPT/]
+
+================================================================
+CASE G3  this session's bench grader (known claude-opus-5-5)
+expected: PINNED, exit 0
+command: node h40d-grader-models.mjs --session 9c5886c7-cdbd-48af-b8bc-e9275012ec64 bench=a724b4a1166d1c18a
+----------------------------------------------------------------
+bench: {"claude-opus-5-5":13} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a724b4a1166d1c18a.jsonl)
+ALL GRADERS claude-opus-5-5 (1 of 1 agents)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /bench: \{"claude-opus-5-5":\d+\} PINNED/]
+
+================================================================
+CASE G4  a known Sonnet transcript (finished 2026-09-30, claude-sonnet-5-5, in ANOTHER session and slug)
+expected: NOT PINNED, exit 1, found by the search; the final lines say GRADER PIN NOT MET and name the model for --model
+command: node h40d-grader-models.mjs --session 9c5886c7-cdbd-48af-b8bc-e9275012ec64 sonnet=ae8c58f581cf35c50
+----------------------------------------------------------------
+sonnet: {"claude-sonnet-5-5":53} NOT PINNED  (found by SEARCH (not under session 9c5886c7): -gifted-goldstine-133146/706e510b/subagents/agent-ae8c58f581cf35c50.jsonl)
+GRADER PIN NOT MET - sonnet did not run exactly claude-opus-5-5 (models seen: claude-sonnet-5-5); read section 6 (GRADER DRIFT): 3a is reported, not gated; 3b and 3c still gate
+every agent ran claude-sonnet-5-5: every merge takes --model claude-sonnet-5-5
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /sonnet: \{"claude-sonnet-5-5":\d+\} NOT PINNED {2}\(found by SEARCH/; ok: has /GRADER PIN NOT MET/; ok: has /every merge takes --model claude-sonnet-5-5/]
+
+================================================================
+CASE G5  a known Sonnet transcript inside the named session (2026-09-09, claude-sonnet-5)
+expected: NOT PINNED, exit 1, found by session path
+command: node h40d-grader-models.mjs --session 9c5886c7-cdbd-48af-b8bc-e9275012ec64 sonnet=af8bc9622ae011160
+----------------------------------------------------------------
+sonnet: {"claude-sonnet-5":19} NOT PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-af8bc9622ae011160.jsonl)
+GRADER PIN NOT MET - sonnet did not run exactly claude-opus-5-5 (models seen: claude-sonnet-5); read section 6 (GRADER DRIFT): 3a is reported, not gated; 3b and 3c still gate
+every agent ran claude-sonnet-5: every merge takes --model claude-sonnet-5
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /sonnet: \{"claude-sonnet-5":\d+\} NOT PINNED {2}\(found by session path:/; ok: has /GRADER PIN NOT MET/]
+
+================================================================
+CASE G6  a DIFFERENT OPUS (claude-opus-5, a dual-reader agent): the pin is exact, so a neighbouring version must fail
+expected: NOT PINNED, exit 1
+command: node h40d-grader-models.mjs --session 9c5886c7-cdbd-48af-b8bc-e9275012ec64 opus5=a96f4c1416e2c9f83
+----------------------------------------------------------------
+opus5: {"claude-opus-5":51} NOT PINNED  (found by SEARCH (not under session 9c5886c7): ive-Masa-st--dual-reader/4ecdc811/subagents/agent-a96f4c1416e2c9f83.jsonl)
+GRADER PIN NOT MET - opus5 did not run exactly claude-opus-5-5 (models seen: claude-opus-5); read section 6 (GRADER DRIFT): 3a is reported, not gated; 3b and 3c still gate
+every agent ran claude-opus-5: every merge takes --model claude-opus-5
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /opus5: \{"claude-opus-5":\d+\} NOT PINNED/; ok: has /GRADER PIN NOT MET/]
+
+================================================================
+CASE G7  a missing id
+expected: NO TRANSCRIPT FOUND, exit 1, GRADER PIN NOT VERIFIED
+command: node h40d-grader-models.mjs --session 9c5886c7-cdbd-48af-b8bc-e9275012ec64 ghost=a0000000000000000
+----------------------------------------------------------------
+ghost: NO TRANSCRIPT FOUND for a0000000000000000 (nothing under any session)
+GRADER PIN NOT VERIFIED - no transcript for ghost: nothing may be merged on an unread model
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /ghost: NO TRANSCRIPT FOUND for a0000000000000000/; ok: has /GRADER PIN NOT VERIFIED/]
+
+================================================================
+CASE G8  the same Opus agent looked up from a DIFFERENT --session
+expected: PINNED, exit 0, found by the SEARCH (not by the session path)
+command: node h40d-grader-models.mjs --session 11111111-2222-3333-4444-555555555555 inapp=abcb62d968375290e
+----------------------------------------------------------------
+inapp: {"claude-opus-5-5":23} PINNED  (found by SEARCH (not under session 11111111): s-nifty-lederberg-49681a/9c5886c7/subagents/agent-abcb62d968375290e.jsonl)
+ALL GRADERS claude-opus-5-5 (1 of 1 agents)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /inapp: \{"claude-opus-5-5":\d+\} PINNED {2}\(found by SEARCH \(not under session 11111111\):/; ok: has /ALL GRADERS claude-opus-5-5/; ok: has not /found by session path/]
+
+================================================================
+CASE G9  the same agent with no --session at all
+expected: PINNED, exit 0, found by SEARCH (no --session given)
+command: node h40d-grader-models.mjs inapp=abcb62d968375290e
+----------------------------------------------------------------
+inapp: {"claude-opus-5-5":23} PINNED  (found by SEARCH (no --session given): s-nifty-lederberg-49681a/9c5886c7/subagents/agent-abcb62d968375290e.jsonl)
+ALL GRADERS claude-opus-5-5 (1 of 1 agents)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /found by SEARCH \(no --session given\)/; ok: has /ALL GRADERS claude-opus-5-5/]
+
+================================================================
+CASE G10  an Opus agent whose transcript holds one rate-limit placeholder (agent a10ccc0235aa0a220: real claude-opus-5-5 records + 1 synthetic API-error record)
+expected: PINNED with the synthetic record named and counted apart, exit 0 (h40c-grader-models.mjs would have said NOT PINNED)
+command: node h40d-grader-models.mjs synth=a10ccc0235aa0a220
+----------------------------------------------------------------
+synth: {"claude-opus-5-5":9} + 1 <synthetic> API-error record(s), not model output PINNED  (found by SEARCH (no --session given): s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a10ccc0235aa0a220.jsonl)
+ALL GRADERS claude-opus-5-5 (1 of 1 agents)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /synth: \{"claude-opus-5-5":\d+\} \+ 1 <synthetic> API-error record\(s\), not model output PINNED/]
+
+================================================================
+CASE G11  a transcript with ONLY a synthetic record (no real assistant record)
+expected: NOT PINNED, exit 1
+command: node h40d-grader-models.mjs onlysynth=a4a92961b8530e213
+----------------------------------------------------------------
+onlysynth: {} + 1 <synthetic> API-error record(s), not model output (no real assistant record) NOT PINNED  (found by SEARCH (no --session given): s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a4a92961b8530e213.jsonl)
+GRADER PIN NOT MET - onlysynth did not run exactly claude-opus-5-5 (models seen: none); read section 6 (GRADER DRIFT): 3a is reported, not gated; 3b and 3c still gate
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /onlysynth: \{\} \+ 1 <synthetic>.*\(no real assistant record\) NOT PINNED/; ok: has /GRADER PIN NOT MET/]
+
+================================================================
+CASE G12  a transcript with two real models (claude-fable-5 and claude-sonnet-5)
+expected: NOT PINNED, exit 1
+command: node h40d-grader-models.mjs mixed=a7d89470337c8f880
+----------------------------------------------------------------
+mixed: {"claude-fable-5":45,"claude-sonnet-5":119} NOT PINNED  (found by SEARCH (no --session given): ve-Masa-st--talking-logs/378660b0/subagents/agent-a7d89470337c8f880.jsonl)
+GRADER PIN NOT MET - mixed did not run exactly claude-opus-5-5 (models seen: claude-fable-5, claude-sonnet-5); read section 6 (GRADER DRIFT): 3a is reported, not gated; 3b and 3c still gate
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /mixed: \{"claude-fable-5":\d+,"claude-sonnet-5":\d+\} NOT PINNED/]
+
+================================================================
+CASE G13  the seven h40c graders plus ONE Sonnet agent in a single call
+expected: one failure fails the call: exit 1, GRADER PIN NOT MET names only the sonnet tag, no ALL GRADERS line
+command: node h40d-grader-models.mjs --session 9c5886c7-cdbd-48af-b8bc-e9275012ec64 inapp=abcb62d968375290e captured-low=a120a26826e549013 captured-low-r2=a28b3b9edce65f468 captured-low-r3=a3e0a73e74fb788db captured-high=acfef039513d3fb5a captured-high-r2=af854b505d08406ca captured-high-r3=a3def826df863fc91 sonnet=ae8c58f581cf35c50
+----------------------------------------------------------------
+inapp: {"claude-opus-5-5":23} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-abcb62d968375290e.jsonl)
+captured-low: {"claude-opus-5-5":16} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a120a26826e549013.jsonl)
+captured-low-r2: {"claude-opus-5-5":16} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a28b3b9edce65f468.jsonl)
+captured-low-r3: {"claude-opus-5-5":13} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a3e0a73e74fb788db.jsonl)
+captured-high: {"claude-opus-5-5":15} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-acfef039513d3fb5a.jsonl)
+captured-high-r2: {"claude-opus-5-5":18} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-af854b505d08406ca.jsonl)
+captured-high-r3: {"claude-opus-5-5":14} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a3def826df863fc91.jsonl)
+sonnet: {"claude-sonnet-5-5":53} NOT PINNED  (found by SEARCH (not under session 9c5886c7): -gifted-goldstine-133146/706e510b/subagents/agent-ae8c58f581cf35c50.jsonl)
+GRADER PIN NOT MET - sonnet did not run exactly claude-opus-5-5 (models seen: claude-sonnet-5-5); read section 6 (GRADER DRIFT): 3a is reported, not gated; 3b and 3c still gate
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /GRADER PIN NOT MET - sonnet did not run exactly/; ok: has not /ALL GRADERS/]
+
+================================================================
+CASE G14  fixture: a transcript that exists only as a temp tasks/<id>.output file (the .output search path)
+expected: PINNED, exit 0, the file is under tasks/
+command: node h40d-grader-models.mjs --projects C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\grader-fixtures\projects --temp C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\grader-fixtures\temp fx=a1111111111111111
+----------------------------------------------------------------
+fx: {"claude-opus-5-5":3} PINNED  (found by SEARCH (no --session given): slugA/sess1/tasks/a1111111111111111.output)
+ALL GRADERS claude-opus-5-5 (1 of 1 agents)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /fx: \{"claude-opus-5-5":3\} PINNED {2}\(found by SEARCH \(no --session given\): .*\/tasks\/a1111111111111111\.output\)/]
+
+================================================================
+CASE G15  fixture: only an EMPTY tasks/<id>.output placeholder exists
+expected: NO TRANSCRIPT FOUND naming the ignored placeholder, exit 1
+command: node h40d-grader-models.mjs --projects C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\grader-fixtures\projects --temp C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\grader-fixtures\temp fx=a2222222222222222
+----------------------------------------------------------------
+fx: NO TRANSCRIPT FOUND for a2222222222222222 (1 empty placeholder file(s) ignored)
+GRADER PIN NOT VERIFIED - no transcript for fx: nothing may be merged on an unread model
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /fx: NO TRANSCRIPT FOUND for a2222222222222222 \(1 empty placeholder file\(s\) ignored\)/]
+
+================================================================
+CASE G16  fixture: a drifted model, claude-opus-5-6 on every agent (the GRADER DRIFT case)
+expected: NOT PINNED, exit 1, the last line gives the exact id for every merge
+command: node h40d-grader-models.mjs --projects C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\grader-fixtures\projects --temp C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\grader-fixtures\temp fx=a3333333333333333
+----------------------------------------------------------------
+fx: {"claude-opus-5-6":2} NOT PINNED  (found by SEARCH (no --session given): slugA/sess1/tasks/a3333333333333333.output)
+GRADER PIN NOT MET - fx did not run exactly claude-opus-5-5 (models seen: claude-opus-5-6); read section 6 (GRADER DRIFT): 3a is reported, not gated; 3b and 3c still gate
+every agent ran claude-opus-5-6: every merge takes --model claude-opus-5-6
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /fx: \{"claude-opus-5-6":2\} NOT PINNED/; ok: has /GRADER PIN NOT MET/; ok: has /every agent ran claude-opus-5-6: every merge takes --model claude-opus-5-6/]
+
+================================================================
+CASE G17  fixture: a file that holds no assistant record (plain text, like a Bash task output)
+expected: NO TRANSCRIPT FOUND, exit 1
+command: node h40d-grader-models.mjs --projects C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\grader-fixtures\projects --temp C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\grader-fixtures\temp fx=a4444444444444444
+----------------------------------------------------------------
+fx: NO TRANSCRIPT FOUND for a4444444444444444 (1 file(s) found but none holds an assistant record)
+GRADER PIN NOT VERIFIED - no transcript for fx: nothing may be merged on an unread model
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /fx: NO TRANSCRIPT FOUND for a4444444444444444 \(1 file\(s\) found but none holds an assistant record\)/]
+
+================================================================
+CASE G18  fixture: a project transcript with real + synthetic records, session path
+expected: PINNED, found by session path, exit 0
+command: node h40d-grader-models.mjs --projects C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\grader-fixtures\projects --temp C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\grader-fixtures\temp --session sess1 fx=a5555555555555555
+----------------------------------------------------------------
+fx: {"claude-opus-5-5":2} + 1 <synthetic> API-error record(s), not model output PINNED  (found by session path: slugA/sess1/subagents/agent-a5555555555555555.jsonl)
+ALL GRADERS claude-opus-5-5 (1 of 1 agents)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /fx: \{"claude-opus-5-5":2\} \+ 1 <synthetic>.* PINNED {2}\(found by session path:/]
+
+================================================================
+CASE G19  a usage error: no agents
+expected: exit 2
+command: node h40d-grader-models.mjs --session 9c5886c7-cdbd-48af-b8bc-e9275012ec64
+----------------------------------------------------------------
+[stderr] h40d-grader-models: no <tag>=<agentId> given
+usage: node h40d-grader-models.mjs [--session <id>] [--projects <dir>] [--temp <dir>] <tag>=<agentId> ...
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /no <tag>=<agentId> given/]
+
+================================================================
+CASE G20  a usage error: a path-like --session
+expected: exit 2
+command: node h40d-grader-models.mjs --session ../x inapp=abcb62d968375290e
+----------------------------------------------------------------
+[stderr] h40d-grader-models: --session ../x is not a session id
+usage: node h40d-grader-models.mjs [--session <id>] [--projects <dir>] [--temp <dir>] <tag>=<agentId> ...
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /--session \.\.\/x is not a session id/]
+
+================================================================
+CASE G21  a usage error: a path-like id
+expected: exit 2
+command: node h40d-grader-models.mjs bad=..\..\x
+----------------------------------------------------------------
+[stderr] h40d-grader-models: "bad=..\..\x" is not <tag>=<agentId>
+usage: node h40d-grader-models.mjs [--session <id>] [--projects <dir>] [--temp <dir>] <tag>=<agentId> ...
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /is not <tag>=<agentId>/]
+
+================================================================
+CASE G22  fixture: ONE agent whose transcript holds the pinned model AND another (claude-opus-5-5 x2 + claude-sonnet-5-5 x1): "the pin is exact" must mean every real record
+expected: NOT PINNED, exit 1
+command: node h40d-grader-models.mjs --projects C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\grader-fixtures\projects --temp C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\grader-fixtures\temp fx=a6666666666666666
+----------------------------------------------------------------
+fx: {"claude-opus-5-5":2,"claude-sonnet-5-5":1} NOT PINNED  (found by SEARCH (no --session given): slugA/sess1/tasks/a6666666666666666.output)
+GRADER PIN NOT MET - fx did not run exactly claude-opus-5-5 (models seen: claude-opus-5-5, claude-sonnet-5-5); read section 6 (GRADER DRIFT): 3a is reported, not gated; 3b and 3c still gate
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /fx: \{"claude-opus-5-5":2,"claude-sonnet-5-5":1\} NOT PINNED/; ok: has /GRADER PIN NOT MET/]
+
+================================================================
+NOTES
+- the seven h40c grader agents were found by their dispatch descriptions in the controller session's subagents folder (agent-<id>.meta.json: "Grade h40c in-app arm", "... captured-low arm" and so on to "... captured-high-r3 arm"): ids abcb62d968375290e, a120a26826e549013, a28b3b9edce65f468, a3e0a73e74fb788db, acfef039513d3fb5a, af854b505d08406ca, a3def826df863fc91.
+- G4 and G5 use FINISHED Sonnet agents; the agents running while this was built (the other instrument builders) were not used: a live transcript grows between runs.
+- G10 / G11: "<synthetic>" assistant records are the client's rate-limit placeholders (isApiErrorMessage true, 0 output tokens), not model output; they are counted and printed apart. Across this machine 6 of 167 transcripts that name claude-opus-5-5 hold one.
+- the model field is read from the assistant records of the agent's OWN transcript; nothing from a transcript is printed except model ids, record counts and the file location.
+
+================================================================
+SUMMARY grader-models: 22 of 22 cases read as expected

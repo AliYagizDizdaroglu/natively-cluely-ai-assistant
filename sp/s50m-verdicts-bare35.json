@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names data fit, production constraints and a logistic regression baseline; accurate and naturally spoken."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic all correct; calling 31.6 versus the CV's 30 percent consistent is a mild stretch."
+  },
+  "S1Q03": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Right instrument, overclaimed: a holdout gives incremental lift, not the whole 1.4 point drop."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct lift definition, stable tie order and all three edge cases, but about 110 words."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split with a 30-day buffer and train-only ColumnTransformer fit; slightly over spoken length."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Never filters event type to support calls, the feature actually asked for; also long."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every stage and names the shared feature store, but runs about 130 words."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Logging and delayed joins solid, but never designs the experiment assignment, only records the variant."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure service for every component; awkward Amazon S3 opener and over length."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC, Key Vault and network separation all covered; about 95 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All eight stages correct and mapped to experience, but roughly 140 words to speak."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Defines unit, denominator, construction and interval for all three metrics; far too long spoken."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sharp dependency-based criterion separating all three approaches; slightly over spoken length."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct one-over-c-plus-rank scoring with deterministic id tie-break, said in a natural 65 words."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All four constraints plus ties and empty input, but 100 words and mixes I with we."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Concurrency cap, timeout race, order preservation and isolated failures all covered concisely."
+  },
+  "S2Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Index organization stays vague and never explains tenant isolation at ten million documents; also long."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual write, backfill, shadow comparison, flag cutover and rollback all present; about 105 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure service for each component plus a justified custom parser; slightly long."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Peek-lock with a deterministic hash upsert gives real idempotency; about 100 words."
+  }
+}

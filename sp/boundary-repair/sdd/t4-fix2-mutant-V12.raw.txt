@@ -1,0 +1,47 @@
+
+ RUN  v2.1.9 C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/boundary-repair/sdd/t4-mirror7
+
+ ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts (10 tests | 1 failed) 37ms
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > a socket the server closed (1011) and replaced does not share its cut: F2 on the reconnected socket is emitted as received 14ms
+     → expected [ [ …(2) ], [ …(2) ], [ …(2) ] ] to deeply equal [ [ …(2) ], [ …(2) ], [ …(2) ] ]
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  23:10:44
+   Duration  2.35s (transform 152ms, setup 0ms, collect 181ms, tests 37ms, environment 1.41s, prepare 298ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > a socket the server closed (1011) and replaced does not share its cut: F2 on the reconnected socket is emitted as received
+AssertionError: expected [ [ …(2) ], [ …(2) ], [ …(2) ] ] to deeply equal [ [ …(2) ], [ …(2) ], [ …(2) ] ]
+
+- Expected
++ Received
+
+  Array [
+    Array [
+      "Design a multi tenant RAC service over",
+      false,
+    ],
+    Array [
+      "Design a multi tenant Rag",
+      true,
+    ],
+    Array [
+-     "over 10,000,000 documents, it has to support document updates",
++     "service over 10,000,000 documents, it has to support document updates",
+      true,
+    ],
+  ]
+
+ ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:244:26
+    242|             lives[1].fire('Results', results(F2.text, true));
+    243|             stt.stop();
+    244|             expect(seen).toEqual(unchanged);
+       |                          ^
+    245|             expect(repairs()).toEqual([]);
+    246|         });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

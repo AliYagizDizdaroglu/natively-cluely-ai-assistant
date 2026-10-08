@@ -1,0 +1,16 @@
+live40 EASY/E         n 20 words p50 9 min 3 max 15 | short&single (<=12, no multi marker): 11 RE02,RE04,RE05,RE06,RE07,RE09,RE10,RE11,RE16,RE18,RE19
+live40 HARD/QF        n  9 words p50 8 min 3 max 16 | short&single (<=12, no multi marker): 4 RH01,EF03,EF04,EF06
+live40 HARD/H         n 11 words p50 18 min 11 max 77 | short&single (<=12, no multi marker): 0 
+live40 HARD/AF        n  7 words p50 7 min 3 max 13 | short&single (<=12, no multi marker): 3 EF02,RH13,RH02
+live40 misrouted r1: RH04 [11w] What is a DAG, and why does Airflow use that structure? || RH07 [24w] What does async actually buy you? Explain what happens when an async FastAPI endpoint calls a blocking HTTP client, or performs expensive CPU work. || RH08 [15w] When would you use asynchronous I/O, a thread pool, separate processes, or an external worker? || RH05 [23w] Distinguish the three probe types: explain startup, readiness, and liveness probes for a model server that needs 90 seconds to load its model.
+scenario50 keys of first item: id,level,scenario,topic,gapMs,q,long
+s50 verbal/-       n  5 words p50 26 min 23 max 31 | short&single (<=12, no multi marker): 0 
+s50 followup/-     n 50 words p50 19 min 12 max 28 | short&single (<=12, no multi marker): 1 S1Q08F
+s50 reasoning/-    n 10 words p50 37 min 25 max 54 | short&single (<=12, no multi marker): 0 
+s50 coding/-       n  8 words p50 53 min 37 max 71 | short&single (<=12, no multi marker): 0 
+s50 codingHeavy/-  n  5 words p50 45 min 39 max 57 | short&single (<=12, no multi marker): 0 
+s50 sql/-          n  2 words p50 67 min 57 max 67 | short&single (<=12, no multi marker): 0 
+s50 design/-       n  9 words p50 41 min 30 max 49 | short&single (<=12, no multi marker): 0 
+s50 cloud/-        n  7 words p50 38 min 30 max 42 | short&single (<=12, no multi marker): 0 
+s50 cloudHeavy/-   n  3 words p50 37 min 36 max 47 | short&single (<=12, no multi marker): 0 
+s50 incident/-     n  1 words p50 35 min 35 max 35 | short&single (<=12, no multi marker): 0 

@@ -1,0 +1,31 @@
+
+ RUN  v2.1.9 C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/boundary-repair/sdd/t4-mirror7
+
+ ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts (10 tests | 1 failed) 41ms
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > the repair line is the very next log line after its final's Transcript event line, before any listener runs 12ms
+     → expected '[DeepgramStreaming] review-probe' to be '[DeepgramStreaming] Transcript event …' // Object.is equality
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  23:10:37
+   Duration  3.00s (transform 235ms, setup 0ms, collect 197ms, tests 41ms, environment 1.76s, prepare 524ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > the repair line is the very next log line after its final's Transcript event line, before any listener runs
+AssertionError: expected '[DeepgramStreaming] review-probe' to be '[DeepgramStreaming] Transcript event …' // Object.is equality
+
+Expected: "[DeepgramStreaming] Transcript event — isFinal=true, text="over 10,000,000 documents, it has to support document updates""
+Received: "[DeepgramStreaming] review-probe"
+
+ ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:227:32
+    225|             const k = log.findIndex((l) => l.includes('boundary repair…
+    226|             expect(k).toBeGreaterThan(0);
+    227|             expect(log[k - 1]).toBe(`[DeepgramStreaming] Transcript ev…
+       |                                ^
+    228|         });
+    229| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

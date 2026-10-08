@@ -1,0 +1,31 @@
+== S1Q08
+11T08-22-32-s50b         detector: n n n Q Q                    classify: -            first answer: whisper/f5l0 +1.0s     closes: continuation-expired
+12T08-22-49-s50c         detector: n n Q n Q                    classify: -            first answer: whisper/f5l0 +1.7s     closes: continuation-expired
+13T08-22-36-s50d         detector: 0 0 0 0 |C| 0 0              classify: asked(f=5)   first answer: live/f0l1 +6.1s        closes: not-a-question,continuation-expired
+14T08-22-28-s50e         detector: n n n Q Q                    classify: -            first answer: whisper/f5l0 +1.1s     closes: continuation-expired
+15T08-22-29-s50f         detector: Q n n n Q                    classify: -            first answer: whisper/f5l0 +1.0s     closes: continuation-expired
+16T08-42-43-s50g         detector: Q n n Q n                    classify: -            first answer: whisper/f5l0 +1.1s     closes: continuation-expired
+16T11-41-44-s50h         detector: n n n Q n                    classify: -            first answer: whisper/f5l0 +1.1s     closes: continuation-expired
+18T08-22-57-s50i         detector: Q n n Q n                    classify: -            first answer: whisper/f5l0 +1.2s     closes: continuation-expired
+19T08-22-41-s50j         detector: Q Q n Q Q                    classify: -            first answer: whisper/f5l0 +1.4s     closes: continuation-expired
+20T11-22-43-s50k         detector: n n n Q Q                    classify: -            first answer: whisper/f5l0 +1.5s     closes: continuation-expired
+21T08-22-34-s50l         detector: n n n n |C| Q Q              classify: asked(f=5)   first answer: whisper/f5l0 +1.9s     closes: continuation-expired
+22T08-22-50-s50m         detector: n n n Q n                    classify: -            first answer: whisper/f5l0 +1.4s     closes: continuation-expired
+30T11-45-30-br1          detector: n n n n |C| n Q              classify: asked(f=5)   first answer: live/f0l1 +62.2s       closes: not-a-question,nothing-heard,continuation-expired
+30T02-38-22-cuesmoke     detector: Q n n n n                    classify: -            first answer: whisper/f5l0 +1.1s     closes: continuation-expired
+30T13-46-52-cuesmoke     detector: n n n Q Q                    classify: -            first answer: whisper/f5l0 +1.2s     closes: continuation-expired,continuation-expired
+
+== S2Q05
+11T08-22-32-s50b         detector: n n n n n n                  classify: -            first answer: live/f6l1 +1.0s        closes: continuation-expired
+12T08-22-49-s50c         detector: n n n n n |C| n Q            classify: asked(f=7)   first answer: whisper/f0l1 +7.3s     closes: not-a-question,continuation-expired
+13T08-22-36-s50d         detector: 0 0 0 0 0 |C| 0 0            classify: asked(f=6)   first answer: live/f0l1 +6.8s        closes: not-a-question,continuation-expired
+14T08-22-28-s50e         detector: n n n n n |C| Q n            classify: asked(f=6)   first answer: whisper/f6l0 +1.6s     closes: continuation-expired
+15T08-22-29-s50f         detector: n n n n n |C| n n            classify: asked(f=7)   first answer: live/f0l1 +6.9s        closes: not-a-question,continuation-expired
+16T08-42-43-s50g         detector: n n n n Q n                  classify: -            first answer: whisper/f6l1 +1.1s     closes: continuation-expired
+16T11-41-44-s50h         detector: n n n n n |C| Q n            classify: asked(f=6)   first answer: whisper/f6l0 +1.9s     closes: continuation-expired
+18T08-22-57-s50i         detector: n n n n n |C| Q n            classify: asked(f=5)   first answer: whisper/f6l0 +1.8s     closes: continuation-expired
+19T08-22-41-s50j         detector: n n n n n |C| Q n            classify: asked(f=6)   first answer: whisper/f6l0 +2.0s     closes: continuation-expired
+20T11-22-43-s50k         detector: n n n n n |C| Q Q            classify: asked(f=6)   first answer: live/f6l1 +2.0s        closes: continuation-expired
+21T08-22-34-s50l         detector: n n n n n |C| Q Q            classify: asked(f=6)   first answer: whisper/f6l0 +2.0s     closes: continuation-expired
+22T08-22-50-s50m         detector: n n n n n |C| Q Q            classify: asked(f=6)   first answer: live/f6l1 +1.8s        closes: continuation-expired
+30T11-45-30-br1          detector: n n n n n |C| Q n            classify: asked(f=6)   first answer: live/f6l1 +1.8s        closes: continuation-expired

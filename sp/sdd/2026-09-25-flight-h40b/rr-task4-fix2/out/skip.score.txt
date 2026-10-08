@@ -1,0 +1,55 @@
+EXIT 0
+--stdout--
+blind files graded: 4
+
+tier 1  gemini-3.8-flash  (2 questions, 3 reps)
+  Q     Flash ✓/3  Flash runs (s to first word)   3.1 LOW   3.5 HIGH  thinking tokens   total s
+  R02F  3          ✓1.2 ✓1.2 ✓1.2                 ✓ ✓ ✓     ✓ ✓ ✓     10/10/10          2.3/2.3/2.3
+  R08   3          ✓1.2 ✓1.2 ✓1.2                 ✓ ✓ ✓     ✓ ✓ ✓     10/10/10          2.3/2.3/2.3
+  gemini-3.8-flash on tier 1: answered 6 of 6 (ids × reps)
+  gemini-3.8-flash on tier 1: 6/6 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+
+tier 2  gemini-3.7-flash  (2 questions, 3 reps)
+  Q     Flash ✓/3  Flash runs (s to first word)   3.1 LOW   3.5 HIGH  thinking tokens   total s
+  R03   3          ✓1.2 ✓1.2 ✓1.2                 ✓ ✓ ✓     ✓ ✓ ✓     10/10/10          2.3/2.3/2.3
+  R16   3          ✓1.2 ✓1.2 ✓1.2                 ✓ ✓ ✓     ✓ ✓ ✓     10/10/10          2.3/2.3/2.3
+  gemini-3.7-flash on tier 2: answered 6 of 6 (ids × reps)
+  gemini-3.7-flash on tier 2: 6/6 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+
+tier 3  gemini-3.6-flash  (11 questions, 1 rep)
+  Q     Flash ✓/1  Flash runs (s to first word)   3.1 LOW   3.5 HIGH  thinking tokens   total s
+  R01   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R11F  1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R12   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R17F  1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R23   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R26F  1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R27   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R28   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R30   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R31F  1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R32   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  gemini-3.6-flash on tier 3: answered 11 of 11 (ids × reps)
+  gemini-3.6-flash on tier 3: 11/11 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+
+tier 3b  gemini-3.5-flash  (11 questions, 1 rep)
+  Q     Flash ✓/1  Flash runs (s to first word)   3.1 LOW   3.5 HIGH  thinking tokens   total s
+  R01   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R11F  1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R12   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R17F  1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R23   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R26F  1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R27   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R28   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R30   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R31F  1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  R32   1          ✓1.2                           ✓ ✓ ✓     ✓ ✓ ✓     10                2.3
+  gemini-3.5-flash on tier 3b: answered 11 of 11 (ids × reps)
+  gemini-3.5-flash on tier 3b: 11/11 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+
+lite answered: 3.1 LOW 45 of 45 (ids × reps), 3.5 HIGH 45 of 45 (ids × reps)
+on the same questions, re-graded in the same files: 3.1 LOW 45/45, 3.5 HIGH 45/45
+
+reasons for every non-acceptable Flash answer:
+--stderr--

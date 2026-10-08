@@ -1,0 +1,6 @@
+electron/audio/GeminiLiveRouter.ts(125,44)
+electron/ipcHandlers.ts(3436,18)
+electron/ipcHandlers.ts(3436,38)
+electron/ipcHandlers.ts(3439,31)
+electron/knowledge/KnowledgeOrchestrator.ts(349,35)
+electron/knowledge/KnowledgeOrchestrator.ts(351,25)

@@ -1,0 +1,26 @@
+{
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic all correct - 2,850 true positives, 57 percent precision, 30 percent recall - and the residual gap is explained."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct left join with predicates in ON and COUNT of a right-side column; spoken COUNT(events.customer_id) needs a small edit."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested component and the shared pieces correctly, but at about 152 words it is far too long to speak."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All four sub-parts sound, including training on the untreated holdout; about 126 words is too long for a spoken reply."
+  }
+}

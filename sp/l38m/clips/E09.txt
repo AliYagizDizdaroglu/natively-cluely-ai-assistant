@@ -1,0 +1,1 @@
+Does a Docker container share the host's kernel?

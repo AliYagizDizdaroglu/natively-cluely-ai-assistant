@@ -1,0 +1,11 @@
+OK  classify: ["routed","hard","nothing","apology","long"]
+OK  classify not played: "notPlayed"
+OK  simple counts: [7,1,1,1,1,1]
+OK  simple carries: 6
+OK  simple first word p50/p90 over the 7 routed (sorted 1000,1100,1300,1500,1700,1900,2100): [1500,2100]
+OK  simple words p50: 2
+OK  hard counts: [1,8,1,0]
+OK  hard misroute line: {"cls":"routed","answer":"Use a heap.","ttftMs":1600,"pipelineCue":"Min-heap of size k","sharesWord":true}
+OK  shares-a-word false: false
+OK  X2 marked hard is not routed: "hard"
+L38R READ CALIBRATION OK

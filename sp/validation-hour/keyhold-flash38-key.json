@@ -1,0 +1,22 @@
+{
+ "k01": "R13|low",
+ "k02": "R12|flash38",
+ "k03": "R08|flash38",
+ "k04": "R08|low",
+ "k05": "R11F|low",
+ "k06": "R33|high",
+ "k07": "R08|high",
+ "k08": "R12|low",
+ "k09": "R33|low",
+ "k10": "R13|flash38",
+ "k11": "R13|high",
+ "k12": "R11F|inapp",
+ "k13": "R33|flash38",
+ "k14": "R33|inapp",
+ "k15": "R08|inapp",
+ "k16": "R12|high",
+ "k17": "R13|inapp",
+ "k18": "R11F|high",
+ "k19": "R12|inapp",
+ "k20": "R11F|flash38"
+}

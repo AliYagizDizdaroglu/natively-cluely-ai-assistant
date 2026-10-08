@@ -1,0 +1,12 @@
+PRECHECK start 2026-10-06T02:54:01+03 label=eq at=2026-10-06 02:54 tz-offset=03:00:00
+PRECHECK flight-task: OK state=Ready next=2026-10-06 03:00 expected=2026-10-06 03:00
+PRECHECK arming-record: OK T 2026-10-06 03:00 = At + 6 = NextRunTime, complete 2026-10-06T00:16:54
+PRECHECK arming-record sha256=1b87f8d02bbc593e46e31d1d334e1046c83d221933ae22c7c0918628c9fc6427
+PRECHECK other-tasks: OK Running other than Natively-flight-eq and Natively-flight-eq-precheck: 0
+PRECHECK electron: OK electron.exe processes: 0
+PRECHECK port: OK port 5180 held: False
+PRECHECK tail: OK tail.exe watchers: 0
+PRECHECK error-log: OK natively-eq-launcher-error.log present: False
+PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 6256 chars; GUARD OK line: True; NIGHT GATES OK line: True
+PRECHECK audio-state INFO: default playback device: volume=93% muted=False
+PRECHECK OK 2026-10-06T02:54:10+03

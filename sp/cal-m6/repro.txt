@@ -1,0 +1,7 @@
+REPRO 
+bare for/f, no if: 
+bare-result=0
+ 
+errorlevel-gated for/f: 
+gated-result=0
+DONE 

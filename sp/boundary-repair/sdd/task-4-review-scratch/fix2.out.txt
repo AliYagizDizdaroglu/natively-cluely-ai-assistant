@@ -1,0 +1,32 @@
+MAIN adapter 16236 B 57292516fc495df1; MAIN adapter test 13838 B 2f3eb860c6142415
+V11 build check: emit@10675 < comment@10975 < repairLog@11140: true; line count unchanged: true
+[as expected] V0 control: MAIN adapter: Tests 10 passed (10)
+[as expected] V1 gate removed: Tests 1 failed | 9 passed (10)
+   failed: a non-English connection passes every transcript through untouched, with no repair line
+[as expected] V2 gate inverted: Tests 4 failed | 6 passed (10)
+   failed: emits the repaired final, logs the raw text plus one repair line, and a restarted socket starts with no remembered cut
+   failed: an empty INTERIM is not a pause: the repair still happens (the control for the three above)
+   failed: a non-English connection passes every transcript through untouched, with no repair line
+   failed: the repair line is the very next log line after its final's Transcript event line, before any listener runs
+[as expected] V3 clear() dropped on the empty FINAL: Tests 1 failed | 9 passed (10)
+   failed: an empty FINAL between F1 and F2 is a pause: F2 is emitted as received, no repair line
+[as expected] V4 clear() dropped on UtteranceEnd: Tests 1 failed | 9 passed (10)
+   failed: an UtteranceEnd between F1 and F2 is a pause too, and is still re-emitted
+[as expected] V5 speech_final not passed: Tests 1 failed | 9 passed (10)
+   failed: speech_final on F1 reaches the module: Deepgram heard the utterance end there, so nothing is restored
+[as expected] V6 an empty INTERIM clears too: Tests 1 failed | 9 passed (10)
+   failed: an empty INTERIM is not a pause: the repair still happens (the control for the three above)
+[as expected] V7 bare .clear() on the empty FINAL: Tests 1 failed | 9 passed (10)
+   failed: an empty FINAL on a non-English or multi connection is harmless: F2 is emitted as received, no error is logged
+[as expected] V8 bare .clear() on UtteranceEnd: Tests 1 failed | 9 passed (10)
+   failed: an UtteranceEnd on a non-English or multi connection is harmless and still re-emitted
+[as expected] V9 UtteranceEnd clear under stale() (ruled: skipped): Tests 10 passed (10)
+[as expected] V10 a log line between the event line and the repair line: Tests 1 failed | 9 passed (10)
+   failed: the repair line is the very next log line after its final's Transcript event line, before any listener runs
+[as expected] V11 the repair block moved after the emit: Tests 1 failed | 9 passed (10)
+   failed: the repair line is the very next log line after its final's Transcript event line, before any listener runs
+[as expected] V12 one repair per start(), shared by reconnect sockets: Tests 1 failed | 9 passed (10)
+   failed: a socket the server closed (1011) and replaced does not share its cut: F2 on the reconnected socket is emitted as received
+junction removed: true; mirror deleted: true; MAIN vitest present: true
+MAIN adapter unchanged: true
+variants whose failing set differed from the expectation: 0

@@ -1,0 +1,34 @@
+# L20b — result under PREREGISTER-l20b.md (recorded 2026-09-29 ~18:25 local, before any grading)
+
+**Verdict: NOT REPLICATED.** Two of the five conditions fail on arithmetic alone, so, as registered,
+nothing is graded.
+
+- Pre-flight (ad-hoc probe 17:16): 5/5, no abnormal close -> L20b ran (runs 17:21, 17:39, 17:57 local).
+- **Condition 4, safety: FAIL.** 2 of 60 items have no answer after their one retry, both in r1: the
+  S1Q02 pair. Attempt 1 closed 1011 "Internal error encountered." during S1Q02F (S1Q02 had been answered
+  in it); the retry closed 1011 4.0 s after S1Q02 ended, with no output, so S1Q02F never played.
+- **Condition 5, speed: FAIL on p90.** Pooled 60 (a hole = no first word): p50 2.3 s (bar 6.8 s, passes),
+  p90 12.9 s (bar 9.4 s). Above 9.4 s: the 2 holes and 4 answers that came after a holding line —
+  r1 S1Q04 17.8 s, r1 S1Q05 12.9 s, r2 S1Q04F 14.8 s, r2 S2Q02F 34.9 s (all hard items).
+- Conditions 1–3 (quality, band): not evaluated; the verdict cannot depend on them.
+- Consequence (registered): live38-as-answerer stays parked; the scheduled probes continue for the ear
+  question; reopening is the user's decision. (A REPLICATED would not have licensed the prototype alone.)
+
+## Reported outside the rule
+
+| Run | Local | Answered | Abnormal sessions | First word, answered: p50 / max |
+|---|---|---|---|---|
+| r1 | 17:21 | 18/20 | 3 of 12 (all 1011) | 2.3 s / 17.8 s |
+| r2 | 17:39 | 20/20 | 0 of 10 | 2.2 s / 34.9 s |
+| r3 | 17:57 | 20/20 | 0 of 10 | 2.3 s / 8.0 s |
+
+- Against L20 (28 Sep): answered 58/60 vs 35/60; abnormal sessions 3/32 vs 26/43; per-run p50 2.2–2.3 s
+  vs 1.7 / 9.8 / 37 s. The service was far healthier, but the 1011s came in the first minutes (r1,
+  S1Q02 and S1Q04 within 144 s) five minutes after a clean 5/5 probe, then none for ~40 minutes.
+- S2Q08 (0/13 on the 28th): answered in all three runs (1.7 / 2.1 / 1.8 s), and S2Q08F too.
+- The slow tail is new: live38 bare spoke a holding line before the real answer on four hard items
+  (ET10b's clean run had none). The registered extraction measures to the real answer, so those count.
+- Missing answers produced no wrong content: a dropped session, not a bad answer.
+- Scripts: `mechanics.mjs` (conditions 4–5), `drops.mjs` (abnormal closes), `tail.mjs` (the table's tail
+  and S2Q08; its first version misread the record field and printed every item missing — caught against
+  mechanics.mjs's counts before any figure was reported).

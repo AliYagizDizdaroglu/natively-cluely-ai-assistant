@@ -1,0 +1,22 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Covers data fit, production latency and a logistic-regression baseline, all accurate and concise."},
+  "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Arithmetic right but never compares the implied 4,750 flagged against the 5,000 a 5 percent band holds."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Control group plus difference-in-differences is the right way to separate model lift from seasonality."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "All three metrics and every edge case answered; inline formula fragments need smoothing when spoken."},
+  "S1Q05": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Fits preprocessing on train only but omits the 30-day embargo, so training labels still peek into the test window."},
+  "S1Q06": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "COALESCE(COUNT(*),0) returns one, not zero, for call-free customers, and the filters as stated collapse the left join."},
+  "S1Q07": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Complete architecture with shared feature store and registry, but TensorFlow Serving is the wrong server for a tabular churn model; 144 words."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Logging, hashed assignment, keyed outcome join and inverse-propensity weighting all correct; 118 words is long."},
+  "S1Q09": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Cuts off mid-sentence after storage and training, leaving inference, scheduling, identity and monitoring unanswered."},
+  "S1Q10": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Managed identity and Key Vault are right, but the database Contributor role is a control-plane role misused for data access."},
+  "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Every stage accurate, but the stage-labelled enumeration and 128 words read as a list, not speech."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Unit, denominator, dataset and interval given for all three metrics with the right interval types; 135 words."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Names the real discriminator, that the tool path varies per sub-task, and contrasts all three options crisply."},
+  "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct reciprocal rank fusion with one-based ranks, summed scores and deterministic id tie-break."},
+  "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Greedy relevance order with budget tracking, id dedup and the two-per-document cap all honoured."},
+  "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Semaphore, per-case wait_for and index-slotted results correctly preserve order and isolate failures."},
+  "S2Q07": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Claims FAISS updates and deletes without a rebuild and skips the asynchronous ingestion path; 124 words."},
+  "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Versioning, backfill, dual writes, comparison, staged cutover and flag rollback all sound; 123 words and line-broken."},
+  "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sensible Azure mapping end to end with a justified custom-orchestration carve-out; 123 words."},
+  "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Peek-lock plus a durable messageId dedup record is the right idempotency mechanism, though exactly-once overstates it."}
+}

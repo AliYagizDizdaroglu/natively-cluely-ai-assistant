@@ -1,0 +1,239 @@
+{
+ "note": "Authored by the kit builder (Sonnet), NOT by the Opus plant author of SPEC 3.1.1: the separate Opus REVIEWER must check every expected label and every base's cue block before any grader runs. Fix round 2026-10-07 per REVIEW-KIT.md: bases S1Q02F, S2Q01, S1Q07, S2Q05 replaced (by S1Q09F, S2Q07, S2Q07F, S2Q08F); S1Q08F/repeats and S2Q09F/contradicts rewritten. Holds question/answer/cue text: stays in LAB\\plants\\. Fix 3 (REVIEW-KIT-2): S2Q07 base replaced by reserve base S1Q10; S1Q09F/contradicts reworded as an explicit negation.",
+ "oneLine": {
+  "S1Q03F": "Persuadables, not lost causes",
+  "S1Q08F": "Feedback loop distorts labels",
+  "S2Q09F": "Region-pinned resources, private endpoints",
+  "S2Q10": "Service Bus dedupe, idempotent state"
+ },
+ "plants": {
+  "S1Q01": [
+   {
+    "kind": "missing",
+    "removeLine": 2
+   },
+   {
+    "kind": "halo",
+    "answerFind": "a standard logistic regression baseline",
+    "answerReplace": "a rules-based heuristic baseline",
+    "contradictsLine": 2
+   }
+  ],
+  "S1Q01F": [
+   {
+    "kind": "wrong_fact",
+    "line": 1,
+    "text": "Neural networks for tiny datasets"
+   },
+   {
+    "kind": "filler",
+    "replace": [
+     {
+      "line": 0,
+      "text": "Depends on the use case"
+     },
+     {
+      "line": 2,
+      "text": "Weigh tradeoffs and constraints"
+     }
+    ]
+   }
+  ],
+  "S1Q03F": [
+   {
+    "kind": "wrong_fact",
+    "line": 0,
+    "text": "Treatment effect equals churn risk"
+   },
+   {
+    "kind": "cut",
+    "line": 0,
+    "fullPhrase": "Lost causes leave regardless of the incentive offered"
+   }
+  ],
+  "S1Q05": [
+   {
+    "kind": "missing",
+    "removeLine": 0
+   },
+   {
+    "kind": "repeats",
+    "line": 2,
+    "cueText": "Fit preprocessing on full dataset",
+    "answerFind": "The ColumnTransformer fits exclusively on the training split—handling missing numeric values with an imputer and encoding categoricals with unknown category handling—so no validation statistics ever bleed into training.",
+    "answerReplace": "The ColumnTransformer is fit once on the full dataset before the split—handling missing numeric values with an imputer and encoding categoricals with unknown category handling—so every statistic is computed on all available rows."
+   }
+  ],
+  "S1Q06F": [
+   {
+    "kind": "filler",
+    "replace": [
+     {
+      "line": 0,
+      "text": "Add appropriate indexes"
+     },
+     {
+      "line": 1,
+      "text": "Handle corrections properly"
+     }
+    ]
+   },
+   {
+    "kind": "halo",
+    "answerFind": "simple append-only logs fail because past feature values shift, so I'd introduce an updated-at timestamp or event versioning, and run scheduled backfill pipelines to recompute affected snapshots cleanly",
+    "answerReplace": "simple append-only logs remain sufficient because corrections never change past feature values, so I'd add no versioning and never recompute any snapshot",
+    "contradictsLine": 1
+   }
+  ],
+  "S1Q07F": [
+   {
+    "kind": "contradicts",
+    "line": 1,
+    "text": "Redis state tracking"
+   },
+   {
+    "kind": "cut",
+    "line": 2,
+    "fullPhrase": "Pin the model artifact and feature snapshot together"
+   }
+  ],
+  "S1Q08F": [
+   {
+    "kind": "repeats",
+    "line": 0,
+    "cueText": "Campaign-treated labels are unbiased",
+    "answerFind": "Training on past data where campaigns were active creates a feedback loop that distorts true customer behavior. If an incentive successfully kept a high-risk customer from churning, the model learns that this profile stays, even though they would have left without the intervention. That means future predictions end up measuring response to marketing rather than baseline churn risk.",
+    "answerReplace": "Training on customers affected by previous campaigns does not introduce bias, because a campaign only changes behavior in ways the model can already see. Incentives simply reveal true customer preferences, so the observed labels are a clean measure of baseline churn risk. Repeated retraining on that data therefore keeps the model accurate."
+   },
+   {
+    "kind": "off_question",
+    "donor": "S1Q07F"
+   }
+  ],
+  "S1Q09F": [
+   {
+    "kind": "contradicts",
+    "line": 0,
+    "text": "Batch endpoints, not real-time inference"
+   },
+   {
+    "kind": "halo",
+    "answerFind": "I deploy to Azure Kubernetes Service for complex multi-container systems and heavy agentic RAG workloads",
+    "answerReplace": "I avoid Azure Kubernetes Service entirely and put even complex multi-container systems and heavy agentic RAG workloads",
+    "contradictsLine": 2
+   }
+  ],
+  "S1Q10F": [
+   {
+    "kind": "filler",
+    "replace": [
+     {
+      "line": 0,
+      "text": "Check the logs carefully"
+     },
+     {
+      "line": 1,
+      "text": "Verify permissions are correct"
+     }
+    ]
+   },
+   {
+    "kind": "off_question",
+    "donor": "S1Q05"
+   }
+  ],
+  "S2Q04F": [
+   {
+    "kind": "cut",
+    "line": 1,
+    "fullPhrase": "Multiply reciprocal rank terms by per-source weights"
+   },
+   {
+    "kind": "repeats",
+    "line": 0,
+    "cueText": "Raw scores share one scale",
+    "answerFind": "Raw scores from keyword and vector searches live on completely different scales, so adding them directly lets whichever model outputs larger numbers dominate the results.",
+    "answerReplace": "Raw scores from keyword and vector searches already share one normalized scale, so adding them directly is a perfectly good way to merge the results."
+   }
+  ],
+  "S2Q06": [
+   {
+    "kind": "missing",
+    "removeLine": 1
+   },
+   {
+    "kind": "filler",
+    "replace": [
+     {
+      "line": 0,
+      "text": "Use asyncio properly"
+     },
+     {
+      "line": 2,
+      "text": "Handle errors gracefully"
+     }
+    ]
+   }
+  ],
+  "S2Q07F": [
+   {
+    "kind": "off_question",
+    "donor": "S2Q06"
+   },
+   {
+    "kind": "halo",
+    "answerFind": "Authorization must be checked twice: at the initial retrieval filter and right before context injection. If permissions change mid-query, relying only on a pre-flight check can leak data if chunks are already in flight. I enforce late-binding authorization by validating document ACLs against retrieved chunk metadata immediately before sending the payload to the LLM.",
+    "answerReplace": "Authorization needs to be checked only once, at query start. If permissions change mid-query, the result is still valid because the user was entitled when the query began. I enforce early-binding authorization by validating the user's ACLs at query start and never re-checking the retrieved chunks.",
+    "contradictsLine": 1
+   }
+  ],
+  "S2Q08F": [
+   {
+    "kind": "contradicts",
+    "line": 0,
+    "text": "Checksum sampling, not counts"
+   },
+   {
+    "kind": "wrong_fact",
+    "line": 1,
+    "text": "Shadow traffic alters production responses"
+   }
+  ],
+  "S2Q09F": [
+   {
+    "kind": "contradicts",
+    "line": 0,
+    "text": "Service endpoints, not private endpoints"
+   },
+   {
+    "kind": "repeats",
+    "line": 0,
+    "cueText": "Global OpenAI deployments stay in-region",
+    "answerFind": "region-specific Azure OpenAI deployments to guarantee inference and embeddings stay fully within that geography",
+    "answerReplace": "global Azure OpenAI deployments, which guarantee inference and embeddings stay within that geography"
+   }
+  ],
+  "S2Q10": [
+   {
+    "kind": "off_question",
+    "donor": "S2Q04F"
+   },
+   {
+    "kind": "cut",
+    "line": 0,
+    "fullPhrase": "Service Bus duplicate detection with message ID hash"
+   }
+  ],
+  "S1Q10": [
+   {
+    "kind": "missing",
+    "removeLine": 2
+   },
+   {
+    "kind": "wrong_fact",
+    "line": 1,
+    "text": "Key Vault keeps secrets unencrypted"
+   }
+  ]
+ }
+}

@@ -1,0 +1,9 @@
+passes: record s50m's grader, verified as claude-opus-5
+
+s50m's 18 judge files were re-merged with --model claude-opus-5: all 18
+grading agents of 2026-09-22 ran it, per their transcripts. The grades
+are byte-identical. The record's arm lines and INDEX.md now name the
+grader, and INDEX gains its grader column (5c97b11): s50m reads
+claude-opus-5, the passes before it unrecorded.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

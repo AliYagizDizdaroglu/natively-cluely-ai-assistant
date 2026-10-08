@@ -1,0 +1,102 @@
+{
+ "model": "gemini-3.8-live",
+ "compression": "on",
+ "t0Iso": "2026-09-30T01:30:03.850Z",
+ "results": [
+  {
+   "id": "S1Q02",
+   "comp": "on",
+   "openedAt": 3,
+   "setupMs": 759,
+   "clipSeconds": 26.2,
+   "clipEndMs": 28101,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1740,
+   "lastWordMs": 6254,
+   "text": "With one hundred thousand subscribers, the nine point five percent churn rate means there are ninety five hundred total churners. By targeting five thousand people, or five percent of the population, capturing thirty percent of the churners gives us twenty eight hundred fifty true positives, resulting in a precision of fifty seven percent, which is consistent with our sixty percent citation.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q08",
+   "comp": "on",
+   "openedAt": 57337,
+   "setupMs": 667,
+   "clipSeconds": 19.3,
+   "clipEndMs": 78192,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the roll back.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1323,
+   "lastWordMs": 9218,
+   "text": "To avoid downtime, I use versioned namespace identifiers in the vector database, storing old and new high dimensional embeddings side by side for concurrent serving. I then run an asynchronous backfill process to populate the new embeddings for all existing documents, using message queues to simultaneously apply incoming live document updates to both versions. Before switching over, I validate quality by comparing retrieval metrics and similarity scores in a shadow environment against an annotated test set. Cutover involves updating the router configuration to direct read requests to the new embedding service, while rollback simply restores the previous routing pointer without data loss or reindexing.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q01",
+   "comp": "on",
+   "openedAt": 122948,
+   "setupMs": 741,
+   "clipSeconds": 16.3,
+   "clipEndMs": 140776,
+   "heard": "Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those stages. To your document intelligence experience.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 993,
+   "lastWordMs": 13286,
+   "text": "I ingest and parse raw documents using AWS Textract to handle complex layouts and tables accurately. Then, I split the extracted text into semantically meaningful chunks with appropriate overlap to preserve contextual boundaries. These chunks are embedded into vector representations using an XLM-RoBERTa model optimized for multilingual search. For retrieval, I use a hybrid approach that combines dense vector search with sparse keyword matching to capture both semantic meaning and exact terms. I then apply a re-ranker to score the top retrieved passages, ensuring the most relevant context rises to the top. During context assembly, LangGraph decomposes complex multi-hop queries and incorporates human-in-the-loop checkpoints to ensure precise assembling before prompting. Finally, GPT-5 synthesizes the assembled context into the final response, using continuous LLM-as-judge evals to actively prevent hallucinations.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q06",
+   "comp": "on",
+   "openedAt": 200429,
+   "setupMs": 677,
+   "clipSeconds": 27.7,
+   "clipEndMs": 229897,
+   "heard": "Now is sequel one. Construct a point in time feature. You have a snapshots table with a customer ID and a snapshot time and an events table with a customer ID, an event time, an ingested at time. And an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot. Includes only events ingested by the snapshot time and preserves customers with zero calls.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1528,
+   "lastWordMs": 7099,
+   "text": "I'd use a left join between the snapshots table and the filtered events table where the event type is a support call. The join conditions will match the customer ID, ensure the event time is within thirty days prior to the snapshot, and check that the ingested at timestamp is at or before the snapshot time. Finally, grouping by customer and snapshot time with a count of events will preserve those with zero calls.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q04",
+   "comp": "on",
+   "openedAt": 260484,
+   "setupMs": 664,
+   "clipSeconds": 30.4,
+   "clipEndMs": 292829,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return precision at K, recall at K, and lift over the population prevalence. Assume binary labels and finite scores. And break score ties by original row order. Tell me what it does. Invalid K for empty inputs. And when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 801,
+   "lastWordMs": 6855,
+   "text": "To implement this, I define a function that zips the scores, labels, and original indices, then sorts them primarily by score descending and secondarily by index ascending to break ties. After slicing the top k elements, I calculate precision at k as the proportion of true positives and recall at k by dividing those true positives by the total number of positive labels. Finally, lift is derived by dividing the precision at k by the overall population prevalence.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  }
+ ]
+}

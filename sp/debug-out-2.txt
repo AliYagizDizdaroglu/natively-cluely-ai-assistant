@@ -1,0 +1,112 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn[39m
+
+[90mstdout[2m | electron/services/_debug-replay.test.ts[2m > [22m[2mdebug 2026-09-09T15-00-55-s50a[2m > [22m[2mclassifies every early/multi-dispatch row
+[22m[39m=== 2026-09-09T15-00-55-s50a ===
+S1Q01 clipSecs [33m12.4445[39m voiceSegs [33m4[39m voiceOff-playedAt [33m11640[39m firstDet-playedAt [33m3220[39m
+   [33m9220[39m dispatch [33m1[39m "Why did you choose XGBoost?"
+   [33m12840[39m supersede [33m3[39m "Why did you choose XGBoost? Using your churn project, expla
+   [33m20840[39m close  
+S1Q01F clipSecs [33m6.9995[39m voiceSegs [33m3[39m voiceOff-playedAt [33m6220[39m firstDet-playedAt [33m5152[39m
+   [33m7420[39m dispatch [33m2[39m "Under what conditions would you prefer logistic regression?
+   [33m15420[39m close  
+   [33m20584[39m dispatch [33m0[39m "Under what conditions would you prefer logistic regression,
+   [33m28584[39m close  
+S1Q02 clipSecs [33m26.2295[39m voiceSegs [33m7[39m voiceOff-playedAt [33m25420[39m firstDet-playedAt [33m3713[39m
+   [33m9713[39m dispatch [33m1[39m "Can you reconcile the metrics on your CV?"
+   [33m26620[39m dispatch [33m2[39m "Assuming the same population and observation period, use 10
+   [33m34620[39m close  
+S1Q03 clipSecs [33m16.5945[39m voiceSegs [33m3[39m voiceOff-playedAt [33m15800[39m firstDet-playedAt [33m3441[39m
+   [33m9441[39m dispatch [33m2[39m "Did the model actually reduce churn? Your CV reports churn 
+   [33m17000[39m supersede [33m4[39m "Did the model actually reduce churn? Your CV reports churn 
+   [33m25000[39m close  
+S1Q04 clipSecs [33m30.3695[39m voiceSegs [33m14[39m voiceOff-playedAt [33m29580[39m firstDet-playedAt [33m6914[39m
+   [33m12914[39m dispatch [33m2[39m "Let's do some code. Implement evaluation for a fixed campai
+   [33m30782[39m supersede [33m6[39m "Let's do some code. Implement evaluation for a fixed campai
+   [33m38782[39m close  
+S1Q05 clipSecs [33m25.1895[39m voiceSegs [33m7[39m voiceOff-playedAt [33m24380[39m firstDet-playedAt [33m4651[39m
+   [33m12693[39m dispatch [33m2[39m "Build a leakage safe churn training pipeline. You are given
+   [33m25580[39m supersede [33m6[39m "Build a leakage safe churn training pipeline. You are given
+   [33m33580[39m close  
+S1Q06 clipSecs [33m27.7195[39m voiceSegs [33m10[39m voiceOff-playedAt [33m26920[39m firstDet-playedAt [33m6431[39m
+   [33m12431[39m dispatch [33m2[39m "Now a SQL one, construct a point in time feature. Have a sn
+   [33m28120[39m supersede [33m5[39m "Now a SQL one, construct a point in time feature. Have a sn
+   [33m36120[39m close  
+S1Q07 clipSecs [33m24.4245[39m voiceSegs [33m11[39m voiceOff-playedAt [33m23640[39m firstDet-playedAt [33m6782[39m
+   [33m12782[39m dispatch [33m3[39m "Design the next version of the churn platform, It has to su
+   [33m24840[39m supersede [33m6[39m "Design the next version of the churn platform, It has to su
+   [33m32840[39m close  
+S1Q08 clipSecs [33m18.3845[39m voiceSegs [33m7[39m voiceOff-playedAt [33m17560[39m firstDet-playedAt [33m9493[39m
+   [33m15493[39m dispatch [33m2[39m "Now add delayed outcomes and experimentation. Extend that d
+   [33m18760[39m supersede [33m4[39m "Now add delayed outcomes and experimentation. Extend that d
+   [33m26760[39m close  
+   [33m34860[39m dispatch [33m0[39m "Extend that design so churn outcomes arrive thirty days lat
+   [33m42860[39m close  
+S1Q09 clipSecs [33m21.8495[39m voiceSegs [33m11[39m voiceOff-playedAt [33m21060[39m firstDet-playedAt [33m6468[39m
+   [33m12468[39m dispatch [33m2[39m "Translate your AWS experience into an Azure deployment. Des
+   [33m22260[39m supersede [33m4[39m "Translate your AWS experience into an Azure deployment. Des
+   [33m30260[39m close  
+S1Q10 clipSecs [33m20.3795[39m voiceSegs [33m6[39m voiceOff-playedAt [33m19600[39m firstDet-playedAt [33m12076[39m
+   [33m18076[39m dispatch [33m3[39m "Secure the Churn platform without embedded credentials. How
+   [33m20800[39m supersede [33m5[39m "Secure the Churn platform without embedded credentials. How
+   [33m28800[39m close  
+S2Q01 clipSecs [33m16.3495[39m voiceSegs [33m10[39m voiceOff-playedAt [33m15580[39m firstDet-playedAt [33m6647[39m
+   [33m12647[39m dispatch [33m2[39m "Explain your Rag pipeline precisely. Walk through ingestion
+   [33m16780[39m supersede [33m3[39m "Explain your Rag pipeline precisely. Walk through ingestion
+   [33m24780[39m close  
+S2Q02 clipSecs [33m25.8045[39m voiceSegs [33m9[39m voiceOff-playedAt [33m25000[39m firstDet-playedAt [33m6601[39m
+   [33m12601[39m dispatch [33m2[39m "Defend the improvements reported on your CV, you report ext
+   [33m26224[39m supersede [33m5[39m "Defend the improvements reported on your CV, you report ext
+   [33m34224[39m close  
+S2Q03 clipSecs [33m14.1945[39m voiceSegs [33m3[39m voiceOff-playedAt [33m13380[39m firstDet-playedAt [33m3974[39m
+   [33m10063[39m dispatch [33m1[39m "When does an agent justify its complexity?"
+   [33m14675[39m supersede [33m3[39m "When does an agent justify its complexity? Consider a quest
+   [33m22675[39m close  
+S2Q04 clipSecs [33m23.0395[39m voiceSegs [33m6[39m voiceOff-playedAt [33m22220[39m firstDet-playedAt [33m9298[39m
+   [33m15298[39m dispatch [33m3[39m "Merge two retrieval result lists. Implement reciprocal rank
+   [33m23420[39m supersede [33m5[39m "Merge two retrieval result lists. Implement reciprocal rank
+   [33m31420[39m close  
+S2Q05 clipSecs [33m24.9445[39m voiceSegs [33m10[39m voiceOff-playedAt [33m24140[39m firstDet-playedAt [33m17530[39m
+   [33m23530[39m dispatch [33m4[39m "Pack retrieved evidence into a context budget. Implement a 
+   [33m25340[39m supersede [33m5[39m "Pack retrieved evidence into a context budget. Implement a 
+   [33m33340[39m close  
+S2Q06 clipSecs [33m19.6745[39m voiceSegs [33m7[39m voiceOff-playedAt [33m18880[39m firstDet-playedAt [33m9120[39m
+   [33m15120[39m dispatch [33m2[39m "Implement an asynchronous evaluation runner, You are given 
+   [33m20080[39m supersede [33m4[39m "Implement an asynchronous evaluation runner, You are given 
+   [33m28080[39m close  
+S2Q07 clipSecs [33m22.1995[39m voiceSegs [33m10[39m voiceOff-playedAt [33m21340[39m firstDet-playedAt [33m7723[39m
+   [33m13723[39m dispatch [33m2[39m "Design a multitenant rack service over 10,000,000 documents
+   [33m22588[39m supersede [33m5[39m "Design a multitenant rack service over 10,000,000 documents
+   [33m30588[39m close  
+
+[90mstdout[2m | electron/services/_debug-replay.test.ts[2m > [22m[2mdebug 2026-09-08T08-44-56-after9[2m > [22m[2mclassifies every early/multi-dispatch row
+[22m[39m=== 2026-09-08T08-44-56-after9 ===
+M05 clipSecs [33m5.2395[39m voiceSegs [33m1[39m voiceOff-playedAt [33m4420[39m firstDet-playedAt [33m5759[39m
+   [33m5620[39m classify [33m2[39m "How do you secure training data in s three that contains cu
+   [33m5759[39m dispatch [33m2[39m "How do you secure training data in s three that contains cu
+   [33m13759[39m close  
+   [33m65380[39m classify [33m2[39m "Now take a look at this problem on screen and walk me throu
+   [33m66996[39m dispatch [33m2[39m "Now take a look at this problem on screen and walk me throu
+   [33m74996[39m close  
+M18 clipSecs [33m5.4645[39m voiceSegs [33m1[39m voiceOff-playedAt [33m4660[39m firstDet-playedAt [33m5877[39m
+   [33m5860[39m classify [33m2[39m "How do you handle CUDA and driver compatibility in containe
+   [33m5877[39m dispatch [33m2[39m "How do you handle CUDA and driver compatibility in containe
+   [33m13877[39m close  
+   [33m66325[39m classify [33m2[39m "Here is another one on screen. Take a look and talk me thro
+   [33m67710[39m dispatch [33m2[39m "Here is another one on screen. Take a look and talk me thro
+   [33m75710[39m close  
+H03 clipSecs [33m8.4495[39m voiceSegs [33m2[39m voiceOff-playedAt [33m7620[39m firstDet-playedAt [33m9230[39m
+   [33m8820[39m classify [33m2[39m "Would you design a pipeline that retrains, validates, and d
+   [33m9230[39m dispatch [33m2[39m "Would you design a pipeline that retrains, validates, and d
+   [33m17230[39m close  
+   [33m84830[39m dispatch [33m2[39m "Last one on screen. Walk me through it and mention the time
+   [33m92830[39m close  
+
+ [32m✓[39m electron/services/_debug-replay.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 24[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m   Start at [22m 11:40:58
+[2m   Duration [22m 3.71s[2m (transform 118ms, setup 0ms, collect 111ms, tests 24ms, environment 2.27s, prepare 388ms)[22m
+

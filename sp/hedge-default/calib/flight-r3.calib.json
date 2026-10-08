@@ -1,0 +1,15 @@
+{
+  "negatives": {
+    "N1 array order of the answer models": ["export const ANSWER_MODELS = ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite'];", "export const ANSWER_MODELS = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite'];"],
+    "N2 string: the Live model": ["export const LIVE_DEFAULT = 'gemini-3.1-flash-live-preview';", "export const LIVE_DEFAULT = 'gemini-3.1-flash-live-previews';"],
+    "N3 string: the Live fallback": ["export const LIVE_FALLBACK = 'gemini-2.5-flash-native-audio-latest';", "export const LIVE_FALLBACK = 'gemini-2.5-flash-native-audio-latest2';"],
+    "N4 code: the focused-arm helper": ["export const focusedOnlyFor = (roster) => FOCUSED_ONLY_BY_ROSTER[roster] ?? null;", "export const focusedOnlyFor = (roster) => FOCUSED_ONLY_BY_ROSTER[roster] ?? [];"],
+    "N5 code line right under the edited docblock": ["{ model: ANSWER_MODELS[1], tag: 'captured-high', captured: true, args: ['--thinking', 'HIGH'] },", "{ model: ANSWER_MODELS[1], tag: 'captured-high', captured: true, args: ['--thinking', 'LOW'] },"]
+  },
+  "positives": {
+    "P1 the docblock line this round edits (captured-minimal)": ["through s50f. in-app vs this = the level, same bytes.", "through s50f. in-app vs this = the level, same bytes. (calibration)"],
+    "P2 the docblock heading this round edits (3.5-lite group)": ["the stall-fallback model (2026-09-18 bench: it does NOT honour", "the stall-fallback model (calibration) (2026-09-18 bench: it does NOT honour"],
+    "P3 whitespace inside a code line": ["import { fileURLToPath } from 'node:url';", "import { fileURLToPath }   from 'node:url';"],
+    "P4 a // comment inside the array below the docblock": ["// — a model decision needs its own band on the same bytes, same window, not one arm.", "// — a model decision needs its own band on the same bytes, same window, not one arm. (calibration)"]
+  }
+}

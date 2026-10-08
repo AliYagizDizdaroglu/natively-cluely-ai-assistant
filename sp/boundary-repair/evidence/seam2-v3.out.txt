@@ -1,0 +1,52 @@
+M06#1     finals 2 | missing vs script: machine | after repair missing: machine
+M10#1     finals 2 | missing vs script: dashboard | after repair missing: dashboard
+S2Q08F#1  finals 2 | missing vs script: none | after repair missing: none
+S1Q02F#1  finals 3 | missing vs script: pr | after repair missing: pr
+H11#1     finals 3 | missing vs script: tripled | BOUNDARY LOSS resumed "tripled" TRUE +1187ms
+          repaired: "Your training job costs tripled after a code change with no accuracy gain. How do you find the cause?" | after repair missing: none
+S1Q10#1   finals 5 | missing vs script: postgresql | after repair missing: postgresql
+M28#1     finals 2 | missing vs script: between | BOUNDARY LOSS unresumed-tail "between training" TRUE +966ms (F2 "training and serving?")
+          repaired: "How do you keep feature engineering consistent between training and serving?" | after repair missing: none
+W09#1     finals 1 | missing vs script: none | after repair missing: none
+S1Q03F#1  finals 3 | missing vs script: might | after repair missing: might
+M02#1     finals 2 | missing vs script: scheduled | after repair missing: scheduled
+H01#1     finals 3 | missing vs script: fifteen percent | after repair missing: fifteen percent
+M21#1     finals 2 | missing vs script: none | after repair missing: none
+S1Q05#1   finals 7 | missing vs script: 30 preprocessing | after repair missing: 30 preprocessing
+S1Q09F#1  finals 3 | missing vs script: aks | after repair missing: aks
+S1Q08F#1  finals 2 | missing vs script: none | after repair missing: none
+S1Q01#1   finals 4 | missing vs script: none | after repair missing: none
+M06#2     finals 2 | missing vs script: machine | BOUNDARY LOSS unresumed-tail "machine" TRUE +1478ms (F2 "learning repository actually test?") | after repair missing: machine
+M10#2     finals 2 | missing vs script: none | after repair missing: none
+S2Q08F#2  finals 2 | missing vs script: none | after repair missing: none
+S1Q02F#2  finals 3 | missing vs script: pr | after repair missing: pr
+H11#2     finals 3 | missing vs script: none | after repair missing: none
+S1Q10#2   finals 5 | missing vs script: postgresql | after repair missing: postgresql
+M28#2     finals 2 | missing vs script: between | after repair missing: between
+W09#2     finals 1 | missing vs script: none | after repair missing: none
+S1Q03F#2  finals 3 | missing vs script: might | after repair missing: might
+M02#2     finals 2 | missing vs script: none | after repair missing: none
+H01#2     finals 3 | missing vs script: fifteen percent | after repair missing: fifteen percent
+M21#2     finals 2 | missing vs script: none | after repair missing: none
+S1Q05#2   finals 7 | missing vs script: 30 preprocessing | after repair missing: 30 preprocessing
+S1Q09F#2  finals 3 | missing vs script: aks | after repair missing: aks
+S1Q08F#2  finals 2 | missing vs script: none | after repair missing: none
+S1Q01#2   finals 4 | missing vs script: none | after repair missing: none
+M06#3     finals 2 | missing vs script: machine | BOUNDARY LOSS unresumed-tail "machine" TRUE +1486ms (F2 "learning repository actually test?") | after repair missing: machine
+M10#3     finals 2 | missing vs script: recommendation | after repair missing: recommendation
+S2Q08F#3  finals 2 | missing vs script: none | after repair missing: none
+S1Q02F#3  finals 2 | missing vs script: pr | after repair missing: pr
+H11#3     finals 3 | missing vs script: tripled | after repair missing: tripled
+S1Q10#3   finals 5 | missing vs script: postgresql | after repair missing: postgresql
+M28#3     finals 2 | missing vs script: consistent | BOUNDARY LOSS unresumed-tail "consistent" TRUE +1007ms (F2 "between training and serving?") | after repair missing: consistent
+W09#3     finals 1 | missing vs script: none | after repair missing: none
+S1Q03F#3  finals 3 | missing vs script: might | after repair missing: might
+M02#3     finals 2 | missing vs script: none | after repair missing: none
+H01#3     finals 3 | missing vs script: fifteen percent | after repair missing: fifteen percent
+M21#3     finals 2 | missing vs script: none | after repair missing: none
+S1Q05#3   finals 7 | missing vs script: 30 preprocessing | after repair missing: 30 preprocessing
+S1Q09F#3  finals 3 | missing vs script: aks | after repair missing: aks
+S1Q08F#3  finals 2 | missing vs script: none | after repair missing: none
+S1Q01#3   finals 4 | missing vs script: none | after repair missing: none
+
+plays 48; cuts 38; resumed losses 1 (TRUE 1, FALSE 0); unresumed tails 4 (TRUE 4, FALSE 0); plays with a loss 5; plays the repair made more complete 2

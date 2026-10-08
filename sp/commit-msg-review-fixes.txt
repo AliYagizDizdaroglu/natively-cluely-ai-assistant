@@ -1,0 +1,28 @@
+fix(cues): inline the page image, log every failure, kill path, captures row
+
+Review findings on bc68d1c (all verified before changing anything):
+
+- The cue page loaded a file:// image inside a data: document, which Chromium
+  blocks; the page would have been blank for the whole hour. The PNG is now
+  inlined as a data URL and the page reports the image's natural size to the
+  cues log ("image 2310x760 loaded"); proved by a 3 s show on this machine.
+- The page is now two columns (2310x760 for PY4 instead of 1100x1200+): a
+  tall single column shrank to ~60 % on the 912 px work area.
+- interview60.cues.mjs logs before rendering, logs a render or spawn failure
+  instead of dying silently, truncates its log per run, and writes
+  interview60.cues.pid; run.mjs app:stop kills that pid (a detached
+  scheduler used to outlive an aborted flight and put pages on screen
+  later) and auto's snapshot copies interview60.cues.log into the run
+  folder. Dry run with a fake timeline: log + pid written, scheduler killed
+  by app:stop, timeline restored.
+- metrics: screenCaptures counts "[Main] screen reference: captured" lines
+  and the CODING row shows "N captures" (test fixture + assertion first).
+- containment.ts strips punctuation BEFORE joining "p 99" -> "p99", so
+  "p. 99" converges too. IntelligenceManager validates the chain-test JSON
+  as an array of strings. main.ts drops the dead liveMode check in
+  answerDetection. README: both chain-test variables, the display and
+  free-desktop preconditions, the cues log.
+
+electron suite 439 green; tsc the six known errors.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

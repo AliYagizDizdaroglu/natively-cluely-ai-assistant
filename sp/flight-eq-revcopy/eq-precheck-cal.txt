@@ -1,0 +1,302 @@
+eq-precheck.ps1 calibration (A2.10 P8; A3.7 I4a; A5.2; A6.1)
+
+script under test: C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\eq-precheck.ps1 sha256/12 9a703bca9b41; helper C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\eq-precheck-cal-tasks.ps1 sha256/12 da0985f126ba
+BOM present (EF BB BF); ParseFile errors: 0
+machine: now 2026-10-05T21:44:16 local, UTC offset 3 h
+each case: teardown -> register the dummy tasks (trigger At + 6) -> write the arming stub into E\eqcal-arming\ -> run the script with -Label eqcal -ArmingPath <stub> -DryLog <E\eqcal-dry\...> -> read the dummy back -> teardown
+
+ok   P1  CLEAN: At = now + 2 min (the script WAITS until At), the dummy flight task registered for At + 6, a clean arming stub (T = At + 6, one T: line, ARMING COMPLETE stamped At - 5 min), the dry dummy writes GUARD OK and NIGHT GATES OK -> PRECHECK OK, exit 0, the first line stamped >= At, the dummy still Ready
+      exit 0 after 112 s :: PRECHECK OK 2026-10-05T21:46:13+03
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:52 expected=2026-10-05 21:52
+        PRECHECK arming-record: OK T 2026-10-05 21:52 = At + 6 = NextRunTime, complete 2026-10-05T21:41:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+      dummy flight task read back: STATE Natively-flight-eqcal Ready next=2026-10-05 21:52 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   P2  clean again, At already past (no wait): the same OK (a second clean run proves the teardown left nothing sticky)
+      exit 0 after 9 s :: PRECHECK OK 2026-10-05T21:46:36+03
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:51 expected=2026-10-05 21:51
+        PRECHECK arming-record: OK T 2026-10-05 21:51 = At + 6 = NextRunTime, complete 2026-10-05T21:40:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+      dummy flight task read back: STATE Natively-flight-eqcal Ready next=2026-10-05 21:51 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   P3  -FakeFail port -> PRECHECK FAILED (1): port, exit 1, the dummy flight task DISABLED and read back Disabled
+      exit 1 after 11 s :: PRECHECK FAILED (1): port
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:51 expected=2026-10-05 21:51
+        PRECHECK arming-record: OK T 2026-10-05 21:51 = At + 6 = NextRunTime, complete 2026-10-05T21:40:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: FAIL forced by -FakeFail (calibration); real reading: port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:51 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   P4  -At '00:09' (a bare HH:mm) -> usage, exit 2, nothing written
+      exit 2 after 1 s :: PRECHECK usage error: -At must be a full date-time 'yyyy-MM-dd HH:mm' (got '00:09'): a bare HH:mm would resolve to today
+      dummy flight task read back: STATE Natively-flight-eqcal Ready next=2026-10-05 21:52 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   P5  -At an impossible date -> usage, exit 2
+      exit 2 after 1 s :: PRECHECK usage error: -At must be a full date-time 'yyyy-MM-dd HH:mm' (got '2026-02-30 21:00'): a bare HH:mm would resolve to today
+      dummy flight task read back: STATE Natively-flight-eqcal Ready next=2026-10-05 21:52 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   P6  -FakeFail with a name that is no gate -> usage, exit 2
+      exit 2 after 1 s :: PRECHECK usage error: -FakeFail must be one of: flight-task, arming-record, other-tasks, electron, port, tail, error-log, dry-twin
+      dummy flight task read back: STATE Natively-flight-eqcal Ready next=2026-10-05 21:52 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   A1  arming record ABSENT -> PRECHECK FAILED (1): arming-record, flight task disabled
+      exit 1 after 11 s :: PRECHECK FAILED (1): arming-record
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:52 expected=2026-10-05 21:52
+        PRECHECK arming-record: FAIL record ABSENT
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:52 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   A2  the stub names At + 21 (another T) -> FAILED (1): arming-record
+      exit 1 after 10 s :: PRECHECK FAILED (1): arming-record
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:53 expected=2026-10-05 21:53
+        PRECHECK arming-record: FAIL record T 2026-10-05 22:08 is not At + 6 min (2026-10-05 21:53)
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:53 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   A3  the stub has no ARMING COMPLETE line -> FAILED (1): arming-record
+      exit 1 after 10 s :: PRECHECK FAILED (1): arming-record
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:53 expected=2026-10-05 21:53
+        PRECHECK arming-record: FAIL the record does not END with an ARMING COMPLETE line (an unfinished record)
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:53 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   A4  the stub is stamped At - 3 min (finished later than T - 10) -> FAILED (1): arming-record
+      exit 1 after 10 s :: PRECHECK FAILED (1): arming-record
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:54 expected=2026-10-05 21:54
+        PRECHECK arming-record: FAIL ARMING COMPLETE stamp 2026-10-05T21:45:00 is later than At - 4 min (2026-10-05 21:44): finished too late
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:54 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   A5  the stub is stamped exactly At - 4 min (= T - 10) -> OK (the bound is inclusive)
+      exit 0 after 8 s :: PRECHECK OK 2026-10-05T21:49:38+03
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:54 expected=2026-10-05 21:54
+        PRECHECK arming-record: OK T 2026-10-05 21:54 = At + 6 = NextRunTime, complete 2026-10-05T21:44:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+      dummy flight task read back: STATE Natively-flight-eqcal Ready next=2026-10-05 21:54 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   A6  the stub has TWO T: lines -> FAILED (1): arming-record
+      exit 1 after 10 s :: PRECHECK FAILED (1): arming-record
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:54 expected=2026-10-05 21:54
+        PRECHECK arming-record: FAIL the record has 2 'T:' lines, exactly one is required (a superseded T is written as 'Superseded:')
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:54 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   A7  the stub names At + 6 but the flight task's NextRunTime is At + 7 (a trigger that drifted) -> FAILED (2): flight-task, arming-record
+      exit 1 after 10 s :: PRECHECK FAILED (2): flight-task, arming-record
+        PRECHECK flight-task: FAIL state=Ready next=2026-10-05 21:56 expected=2026-10-05 21:55
+        PRECHECK arming-record: FAIL record T 2026-10-05 21:55 is not the flight task's NextRunTime
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:56 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   A8  the stub carries a Superseded: line (a superseded T) and ONE T: line -> OK
+      exit 0 after 8 s :: PRECHECK OK 2026-10-05T21:50:42+03
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:55 expected=2026-10-05 21:55
+        PRECHECK arming-record: OK T 2026-10-05 21:55 = At + 6 = NextRunTime, complete 2026-10-05T21:44:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+      dummy flight task read back: STATE Natively-flight-eqcal Ready next=2026-10-05 21:55 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   A9  the stub ends with ARMING COMPLETE and blank lines follow -> OK (the last NON-EMPTY line counts)
+      exit 0 after 8 s :: PRECHECK OK 2026-10-05T21:51:02+03
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:55 expected=2026-10-05 21:55
+        PRECHECK arming-record: OK T 2026-10-05 21:55 = At + 6 = NextRunTime, complete 2026-10-05T21:44:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+      dummy flight task read back: STATE Natively-flight-eqcal Ready next=2026-10-05 21:55 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   T1  the flight task NOT REGISTERED -> FAILED (3): flight-task, arming-record, dry-twin (the teardown removed the dry dummy too); nothing to disable, said so; the script does not crash
+      exit 1 after 5 s :: PRECHECK FAILED (3): flight-task, arming-record, dry-twin
+        PRECHECK flight-task: FAIL NOT REGISTERED (Natively-flight-eqcal)
+        PRECHECK arming-record: FAIL record T 2026-10-05 21:56 is not the flight task's NextRunTime
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: FAIL the dry task Natively-flight-eqcal-dry is NOT REGISTERED
+        PRECHECK flight task Natively-flight-eqcal is NOT REGISTERED, nothing to disable
+      dummy flight task read back: STATE Natively-flight-eqcal ABSENT
+ok   T2  another Natively-* task RUNNING (a dummy busy task) -> FAILED (1): other-tasks, naming it; the dummy flight task disabled
+      exit 1 after 10 s :: PRECHECK FAILED (1): other-tasks
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:56 expected=2026-10-05 21:56
+        PRECHECK arming-record: OK T 2026-10-05 21:56 = At + 6 = NextRunTime, complete 2026-10-05T21:45:00
+        PRECHECK other-tasks: FAIL Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 1 [Natively-eqcal-busy]
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:56 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   T3  port 5180 REALLY held (a node listener) -> FAILED (1): port
+      exit 1 after 9 s :: PRECHECK FAILED (1): port
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:56 expected=2026-10-05 21:56
+        PRECHECK arming-record: OK T 2026-10-05 21:56 = At + 6 = NextRunTime, complete 2026-10-05T21:45:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: FAIL port 5180 held: True
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:56 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   T4  the error log present (%TEMP%\natively-eqcal-launcher-error.log) -> FAILED (1): error-log
+      exit 1 after 10 s :: PRECHECK FAILED (1): error-log
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:57 expected=2026-10-05 21:57
+        PRECHECK arming-record: OK T 2026-10-05 21:57 = At + 6 = NextRunTime, complete 2026-10-05T21:46:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: FAIL natively-eqcal-launcher-error.log present: True
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:57 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   T5  a tail.exe watcher running -> FAILED (1): tail
+      exit 1 after 9 s :: PRECHECK FAILED (1): tail
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:57 expected=2026-10-05 21:57
+        PRECHECK arming-record: OK T 2026-10-05 21:57 = At + 6 = NextRunTime, complete 2026-10-05T21:46:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: FAIL tail.exe watchers: 1
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:57 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   T6  an electron.exe process running (a COPY of node.exe named electron.exe, sleeping 40 s: a process of the right NAME, never the app) -> FAILED (1): electron
+      exit 1 after 10 s :: PRECHECK FAILED (1): electron
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:57 expected=2026-10-05 21:57
+        PRECHECK arming-record: OK T 2026-10-05 21:57 = At + 6 = NextRunTime, complete 2026-10-05T21:46:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: FAIL electron.exe processes: 1
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:57 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   D1  the dry twin writes GUARD OK but NOT NIGHT GATES OK -> FAILED (1): dry-twin
+      exit 1 after 9 s :: PRECHECK FAILED (1): dry-twin
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:58 expected=2026-10-05 21:58
+        PRECHECK arming-record: OK T 2026-10-05 21:58 = At + 6 = NextRunTime, complete 2026-10-05T21:47:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: FAIL result=0x0 in 4 s; new log bytes 28 chars; GUARD OK line: True; NIGHT GATES OK line: False
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:58 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   D2  the dry twin writes both lines but EXITS 1 -> FAILED (1): dry-twin (result 0x1)
+      exit 1 after 10 s :: PRECHECK FAILED (1): dry-twin
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:58 expected=2026-10-05 21:58
+        PRECHECK arming-record: OK T 2026-10-05 21:58 = At + 6 = NextRunTime, complete 2026-10-05T21:47:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: FAIL result=0x1 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:58 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   D3  the dry twin runs 25 s with -DryTimeoutSec 8 -> FAILED (2): dry-twin, dry-timeout (still running at the limit)
+      exit 1 after 17 s :: PRECHECK FAILED (2): dry-twin, dry-timeout
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:59 expected=2026-10-05 21:59
+        PRECHECK arming-record: OK T 2026-10-05 21:59 = At + 6 = NextRunTime, complete 2026-10-05T21:48:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: FAIL dry-timeout: still running after 8 s
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:59 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   D4  the dry twin task NOT REGISTERED -> FAILED (1): dry-twin
+      exit 1 after 6 s :: PRECHECK FAILED (1): dry-twin
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:59 expected=2026-10-05 21:59
+        PRECHECK arming-record: OK T 2026-10-05 21:59 = At + 6 = NextRunTime, complete 2026-10-05T21:48:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: FAIL the dry task Natively-flight-eqcal-dry is NOT REGISTERED
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:59 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   D5  the dry twin's OLD log lines do not count: the log already holds GUARD OK and NIGHT GATES OK from an earlier run and the dry run writes nothing new -> FAILED (1): dry-twin
+      exit 1 after 10 s :: PRECHECK FAILED (1): dry-twin
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 21:59 expected=2026-10-05 21:59
+        PRECHECK arming-record: OK T 2026-10-05 21:59 = At + 6 = NextRunTime, complete 2026-10-05T21:48:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: OK port 5180 held: False
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: FAIL result=0x0 in 4 s; new log bytes 0 chars; GUARD OK line: False; NIGHT GATES OK line: False
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 21:59 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   M1  two gates broken at once (port REALLY held, -FakeFail error-log) -> FAILED (2): port, error-log: every failing gate is named, in gate order, not only the first
+      exit 1 after 10 s :: PRECHECK FAILED (2): port, error-log
+        PRECHECK flight-task: OK state=Ready next=2026-10-05 22:00 expected=2026-10-05 22:00
+        PRECHECK arming-record: OK T 2026-10-05 22:00 = At + 6 = NextRunTime, complete 2026-10-05T21:49:00
+        PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+        PRECHECK electron: OK electron.exe processes: 0
+        PRECHECK port: FAIL port 5180 held: True
+        PRECHECK tail: OK tail.exe watchers: 0
+        PRECHECK error-log: FAIL forced by -FakeFail (calibration); real reading: natively-eqcal-launcher-error.log present: False
+        PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+        PRECHECK flight task Natively-flight-eqcal disabled, state now: Disabled
+      dummy flight task read back: STATE Natively-flight-eqcal Disabled next=2026-10-05 22:00 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+
+CLEAN-UP: no eqcal task left; real eq tasks present: 0; E\ARMING-flight-eq.md untouched (absent before and after); %TEMP% eqcal error log absent
+PRECHECK CALIBRATION OK 30/30

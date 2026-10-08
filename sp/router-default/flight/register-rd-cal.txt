@@ -1,0 +1,200 @@
+register-rd.ps1 calibration (A2.10 P9; A5.2 I3; read-back asserted)
+
+script under test: C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\register-rd.ps1 sha256/12 f99b3e5c3816; BOM present (EF BB BF); ParseFile errors: 0
+dummy times: T1 2026-10-07 02:40 (precheck 2026-10-07 02:34), T2 2026-10-07 02:55 (precheck 2026-10-07 02:49); the cal launchers are in C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\cal\rdcal-launchers
+
+ok   R1   dry: registered with NO trigger (triggers=0), Ready, StartWhenAvailable False, limit 1 h -> REGISTRATION OK, exit 0
+        registered Natively-flight-rdcal-dry  state=Ready  limit=PT1H  triggers=0
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal-dry.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: none
+        REGISTRATION OK: Natively-flight-rdcal-dry reads Ready, StartWhenAvailable False, no trigger
+ok   R2   flight at T1: the next run read back = T1 (2026-10-07 02:40), WakeToRun, StartWhenAvailable False, limit 5 h, workdir = MAIN, the action names launch-rdcal.cmd -> REGISTRATION OK
+        registered Natively-flight-rdcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:40
+        REGISTRATION OK: Natively-flight-rdcal reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-07 02:40
+ok   R3   precheck at T1 - 6: next run = 2026-10-07 02:34, limit 15 min, the action runs rd-precheck.ps1 with -At "2026-10-07 02:34" and -Label rdcal
+        registered Natively-flight-rdcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\rd-precheck.ps1" -At "2026-10-07 02:34" -Label rdcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:34
+        REGISTRATION OK: Natively-flight-rdcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS precheck=2026-10-07 02:34
+ok   R4   armed (flight + precheck, step 13) at T2: BOTH next run times printed (NEXT RUNS flight=2026-10-07 02:55 precheck=2026-10-07 02:49)
+        registered Natively-flight-rdcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:55
+        REGISTRATION OK: Natively-flight-rdcal reads Ready, StartWhenAvailable False, next run as requested
+        registered Natively-flight-rdcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\rd-precheck.ps1" -At "2026-10-07 02:49" -Label rdcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:49
+        REGISTRATION OK: Natively-flight-rdcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-07 02:55  precheck=2026-10-07 02:49
+ok   R5   verify at the same T2 (reads all three back, changes nothing) -> three REGISTRATION OK, exit 0
+        registered Natively-flight-rdcal-dry  state=Ready  limit=PT1H  triggers=0
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal-dry.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: none
+        REGISTRATION OK: Natively-flight-rdcal-dry reads Ready, StartWhenAvailable False, no trigger
+        registered Natively-flight-rdcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:55
+        REGISTRATION OK: Natively-flight-rdcal reads Ready, StartWhenAvailable False, next run as requested
+        registered Natively-flight-rdcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\rd-precheck.ps1" -At "2026-10-07 02:49" -Label rdcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:49
+        REGISTRATION OK: Natively-flight-rdcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-07 02:55  precheck=2026-10-07 02:49
+ok   R6   verify with ANOTHER T (2026-10-07 02:40) -> REGISTRATION PROBLEM: the next run reads ..., not the requested ..., exit 1 (the flip of R5)
+        registered Natively-flight-rdcal-dry  state=Ready  limit=PT1H  triggers=0
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal-dry.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: none
+        REGISTRATION OK: Natively-flight-rdcal-dry reads Ready, StartWhenAvailable False, no trigger
+        registered Natively-flight-rdcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:55
+        REGISTRATION PROBLEM: the next run reads 10/07/2026 02:55:00, not the requested 10/07/2026 02:40:00
+        REGISTRATION FAILED: Natively-flight-rdcal does not read back as required
+        registered Natively-flight-rdcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\rd-precheck.ps1" -At "2026-10-07 02:49" -Label rdcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:49
+        REGISTRATION PROBLEM: the next run reads 10/07/2026 02:49:00, not the requested 10/07/2026 02:34:00
+        REGISTRATION PROBLEM: the action does not run rd-precheck.ps1 with -At T - 6 and the label
+        REGISTRATION FAILED: Natively-flight-rdcal-precheck does not read back as required
+        NEXT RUNS flight=2026-10-07 02:55  precheck=2026-10-07 02:49
+ok   R7   StartWhenAvailable flipped to True on the registered flight task (Set-ScheduledTask) -> verify: REGISTRATION PROBLEM StartWhenAvailable reads True, REGISTRATION FAILED, exit 1
+        registered Natively-flight-rdcal-dry  state=Ready  limit=PT1H  triggers=0
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal-dry.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: none
+        REGISTRATION OK: Natively-flight-rdcal-dry reads Ready, StartWhenAvailable False, no trigger
+        registered Natively-flight-rdcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=True
+          next run: 2026-10-07 02:55
+        REGISTRATION PROBLEM: StartWhenAvailable reads True: a missed start would fire late, the registration requires False
+        REGISTRATION FAILED: Natively-flight-rdcal does not read back as required
+        registered Natively-flight-rdcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\rd-precheck.ps1" -At "2026-10-07 02:49" -Label rdcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:49
+        REGISTRATION OK: Natively-flight-rdcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-07 02:55  precheck=2026-10-07 02:49
+ok   R7b  re-registering the flight task (-Force) restores StartWhenAvailable False -> REGISTRATION OK again (nothing sticky)
+        registered Natively-flight-rdcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:55
+        REGISTRATION OK: Natively-flight-rdcal reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-07 02:55
+ok   R8   the flight task Disabled -> verify: REGISTRATION PROBLEM the state reads 'Disabled', not Ready, exit 1
+        registered Natively-flight-rdcal-dry  state=Ready  limit=PT1H  triggers=0
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal-dry.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: none
+        REGISTRATION OK: Natively-flight-rdcal-dry reads Ready, StartWhenAvailable False, no trigger
+        registered Natively-flight-rdcal  state=Disabled  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:55
+        REGISTRATION PROBLEM: the state reads 'Disabled', not Ready
+        REGISTRATION FAILED: Natively-flight-rdcal does not read back as required
+        registered Natively-flight-rdcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\rd-precheck.ps1" -At "2026-10-07 02:49" -Label rdcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:49
+        REGISTRATION OK: Natively-flight-rdcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-07 02:55  precheck=2026-10-07 02:49
+ok   R8b  re-registering a DISABLED task enables it again (Ready) -> REGISTRATION OK
+        registered Natively-flight-rdcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:55
+        REGISTRATION OK: Natively-flight-rdcal reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-07 02:55
+ok   F1   -T in the past -> REFUSED (a Once trigger in the past registers a task that never runs), no task registered
+        REFUSED: -T 2026-10-07 01:10 minus 6 min is not in the future: a Once trigger in the past registers a task that never runs, silently
+ok   F2   -T a bare time '21:00' -> REFUSED
+        REFUSED: -T must be a full date-time 'yyyy-MM-dd HH:mm' (got '21:00'): a bare time would resolve to today
+ok   F3   -Which bogus -> REFUSED
+        REFUSED: -Which must be dry, flight, precheck, armed, verify or supersede (got 'bogus')
+ok   F4   the launcher's NATIVELY_RD_T differs from -T -> REFUSED naming both
+        REFUSED: C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal.cmd: the launcher's NATIVELY_RD_T is '2026-01-01 00:00', not -T '2026-10-07 02:40'
+ok   F5   the launcher still holds a commit placeholder (@@) -> REFUSED
+        REFUSED: C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal.cmd: the launcher still holds a placeholder: node gen-launchers-rd.mjs --commit <registered HEAD> --t <T> --deadline-min <N> --ctx-sha12  ...[7 more chars]
+ok   F6   Label rd, -T 2026-10-07 01:14 at -Now 2026-10-07 01:00 (one minute short of now + 15 min) -> REFUSED (lead), no real task registered
+        REFUSED: -T 2026-10-07 01:14 is less than 15 min after now (T must be at least now + 15 min; a T in the past is refused)
+ok   F7   Label rd, -T 2026-10-07 00:30 at -Now 2026-10-07 01:00 (a T in the past) -> REFUSED (lead), no real task registered
+        REFUSED: -T 2026-10-07 00:30 is less than 15 min after now (T must be at least now + 15 min; a T in the past is refused)
+ok   F6b  Label rd, -T 2026-10-08 01:01 at -Now 2026-10-07 01:00 (one minute past now + 24 h) -> REFUSED (horizon), no real task registered
+        REFUSED: -T 2026-10-08 01:01 is more than 24 h after now
+ok   F6c  Label rd, -T 2026-10-07 08:45 at -Now 2026-10-07 01:00 (the run (T + 75 min) reaches 10:00 local, the quota reset) -> REFUSED (quota), no real task registered
+        REFUSED: -T 2026-10-07 08:45 + 75 min (the run's expected end) crosses the quota day reset at 10:00 local (07:00Z): the run must stay inside one quota day
+ok   F6d  Label rd, -T 2026-10-07 09:59 at -Now 2026-10-07 01:00 (T one minute before the reset) -> REFUSED (quota), no real task registered
+        REFUSED: -T 2026-10-07 09:59 + 75 min (the run's expected end) crosses the quota day reset at 10:00 local (07:00Z): the run must stay inside one quota day
+ok   F6e  Label rd, -T 2026-10-08 08:45 at -Now 2026-10-07 20:00 (the next day reset) -> REFUSED (quota), no real task registered
+        REFUSED: -T 2026-10-08 08:45 + 75 min (the run's expected end) crosses the quota day reset at 10:00 local (07:00Z): the run must stay inside one quota day
+ok   F8a  Label rd, -T 2026-10-07 01:15 at -Now 2026-10-07 01:00 (exactly now + 15 min) with -Plan against placeholder launchers -> REFUSED for a LATER reason (router build absent from MAIN today, else the placeholder), NOT for the T bounds; nothing registered
+        REFUSED: C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\ph\launch-rd.cmd: the launcher still holds a placeholder: node gen-launchers-rd.mjs --commit <registered HEAD> --t <T> --deadline-min <N> --ctx-sha12  ...[75 more chars]
+ok   F8b  Label rd, -T 2026-10-08 01:00 at -Now 2026-10-07 01:00 (exactly now + 24 h) with -Plan against placeholder launchers -> REFUSED for a LATER reason (router build absent from MAIN today, else the placeholder), NOT for the T bounds; nothing registered
+        REFUSED: C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\ph\launch-rd.cmd: the launcher still holds a placeholder: node gen-launchers-rd.mjs --commit <registered HEAD> --t <T> --deadline-min <N> --ctx-sha12  ...[75 more chars]
+ok   F8c  Label rd, -T 2026-10-07 08:44 at -Now 2026-10-07 01:00 (the last T whose run ends before the reset) with -Plan against placeholder launchers -> REFUSED for a LATER reason (router build absent from MAIN today, else the placeholder), NOT for the T bounds; nothing registered
+        REFUSED: C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\ph\launch-rd.cmd: the launcher still holds a placeholder: node gen-launchers-rd.mjs --commit <registered HEAD> --t <T> --deadline-min <N> --ctx-sha12  ...[75 more chars]
+ok   F8d  Label rd, -T 2026-10-07 10:00 at -Now 2026-10-07 01:00 (T exactly at the reset) with -Plan against placeholder launchers -> REFUSED for a LATER reason (router build absent from MAIN today, else the placeholder), NOT for the T bounds; nothing registered
+        REFUSED: C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\ph\launch-rd.cmd: the launcher still holds a placeholder: node gen-launchers-rd.mjs --commit <registered HEAD> --t <T> --deadline-min <N> --ctx-sha12  ...[75 more chars]
+ok   F8e  Label rd, -T 2026-10-07 23:00 at -Now 2026-10-07 20:00 (the earlier fallback T) with -Plan against placeholder launchers -> REFUSED for a LATER reason (router build absent from MAIN today, else the placeholder), NOT for the T bounds; nothing registered
+        REFUSED: C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\ph\launch-rd.cmd: the launcher still holds a placeholder: node gen-launchers-rd.mjs --commit <registered HEAD> --t <T> --deadline-min <N> --ctx-sha12  ...[75 more chars]
+ok   F8f  Label rd, -T 2026-10-07 04:30 at -Now 2026-10-06 22:00 (an early-morning T) with -Plan against placeholder launchers -> REFUSED for a LATER reason (router build absent from MAIN today, else the placeholder), NOT for the T bounds; nothing registered
+        REFUSED: C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\ph\launch-rd.cmd: the launcher still holds a placeholder: node gen-launchers-rd.mjs --commit <registered HEAD> --t <T> --deadline-min <N> --ctx-sha12  ...[75 more chars]
+ok   F9   -Plan armed with the cal launchers: PLAN lines for both tasks, "PLAN only: nothing was registered", exit 0, and no task exists afterwards
+        PLAN Natively-flight-rdcal: cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal.cmd"  workdir=C:\Users\sotka\OneDrive\Masa�st�\natively-cluely-ai-assistant  limit=05:00:00  trigger=Once  ...[19 more chars]
+        PLAN Natively-flight-rdcal-precheck: powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\rd-precheck.ps1" -At "2026-10-07 02:34" -Label rdcal  workdir=C:\Users\sotka\OneDrive ...[97 more chars]
+        PLAN only: nothing was registered
+ok   S1   supersede with both tasks registered and a record: BOTH read back Disabled, the record renamed to ARMING-super.superseded-<HHmm>.md (the old name gone), the old T printed and "not passed yet", exit 0
+        SUPERSEDE Natively-flight-rdcal disabled, read back: Disabled
+        SUPERSEDE Natively-flight-rdcal-precheck disabled, read back: Disabled
+        SUPERSEDE old T 2026-10-07 02:55; its precheck time (T - 6) has not passed yet; the superseded T goes into the new record as a Superseded: line
+        SUPERSEDE record renamed to ARMING-super.superseded-0141.md; present under the old name now: False
+        SUPERSEDE OK: regenerate the launchers with a new T inside a guard window (the latest is 2026-10-08 03:00, else no flight), then register again and write a new arming record
+ok   S2   after the supersede, re-registering (step 13 of the regenerated run) makes both tasks Ready again -> REGISTRATION OK x2
+        registered Natively-flight-rdcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-launchers\launch-rdcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:55
+        REGISTRATION OK: Natively-flight-rdcal reads Ready, StartWhenAvailable False, next run as requested
+        registered Natively-flight-rdcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\rd-precheck.ps1" -At "2026-10-07 02:49" -Label rdcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-07 02:49
+        REGISTRATION OK: Natively-flight-rdcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-07 02:55  precheck=2026-10-07 02:49
+ok   S3   supersede again with an OLD T (T - 6 already passed): "ALREADY PASSED: no flight at that T", a second renamed copy kept (never overwritten)
+        SUPERSEDE Natively-flight-rdcal disabled, read back: Disabled
+        SUPERSEDE Natively-flight-rdcal-precheck disabled, read back: Disabled
+        SUPERSEDE old T 2026-10-07 01:20; its precheck time (T - 6) has ALREADY PASSED: no flight at that T; the superseded T goes into the new record as a Superseded: line
+        SUPERSEDE record renamed to ARMING-super.superseded-0142.md; present under the old name now: False
+        SUPERSEDE OK: regenerate the launchers with a new T inside a guard window (the latest is 2026-10-08 03:00, else no flight), then register again and write a new arming record
+ok   S4   supersede with NO tasks registered and NO record: both tasks named NOT REGISTERED, no record to rename, exit 0 (not an error)
+        SUPERSEDE Natively-flight-rdcal is NOT REGISTERED, nothing to disable
+        SUPERSEDE Natively-flight-rdcal-precheck is NOT REGISTERED, nothing to disable
+        SUPERSEDE no arming record at C:\Users\sotka\OneDrive\Masa�st�\natively-lab\sp\router-default\flight\cal\rdcal-arming\ARMING-super.md, nothing to rename
+        SUPERSEDE OK: regenerate the launchers with a new T inside a guard window (the latest is 2026-10-08 03:00, else no flight), then register again and write a new arming record
+ok   S5   supersede -Plan: nothing disabled, nothing renamed (the dummy flight task still Ready, the record under its own name)
+        SUPERSEDE (plan) would disable Natively-flight-rdcal (now Ready)
+        SUPERSEDE (plan) would disable Natively-flight-rdcal-precheck (now Ready)
+        SUPERSEDE old T 2026-10-07 02:55; its precheck time (T - 6) has not passed yet; the superseded T goes into the new record as a Superseded: line
+        SUPERSEDE (plan) would rename the record to ARMING-super.superseded-0142.md
+        SUPERSEDE OK: regenerate the launchers with a new T inside a guard window (the latest is 2026-10-08 03:00, else no flight), then register again and write a new arming record
+
+CLEAN-UP: no rdcal task left; real rd tasks present: 0
+REGISTER CALIBRATION OK 36/36

@@ -1,0 +1,13 @@
+docs(passes): the v2 cue re-smoke is NOT CLEAN on a block-only answer: its record, its result, a spike-6 correction
+
+The 16:12 re-smoke on e3fae5f failed its check: one answer showed the substitute line and no cues. Saved replies
+show the cause: the offers block written before the spoken answer (9 of 624 replies), which the offers filter then
+drops together with the answer. The result note applies the pre-registered rule (a cue failure: no merge on this
+build) and reports the trims, the hedge split, the hold's timing read and S1Q08's second answer.
+
+The spike-6 addendum of 15:27 said 0 block-only of 216. Two of those replies show nothing; the correction says so
+and recounts the primary measure without them (one-first 14, still the only wording within 2 of the best).
+
+The probe's 16:10 note (its block-only count takes the spoken answer only) rides along; no probe call exists yet.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

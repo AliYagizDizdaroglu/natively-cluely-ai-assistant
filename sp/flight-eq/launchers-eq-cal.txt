@@ -1,0 +1,158 @@
+launchers-eq-cal.mjs calibration (b7; A2.10 P7; A4.6 m9; A5.2; the flight-launcher-guards note's four steps)
+
+MAIN C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant HEAD 56bda9eb64b65a190c73788b5f86a550f6809f6a (read only); CAL T 2026-10-05 21:00; the cal launchers are in C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\launchers-cal
+
+GENERATOR (gen-launchers-eq.mjs)
+ok   L1    generate with a full commit, T and a passes list -> BOTH FILES PASS, exit 0, the two structure lines YES
+      GENERATOR: BOTH FILES PASS
+ok   L2    --check --armed on the filled launchers -> PASS, PLACEHOLDERS: none
+      GENERATOR: BOTH FILES PASS
+ok   L3    an INDEPENDENT scan (not the generator's own): both files ASCII, CR count == line count == CRLF count, no bare LF, no BOM
+      launch-eq.cmd 9006 bytes 113 lines 113 CR; launch-eq-dry.cmd 6907 bytes 100 lines 100 CR
+ok   L4    the real launcher passes --require-precheck on its guard line; the dry launcher does not
+ok   L5    the sha lines come first: the eq-sha-lines call is the first command after the start banner in both launchers, before wav:check and the proofs
+ok   L6    the T and the commit and the flag lines are in the environment block: NATIVELY_EARLIER_QUESTION=1, NATIVELY_FLIGHT_FOCUSED=off, NATIVELY_EQ_T=<T>, NATIVELY_ROSTER=scenario50, NATIVELY_SCENARIOS=S1,S2, no trailing space
+ok   L7    --commit with 39 hex characters -> refused, nothing written
+      exit 2 :: REFUSED: --commit is not a full 40 character lowercase hash
+ok   L8    --commit in uppercase -> refused
+      exit 2 :: REFUSED: --commit is not a full 40 character lowercase hash
+ok   L9    --t before the window (19:29) -> refused
+      exit 2 :: REFUSED: --t 2026-10-05 19:29 is outside 2026-10-05 19:30 .. 2026-10-06 03:00 (A1.1, A7)
+ok   L10   --t after the window (2026-10-06 03:01) -> refused (A7: was 01:01)
+      exit 2 :: REFUSED: --t 2026-10-06 03:01 is outside 2026-10-05 19:30 .. 2026-10-06 03:00 (A1.1, A7)
+ok   L11   --t impossible date -> refused
+      exit 2 :: REFUSED: --t is not a valid "yyyy-MM-dd HH:mm" time: "2026-02-30 21:00"
+ok   L12   --t in ISO form -> refused
+      exit 2 :: REFUSED: --t is not a valid "yyyy-MM-dd HH:mm" time: "2026-10-05T21:00"
+ok   L13   --passes with a path in it -> refused
+      exit 2 :: REFUSED: --passes must be distinct file names like flight-eq-AMENDMENT-A1.md, comma separated: ..\x.md
+ok   L14   --passes with a duplicate -> refused
+      exit 2 :: REFUSED: --passes must be distinct file names like flight-eq-AMENDMENT-A1.md, comma separated: a.md,a.md
+ok   L15   an unknown option -> refused
+      exit 2 :: REFUSED: unknown option --bogus
+ok   L16   --armed without --check -> refused
+      exit 2 :: REFUSED: --armed belongs to --check
+ok   L17   --check with --commit -> refused
+      exit 2 :: REFUSED: --check writes nothing, so it takes no --commit, --t or --passes
+ok   L18   --t with no value -> refused
+      exit 2 :: REFUSED: --t needs a value
+ok   L19   --t 2026-10-05 19:30, --t 2026-10-06 03:00 (A7 upper bound) and --t 2026-10-06 01:01 (outside before A7) are all accepted (the bounds are inclusive, as the guard's g4)
+      exit 0 / 0 / 0
+ok   L20   a parenthesis in an echo inside an if-block (the 2026-09-20 defect) -> refused
+      exit 2 :: REFUSED: the sources do not lint, nothing was written: |   launch-eq.cmd line 80: an echo inside an if-block holds one of ( ) & | < > ^ % ! or a quote
+ok   L21   a percent sign in a rem line -> refused
+      exit 2 :: REFUSED: the sources do not lint, nothing was written: |   launch-eq.cmd line 23: a rem line holds one of % ( ) & | < > ^
+ok   L22   a non-ASCII character -> refused
+      exit 2 :: REFUSED: the sources do not lint, nothing was written: |   launch-eq.cmd line 83: a character outside printable ASCII
+ok   L23   a trailing space after a set value -> refused
+      exit 2 :: REFUSED: the sources do not lint, nothing was written: |   launch-eq.cmd line 35: trailing whitespace (a trailing space after a set value is part of the value in cmd)
+ok   L24   an @@ token outside the commit and T lines -> refused
+      exit 2 :: REFUSED: the sources do not lint, nothing was written: |   launch-eq.cmd line 62: an @@ token outside the commit and T lines
+ok   L25   an unknown macro -> refused
+      exit 2 :: REFUSED: unknown macro {{LOGG}}
+ok   L26   a missing section -> refused
+      exit 2 :: REFUSED: section guard-wet is not used by any launcher
+ok   L27   a digit directly before >> (reads as a handle redirect) -> refused
+      exit 2 :: REFUSED: the sources do not lint, nothing was written: |   launch-eq.cmd line 15: a digit directly before >> would read as a handle redirect
+ok   L28   an if-block never closed -> refused
+      exit 2 :: REFUSED: the sources do not lint, nothing was written: |   launch-eq.cmd: an if-block is never closed
+ok   L29   the launcher saved with LF line ends only (what the Write tool produces) -> --check FAILS naming bare LF
+      exit 1 :: launch-eq.cmd         8893 bytes   1 lines  CRLF 0  bare LF 113  bare CR 0  above 126: 0  other control: 0  BOM no  ends with CRLF NO  source lines missing 113  differing 113  commit filled  T filled  sha256/12 d1756bbe30af  FAIL
+ok   L30   the launcher with a UTF-8 BOM -> FAILS
+      exit 1 ::     - a UTF-8 BOM at the start
+ok   L31   one line changed by one character -> FAILS (differing)
+      exit 1 ::     - 1 line(s) differ from the source, the first at line 74
+ok   L32   a smart quote (a byte above 126) added -> FAILS
+      exit 1 :: launch-eq.cmd         9007 bytes 113 lines  CRLF 113  bare LF 0  bare CR 0  above 126: 1  other control: 0  BOM no  ends with CRLF yes  source lines missing 1  differing 1  commit filled  T filled  sha256/12 0da8db06f16b  FAIL
+ok   L33   the commit value shortened to 39 characters in the file -> FAILS (neither the placeholder nor a hash)
+      exit 1 ::     - the commit or T value is neither the placeholder nor a valid value
+ok   L34   placeholder launchers: --check PASSES, --check --armed FAILS naming the placeholder
+      write exit 0, check exit 0, armed check exit 1
+ok   L35   a commit given but T left: --check --armed still FAILS (T is a placeholder); then T given -> the commit is KEPT and --armed PASSES
+
+SHA LINES (eq-sha-lines.mjs)
+ok   S1    a committed passes file: the printed sha256 equals an independent hash of the file; PREREGISTER-h40d.md too; `ARMING absent`; exit 0
+      SHA LINES HEAD 56bda9eb64b65a190c73788b5f86a550f6809f6a | PASSES 2026-10-04-turn-followup-result.md sha256=20a07d120c5e... | PASSES PREREGISTER-h40d.md sha256=1b7432f67cf8... | ARMING absent
+ok   S2    an arming record present: `ARMING sha256=` equals the independent hash of its bytes
+ok   S3    a text NOT committed at HEAD (a name that is in no commit): `MISSING at HEAD`, the other line still printed, exit 1 (the launcher exits 14)
+      ARMING absent
+ok   S4    the working-tree file edited AFTER the commit: the printed sha is the COMMITTED text's (git show HEAD:), not the edited file's
+ok   S5    usage: --passes with a path -> exit 2
+      exit 2
+ok   S6    usage: a missing --arming -> exit 2
+      exit 2
+ok   S7    usage: an unknown option -> exit 2
+      exit 2
+
+DIST PROOFS (eq-proofs.mjs)
+ok   D1    MAIN's real dist: ALL PASSED, exit 0; dist-proof, four markers True, the sha line, parity-dist both lines all in the output
+      EQ PROOFS: ALL PASSED :: EQ PROOFS earlierQuestion.js sha256/16 56bfb8b11c522dd4
+ok   D2    the stub root (a copy of the real dist), unbroken -> ALL PASSED (the baseline of the next cases)
+      EQ PROOFS: ALL PASSED
+ok   D3    marker llm/earlierQuestion.js "EARLIER QUESTION (asked earlier; context only" broken -> that EQ MARKER line False, FAILED, exit 1
+      EQ PROOFS: FAILED (marker llm/earlierQuestion)
+ok   D4    marker IntelligenceEngine.js "earlier question: gate=" broken -> that EQ MARKER line False, FAILED, exit 1
+      EQ PROOFS: FAILED (marker IntelligenceEngine)
+ok   D5    marker main.js "describeEarlierQuestionAtStartup" broken -> that EQ MARKER line False, FAILED, exit 1
+      EQ PROOFS: FAILED (marker main)
+ok   D6    marker llm/WhatToAnswerLLM.js "earlierQuestionBlock" broken -> that EQ MARKER line False, FAILED, exit 1
+      EQ PROOFS: FAILED (marker llm/WhatToAnswerLLM)
+ok   D7    the cue build broken (CUE_LINE_PREFIX renamed in the filter) -> FAILED (dist-proof), exit 1
+      EQ PROOFS: FAILED (dist-proof)
+ok   D8    parity-dist with EQ_DIST_BREAK=1 (MISMATCH lines) -> FAILED (parity-dist), exit 1
+      EQ PROOFS: FAILED (parity-dist)
+ok   D9    --same-as-log, the sha after the LAST before-banner equals the current sha (an older banner holds zeros: the last one wins) -> ALL PASSED, "unchanged ... yes"
+      EQ PROOFS: ALL PASSED
+ok   D10   --same-as-log, the sha before the run differs (the dist was rebuilt into something else) -> "unchanged ... NO", FAILED (sha-changed), exit 1
+      EQ PROOFS: FAILED (sha-changed)
+ok   D11   --same-as-log with no before-banner in the log -> NOT FOUND, FAILED, exit 1 (never a silent pass)
+      EQ PROOFS: FAILED (sha-before-not-found)
+ok   D12   usage: a relative --root -> exit 2
+      exit 2
+
+GUARDS-ONLY COPIES of the real launcher, run with cmd.exe from MAIN (the flight-launcher-guards note's steps 1, 2 and 4)
+ok   G1    step 1: the guards-only copy of the real launcher, from MAIN's folder -> prints GUARDS_ALL_PASSED, exit 0, no error log (the guard line is the REAL one plus the guard's calibration options --settings --precheck-file --now only; the smoke result is the REAL RESULT-smoke-eq.md)
+      exit 0, stdout "GUARDS_ALL_PASSED", error log absent
+ok   G2    the copy's log (E\guardsonly.launcher.log) holds the whole chain: start banner with commit and T, PASSES sha256 lines and ARMING absent BEFORE wav:check, EQ PROOFS ALL PASSED, GUARD OK, NIGHT GATES OK, PRECHECK ACCEPTED
+      === LAUNCHER eq start Tue 10/06/2026  0:08:26.82 commit 56bda9eb64b65a | PASSES 2026-10-04-turn-followup-result.md sha256=20a07d120c5e... | PASSES PREREGISTER-h40d.md sha256=1b7432f67cf8... | ARMING absent | scenario50.wav matches scenario50 [S1, S2]  40 items | === DIST BEFORE THE RUN ===  | EQ PROOFS: ALL PASSED | NIGHT GATES OK | PRECHECK ACCEPTED 2026-10-05T20:53:00+03
+ok   G3    the guard line in that log read the TRUE environment through the launcher's own env block: flag exactly 1, focused arms OFF, T 2026-10-05 21:00, the cmd-set values arrived (INFORMATION: depends on the smoke stub, the real settings and the machine's night gates)
+      GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (in ...[1115 more chars]
+ok   M1    step 2: the harness-stop marker mangled (process.on exit appStop searched with a typo) -> exit 6 and the error-log line
+      exit 6 (want 6); stdout ""; error log: the harness does not stop the app when a run ends - pick 5952b23 into this checkout
+ok   M2    step 2: the commit placeholder left in -> exit 12 and the error-log line
+      exit 12 (want 12); stdout ""; error log: NATIVELY_FLIGHT_COMMIT is not a full 40 character hash - the placeholder was not filled in - run gen-launchers-eq.mjs with the commit
+ok   M3    step 2: the guard script name mangled -> exit 4 and the error-log line (a guard that cannot run refuses)
+      exit 4 (want 4); stdout ""; error log: behavioural guard failed - see flight-eq.launcher.log
+ok   M4    step 2: a passes file that is not committed at HEAD named in the sha-lines call -> exit 14 and the error-log line
+      exit 14 (want 14); stdout ""; error log: a committed text is missing at HEAD - see flight-eq.launcher.log
+ok   M5    step 2: the precheck stamp stale (now = T + 11 min) -> the real guard refuses (g5) -> exit 4
+      exit 4 (want 4); stdout ""; error log: behavioural guard failed - see flight-eq.launcher.log
+ok   M6    step 2: the roster file name mangled -> exit 7
+      exit 7 (want 7); stdout ""; error log: scenario50 roster missing from this checkout
+ok   M7    step 2: the audio file name mangled -> exit 8
+      exit 8 (want 8); stdout ""; error log: scenario50.wav missing - build the audio first
+ok   M8    step 2: the working directory check mangled -> exit 9
+      exit 9 (want 9); stdout ""; error log: wrong working directory: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant
+ok   M9    step 2: wav:check pointed at a harness subcommand that fails (a mangled subcommand name) -> exit 5
+      exit 5 (want 5); stdout ""; error log: scenario50.wav does not match the scenario50 roster - see flight-eq.launcher.log
+ok   M10   step 2: dist proofs 1 refusing (a relative --root) -> exit 3 and the error-log line
+      exit 3; error log: dist proofs 1 failed - see flight-eq.launcher.log
+ok   M11   review m1: the guard stub exits -1073741819 (a native crash) -> the launcher STOPS: exit 4, the error-log line, no GUARDS_ALL_PASSED
+      exit 4 (want 4); stdout ""; error log: behavioural guard failed - see flight-eq.launcher.log
+ok   M12   review m1, the mutant: the OLD `if errorlevel 1` form with the same crashing stub -> the launcher is let through (GUARDS_ALL_PASSED, exit 0), so M11 does discriminate
+      exit 0; stdout "GUARDS_ALL_PASSED"
+ok   G4    artifacts deleted: E\launch-eq-guardsonly.cmd and E\guardsonly.launcher.log are gone, and the real error log %TEMP%\natively-eq-launcher-error.log is ABSENT (arming requires it absent)
+      C:\Users\sotka\AppData\Local\Temp\natively-eq-launcher-error.log
+
+LAUNCH-EQ-CHECK (E\launch-eq-check.mjs, the same guards-only chain as a tool the controller runs on the REAL generated launcher)
+ok   K1    the REAL form of the cal launcher (--require-precheck): LAUNCH CHECK OK, exit 0, G1 GUARDS_ALL_PASSED, ten mangles each ok, G4 clean
+      LAUNCH CHECK OK 20/20: GUARDS_ALL_PASSED and every mangled marker exiting with its own code
+ok   K2    the DRY form of the cal launcher: LAUNCH CHECK OK, exit 0 (no precheck stamp involved), nine mangles
+      LAUNCH CHECK OK 18/18: GUARDS_ALL_PASSED and every mangled marker exiting with its own code
+ok   K3    a launcher that still holds the placeholders -> usage, exit 2, "still holds a placeholder" (nothing run)
+      usage: node launch-eq-check.mjs [--launcher <file>] [--out <file>]
+ok   K4    a launcher with its OWN harness-stop marker mangled (a launcher that cannot pass) -> LAUNCH CHECK FAILED, exit 1, G1 BAD (the check can fail)
+      LAUNCH CHECK FAILED: G1, G2.1, G2.2, G2.3, G2.4, G2.5, G2.6, G2.7, G2.8, M2, M3, M4, M8, M9, M10 (5/20 ok)
+ok   K5    no artifact left behind by the tool (the guards-only copy deleted, the real error log absent)
+
+LAUNCHER CALIBRATION OK 74/74 (1 informational case recorded and not counted)

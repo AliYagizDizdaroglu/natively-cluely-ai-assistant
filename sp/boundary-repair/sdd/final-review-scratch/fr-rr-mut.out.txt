@@ -1,0 +1,9 @@
+adapter real                                 exit 0  [PPPPPPPPPPP]  no failure
+adapter clock stuck at 0                     exit 1  [PPPPPFPPPPP]  FAILED: the 5 s window runs on the arrival clock: F2 5001 ms after F1 is emitted as rece
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true
+M0 extractor real                            exit 0  [PPPSS]  no failure
+M1 refuse only repair-under-repair           exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its own final (one synchr
+M2 orphan throw removed                      exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its own final (one synchr
+M3 wrong-final throw removed                 exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its own final (one synchr
+M4 > instead of >=                           exit 1  [PFPSS]  FAILED: keeps interims and empty finals out, drops finals before `since` and keeps a fin
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true

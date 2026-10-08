@@ -1,0 +1,16 @@
+feat(router): live router behind NATIVELY_LIVE_ROUTER (3.8 Live answers easy questions, pipeline shadow), default OFF
+
+Lands feat/live-router (integration of four lane worktrees, 17d199d..9fbdf5b) into MAIN. With the flag unset the app
+behaves as before (renderer events unchanged; two extra log lines). With NATIVELY_LIVE_ROUTER=1:
+- a second Live session (gemini-3.8-live, router40's setup + a profile-summary context) routes each dispatched turn;
+- the arbiter shows Live only for a valid easy answer (first letter-bearing word not "hard", no marker, within the
+  caps), streams it from its first word, and otherwise shows the always-running pipeline answer; an invalid Live answer
+  after it was shown gets the pipeline answer appended as "(full answer)"; the hidden shadow never enters history;
+- the ear keeps its generation guard against stale reconnect callbacks and fails over 3.1 -> 2.5 once per meeting;
+- unknown uppercase __MARKER__ blocks are stripped from pipeline text;
+- the live40 hands-free roster, router preflight gates, capture files, probe-settle wait and arms filter in the harness.
+
+Gates at 9fbdf5b: tsc root 0, electron 6 (pre-existing); build OK; suite 1508 passed / 9 skipped / 0 failed.
+Every task Opus-reviewed; whole-branch Opus review READY after one fix round.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

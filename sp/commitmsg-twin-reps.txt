@@ -1,0 +1,17 @@
+feat(flight): run the offline twin three times, so the hour carries its own noise floor
+
+Flight s50i put the live hour at 28/39 against its offline twin's 33/39 — identical bytes,
+identical model, identical thinking level. Only one of the seven questions that moved had an
+identifiable mechanical cause (the word guard, fixed in 01d3810); the other six differ only by
+sampling at temperature 0.4. At one sample a side, against a bench noise floor of ±4 on 38
+pairs, that gap cannot be told apart from chance.
+
+So captured-low now runs three times (captured-low, -r2, -r3), identical but for the tag. The
+three reps measure the twin's own rep-to-rep spread, and that band is what the single live hour
+has to fall outside before the gap counts as a pipeline defect rather than sampling. Adds about
+78 lite calls; both models stay well inside their daily quotas.
+
+This is the cheapest way to settle the largest open number in the flight, and it settles it
+without spending three flight hours.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

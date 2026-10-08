@@ -1,0 +1,130 @@
+{
+ "docker": {
+  "id": "docker",
+  "anchors": [
+   "image",
+   "layer",
+   "container",
+   "dockerfile"
+  ],
+  "turns": [
+   {
+    "q": "What is the difference between a Docker image and a container?",
+    "contextual": "A Docker image is the static, read-only template that contains the application code, libraries, and environment settings, essentially acting as a snapshot of your system. A container is the live, runnable instance of that image, where the application actually executes in an isolated environment with its own writable layer on top of the image. Think of the image as a recipe and the container as the meal you’ve cooked from it."
+   },
+   {
+    "q": "Ours came out at 8 gigabytes. How would you shrink it?",
+    "contextual": "I would start by switching to a minimal base image like Alpine or Distroless to strip out unnecessary system dependencies. Then, I’d consolidate my RUN commands to reduce the number of layers and use multi-stage builds to ensure only the final binary and essential runtime assets make it into the production image, leaving build tools and source code behind.",
+    "standalone": "I would start by implementing quantization to reduce the precision of the model weights from 16-bit to 8-bit or 4-bit, which typically cuts the memory footprint in half with minimal accuracy loss. I’d also look into pruning redundant parameters and applying knowledge distillation to transfer the core intelligence into a smaller, more efficient student model."
+   },
+   {
+    "q": "And once it is small, how do you keep its layers cached in CI so builds stay fast?",
+    "contextual": "I keep builds fast by ordering my Dockerfile instructions from least to most frequently changed, placing things like dependency installs before copying my application source code. This ensures that the layer cache remains valid for the heavy lifting as long as my dependencies haven't changed. I also use build-kit's cache-to and cache-from flags to persist these layers across CI runs.",
+    "standalone": "I use a multi-stage build strategy to isolate the application dependencies from the runtime environment. By pinning the dependency installation to a specific lock file and leveraging Docker’s layer caching, I ensure that only changes to the manifest trigger a re-install, while the rest of the image remains cached. For more complex pipelines, I push these intermediate layers to a remote registry to ensure consistency across different build agents."
+   }
+  ]
+ },
+ "sagemaker": {
+  "id": "sagemaker",
+  "anchors": [
+   "endpoint",
+   "latency",
+   "instance",
+   "cloudwatch"
+  ],
+  "turns": [
+   {
+    "q": "What is a SageMaker endpoint, and what does it actually host?",
+    "contextual": "A SageMaker endpoint is a fully managed HTTP(S) interface that serves your trained models for real-time inference. It hosts the model artifacts—the weights and parameters—alongside the inference code, running them within a containerized environment on dedicated compute instances. This setup abstracts away the underlying infrastructure, automatically handling scaling, load balancing, and health checks for your production traffic."
+   },
+   {
+    "q": "Its p99 latency has been creeping up at ten thousand requests a second. Where do you look first?",
+    "contextual": "I’d start by checking the CloudWatch metrics for the instance-level CPU and memory utilization to see if we’re hitting resource saturation or if the instance type is no longer sufficient for the load. Simultaneously, I’d look at the model latency metrics to distinguish between network overhead and actual inference time, while checking for any cold start issues or request queuing at the load balancer level.",
+    "standalone": "I start by checking the distribution of request processing times to see if the latency is hitting a specific bottleneck, like a database query or a downstream API call. I’ll look at the service's resource utilization metrics, specifically CPU throttling and garbage collection pauses, which often trigger p99 spikes under high throughput. If those look stable, I investigate the connection pool saturation or queue depths to identify where requests are waiting before they are even processed."
+   },
+   {
+    "q": "You looked, and it is compute-bound. What do you change?",
+    "contextual": "I would first evaluate horizontal scaling by increasing the instance count to distribute the load, or switch to a more performant instance type with better compute-to-memory ratios. If the model architecture allows, I’d implement multi-model endpoints or model compilation using SageMaker Neo to optimize the binary for the specific hardware, which often yields significant latency improvements for compute-bound tasks.",
+    "standalone": "I’d start by profiling the execution to identify the specific hot path, then look to optimize the algorithmic complexity or leverage vectorization to better utilize the CPU cache. If the logic is inherently heavy, I would offload the computation to a more efficient language extension or distribute the workload across multiple threads to maximize core utilization."
+   }
+  ]
+ },
+ "drift": {
+  "id": "drift",
+  "anchors": [
+   "drift",
+   "distribution",
+   "retrain",
+   "threshold",
+   "baseline"
+  ],
+  "turns": [
+   {
+    "q": "How would you detect data drift on a model that is already in production?",
+    "contextual": "I track data drift by comparing the statistical distribution of production input features against the training baseline using the Kolmogorov-Smirnov test or Jensen-Shannon divergence. I set up automated monitoring in the feature store to trigger alerts when these metrics cross a defined threshold, which signals that the model's environment has shifted enough to potentially degrade performance."
+   },
+   {
+    "q": "Say that check fires at three in the morning. What happens next, automatically?",
+    "contextual": "When that threshold is crossed, the system triggers a circuit breaker that pauses automated retraining pipelines to prevent the model from learning on potentially corrupted or skewed data. Simultaneously, it generates a snapshot of the drifting features and pushes an incident ticket to the team's dashboard, attaching a report that highlights which specific features are driving the divergence.",
+    "standalone": "If that check fails at three in the morning, the system immediately triggers an alert through our incident management platform, which pages the on-call engineer. Simultaneously, the automation pipeline halts any further deployments to prevent cascading failures, while the system logs the specific error state and takes a snapshot of the current environment for post-mortem analysis."
+   },
+   {
+    "q": "And if the retrain it kicked off comes back worse than the model already serving?",
+    "contextual": "I use a champion-challenger deployment pattern where the retrained model is never promoted directly to production. Instead, it runs in shadow mode alongside the current model, and I compare their performance metrics on live traffic. If the challenger doesn't demonstrably outperform the champion on key stability and accuracy targets, the system automatically rejects the update and keeps the current model serving.",
+    "standalone": "I would immediately trigger an automated rollback to the previous model version to maintain performance stability. My deployment pipeline includes a canary testing phase where the new model is evaluated against a holdout dataset before it ever replaces the production traffic. If the metrics don't meet the predefined threshold, the CI/CD system automatically halts the promotion and alerts the team."
+   }
+  ]
+ },
+ "airflow": {
+  "id": "airflow",
+  "anchors": [
+   "dag",
+   "task",
+   "retry",
+   "xcom",
+   "airflow"
+  ],
+  "turns": [
+   {
+    "q": "What is a DAG, and why does Airflow use that structure?",
+    "contextual": "A DAG, or Directed Acyclic Graph, is a collection of tasks with defined dependencies that flow in one direction without any loops. Airflow uses this structure because it provides a clear, deterministic way to map out complex data pipelines where each step depends on the successful completion of the previous ones. By representing workflows this way, Airflow can automatically determine the execution order, handle retries for specific failed tasks, and visualize the entire pipeline's progress in real-time."
+   },
+   {
+    "q": "One of its tasks fails intermittently because of a flaky API. How do you handle that?",
+    "contextual": "I would first implement a retry policy directly on the task by setting the retries parameter and a delay, which handles transient network blips automatically. If the API is consistently flaky, I’d wrap the call in a custom operator that uses an exponential backoff strategy to avoid overwhelming the service. For more complex cases, I’d use a sensor to verify the API’s availability before triggering the task, ensuring the pipeline only proceeds when the external dependency is actually ready.",
+    "standalone": "I handle flaky APIs by implementing an exponential backoff strategy with a jittered retry mechanism. This prevents overwhelming the downstream service while ensuring that transient network blips don't cause a hard failure. If the task continues to fail after the maximum number of retries, I move the message to a dead-letter queue to preserve the state for manual inspection."
+   },
+   {
+    "q": "Now that same task produces five gigabytes of output. How do you hand it to the next task?",
+    "contextual": "I would avoid passing that volume of data directly through Airflow's metadata database or XComs, as that would cause significant performance degradation. Instead, I’d write the five gigabytes to an external object store like S3 or GCS, and have the task pass only the file path or URI to the next task via XCom. This keeps the pipeline lightweight and ensures the downstream task can pull the data directly from the storage layer.",
+    "standalone": "I would move that data into an object store like S3 or a shared persistent volume rather than passing it directly through the pipeline. By writing the output to a URI and passing only the reference to the next task, I avoid memory bottlenecks and ensure the data remains accessible if a retry is required."
+   }
+  ]
+ },
+ "k8s": {
+  "id": "k8s",
+  "anchors": [
+   "pod",
+   "deployment",
+   "autoscal",
+   "node",
+   "gpu"
+  ],
+  "turns": [
+   {
+    "q": "What is the difference between a Pod and a Deployment in Kubernetes?",
+    "contextual": "A Pod is the smallest deployable unit in Kubernetes, representing a single instance of a running process or container. A Deployment, on the other hand, is a management layer that sits on top of Pods to handle scaling, rolling updates, and self-healing. While a Pod is ephemeral and manually managed, a Deployment ensures the desired number of replicas are always running and handles the transition between different versions of your application."
+   },
+   {
+    "q": "How would you autoscale that deployment for a model inference server?",
+    "contextual": "I would implement a Horizontal Pod Autoscaler to dynamically adjust the replica count based on real-time metrics. For model inference, I’d specifically target CPU or memory utilization, or better yet, custom metrics like request latency or throughput using a Prometheus adapter. This ensures the inference server scales out during traffic spikes and scales back down to save costs when idle.",
+    "standalone": "I would use a Horizontal Pod Autoscaler configured to track custom metrics like request latency or GPU utilization rather than just CPU. By setting a target threshold, the scaler automatically adds replicas when demand spikes and terminates them during lulls. To handle cold starts, I’d implement a buffer of warm replicas and ensure the model weights are cached on the node."
+   },
+   {
+    "q": "It scaled out to forty pods and the GPU nodes ran dry. What is the fix?",
+    "contextual": "I would immediately implement Cluster Autoscaler to dynamically provision new nodes when pods are pending due to insufficient resources. To prevent hitting hard limits, I’d also set resource requests and limits on the inference containers to ensure the scheduler accurately tracks GPU availability across the cluster. If the GPU demand remains extreme, I'd introduce a PriorityClass to ensure critical inference traffic preempts lower-priority batch jobs.",
+    "standalone": "I would immediately implement a cluster autoscaler to dynamically provision additional GPU-enabled nodes before the existing ones hit capacity. To optimize current resources, I’d also look at vertical pod autoscaling to right-size requests and use node affinity or taints and tolerations to ensure GPU workloads are prioritized on the appropriate hardware."
+   }
+  ]
+ }
+}

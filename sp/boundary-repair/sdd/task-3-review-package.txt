@@ -1,0 +1,288 @@
+# Task 3 review package: v3 (end of Task 1, sdd/t3-orig/) -> v4 (MAIN working tree now)
+STAT electron/audio/deepgramBoundaryRepair.ts  v3 5940 B -> v4 10262 B  sha256 8aca65e47f33039a
+STAT electron/audio/deepgramBoundaryRepair.test.ts  v3 7691 B -> v4 13159 B  sha256 10d8040ad1debde6
+
+===== electron/audio/deepgramBoundaryRepair.ts (v3 -> v4) =====
+diff --git "a/C:\\Users\\sotka\\AppData\\Local\\Temp\\claude\\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\\9c5886c7-cdbd-48af-b8bc-e9275012ec64\\scratchpad\\boundary-repair\\sdd\\t3-orig\\deepgramBoundaryRepair.ts" "b/C:\\Users\\sotka\\OneDrive\\Masa\303\274st\303\274\\natively-cluely-ai-assistant\\electron\\audio\\deepgramBoundaryRepair.ts"
+index 2599084..951cce6 100644
+--- "a/C:\\Users\\sotka\\AppData\\Local\\Temp\\claude\\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\\9c5886c7-cdbd-48af-b8bc-e9275012ec64\\scratchpad\\boundary-repair\\sdd\\t3-orig\\deepgramBoundaryRepair.ts"
++++ "b/C:\\Users\\sotka\\OneDrive\\Masa\303\274st\303\274\\natively-cluely-ai-assistant\\electron\\audio\\deepgramBoundaryRepair.ts"
+@@ -1,101 +1,155 @@
+ /**
+  * Puts back the word(s) Deepgram drops at a segment boundary.
+  *
+  * nova-3 (interim_results, endpointing 300, smart_format) sometimes finalizes a segment SHORT of
+  * its own latest interim and starts the next segment after a word that then appears in no final;
+- * the app joins finals verbatim, so the word is gone before any app logic sees it. Reproduced at
+- * the seam on 2026-09-29 (scratchpad seam-probe.mjs, 4 clips x 5 plays straight to Deepgram, the
+- * app's exact options): 6 of 20 plays lost a word. Flight h40c R22 is the symptom:
++ * the turn text is built from finals, so the word is gone before the question is asked. Reproduced
++ * at the seam on 2026-09-29 (scratchpad seam-probe.mjs, clips streamed straight to Deepgram with
++ * the app's option object): 6 of 20 plays lost a word, then 9 of 48. Flight h40c R22 is the symptom:
+  *
+  *   interim  "How do you cut hallucinations in a rag answer without just making"
+  *   final    "How do you cut"
+  *   final    "in a rag answer without just making it refuse?"
+  *
+- * The app answered "How do you cut in a rag answer without just making it refuse?" and all six
+- * replays of that prompt answered about refusals.
++ * and the app dispatched "How do you cut in a rag answer without just making it refuse?".
+  *
+- * This is rule v3 of the design brief (scratchpad boundary-repair/DESIGN.md), a line-for-line port
+- * of its reference rule-v3.mjs; the two must agree event for event (checked event for event on the recorded Deepgram streams, 2026-09-29).
++ * This is rule v4 of the design brief (scratchpad boundary-repair/DESIGN-v4.md), a line-for-line
++ * port of its reference rule-v4.mjs; the two must agree event for event (check-v4.mjs proves the
++ * reference on every recorded stream; the controller replays the built module the same way).
+  *
+  *   CUT    a final F1 whose tokens equal the preceding interim I's first |F1| tokens (strict), or
+- *          all but F1's last token (tolerant: Deepgram re-spells the word at the cut, "RAC" ->
+- *          "Rag", in 5 of 5 seam plays of S2Q07), with I longer than F1. T = I's tokens after F1;
+- *          Traw = the same words in I's own spelling.
++ *          all but F1's last token, which must be a RE-SPELLING of I's token at that position
++ *          (tolerant: Deepgram re-spells the word at the cut, "RAC" -> "Rag", 5 of 5 seam plays of
++ *          S2Q07) — see isRespelling(). I must be longer than F1 and ASCII-LETTERED (the tokens
++ *          are ASCII: accented English such as "résumé" stays aligned but tokenises as fragments,
++ *          and a lost "résumé" came back as "r sum" in the 2026-09-29 review's probe; 0 such
++ *          interims in the 28 English logs and the seam recordings). The ASCII-letter condition
++ *          is also what keeps rawTok() index-aligned with tok(): no character it admits changes
++ *          the token count, checked on every code point in the 2026-09-29 v4 re-review. T = I's
++ *          tokens after F1; Traw = the same words in I's own spelling.
++ *   PAUSE  clear() forgets the cut and the latest interim (the adapter calls it on an empty FINAL and
++ *          on UtteranceEnd); a final with speechFinal (Deepgram heard the utterance end there) leaves
++ *          no cut. None of the three occurred inside a repaired loss on the recorded data: 0 of 29 log
++ *          repairs had an empty final between F1 and F2, 0 of 6 seam repairs an UtteranceEnd, and all
++ *          63 seam cuts had speech_final=false.
+  *   REPAIR on the NEXT final F2 only, within REPAIR_WINDOW_MS of F1, when F2 does not simply start
+  *          with T[0] (the normal case, 527 in the logs: the word moved to the next segment): for
+  *          k = 1 then 2 (k < |T|), if F2's first min(2, |T| - k) tokens EXACTLY equal T[k..], emit
+  *          Traw[0..k) + ' ' + F2. Anything else, and every interim, passes through unchanged.
+  *
+- * Measured over every run log (rule-sim.mjs, 2026-09-29): non-holdout 25 repairs, 25 TRUE against
+- * the scripted question, 0 FALSE; holdout 4 / 4 TRUE; on the seam recording 4 of the 6 lost words,
+- * nothing else. v2's two wider branches were dropped after 4 FALSE repairs on holdout ("two" before
+- * "to answer", "fee" before "feature", "four point" before "4.1%"), so two shapes stay unrepaired
+- * on purpose: the |T| == 1 tail (F2 does not start with the interim's one remaining word — text
+- * alone cannot tell a lost word from Deepgram re-hearing the same audio, "schedule" ->
+- * "scheduled"), and resumption evidence that differs only by number formatting ("eighty" / "84%").
++ * Measured over every run log and both seam recordings (check-v4.mjs, 2026-09-29): non-holdout logs
++ * 25 repairs, all 25 TRUE against the scripted question (the measured precision; 25 is a floor on
++ * the number of losses, since the logs cannot show a loss that left no interim evidence); holdout
++ * 4 / 4 TRUE — reported only, NOT an independent validation and not evidence for any choice here
++ * (v2's holdout failures chose what v3 removed; R22 and these 4 are excluded from any future
++ * holdout measurement of this rule); seam recordings 6 repairs, all true, of 15 boundary losses
++ * (4 of 6 on the first; 2 of 9 on the second, where 4 losses left NO interim evidence — F1 longer
++ * than its last interim — which no interim rule reaches). v2's two wider branches were dropped
++ * after 4 FALSE repairs on holdout ("two" before "to answer", "fee" before "feature", "four point"
++ * before "4.1%"), so two shapes stay unrepaired on purpose: the |T| == 1 tail (F2 does not start
++ * with the interim's one remaining word — text alone cannot tell a lost word from Deepgram
++ * re-hearing the same audio, "schedule" -> "scheduled"), and resumption evidence that differs only
++ * by number formatting ("eighty" / "84%"). The weakest path is k = 2 with m = 1: one observed loss
++ * ("for a" before "production").
++ *
++ * English only: the tokens are ASCII, and the spec review showed the rule mangling Spanish and
++ * Turkish text. DeepgramStreamingSTT creates the repair only on an English connection (the same
++ * test as keytermsFor) and passes every other language, and 'multi', through untouched.
+  *
+  * Pure: no clock, no logging. DeepgramStreamingSTT creates one per live socket, feeds every
+- * NON-EMPTY Transcript event with its arrival time, and logs each restore.
++ * NON-EMPTY Transcript event with its arrival time and speech_final flag, and logs each restore.
+  */
+ 
+-/** The longest F1 -> F2 gap among the repaired losses was 4441 ms; the margin keeps a tail from being glued onto the next, unrelated utterance. */
++/**
++ * The longest F1 -> F2 gap among the repaired losses was 3715 ms (logs; 3115 holdout, 3207 seam); the
++ * margin keeps a tail from being glued onto the next, unrelated utterance. NORMAL cuts (nothing lost)
++ * reach 7835 ms, 12 of 527 past 5000, so the window will occasionally miss a real loss.
++ */
+ const REPAIR_WINDOW_MS = 5000;
+ /** The largest skip observed: 1 loss of 2 words, 25 of 1 (non-holdout logs). */
+ const MAX_SKIPPED_WORDS = 2;
+ /** Resumption tokens that must match exactly: 2 — the evidence every observed loss provides — or 1 when the interim holds no more. */
+ const RESUME_MATCH_WORDS = 2;
+ 
+ /** Comparison tokens: thousands commas between digits removed ("10,000" -> "10000"), lowercase, [a-z0-9']+ runs — the evidence scans' normalisation. */
+ const stripThousands = (s: string): string => s.replace(/(\d),(\d)/g, '$1$2');
+ const tok = (s: string): string[] => stripThousands(s).toLowerCase().match(/[a-z0-9']+/g) ?? [];
+-/** The same tokens in the text's own spelling (not lowercased): index-aligned with tok() on the same text. */
++/** The same tokens in the text's own spelling (not lowercased): index-aligned with tok() on any text without a non-ASCII letter — the NON_ASCII_LETTER guard in createBoundaryRepair is what guarantees it. */
+ const rawTok = (s: string): string[] => stripThousands(s).match(/[A-Za-z0-9']+/g) ?? [];
++/** A letter or combining mark outside ASCII: the tokenisers split such a word into fragments, so an interim holding one is never a cut (2026-09-29 review M2). */
++const NON_ASCII_LETTER = /(?![\x00-\x7F])[\p{L}\p{M}]/u;
++
++/**
++ * F1's last token may only be a RE-SPELLING of the interim's token at that position: same first
++ * letter, no digit, no longer. smart_format writes "ninety two percent" as "92%" — one final token
++ * over three interim words — and a compound merges "all right" into "Alright": a final token that
++ * absorbed more audio than the interim's word shifts T, and v3 restored "two percent" / "right"
++ * (the spec review's probes). Measured on the 42 tolerant cuts in the NON-HOLDOUT logs and seam
++ * recordings (check-v4.out.txt): all 34 kept are no longer than the interim's token ("xgboost" ->
++ * "xg", "dashboard" -> "dash", "RAC" -> "Rag"); 7 refused as longer (all "break" -> "breaks") and
++ * 1 for a digit ("ninety" -> "92"), none of them followed by a repair; 0 refused for the first
++ * letter — that rule rests only on the synthetic "put" for "cut" case. KNOWN RECALL COST: an
++ * inflection is longer too, and it does not shift T (the 7 "breaks" cuts are aligned: F2 resumed at
++ * the interim's next word, nothing lost); a word lost right after an inflected cut ("scale" ->
++ * "scales", then "horizontally") was restored by v3 and is not by v4. No such loss in the data.
++ */
++const isRespelling = (finalTok: string, interimTok: string): boolean =>
++    finalTok[0] === interimTok[0] && !/\d/.test(finalTok) && finalTok.length <= interimTok.length;
+ 
+ export interface BoundaryRepairResult {
+     /** What to emit: `text` as received, or the restored word(s) + ' ' + `text`. */
+     text: string;
+     /** The restored word(s) in the interim's own spelling, in order; null when nothing was restored. */
+     restored: string[] | null;
+ }
+ 
+ export interface BoundaryRepair {
+-    /** One call per NON-EMPTY Transcript event, in arrival order; `atMs` is the arrival time (only finals read it). */
+-    onTranscript(text: string, isFinal: boolean, atMs: number): BoundaryRepairResult;
++    /**
++     * One call per NON-EMPTY Transcript event, in arrival order; `atMs` is the arrival time (only
++     * finals read it); `speechFinal` is Deepgram's speech_final flag (a final carrying it leaves no cut).
++     */
++    onTranscript(text: string, isFinal: boolean, atMs: number, speechFinal?: boolean): BoundaryRepairResult;
++    /** A pause (an empty final, an UtteranceEnd): forget the remembered cut and the latest interim. */
++    clear(): void;
+ }
+ 
+ export function createBoundaryRepair(): BoundaryRepair {
+     let lastInterim: string | null = null;
+     let cut: { T: string[]; Traw: string[]; atMs: number } | null = null;
+     return {
+-        onTranscript(text, isFinal, atMs) {
++        clear() {
++            cut = null;
++            lastInterim = null;
++        },
++        onTranscript(text, isFinal, atMs, speechFinal = false) {
+             if (!isFinal) {
+                 lastInterim = text;
+                 return { text, restored: null };
+             }
+             let out = text;
+             let restored: string[] | null = null;
+             const remembered = cut;
+             if (remembered && atMs - remembered.atMs <= REPAIR_WINDOW_MS) {
+                 const T = remembered.T, f = tok(text);
+                 if (f.length && f[0] !== T[0]) {
+                     for (let k = 1; k <= MAX_SKIPPED_WORDS && k < T.length && !restored; k++) {
+                         const m = Math.min(RESUME_MATCH_WORDS, T.length - k);
+                         if (f.length >= m && T.slice(k, k + m).every((w, j) => w === f[j])) restored = remembered.Traw.slice(0, k);
+                     }
+                 }
+                 if (restored) out = `${restored.join(' ')} ${text}`;
+             }
+             cut = null;
+-            if (lastInterim) {
+-                const iw = tok(lastInterim), fw = tok(text);
++            if (lastInterim && !speechFinal && !NON_ASCII_LETTER.test(lastInterim)) {
++                const iw = tok(lastInterim), fw = tok(text), raw = rawTok(lastInterim);
+                 if (fw.length > 0 && fw.length < iw.length) {
+                     const strict = fw.every((w, i) => w === iw[i]);
+-                    const tolerant = !strict && fw.length >= 2 && fw.slice(0, -1).every((w, i) => w === iw[i]);
+-                    if (strict || tolerant) cut = { T: iw.slice(fw.length), Traw: rawTok(lastInterim).slice(fw.length), atMs };
++                    const tolerant = !strict && fw.length >= 2 && fw.slice(0, -1).every((w, i) => w === iw[i]) && isRespelling(fw[fw.length - 1], iw[fw.length - 1]);
++                    if (strict || tolerant) cut = { T: iw.slice(fw.length), Traw: raw.slice(fw.length), atMs };
+                 }
+             }
+             lastInterim = null;
+             return { text: out, restored };
+         },
+     };
+ }
+
+===== electron/audio/deepgramBoundaryRepair.test.ts (v3 -> v4) =====
+diff --git "a/C:\\Users\\sotka\\AppData\\Local\\Temp\\claude\\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\\9c5886c7-cdbd-48af-b8bc-e9275012ec64\\scratchpad\\boundary-repair\\sdd\\t3-orig\\deepgramBoundaryRepair.test.ts" "b/C:\\Users\\sotka\\OneDrive\\Masa\303\274st\303\274\\natively-cluely-ai-assistant\\electron\\audio\\deepgramBoundaryRepair.test.ts"
+index 094ea3e..b696f6d 100644
+--- "a/C:\\Users\\sotka\\AppData\\Local\\Temp\\claude\\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\\9c5886c7-cdbd-48af-b8bc-e9275012ec64\\scratchpad\\boundary-repair\\sdd\\t3-orig\\deepgramBoundaryRepair.test.ts"
++++ "b/C:\\Users\\sotka\\OneDrive\\Masa\303\274st\303\274\\natively-cluely-ai-assistant\\electron\\audio\\deepgramBoundaryRepair.test.ts"
+@@ -123,10 +123,88 @@ describe('deepgramBoundaryRepair synthetic edges (the symptom\'s strings)', () =
+ 
+     it('a loss of three words is left alone: at most two skipped words are restored', () => {
+         expect(play([I, F1, { ...F2, text: 'rag answer without just making it refuse?' }])).toBe('rag answer without just making it refuse?');
+     });
+ 
+     it('F2 starting with the interim\'s first tail word is the normal case, even when that word repeats', () => {
+         const I3 = { text: 'How do you cut hallucinations in in a rag answer without just making', isFinal: false, atMs: 0 };
+         expect(play([I3, { ...F1, text: 'How do you cut hallucinations' }, F2])).toBe(F2.text);
+     });
+ });
++
++describe('deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses', () => {
++    const [I, F1, F2] = fixtures.symptom.events;                 // atMs 0 / 17 / 1564
++    const play = (events: Fixture['events']): string => lastFinal({ run: 'synthetic', cls: 'EDGE', events, expectedF2: '' });
++    const at = (text: string, isFinal: boolean, atMs: number) => ({ text, isFinal, atMs });
++
++    // Negative #28 as logged has the interim stopping at "percent" and a 5852 ms gap. With the interim running on and
++    // F2 inside the window, v3 restored "two percent" — a FALSE insertion (probe-inputs.out.txt): smart_format wrote
++    // "ninety two percent" as the one token "92%", so T was shifted by two words.
++    it('negative #28 with the interim running on: a digit token at the cut ("ninety two percent" -> "92%.") is no cut', () => {
++        expect(play([at('accuracy reaching ninety two percent for each', false, 0), at('accuracy reaching 92%.', true, 688), at('For each of those metrics, define the unit of evaluation,', true, 2688)]))
++            .toBe('For each of those metrics, define the unit of evaluation,');
++    });
++
++    it('"twenty five" -> "25": the same shape (v3 restored "five")', () => {
++        expect(play([at('we cut latency by twenty five last quarter', false, 0), at('We cut latency by 25', true, 100), at('last quarter. What changed?', true, 2100)]))
++            .toBe('last quarter. What changed?');
++    });
++
++    it('"all right" -> "Alright": a final token longer than the interim\'s is a merge, not a re-spelling (v3 restored "right")', () => {
++        expect(play([at('thanks all right so tell me about', false, 0), at('Thanks. Alright.', true, 100), at('So tell me about your last project.', true, 2100)]))
++            .toBe('So tell me about your last project.');
++    });
++
++    // A documented RECALL COST, not a fix (DESIGN-v4 §4, §8): an inflection is longer too, and it does not shift T — the 7
++    // "break" -> "breaks" cuts in the logs are aligned and lost nothing. Here "even" IS lost after the inflected cut; v3
++    // restored it, v4 does not, because the same length test is what refuses the merges above. Pinned so the cost is known.
++    it('"break" -> "breaks": a longer final token is refused even when it is only an inflection, so a word lost right after it stays lost (v3 restored "even")', () => {
++        expect(play([at('the deploy would break even before the rollout', false, 0), at('The deploy would breaks', true, 100), at('before the rollout finishes.', true, 2100)]))
++            .toBe('before the rollout finishes.');
++    });
++
++    it('a re-spelling keeps its first letter: "put" for "cut" is no cut ("cat" for "cut" still is — the edge above)', () => {
++        expect(play([I, { ...F1, text: 'How do you put' }, F2])).toBe(F2.text);
++    });
++
++    // The spec review's Turkish probe (probe-lang.out.txt): "İ" lowercases to "i" + a combining dot, so tok() holds one
++    // token more than rawTok() and v3 restored "zmir projesinde" — a shifted Traw. The adapter never sends non-English
++    // audio here; the non-ASCII guard refuses it (it subsumes v2's alignment guard).
++    it('an interim with a non-ASCII letter that splits the tokenisers ("İ") is no cut', () => {
++        expect(play([at('Peki İzmir projesinde hangi veritabanını seçtiniz', false, 0), at('Peki', true, 100), at('projesinde hangi veritabanını seçtiniz?', true, 2100)]))
++            .toBe('projesinde hangi veritabanını seçtiniz?');
++    });
++
++    // Accented English stays aligned ("résumé" -> "r" + "sum" in both tokenisers) but is fragments: v3 restored "r sum"
++    // (the v4 review's M2 probe). 0 interims with a non-ASCII letter in the 28 English logs and the seam recordings.
++    it('an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"', () => {
++        expect(play([at('tell me about your résumé and your last role', false, 0), at('Tell me about your', true, 100), at('and your last role.', true, 2100)]))
++            .toBe('and your last role.');
++    });
++
++    it('clear() between F1 and F2 (the adapter\'s empty final / UtteranceEnd) forgets the cut', () => {
++        const r = createBoundaryRepair();
++        r.onTranscript(I.text, false, I.atMs);
++        r.onTranscript(F1.text, true, F1.atMs);
++        r.clear();
++        expect(r.onTranscript(F2.text, true, F2.atMs)).toEqual({ text: F2.text, restored: null });
++    });
++
++    it('clear() also forgets the latest interim: a final after a pause is not a cut of it', () => {
++        const r = createBoundaryRepair();
++        r.onTranscript(I.text, false, I.atMs);
++        r.clear();
++        r.onTranscript(F1.text, true, F1.atMs);
++        expect(r.onTranscript(F2.text, true, F2.atMs)).toEqual({ text: F2.text, restored: null });
++    });
++
++    it('speechFinal on F1 (Deepgram heard the utterance end there) leaves no cut; on F2 it does not stop the repair', () => {
++        const r = createBoundaryRepair();
++        r.onTranscript(I.text, false, I.atMs);
++        r.onTranscript(F1.text, true, F1.atMs, true);
++        expect(r.onTranscript(F2.text, true, F2.atMs)).toEqual({ text: F2.text, restored: null });
++        const r2 = createBoundaryRepair();
++        r2.onTranscript(I.text, false, I.atMs);
++        r2.onTranscript(F1.text, true, F1.atMs, false);
++        expect(r2.onTranscript(F2.text, true, F2.atMs, true).text).toBe(fixtures.symptom.expectedF2);
++    });
++});
+

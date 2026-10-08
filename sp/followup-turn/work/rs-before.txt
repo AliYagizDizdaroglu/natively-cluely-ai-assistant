@@ -1,0 +1,48 @@
+OK   --dry-run --leg front: 140 calls listed, each naming gemini-3.5-flash-lite and thinkingLevel HIGH; no fetch, no file
+OK   ... the header names leg, model, thinkingLevel, temperature, the filter pin
+OK   --dry-run --leg back: 48 calls, gemini-3.1-flash-lite, thinkingLevel LOW
+OK   --dry-run: the plan is 2 hours x (4 roster + 3 D) x 5 reps x 2 arms for the front and roster-only x 3 reps for the back
+OK   interleaving: A first exactly when (itemIndex + rep) is even, and every (item, rep) holds one A and one B
+OK   front pass: 140 calls to the mock, none refused  [140 calls]
+OK   request shape: model in the URL, SSE, temperature 0.4, maxOutputTokens 65536, thinkingLevel HIGH, key header
+OK   each call carries the plan's arm bytes: arm A = userA, arm B = userB = insertBlock(userA, block); system unchanged
+OK   record fields: key, hour, id, kind, leg, model, thinking, label, arm, rep, spoken, words, ttft, total, finish, raw, rawLen, thoughts  [{"words":14}]
+OK   thoughts: a reported count is kept (321), no usageMetadata -> null, usageMetadata without the field -> null (never 0), an honest 0 stays 0
+OK   32 answer files after both legs? front first: 20 files (2 hours x 2 arms x 5 reps), named interview60.answers.<model>_fturn-<hour>-<arm>-r<rep>.json
+OK   records are keyed <hour>:<id> and each file holds only its hour
+OK   the pass log ends with the arm summaries and "incomplete ... none"
+OK   a second invocation without --crash-resume is REFUSED and makes no call
+OK   --crash-resume with every record present: logged, 0 calls  [[2026-10-03 22:33:34] CRASH-RESUME leg=front hours=s50m,s50l: 140 records kept, 0 calls with no record at all will be ma]
+OK   --crash-resume after one record was lost: exactly that one call is made (the right item, arm and rep); a TRANSIENT record is never re-called  [calls 1, transient s50m:D1#1 B]
+OK   the lost record is back, with its hour/leg/model/thinking
+BAD  --leg back is REFUSED while one of the 20 front files is missing, and makes no call
+OK   back pass: 48 planned calls + 2 retries (call 1) + 4 more attempts (call 2) + 1 cut-stream retry = 55 requests  [55 requests]
+OK   a call that fails with 503, 429 and then succeeds is a normal record
+OK   a call whose 5 attempts all fail is a transientError record (no spoken), named as incomplete, and the pass goes on
+OK   a stream cut with no finishReason is tried once more
+OK   back requests use gemini-3.1-flash-lite and thinkingLevel LOW
+OK   back files: 12 (2 hours x 2 arms x 3 reps)
+BAD  every request carries an AbortSignal (the per-call timeout, A2 point 3) and the registered timeout is 120 s
+BAD  every record carries `end` (>= its `at`) and the stop it was made under
+BAD  empty streams: 5 + 3 + 1 + 2 + 44 = 55 requests (the retry on finish === null no longer needs spoken)  [48 requests]
+BAD  five empty streams in a row store transientError "empty stream (no text, no finishReason)", never a completed record; the pair is named incomplete
+BAD  two empty streams then an answer is a normal record (retried inside the same 5-attempt budget, like a 503)
+BAD  a stream WITH a finishReason and an empty answer stays a real record (spoken "", finish STOP, no retry): section 5 scores it 0/0/0
+BAD  a usage-only stream (thoughts reported, no text, no finishReason) is empty too: retried, then the answer is kept
+BAD  hard stop: now + 120 s >= cutoff -> the first call is not made, nothing is written but the marker
+BAD  ... run.log and the console get "STOPPED AT HARD STOP back <slots not made>" naming all 48 slots
+BAD  ... and R/STOPPED-back.txt is written (the same line)
+node:fs:1952
+  binding.unlink(getValidatedPath(path));
+          ^
+
+Error: ENOENT: no such file or directory, unlink 'C:\Users\sotka\AppData\Local\Temp\turn-runner-38JItg\STOPPED-back.txt'
+    at Object.unlinkSync (node:fs:1952:11)
+    at file:///C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/followup-turn/R/scripts/runner-selftest.mjs:191:8 {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'unlink',
+  path: 'C:\\Users\\sotka\\AppData\\Local\\Temp\\turn-runner-38JItg\\STOPPED-back.txt'
+}
+
+Node.js v22.19.0

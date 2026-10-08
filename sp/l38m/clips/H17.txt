@@ -1,0 +1,1 @@
+Design a CI/CD pipeline for an ML model where retraining is triggered by drift, with a human approval before promotion.

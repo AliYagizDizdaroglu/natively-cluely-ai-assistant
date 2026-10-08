@@ -1,0 +1,21 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Missing values, interactions, fast inference, regularization for imbalance, logistic regression baseline. Covers data and production constraints. 60 natural words."},
+  "S1Q02": {"correctness": 0, "on_topic": 2, "delivery": 1, "reason": "Invents 4750 flagged instead of the given 5000 top-five-percent band, then wrongly calls 57 versus 60 percent consistent."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "A/B split plus difference-in-differences controlling seasonality, tenure and mix. Directly answers attribution in 57 speakable words."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Stable order, precision, recall, lift and all three edge cases stated. Spoken equations with equals and division signs need editing."},
+  "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Thirty-day buffer at the chronological cutoff, ColumnTransformer fit only on train, evaluated on holdout. 81 words, natural."},
+  "S1Q06": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct: event_type filter, 30-day window, ingested_at guard, LEFT JOIN, COALESCE. Literal SQL predicates spoken aloud need light editing."},
+  "S1Q08": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Logging, hash assignment and delayed join fine, but overriding the label when an offer was shown is wrong."},
+  "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Every requested Azure component mapped with operational reasons, but 172 words is far too long to say aloud."},
+  "S1Q10": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Managed identity, Key Vault, private endpoint and per-environment isolation good, but PostgreSQL Contributor is a control-plane role, not data access."},
+  "S2Q01": {"correctness": 1, "on_topic": 2, "delivery": 0, "reason": "Pipeline stages sound, but fabricates a placeholder employer and metrics that would embarrass the candidate; 190 words is unspeakable."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Unit, denominator, dataset construction and uncertainty defined for all three metrics. 146 words needs trimming to speak."},
+  "S2Q03": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Claims three-document evidence alone justifies an agent; misses that a known fixed workflow usually suffices there. 60 words."},
+  "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "One-based ranks, summed 1/(c+r), descending score, ascending id tie-break, top k unique. Correct and compact at 42 words."},
+  "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Relevance-first greedy with id dedupe, two-per-document cap and skip-if-it-does-not-fit. All constraints handled in 67 spoken words."},
+  "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Semaphore of eight, wait_for timeout, exceptions recorded, results written at original indices. Correct and natural at 59 words."},
+  "S2Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Tenant-partitioned index, relational metadata, row-level security on results, recall and citation evaluation. 125 words slightly long."},
+  "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Versioned columns, CDC dual-write backfill, held-out comparison, staged cutover, flag rollback all correct, but 155 words is far too long."},
+  "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Right Azure service per component plus managed-versus-custom reasoning, but the telegraphic run-on enumeration needs rewording to speak."},
+  "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Duplicate detection, peek-lock, Cosmos message-id check, complete after write; lock expiry redelivers safely. Precise, 52 natural words."}
+}

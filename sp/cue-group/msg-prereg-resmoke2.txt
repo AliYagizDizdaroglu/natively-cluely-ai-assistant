@@ -1,0 +1,14 @@
+docs(passes): the second cue re-smoke's amendment: why, how it is read, what flies
+
+Written before the combined build and before the task was registered: the
+16:12 run's block-only answer and its cause (the offers block before the
+spoken answer), the three commits that fly together (early close, pins,
+offers fix), the reading rules decided before the data (a true block-only
+reply, the hard-failures line, the offers-first line read per answer,
+first token after the early close, the 09:00 gate, the dist proven before
+and after the run), the early close's timing band with its consequence,
+and what flies: d83fdfe built 2026-10-01 00:03:29, every marker as
+expected, the gates, the 624-reply old-vs-new replay (exactly 9 changed),
+and the calibrations re-run on the dist. The PASS rule is unchanged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

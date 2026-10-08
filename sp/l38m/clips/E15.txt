@@ -1,0 +1,1 @@
+In a token-bucket rate limiter, what does the refill rate bound?

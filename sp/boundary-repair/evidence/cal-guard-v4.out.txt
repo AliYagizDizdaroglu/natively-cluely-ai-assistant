@@ -1,0 +1,14 @@
+OK  v4            exit 0 (want 0, "GUARD br1 post OK"): GUARD br1 post OK: R22 repaired, normal cut untouched, v3 tail rule, v4 (digit merge, clear, speech_final), adapter wired + gated + logging, hedge on by default
+OK  none          exit 1 (want 1, "the built module does not load"): GUARD br1 post FAILED: the built module does not load: Cannot find module 'C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\boundary-repair\cal\v4proj-none/dist-electron/electron/audio/deepgramBoundaryRepair.js'
+OK  v4-noclear    exit 1 (want 1, "has no clear()"): GUARD br1 post FAILED: the built repair has no clear(): this build is not v4
+OK  v2-shape      exit 1 (want 1, "the |T| == 1 branch fires"): GUARD br1 post FAILED: the |T| == 1 branch fires - this build is not v3: {"text":"between training and serving?","restored":["between"]}
+OK  v3-shape      exit 1 (want 1, "the digit merge is treated as a cut"): GUARD br1 post FAILED: the digit merge is treated as a cut - this build is not v4: {"text":"two percent For each of those metrics, define the unit of evaluation,","restored":["two","percent"]}
+OK  v4-clearnoop  exit 1 (want 1, "clear() does not forget the cut"): GUARD br1 post FAILED: clear() does not forget the cut: {"text":"hallucinations in a rag answer without just making it refuse?","restored":["hallucinations"]}
+OK  v4-sfignored  exit 1 (want 1, "speech_final on the cut final still leaves a cut"): GUARD br1 post FAILED: speech_final on the cut final still leaves a cut: {"text":"hallucinations in a rag answer without just making it refuse?","restored":["hallucinations"]}
+OK  unwired       exit 1 (want 1, "does not import the repair"): GUARD br1 post FAILED: the built DeepgramStreamingSTT does not import the repair
+OK  nolog         exit 1 (want 1, "does not log the repair line"): GUARD br1 post FAILED: the built DeepgramStreamingSTT does not log the repair line
+OK  nogate        exit 1 (want 1, "does not gate the repair to English"): GUARD br1 post FAILED: the built DeepgramStreamingSTT does not gate the repair to English
+OK  nosf          exit 1 (want 1, "does not pass speech_final"): GUARD br1 post FAILED: the built DeepgramStreamingSTT does not pass speech_final
+OK  noclearcall   exit 1 (want 1, "never calls clear()"): GUARD br1 post FAILED: the built DeepgramStreamingSTT never calls clear()
+OK  hedgeoff      exit 1 (want 1, "the built default is not the hedge"): GUARD br1 post FAILED: the built default is not the hedge: "[Main] verbal hedge: off"
+CALIBRATION OK: 13 cases, each check fails on its own premise and the v4 tree passes

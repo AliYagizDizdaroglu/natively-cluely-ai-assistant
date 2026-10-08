@@ -1,0 +1,40 @@
+run 2026-10-01T02-37-41-cuesmoke  window 2026-10-01T02:01:12.480Z .. 2026-10-01T02:37:39.234Z
+lines: cues 22 (empty 0), budget 22, won-by 22; diag: invoked 22, first token 22, word budget 22
+R2  cues -> budget            : n 22, under 15 ms 0, median 343.5 ms, p90 673 ms, min 35 ms, max 753 ms, unpaired 0
+     in log order: 116, 43, 78, 718, 120, 368, 277, 753, 348, 329, 340, 147, 620, 391, 35, 115, 410, 277, 480, 673, 347, 465
+R1  won by -> cues            : n 22, under 15 ms 5, median 45.5 ms, p90 185 ms, min 5 ms, max 321 ms, unpaired 0
+     in log order: 8, 321, 5, 45, 50, 92, 61, 54, 7, 37, 189, 45, 76, 7, 5, 145, 19, 46, 100, 185, 27, 32
+T   won by -> budget          : n 22, under 15 ms 0, median 370 ms, p90 763 ms, min 40 ms, max 858 ms, unpaired 0
+     in log order: 124, 364, 83, 763, 170, 460, 338, 807, 355, 366, 529, 192, 696, 398, 40, 260, 429, 323, 580, 858, 374, 497
+C   won by -> first token     : n 22, under 15 ms 4, median 50 ms, p90 192 ms, min 7 ms, max 324 ms, unpaired 0
+     in log order: 14, 324, 7, 46, 52, 94, 63, 56, 98, 41, 193, 47, 78, 9, 7, 147, 21, 48, 101, 192, 31, 34
+B   first token -> word budget: n 22, under 15 ms 0, median 332 ms, p90 667 ms, min 33 ms, max 752 ms, unpaired 0
+     in log order: 111, 40, 77, 718, 119, 367, 276, 752, 258, 327, 337, 146, 620, 390, 33, 113, 410, 276, 480, 667, 344, 465
+     per finished answer, in log order (ms): R1 / R2 / T | B / C / cues->first token   words   (the whole log: the readiness probe's answers are in it)
+       02:02:41Z      8 /   116 /   124 |   111 /    14 /     6   51  gemini-3.5-flash-lite
+       02:02:59Z    321 /    43 /   364 |    40 /   324 /     3   52  gemini-3.5-flash-lite
+       02:03:25Z      5 /    78 /    83 |    77 /     7 /     2   73  gemini-3.5-flash-lite
+       02:04:34Z     45 /   718 /   763 |   718 /    46 /     1   61  gemini-3.5-flash-lite
+       02:05:59Z     50 /   120 /   170 |   119 /    52 /     2   60  gemini-3.5-flash-lite
+       02:07:24Z     92 /   368 /   460 |   367 /    94 /     2   90  gemini-3.5-flash-lite
+       02:08:41Z     61 /   277 /   338 |   276 /    63 /     2   67  gemini-3.5-flash-lite
+       02:10:04Z     54 /   753 /   807 |   752 /    56 /     2   66  gemini-3.5-flash-lite
+       02:11:34Z      7 /   348 /   355 |   258 /    98 /    91  101  gemini-3.5-flash-lite
+       02:14:11Z     37 /   329 /   366 |   327 /    41 /     4   72  gemini-3.5-flash-lite
+       02:15:36Z    189 /   340 /   529 |   337 /   193 /     4   71  gemini-3.5-flash-lite
+       02:18:44Z     45 /   147 /   192 |   146 /    47 /     2   55  gemini-3.5-flash-lite
+       02:20:12Z     76 /   620 /   696 |   620 /    78 /     2   93  gemini-3.5-flash-lite
+       02:22:48Z      7 /   391 /   398 |   390 /     9 /     2   66  gemini-3.5-flash-lite
+       02:24:14Z      5 /    35 /    40 |    33 /     7 /     2   87  gemini-3.5-flash-lite
+       02:26:57Z    145 /   115 /   260 |   113 /   147 /     2   72  gemini-3.5-flash-lite
+       02:28:09Z     19 /   410 /   429 |   410 /    21 /     2   99  gemini-3.5-flash-lite
+       02:30:48Z     46 /   277 /   323 |   276 /    48 /     2   63  gemini-3.5-flash-lite
+       02:32:08Z    100 /   480 /   580 |   480 /   101 /     1   90  gemini-3.5-flash-lite
+       02:33:45Z    185 /   673 /   858 |   667 /   192 /     7   89  gemini-3.5-flash-lite
+       02:35:07Z     27 /   347 /   374 |   344 /    31 /     4   80  gemini-3.5-flash-lite
+       02:36:47Z     32 /   465 /   497 |   465 /    34 /     2   81  gemini-3.5-flash-lite
+     C by winner: gemini-3.5-flash-lite n 22 median 50 ms
+the hold, by the early-close expectation: counted answers (won-by, a non-empty block, words, stream >= 50 ms) n 21; R2 under 15 ms 0; B under 15 ms 0
+     left out: no won-by line 0; no block, an empty block or a redirect 0; no words 0; a stream under 50 ms 1
+     rule: GONE = both at most a quarter of n; NOT GONE = either at least half; else, or n under 12, NO VERDICT
+HOLD GONE (R2 and B both at most a quarter)

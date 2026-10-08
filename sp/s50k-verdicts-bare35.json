@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct on sparsity-aware missing-value splits, batch latency, and a regularized logistic-regression baseline; 87 words is slightly long."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic exact: 9,500 churners, 5,000 band, 3,000 true positives, 31.6 percent recall; calling 31.6 versus 30 pure rounding slightly overclaims."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout control plus regression controls for tenure, spend and seasonality is the right causal answer, cleanly spoken."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tie-break and formulas right, but empty inputs returning zeros contradicts the invalid-k raise, and lift with zero prevalence is undefined, not zero."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Nails the thirty-day embargo and transformer fit on train only; the one-hot plus target-encoding mix is compressed, and it runs long."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Never filters event_type to support calls, and puts the event predicates in a clause that would silently void the left join."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested layer and names the shared Feast feature definitions as the batch-online contract; 108 words is too long."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Stable request id, salted-hash assignment, delayed outcome join and inverse propensity weighting all correct; the thirty-day stream join is loose phrasing."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All eight Azure mappings plus operational reasoning; names Compute Instances before self-correcting to clusters, and 147 words is far too long."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, Entra-integrated Postgres, scoped RBAC, Key Vault over private endpoint and per-environment isolation all correct; length over budget."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All eight stages technically accurate and mapped to experience, but 189 words is more than twice a speakable answer."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives unit, denominator, dataset construction and bootstrap uncertainty for all three metrics; 138 words is far past a spoken reply."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correctly pins the agent's value to sequentially dependent retrieval and contrasts parallel decomposition; only defect is 107-word length."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "One-based ranks, one over c plus rank, summed contributions, id ascending tie-break and top-k slice all match the spec."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy relevance-first with dedupe, two-per-document cap and skip-if-it-does-not-fit all honoured; 87 words is marginally long."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, per-case timeout race, locally caught failures and order-preserving await array satisfy every constraint asked."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Partitioned index, ACL pre-filtering, version-id invalidation and offset-based citations are sound; metadata storage treated thinly and the answer runs long."
+  },
+  "S2Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioning, dual-write backfill and routing-flag cutover are right, but comparing distance metrics between vectors of different dimensionality is not a quality test."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure component correctly placed and the custom-parsing-worker exception is a real justification; 100 words is over budget."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Deterministic document key making the upsert idempotent, completing the message only after the write, and lock expiry on crash is exactly right."
+  }
+}

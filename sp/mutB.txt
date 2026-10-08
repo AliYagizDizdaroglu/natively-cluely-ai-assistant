@@ -1,0 +1,37 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+ ✓ electron/test/golden/interview60.chains.test.ts (2 tests) 5ms
+ ❯ electron/ipcHandlers.typedPrompt.test.ts (2 tests | 1 failed) 21ms
+   × gemini-chat-stream sends the typed verbal prompt > sends that variable: the one call to streamVerbalWithGeminiFlash takes verbalSystemPrompt as it stands 14ms
+     → expected [ Array(1) ] to deeply equal [ Array(1) ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/ipcHandlers.typedPrompt.test.ts > gemini-chat-stream sends the typed verbal prompt > sends that variable: the one call to streamVerbalWithGeminiFlash takes verbalSystemPrompt as it stands
+AssertionError: expected [ Array(1) ] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+  Array [
+-   "stream = llmHelper.streamVerbalWithGeminiFlash(userContent, verbalSystemPrompt, undefined, selectedModel);",
++   "stream = llmHelper.streamVerbalWithGeminiFlash(userContent, wrap(verbalSystemPrompt), undefined, selectedModel);",
+  ]
+
+ ❯ electron/ipcHandlers.typedPrompt.test.ts:29:61
+     27|     });
+     28|     it('sends that variable: the one call to streamVerbalWithGeminiFla…
+     29|         expect(mentioning(/streamVerbalWithGeminiFlash\(/)).toEqual([
+       |                                                             ^
+     30|             'stream = llmHelper.streamVerbalWithGeminiFlash(userConten…
+     31|         ]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 3 passed (4)
+   Start at  20:57:05
+   Duration  3.53s (transform 161ms, setup 0ms, collect 174ms, tests 26ms, environment 3.97s, prepare 694ms)
+

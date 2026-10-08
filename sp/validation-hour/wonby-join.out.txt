@@ -1,0 +1,11 @@
+won-by lines in the hour: 47 { 'gemini-3.5-flash-lite': 41, 'gemini-3.1-flash-lite': 6 }
+  R02F   dispatched 2026-10-02T10:37:42.429Z  won-by lines in [d-1s, d+25s]: gemini-3.5-flash-lite@+4.3s
+  R07F   dispatched 2026-10-02T10:47:22.376Z  won-by lines in [d-1s, d+25s]: gemini-3.5-flash-lite@+3.7s
+  R08    dispatched 2026-10-02T10:48:24.033Z  won-by lines in [d-1s, d+25s]: gemini-3.5-flash-lite@+4.5s
+  R11F   dispatched 2026-10-02T10:57:28.939Z  won-by lines in [d-1s, d+25s]: gemini-3.5-flash-lite@+4.7s
+  R12    dispatched 2026-10-02T10:58:38.616Z  won-by lines in [d-1s, d+25s]: gemini-3.5-flash-lite@+4.1s
+  R13    dispatched 2026-10-02T11:01:41.330Z  won-by lines in [d-1s, d+25s]: gemini-3.5-flash-lite@+5.4s
+  R22F   dispatched 2026-10-02T11:18:31.528Z  won-by lines in [d-1s, d+25s]: gemini-3.5-flash-lite@+4.8s
+  R33    dispatched 2026-10-02T11:38:32.390Z  won-by lines in [d-1s, d+25s]: gemini-3.5-flash-lite@+4.0s
+pairs whose first won-by line is gemini-3.5-flash-lite: 38
+pairs whose first won-by line is gemini-3.1-flash-lite: 6 -> R24 R25 R26 R26F R27 R28

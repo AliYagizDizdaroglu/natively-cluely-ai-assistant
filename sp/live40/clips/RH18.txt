@@ -1,0 +1,1 @@
+Your training image is eight gigabytes. How would you approach shrinking it?

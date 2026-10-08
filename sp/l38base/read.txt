@@ -1,0 +1,10 @@
+agreement 176/176
+set/level                 n   g1   g2  both  either  ids
+scenario50/main          50    0    0     0       0  
+interview60/main         58    0    0     0       0  
+scenario50/followup      50    0    0     0       0  
+interview60/followup     18    1    1     1       1  L04F2
+scenario50: BOTH-easy 0/100 (0.0%), EITHER 0/100; per hour BOTH 0.0, EITHER 0.0
+interview60: BOTH-easy 1/76 (1.3%), EITHER 1/76; per hour BOTH 1.0, EITHER 1.0
+disagreements: none
+EASY item L04F2: "And where would you store the features so that serving can read them fast?"

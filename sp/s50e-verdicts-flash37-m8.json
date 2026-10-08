@@ -1,0 +1,8 @@
+{
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every requested slot mapped correctly, with a defensible managed-versus-custom split. Around 125 words across five paragraphs, so needs shortening before speaking."
+  }
+}

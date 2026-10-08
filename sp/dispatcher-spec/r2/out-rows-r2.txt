@@ -1,0 +1,144 @@
+FAIL rows (0):
+  
+INCONCLUSIVE (0):
+  
+notes:
+  [fix] br1 R12 S2Q01: live=[] finals=4 n=1 r21=false (today: live=1, r21=true)
+  [fix] br1 subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 6 (whisper 0); revives 1 (by verdict 0, reverse rule 0); revive delay after the decline max 1414 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 5); reorders 4
+  [fix] cuesmoke subs 1 (re-armed 0) [13:23:16.994 f=2 question (detector detected=true conf=0.99 q.len=)]; rows resting on a substitution: []; absorbed 1 (whisper 0); revives 0 (by verdict 0, reverse rule 0); revive delay after the decline max - ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 1 (today 1); drops 0 (today 0); reorders 3
+  [fix] cuesmoke2 subs 1 (re-armed 0) [02:26:47.413 f=2 question (detector detected=true conf=0.95 q.len=)]; rows resting on a substitution: [S1Q07F]; absorbed 1 (whisper 0); revives 1 (by verdict 0, reverse rule 1); revive delay after the decline max 259 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 1); reorders 1
+  [fix] s50b subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 0 (whisper 0); revives 1 (by verdict 0, reverse rule 0); revive delay after the decline max 1270 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 0); reorders 6
+  [fix] s50c subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 0 (whisper 0); revives 1 (by verdict 0, reverse rule 0); revive delay after the decline max 1112 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 0); reorders 4
+  [fix] s50c-peritem subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 0 (whisper 0); revives 1 (by verdict 0, reverse rule 0); revive delay after the decline max 1100 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 0); reorders 4
+  [fix] s50d subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 1 (whisper 0); revives 9 (by verdict 0, reverse rule 0); revive delay after the decline max 2091 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 1); reorders 2
+  [fix] s50e subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 4 (whisper 0); revives 0 (by verdict 0, reverse rule 0); revive delay after the decline max - ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 4); reorders 3
+  [fix] s50f R11 on-time absorb (a same-item re-fire after its answer): 07:49:51.569 live ON-TIME +8.7s item=S2Q01F echoOf=S2Q01F rem 1.00 open 0.00 residual 0/0 q="Which of those stages can cause a correct source d"
+  [fix] s50f subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 4 (whisper 0); revives 1 (by verdict 0, reverse rule 0); revive delay after the decline max 1853 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 1 (today 1); drops 0 (today 4); reorders 6
+  [fix] s50g subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 0 (whisper 0); revives 0 (by verdict 0, reverse rule 0); revive delay after the decline max - ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 0); reorders 6
+  [fix] s50i R12 S2Q07F: live=[] finals=3 n=1 r21=false (today: live=1, r21=false)
+  [fix] s50i subs 3 (re-armed 1) [08:01:06.727 f=6 not-a-question (detector detected=false conf=0.95 q.len); 08:12:14.666 f=3 unknown (unknown); 08:17:30.639 f=4 question (detector detected=true conf=0.99 q.len=)]; rows resting on a substitution: [S2Q07F]; absorbed 1 (whisper 0); revives 2 (by verdict 0, reverse rule 0); revive delay after the decline max 1200 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 7 (today 6); drops 0 (today 0); reorders 1
+  [fix] s50j subs 3 (re-armed 1) [07:37:38.416 f=2 unknown (unknown); 07:41:33.620 f=2 unknown (unknown); 07:47:37.177 f=2 unknown (unknown)]; rows resting on a substitution: [S1Q08F S1Q10F]; absorbed 4 (whisper 0); revives 2 (by verdict 0, reverse rule 0); revive delay after the decline max 402 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 2 (today 1); drops 0 (today 4); reorders 0
+  [fixunk] br1 R12 S2Q01: live=[] finals=4 n=1 r21=false (today: live=1, r21=true)
+  [fixunk] br1 subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 6 (whisper 0); revives 1 (by verdict 0, reverse rule 0); revive delay after the decline max 1414 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 5); reorders 4
+  [fixunk] cuesmoke subs 1 (re-armed 0) [13:23:16.994 f=2 unknown (unknown)]; rows resting on a substitution: []; absorbed 1 (whisper 0); revives 0 (by verdict 0, reverse rule 0); revive delay after the decline max - ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 1 (today 1); drops 0 (today 0); reorders 3
+  [fixunk] cuesmoke2 subs 1 (re-armed 0) [02:26:47.413 f=2 unknown (unknown)]; rows resting on a substitution: [S1Q07F]; absorbed 1 (whisper 0); revives 2 (by verdict 0, reverse rule 1); revive delay after the decline max 355 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 1); reorders 1
+  [fixunk] s50b subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 0 (whisper 0); revives 1 (by verdict 0, reverse rule 0); revive delay after the decline max 1270 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 0); reorders 6
+  [fixunk] s50c subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 0 (whisper 0); revives 1 (by verdict 0, reverse rule 0); revive delay after the decline max 1112 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 0); reorders 4
+  [fixunk] s50c-peritem subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 0 (whisper 0); revives 1 (by verdict 0, reverse rule 0); revive delay after the decline max 1100 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 0); reorders 4
+  [fixunk] s50d subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 1 (whisper 0); revives 9 (by verdict 0, reverse rule 0); revive delay after the decline max 2091 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 1); reorders 2
+  [fixunk] s50e subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 4 (whisper 0); revives 0 (by verdict 0, reverse rule 0); revive delay after the decline max - ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 4); reorders 3
+  [fixunk] s50f R11 on-time absorb (a same-item re-fire after its answer): 07:49:51.569 live ON-TIME +8.7s item=S2Q01F echoOf=S2Q01F rem 1.00 open 0.00 residual 0/0 q="Which of those stages can cause a correct source d"
+  [fixunk] s50f subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 4 (whisper 0); revives 1 (by verdict 0, reverse rule 0); revive delay after the decline max 1853 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 1 (today 1); drops 0 (today 4); reorders 6
+  [fixunk] s50g subs 0 (re-armed 0); rows resting on a substitution: []; absorbed 0 (whisper 0); revives 0 (by verdict 0, reverse rule 0); revive delay after the decline max - ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 0 (today 0); drops 0 (today 0); reorders 6
+  [fixunk] s50i R12 S2Q07F: live=[] finals=3 n=1 r21=false (today: live=1, r21=false)
+  [fixunk] s50i subs 3 (re-armed 1) [08:01:06.727 f=6 unknown (unknown); 08:12:14.666 f=3 unknown (unknown); 08:17:30.639 f=4 unknown (unknown)]; rows resting on a substitution: [S2Q07F]; absorbed 1 (whisper 0); revives 2 (by verdict 0, reverse rule 0); revive delay after the decline max 1200 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 7 (today 6); drops 0 (today 0); reorders 1
+  [fixunk] s50j subs 3 (re-armed 1) [07:37:38.416 f=2 unknown (unknown); 07:41:33.620 f=2 unknown (unknown); 07:47:37.177 f=2 unknown (unknown)]; rows resting on a substitution: [S1Q08F S1Q10F]; absorbed 4 (whisper 0); revives 2 (by verdict 0, reverse rule 0); revive delay after the decline max 402 ms; replaced-declined 0; evidence ignored on a declined turn 0; supersedes 2 (today 1); drops 0 (today 4); reorders 0
+  R5 control (revive on, echo off) br1 S1Q08: 2 dispatches (expected 2)
+  R5b control2 (revive off, echo on) br1 S1Q08: n=1 fromLive=true lat=65350 (expected late, from Live: the revive is what fixes it)
+  R5c control (echo off) cue S1Q08: 2 dispatches (expected 2: the echo rule is what removes the double)
+report:
+  [fix] R3 br1 S1Q08: once, finals=5, lat 3006 ms (budget 3106, today 65350), path gate, closes [continuation-expired]
+  [fix] revive br1 11:01:47.374 by whisper rule forward score 1.00 residual 25/25 finals 5 q="Now add delayed outcomes and experimentation,\nExte"
+  [fix] verdict outcomes br1: {"ignored:dispatched":7,"declined":1,"marked":1}
+  [fix] R4 cuesmoke S1Q08: once (today 2); absorb score 1.00 residual 0/0 age 72.8 s
+  [fix] verdict outcomes cuesmoke: {"ignored:dispatched":4,"marked":1}
+  [fix] R16 cuesmoke2 S1Q07F: once, finals=2 (today 0, fromLive true), cov 1.00 (today 1.00), lat 2845 ms (today 7243; log 7259), path gate, text "A nightly job fails halfway through. How do you resume it wi" RESTS-ON-SUBSTITUTION
+  [fix] R16 cuesmoke2 S1Q08F: once, finals=2 (today 1, fromLive false), cov 1.00 (today 0.88), lat 3490 ms (today 4290; log 4306), path gate, text "How could repeatedly training on customers affected by previ"
+  [fix] revive cuesmoke2 02:30:41.839 by whisper rule reverse score 1.00 residual 2/2 finals 1 q="How could repeatedly"
+  [fix] verdict outcomes cuesmoke2: {"ignored:dispatched":4,"ignored:stale-finals":1,"marked":1,"declined":1}
+  [fix] R6 s50b S2Q06: lat 2910 ms (budget 3010) today 6610 ms finals=5/5 path=gate
+  [fix] revive s50b 08:04:41.005 by live rule forward score 1.00 residual 30/30 finals 5 q="Implement an asynchronous evaluation runner. You a"
+  [fix] verdict outcomes s50b: {"ignored:dispatched":4,"marked":2,"declined":1}
+  [fix] R6 s50c S2Q05: lat 2768 ms (budget 2868) today 6816 ms finals=7/7 path=gate
+  [fix] revive s50c 08:00:59.748 by whisper rule forward score 1.00 residual 24/24 finals 7 q="budget, implement a function called select context"
+  [fix] verdict outcomes s50c: {"ignored:dispatched":3,"marked":1,"declined":1}
+  [fix] R6 s50c-peritem S2Q05: lat 2756 ms (budget 2856) today 6804 ms finals=7/7 path=gate
+  [fix] revive s50c-peritem 08:00:59.748 by whisper rule forward score 1.00 residual 24/24 finals 7 q="budget, implement a function called select context"
+  [fix] verdict outcomes s50c-peritem: {"ignored:dispatched":4,"marked":1,"declined":1}
+  [fix] R6 s50d S1Q04: lat 2202 ms (budget 2302) today 5902 ms finals=9/9 path=gate
+  [fix] R6 s50d S1Q06: lat 3335 ms (budget 3435) today 7035 ms finals=8/8 path=gate
+  [fix] R6 s50d S1Q08: lat 2563 ms (budget 2663) today 6263 ms finals=5/5 path=gate
+  [fix] R6 s50d S1Q09: lat 3360 ms (budget 3460) today 7060 ms finals=5/5 path=gate
+  [fix] R6 s50d S2Q04: lat 2333 ms (budget 2433) today 6033 ms finals=6/6 path=gate
+  [fix] R6 s50d S2Q05: lat 3205 ms (budget 3305) today 6905 ms finals=6/6 path=gate
+  [fix] R6 s50d S2Q05F: lat 3700 ms (budget 4200, unfinished hold) today 5972 ms finals=2/2 path=unfinished
+  [fix] R6 s50d S2Q06: lat 2710 ms (budget 2810) today 6410 ms finals=5/5 path=gate
+  [fix] R6 s50d S2Q08: lat 2278 ms (budget 2378) today 6839 ms finals=5/5 path=gate
+  [fix] revive s50d 07:22:17.155 by live rule forward score 1.00 residual 38/38 finals 9 q="Implement evaluation for a fixed campaign budget. "
+  [fix] revive s50d 07:30:55.496 by live rule forward score 1.00 residual 28/28 finals 8 q="Now for SQL, construct a point-in-time feature. Yo"
+  [fix] revive s50d 07:38:52.612 by live rule forward score 1.00 residual 24/24 finals 5 q="Now add delayed outcomes and experimentation. Exte"
+  [fix] revive s50d 07:42:51.068 by live rule forward score 1.00 residual 28/28 finals 5 q="Translate your AWS experience into an Azure deploy"
+  [fix] revive s50d 07:56:42.946 by live rule forward score 0.97 residual 29/30 finals 6 q="Merge two retrieval result lists. Implement recipr"
+  [fix] revive s50d 08:00:46.762 by live rule forward score 0.93 residual 26/28 finals 6 q="Hack retrieved evidence into a context budget. Imp"
+  [fix] revive s50d 08:03:24.734 by live rule forward score 1.00 residual 15/15 finals 2 q="Construct an example where that greedy policy give"
+  [fix] revive s50d 08:04:44.831 by live rule forward score 1.00 residual 26/26 finals 5 q="You are given test cases and an async `evaluate` f"
+  [fix] revive s50d 08:13:13.567 by whisper rule forward score 1.00 residual 10/10 finals 5 q="Describe the versioning, the backfill, how updates"
+  [fix] verdict outcomes s50d: {"declined":10,"ignored:dispatched":1,"marked":1}
+  [fix] verdict outcomes s50e: {"ignored:dispatched":4,"marked":3}
+  [fix] R6 s50f S2Q05: lat 3378 ms (budget 3478) today 7078 ms finals=7/7 path=gate
+  [fix] revive s50f 08:00:40.564 by live rule forward score 0.93 residual 26/28 finals 7 q="Pack retrieved evidence into a context budget. Imp"
+  [fix] verdict outcomes s50f: {"ignored:dispatched":5,"marked":1,"declined":1}
+  [fix] verdict outcomes s50g: {"ignored:dispatched":2,"marked":1}
+  [fix] R7 s50i S2Q09: cov 0.96 (today 0.46) n=1 finals=4 supersedes=1 lat 3700 (today 6012)
+  [fix] revive s50i 08:12:15.119 by whisper rule forward score 1.00 residual 5/5 finals 3 q="Where and when must authorization be checked?"
+  [fix] revive s50i 08:17:30.745 by live rule forward score 0.56 residual 9/16 finals 4 q="Describe the architecture across queues, workers, "
+  [fix] verdict outcomes s50i: {"ignored:dispatched":6,"marked":3,"ignored:stale-finals":2,"declined":2}
+  [fix] R6 s50j S1Q07F: lat 1829 ms (budget 1929) today 5529 ms finals=2/1 path=gate
+  [fix] R6 s50j S1Q08F: lat 3062 ms (budget 3162) today 6922 ms finals=2/1 path=gate RESTS-ON-SUBSTITUTION
+  [fix] R7 s50j S1Q10F: cov 1.00 (today 0.45) n=1 finals=2 supersedes=1 lat 6128 (today 7452) RESTS-ON-SUBSTITUTION
+  [fix] revive s50j 07:41:34.055 by whisper rule forward score 1.00 residual 9/9 finals 2 q="How could repeatedly training on customers affecte"
+  [fix] revive s50j 07:47:37.979 by live rule forward score 0.92 residual 12/13 finals 2 q="The application receives an authorization error af"
+  [fix] verdict outcomes s50j: {"ignored:dispatched":6,"ignored:stale-finals":2,"declined":3,"marked":2}
+  [fixunk] R3 br1 S1Q08: once, finals=5, lat 3006 ms (budget 3106, today 65350), path gate, closes [continuation-expired]
+  [fixunk] revive br1 11:01:47.374 by whisper rule forward score 1.00 residual 25/25 finals 5 q="Now add delayed outcomes and experimentation,\nExte"
+  [fixunk] verdict outcomes br1: {"ignored:dispatched":7,"declined":1,"marked":1}
+  [fixunk] R4 cuesmoke S1Q08: once (today 2); absorb score 1.00 residual 0/0 age 72.8 s
+  [fixunk] verdict outcomes cuesmoke: {"ignored:dispatched":4,"marked":1}
+  [fixunk] R16 cuesmoke2 S1Q07F: once, finals=2 (today 0, fromLive true), cov 1.00 (today 1.00), lat 2848 ms (today 7243; log 7259), path gate, text "A nightly job fails halfway through. How do you resume it wi" RESTS-ON-SUBSTITUTION
+  [fixunk] R16 cuesmoke2 S1Q08F: once, finals=2 (today 1, fromLive false), cov 1.00 (today 0.88), lat 3490 ms (today 4290; log 4306), path gate, text "How could repeatedly training on customers affected by previ"
+  [fixunk] revive cuesmoke2 02:26:48.168 by whisper rule forward score 1.00 residual 8/8 finals 2 q="How do you resume it without duplicate campaign ac"
+  [fixunk] revive cuesmoke2 02:30:41.839 by whisper rule reverse score 1.00 residual 2/2 finals 1 q="How could repeatedly"
+  [fixunk] verdict outcomes cuesmoke2: {"ignored:dispatched":4,"ignored:stale-finals":1,"declined":2}
+  [fixunk] R6 s50b S2Q06: lat 2910 ms (budget 3010) today 6610 ms finals=5/5 path=gate
+  [fixunk] revive s50b 08:04:41.005 by live rule forward score 1.00 residual 30/30 finals 5 q="Implement an asynchronous evaluation runner. You a"
+  [fixunk] verdict outcomes s50b: {"ignored:dispatched":4,"marked":2,"declined":1}
+  [fixunk] R6 s50c S2Q05: lat 2768 ms (budget 2868) today 6816 ms finals=7/7 path=gate
+  [fixunk] revive s50c 08:00:59.748 by whisper rule forward score 1.00 residual 24/24 finals 7 q="budget, implement a function called select context"
+  [fixunk] verdict outcomes s50c: {"ignored:dispatched":3,"marked":1,"declined":1}
+  [fixunk] R6 s50c-peritem S2Q05: lat 2756 ms (budget 2856) today 6804 ms finals=7/7 path=gate
+  [fixunk] revive s50c-peritem 08:00:59.748 by whisper rule forward score 1.00 residual 24/24 finals 7 q="budget, implement a function called select context"
+  [fixunk] verdict outcomes s50c-peritem: {"ignored:dispatched":4,"marked":1,"declined":1}
+  [fixunk] R6 s50d S1Q04: lat 2202 ms (budget 2302) today 5902 ms finals=9/9 path=gate
+  [fixunk] R6 s50d S1Q06: lat 3335 ms (budget 3435) today 7035 ms finals=8/8 path=gate
+  [fixunk] R6 s50d S1Q08: lat 2563 ms (budget 2663) today 6263 ms finals=5/5 path=gate
+  [fixunk] R6 s50d S1Q09: lat 3360 ms (budget 3460) today 7060 ms finals=5/5 path=gate
+  [fixunk] R6 s50d S2Q04: lat 2333 ms (budget 2433) today 6033 ms finals=6/6 path=gate
+  [fixunk] R6 s50d S2Q05: lat 3205 ms (budget 3305) today 6905 ms finals=6/6 path=gate
+  [fixunk] R6 s50d S2Q05F: lat 3700 ms (budget 4200, unfinished hold) today 5972 ms finals=2/2 path=unfinished
+  [fixunk] R6 s50d S2Q06: lat 2710 ms (budget 2810) today 6410 ms finals=5/5 path=gate
+  [fixunk] R6 s50d S2Q08: lat 2278 ms (budget 2378) today 6839 ms finals=5/5 path=gate
+  [fixunk] revive s50d 07:22:17.155 by live rule forward score 1.00 residual 38/38 finals 9 q="Implement evaluation for a fixed campaign budget. "
+  [fixunk] revive s50d 07:30:55.496 by live rule forward score 1.00 residual 28/28 finals 8 q="Now for SQL, construct a point-in-time feature. Yo"
+  [fixunk] revive s50d 07:38:52.612 by live rule forward score 1.00 residual 24/24 finals 5 q="Now add delayed outcomes and experimentation. Exte"
+  [fixunk] revive s50d 07:42:51.068 by live rule forward score 1.00 residual 28/28 finals 5 q="Translate your AWS experience into an Azure deploy"
+  [fixunk] revive s50d 07:56:42.946 by live rule forward score 0.97 residual 29/30 finals 6 q="Merge two retrieval result lists. Implement recipr"
+  [fixunk] revive s50d 08:00:46.762 by live rule forward score 0.93 residual 26/28 finals 6 q="Hack retrieved evidence into a context budget. Imp"
+  [fixunk] revive s50d 08:03:24.734 by live rule forward score 1.00 residual 15/15 finals 2 q="Construct an example where that greedy policy give"
+  [fixunk] revive s50d 08:04:44.831 by live rule forward score 1.00 residual 26/26 finals 5 q="You are given test cases and an async `evaluate` f"
+  [fixunk] revive s50d 08:13:13.567 by whisper rule forward score 1.00 residual 10/10 finals 5 q="Describe the versioning, the backfill, how updates"
+  [fixunk] verdict outcomes s50d: {"declined":10,"ignored:dispatched":1,"marked":1}
+  [fixunk] verdict outcomes s50e: {"ignored:dispatched":4,"marked":3}
+  [fixunk] R6 s50f S2Q05: lat 3378 ms (budget 3478) today 7078 ms finals=7/7 path=gate
+  [fixunk] revive s50f 08:00:40.564 by live rule forward score 0.93 residual 26/28 finals 7 q="Pack retrieved evidence into a context budget. Imp"
+  [fixunk] verdict outcomes s50f: {"ignored:dispatched":5,"marked":1,"declined":1}
+  [fixunk] verdict outcomes s50g: {"ignored:dispatched":2,"marked":1}
+  [fixunk] R7 s50i S2Q09: cov 0.96 (today 0.46) n=1 finals=4 supersedes=1 lat 3700 (today 6012)
+  [fixunk] revive s50i 08:12:15.119 by whisper rule forward score 1.00 residual 5/5 finals 3 q="Where and when must authorization be checked?"
+  [fixunk] revive s50i 08:17:30.745 by live rule forward score 0.56 residual 9/16 finals 4 q="Describe the architecture across queues, workers, "
+  [fixunk] verdict outcomes s50i: {"ignored:dispatched":5,"marked":3,"ignored:stale-finals":2,"declined":2,"ignored:marked":1}
+  [fixunk] R6 s50j S1Q07F: lat 1829 ms (budget 1929) today 5529 ms finals=2/1 path=gate
+  [fixunk] R6 s50j S1Q08F: lat 3062 ms (budget 3162) today 6922 ms finals=2/1 path=gate RESTS-ON-SUBSTITUTION
+  [fixunk] R7 s50j S1Q10F: cov 1.00 (today 0.45) n=1 finals=2 supersedes=1 lat 6128 (today 7452) RESTS-ON-SUBSTITUTION
+  [fixunk] revive s50j 07:41:34.055 by whisper rule forward score 1.00 residual 9/9 finals 2 q="How could repeatedly training on customers affecte"
+  [fixunk] revive s50j 07:47:37.979 by live rule forward score 0.92 residual 12/13 finals 2 q="The application receives an authorization error af"
+  [fixunk] verdict outcomes s50j: {"ignored:dispatched":6,"ignored:stale-finals":2,"declined":3,"marked":2}

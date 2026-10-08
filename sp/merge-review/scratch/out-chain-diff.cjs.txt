@@ -1,0 +1,7 @@
+no-cue, answer-first replies: 8000 streams, 0 differ from MAIN's chain; cue reports != exactly one [] : 0
+card@1: same cues=[] reports=1
+card@5: same cues=[] reports=1
+card@1000: same cues=[] reports=1
+intro@1: same cues=[] reports=1
+intro@5: same cues=[] reports=1
+intro@1000: same cues=[] reports=1

@@ -1,0 +1,11 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/eq-build
+
+ ✓ electron/llm/earlierQuestion.test.ts (57 tests) 29ms
+
+ Test Files  1 passed (1)
+      Tests  57 passed (57)
+   Start at  16:36:36
+   Duration  2.35s (transform 116ms, setup 0ms, collect 128ms, tests 29ms, environment 1.28s, prepare 180ms)
+

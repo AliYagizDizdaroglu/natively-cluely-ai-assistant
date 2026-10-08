@@ -1,0 +1,22 @@
+{
+ "k01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers ingestion, storage, serving and consistency via point-in-time joins plus shared definitions; over 100 words."},
+ "k02": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Hybrid push/pull for mega-creators and write amplification plus push gateway costs; concise and spoken."},
+ "k03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correctly rejects the false premise, then read_committed plus idempotent downstream writes."},
+ "k04": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Scopes EOS to Kafka-to-Kafka but never flags it is not on by default or names the mechanism."},
+ "k05": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Generic load balancing and observability; ignores how the rate limiter behaves across ten instances."},
+ "k06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Relative vs volume and segment effects explained; checks the metric denominator and blocked ticket types."},
+ "k07": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Shows EOS needs transactional producers and read_committed, and external writes need idempotency."},
+ "k08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Batched fan-out, write amplification and APNs/FCM limits are right; runs about 95 words."},
+ "k09": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Rate-vs-absolute logic muddled: a rate relative to total traffic cannot drop while counts rise from aggressiveness; long."},
+ "k10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Full design with single versioned transform repo and point-in-time joins; over 100 words."},
+ "k11": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "All four parts covered with shared definitions and point-in-time joins; slightly over length."},
+ "k12": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Talks round-robin and stateless failover; misses the distributed rate-limiting problem entirely."},
+ "k13": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Benchmark relative rate vs production absolute volume; checks quarantine logs against complaints."},
+ "k14": {"correctness": 0, "on_topic": 2, "delivery": 2, "reason": "Confuses metrics: legitimate mail blocked is false positives, not false negative rate or recall."},
+ "k15": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Idempotent upserts right, but misapplies transactional outbox to consumer offsets; premise not corrected."},
+ "k16": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Async worker fan-out with cost at per-user writes and push gateways; correct if generic."},
+ "k17": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Serving layer thin and consistency rests only on point-in-time joins, missing shared transformation logic."},
+ "k18": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Externalized state and connection pooling, but never addresses rate limiting across instances."},
+ "k19": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Event-driven fan-out with push gateway rate limits, per-message cost and egress identified."},
+ "k20": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Local counters break; centralized Redis with atomic Lua or gateway enforcement keeps a global quota."}
+}

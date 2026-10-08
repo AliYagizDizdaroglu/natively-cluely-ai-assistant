@@ -1,0 +1,41 @@
+Ruling R3 below |
+Ruling R4 |
+Ruling R1: work on fix/coding-style-suffix-all-gemini in the main checkout, no fresh worktree
+Ruling R2: the pre-existing staged deletion of natively_debug.log.1 was moved OUT of the index (now an unstaged working-tree deletion) because a staged deletion rides al
+Ruling R3: `overlap()` exists in both interview60.lib.mjs and questionReconcile.ts
+Ruling R4: in Live mode Off, STT chips keep forwarding as today (T6 special-cases whisper in Off before decideDispatch); spec §3.1 says Suggest is untouched and says no
+Ruling R5: the working tree carries earlier uncommitted work in files this pass also edits (main.ts, WhatToAnswerLLM.ts, LLMHelper.ts, IntelligenceManager.ts, NativelyIn
+Ruling R6: the plan's restore block is wrong on this point; spec §1.1 ("starts the router exactly as an IPC set would") is satisfied by the pre-existing deferred check
+Ruling R6.
+Ruling R7 (Task 2): the plan's live-proof fallback ("click the Live pill once in the UI") needs a human; the hook gains a second dev-only env, NATIVELY_LIVE_MODE
+Ruling R8: Gemini quota is walled until the daily reset; Tasks 3
+Ruling R9: committed the rest of the untracked golden harness (question bank, answers/chains passes, report generator, calibration scripts, build-audio scripts) as its o
+Ruling R10: Task 3 Step 6 (probe evidence) and Task 4 (socket fix) are deferred until the user says which STT they interview with; Task 3's steps 1
+Ruling R10 (user to say Deepgram vs Groq). Task 4 waits on it.
+Ruling R11: the "· Live" mislabel is resolved by Task 11, which deletes that guess and lets the model sentinel supply the label; Task 11's dispatch carries the note
+Ruling R12: if the real-Groq calibration returns 429 (daily quota already hit today), the prompt change and the script are still committed and the calibration is re-run b
+Ruling R13: the detector calibration runs INSIDE the app with its stored key
+Ruling R14: the prompt contract is kept but is insufficient (evidence above); Task 9's fix round adds a deterministic merge in QuestionDetector
+Ruling R15: the calibration hook must drive the cases through a real `QuestionDetector` (fake clock not needed: the '?' fast path fires detection synchronously on the sec
+Ruling R16: `electron/services/questionReconcile.ts:16` fails the electron type-check (`Property 'length' does not exist on type 'never'`, from `(match() || []).filter(..
+Ruling R17: Task 11's committed hunks must apply on HEAD
+Ruling R18: the sentinel test case goes in a new tracked file `electron/llm/verbalSentinel.test.ts` (never stage the user's untracked `verbalFallback.test.ts`; read it on
+Ruling R19: Task 12 commits code + test now; its measurement (answers pass) needs the Gemini quota and runs inside Task 14's answers pass
+Ruling R20: Task 12 (
+Ruling R21: the working-tree patch to the user's untracked test file stands
+Ruling R22: in the committed HEAD alone the bar shows `
+Ruling R23 (Task 13): `interview60.runs/` is gitignored, so the baseline test must `it.skipIf(!existsSync(beforeDir))` with a message naming the directory
+Ruling R24 (Task 14 execution): the hour (`auto after`) outlasts any subagent command budget, so the controller runs Step 1 (gates + calibrations) and Step 2 (`auto after
+Ruling R25: a scratch worktree with a node_modules junction is removed by first deleting the junction itself (`cmd //c rmdir <path>\node_modules`, which never recurses) a
+Ruling R26: fix round 1 adds a fixture-free synthetic-run test (3 questions; dispatch answer/chip/drop/duplicate lines; an answer to nobody; `first token` lines; socket c
+Ruling R27: the final whole-branch review runs NOW (during the quota wait) on the code as of 831bfb5
+Ruling R28 (confound): the after-run's interviewer STT is `RestSTT (groq, whisper-large-v3)` (`[Main] Creating interviewer STT provider: groq` at 04:09:40); the before-ru
+Ruling R30: the probe must demand FIVE consecutive generateContent 200s, 15 s apart (a walled key yields one or two on a burst, never five); log each attempt. Ruling R31:
+Ruling R32: the current hour runs to its end (its detection/dedup/race/merge/classifier/routing rows are valid; answers are void); the answers/chains passes are skipped f
+Ruling R33 (Important #1): claim each dispatch line for exactly one item
+Ruling R34 (Important #3, spec amendment): `replaced` verdicts are reported as "caught" (informational); the "surfaced" gate row = doubles 0 AND unclaimed answers (`answe
+Ruling R35 (Important #4): `app:stop` matches `electron.exe` only, whose command line contains the checkout path and NOT `\.claude\worktrees\`, and the pid-file pid is ki
+Ruling R36 (fix wave, one dispatch per the skill): Importants #1, #3, #4, #5 + R30 (probe: five consecutive 200s 15 s apart) + R31 (`answerFailures`, `delivered`) + minor
+Ruling R37 (Important #2): an Auto/Suggest dispatch with source=live and verdict=unverifiable is HELD up to 2500 ms (or until the next interviewer STT final) and re-recon
+Ruling R38: `tapFirstToken` ignores sentinel chunks (`__model_source:
+Ruling R39: run 2 (`auto after2`) launches as soon as Commit D lands

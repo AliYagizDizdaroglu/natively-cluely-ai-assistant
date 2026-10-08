@@ -1,0 +1,177 @@
+PASS  synthetic clean hour: G = G* = {S1Q04F, S1Q06F, S2Q05F, S2Q08F}, G_twin the same, no VOID/FAIL
+PASS  synthetic clean hour: all four referents RIGHT; gate histogram block=4 no-cue=4 parent-in-prompt=2
+PASS  synthetic clean hour: turn ids increasing; LABEL captures 4 = gate=block windows with a LABEL capture 4 (EQUAL)
+PASS  startup line only: 0 diag lines; flag on with no diag line -> VOID 1(c) NOT EXERCISED named
+PASS  B1: startup line off, no diag line -> prints NOT EXERCISED (flag off) AND names VOID 1(a) + VOID 1(c)
+PASS  B1: startup lines ABSENT (a rotated log) -> VOID 1(a) naming ABSENT, VOID 1(c) NOT EXERCISED (startup line ABSENT)
+PASS  gate=error ... ms=0 error="x" and gate=error ... ms=3 (no suffix): both counted, 5a FAIL named for each, the message of the first read  -- gate=error at log line 5 (window S1Q04,  | gate=error at log line 9 (window S1Q05, 
+PASS  a block whose parent matches an earlier item (S1Q04 under S1Q06F) -> WRONG REFERENT named, expected S1Q06  -- S1Q06F WRONG REFERENT -> S1Q04 expected S1Q06 (earlier than the parent) (FAIL only if the in-app answer is wrong)
+PASS  a block whose parent matches a LATER item -> WRONG REFERENT, "later than the parent"
+PASS  a block whose parent matches no roster item -> UNMATCHED named
+PASS  a main (S1Q06) with gate=block -> named under 4d as inserted (a wrong answer there = FAIL)
+PASS  a turn=none line -> named (1(b)/5c) with its log line; counts against the numeric-turn fraction
+PASS  3 turn=none of 10 windows (70% numeric) -> VOID 1(b)
+PASS  K1 screenshot: gate=block, capture without LABEL, `screen reference: captured` before the pinned line -> `coding`: out of G, VOID 0, a G* miss
+PASS  the flip: the same window without the screenshot line -> UNEXPLAINED, VOID 1(e)
+PASS  a screen-reference line before ANOTHER window's pinned line does not excuse S1Q04F (m3: no other pinned line between)
+PASS  a screen-reference line sitting before the PREVIOUS window's pinned line (S1Q04) does not excuse S1Q04F
+PASS  A3.1b/A4.2 m4 fast-route (verbal-diag route line + the debug override line as corroboration, no capture): in G, out of G_twin (cause fast-route), VOID 0, referent UNREAD
+PASS  fast-route id is out of G_twin with its cause named
+PASS  I10: the debug-log override line ALONE (no verbal-diag route line) is not the signature -> UNEXPLAINED, VOID 1(e)
+PASS  the flip: the same window without the signature -> UNEXPLAINED, VOID 1(e)
+PASS  A4.2 m4: a window carrying only a verbal-diag `route: BEHAVIORAL` line (timestamp inside the window) -> fast-route
+PASS  a verbal-diag route line of another kind is not a signature -> UNEXPLAINED
+PASS  a verbal-diag BEHAVIORAL line OUTSIDE the run window is counted as ignored and is no signature -> UNEXPLAINED
+PASS  a verbal-diag BEHAVIORAL line stamped AFTER the run window ends, inside the last dispatch window's open tail, is no signature -> UNEXPLAINED
+PASS  A3.1b knowledge-short-circuit (intro-response line, no capture): out of G, a G* miss, VOID 0
+PASS  knowledge-short-circuit via a __negotiationCoaching answer -> same
+PASS  a main with gate=block read as knowledge-short-circuit is named 4d as built-not-inserted (4e), not as inserted
+PASS  A4.1: a MALFORMED block in a gate=block window -> 5d FAIL, never UNEXPLAINED, 1(e) not VOID
+PASS  A4.1 case: a malformed LABEL capture in a non-block window (S1Q05) -> VOID 1(e), 5d reading MALFORMED printed, window item named  -- a capture carrying the LABEL falls in a non-block window (log line 8, item S1Q05); its 5d reading: MALFORMED
+PASS  a well-formed LABEL capture in a non-block window -> VOID 1(e) with the 5d reading well-formed
+PASS  A5.1(ii): a LABEL capture stamped before startedAt -> `ignored 1`, VOID 0
+PASS  A5.1(ii): the same capture stamped INSIDE the window with no gate=block window -> VOID 1(e)
+PASS  A6 m3: a LABEL capture with an unparseable `at` is read as in the window -> VOID 1(e)
+PASS  two dispatches of S1Q04F with the kept prompts entry LABEL-less -> G_twin excludes it, cause `double`
+PASS  a single-dispatch id with a LABEL-less kept entry -> cause `other`
+PASS  |G_twin| < 3 -> named INCOMPLETE (2b-2d, 3a, 4b, 4c)
+PASS  "Thank you." pinned -> `short`, named, STRAY 0, VOID 0
+PASS  an invented 8-word sentence matching no roster text -> STRAY 1 -> VOID 1(i)
+PASS  "Why that one?" (the smoke's WHY) -> `short`, not roster (A2 m2)
+PASS  m8: a `short` window that reads gate=block -> named, excluded from G
+PASS  1(c): 2 of 4 G* read gate=block -> VOID 1(c) naming the missing ids with their gate= values
+PASS  1(c): 3 of 4 G* is enough (the registered floor) -> no VOID
+PASS  1(f): 3 items with no dispatch window (> 2) -> VOID 1(f) naming them
+PASS  2a: ms p90 > 50 (3 of 10 lines at 80 ms) -> FAIL 2a
+PASS  2a: one slow line of 10 (p90 still <= 50) -> PASS
+PASS  turn ids not increasing -> named
+PASS  1(a): the hedge startup line reading off -> VOID 1(a)
+PASS  1(a): follow-up parent on -> VOID 1(a)
+PASS  a gate=block window whose capture is missing (3 LABEL captures for 4 block windows) -> UNEXPLAINED, VOID 1(e); the count line EQUAL (3 block windows have a capture)
+PASS  --prompts: a second LABEL capture inside one block window (the hedge back leg) -> count line NOT EQUAL, NAMED only (informational), no VOID
+PASS  smoke seg 1: G = {S1Q04F, S1Q06F}, G* ∩ G = both, G_twin = both
+PASS  smoke seg 1: both referents right (S1Q04F -> S1Q04, S1Q06F -> S1Q06)
+PASS  smoke seg 1: 2 `no-cue` (S1Q04, S1Q06), WHY gate=parent-in-prompt cue=short, histogram block=2 no-cue=2 parent-in-prompt=1
+PASS  smoke seg 1: WHY reads `short` (A2 m2); STRAY 0
+PASS  smoke seg 1: turn ids increasing (1..5), 0 gate=error, block chars within 200..578, exit 0  -- exit 0
+PASS  smoke seg 1: the 664 cumulative captures: only the 5 in-window ones are read, 0 LABEL captures ignored outside, 2 LABEL in-window = 2 block windows (EQUAL)
+PASS  smoke seg 1: the reader's stdout carries no pinned text and no captured-prompt text (leak check, 2 sources)
+--- evidence: the reader's full output on the smoke segment 1 (ids, counts and classes only) ---
+NON-REGISTERED: calibration overrides active (--gstar, --gstar-min, --twin-min)
+READER smoke-run-tmp: window = the smoke's: first clip start - 2 s .. end of log (--played)
+READ startup (before the run window, last match each): earlier question: on; verbal hedge: on trigger=5000ms; follow-up parent: off
+1(a) startup lines as registered
+READ run window 2026-10-05T14:38:07.036Z .. end of log; dispatch windows 5; diag lines in window 5; captures 664 (in window 5, LABEL outside window ignored 0); verbal-diag route lines in window 0 (fast/behavioral 0); ignored out-of-window: fast/behavioral 0 (all routes 0)
+WINDOW line 283 item S1Q04 roster:S1Q04 gate=no-cue cue=none chars=0 turn=1 ms=8 sig=- capture=no-label
+WINDOW line 470 item S1Q04F roster:S1Q04F gate=block cue=constraint chars=418 turn=2 ms=3 sig=- capture=label-ok
+WINDOW line 676 item S1Q06 roster:S1Q06 gate=no-cue cue=none chars=0 turn=3 ms=1 sig=- capture=no-label
+WINDOW line 822 item S1Q06F roster:S1Q06F gate=block cue=pronoun chars=516 turn=4 ms=1 sig=- capture=label-ok
+WINDOW line 893 item WHY short gate=parent-in-prompt cue=short chars=0 turn=5 ms=2 sig=- capture=no-label
+READ roster windows 4, short 1 (lines 893; items WHY), STRAY 0
+READ gate= histogram: block=2 no-cue=2 parent-in-prompt=1 parent-in-pinned=0 supersede=0 no-parent=0 error=0 no-turn=0
+READ ms= p50 2 p90 8 max 8 (n 5)
+2a PASS ms p90 <= 50
+READ turn ids increasing (5 numeric)
+1(b) 5 of 5 windows carry a numeric turn= (100.0%)
+5a PASS gate=error 0
+BLOCK line 470 item S1Q04F cause=inserted
+BLOCK line 822 item S1Q06F cause=inserted
+READ LABEL captures in the run window 2 (in gate=block windows 2); LABEL captures outside the window ignored 0
+PROMPTS LABEL count: per-dispatch captures in window 2; gate=block windows that have a captured prompt carrying the LABEL 2; EQUAL
+PROMPTS interview60.prompts.json: 2 entries carry the LABEL (ids S1Q04F,S1Q06F)
+READ G = {S1Q04F, S1Q06F} (2)
+READ G* = {S1Q04F, S1Q06F}; G*∩G = {S1Q04F, S1Q06F} (2 of 2); G not in G* = {-}
+1(c) 2 of 2 G* ids read gate=block (>= 2)
+READ G_twin = {S1Q04F, S1Q06F} (2); in G but out of G_twin: -
+READ items with no dispatch window 0 of 5
+4d mains: 0 with gate=block
+5c gate rows reached: block, no-cue, parent-in-prompt; NOT EXERCISED: parent-in-pinned, supersede, no-parent, error, no-turn
+5c cue-fired-parent-present ids: S1Q08=absent S2Q08=absent S2Q09F=absent S2Q01F=absent
+REFERENT S1Q04F RIGHT -> S1Q04 expected S1Q04
+REFERENT S1Q06F RIGHT -> S1Q06 expected S1Q06
+READ signatures: debug-log override→behavioral lines in window 0; verbal-diag fast route lines in window 0
+READER no VOID/FAIL/INCOMPLETE clause named
+--- end evidence ---
+PASS  smoke seg 1: running the reader twice gives byte-identical output
+PASS  B1 smoke seg 2: no diag line -> `NOT EXERCISED (flag off)` printed, VOID 1(a) + VOID 1(c) named, exit 1  -- exit 1
+--- evidence: smoke segment 2 (flag off) ---
+NON-REGISTERED: calibration overrides active (--gstar, --gstar-min)
+READER smoke-off: window = the smoke's: first clip start - 2 s .. end of log (--played)
+READ startup (before the run window, last match each): earlier question: off; verbal hedge: on trigger=5000ms; follow-up parent: off
+VOID 1(a): startup lines are not exactly "earlier question: on", "verbal hedge: on trigger=5000ms", "follow-up parent: off": earlier question=off
+READ run window 2026-10-05T14:45:49.293Z .. end of log; dispatch windows 2; diag lines in window 0; captures UNAVAILABLE (no verbal-prompts.log); verbal-diag route lines in window 0 (fast/behavioral 0); ignored out-of-window: fast/behavioral 0 (all routes 0)
+WINDOW line 393 item S1Q04 roster:S1Q04 NO DIAG LINE sig=- capture=n/a
+WINDOW line 540 item S1Q04F roster:S1Q04F NO DIAG LINE sig=- capture=n/a
+READ roster windows 2, short 0, STRAY 0
+READ gate= histogram: block=0 no-cue=0 parent-in-prompt=0 parent-in-pinned=0 supersede=0 no-parent=0 error=0 no-turn=0
+2a n/a no diag ms values
+READ turn ids none (0 numeric)
+5a PASS gate=error 0
+NOT EXERCISED (flag off): the run window carries no earlier-question diag line
+VOID 1(c): NOT EXERCISED: no earlier-question diag line in the run window (4 G* ids cannot read gate=block)
+READ G = {} (0)
+READ G* = {S1Q04F}; G*∩G = {} (0 of 1); G not in G* = {-}
+READ G* miss S1Q04F: gate=no-diag
+READ G_twin = {} (0); in G but out of G_twin: - [interview60.prompts.json absent: G_twin unavailable]
+INCOMPLETE G_twin: UNREAD: no interview60.prompts.json in the run folder (G_twin, 2b-2d, 3a, 4b, 4c cannot be computed)
+INCOMPLETE 1(e): UNREAD: no verbal-prompts.log in the run folder (1(e) and 5d cannot be read; G is provisional, from diag lines alone)
+READ items with no dispatch window 0 of 2
+4d mains: 0 with gate=block
+5c gate rows reached: -; NOT EXERCISED: block, no-cue, parent-in-prompt, parent-in-pinned, supersede, no-parent, error, no-turn
+5c cue-fired-parent-present ids: S1Q08=absent S2Q08=absent S2Q09F=absent S2Q01F=absent
+READ signatures: debug-log override→behavioral lines in window 0; verbal-diag fast route lines in window 0
+READER 4 VOID/FAIL/INCOMPLETE clause(s) named: VOID 1(a), VOID 1(c), INCOMPLETE G_twin, INCOMPLETE 1(e)
+--- end evidence ---
+PASS  s50m's run log: B1 NOT EXERCISED printed (a pre-feature log: startup line ABSENT), VOID 1(a) + VOID 1(c) named, exit 1; 40/41 windows all roster, STRAY 0  -- exit 1; READ roster windows 40, short 0, STRAY 0
+PASS  s50m (A4.2 real shape, run window only): exactly 1 debug-log override→behavioral line and 1 verbal-diag fast-route line, both at S1Q01
+PASS  s50m: the stdout carries no pinned text
+PASS  s50m (A4.2): out-of-window verbal-diag FAST/BEHAVIORAL lines counted and ignored = 23
+--- evidence: s50m summary lines ---
+READER 2026-09-22T08-22-50-s50m: window = the timeline's startedAt..endedAt
+READ run window 2026-09-22T07:14:07.873Z .. 2026-09-22T08:22:50.638Z; dispatch windows 40; diag lines in window 0; captures 406 (in window 39, LABEL outside window ignored 0); verbal-diag route lines in window 40 (fast/behavioral 1); ignored out-of-window: fast/behavioral 23 (all routes 1509)
+READ roster windows 40, short 0, STRAY 0
+READ gate= histogram: block=0 no-cue=0 parent-in-prompt=0 parent-in-pinned=0 supersede=0 no-parent=0 error=0 no-turn=0
+NOT EXERCISED (startup line ABSENT): the run window carries no earlier-question diag line
+READ G = {} (0)
+READ signatures: debug-log override→behavioral lines in window 1; verbal-diag fast route lines in window 1
+READER 3 VOID/FAIL/INCOMPLETE clause(s) named: VOID 1(a), VOID 1(c), INCOMPLETE A2.4
+--- end evidence ---
+PASS  s50m: verbal-prompts.log is cumulative; LABEL captures outside the run window are counted, 0 here
+PASS  s50l's run log: B1 NOT EXERCISED printed (a pre-feature log: startup line ABSENT), VOID 1(a) + VOID 1(c) named, exit 1; 40/41 windows all roster, STRAY 0  -- exit 1; READ roster windows 41, short 0, STRAY 0
+PASS  s50l (A4.2 real shape, run window only): exactly 1 debug-log override→behavioral line and 1 verbal-diag fast-route line, both at S1Q01
+PASS  s50l: the stdout carries no pinned text
+--- evidence: s50l summary lines ---
+READER 2026-09-21T08-22-34-s50l: window = the timeline's startedAt..endedAt
+READ run window 2026-09-21T07:13:51.510Z .. 2026-09-21T08:22:34.266Z; dispatch windows 41; diag lines in window 0; captures 365 (in window 40, LABEL outside window ignored 0); verbal-diag route lines in window 41 (fast/behavioral 1); ignored out-of-window: fast/behavioral 22 (all routes 1466)
+READ roster windows 41, short 0, STRAY 0
+READ gate= histogram: block=0 no-cue=0 parent-in-prompt=0 parent-in-pinned=0 supersede=0 no-parent=0 error=0 no-turn=0
+NOT EXERCISED (startup line ABSENT): the run window carries no earlier-question diag line
+READ G = {} (0)
+READ signatures: debug-log override→behavioral lines in window 1; verbal-diag fast route lines in window 1
+READER 3 VOID/FAIL/INCOMPLETE clause(s) named: VOID 1(a), VOID 1(c), INCOMPLETE A2.4
+--- end evidence ---
+PASS  s50l: verbal-prompts.log is cumulative; LABEL captures outside the run window are counted, 0 here
+PASS  A2.10 run5 log (2026-10-01 21:00 contamination) against the S1+S2 roster -> STRAY >= 1, VOID 1(i)  -- STRAY 14 of 14 windows
+--- evidence: run5 log: windows 14, roster 0, short 0, STRAY 14; clause(s) named: 1(a),1(i),1(c),G_twin,1(e) ---
+PASS  A6 case (i), emulated on the smoke's own folder with a run window opening after it: every smoke LABEL capture is counted `ignored` (>= 2), none read under 1(e)/5d  -- rbal-diag route lines in window 0 (fast/behavioral 0); ignored out-of-window: fast/behavioral 0 (all routes 0)
+PASS  I6: a MALFORMED second LABEL capture in a block window whose paired capture is well-formed -> 5d FAIL named (not the paired one)
+PASS  I7: two gate=block windows of S1Q04F (inserted, then UNEXPLAINED): causes kept per window in line order, S1Q04F stays in G and reads as reached for 1(c), VOID 1(e) for the second
+PASS  I7: the same two windows in the opposite order (UNEXPLAINED first, inserted last) -> same G and the same G* reading
+PASS  I8: a main with a fast-route block -> named as 4d (feature-attributable if wrong), not 4e
+PASS  I8: a main with a malformed block -> named "5d + 4d"
+PASS  I9: a main window carrying an inserted block -> `--referents` prints PARENT IDENTIFIED with the matched ids and its log line (NAMED)  -- S1Q06 PARENT IDENTIFIED for a window with no expected parent (main, log line 10): matches S1Q05 (FAIL only if the in-app
+PASS  m3: block chars 100 and 579 -> named outside 200..578; 578 accepted
+PASS  m4: a later gate=block diag line inside a window whose first diag line reads no-cue -> named
+PASS  I5: an unparseable line in verbal-prompts.log -> INCOMPLETE 1(e) UNREAD naming the line index, exit 1, no text of it printed  -- exit 1
+PASS  B2: a malformed interview60.prompts.json -> READER UNREADABLE naming the file and the error class, exit 2, none of its text in the output  -- READER UNREADABLE: interview60.prompts.json (interview60.prompts.json) is not readable JSON (SyntaxError)
+PASS  B2: safeErr prints the class and file:line only, never the message  -- SyntaxError at eq-flight-read.cal.mjs:330
+PASS  m7: --gstar-min without the calibration marker -> READER REFUSED, exit 2
+PASS  m7: with the calibration marker the override prints a NON-REGISTERED banner
+PASS  CLI: a hour with a VOID clause (1(a)) -> exit 1 and the clause named  -- exit 1
+PASS  I4 CLI: a clean synthetic hour with no prompts file and no verbal-prompts.log -> exit 1, INCOMPLETE 1(e) UNREAD and INCOMPLETE G_twin UNREAD in the summary  -- exit 1
+PASS  CLI: no arguments -> usage, exit 2
+PASS  CLI: a dir without natively_debug.log -> UNREADABLE, exit 2
+PASS  CLI: a timeline without startedAt (and no --played) -> UNREADABLE, exit 2
+PASS  CLI: the clean hour's stdout carries no pinned text
+
+B5 CALIBRATION: 90 PASS, 0 FAIL of 90

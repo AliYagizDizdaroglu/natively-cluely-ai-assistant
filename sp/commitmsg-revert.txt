@@ -1,0 +1,19 @@
+revert(turn): the wordless-final signal is not one Deepgram sends reliably
+
+This reverts a565914. Its unit proof held; its live proof did not. The same
+noisy smoke (a 1 s tone twice in every 14 s gap) ran before and after:
+
+  before (old build)   1 answer, 2 supersedes of 4   Deepgram finalized each
+                       tone EMPTY (is_final=true, text="") ~1.4 s after it
+  after  (a565914)     1 answer, 3 supersedes of 4   Deepgram sent an
+                       utterance-end for tone 1, NOTHING for tone 2, and the
+                       only empty final of the gap arrived mid-question with
+                       the voice on — where the method is a no-op by design
+
+An empty final is something Deepgram emits sometimes for a wordless segment,
+not every time. A rule that waits for it closes the turn on the runs where it
+comes and swallows the next question on the runs where it does not. The
+reliable evidence is the ABSENCE of a worded final after a voice stop, which
+needs nothing new from Deepgram; the next commit clocks the turn on that.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

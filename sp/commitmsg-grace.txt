@@ -1,0 +1,42 @@
+fix(turn): a voice stop that no words follow is not the interviewer resuming
+
+Symptom (smoke 2026-09-13 21:50 UTC; reproduced on demand 2026-09-14 with a
+1 s tone twice in every 14 s gap): the first question answered, the next ones
+emitted as `dispatch: supersede` carrying the previous question joined with
+the new — 1 answer and 2-3 supersedes for 4 questions; `finals=` on the turn
+lines grew across questions because the first turn never closed.
+
+Root cause. After a dispatch the continuation close waited for 8 s with no
+VAD off-transition. Energy on the desktop loopback that is not speech (a
+chime, another participant, the tone) restarts that clock from every blip's
+stop; the next question begins before it expires and its finals are appended
+to the answered turn as a continuation. Ruled out: Deepgram's speech-started
+(logs only), the microphone (all three VAD feeds are systemAudioCapture),
+empty finals as pending text (dropped upstream). Not a gap-length effect.
+Replay could not see it: fixture voice windows come from the clip WAVs, whose
+floor is digital silence.
+
+Fix, in the machine only. A voice stop counts toward the continuation clocks
+only while its words could still be on the way; once wordlessGraceMs (3 s)
+has passed with no worded final, it was not speech and drops out of the
+close rule and R15's staleness rule. Provenance for 3 s: on the 116 golden
+questions the last final follows the last voice stop by p50 708 ms, p99
+1029 ms, max 1041 ms; 3 s is ~3x the max. A worded final after the dispatch
+flips pendingAfterDispatch, so every stop these clocks see is one nobody's
+words followed yet. The close is therefore the later of dispatch + 8 s and
+last stop + 3 s; nextTimerAt names both. Named residual: a question whose
+first worded final lands inside 3 s of a blip's stop still joins the answered
+turn (the question would have to start almost as the blip ends).
+
+Why not the empty-final signal a565914 used: reverted in e15ef7d — the live
+after-run showed Deepgram sends it for some wordless blips and not others.
+
+Tests: three cases (blips -> close at the grace -> the next question's own
+dispatch; a question starting right after a blip is its own turn even with
+its first final under 8 s after the blip's stop; a short real continuation
+whose words land 0.8 s after its stop still supersedes) plus the constants
+table. Watched fail first; with the old rule restored the first two fail on
+behaviour. Replay unchanged: 116/116 once, 0 supersedes. tsc at the 6-error
+baseline.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

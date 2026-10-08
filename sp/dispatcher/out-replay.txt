@@ -1,0 +1,81 @@
+== calibration: committed fixtures, the committed test's own feed (--old --no-verdicts)
+2026-09-09T15-00-55-s50a: 40/40 once, doubles [], never [], early [], long-whole 15/15, median 1200 ms, max 3626 ms, drops 2 (NO verdicts fed)
+classify decisions 11, recorded 0, matched 0, unmatched replay classifies 0
+2026-09-08T08-44-56-after9: 79/79 once, doubles [], never [], early [], long-whole 0/0, median 1200 ms, max 3173 ms, drops 0 (NO verdicts fed)
+classify decisions 38, recorded 0, matched 0, unmatched replay classifies 0
+
+== br1, offset 1419 ms, recorded classify verdicts fed (today's machine)
+2026-09-30T11-45-30-br1: 40/40 once, doubles [], never [], early [], long-whole 15/15, median 1200 ms, max 65350 ms, drops 4
+classify decisions 9, recorded 11, matched 9, unmatched replay classifies 0
+  S1Q08   dispatches=1 firstLatency=65350 ms fromLive=true finals=0 cov=0.96 closes=[not-a-question,nothing-heard,continuation-expired]
+  S2Q01   dispatches=1 firstLatency=16698 ms fromLive=true finals=0 cov=0.43 closes=[continuation-expired,continuation-expired]
+trace S1Q08: played 11:01:26.808, voice off 11:01:44.368
+  11:01:45.568 classify finals=5 turn=15
+  11:01:45.568 matched replay classify 11:01:45.568 f=5 <- log classify 11:01:45.586 f=5 verdict=not-a-question due 11:01:45.960
+  11:01:45.960 close not-a-question
+  11:01:55.374 close nothing-heard
+  11:02:49.718 dispatch finals=0 live=1 fromLive=true text="Now, extend the platform design to handle delayed outcomes a"
+  11:02:57.718 close continuation-expired
+
+== br1, offset 1419 ms, NO verdicts fed (what the committed replay does)
+2026-09-30T11-45-30-br1: 39/40 once, doubles [S1Q08:2], never [], early [], long-whole 15/15, median 1200 ms, max 16698 ms, drops 4 (NO verdicts fed)
+classify decisions 9, recorded 11, matched 0, unmatched replay classifies 0
+  S1Q08   dispatches=2 firstLatency=3006 ms fromLive=false finals=5 cov=0.96 closes=[continuation-expired,continuation-expired]
+  S2Q01   dispatches=1 firstLatency=16698 ms fromLive=true finals=0 cov=0.43 closes=[continuation-expired,continuation-expired]
+trace S1Q08: played 11:01:26.808, voice off 11:01:44.368
+  11:01:45.568 classify finals=5 turn=15
+  11:01:47.374 dispatch finals=5 live=0 fromLive=false text="Now add delayed outcomes and experimentation, Extend that de"
+  11:01:55.374 close continuation-expired
+  11:02:49.718 dispatch finals=0 live=1 fromLive=true text="Now, extend the platform design to handle delayed outcomes a"
+  11:02:57.718 close continuation-expired
+
+== cuesmoke v2, offset 776 ms, recorded classify verdicts fed
+2026-09-30T13-46-52-cuesmoke: 19/20 once, doubles [S1Q08:2], never [], early [], long-whole 8/8, median 1200 ms, max 3700 ms, drops 0
+classify decisions 4, recorded 5, matched 4, unmatched replay classifies 0
+  S1Q08   dispatches=2 firstLatency=1200 ms fromLive=false finals=5 cov=0.84 closes=[continuation-expired,continuation-expired]
+trace S1Q08: played 13:36:57.196, voice off 13:37:14.756
+  13:37:15.956 dispatch finals=5 live=0 fromLive=false text="Now add delayed outcomes and experimentation. Extend that de"
+  13:37:23.956 close continuation-expired
+  13:38:32.425 dispatch finals=0 live=1 fromLive=true text="Extend that design so churn outcomes arrive 30 days later, a"
+  13:38:40.425 close continuation-expired
+
+== s50b, recorded classify verdicts fed
+2026-09-11T08-22-32-s50b: 40/40 once, doubles [], never [], early [], long-whole 15/15, median 1200 ms, max 6610 ms, drops 0
+classify decisions 7, recorded 7, matched 7, unmatched replay classifies 0
+  S2Q06   dispatches=1 firstLatency=6610 ms fromLive=true finals=0 cov=0.97 closes=[not-a-question,continuation-expired]
+
+== s50c, recorded classify verdicts fed
+2026-09-12T08-22-49-s50c: 40/40 once, doubles [], never [], early [], long-whole 15/15, median 1200 ms, max 6816 ms, drops 0
+classify decisions 5, recorded 7, matched 5, unmatched replay classifies 0
+  S2Q05   dispatches=1 firstLatency=6816 ms fromLive=true finals=0 cov=0.97 closes=[not-a-question,continuation-expired]
+
+== s50d, recorded classify verdicts fed
+2026-09-13T08-22-36-s50d: 39/40 once, doubles [], never [S2Q09], early [], long-whole 15/15, median 1200 ms, max 7060 ms, drops 1
+classify decisions 12, recorded 12, matched 12, unmatched replay classifies 0
+  S1Q04   dispatches=1 firstLatency=5902 ms fromLive=true finals=0 cov=0.92 closes=[not-a-question,continuation-expired]
+  S1Q06   dispatches=1 firstLatency=7035 ms fromLive=true finals=0 cov=0.97 closes=[not-a-question,continuation-expired]
+  S1Q08   dispatches=1 firstLatency=6263 ms fromLive=true finals=0 cov=1.00 closes=[not-a-question,continuation-expired]
+  S1Q09   dispatches=1 firstLatency=7060 ms fromLive=true finals=0 cov=1.00 closes=[not-a-question,continuation-expired]
+  S2Q04   dispatches=1 firstLatency=6033 ms fromLive=true finals=0 cov=0.92 closes=[not-a-question,continuation-expired]
+  S2Q05   dispatches=1 firstLatency=6905 ms fromLive=true finals=0 cov=0.97 closes=[not-a-question,continuation-expired]
+  S2Q05F  dispatches=1 firstLatency=5972 ms fromLive=true finals=0 cov=0.92 closes=[not-a-question,continuation-expired]
+  S2Q06   dispatches=1 firstLatency=6410 ms fromLive=true finals=0 cov=0.83 closes=[not-a-question,continuation-expired]
+  S2Q08   dispatches=1 firstLatency=6839 ms fromLive=true finals=0 cov=0.81 closes=[not-a-question,continuation-expired]
+  S2Q09   dispatches=0 firstLatency=null ms fromLive=null finals=null cov=0.00 closes=[not-a-question]
+
+== s50f, recorded classify verdicts fed
+2026-09-15T08-22-29-s50f: 40/40 once, doubles [], never [], early [], long-whole 15/15, median 1200 ms, max 7078 ms, drops 4
+classify decisions 7, recorded 8, matched 7, unmatched replay classifies 0
+  S2Q05   dispatches=1 firstLatency=7078 ms fromLive=true finals=0 cov=1.00 closes=[not-a-question,continuation-expired]
+
+== s50i, recorded classify verdicts fed
+2026-09-18T08-22-57-s50i: 40/40 once, doubles [], never [], early [], long-whole 15/15, median 1200 ms, max 6012 ms, drops 0
+classify decisions 10, recorded 12, matched 10, unmatched replay classifies 0
+  S2Q09   dispatches=1 firstLatency=6012 ms fromLive=false finals=2 cov=0.46 closes=[not-a-question,continuation-expired]
+
+== s50j, recorded classify verdicts fed
+2026-09-19T08-22-41-s50j: 40/40 once, doubles [], never [], early [], long-whole 15/15, median 1200 ms, max 7452 ms, drops 4
+classify decisions 11, recorded 11, matched 10, unmatched replay classifies 1 @ 07:47:37.977
+  S1Q07F  dispatches=1 firstLatency=5529 ms fromLive=true finals=0 cov=1.00 closes=[not-a-question,continuation-expired]
+  S1Q08F  dispatches=1 firstLatency=6922 ms fromLive=true finals=0 cov=1.00 closes=[not-a-question,continuation-expired]
+  S1Q10F  dispatches=1 firstLatency=7452 ms fromLive=false finals=2 cov=0.45 closes=[not-a-question,continuation-expired]

@@ -1,0 +1,27 @@
+const fs = require('fs');
+const dir = 'C:/Users/sotka/OneDrive/Masa\u00fcst\u00fc/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-09-15T08-22-29-s50f/';
+const pairs = JSON.parse(fs.readFileSync(dir + 'interview60.judge.pairs.qwen_qwen3.8-27b.json', 'utf8'));
+const raw = fs.readFileSync(dir + 'interview60.judge.verdicts.qwen_qwen3.8-27b.json', 'utf8');
+const v = JSON.parse(raw);
+const itemKeys = pairs.items.map(i => i.key);
+const vKeys = Object.keys(v);
+console.log('items in pairs:', itemKeys.length);
+console.log('keys in verdicts:', vKeys.length);
+console.log('missing:', itemKeys.filter(k => !(k in v)).join(',') || 'none');
+console.log('extra:', vKeys.filter(k => !itemKeys.includes(k)).join(',') || 'none');
+const bad = vKeys.filter(k => {
+  const e = v[k];
+  return !['correctness', 'on_topic', 'delivery'].every(f => Number.isInteger(e[f]) && e[f] >= 0 && e[f] <= 2) || typeof e.reason !== 'string' || !e.reason.length;
+});
+console.log('bad entries:', bad.join(',') || 'none');
+console.log('reason >25 words:', vKeys.filter(k => v[k].reason.trim().split(/\s+/).length > 25).join(',') || 'none');
+const both2 = vKeys.filter(k => v[k].correctness === 2 && v[k].on_topic === 2);
+const anyZero = vKeys.filter(k => v[k].correctness === 0 || v[k].on_topic === 0);
+console.log('correctness2 AND on_topic2:', both2.length);
+console.log('correctness0 OR on_topic0:', anyZero.length, anyZero.join(',') || '');
+const tot = k => v[k].correctness + v[k].on_topic + v[k].delivery;
+const sorted = vKeys.slice().sort((a, b) => tot(a) - tot(b) || v[a].correctness - v[b].correctness);
+console.log('lowest five:');
+sorted.slice(0, 5).forEach(k => console.log('  ' + k + ' total=' + tot(k) + ' c=' + v[k].correctness + ' o=' + v[k].on_topic + ' d=' + v[k].delivery));
+console.log('delivery 0 count:', vKeys.filter(k => v[k].delivery === 0).length);
+console.log('delivery 2 count:', vKeys.filter(k => v[k].delivery === 2).length);

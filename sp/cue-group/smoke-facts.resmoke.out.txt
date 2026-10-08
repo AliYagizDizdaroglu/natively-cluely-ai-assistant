@@ -1,0 +1,62 @@
+run 2026-09-30T13-46-52-cuesmoke
+log window 2026-09-30T12:56:45.277Z .. 2026-09-30T13:46:51.623Z; timeline items 20
+
+cue blocks: 24
+  13:11:52Z  ?       1 line(s), words 4:  ["Layer caching and order"]
+  13:12:08Z  ?       2 line(s), words 4/5:  ["KEDA with custom metrics","Scaling from zero and min"]
+  13:12:36Z  S1Q01   3 line(s), words 5/4/4:  ["XGBoost fits tabular churn data","Meets low-latency production constraints","Benchmarked against logistic regression"]
+  13:13:44Z  S1Q01F  3 line(s), words 5/5/4:  ["Logistic regression for linear interpretability","Neural nets for unstructured data","Rules for strict compliance"]
+  13:13:45Z  S1Q01F  1 line(s), words 5:  ["High interpretability and linear constraints"]
+  13:15:11Z  S1Q02   3 line(s), words 4/4/3:  ["Calculate actuals and targets","Derive precision and recall","Verify metric consistency"]
+  13:16:36Z  S1Q02F  2 line(s), words 5/5:  ["4x baseline PR-AUC lift and","Intervention cost, customer lifetime value,"]
+  13:17:52Z  S1Q03   2 line(s), words 5/5:  ["Yes, reduced churn to 8.1%","A/B testing with control groups"]
+  13:19:16Z  S1Q03F  3 line(s), words 5/4/3:  ["Wasting budget on lost causes","Targeting persuadables via uplift","Maximizing incremental ROI"]
+  13:20:47Z  S1Q04   3 line(s), words 5/5/5:  ["Precision, recall, and lift calculation","Stable sorting for score ties","Handling empty inputs and zeros"]
+  13:23:22Z  S1Q04F  2 line(s), words 4/4:  ["Partial sort via heaps","Secondary key for ties"]
+  13:24:54Z  S1Q05   2 line(s), words 4/3:  ["Chronological split with gap","Scikit-learn Pipeline preprocessing"]
+  13:27:55Z  S1Q05F  2 line(s), words 5/5:  ["Panel data for subscription dynamics","Customer-level holdout against data leakage"]
+  13:29:23Z  S1Q06   3 line(s), words 4/4/4:  ["Left join snapshots events","Thirty day window filter","Preserve zero call customers"]
+  13:32:00Z  S1Q06F  2 line(s), words 4/4:  ["Composite and BRIN indexes","Append-only corrections and upserts"]
+  13:33:28Z  S1Q07   3 line(s), words 4/5/5:  ["Unified feature store ingestion","Airflow training and Model Registry","FastAPI serving and drift monitoring"]
+  13:36:03Z  S1Q07F  2 line(s), words 4/4:  ["Idempotent checkpoints prevent duplicates","Pinned artifacts prevent mixing"]
+  13:37:21Z  S1Q08   3 line(s), words 5/5/5:  ["Log predictions with snapshots and","Deterministic hashing for experiment assignment","Thirty-day delayed joins with treatment"]
+  13:38:37Z  S1Q08   3 line(s), words 4/3/3:  ["Logging and deterministic assignment","Thirty-day outcome joins","Retraining data selection"]
+  13:39:59Z  S1Q08F  2 line(s), words 2/3:  ["Treatment-effect confounding","Policy-induced feedback loops"]
+  13:41:18Z  S1Q09   3 line(s), words 5/5/5:  ["Azure Blob and ML clusters","ACR, Model Registry, and AKS","ADF, Managed Identity, and Monitor"]
+  13:42:57Z  S1Q09F  3 line(s), words 5/5/5:  ["AML endpoints for ML inference","App Service for lightweight web","AKS for multi-container agent platforms"]
+  13:44:17Z  S1Q10   3 line(s), words 4/5/5:  ["Managed identities for authentication","Azure RBAC and Key Vault","Isolated resource groups and VNets"]
+  13:45:58Z  S1Q10F  3 line(s), words 4/4/5:  ["Identity verification and tokens","Azure RBAC role assignments","Network routing and private endpoints"]
+
+shape: empty 0, one line 2, two lines 9, three lines 13, more than three 0
+words per cue line: n 59, median 4, max 5, lines over 5 words 0; words per block: median 10.5
+items with more than one block: ? x2, S1Q01F x2, S1Q08 x2; items with no block: none
+
+cues trimmed lines: 5
+  13:12:08Z  ?       [cut 1]  {"rawLines":2,"dropped":[],"cut":["Scaling from zero and min replicas"],"cleaned":[]}
+  13:16:36Z  S1Q02F  [cut 2]  {"rawLines":2,"dropped":[],"cut":["4x baseline PR-AUC lift and strong ranking","Intervention cost, customer lifetime value, and net ROI"],"cleaned":[]}
+  13:37:21Z  S1Q08   [dropped 1, cut 2]  {"rawLines":4,"dropped":["Retrain with control groups or uplift weighting"],"cut":["Log predictions with snapshots and variant","Thirty-day delayed joins with treatment flags"],"cleaned":[]}
+  13:42:57Z  S1Q09F  [cut 1]  {"rawLines":3,"dropped":[],"cut":["App Service for lightweight web apps"],"cleaned":[]}
+  13:44:17Z  S1Q10   [cut 1]  {"rawLines":3,"dropped":[],"cut":["Azure RBAC and Key Vault for secrets"],"cleaned":[]}
+
+answers: full lines 23 (failed 1), superseded streams 1
+  failed at 13:12:08Z  ?:  "Could you repeat that? I want to make sure I address your question properly."
+  superseded at 13:13:45Z  S1Q01F
+hedge: gemini-3.5-flash-lite won 24 (at median 4479 ms, max 5649 ms)
+lines with "Knowledge mode (stream): returning generated intro response": 0
+lines with "__negotiationCoaching": 0
+lines with "turn: close reason=not-a-question": 0
+lines with "boundary repair: restored": 1
+
+first token (diag, this run): n 22, median 5295 ms, p90 6411 ms, max 13084 ms
+
+report rows:
+  - FAIL  Answered hands-free: 20/20 dispatched, 1 to nobody   (before: 26/52)
+  - PASS  Heard by either detector: 20/20   (before: 51/52)
+  - FAIL  Surfaced detections per question: 0 doubles, 0 extended, 1 superseded, 0 caught, 1 unclaimed   (before: 12 doubles, 1 invented)
+  - PASS  Long questions answered whole: 8 of 8 (dispatched text covers ≥ 80% of the question)   (before: not in the roster)
+  - PASS  Answer TTFT p90 · detect p50: 6.4 s · 0.5 s   (before: 3.7 s (answer-only pass) · 4.1 s)
+  - PASS  Cue block above every spoken answer: 22/22 present, 22 well-formed, 4 trimmed   (before: not logged (before cue mode))
+  **GATE FAILED — Answered hands-free; Surfaced detections per question; STT socket closes / lost utterances / fragment chips; Interview-acceptable answers (Opus 5 judge)**
+
+dist now: main.js written 2026-09-30T12:44:09.493Z; limits 3 x 5; CUE_RULE sha256/12 8e15e4e7dd41
+dist CUE_SHAPE_RULE: - At most 3 lines, each at most 5 words. The first line is the answer itself in the fewest words that carry it: one or two words when that is enough (asked "Tabs or spaces?", the whole block is 1| Spaces). A one-part question gets exactly one line. Add a line only for another part the QUESTION names, never for a point you add on your own; when it names more than 3 parts, group related parts into themes so every part is still covered in 3 lines.

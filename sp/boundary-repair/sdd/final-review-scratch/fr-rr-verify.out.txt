@@ -1,0 +1,26 @@
+1. round-start copies = the reviewed files
+OK   t4-r2/DeepgramStreamingSTT.boundaryRepair.test.ts 13838 B 2f3eb860c6142415
+OK   t4-r2/DeepgramStreamingSTT.ts 16236 B 57292516fc495df1
+OK   t4-r2/deepgramBoundaryRepair.ts 10743 B d5ba4da0650e7531
+OK   t4-r2/interview60.turns-finals.test.ts 4115 B d40c6c235cb69281
+2. MAIN now
+OK   electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts 14252 B 5f43849a3ce22ae0 CR=false BOM=false
+OK   electron/audio/DeepgramStreamingSTT.ts 16232 B 74fff12e86d916ae CR=false BOM=false
+OK   electron/audio/deepgramBoundaryRepair.ts 10955 B 97f1ba9fee3268c4 CR=false BOM=false
+OK   electron/test/golden/interview60.turns-finals.test.ts 4144 B 0796ae6832b70d9f CR=false BOM=false
+OK   electron/audio/deepgramBoundaryRepair.test.ts 13947 B 6956aea35dfef746 CR=false BOM=false
+OK   electron/audio/deepgramBoundaryRepair.fixtures.json 22788 B e65c6e746f821642 CR=false BOM=false
+OK   electron/audio/deepgramKeyterms.ts 5801 B b4431b9138d9688f CR=false BOM=false
+OK   electron/audio/deepgramKeyterms.test.ts 3429 B bfdd8a5d91f48da7 CR=false BOM=false
+OK   electron/test/golden/interview60.turns-finals.mjs 2119 B 365cca381954a2e0 CR=false BOM=false
+OK   electron/test/golden/interview60.turns-fixture.mjs 5470 B cfd7c87666393bb8 CR=false BOM=false
+3. the edited tests == my proposals rebuilt from the reviewed files
+OK   adapter test == fr-t4-cal proposal (byte for byte)
+OK   extractor test == fr-t5-cal proposal (byte for byte)
+4. comment-only: transpile identity (calibrated) + the header read as words
+OK   DeepgramStreamingSTT.ts: transpile before == after: true (11625 chars); calibration (data.speech_final === true -> data.speech_final == true) changes it: true
+OK   deepgramBoundaryRepair.ts: transpile before == after: true (3108 chars); calibration (REPAIR_WINDOW_MS = 5000 -> REPAIR_WINDOW_MS = 5001) changes it: true
+OK   module header, as words = reviewed header + exactly the two replacements
+OK   added header lines: 6, max 103 cols (header's widest before: 103), indentation kept
+OK   adapter: exactly "(median 187 per flight hour)" -> "(median 187 per run log)"
+ALL CHECKS PASS

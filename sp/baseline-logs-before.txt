@@ -1,0 +1,2 @@
+﻿verbal-diag.log 2848774 14:38:43 15E594E77DE1
+natively_debug.log 670135 14:39:53 210E6AEF4692

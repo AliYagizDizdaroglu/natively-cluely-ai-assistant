@@ -1,0 +1,29 @@
+rd-precheck-mutants.mjs: a copy of rd-precheck.ps1 with one gate rule off, run over the cases that must notice it
+script C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\rd-precheck.ps1
+
+ok   stamp-bound-moved (At - 4 -> At - 3 min)
+      cases A4: A4=BAD (each must read BAD on the mutant)
+ok   stamp-bound-exclusive (-gt -> -ge)
+      cases A5: A5=BAD (each must read BAD on the mutant)
+ok   record-T-vs-NextRunTime-not-compared
+      cases A7: A7=BAD (each must read BAD on the mutant)
+ok   T-line-count-not-checked
+      cases A6: A6=BAD (each must read BAD on the mutant)
+ok   night-gates-line-not-required
+      cases D1: D1=BAD (each must read BAD on the mutant)
+ok   dry-twin-result-ignored
+      cases D2: D2=BAD (each must read BAD on the mutant)
+ok   disable-not-done
+      cases P3: P3=BAD (each must read BAD on the mutant)
+ok   other-tasks-not-gated
+      cases T2: T2=BAD (each must read BAD on the mutant)
+ok   port-not-gated
+      cases T3: T3=BAD (each must read BAD on the mutant)
+ok   error-log-not-gated
+      cases T4: T4=BAD (each must read BAD on the mutant)
+ok   tail-not-gated
+      cases T5: T5=BAD (each must read BAD on the mutant)
+ok   electron-not-gated
+      cases T6: T6=BAD (each must read BAD on the mutant)
+
+PRECHECK MUTANTS OK 12/12 caught

@@ -1,0 +1,9 @@
+      const question = String(chip?.question ?? '');
+      this.dispatchDetection({
+        question,
+        intent: chip?.intent ?? 'verbal',
+        source: 'whisper',
+        anchor: question,
+        verdict: 'match',
+        chip,
+      });

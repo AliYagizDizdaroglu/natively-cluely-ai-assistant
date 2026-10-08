@@ -1,0 +1,18 @@
+{
+  "electron/llm/verbalHedge.ts": "4510e0b5d0689abcf0a4ff97c3fb6faaa4df5fb0733a75b4d7154443336215fb",
+  "electron/llm/verbalHedge.test.ts": "9da6352ed4eec85af7467c6b42ce826fbfd5120c1a4f03674413660367365ce4",
+  "electron/LLMHelper.verbalHedge.test.ts": "97eec33e86815304465e4c6caf761db5b465dc8184e7d4bdd6fae6218289c8ce",
+  "electron/LLMHelper.emptyStream.test.ts": "ba007d8cd971d8172d20b348317db63be21b27f8afb0e686cec1c7af678db123",
+  "electron/LLMHelper.geminiThinking.test.ts": "c5e1e6520c91b036f255b36c7928d74fe5ba664d08dd965f7ca16137334aa9e5",
+  "electron/LLMHelper.abortOnClose.test.ts": "ebcbfa8be109ae3059e1e5a43daddae253527d0e18ac10c6d994075bea3cdecf",
+  "electron/LLMHelper.stallFallback.test.ts": "3d6dd3c2705760c6b2f3e30f5ed5ce3e1da49f11c13f7215001e329836ffece7",
+  "electron/llm/WhatToAnswerLLM.answeringModel.test.ts": "31bc1460e11e4f1e02a9e882e6f0c40c2dc916fbfc89c162c2652a3ddc78905c",
+  "electron/LLMHelper.verbalPrimary.test.ts": "6a71861fd3f7980e46a8f4a807232d7c6e088cf36a52b2db048b8397c681e9ae",
+  "electron/test/golden/interview60.pass-record.test.ts": "501d4622abc1eb48b057d7e859601529364e1bf8d944eb3b80bfa1450a8447e3",
+  "electron/LLMHelper.ts": "4251a061ed772b5d40f5afd7e18ea2c6c2dddd05ca792be30f147463079c9e20",
+  "electron/llm/verbalPrimaryModel.ts": "91c043f01a8a9841729cd8e0fe81a6099c7a7091abf9e2e7567ecfeee031c96b",
+  "electron/LLMHelper.geminiSystemInstruction.test.ts": "177c0ac03cad39f3abefec9e1a5263d41e7f1b46d32509fbecde29db6eb4d7be",
+  "electron/LLMHelper.customNotes.test.ts": "b39972db8b0c5ce05ea8c6e45a3e553413b484b8d2ad3fbccd8de2a11548c28e",
+  "electron/test/golden/interview60.pass-record.mjs": "4f4c702035c258b851c0accfcc151a1e8783373e69602e2ec3bb62a5d073bf8e",
+  "electron/test/golden/interview60.flight.mjs": "85854c395c1f50c39cc38775aeec820e15524130390e099d81c0acc57e478ea1"
+}

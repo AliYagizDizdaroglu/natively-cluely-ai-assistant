@@ -1,0 +1,14 @@
+id     in-app (as shown)   3.8 Flash           3.5-lite HIGH r1    3.1-lite LOW r1     
+R13    122/122 weak        221/221 ACC         221/221 ACC         221/221 ACC          flash vs in-app: BETTER
+R12    222/222 ACC         222/222 ACC         222/222 ACC         221/221 ACC          flash vs in-app: same
+R08    122/122 weak        222/222 ACC         222/222 ACC         122/122 weak         flash vs in-app: BETTER
+R11F   112/112 weak        222/222 ACC         112/112 weak        112/112 weak         flash vs in-app: BETTER
+R33    022/022 WRONG       222/222 ACC         222/222 ACC         121/121 weak         flash vs in-app: BETTER
+
+totals over 5 items (acceptable by both / by either / wrong by any grader):
+  in-app (as shown)    1 / 1 / 1
+  3.8 Flash            5 / 5 / 0
+  3.5-lite HIGH r1     4 / 4 / 0
+  3.1-lite LOW r1      2 / 2 / 0
+
+first token, offline, these items: 3.8 Flash median 9152 ms; 3.5-lite HIGH r1 3973 ms; 3.1-lite LOW r1 3763 ms

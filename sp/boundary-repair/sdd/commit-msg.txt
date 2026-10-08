@@ -1,0 +1,59 @@
+fix(stt): a word lost between two Deepgram finals is restored from the interim
+
+Flight h40c R22: Deepgram's interim held "How do you cut hallucinations
+in a rag answer without just making", its finals were "How do you cut"
+and "in a rag answer without just making it refuse?", and the app
+answered the joined finals without "hallucinations". Streaming cached
+clips to Deepgram with the app's live options reproduced it: a final
+stops short of its interim and the next final resumes one or two words
+later (6 of 20 and 9 of 48 plays lost a word). The loss is Deepgram's;
+the interim is the only place the word survives.
+
+deepgramBoundaryRepair remembers such a cut and, when the next final
+arrives within 5 s and starts at the interim's second or third word
+after it, puts the skipped word(s) back in the interim's spelling. A cut
+is the interim's prefix, or the prefix with a re-spelled last word
+("RAC" -> "Rag": same first letter, no digit, no longer, so a word
+covering more than the interim's, "ninety two percent" -> "92%" or
+"all right" -> "Alright", is no re-spelling). No cut is kept when the
+interim holds a non-ASCII letter or when the cut final carries
+speech_final; an empty final or an UtteranceEnd clears it. A lone word
+after the cut is never restored: text alone cannot tell a loss from a
+re-hearing there.
+
+DeepgramStreamingSTT creates one repair per socket, only for English
+(isEnglishLanguage, now shared with keytermsFor), passes speech_final,
+clears on pauses, and logs each repair on the line right after its
+final; the golden turns extractor replays that pair as the app saw it
+and refuses a repair line that is not right under its own final.
+
+Evidence: the module equals the reference rule event for event on every
+recorded run log and the two earlier seam recordings (13,892 events)
+and on 45 fixtures. On the non-holdout logs it makes 25 repairs, all
+true against the scripted question (25 is a floor on the losses), and 6
+in those two recordings. A fresh seam recording of 10 other non-holdout
+clips (30 plays, the reference rule under the adapter's wiring) made 1
+repair, true, and none wrong. Holdout is no independent validation:
+v2's holdout failures chose what v3 removed. Beyond that, no holdout
+count was used for any choice (v4's tallies are non-holdout only), and
+R22 plus the 4 holdout repairs are excluded from future holdout
+measurement of this rule.
+
+Recall is partial: 6 of the 15 seam plays that lost a word were
+restored (2 of 9 on the second recording, made after v3 was settled),
+and 4 of those 9 left no interim evidence at all. A loss right after an
+inflected cut ("scale" -> "scales") also stays unrepaired, a restored
+word loses punctuation inside it ("4.1" -> "4 1"), and a strict cut
+past a smart_format rewrite (interim "92 percent for each", final
+"92%.") would still restore "percent"; neither of the last two occurs
+in the data.
+
+Reviewed: Opus reviews of the spec (v3 and v4), of each of the five
+tasks and of the whole change; its one fix round (a test that pins the
+adapter's clock, comment corrections) was re-reviewed and approved.
+Suites: electron/audio 10 files / 143 tests; turns-finals plus
+interviewerTurn 48/48; root tsc clean, electron tsc at the 6 baseline
+errors. The built module is checked against the reference after the
+build, and live on the next app hour.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

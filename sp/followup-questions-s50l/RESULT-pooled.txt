@@ -1,0 +1,13 @@
+additivity OK: n 47+42=89, R 21+21=42, wrongA 0+0, wrongB 0+1, offA 9+6, offB 3+0, slowA 6+0, slowB 7+0, accA 10+11, accB 13+16
+POOLED (s50m Thursday + s50l Saturday): 47 + 42 pairs; instrument 8564ba96369a; graders claude-opus-5-5
+incomplete pairs (excluded): m:C5#1
+answers empty after the filters (scored 0/0/0): none
+n = 89 complete (item, rep) pairs; roster pairs R = 42
+1. no new wrong answers        consensus-wrong B 1 <= A 0: FAIL
+2. no rise in off-topic        consensus-off-topic B 3 <= A 15: holds
+3a. not later (median)         median paired TTFT B-A 131 ms (holds <= +500, FAIL > +1000): holds
+3b. not later (p90)            p90 B 9610 ms vs p90 A 8771 ms + 2000: holds
+3c. stalls                     TTFT > 10 s: B 7 <= A 6 + 5: holds
+4. not longer                  median paired words B-A 3 (holds <= +5, FAIL > +10): holds
+5. gain, roster pairs          consensus-acceptable B 29 - A 21 = +8 (PASS >= +8, FAIL <= +2): PASS
+DECISION: FAIL

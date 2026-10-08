@@ -1,0 +1,18 @@
+run: thoughts-2c
+cue twins (gemini-3.5-flash-lite_cuesbench)
+  -r1 interview60.answers.gemini-3.5-flash-lite_cuesbench.json: answered 38, holes 0, empty prose 1 [S2Q06F], no thoughts 0; thoughts p50 954 p90 1277; ttft p50 4052 p90 5217 ms
+  -r2 interview60.answers.gemini-3.5-flash-lite_cuesbench-r2.json: answered 39, holes 0, empty prose 0, no thoughts 0; thoughts p50 983 p90 1268; ttft p50 4048 p90 4571 ms
+  -r3 interview60.answers.gemini-3.5-flash-lite_cuesbench-r3.json: answered 39, holes 0, empty prose 0, no thoughts 0; thoughts p50 963 p90 1309; ttft p50 3852 p90 5133 ms
+  pooled: n 116, thoughts p50 955 p90 1268; ttft p50 4006 p90 5127 ms; rep medians [954, 983, 963] spread 29; one rep against the other two pooled: [29, 28, 8] max 29
+  theil-sen ms per thought token, pooled reps: all 2.91 (n 116), stalls over 10000 ms excluded 2.91 (n 116)
+no-cue twins (control) (gemini-3.5-flash-lite_captured-high)  [from C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-09-22T08-22-50-s50m]
+  -r1 interview60.answers.gemini-3.5-flash-lite_captured-high.json: answered 39, holes 0, empty prose 0, no thoughts 0; thoughts p50 911 p90 1206; ttft p50 3858 p90 4712 ms
+  -r2 interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json: answered 38, holes 0, empty prose 1 [S2Q06], no thoughts 0; thoughts p50 892 p90 1062; ttft p50 3733 p90 4363 ms
+  -r3 interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json: answered 39, holes 0, empty prose 0, no thoughts 0; thoughts p50 899 p90 1095; ttft p50 3860 p90 4475 ms
+  pooled: n 116, thoughts p50 900 p90 1140; ttft p50 3858 p90 4536 ms; rep medians [911, 892, 899] spread 19; one rep against the other two pooled: [13, 12, 1] max 13
+  theil-sen ms per thought token, pooled reps: all 2.71 (n 116), stalls over 10000 ms excluded 2.75 (n 115)
+rule 2c: thoughts coverage cue 116/116 control 116/116 -> thinking tokens decide
+rule 2c: cue pooled median thoughts - control pooled median thoughts = 55 tokens (threshold +150); p90 difference 128 (reported)
+rule 2c: cue pooled median ttft - control pooled median ttft = 148 ms (fallback threshold +1000; the 0.5 s line is reported: within); p90 difference 591 ms (reported)
+rule 2c reading: PASS
+rule 2c holes: cue 0, control 0 (a rep with more than 3 true holes makes 2c and 3c INCOMPLETE; otherwise 2c is read on the ids answered); empty prose: cue 1, control 1 (each counts wrong in 3c)

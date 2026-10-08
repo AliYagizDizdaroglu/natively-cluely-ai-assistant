@@ -1,0 +1,236 @@
+{
+  "S1Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sound interpretability/data-complexity framing for all three options, but well over 85 words."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "True positives and precision computed correctly, but recall was explicitly asked and never stated."
+  },
+  "S1Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct on class imbalance inflating ROC and on threshold cost-benefit; too long to speak."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Randomized holdout plus difference-in-differences is the right causal answer; length exceeds spoken range."
+  },
+  "S1Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct persuadables/uplift reasoning, but opening 'You're spot on' is the wrong register for a candidate."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Stable argsort and edge cases are right, but the answer is a raw Python code block, unspeakable."
+  },
+  "S1Q04F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "argpartition is right, but 'the Thai rule' garble and vague pre-filtering miss how ties stay stable."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split with a 30-day buffer and train-only ColumnTransformer fit is exactly right; slightly long."
+  },
+  "S1Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly ties repeated snapshots to time-dependent modeling and names the customer-level leakage risk."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Left join with the window, ingested-at cutoff and count preserving zeros is correct; over length."
+  },
+  "S1Q06F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Indexes the snapshots key rather than the events lookup columns; corrections advice is sound."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Shared feature store for batch/online parity plus registry, serving and drift monitoring; too long."
+  },
+  "S1Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Idempotency keys, checkpointed state and a pinned model version answer the resume problem cleanly."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers logging, deterministic bucketing, the delayed join and a maturity cutoff; exceeds spoken length."
+  },
+  "S1Q08F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Right feedback-loop intuition but mislabels it 'label leakage'; stray markdown asterisks around 'because'."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate AWS-to-Azure mapping across every asked component, but far too long to say aloud."
+  },
+  "S1Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct split of managed endpoints, App Service glue and AKS for custom control; over length."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Managed identity, RBAC role, Entra ID for Postgres, Key Vault CSI and private endpoints, tightly said."
+  },
+  "S1Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Cleanly separates token acquisition, role assignment and NSG/private-endpoint connectivity checks."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every stage accurately and ties them to the CV work, but roughly twice the spoken length."
+  },
+  "S2Q01F": {
+    "correctness": 2,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Correct on lost-in-the-middle and weak grounding, but ignores parsing, chunking and reranking failures."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives unit, denominator, construction and uncertainty for all three metrics; over spoken length."
+  },
+  "S2Q02F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Strong ablation and judge-bias checks, but the prompting ablation that was explicitly asked is missing."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sharply contrasts fixed workflow, decomposition and a read-think-act loop for dependent retrieval."
+  },
+  "S2Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Step caps, token budgets and a circuit-breaker fallback answer all three asked controls concisely."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct RRF accumulation with one-over-c-plus-rank and doc id as the deterministic tie-break."
+  },
+  "S2Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Right on incomparable score scales and weighted RRF; a little long for a spoken follow-up."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Hits every constraint: relevance sort, id dedup set, per-document cap of two, and budget skip."
+  },
+  "S2Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Concrete coverage-failure example plus MMR and decomposition, though the example drifts toward retrieval; long."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore of eight, wait_for timeout, per-task try-except and gather ordering are all correct; long."
+  },
+  "S2Q06F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Answers only the deterministic-testing half; never designs the transient retry within an overall deadline."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-partitioned index, Postgres metadata, pre-filtered ACLs, citation offsets and evals; far too long."
+  },
+  "S2Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names the time-of-check-to-time-of-use risk and re-checks authorization at the fetch itself."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioned embeddings, dual-write backfill, golden-set comparison and flag cutover/rollback; over length."
+  },
+  "S2Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Parity counts, golden-set retrieval comparison and shadow traffic prove completeness well; slightly long."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure service per component with a defensible managed-versus-custom line; exceeds spoken length."
+  },
+  "S2Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Azure Policy pinning, regional OpenAI endpoints and scoped telemetry are the right residency levers; long."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Idempotency key, upsert, status table and peek-lock expiry make redelivery safe; too long spoken."
+  },
+  "S2Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "maxDeliveryCount, DLQ replay consumer and tombstone with version ordering cover all three; over length."
+  }
+}

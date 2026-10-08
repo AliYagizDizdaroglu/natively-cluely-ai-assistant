@@ -1,0 +1,22 @@
+{
+ "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Covers tabular fit, missing values, production constraints and a logistic regression baseline concisely."},
+ "S1Q02": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Arithmetic correct (2,850 TP, 57% precision, 30% recall) with honest inconsistency verdict; slightly over length."},
+ "S1Q03": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Holdout and adjustment sound, but wrongly claims the whole 9.5-to-8.1 delta is definitively attributable; long."},
+ "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Stable sort, metrics and all edge cases addressed with defensible choices; over 85 words."},
+ "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Chronological split with label-horizon gap and train-only Pipeline fitting is correct; far too long."},
+ "S1Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Left join with 30-day window, ingestion cutoff and zero preservation all correctly described."},
+ "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers all stages with shared feature store and model artifact; online prediction storage thin; long."},
+ "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Logging, hashed assignment, delayed joins and treatment-aware retraining selection all addressed."},
+ "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sensible Azure service per component with operational reasons; well over 85 words."},
+ "S1Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Managed identity, Private Link, RBAC, Key Vault and per-environment isolation correct; long."},
+ "S2Q01": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Walks through stages but generically, with a weak experience mapping and a no-hallucinations overclaim."},
+ "S2Q02": {"correctness": 1, "on_topic": 2, "delivery": 0, "reason": "Leaked __SPOKEN__ tag; F1 given a single recall-style denominator and details sound fabricated."},
+ "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Sound comparison keyed on sequential dependency, but leaked __CUES__ tag cannot be spoken as-is."},
+ "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct RRF accumulation, score-then-id tie-break and top-k slice."},
+ "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Greedy sort, dedup set, per-document cap and budget skip all correct; slightly long."},
+ "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Pool of eight, per-case timeout race, settled handling and index-preserving order all covered."},
+ "S2Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Tenant-partitioned hybrid index, versioned chunks, query-time permission filtering and evaluation covered; long."},
+ "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Versioned dual index, backfill, dual-write sync, offline comparison, flagged cutover and rollback; long."},
+ "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Appropriate Azure services for each component and a justified custom parser; over length."},
+ "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Peek-lock plus idempotent upsert on a deterministic key makes reprocessing safe."}
+}

@@ -1,0 +1,1 @@
+What does Kubernetes HPA scale on by default?

@@ -1,0 +1,17 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn[39m
+
+[90mstderr[2m | electron/llm/verbalStreamFilter.test.ts[2m > [22m[2mfilterCodeFences — the app suppresses fenced blocks, and so must the arms[2m > [22m[2msuppresses a fenced block and keeps the prose around it
+[22m[39m[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+[90mstderr[2m | electron/llm/verbalStreamFilter.test.ts[2m > [22m[2mfilterCodeFences — the app suppresses fenced blocks, and so must the arms[2m > [22m[2msuppresses it when the text arrives one character at a time
+[22m[39m[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+ [32m✓[39m electron/llm/verbalStreamFilter.test.ts [2m([22m[2m72 tests[22m[2m)[22m[90m 114[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m72 passed[39m[22m[90m (72)[39m
+[2m   Start at [22m 22:03:30
+[2m   Duration [22m 3.48s[2m (transform 265ms, setup 0ms, collect 304ms, tests 114ms, environment 2.05s, prepare 386ms)[22m
+

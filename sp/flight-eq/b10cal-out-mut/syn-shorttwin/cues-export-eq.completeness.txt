@@ -1,0 +1,17 @@
+LOG natively_debug.log b96d3c620a359d89e9f9b3828df8bb2529e72e928a0301768ac4609e5de8dd75
+ARMING sha256/12 d3c85a46dca4 head 56bda9e
+window 2026-10-05T23:00:00.000Z 2026-10-05T23:06:40.000Z
+in-app entries 3 ids 3
+in-app joined to pairs 3 unjoined 0
+cue lines in window 3 outside window 1
+full lines in window 3 outside window 1
+full lines exempt (probe) 0
+empties 0
+cueBlocks present 3 = non-empty entries 3 + non-empty superseded 0 + non-empty probe lines 0: OK
+twin captured-high-r1 entries 3 asked 3 (timeline items)
+twin captured-high-r2 entries 3 asked 3 (timeline items)
+twin captured-high-r3 entries 2 asked 3 (timeline items) MISMATCH S1Q02
+twin captured-low-r1 entries 3 asked 3 (timeline items)
+twin captured-low-r2 entries 3 asked 3 (timeline items)
+twin captured-low-r3 entries 3 asked 3 (timeline items)
+EXPORT INCOMPLETE: captured-high-r3:S1Q02

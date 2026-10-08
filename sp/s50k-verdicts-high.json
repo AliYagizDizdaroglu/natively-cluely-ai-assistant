@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Covers data fit, native missing-value handling, inference cost and an L1 logistic baseline with a lift metric; ~72 words."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic exact (9,500 churners, 5,000 flagged, 2,850 TP, 30 percent recall, 57 percent precision) and the rounding call is defensible."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout plus regression adjustment and propensity matching correctly separates model effect from seasonality and mix; ~75 words."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Claims recall and lift 'naturally evaluate to zero' when prevalence is zero, but those are undefined divisions; also ~124 words."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct thirty-day embargo, ColumnTransformer fit on train only, estimator inside the Pipeline; slightly long at about 90 words."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Names the left join but never says the filters must sit in the ON clause and counts a nullable column, the exact zero-call trap; ~98 words."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Hits every requested stage and correctly names shared feature definitions as the anti-skew boundary, but runs about 106 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Prediction logging with variant, consistent hashing, lagged join on prediction id, propensity weighting for treated users; ~103 words."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure mapping across all eight areas with operational rationale, but about 116 words is well past a spoken answer."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC, Entra auth to PostgreSQL, Key Vault fallback and private endpoints all correct; about 102 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every named stage including layout-aware parsing and cross-encoder reranking, then ties it to experience; about 111 words."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives unit, denominator, dataset construction and uncertainty for all three metrics, though the F1 denominator covers only the gold side; very long."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sharp comparison turning on whether the next query depends on the previous result, the right dividing line; about 119 words."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Reciprocal rank fusion stated exactly to spec with one-based ranks, constant c, id tie-break and top-k slice; about 83 words."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy sort, budget tracking, id dedupe, two-per-document cap and skip-not-stop behaviour all correct; about 103 words."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Concurrency cap of eight, per-case timeout race, index-preserved results and per-case catch so failures stay isolated; just over length."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-partitioned hybrid index, Postgres metadata with ACLs, pre-filtered retrieval and Ragas evaluation; about 107 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioning, dual-write backfill, shadow comparison, flag cutover and instant rollback all addressed; about 117 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct service-by-service Azure placement plus a real custom-component justification, but roughly 140 words is far past spoken length."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "PeekLock plus a Cosmos dedupe key written atomically with the embedding before Complete is the right idempotency story; about 118 words."
+  }
+}

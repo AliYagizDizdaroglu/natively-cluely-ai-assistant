@@ -1,0 +1,189 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts (68 tests | 10 failed) 61ms
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > negative #28 with the interim running on: a digit token at the cut ("ninety two percent" -> "92%.") is no cut 12ms
+     → expected 'two percent For each of those metrics…' to be 'For each of those metrics, define the…' // Object.is equality
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > "twenty five" -> "25": the same shape (v3 restored "five") 1ms
+     → expected 'five last quarter. What changed?' to be 'last quarter. What changed?' // Object.is equality
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > "all right" -> "Alright": a final token longer than the interim's is a merge, not a re-spelling (v3 restored "right") 2ms
+     → expected 'right So tell me about your last proj…' to be 'So tell me about your last project.' // Object.is equality
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > "break" -> "breaks": a longer final token is refused even when it is only an inflection, so a word lost right after it stays lost (v3 restored "even") 1ms
+     → expected 'even before the rollout finishes.' to be 'before the rollout finishes.' // Object.is equality
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > a re-spelling keeps its first letter: "put" for "cut" is no cut ("cat" for "cut" still is — the edge above) 1ms
+     → expected 'hallucinations in a rag answer withou…' to be 'in a rag answer without just making i…' // Object.is equality
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > an interim with a non-ASCII letter that splits the tokenisers ("İ") is no cut 1ms
+     → expected 'zmir projesinde projesinde hangi veri…' to be 'projesinde hangi veritabanını seçtini…' // Object.is equality
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum" 1ms
+     → expected 'r sum and your last role.' to be 'and your last role.' // Object.is equality
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > clear() between F1 and F2 (the adapter's empty final / UtteranceEnd) forgets the cut 1ms
+     → r.clear is not a function
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > clear() also forgets the latest interim: a final after a pause is not a cut of it 1ms
+     → r.clear is not a function
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > speechFinal on F1 (Deepgram heard the utterance end there) leaves no cut; on F2 it does not stop the repair 9ms
+     → expected { …(2) } to deeply equal { …(2) }
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > negative #28 with the interim running on: a digit token at the cut ("ninety two percent" -> "92%.") is no cut
+AssertionError: expected 'two percent For each of those metrics…' to be 'For each of those metrics, define the…' // Object.is equality
+
+Expected: "For each of those metrics, define the unit of evaluation,"
+Received: "two percent For each of those metrics, define the unit of evaluation,"
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:144:14
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > "twenty five" -> "25": the same shape (v3 restored "five")
+AssertionError: expected 'five last quarter. What changed?' to be 'last quarter. What changed?' // Object.is equality
+
+Expected: "last quarter. What changed?"
+Received: "five last quarter. What changed?"
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:149:14
+    147|     it('"twenty five" -> "25": the same shape (v3 restored "five")', (…
+    148|         expect(play([at('we cut latency by twenty five last quarter', …
+    149|             .toBe('last quarter. What changed?');
+       |              ^
+    150|     });
+    151| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > "all right" -> "Alright": a final token longer than the interim's is a merge, not a re-spelling (v3 restored "right")
+AssertionError: expected 'right So tell me about your last proj…' to be 'So tell me about your last project.' // Object.is equality
+
+Expected: "So tell me about your last project."
+Received: "right So tell me about your last project."
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:154:14
+    152|     it('"all right" -> "Alright": a final token longer than the interi…
+    153|         expect(play([at('thanks all right so tell me about', false, 0)…
+    154|             .toBe('So tell me about your last project.');
+       |              ^
+    155|     });
+    156| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > "break" -> "breaks": a longer final token is refused even when it is only an inflection, so a word lost right after it stays lost (v3 restored "even")
+AssertionError: expected 'even before the rollout finishes.' to be 'before the rollout finishes.' // Object.is equality
+
+Expected: "before the rollout finishes."
+Received: "even before the rollout finishes."
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:162:14
+    160|     it('"break" -> "breaks": a longer final token is refused even when…
+    161|         expect(play([at('the deploy would break even before the rollou…
+    162|             .toBe('before the rollout finishes.');
+       |              ^
+    163|     });
+    164| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > a re-spelling keeps its first letter: "put" for "cut" is no cut ("cat" for "cut" still is — the edge above)
+AssertionError: expected 'hallucinations in a rag answer withou…' to be 'in a rag answer without just making i…' // Object.is equality
+
+Expected: "in a rag answer without just making it refuse?"
+Received: "hallucinations in a rag answer without just making it refuse?"
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:166:66
+    164| 
+    165|     it('a re-spelling keeps its first letter: "put" for "cut" is no cu…
+    166|         expect(play([I, { ...F1, text: 'How do you put' }, F2])).toBe(…
+       |                                                                  ^
+    167|     });
+    168| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > an interim with a non-ASCII letter that splits the tokenisers ("İ") is no cut
+AssertionError: expected 'zmir projesinde projesinde hangi veri…' to be 'projesinde hangi veritabanını seçtini…' // Object.is equality
+
+Expected: "projesinde hangi veritabanını seçtiniz?"
+Received: "zmir projesinde projesinde hangi veritabanını seçtiniz?"
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:174:14
+    172|     it('an interim with a non-ASCII letter that splits the tokenisers …
+    173|         expect(play([at('Peki İzmir projesinde hangi veritabanını seçt…
+    174|             .toBe('projesinde hangi veritabanını seçtiniz?');
+       |              ^
+    175|     });
+    176| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+AssertionError: expected 'r sum and your last role.' to be 'and your last role.' // Object.is equality
+
+Expected: "and your last role."
+Received: "r sum and your last role."
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:181:14
+    179|     it('an interim with a non-ASCII letter is no cut: a lost "résumé" …
+    180|         expect(play([at('tell me about your résumé and your last role'…
+    181|             .toBe('and your last role.');
+       |              ^
+    182|     });
+    183| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > clear() between F1 and F2 (the adapter's empty final / UtteranceEnd) forgets the cut
+TypeError: r.clear is not a function
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:188:11
+    186|         r.onTranscript(I.text, false, I.atMs);
+    187|         r.onTranscript(F1.text, true, F1.atMs);
+    188|         r.clear();
+       |           ^
+    189|         expect(r.onTranscript(F2.text, true, F2.atMs)).toEqual({ text:…
+    190|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > clear() also forgets the latest interim: a final after a pause is not a cut of it
+TypeError: r.clear is not a function
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:195:11
+    193|         const r = createBoundaryRepair();
+    194|         r.onTranscript(I.text, false, I.atMs);
+    195|         r.clear();
+       |           ^
+    196|         r.onTranscript(F1.text, true, F1.atMs);
+    197|         expect(r.onTranscript(F2.text, true, F2.atMs)).toEqual({ text:…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > speechFinal on F1 (Deepgram heard the utterance end there) leaves no cut; on F2 it does not stop the repair
+AssertionError: expected { …(2) } to deeply equal { …(2) }
+
+- Expected
++ Received
+
+  Object {
+-   "restored": null,
+-   "text": "in a rag answer without just making it refuse?",
++   "restored": Array [
++     "hallucinations",
++   ],
++   "text": "hallucinations in a rag answer without just making it refuse?",
+  }
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:204:56
+    202|         r.onTranscript(I.text, false, I.atMs);
+    203|         r.onTranscript(F1.text, true, F1.atMs, true);
+    204|         expect(r.onTranscript(F2.text, true, F2.atMs)).toEqual({ text:…
+       |                                                        ^
+    205|         const r2 = createBoundaryRepair();
+    206|         r2.onTranscript(I.text, false, I.atMs);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+
+ Test Files  1 failed (1)
+      Tests  10 failed | 58 passed (68)
+   Start at  21:27:48
+   Duration  5.67s (transform 215ms, setup 0ms, collect 303ms, tests 61ms, environment 3.10s, prepare 471ms)
+

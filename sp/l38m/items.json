@@ -1,0 +1,329 @@
+{
+ "class": {
+  "E01": "E",
+  "E01F": "AF",
+  "H01": "H",
+  "H01F": "HF",
+  "E02": "E",
+  "H02": "H",
+  "H02F": "AF",
+  "E03": "E",
+  "E03F": "QF",
+  "H03": "H",
+  "H03F": "AF",
+  "E04": "E",
+  "E04F": "QF",
+  "H04": "H",
+  "H04F": "AF",
+  "E05": "E",
+  "H05": "H",
+  "H05F": "AF",
+  "E06": "E",
+  "E06F": "QF",
+  "H06": "H",
+  "H06F": "AF",
+  "E07": "E",
+  "H07": "H",
+  "H07F": "AF",
+  "E08": "E",
+  "H08": "H",
+  "E09": "E",
+  "H09": "H",
+  "H09F": "AF",
+  "E10": "E",
+  "H10": "H",
+  "E11": "E",
+  "E11F": "AF",
+  "H11": "H",
+  "E12": "E",
+  "E12F": "QF",
+  "H12": "H",
+  "H12F": "AF",
+  "E13": "E",
+  "H13": "H",
+  "E14": "E",
+  "H14": "H",
+  "H14F": "HF",
+  "E15": "E",
+  "H15": "H",
+  "E16": "E",
+  "E16F": "QF",
+  "H16": "H",
+  "H16F": "AF",
+  "E17": "E",
+  "E17F": "AF",
+  "H17": "H",
+  "H17F": "AF",
+  "E18": "E",
+  "H18": "H",
+  "H18F": "AF",
+  "E19": "E",
+  "H19": "H",
+  "E20": "E",
+  "E20F": "AF",
+  "H20": "H",
+  "H20F": "AF"
+ },
+ "text": {
+  "E01": "For a heavily imbalanced churn classifier, would you report accuracy or PR-AUC?",
+  "E01F": "Why that one?",
+  "H01": "Your churn model's PR-AUC fell from 0.62 to 0.48 in production this month. Walk me through how you would find out whether it is data drift, concept drift or a pipeline bug.",
+  "H01F": "Which of those would you rule out first, and how?",
+  "E02": "In XGBoost, what does the learning rate scale?",
+  "H02": "How do you choose between XGBoost and logistic regression for churn when the business needs a reason code for every customer?",
+  "H02F": "Does your choice change at five hundred million rows?",
+  "E03": "In top-k retrieval for RAG, what does k control?",
+  "E03F": "And what happens to recall as k grows?",
+  "H03": "Design the chunking and retrieval for fifty thousand PDF contracts where clauses reference other clauses.",
+  "H03F": "What latency budget does your design assume?",
+  "E04": "Which HTTP status should your gateway return when the downstream model times out?",
+  "E04F": "And for a malformed client payload?",
+  "H04": "How would you evaluate a RAG system's answers without human labels for every question?",
+  "H04F": "Which failure would that evaluation miss?",
+  "E05": "What does a Kubernetes readiness probe gate?",
+  "H05": "Design a Python AI gateway that fronts three LLM providers, with failover, per-tenant rate limits and cost tracking.",
+  "H05F": "What's the time complexity of your rate limiter?",
+  "E06": "Is a ConfigMap the right place for an API key?",
+  "E06F": "How are a Secret's values encoded?",
+  "H06": "A FastAPI service's p99 latency doubles under load while CPU stays at thirty percent. What do you check, and in what order?",
+  "H06F": "Which of those checks would you automate?",
+  "E07": "Which S3 storage class would you use for training data you read once a year?",
+  "H07": "How would you autoscale a GPU inference service on Kubernetes when requests arrive in bursts and a cold start takes ninety seconds?",
+  "H07F": "Where does your approach break first?",
+  "E08": "In Airflow, what does catchup equals false do?",
+  "H08": "Explain the difference between requests and limits for a model-serving pod, and what happens when the pod exceeds each.",
+  "E09": "Does a Docker container share the host's kernel?",
+  "H09": "Design an A/B test for a new recommendation model on a retail site where purchases are rare and seasonal.",
+  "H09F": "How long would you run it?",
+  "E10": "Which Dockerfile instruction sets the container's default command?",
+  "H10": "How would you detect and handle a feedback loop where the recommender keeps showing only the items it has already recommended?",
+  "E11": "Which SageMaker feature serves many models from one endpoint?",
+  "E11F": "Have you used that in production?",
+  "H11": "Compare a SageMaker real-time endpoint, serverless inference and batch transform for a model called two thousand times a day with a two-second SLA.",
+  "E12": "Which statistical test would you reach for to detect drift in a numeric feature?",
+  "E12F": "And for a categorical feature?",
+  "H12": "Set up monitoring for a deployed credit model: which signals, which thresholds, and who gets paged for what?",
+  "H12F": "How would you avoid alert fatigue with that setup?",
+  "E13": "When a CloudFormation stack is deleted, what happens to its resources by default?",
+  "H13": "Design the S3 layout and lifecycle policy for training data that arrives daily, is reprocessed weekly and must be kept for seven years for audit.",
+  "E14": "Which CI step should block a merge: unit tests or model retraining?",
+  "H14": "A CloudFormation update fails halfway and rolls back, but the rollback fails too. What do you do?",
+  "H14F": "How would you prevent that next time?",
+  "E15": "In a token-bucket rate limiter, what does the refill rate bound?",
+  "H15": "An Airflow DAG with two hundred tasks takes six hours, but its critical path is only two hours. How would you find and fix the bottleneck?",
+  "E16": "What is the average time complexity of a Python dict lookup?",
+  "E16F": "And the worst case?",
+  "H16": "Your training image is nine gigabytes and builds take forty minutes. How would you cut both without breaking reproducibility?",
+  "H16F": "Which of your changes gives the most for the least risk?",
+  "E17": "For nightly churn scoring of ten million customers, batch or online inference?",
+  "E17F": "Is that still right at ten times the volume?",
+  "H17": "Design a CI/CD pipeline for an ML model where retraining is triggered by drift, with a human approval before promotion.",
+  "H17F": "What's your rollback story?",
+  "E18": "Which Kubernetes object gives pods a stable network identity: a Deployment or a StatefulSet?",
+  "H18": "Write a function that returns the longest window of a time series in which the maximum minus the minimum stays under a threshold, and tell me its complexity.",
+  "H18F": "Can you do it in a single pass?",
+  "E19": "Which sampling temperature makes an LLM's output most deterministic?",
+  "H19": "Given tables customers and payments, write the SQL for each customer's second-highest payment and the month it happened.",
+  "E20": "Which Postgres extension stores vector embeddings?",
+  "E20F": "How confident are you in that choice?",
+  "H20": "Tell me about a model you shipped that hurt a business metric, and what you changed afterwards.",
+  "H20F": "Was that the right call, in hindsight?"
+ },
+ "terms": {
+  "E01": "PR[- ]?AUC|precision[- ]recall|\\bP R\\b",
+  "E02": "contribution|step|shrink|weight|each tree|new tree|tree|update|gradient",
+  "E03": "number of|how many|chunks|documents|passages|results",
+  "E03F": "increas|rise|goes up|higher|improv|better",
+  "E04": "504",
+  "E04F": "400|422",
+  "E05": "traffic|request|service|endpoint|load ?balanc",
+  "E06": "\\bno\\b|secret",
+  "E06F": "base ?-?64",
+  "E07": "glacier|deep archive",
+  "E08": "skip|backfill|past|missed|historical|latest|only the most recent",
+  "E09": "\\byes\\b|shares",
+  "E10": "\\bCMD\\b|\\bC M D\\b|\\bcommand\\b",
+  "E11": "multi[- ]?model",
+  "E12": "Kolmogorov|\\bK[- ]?S\\b|Smirnov|\\bPSI\\b|population stability|Wasserstein",
+  "E12F": "chi|χ|\\bPSI\\b|population stability|Jensen|\\bJS\\b",
+  "E13": "delet|removed|destroy",
+  "E14": "unit test",
+  "E15": "sustain|average|long[- ](run|term)|steady|throughput|request rate|rate of requests|requests per",
+  "E16": "O\\s*\\(\\s*1\\s*\\)|\\bconstant\\b|\\bO of (one|1)\\b|\\border of (one|1)\\b",
+  "E16F": "O\\s*\\(\\s*n\\s*\\)|\\blinear\\b|\\bO of n\\b|\\bo n\\b|\\border of n\\b(?!\\s*log)",
+  "E17": "batch",
+  "E18": "stateful ?set",
+  "E19": "\\bzero\\b|\\b0\\b",
+  "E20": "pg ?vector"
+ },
+ "parent": {
+  "E01F": "E01",
+  "H01F": "H01",
+  "H02F": "H02",
+  "E03F": "E03",
+  "H03F": "H03",
+  "E04F": "E04",
+  "H04F": "H04",
+  "H05F": "H05",
+  "E06F": "E06",
+  "H06F": "H06",
+  "H07F": "H07",
+  "H09F": "H09",
+  "E11F": "E11",
+  "E12F": "E12",
+  "H12F": "H12",
+  "H14F": "H14",
+  "E16F": "E16",
+  "H16F": "H16",
+  "E17F": "E17",
+  "H17F": "H17",
+  "H18F": "H18",
+  "E20F": "E20",
+  "H20F": "H20"
+ },
+ "chains": [
+  [
+   "E01",
+   "E01F"
+  ],
+  [
+   "H01",
+   "H01F"
+  ],
+  [
+   "E02"
+  ],
+  [
+   "H02",
+   "H02F"
+  ],
+  [
+   "E03",
+   "E03F"
+  ],
+  [
+   "H03",
+   "H03F"
+  ],
+  [
+   "E04",
+   "E04F"
+  ],
+  [
+   "H04",
+   "H04F"
+  ],
+  [
+   "E05"
+  ],
+  [
+   "H05",
+   "H05F"
+  ],
+  [
+   "E06",
+   "E06F"
+  ],
+  [
+   "H06",
+   "H06F"
+  ],
+  [
+   "E07"
+  ],
+  [
+   "H07",
+   "H07F"
+  ],
+  [
+   "E08"
+  ],
+  [
+   "H08"
+  ],
+  [
+   "E09"
+  ],
+  [
+   "H09",
+   "H09F"
+  ],
+  [
+   "E10"
+  ],
+  [
+   "H10"
+  ],
+  [
+   "E11",
+   "E11F"
+  ],
+  [
+   "H11"
+  ],
+  [
+   "E12",
+   "E12F"
+  ],
+  [
+   "H12",
+   "H12F"
+  ],
+  [
+   "E13"
+  ],
+  [
+   "H13"
+  ],
+  [
+   "E14"
+  ],
+  [
+   "H14",
+   "H14F"
+  ],
+  [
+   "E15"
+  ],
+  [
+   "H15"
+  ],
+  [
+   "E16",
+   "E16F"
+  ],
+  [
+   "H16",
+   "H16F"
+  ],
+  [
+   "E17",
+   "E17F"
+  ],
+  [
+   "H17",
+   "H17F"
+  ],
+  [
+   "E18"
+  ],
+  [
+   "H18",
+   "H18F"
+  ],
+  [
+   "E19"
+  ],
+  [
+   "H19"
+  ],
+  [
+   "E20",
+   "E20F"
+  ],
+  [
+   "H20",
+   "H20F"
+  ]
+ ]
+}

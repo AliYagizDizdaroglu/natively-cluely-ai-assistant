@@ -1,0 +1,7 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must the arms > suppresses a fenced block and keeps the prose around it
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must the arms > suppresses it when the text arrives one character at a time
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+

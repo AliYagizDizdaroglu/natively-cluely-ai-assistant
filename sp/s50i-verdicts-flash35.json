@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All four figures computed correctly, but stray dollar signs before subscriber counts would be misread aloud."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct left-join-with-predicates-in-ON, ingestion cutoff and COUNT of a joined column for zeros; runs about a hundred words."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers all four asked sub-parts soundly, but at roughly 180 words it is far too long to speak."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service named is the right fit and the managed-versus-custom split is justified; slightly over length."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Deterministic chunk IDs with upserts plus Cosmos conditional writes is exactly the idempotency answer, crisply spoken."
+  }
+}

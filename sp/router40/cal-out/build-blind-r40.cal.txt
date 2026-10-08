@@ -1,0 +1,21 @@
+PASS  P5-0 | setup: synthetic complete router40-R (dry run) + a stopped run under another name + a synthetic L (46 answers, RH14 hole) | expected: dry runs exit 0 and 3; files present | actual: exit 0 and 3; stopped-run files 2
+PASS  P5-1 | build from the synthetic inputs | expected: exit 0, "A questions equal live40's 46/46" | actual: exit 0; A questions equal live40's 46/46
+PASS  P5-2 | answer counts per arm equal the run files (A 46 from live40-r1; L 46 = 47 - the RH14 hole; RL = the 20 items whose scripted reply is an answer) | expected: A 46, L 46, RL 20 | actual: A 46, L 46, RL 20
+PASS  P5-3 | files cut by whole items at positions 1-12, 13-24, 25-36, 37-47 of the 47 (RH14 sits in file 3 with no answer in this fixture, so it is absent there); each file <= 36 answers | expected: 12,12,11,11 items with answers; max answers <= 36 | actual: 12,12,11,11 items; answers 30,27,28,27
+PASS  P5-4 | every answer of an item sits in the same file; every item with an answer is placed | expected: true, 46 items | actual: true, 46 items
+PASS  P5-5 | each placed item sits in the file of its chain-order slice | expected: true | actual: true
+PASS  P5-6 | A's questions equal live40's pairs.blind-1.json's via its key (independent recomputation) | expected: 46/46 | actual: 46/46
+PASS  P5-7 | follow-up answers carry the [Follow-up to: <parent>] question (16 follow-ups x their arms) | expected: 31 answers with a follow-up question | actual: 31
+PASS  P5-8 | grep over the 4 blind files for item ids, chain ids, arm/class/route keys, router40/live40/keyhold | expected: 0 hits in every file | actual: 0,0,0,0 hits
+PASS  P5-8b | positive control for that grep: the same text with one item id appended | expected: detected | actual: detected
+PASS  P5-9 | neutral contiguous keys q01.. per file; arms interleaved (>= 8 arm changes along file 1); the item order along the keys is NOT the chain order (the answers were shuffled) | expected: true; >= 8; shuffled | actual: true; 23; shuffled
+PASS  P5-10 | the registered seed makes two builds byte-identical | expected: equal | actual: equal
+PASS  P5-11 | a router40-R-<hhmm> style input (here a COMPLETE run copied to router40-R-1002, so only the name rule can refuse it) | expected: REFUSED (exit 2) naming the graded name, nothing built | actual: exit 2; name rule true; out dir exists false
+PASS  P5-12 | the C02 smoke name router40-R-smoke (A4 D1: any non-graded name) | expected: REFUSED (exit 2): the name rule | actual: exit 2; name rule true
+PASS  P5-13 | a second build into the same out dir | expected: REFUSED (exit 2), never overwritten | actual: exit 2
+PASS  P5-14 | router40-R with complete=false | expected: REFUSED (exit 2) | actual: exit 2
+PASS  P5-15 | router40-L with complete=false | expected: REFUSED (exit 2) | actual: exit 2
+PASS  P5-16 | the dry (mock) router40-R without --allow-dry | expected: REFUSED (exit 2) | actual: exit 2
+PASS  P5-18 | the build record also holds readerOutputSha256 (64 hex) | expected: 64 hex | actual: 64 hex
+PASS  P5-17 | the build record keyhold/build-record.json holds read-r.mjs's real sha256 and is not in the blind folder | expected: readRSha256 = the file's sha; not in blind/ | actual: sha equal; in blind/ false
+build-blind-r40: 20/20 cases PASS

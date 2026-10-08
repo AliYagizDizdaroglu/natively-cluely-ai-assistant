@@ -1,0 +1,21 @@
+{
+  "S1Q01": {"winner": "B", "why": "Both cover data, production, baseline; B names a real production constraint, A's memory-latency claim is loose"},
+  "S1Q02": {"winner": "B", "why": "Same arithmetic, but B states recall explicitly; A never gives the recall the question asked for"},
+  "S1Q03": {"winner": "A", "why": "A addresses customer mix via cohort analysis; B overclaims the whole 1.4% as attributable"},
+  "S1Q04": {"winner": "A", "why": "B assumes arrays pre-sorted, skipping the sort and the required original-row-order tie-break"},
+  "S1Q05": {"winner": "A", "why": "A states the concrete 30-day gap between train end and validation start; B only gestures at it"},
+  "S1Q06": {"winner": "A", "why": "A puts window and ingest conditions in the JOIN, guaranteeing zero-call rows; B's filtering wording risks dropping them"},
+  "S1Q07": {"winner": "B", "why": "B names feature computation sharing and states the shared core explicitly, the question's last part"},
+  "S1Q08": {"winner": "A", "why": "A covers logging timestamps and the window-closed condition for retraining selection; B omits maturity"},
+  "S1Q09": {"winner": "tie", "why": "Both cover all eight components with operational reasons; no correctness gap separates them"},
+  "S1Q10": {"winner": "B", "why": "B covers model-artifact access plus PostgreSQL; A addresses only the database"},
+  "S2Q01": {"winner": "A", "why": "B stops at reranking, omitting context assembly and generation"},
+  "S2Q02": {"winner": "B", "why": "B gives unit, denominator, construction and uncertainty for all three metrics; A omits several"},
+  "S2Q03": {"winner": "A", "why": "A compares all three approaches with the decomposition limitation and the latency tradeoff"},
+  "S2Q04": {"winner": "tie", "why": "Identical accumulation, scoring, id tie-break and top-k slice; neither errs"},
+  "S2Q05": {"winner": "A", "why": "B inverts the doc-limit check and wrongly claims greedy maximizes total relevance"},
+  "S2Q07": {"winner": "B", "why": "A answers a different question entirely; B covers index, metadata, permissions, ingestion"},
+  "S2Q08": {"winner": "B", "why": "A stops after quality comparison, omitting cutover and rollback"},
+  "S2Q09": {"winner": "A", "why": "A names Azure OpenAI for LLM access; B substitutes API Management, which is not LLM access"},
+  "S2Q10": {"winner": "B", "why": "B's commit-then-ack with a dedup key is correct; A claims a transaction coupling write and ack"}
+}

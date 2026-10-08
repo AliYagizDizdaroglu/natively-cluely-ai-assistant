@@ -1,0 +1,326 @@
+{
+  "S1Q01": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Solid XGBoost rationale for tabular data and latency, but never names the baseline the question explicitly asked for."
+  },
+  "S1Q01F": {
+    "correctness": 2,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Correct on all three conditions, but opens by re-answering the parent XGBoost question and runs 88 words."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 0,
+    "delivery": 2,
+    "reason": "Reconciles the document-extraction F1 and latency metrics instead of the churn figures the question named; no arithmetic attempted."
+  },
+  "S1Q02#2": {
+    "correctness": 0,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic is ten times too large: the top 5 percent band is 5,000 not 50,000, and the 9.5 percent base rate is ignored."
+  },
+  "S1Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly reads the ROC/PR gap as class imbalance and names threshold cost-benefit as the missing input before deployment."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names the randomized holdout control, the right mechanism for separating model effect from seasonality and business change."
+  },
+  "S1Q03#2": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Concurrent control group correctly identified as the way to net out seasonality and broader business trends."
+  },
+  "S1Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly frames the uplift argument: highest-risk customers are often lost causes rather than persuadables."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 0,
+    "delivery": 0,
+    "reason": "Describes an uplift-based budget selector, not the requested precision, recall and lift at k function, and reads as a numbered list."
+  },
+  "S1Q04#2": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 0,
+    "reason": "Precision and recall definitions are right, but lift over prevalence and the original-row-order tie rule are missing; delivered as a numbered list."
+  },
+  "S1Q04#3": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Covers all three edge cases but hedges between zero and NaN and calls precision undefined when it is simply zero."
+  },
+  "S1Q04F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "heapq.nlargest is the right optimisation, but it swaps the required original-row-order tie rule for user id or timestamp."
+  },
+  "S1Q05": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Right on point-in-time leakage, but skips the scikit-learn fit-on-training-only mechanic the question asked for; asterisk emphasis needs an edit."
+  },
+  "S1Q05#2": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Chronological split, ColumnTransformer fit on train and the label-window gap are all correct, but it ends in a spoken-unusable numbered list."
+  },
+  "S1Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Both halves right, panel rows for evolving state and a customer holdout for unseen customers, but asterisk emphasis needs an edit."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Generic point-in-time recipe with no 30-day count, no ingested-at filter and no zero-call preservation."
+  },
+  "S1Q06#2": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 0,
+    "reason": "Count, 30-day interval and left join are right, but the ingested-by-snapshot filter is missing and it is delivered as a list."
+  },
+  "S1Q06#3": {
+    "correctness": 0,
+    "on_topic": 0,
+    "delivery": 0,
+    "reason": "No answer at all: both models failed and a raw JSON 503 error blob was surfaced in place of a reply."
+  },
+  "S1Q06F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Correct slowly-changing-dimension answer for corrections, but the indexing half of the question is never addressed."
+  },
+  "S1Q07": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Feature store as the shared batch and online source is the right core, but ingestion, model registration and prediction storage go uncovered."
+  },
+  "S1Q07F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Idempotency keys and partition state handle duplicates, but pinning one model version across the run is only asserted, not mechanised."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Reaches for a queue and a feature store instead of prediction logging, experiment assignment, outcome joins and retraining selection."
+  },
+  "S1Q08#2": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging keys, point-in-time outcome joins and treatment-bias handling are all correct, but it runs to 106 words."
+  },
+  "S1Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly names the feedback loop: the model learns campaign response rather than natural churn propensity."
+  },
+  "S1Q09": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Names the headline Azure equivalents but leaves object storage, model artifacts, container images, identity and monitoring uncovered."
+  },
+  "S1Q09#2": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Blob, Data Factory and Azure ML placements are right, but it conflates managed endpoints with AKS and skips images, identity and monitoring."
+  },
+  "S1Q09#3": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Entra ID, Data Factory triggers and Azure Monitor are correct, but training, artifacts, images and inference are left out."
+  },
+  "S1Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "All three placements correct with sound operational reasons for managed endpoints, App Service and AKS."
+  },
+  "S1Q10": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Managed identity and RBAC are exactly right, but networking controls, unavoidable secrets and environment separation are untouched."
+  },
+  "S1Q10#2": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Key Vault and per-environment resource groups are right, but the authentication and authorization halves it names are skipped."
+  },
+  "S1Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Clean triage: 401 for the identity token, 403 for RBAC, timeouts for network, exactly the distinction asked."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every named stage covered correctly including reranking and context assembly, but 131 words is far past a spoken answer."
+  },
+  "S2Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Defensible pick of retrieval and context assembly as the stages that turn a correct source into a wrong answer."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Explains how the gains were achieved instead of defining unit of evaluation, denominator, dataset construction and uncertainty."
+  },
+  "S2Q02#2": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Gives units, denominators, dataset sizes and a confidence interval, precisely the measurement detail the question demanded."
+  },
+  "S2Q02F": {
+    "correctness": 2,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Sound hold-downstream-fixed ablation design and a real judge-bias check, but classification and prompting are skipped and it runs 101 words."
+  },
+  "S2Q03#2": {
+    "correctness": 2,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Right on when agency pays off, but folds query decomposition into the agent instead of comparing all three options."
+  },
+  "S2Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Stopping conditions, token and cost budgets and a deterministic fallback all named, directly answering all three parts."
+  },
+  "S2Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Formula is right but reuses k for both the constant and the cutoff; contains raw LaTeX and a numbered list."
+  },
+  "S2Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct on why raw scores are incomparable and on weighting each source's reciprocal rank before summing."
+  },
+  "S2Q05#2": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Algorithm satisfies every stated constraint, but it opens with a broken sentence and ends in a numbered list."
+  },
+  "S2Q05F": {
+    "correctness": 2,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "MMR and chained retrieval are the right fixes, but no concrete failing example is ever constructed."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Semaphore, wait_for timeout, per-task exception capture and gather ordering are all correct, but 167 words with an embedded numbered list."
+  },
+  "S2Q06F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Deterministic testing is answered well, but the transient-retry-within-an-overall-deadline mechanism is only alluded to."
+  },
+  "S2Q07": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Sharding and tenant namespaces are right, but citations, deletions, metadata storage and evaluation are all left out."
+  },
+  "S2Q07#2": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Answers ingestion and evaluation while skipping the index organization, metadata storage and permission enforcement it explicitly names."
+  },
+  "S2Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correctly places checks at the gateway, at retrieval and again before generation to catch mid-query revocation, but runs 103 words."
+  },
+  "S2Q08": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Versioning, backfill and change-data-capture sync are right, but cutover and rollback are never described and it runs 93 words."
+  },
+  "S2Q08F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Shadow comparison and drift dashboards address quality, not the document-count and lag proof of completeness and currency asked for."
+  },
+  "S2Q09": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Blob, Event Grid, Functions, Service Bus and AKS are placed correctly, but search, LLM access and telemetry are missing."
+  },
+  "S2Q09#2": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Azure AI Search, Azure OpenAI and Application Insights are correct, but only three components are covered and the custom-component case is skipped."
+  },
+  "S2Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Azure Policy, in-region redundancy, Private Link and a self-hosted fallback make a complete data-residency answer."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Idempotency key in a durable store with check-and-set is the right answer for redelivery and post-write crashes."
+  },
+  "S2Q10F": {
+    "correctness": 2,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Poison handling and the version-guarded delete race are right, but dead-letter replay itself is never described."
+  }
+}

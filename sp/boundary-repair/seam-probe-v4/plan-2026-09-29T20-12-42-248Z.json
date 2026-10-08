@@ -1,0 +1,197 @@
+{
+ "rate": 24000,
+ "plan": [
+  {
+   "play": 1,
+   "id": "L04",
+   "startS": 2,
+   "endS": 30.5095
+  },
+  {
+   "play": 1,
+   "id": "S2Q01F",
+   "startS": 34.5095,
+   "endS": 39.849000000000004
+  },
+  {
+   "play": 1,
+   "id": "S2Q03F",
+   "startS": 43.849000000000004,
+   "endS": 50.798500000000004
+  },
+  {
+   "play": 1,
+   "id": "S2Q07F",
+   "startS": 54.798500000000004,
+   "endS": 62.18300000000001
+  },
+  {
+   "play": 1,
+   "id": "S2Q10F",
+   "startS": 66.183,
+   "endS": 72.7775
+  },
+  {
+   "play": 1,
+   "id": "S1Q07",
+   "startS": 76.7775,
+   "endS": 101.202
+  },
+  {
+   "play": 1,
+   "id": "S2Q04",
+   "startS": 105.202,
+   "endS": 128.2415
+  },
+  {
+   "play": 1,
+   "id": "S3Q10",
+   "startS": 132.2415,
+   "endS": 154.256
+  },
+  {
+   "play": 1,
+   "id": "L01",
+   "startS": 158.256,
+   "endS": 182.8855
+  },
+  {
+   "play": 1,
+   "id": "S5Q07",
+   "startS": 186.8855,
+   "endS": 208.315
+  },
+  {
+   "play": 2,
+   "id": "L04",
+   "startS": 212.315,
+   "endS": 240.8245
+  },
+  {
+   "play": 2,
+   "id": "S2Q01F",
+   "startS": 244.8245,
+   "endS": 250.164
+  },
+  {
+   "play": 2,
+   "id": "S2Q03F",
+   "startS": 254.164,
+   "endS": 261.1135
+  },
+  {
+   "play": 2,
+   "id": "S2Q07F",
+   "startS": 265.1135,
+   "endS": 272.498
+  },
+  {
+   "play": 2,
+   "id": "S2Q10F",
+   "startS": 276.498,
+   "endS": 283.0925
+  },
+  {
+   "play": 2,
+   "id": "S1Q07",
+   "startS": 287.0925,
+   "endS": 311.517
+  },
+  {
+   "play": 2,
+   "id": "S2Q04",
+   "startS": 315.517,
+   "endS": 338.55649999999997
+  },
+  {
+   "play": 2,
+   "id": "S3Q10",
+   "startS": 342.55649999999997,
+   "endS": 364.57099999999997
+  },
+  {
+   "play": 2,
+   "id": "L01",
+   "startS": 368.57099999999997,
+   "endS": 393.2005
+  },
+  {
+   "play": 2,
+   "id": "S5Q07",
+   "startS": 397.2005,
+   "endS": 418.63
+  },
+  {
+   "play": 3,
+   "id": "L04",
+   "startS": 422.63,
+   "endS": 451.1395
+  },
+  {
+   "play": 3,
+   "id": "S2Q01F",
+   "startS": 455.1395,
+   "endS": 460.479
+  },
+  {
+   "play": 3,
+   "id": "S2Q03F",
+   "startS": 464.479,
+   "endS": 471.4285
+  },
+  {
+   "play": 3,
+   "id": "S2Q07F",
+   "startS": 475.4285,
+   "endS": 482.813
+  },
+  {
+   "play": 3,
+   "id": "S2Q10F",
+   "startS": 486.813,
+   "endS": 493.40749999999997
+  },
+  {
+   "play": 3,
+   "id": "S1Q07",
+   "startS": 497.40749999999997,
+   "endS": 521.832
+  },
+  {
+   "play": 3,
+   "id": "S2Q04",
+   "startS": 525.832,
+   "endS": 548.8715
+  },
+  {
+   "play": 3,
+   "id": "S3Q10",
+   "startS": 552.8715,
+   "endS": 574.886
+  },
+  {
+   "play": 3,
+   "id": "L01",
+   "startS": 578.886,
+   "endS": 603.5155
+  },
+  {
+   "play": 3,
+   "id": "S5Q07",
+   "startS": 607.5155,
+   "endS": 628.9449999999999
+  }
+ ],
+ "script": {
+  "L04": "Now a data engineering one. You own a feature pipeline in Airflow that builds daily features for a fraud model from about a dozen upstream tables, and the upstream data regularly arrives late or gets corrected a few days after the fact. Walk me through how you would design the DAG so that late data and corrections are handled correctly, how you would backfill a month without overwhelming the warehouse, and how you would make sure training and serving see the same feature values.",
+  "S2Q01F": "Which of those stages can cause a correct source document to produce an incorrect answer?",
+  "S2Q03F": "What stopping conditions, budgets, and failure policies would prevent loops and unnecessary tool calls?",
+  "S2Q07F": "A user loses access to a document while a query is running. Where and when must authorization be checked?",
+  "S2Q10F": "How would you handle poison documents, dead-letter replay, and a delete event racing with an older update?",
+  "S1Q07": "Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.",
+  "S2Q04": "Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.",
+  "S3Q10": "Debug an Azure private-connectivity failure: after public access to an upstream service is disabled, your deployed application times out, while local development still works through another route. Describe your investigation of name resolution, routing, private endpoints, network rules, TLS, and identity.",
+  "L01": "Let's do a design question. We have a recommendation model that is retrained every night on about two terabytes of click data, and it serves roughly five thousand requests per second during the day. Walk me through how you would build the training pipeline, how you would validate a new model before it replaces the old one, and how you would roll it out so that a bad model never reaches all of the traffic at once.",
+  "S5Q07": "Design a retail shopping assistant end to end: the assistant answers product questions, checks inventory, and retrieves authenticated order status. Design the API, the retrieval, tool execution, authorization, the streaming interface, state storage, and monitoring, and explain where freshness is critical."
+ }
+}

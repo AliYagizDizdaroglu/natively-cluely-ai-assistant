@@ -1,0 +1,9 @@
+low r1: answered 30/38; holes S1Q05F S1Q07 S1Q07F S1Q03F S1Q06F S2Q08F S1Q10F S2Q05F (system-error apologies: S1Q05F S1Q07 S1Q07F S1Q03F S1Q06F S2Q08F S1Q10F S2Q05F); abnormal sessions 0 of 19; window 2026-09-30T21:11:51.951Z
+        first word of the real answer p50 2.2 s, p90 16.5 s, max 23.4 s; last word p50 31.7 s, p90 49.9 s; a holding line on 8/30; words p50 76; thought tokens p50 685; slow feed none
+low r2: answered 30/38; holes S1Q04F S1Q05F S1Q07 S2Q01F S1Q08F S2Q03F S2Q05 S2Q07F (system-error apologies: S1Q04F S1Q05F S1Q07 S2Q01F S1Q08F S2Q03F S2Q05 S2Q07F); abnormal sessions 0 of 19; window 2026-09-30T21:46:24.742Z
+        first word of the real answer p50 2.0 s, p90 7.9 s, max 9.2 s; last word p50 29.4 s, p90 43.2 s; a holding line on 7/30; words p50 72; thought tokens p50 447; slow feed none
+low r3: answered 29/38; holes S1Q02F S1Q04F S2Q02F S1Q06 S1Q06F S1Q09 S2Q03F S2Q06 S2Q06F (system-error apologies: S1Q02F S1Q04F S2Q02F S1Q06 S1Q06F S1Q09 S2Q03F S2Q06 S2Q06F); abnormal sessions 0 of 19; window 2026-09-30T22:18:43.018Z
+        first word of the real answer p50 5.9 s, p90 13.1 s, max 15.8 s; last word p50 31.9 s, p90 61.4 s; a holding line on 15/29; words p50 77; thought tokens p50 1986; slow feed none
+low pooled over 3 rep(s), answered items with a normal feed (89): first word p50 2.2 s, p90 11.4 s; last word p50 30.7 s, p90 49.9 s
+condition 4 (reliability): answered 89/114, need >= 110 -> FAIL
+ARM low: reps 3, answered 89/114, holes 25, last run answered 29 -> DONE

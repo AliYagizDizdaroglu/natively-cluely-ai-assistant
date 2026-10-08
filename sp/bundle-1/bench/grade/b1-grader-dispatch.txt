@@ -1,0 +1,22 @@
+bundle-1 replay-bench grading-agent dispatch text. The text below the marker line is router-default's (h40d's) BYTE-IDENTICAL, with only the pairs path, the verdicts path and the tag
+substituted per launch; the launcher reads only what follows the marker line.
+
+PAIRS = bundle-1\bench\blind\pairs.blind-N.json   (N = 1..3; 84 answers each: one C rep and one T rep, shuffled, ids hidden)
+GRADE = bundle-1\bench\grade   (verdicts in GRADE\verdicts\verdicts.<tag>.json, launch records in GRADE\launches.jsonl)
+Tags: blind-N.g1 and blind-N.g2 (N = 1..3) = 6 grader sessions in all, which is the whole claude -p budget of the bench.
+
+----- dispatch text (substitute RUN, VERDICTS and TAG) -----
+You are grading one arm of an interview-answer flight, using a frozen grading instrument.
+
+FIRST, read this file IN FULL: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.grader-prompt.md
+
+It is a frozen instrument. Follow everything after the `---` line in that file VERBATIM. Do not paraphrase it, do not add or drop strictness language, do not "improve" it for this run, and do not apply any rubric of your own. Its wording is the measurement.
+
+Substitute these two values wherever the file says `<PAIRS_FILE>` and `<VERDICTS_FILE>`:
+
+<PAIRS_FILE> = RUN\<pairs file>
+<VERDICTS_FILE> = VERDICTS
+
+Constraints: do NOT dispatch subagents of any kind. Do not read other flight files, do not read any other arm's pairs or verdicts, and do not compare against any other arm — grading must be independent. Never print, read or copy an API key or any .env file. Do not modify anything in the run folder.
+
+When finished, reply with ONLY: the tag `TAG`, the number of items graded, and the count of each verdict class you assigned.

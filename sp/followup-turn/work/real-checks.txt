@@ -1,0 +1,10 @@
+    // Addendum G2: the tightened rule is NOT loosened to fit these. Each real transcript is its own check, with the clause that trips named.
+    const byTag = Object.fromEntries(r.out.split('\n').filter((l) => /^blind-/.test(l)).map((l) => [l.split(' ')[0], l]));
+    for (const tagEq of real) {
+        const [tag, id] = tagEq.split('=');
+        const l = byTag[tag] ?? '';
+        const tripped = l.replace(/^.*?FLAGGED \d+: /, '').replace(/; bash=.*$/, '');
+        check(`REAL ${tag} (${id}) reads CLEAN under the tightened rule (Read rubric + own pairs, Write own verdicts, one validation Bash)`, / clean;/.test(l) && !/FLAGGED/.test(l), / clean;/.test(l) ? '' : (tripped.match(/G2: [^:]*|not of the shape[^:]*|string literal [^:]*/)?.[0] ?? tripped).slice(0, 130));
+    }
+    check('... the 8 real first user messages match the dispatch text (8/8)', (r.out.match(/dispatch=match/g) ?? []).length === 8 && !/DIFFERS/.test(r.out));
+    check('... each real Bash is recorded as <length>:<sha12> (allowed ones in bash=[...], tripped ones in the flag text)', (r.out.match(/bash=\[\d+:[0-9a-f]{12}\]/g) ?? []).length + (r.out.match(/Bash\[len=\d+,sha12=[0-9a-f]{12}\]/g) ?? []).length >= 8);

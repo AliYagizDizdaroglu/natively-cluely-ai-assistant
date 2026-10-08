@@ -1,0 +1,13 @@
+OK  hook calibration: with the hook, a fetch to 127.0.0.1 -> NETWORK-ATTEMPT, exit 99
+OK  hook calibration: without the hook the same fetch runs and fails locally (nothing external), exit 0, no NETWORK-ATTEMPT
+OK  hook calibration: a raw net.connect (what a WebSocket uses) is caught too
+OK  the runner copy has the same number of lines as the real run.mjs (only the HERE line differs)
+OK  one byte of the instruction changed -> exit 2, "refusing to run", no NETWORK-ATTEMPT
+OK  a space appended -> refused, no network
+OK  the last byte removed -> refused, no network
+OK  instruction.txt missing -> the runner stops (non-zero), no network
+OK  the UNMODIFIED copy passes the hash check and reaches the network (blocked by the hook): exit 99, NETWORK-ATTEMPT, no refusal
+OK  a CRLF copy of the same text also passes (the runner normalises line endings before hashing, as registered)
+OK  the run file was never written by a refused run (no runs/ output beyond the empty folder)
+OK  SP/l20d/instruction.txt untouched: sha256 same, mtime same, size 1210 (1210), sha256 = e29bf381...
+RUN.MJS REFUSAL CALIBRATION OK

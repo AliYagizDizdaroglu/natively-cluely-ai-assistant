@@ -1,0 +1,16 @@
+===== s50j S1Q08F [fix]
+2026-09-19T08-22-41-s50j [fix jitter=50]: 40/40 once; doubles []; never []; drops 0; absorbed 4 (whisper 0); subs 3; unmatched 0; reorders 0; supersedes 2
+trace S1Q08F: {"n":1,"lat":3062,"budget":3162,"path":"gate","finished":true,"fromLive":false,"finals":2,"cov":"1.00","closes":["continuation-expired"],"live":[],"logFirst":"07:41:37.918","logGate":6940,"vadDev":-13,"blips":0,"voiceOff":"07:41:30.993"}
+  07:41:26.113 voice ON
+  07:41:30.978 final "How could repeatedly"
+  07:41:30.993 voice OFF
+  07:41:33.220 final "training on customers affected by previous campaigns introduce bias?"
+  07:41:32.193 classify finals=1
+  07:41:33.620 classify finals=2
+  07:41:34.055 dispatch finals=2 fromLive=false live=0 path=gate "How could repeatedly training on customers affected by previ"
+  07:41:42.055 close continuation-expired
+  07:41:33.628 <verdict not-a-question> {"kind":"ignored","why":"stale-finals"}
+  07:41:34.020 <verdict unknown SUBSTITUTED> {"kind":"declined","verdict":"unknown","again":false}
+  07:41:34.055 <whisper rv=match> {"kind":"revived","by":"whisper","rule":"forward","how":"residual","score":1,"remScore":0.2222222222222222,"residual":9,"hits":9,"finals":2} q="How could repeatedly training on customers affecte"
+  07:41:34.215 <live rv=match> {"kind":"marked"} q="How could repeatedly training on customers affecte"
+

@@ -1,0 +1,130 @@
+{
+ "docker": {
+  "id": "docker",
+  "anchors": [
+   "image",
+   "layer",
+   "container",
+   "dockerfile"
+  ],
+  "turns": [
+   {
+    "q": "What is the difference between a Docker image and a container?",
+    "contextual": "A Docker image is the static, read-only template that contains the application code, libraries, and environment settings, essentially acting as a snapshot. A container is the live, running instance of that image, where the application actually executes in an isolated environment. You can think of the image as the blueprint and the container as the house built from it."
+   },
+   {
+    "q": "Ours came out at 8 gigabytes. How would you shrink it?",
+    "contextual": "I’d start by switching to a minimal base image like Alpine or Distroless to strip out unnecessary OS utilities. Then, I’d optimize the Dockerfile by chaining commands into a single RUN instruction to reduce layer count and ensure I’m cleaning up package manager caches within that same layer. Finally, I’d use multi-stage builds to exclude build-time dependencies from the final production artifact.",
+    "standalone": "I’d start by auditing the model’s weight precision, moving from float32 to float16 or int8 quantization, which usually cuts the footprint in half with minimal accuracy loss. If that’s not enough, I’d look into pruning redundant parameters or applying knowledge distillation to transfer the performance into a smaller, more efficient student architecture."
+   },
+   {
+    "q": "And once it is small, how do you keep its layers cached in CI so builds stay fast?",
+    "contextual": "I prioritize ordering my Dockerfile instructions from least to most frequently changed, placing stable dependencies like package installs at the top and application code at the bottom. This ensures that when I modify the source code, the CI runner skips the heavy installation layers and only rebuilds the final, lighter layers. I also leverage --cache-from to pull previous build stages from the registry.",
+    "standalone": "I use a multi-stage build pattern to isolate the dependency layer from the application code. By copying only the manifest files first, I can leverage the layer cache for the heavy installation step, which only re-runs when those dependencies actually change. This keeps the vast majority of our build time focused on just the incremental code changes."
+   }
+  ]
+ },
+ "sagemaker": {
+  "id": "sagemaker",
+  "anchors": [
+   "endpoint",
+   "latency",
+   "instance",
+   "cloudwatch"
+  ],
+  "turns": [
+   {
+    "q": "What is a SageMaker endpoint, and what does it actually host?",
+    "contextual": "A SageMaker endpoint is a fully managed, scalable HTTPS URL that hosts your trained machine learning models for real-time inference. It hosts the model artifacts, typically stored in S3, alongside the necessary inference code and dependencies packaged within a Docker container. This setup allows your applications to send data directly to the endpoint and receive predictions back with low latency."
+   },
+   {
+    "q": "Its p99 latency has been creeping up at ten thousand requests a second. Where do you look first?",
+    "contextual": "I’d start by checking the CloudWatch metrics for the endpoint, specifically looking for instance-level CPU and memory utilization to see if we're hitting a resource bottleneck. If those look steady, I’d analyze the request latency distribution to see if the delay is in our inference code or the model's cold start/serialization time, then verify if we need to adjust our auto-scaling policy or increase the instance count to handle the throughput.",
+    "standalone": "I start by checking the distribution of request processing times to see if the latency spike is systemic or isolated to specific endpoints or shards. I’ll look at the database connection pool utilization and lock contention, as those are the most common bottlenecks at that scale. If those are healthy, I’ll investigate garbage collection pauses or event loop blocking in the application runtime."
+   },
+   {
+    "q": "You looked, and it is compute-bound. What do you change?",
+    "contextual": "I’d first evaluate if we can optimize the model itself through techniques like quantization or compilation with SageMaker Neo to reduce the per-request compute footprint. If that’s not enough, I’d switch to compute-optimized instance types or implement multi-model endpoints to better balance the load. Finally, I’d review our auto-scaling policies to ensure we’re scaling based on a more sensitive metric like model latency rather than just CPU utilization.",
+    "standalone": "I would start by profiling the execution to identify the specific hot paths or functions consuming the most CPU cycles. Once isolated, I’d look to optimize the algorithm's complexity, perhaps by switching to a more efficient data structure or implementing memoization to avoid redundant calculations. If the logic is already optimal, I’d explore parallelizing the workload using multi-threading or offloading the heavy lifting to a more performant language or a GPU-accelerated library."
+   }
+  ]
+ },
+ "drift": {
+  "id": "drift",
+  "anchors": [
+   "drift",
+   "distribution",
+   "retrain",
+   "threshold",
+   "baseline"
+  ],
+  "turns": [
+   {
+    "q": "How would you detect data drift on a model that is already in production?",
+    "contextual": "I monitor data drift by comparing the statistical distribution of production input features against the training baseline using the Kolmogorov-Smirnov test or Jensen-Shannon divergence. I set up automated alerts in the model registry to trigger whenever these metrics deviate beyond a predefined threshold, which signals that the underlying data patterns have shifted enough to potentially degrade performance."
+   },
+   {
+    "q": "Say that check fires at three in the morning. What happens next, automatically?",
+    "contextual": "If that alert fires, the first step is an automated pipeline trigger that captures a sample of the current production data and runs a shadow evaluation against the latest ground truth. If the performance drop is confirmed, the system automatically routes the new data to a labeling queue and initiates a model retraining job using the updated distribution to maintain accuracy.",
+    "standalone": "The system triggers an automated alert through our incident management platform, which immediately pages the on-call engineer. Simultaneously, a diagnostic script runs to capture the current state of the environment and logs, attaching them to the ticket so the engineer has full context the moment they log in."
+   },
+   {
+    "q": "And if the retrain it kicked off comes back worse than the model already serving?",
+    "contextual": "I have a safety gate in the deployment pipeline that compares the new model's performance against the current production baseline using a holdout validation set. If the retrained model fails to meet the established accuracy or latency thresholds, the deployment is automatically blocked, and the system alerts the engineering team to investigate the data quality or feature engineering issues manually.",
+    "standalone": "I would implement a champion-challenger deployment strategy where the new model is only promoted to production if it outperforms the current model on a hold-out validation set. If the metrics drop, the automated pipeline triggers an alert and keeps the existing model serving while I investigate the data drift or feature degradation that caused the performance regression."
+   }
+  ]
+ },
+ "airflow": {
+  "id": "airflow",
+  "anchors": [
+   "dag",
+   "task",
+   "retry",
+   "xcom",
+   "airflow"
+  ],
+  "turns": [
+   {
+    "q": "What is a DAG, and why does Airflow use that structure?",
+    "contextual": "A DAG, or Directed Acyclic Graph, is a collection of tasks with defined dependencies that flow in one direction without any loops. Airflow uses this structure because it provides a clear, deterministic execution order for complex data pipelines. By representing workflows as a graph, Airflow can easily identify which tasks are ready to run, manage retries, and visualize the entire process flow."
+   },
+   {
+    "q": "One of its tasks fails intermittently because of a flaky API. How do you handle that?",
+    "contextual": "I handle flaky APIs by implementing a retry policy directly on the task, using exponential backoff to avoid overwhelming the service. I’d set a reasonable retries count and a retry_delay in the task definition, and if the failure persists, I’d use a SlackWebhookOperator or similar alert to notify the team immediately for manual intervention.",
+    "standalone": "I handle flaky APIs by implementing a robust retry strategy with exponential backoff and jitter to avoid overwhelming the service. I wrap the call in a circuit breaker pattern to prevent cascading failures if the API stays down, and I ensure the task is idempotent so that retries don't cause duplicate side effects."
+   },
+   {
+    "q": "Now that same task produces five gigabytes of output. How do you hand it to the next task?",
+    "contextual": "I would avoid passing that volume of data directly through Airflow's XComs, as they are stored in the metadata database and aren't designed for large payloads. Instead, I’d have the task write the five gigabytes to an external object store like S3 or GCS, and then pass only the file path or URI to the next task via XCom.",
+    "standalone": "I would move that data to an S3 bucket or a shared persistent volume rather than passing it directly through the pipeline. By writing the output to object storage and passing only the file path or a URI to the next task, I avoid memory bottlenecks and ensure the data remains accessible if a retry is needed."
+   }
+  ]
+ },
+ "k8s": {
+  "id": "k8s",
+  "anchors": [
+   "pod",
+   "deployment",
+   "autoscal",
+   "node",
+   "gpu"
+  ],
+  "turns": [
+   {
+    "q": "What is the difference between a Pod and a Deployment in Kubernetes?",
+    "contextual": "A Pod is the smallest deployable unit in Kubernetes, representing a single instance of a running process or container. A Deployment, however, is a higher-level abstraction that manages those Pods, handling scaling, rolling updates, and self-healing. While you can run a Pod alone, you’d almost always use a Deployment to ensure your application stays available and version-controlled."
+   },
+   {
+    "q": "How would you autoscale that deployment for a model inference server?",
+    "contextual": "I would use a Horizontal Pod Autoscaler, or HPA, to automatically scale the number of replicas based on resource metrics like CPU or memory utilization. For a model inference server specifically, I’d configure a custom metric—like request latency or queue depth—to ensure the cluster scales before the latency spikes, rather than just reacting to high CPU load.",
+    "standalone": "I would implement Horizontal Pod Autoscaling based on custom metrics, specifically targeting request latency or GPU utilization rather than just CPU. By configuring a Prometheus adapter to feed these metrics into the HPA, the cluster can dynamically scale the replica count to maintain performance SLAs during traffic spikes. For extreme scale, I’d also integrate Cluster Autoscaler to provision new nodes."
+   },
+   {
+    "q": "It scaled out to forty pods and the GPU nodes ran dry. What is the fix?",
+    "contextual": "I would implement Cluster Autoscaler to dynamically provision new GPU-enabled nodes when the scheduler runs out of capacity. To prevent this from happening again, I’d also set up Pod Priority and Preemption to ensure critical inference tasks take precedence, and use node affinity or taints and tolerations to guarantee these pods land specifically on the GPU-optimized instance types.",
+    "standalone": "I would immediately implement a node-level autoscaler like Karpenter to dynamically provision new GPU instances based on pending pod requirements. To prevent future exhaustion, I’d also set up resource quotas and priority classes to ensure critical workloads get the GPU capacity they need first, while offloading non-essential tasks to CPU-based nodes or deferred queues."
+   }
+  ]
+ }
+}

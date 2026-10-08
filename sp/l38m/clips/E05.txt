@@ -1,0 +1,1 @@
+What does a Kubernetes readiness probe gate?

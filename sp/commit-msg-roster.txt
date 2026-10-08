@@ -1,0 +1,26 @@
+feat(interview60): long design questions and follow-up chains in the roster
+
+Roster: six 50-75-word multi-sentence design questions (L01-L06, level
+'long', 95 s gaps) each followed by two follow-ups, and two follow-ups
+after each screenshot cue (level 'followup', chain = parent id, 60 s
+gaps). 79 items, 92 min of audio; playback timeout raised to 120 min;
+computeOffsets copies `chain` into the timeline; the calibration sample
+includes L01 and L04.
+
+Judge: a follow-up is graded with its parent in view ("[Follow-up to:
+...]", or the on-screen problem for a cue's follow-up); the judge summary
+counts long questions and follow-ups beside the base roster, never
+inside it, so the 52-question row stays comparable with after7/after8.
+
+Metrics: each item carries `coverage` (best content-word coverage of the
+scripted question by the dispatched answer/extend text) and a new gate
+row "Long questions answered whole" passes when every level-'long' item
+reaches 0.8. On the after8 run the gate reproduces exactly (46/5/1 of
+52; "none in the roster").
+
+Tests: five follow-ups open with "And ...", which looksFragmentary()
+flags by design (M27's "And when would you not?" is a real Deepgram
+tail); main.ts holds such a chip 2.5 s and answers on expiry, so the
+shape test now asserts base+long whole and conjunction follow-ups held.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

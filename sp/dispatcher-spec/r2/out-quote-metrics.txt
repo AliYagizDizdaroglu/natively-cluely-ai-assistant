@@ -1,0 +1,19 @@
+on-time Live claims (<= 10 s after their clip) in 16 non-holdout whole-turn hours: 523; with interviewer finals so far: 523
+ABSORBED by the r2 residual rule (a wrong absorption of an on-time claim): 0
+  
+absorbed by the r1 rule (rem >= 0.5 and rem > own): 1
+  16T08-42-43-s50g   08:09:57 S2Q01F  +1.7s own 0.47 rem 0.63 (S2Q01) residual 7/7 quotesOpen=true echo=false jaccard 0.41 containment false q="Of the RAG pipeline stages (ingestion, parsing, chunking, embedding, r"
+every on-time claim with rem >= 0.40 (the negative class near the bar): 11
+  11T08-22-32-s50b   07:59:17 S2Q04F  +2.9s own 1.00 rem 0.42 (S2Q04) residual 12/12 quotesOpen=true echo=false jaccard 0.17 containment false q="Why might you use rank fusion instead of adding the raw scores, and ho"
+  12T08-22-49-s50c   07:59:34 S2Q04F  +3.0s own 1.00 rem 0.42 (S2Q04) residual 12/12 quotesOpen=true echo=false jaccard 0.17 containment false q="Why might you use rank fusion instead of adding the raw scores, and ho"
+  14T08-22-28-s50e   07:59:12 S2Q04F  +2.0s own 1.00 rem 0.45 (S2Q04) residual 11/11 quotesOpen=true echo=false jaccard 0.18 containment false q="Why might you use rank fusion instead of adding the raw scores? And ho"
+  16T08-42-43-s50g   08:09:57 S2Q01F  +1.7s own 0.47 rem 0.63 (S2Q01) residual 7/7 quotesOpen=true echo=false jaccard 0.41 containment false q="Of the RAG pipeline stages (ingestion, parsing, chunking, embedding, r"
+  16T08-42-43-s50g   08:19:28 S2Q04F  +2.9s own 1.00 rem 0.42 (S2Q04) residual 12/12 quotesOpen=true echo=false jaccard 0.17 containment false q="Why might you use rank fusion instead of adding the raw scores, and ho"
+  16T11-41-44-s50h   11:18:29 S2Q04F  +2.8s own 1.00 rem 0.42 (S2Q04) residual 12/12 quotesOpen=true echo=false jaccard 0.17 containment false q="Why might you use rank fusion instead of adding the raw scores, and ho"
+  18T08-22-57-s50i   07:59:43 S2Q04F  +3.0s own 1.00 rem 0.42 (S2Q04) residual 12/12 quotesOpen=true echo=false jaccard 0.17 containment false q="Why might you use rank fusion instead of adding the raw scores, and ho"
+  19T08-22-41-s50j   07:59:26 S2Q04F  +2.9s own 0.92 rem 0.42 (S2Q04) residual 11/12 quotesOpen=true echo=false jaccard 0.17 containment false q="Why might you use rank fusion instead of adding the raw scores? And ho"
+  20T11-22-43-s50k   10:59:28 S2Q04F  +3.5s own 1.00 rem 0.42 (S2Q04) residual 12/12 quotesOpen=true echo=false jaccard 0.18 containment false q="Why might you use rank fusion instead of adding the raw scores, and ho"
+  22T08-22-50-s50m   07:59:35 S2Q04F  +3.2s own 1.00 rem 0.42 (S2Q04) residual 12/12 quotesOpen=true echo=false jaccard 0.18 containment false q="Why might you use rank fusion instead of adding the raw scores, and ho"
+  30T11-45-30-br1    11:22:15 S2Q04F  +3.4s own 0.58 rem 0.50 (S2Q04) residual 2/6 quotesOpen=true echo=false jaccard 0.18 containment false q="Modify your Reciprocal Rank Fusion implementation to accept a configur"
+own (claim vs its own finals so far), n=523: min 0.00 p1 0.30 p5 0.67 p10 0.85 p50 1.00; under 0.50: 11; under 0.30: 5
+Jaccard(claim, best remembered other) over on-time claims: max 0.41 p99 0.21; containment hits: 0 []

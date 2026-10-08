@@ -1,0 +1,13 @@
+ok   REAL (control): cases that read differently from the expected answer: []
+ok   lead-exclusive: cases that read differently from the expected answer: [2026-10-07 00:15]
+ok   lead-14: cases that read differently from the expected answer: [2026-10-07 00:14]
+ok   lead-16: cases that read differently from the expected answer: [2026-10-07 00:15]
+ok   lead-removed: cases that read differently from the expected answer: [2026-10-07 00:14, 2026-10-07 00:00, 2026-10-06 23:00]
+ok   horizon-exclusive: cases that read differently from the expected answer: [2026-10-08 00:00]
+ok   horizon-23: cases that read differently from the expected answer: [2026-10-08 00:00]
+ok   horizon-removed: cases that read differently from the expected answer: [2026-10-08 00:01]
+ok   run-60: cases that read differently from the expected answer: [2026-10-07 08:45]
+ok   run-90: cases that read differently from the expected answer: [2026-10-07 08:44]
+ok   reset-06: cases that read differently from the expected answer: [2026-10-07 08:44, 2026-10-07 09:59]
+ok   quota-removed: cases that read differently from the expected answer: [2026-10-07 08:45, 2026-10-07 09:59]
+GEN T MUTANTS OK 12/12

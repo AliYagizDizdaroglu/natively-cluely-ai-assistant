@@ -1,0 +1,390 @@
+row files: 9; OLD verbalStreamFilter.e3fae5f.cjs
+
+[calibration 1] OLD against OLD: expect 0 changed, 10 empty with both
+replies: 624
+the NEW chain wrote the offers-first line for 0 replies (not checked here); the OLD chain for 0
+joined text differs: 0; of those, replies that show text with the OLD filter: 0
+empty with both filters (no spoken answer in the reply): 10
+   spike- current | 3.5-lite HIGH S1Q09#4
+      shape: CUES cue(9w) cue(8w) cue(9w) cue(8w) cue(8w) cue(9w) cue(9w) cue(10w) blank MORE offer(6w) offer(7w) blank prose(153w)
+   spike- current | 3.5-lite HIGH S1Q07#3
+      shape: CUES cue(7w) cue(5w) cue(6w) cue(6w) MORE offer(6w) offer(4w)
+   spike- current | 3.5-lite HIGH S1Q04F#3
+      shape: CUES cue(7w) cue(6w) MORE offer(7w) offer(5w) blank prose(53w)
+   spike- group | 3.5-lite HIGH S1Q04F#1
+      shape: CUES cue(6w) cue(6w) MORE offer(5w) offer(5w) blank prose(59w)
+   spike- current | 3.5-lite HIGH S1Q08F#2
+      shape: CUES cue(7w) cue(8w) MORE offer(6w) offer(3w) blank prose(59w)
+   spike- current | 3.5-lite HIGH S1Q08F#4
+      shape: CUES cue(5w) cue(7w) MORE offer(8w) offer(8w) blank prose(79w)
+   spike2 cap3 | 3.1-lite LOW S1Q04F#3
+      shape: CUES cue(4w) cue(3w) cue(4w) blank MORE offer(4w) offer(5w) blank prose(104w)
+   spike3 cap3-min | 3.5-lite HIGH M1#1
+      shape: CUES cue(2w) cue(2w) MORE offer(6w) offer(5w) blank prose(63w)
+   spike6 one-first | 3.5-lite HIGH X2#4
+      shape: CUES cue(5w) MORE offer(5w) offer(4w) blank prose(55w)
+   spike6 cap3-min | 3.5-lite HIGH M1#3
+      shape: CUES cue(3w) cue(3w) MORE offer(6w) offer(5w) blank prose(58w)
+cue reports differ: 0; offers reports differ: 0; a report not made exactly once: 0; a sentinel in the NEW output that the OLD output does not have: 0; a result that depends on the chunk size: 0
+a sentinel shown with the OLD filter too (known: a reply that closes its cue block with a second __CUES__ line): 1 (spike6 cap3-min | 3.5-lite HIGH S1Q07#4)
+REPLAY AS PREDICTED (0 changed, each from nothing shown to its answer; nothing else moved)
+
+[calibration 2] OLD against OLD + the spike's candidate offers filter: expect 9 changed, 1 empty with both
+replies: 624
+the NEW chain wrote the offers-first line for 10 replies (expected 10: the changed replies and the one with offers and no spoken answer) -> as expected; the OLD chain for 0
+joined text differs: 9; of those, replies that show text with the OLD filter: 0
+   spike- current | 3.5-lite HIGH S1Q09#4: shown words 0 -> 153; offers ["VNet integration and private endpoint routing","Blue-green deployment slot switching on App Service"]
+      shape: CUES cue(9w) cue(8w) cue(9w) cue(8w) cue(8w) cue(9w) cue(9w) cue(10w) blank MORE offer(6w) offer(7w) blank prose(153w)
+   spike- current | 3.5-lite HIGH S1Q04F#3: shown words 0 -> 53; offers ["distributed sorting with PySpark for out-of-core data","heap-based streaming for memory efficiency"]
+      shape: CUES cue(7w) cue(6w) MORE offer(7w) offer(5w) blank prose(53w)
+   spike- group | 3.5-lite HIGH S1Q04F#1: shown words 0 -> 59; offers ["Memory mapping for out-of-core datasets","Vectorized sorting in C extensions"]
+      shape: CUES cue(6w) cue(6w) MORE offer(5w) offer(5w) blank prose(59w)
+   spike- current | 3.5-lite HIGH S1Q08F#2: shown words 0 -> 59; offers ["Propensity score matching for causal inference","Off-policy evaluation techniques"]
+      shape: CUES cue(7w) cue(8w) MORE offer(6w) offer(3w) blank prose(59w)
+   spike- current | 3.5-lite HIGH S1Q08F#4: shown words 0 -> 79; offers ["using uplift modeling to estimate individual treatment effects","holding out a control group unaffected by campaigns"]
+      shape: CUES cue(5w) cue(7w) MORE offer(8w) offer(8w) blank prose(79w)
+   spike2 cap3 | 3.1-lite LOW S1Q04F#3: shown words 0 -> 104; offers ["Trade-offs of approximate top-k","Memory constraints for large datasets"]
+      shape: CUES cue(4w) cue(3w) cue(4w) blank MORE offer(4w) offer(5w) blank prose(104w)
+   spike3 cap3-min | 3.5-lite HIGH M1#1: shown words 0 -> 63; offers ["multi-stage builds for minimal image size","layer bloat from intermediate files"]
+      shape: CUES cue(2w) cue(2w) MORE offer(6w) offer(5w) blank prose(63w)
+   spike6 one-first | 3.5-lite HIGH X2#4: shown words 0 -> 55; offers ["impact on tree split thresholds","combining with distance-based models"]
+      shape: CUES cue(5w) MORE offer(5w) offer(4w) blank prose(55w)
+   spike6 cap3-min | 3.5-lite HIGH M1#3: shown words 0 -> 58; offers ["Multi-stage builds for image size reduction","BuildKit caching mounts for dependencies"]
+      shape: CUES cue(3w) cue(3w) MORE offer(6w) offer(5w) blank prose(58w)
+empty with both filters (no spoken answer in the reply): 1
+   spike- current | 3.5-lite HIGH S1Q07#3
+      shape: CUES cue(7w) cue(5w) cue(6w) cue(6w) MORE offer(6w) offer(4w)
+cue reports differ: 0; offers reports differ: 0; a report not made exactly once: 0; a sentinel in the NEW output that the OLD output does not have: 0; a result that depends on the chunk size: 0
+a sentinel shown with the OLD filter too (known: a reply that closes its cue block with a second __CUES__ line): 1 (spike6 cap3-min | 3.5-lite HIGH S1Q07#4)
+REPLAY AS PREDICTED (9 changed, each from nothing shown to its answer; nothing else moved)
+
+[calibration 3] OLD against a filter that drops the last cue line: expect "NOT AS PREDICTED" with cue reports that differ
+replies: 624
+the NEW chain wrote the offers-first line for 0 replies (not checked here); the OLD chain for 0
+joined text differs: 0; of those, replies that show text with the OLD filter: 0
+empty with both filters (no spoken answer in the reply): 10
+   spike- current | 3.5-lite HIGH S1Q09#4
+      shape: CUES cue(9w) cue(8w) cue(9w) cue(8w) cue(8w) cue(9w) cue(9w) cue(10w) blank MORE offer(6w) offer(7w) blank prose(153w)
+   spike- current | 3.5-lite HIGH S1Q07#3
+      shape: CUES cue(7w) cue(5w) cue(6w) cue(6w) MORE offer(6w) offer(4w)
+   spike- current | 3.5-lite HIGH S1Q04F#3
+      shape: CUES cue(7w) cue(6w) MORE offer(7w) offer(5w) blank prose(53w)
+   spike- group | 3.5-lite HIGH S1Q04F#1
+      shape: CUES cue(6w) cue(6w) MORE offer(5w) offer(5w) blank prose(59w)
+   spike- current | 3.5-lite HIGH S1Q08F#2
+      shape: CUES cue(7w) cue(8w) MORE offer(6w) offer(3w) blank prose(59w)
+   spike- current | 3.5-lite HIGH S1Q08F#4
+      shape: CUES cue(5w) cue(7w) MORE offer(8w) offer(8w) blank prose(79w)
+   spike2 cap3 | 3.1-lite LOW S1Q04F#3
+      shape: CUES cue(4w) cue(3w) cue(4w) blank MORE offer(4w) offer(5w) blank prose(104w)
+   spike3 cap3-min | 3.5-lite HIGH M1#1
+      shape: CUES cue(2w) cue(2w) MORE offer(6w) offer(5w) blank prose(63w)
+   spike6 one-first | 3.5-lite HIGH X2#4
+      shape: CUES cue(5w) MORE offer(5w) offer(4w) blank prose(55w)
+   spike6 cap3-min | 3.5-lite HIGH M1#3
+      shape: CUES cue(3w) cue(3w) MORE offer(6w) offer(5w) blank prose(58w)
+cue reports differ: 606; offers reports differ: 0; a report not made exactly once: 0; a sentinel in the NEW output that the OLD output does not have: 0; a result that depends on the chunk size: 0
+a sentinel shown with the OLD filter too (known: a reply that closes its cue block with a second __CUES__ line): 1 (spike6 cap3-min | 3.5-lite HIGH S1Q07#4)
+   repro- cue | - ?#1: ["Prometheus custom metrics","KEDA for queues","Scale-to-zero and cold starts"] -> ["Prometheus custom metrics","KEDA for queues"]
+   repro- cue | - ?#2: ["Custom queue depth metrics","KEDA for event-driven scaling"] -> ["Custom queue depth metrics"]
+   repro- cue | - ?#3: ["KEDA custom metrics","Resource requests and limits","Prometheus and warm pools"] -> ["KEDA custom metrics","Resource requests and limits"]
+   repro- cue | - ?#4: ["KEDA with custom metrics","Queue depth and latency","Resource requests and limits"] -> ["KEDA with custom metrics","Queue depth and latency"]
+   repro- cue | - ?#5: ["KEDA with custom metrics","Queue depth and latency scaling","Minimum baseline for cold starts"] -> ["KEDA with custom metrics","Queue depth and latency scaling"]
+   repro- cue | - ?#6: ["KEDA with custom metrics","Queue depth and GPU utilization"] -> ["KEDA with custom metrics"]
+   repro- cue | - ?#7: ["KEDA with custom metrics","Queue depth and GPU load","Managing cold-start latency"] -> ["KEDA with custom metrics","Queue depth and GPU load"]
+   repro- cue | - ?#8: ["KEDA custom metrics","Precise resource requests","Minimum baseline replicas"] -> ["KEDA custom metrics","Precise resource requests"]
+   repro- cue | - ?#9: ["KEDA and custom metrics","Queue length over CPU usage"] -> ["KEDA and custom metrics"]
+   repro- cue | - ?#10: ["KEDA with custom metrics","Queue depth and GPU utilization","Readiness probes for model weights"] -> ["KEDA with custom metrics","Queue depth and GPU utilization"]
+   repro- cue | - ?#11: ["KEDA and Prometheus autoscaling","Custom queue depth metrics","Baseline min-replicas for cold starts"] -> ["KEDA and Prometheus autoscaling","Custom queue depth metrics"]
+   repro- cue | - ?#12: ["Custom metrics via KEDA","Baseline replicas for cold starts"] -> ["Custom metrics via KEDA"]
+   spike- current | 3.1-lite LOW S1Q09#1: ["Blob Storage for data lake","Azure ML Compute for training","Model Registry for artifacts","ACR for images","Managed Online Endpoints for inference","Data Factory for orchestration","Entra ID for security","Azure Monitor for observability"] -> ["Blob Storage for data lake","Azure ML Compute for training","Model Registry for artifacts","ACR for images","Managed Online Endpoints for inference","Data Factory for orchestration","Entra ID for security"]
+   spike- current | 3.1-lite LOW S1Q09#2: ["ADLS Gen2 for data lake","Azure ML for training and registry","ACR for container images","AKS for inference","Entra ID and Monitor for security and observability"] -> ["ADLS Gen2 for data lake","Azure ML for training and registry","ACR for container images","AKS for inference"]
+   spike- current | 3.1-lite LOW S1Q09#3: ["Blob Storage for data, Azure ML for training","ACR for images, Model Registry for artifacts","AKS for inference, Data Factory for scheduling","Entra ID for security, Application Insights for monitoring"] -> ["Blob Storage for data, Azure ML for training","ACR for images, Model Registry for artifacts","AKS for inference, Data Factory for scheduling"]
+   spike- current | 3.1-lite LOW S1Q09#4: ["Blob Storage for data lake","AML Training and Registry for artifacts","ACR for container images","AKS for online inference","Data Factory for orchestration","Entra ID for identity","Azure Monitor for observability"] -> ["Blob Storage for data lake","AML Training and Registry for artifacts","ACR for container images","AKS for online inference","Data Factory for orchestration","Entra ID for identity"]
+   spike- group | 3.1-lite LOW S1Q09#1: ["Azure Blob Storage for data and artifacts","Azure Machine Learning for training and registry","Azure Container Registry for images","Azure Kubernetes Service for inference","Azure Functions and Managed Identity for operations","Azure Monitor and Application Insights for observability"] -> ["Azure Blob Storage for data and artifacts","Azure Machine Learning for training and registry","Azure Container Registry for images","Azure Kubernetes Service for inference","Azure Functions and Managed Identity for operations"]
+   spike- group | 3.1-lite LOW S1Q09#2: ["ADLS Gen2 for object storage","Azure ML for training and registry","ACR for container images","AKS for online inference","Azure Data Factory for scheduling","Entra ID and Monitor for security and observability"] -> ["ADLS Gen2 for object storage","Azure ML for training and registry","ACR for container images","AKS for online inference","Azure Data Factory for scheduling"]
+   spike- group | 3.1-lite LOW S1Q09#3: ["Azure Blob Storage with ADLS Gen2","Azure ML for training and registry","ACR and AKS for containerization","Data Factory for orchestration","Entra ID and Azure Monitor"] -> ["Azure Blob Storage with ADLS Gen2","Azure ML for training and registry","ACR and AKS for containerization","Data Factory for orchestration"]
+   spike- group | 3.1-lite LOW S1Q09#4: ["Azure Blob Storage for data and artifacts","Azure Machine Learning for training and registry","Azure Container Registry and App Service","Managed Identity and Azure Monitor"] -> ["Azure Blob Storage for data and artifacts","Azure Machine Learning for training and registry","Azure Container Registry and App Service"]
+REPLAY NOT AS PREDICTED (expected 0 changed, each from 0 words)
+
+[calibration 4] OLD against a filter whose offers stage passes everything through: expect "NOT AS PREDICTED" with new sentinel leaks
+replies: 624
+the NEW chain wrote the offers-first line for 0 replies (not checked here); the OLD chain for 0
+joined text differs: 125; of those, replies that show text with the OLD filter: 115
+   repro- cue | - ?#1: shown words 54 -> 69; offers []
+      shape: CUES cue(3w) cue(3w) cue(4w) blank prose(54w) blank MORE offer(6w) offer(6w)
+   repro- cue | - ?#2: shown words 54 -> 69; offers []
+      shape: CUES cue(4w) cue(4w) blank prose(54w) blank MORE offer(6w) offer(6w)
+   repro- cue | - ?#4: shown words 49 -> 54; offers []
+      shape: CUES cue(4w) cue(4w) cue(4w) blank prose(49w) blank MORE offer(3w)
+   repro- cue | - ?#5: shown words 54 -> 64; offers []
+      shape: CUES cue(4w) cue(5w) cue(5w) prose(54w) MORE offer(3w) offer(4w)
+   repro- cue | - ?#8: shown words 65 -> 77; offers []
+      shape: CUES cue(3w) cue(3w) cue(3w) blank prose(65w) blank MORE offer(5w) offer(4w)
+   repro- cue | - ?#9: shown words 51 -> 58; offers []
+      shape: CUES cue(4w) cue(5w) blank prose(51w) blank MORE offer(5w)
+   repro- cue | - ?#12: shown words 47 -> 61; offers []
+      shape: CUES cue(4w) cue(5w) prose(47w) MORE offer(6w) offer(5w)
+   spike- current | 3.5-lite HIGH S1Q09#4: shown words 0 -> 169; offers []
+      shape: CUES cue(9w) cue(8w) cue(9w) cue(8w) cue(8w) cue(9w) cue(9w) cue(10w) blank MORE offer(6w) offer(7w) blank prose(153w)
+   spike- current | 3.1-lite LOW S1Q07#1: shown words 109 -> 124; offers []
+      shape: CUES cue(8w) cue(6w) cue(6w) cue(4w) cue(6w) blank prose(1w) prose(54w) blank prose(54w) blank MORE offer(6w) offer(6w)
+   spike- current | 3.1-lite LOW S1Q07#2: shown words 81 -> 99; offers []
+      shape: CUES cue(6w) cue(7w) cue(6w) blank prose(81w) blank MORE offer(5w) offer(5w) offer(4w)
+   spike- current | 3.5-lite HIGH S1Q07#3: shown words 0 -> 13; offers []
+      shape: CUES cue(7w) cue(5w) cue(6w) cue(6w) MORE offer(6w) offer(4w)
+   spike- group | 3.1-lite LOW S1Q04F#3: shown words 86 -> 101; offers []
+      shape: CUES cue(4w) cue(2w) cue(5w) blank prose(86w) blank MORE offer(6w) offer(6w)
+   spike- current | 3.5-lite HIGH S1Q04F#1: shown words 54 -> 66; offers []
+      shape: CUES cue(7w) cue(10w) prose(1w) prose(53w) MORE offer(5w) offer(4w)
+   spike- current | 3.5-lite HIGH S1Q04F#2: shown words 57 -> 72; offers []
+      shape: CUES cue(7w) cue(6w) blank prose(57w) blank MORE offer(6w) offer(6w)
+   spike- current | 3.5-lite HIGH S1Q04F#3: shown words 0 -> 68; offers []
+      shape: CUES cue(7w) cue(6w) MORE offer(7w) offer(5w) blank prose(53w)
+   spike- current | 3.5-lite HIGH S1Q04F#4: shown words 95 -> 112; offers []
+      shape: CUES cue(5w) cue(4w) cue(4w) blank prose(95w) blank MORE offer(7w) offer(7w)
+   spike- group | 3.5-lite HIGH S1Q04F#1: shown words 0 -> 72; offers []
+      shape: CUES cue(6w) cue(6w) MORE offer(5w) offer(5w) blank prose(59w)
+   spike- group | 3.5-lite HIGH S1Q04F#2: shown words 53 -> 69; offers []
+      shape: CUES cue(7w) cue(7w) blank prose(53w) blank MORE offer(7w) offer(6w)
+   spike- current | 3.5-lite HIGH S1Q08F#2: shown words 0 -> 71; offers []
+      shape: CUES cue(7w) cue(8w) MORE offer(6w) offer(3w) blank prose(59w)
+   spike- current | 3.5-lite HIGH S1Q08F#3: shown words 67 -> 79; offers []
+      shape: CUES cue(6w) cue(6w) prose(67w) blank MORE offer(5w) offer(4w)
+   spike- current | 3.5-lite HIGH S1Q08F#4: shown words 0 -> 98; offers []
+      shape: CUES cue(5w) cue(7w) MORE offer(8w) offer(8w) blank prose(79w)
+   spike2 cap3 | 3.1-lite LOW S1Q09#1: shown words 116 -> 129; offers []
+      shape: CUES cue(4w) cue(4w) cue(3w) blank prose(116w) blank MORE offer(5w) offer(5w)
+   spike2 cap3 | 3.1-lite LOW S1Q09#2: shown words 129 -> 144; offers []
+      shape: CUES cue(5w) cue(4w) cue(5w) blank prose(56w) blank prose(73w) blank MORE offer(5w) offer(7w)
+   spike2 cap3 | 3.1-lite LOW S1Q09#3: shown words 137 -> 152; offers []
+      shape: CUES cue(3w) cue(3w) cue(2w) blank prose(137w) blank MORE offer(6w) offer(6w)
+   spike2 cap3 | 3.1-lite LOW S1Q07#1: shown words 108 -> 118; offers []
+      shape: CUES cue(3w) cue(3w) cue(2w) blank prose(36w) blank prose(35w) blank prose(37w) blank MORE offer(4w) offer(3w)
+   spike2 themes3 | 3.5-lite HIGH S1Q07#2: shown words 86 -> 97; offers []
+      shape: CUES cue(5w) cue(5w) cue(5w) prose(86w) blank MORE offer(4w) offer(4w)
+   spike2 cap3 | 3.1-lite LOW S1Q08#2: shown words 101 -> 115; offers []
+      shape: CUES cue(5w) cue(5w) cue(4w) blank prose(101w) blank MORE offer(6w) offer(5w)
+   spike2 cap3 | 3.1-lite LOW S1Q08#3: shown words 63 -> 72; offers []
+      shape: CUES cue(4w) cue(3w) cue(3w) blank prose(63w) blank MORE offer(3w) offer(3w)
+   spike2 themes3 | 3.5-lite HIGH S1Q08#3: shown words 86 -> 100; offers []
+      shape: CUES cue(6w) cue(4w) cue(5w) prose(86w) MORE offer(5w) offer(6w)
+   spike2 themes3 | 3.5-lite HIGH S1Q08#4: shown words 78 -> 92; offers []
+      shape: CUES cue(4w) cue(4w) cue(4w) prose(78w) blank MORE offer(6w) offer(5w)
+   spike2 cap3 | 3.1-lite LOW S1Q04F#2: shown words 58 -> 70; offers []
+      shape: CUES cue(2w) cue(4w) cue(2w) blank prose(58w) blank MORE offer(4w) offer(5w)
+   spike2 cap3 | 3.1-lite LOW S1Q04F#3: shown words 0 -> 116; offers []
+      shape: CUES cue(4w) cue(3w) cue(4w) blank MORE offer(4w) offer(5w) blank prose(104w)
+   spike2 cap3 | 3.5-lite HIGH S1Q04F#2: shown words 58 -> 72; offers []
+      shape: CUES cue(5w) cue(5w) cue(3w) blank prose(58w) MORE offer(6w) offer(5w)
+   spike2 cap3 | 3.5-lite HIGH S1Q04F#3: shown words 53 -> 66; offers []
+      shape: CUES cue(4w) cue(4w) prose(53w) MORE offer(5w) offer(5w)
+   spike2 cap3 | 3.5-lite HIGH S1Q08F#1: shown words 55 -> 65; offers []
+      shape: CUES cue(3w) cue(3w) cue(3w) blank prose(55w) blank MORE offer(4w) offer(3w)
+   spike2 cap3 | 3.5-lite HIGH S1Q08F#2: shown words 85 -> 91; offers []
+      shape: CUES cue(3w) blank prose(85w) blank MORE offer(4w)
+   spike2 cap3 | 3.5-lite HIGH S1Q08F#4: shown words 54 -> 67; offers []
+      shape: CUES cue(4w) cue(4w) prose(54w) blank MORE offer(4w) offer(6w)
+   spike2 themes3 | 3.5-lite HIGH S1Q08F#2: shown words 62 -> 73; offers []
+      shape: CUES cue(5w) cue(5w) cue(5w) prose(62w) MORE offer(4w) offer(4w)
+   spike2 themes3 | 3.5-lite HIGH S1Q08F#3: shown words 56 -> 68; offers []
+      shape: CUES cue(5w) cue(4w) cue(4w) blank prose(56w) blank MORE offer(4w) offer(5w)
+   spike2 themes3 | 3.5-lite HIGH S1Q08F#4: shown words 52 -> 64; offers []
+      shape: CUES cue(3w) cue(3w) cue(3w) blank prose(52w) blank MORE offer(5w) offer(4w)
+   spike3 cap3-min | 3.5-lite HIGH X1#3: shown words 60 -> 69; offers []
+      shape: CUES cue(2w) cue(3w) cue(3w) blank prose(60w) MORE offer(3w) offer(3w)
+   spike3 cap3 | 3.5-lite HIGH X2#1: shown words 59 -> 74; offers []
+      shape: CUES cue(4w) cue(3w) blank prose(59w) blank MORE offer(6w) offer(6w)
+   spike3 cap3 | 3.5-lite HIGH X2#2: shown words 44 -> 51; offers []
+      shape: CUES cue(4w) cue(4w) blank prose(44w) MORE offer(5w)
+   spike3 cap3-min | 3.5-lite HIGH X2#1: shown words 56 -> 68; offers []
+      shape: CUES cue(4w) cue(4w) cue(3w) blank prose(56w) blank MORE offer(5w) offer(4w)
+   spike3 cap3 | 3.1-lite LOW X3#1: shown words 65 -> 76; offers []
+      shape: CUES cue(3w) cue(3w) cue(4w) blank prose(65w) blank MORE offer(4w) offer(4w)
+   spike3 cap3-min | 3.1-lite LOW X3#1: shown words 65 -> 75; offers []
+      shape: CUES cue(3w) cue(3w) blank prose(65w) blank MORE offer(2w) offer(5w)
+   spike3 cap3 | 3.5-lite HIGH X3#2: shown words 48 -> 62; offers []
+      shape: CUES cue(3w) cue(2w) blank prose(48w) blank MORE offer(5w) offer(6w)
+   spike3 cap3 | 3.5-lite HIGH X3#3: shown words 54 -> 66; offers []
+      shape: CUES cue(3w) blank prose(54w) blank MORE offer(5w) offer(4w)
+   spike3 cap3-min | 3.5-lite HIGH X3#1: shown words 39 -> 46; offers []
+      shape: CUES cue(4w) blank prose(39w) blank MORE offer(5w)
+   spike3 cap3 | 3.5-lite HIGH X4#3: shown words 46 -> 59; offers []
+      shape: CUES cue(4w) prose(46w) MORE offer(5w) offer(5w)
+   spike3 cap3 | 3.5-lite HIGH X5#1: shown words 51 -> 60; offers []
+      shape: CUES cue(5w) cue(5w) blank prose(51w) blank MORE offer(7w)
+   spike3 cap3 | 3.5-lite HIGH M1#1: shown words 53 -> 66; offers []
+      shape: CUES cue(3w) cue(3w) blank prose(53w) blank MORE offer(5w) offer(5w)
+   spike3 cap3 | 3.5-lite HIGH M1#2: shown words 62 -> 77; offers []
+      shape: CUES cue(4w) cue(5w) cue(3w) blank prose(62w) blank MORE offer(6w) offer(6w)
+   spike3 cap3 | 3.5-lite HIGH M1#3: shown words 51 -> 63; offers []
+      shape: CUES cue(3w) cue(3w) blank prose(51w) blank MORE offer(4w) offer(5w)
+   spike3 cap3-min | 3.5-lite HIGH M1#1: shown words 0 -> 77; offers []
+      shape: CUES cue(2w) cue(2w) MORE offer(6w) offer(5w) blank prose(63w)
+   spike3 cap3-min | 3.5-lite HIGH M1#2: shown words 47 -> 54; offers []
+      shape: CUES cue(2w) cue(3w) blank prose(47w) blank MORE offer(5w)
+   spike3 cap3-min | 3.5-lite HIGH M1#3: shown words 50 -> 58; offers []
+      shape: CUES cue(3w) cue(4w) blank prose(50w) blank MORE offer(6w)
+   spike3 cap3 | 3.1-lite LOW S1Q09#2: shown words 142 -> 161; offers []
+      shape: CUES cue(4w) cue(4w) cue(4w) blank prose(68w) blank prose(74w) blank MORE offer(5w) offer(5w) offer(5w)
+   spike3 cap3 | 3.1-lite LOW S1Q09#3: shown words 137 -> 156; offers []
+      shape: CUES cue(4w) cue(4w) cue(4w) blank prose(137w) blank MORE offer(5w) offer(5w) offer(5w)
+   spike3 cap3-min | 3.5-lite HIGH S1Q09#1: shown words 107 -> 122; offers []
+      shape: CUES cue(6w) cue(6w) cue(7w) blank prose(107w) blank MORE offer(6w) offer(6w)
+   spike3 cap3-min | 3.5-lite HIGH S1Q09#2: shown words 100 -> 116; offers []
+      shape: CUES cue(5w) cue(5w) cue(5w) blank prose(100w) blank MORE offer(6w) offer(7w)
+   spike3 cap3 | 3.1-lite LOW S1Q07#1: shown words 157 -> 173; offers []
+      shape: CUES cue(4w) cue(4w) cue(3w) blank prose(77w) blank prose(80w) blank MORE offer(4w) offer(4w) offer(4w)
+   spike3 cap3-min | 3.1-lite LOW S1Q07#3: shown words 95 -> 110; offers []
+      shape: CUES cue(3w) cue(3w) cue(4w) blank prose(95w) blank MORE offer(4w) offer(3w) offer(4w)
+   spike3 cap3-min | 3.5-lite HIGH S1Q07#1: shown words 120 -> 132; offers []
+      shape: CUES cue(5w) cue(5w) cue(5w) blank prose(120w) blank MORE offer(4w) offer(5w)
+   spike3 cap3-min | 3.5-lite HIGH S1Q07#2: shown words 79 -> 90; offers []
+      shape: CUES cue(4w) cue(5w) cue(4w) blank prose(79w) blank MORE offer(4w) offer(4w)
+   spike4 strict-ex | 3.5-lite HIGH X2#3: shown words 60 -> 75; offers []
+      shape: CUES cue(4w) cue(4w) blank prose(60w) blank MORE offer(7w) offer(5w)
+   spike4 strict-ex | 3.5-lite HIGH X3#3: shown words 47 -> 59; offers []
+      shape: CUES cue(2w) cue(4w) blank prose(47w) blank MORE offer(5w) offer(4w)
+   spike4 strict | 3.5-lite HIGH X4#2: shown words 39 -> 46; offers []
+      shape: CUES cue(1w) cue(4w) blank prose(39w) MORE offer(5w)
+   spike4 strict-ex | 3.5-lite HIGH X4#2: shown words 41 -> 53; offers []
+      shape: CUES cue(4w) cue(5w) blank prose(41w) blank MORE offer(5w) offer(4w)
+   spike4 strict-ex | 3.5-lite HIGH X5#1: shown words 53 -> 65; offers []
+      shape: CUES cue(4w) blank prose(53w) MORE offer(3w) offer(6w)
+   spike4 strict | 3.5-lite HIGH M1#3: shown words 48 -> 62; offers []
+      shape: CUES cue(2w) cue(2w) prose(48w) blank MORE offer(5w) offer(6w)
+   spike4 strict-ex | 3.5-lite HIGH M1#3: shown words 55 -> 63; offers []
+      shape: CUES cue(2w) cue(2w) blank prose(55w) blank MORE offer(6w)
+   spike5 cap-strict-ex | 3.5-lite HIGH X1#3: shown words 53 -> 62; offers []
+      shape: CUES cue(1w) prose(53w) blank MORE offer(3w) offer(3w)
+   spike5 cap-strict-ex | 3.5-lite HIGH X2#2: shown words 53 -> 66; offers []
+      shape: CUES cue(3w) cue(4w) prose(53w) blank MORE offer(6w) offer(4w)
+   spike5 cap-strict-ex | 3.5-lite HIGH X2#4: shown words 53 -> 66; offers []
+      shape: CUES cue(3w) cue(4w) prose(53w) blank MORE offer(5w) offer(5w)
+   spike5 cap-strict-ex | 3.5-lite HIGH X3#1: shown words 54 -> 64; offers []
+      shape: CUES cue(3w) cue(3w) cue(4w) blank prose(54w) MORE offer(3w) offer(4w)
+   spike5 cap-strict-ex | 3.5-lite HIGH X3#2: shown words 37 -> 48; offers []
+      shape: CUES cue(2w) cue(2w) prose(37w) MORE offer(4w) offer(4w)
+   spike5 cap-strict-ex | 3.5-lite HIGH X3#4: shown words 56 -> 66; offers []
+      shape: CUES cue(2w) cue(2w) cue(2w) blank prose(56w) blank MORE offer(3w) offer(4w)
+   spike5 cap-strict-ex | 3.5-lite HIGH X4#4: shown words 41 -> 50; offers []
+      shape: CUES cue(1w) cue(2w) cue(2w) prose(41w) MORE offer(3w) offer(3w)
+   spike5 cap-strict-ex | 3.5-lite HIGH X6#1: shown words 55 -> 68; offers []
+      shape: CUES cue(2w) cue(3w) cue(3w) blank prose(55w) blank MORE offer(4w) offer(6w)
+   spike5 cap-strict-ex | 3.5-lite HIGH X6#2: shown words 41 -> 49; offers []
+      shape: CUES cue(2w) cue(2w) cue(3w) blank prose(41w) blank MORE offer(6w)
+   spike5 cap-strict-ex | 3.5-lite HIGH X6#3: shown words 42 -> 55; offers []
+      shape: CUES cue(2w) cue(3w) cue(3w) blank prose(42w) MORE offer(5w) offer(5w)
+   spike5 cap-strict-ex | 3.5-lite HIGH X6#4: shown words 59 -> 68; offers []
+      shape: CUES cue(2w) cue(2w) cue(2w) blank prose(59w) blank MORE offer(3w) offer(3w)
+   spike5 cap-strict-ex | 3.5-lite HIGH S1Q09#3: shown words 126 -> 140; offers []
+      shape: CUES cue(5w) cue(5w) cue(5w) cue(5w) blank prose(126w) blank MORE offer(5w) offer(6w)
+   spike5 cap-strict-ex | 3.5-lite HIGH S1Q07#2: shown words 100 -> 111; offers []
+      shape: CUES cue(4w) cue(4w) cue(4w) blank prose(100w) blank MORE offer(4w) offer(4w)
+   spike6 cap3-min | 3.5-lite HIGH X1#3: shown words 53 -> 65; offers []
+      shape: CUES cue(2w) cue(3w) blank prose(53w) blank MORE offer(5w) offer(4w)
+   spike6 strict-ex | 3.5-lite HIGH X1#4: shown words 60 -> 71; offers []
+      shape: CUES cue(2w) cue(3w) blank prose(60w) blank MORE offer(4w) offer(4w)
+   spike6 one-first | 3.5-lite HIGH X1#1: shown words 52 -> 62; offers []
+      shape: CUES cue(2w) prose(52w) MORE offer(3w) offer(4w)
+   spike6 cap3-min | 3.5-lite HIGH X2#1: shown words 54 -> 61; offers []
+      shape: CUES cue(3w) cue(5w) blank prose(54w) blank MORE offer(5w)
+   spike6 cap3-min | 3.5-lite HIGH X2#2: shown words 42 -> 54; offers []
+      shape: CUES cue(4w) cue(5w) blank prose(42w) MORE offer(4w) offer(5w)
+   spike6 cap3-min | 3.5-lite HIGH X2#4: shown words 58 -> 66; offers []
+      shape: CUES cue(3w) cue(4w) blank prose(58w) blank MORE offer(6w)
+   spike6 strict-ex | 3.5-lite HIGH X2#3: shown words 47 -> 60; offers []
+      shape: CUES cue(2w) cue(2w) blank prose(47w) blank MORE offer(5w) offer(5w)
+   spike6 strict-ex | 3.1-lite LOW X2#2: shown words 63 -> 72; offers []
+      shape: CUES cue(3w) cue(3w) blank prose(63w) blank MORE offer(3w) offer(3w)
+   spike6 strict-ex | 3.1-lite LOW M1#4: shown words 55 -> 66; offers []
+      shape: CUES cue(3w) cue(3w) blank prose(55w) blank MORE offer(3w) offer(5w)
+   spike6 strict-ex | 3.1-lite LOW S1Q09#2: shown words 84 -> 97; offers []
+      shape: CUES cue(4w) cue(4w) cue(3w) blank prose(84w) blank MORE offer(5w) offer(5w)
+   spike6 one-first | 3.1-lite LOW S1Q09#1: shown words 112 -> 126; offers []
+      shape: CUES cue(4w) cue(4w) cue(4w) blank prose(1w) prose(111w) blank MORE offer(5w) offer(6w)
+   spike6 one-first | 3.1-lite LOW S1Q09#4: shown words 155 -> 176; offers []
+      shape: CUES cue(5w) cue(4w) cue(4w) blank prose(1w) prose(55w) blank prose(99w) blank MORE offer(5w) offer(6w) offer(6w)
+   spike6 cap3-min | 3.1-lite LOW S1Q07#1: shown words 155 -> 173; offers []
+      shape: CUES cue(4w) cue(4w) cue(3w) blank prose(76w) blank prose(34w) blank prose(45w) blank MORE offer(5w) offer(4w) offer(5w)
+   spike6 cap3-min | 3.1-lite LOW S1Q07#3: shown words 110 -> 121; offers []
+      shape: CUES cue(3w) cue(3w) cue(3w) blank prose(40w) blank prose(31w) blank prose(39w) blank MORE offer(4w) offer(4w)
+   spike6 strict-ex | 3.1-lite LOW S1Q07#1: shown words 147 -> 161; offers []
+      shape: CUES cue(3w) cue(4w) cue(2w) blank prose(34w) blank prose(55w) blank prose(58w) blank MORE offer(5w) offer(6w)
+   spike6 strict-ex | 3.1-lite LOW S1Q07#3: shown words 113 -> 128; offers []
+      shape: CUES cue(3w) cue(4w) cue(3w) blank prose(53w) blank prose(60w) blank MORE offer(3w) offer(3w) offer(5w)
+   spike6 strict-ex | 3.1-lite LOW S1Q07#4: shown words 144 -> 162; offers []
+      shape: CUES cue(3w) cue(4w) cue(2w) blank prose(83w) blank prose(61w) blank MORE offer(5w) offer(5w) offer(4w)
+   spike6 one-first | 3.1-lite LOW S1Q07#3: shown words 168 -> 188; offers []
+      shape: CUES cue(5w) cue(5w) cue(3w) blank prose(77w) blank prose(91w) blank MORE offer(5w) offer(6w) offer(5w)
+   spike6 one-first | 3.1-lite LOW S1Q07#4: shown words 121 -> 135; offers []
+      shape: CUES cue(5w) cue(5w) cue(5w) blank prose(121w) blank MORE offer(5w) offer(6w)
+   spike6 cap3-min | 3.5-lite HIGH X1#4: shown words 39 -> 53; offers []
+      shape: CUES cue(2w) cue(3w) blank prose(39w) MORE offer(6w) offer(5w)
+   spike6 cap3-min | 3.5-lite HIGH X2#1: shown words 58 -> 70; offers []
+      shape: CUES cue(3w) blank prose(58w) blank MORE offer(5w) offer(4w)
+   spike6 cap3-min | 3.5-lite HIGH X2#2: shown words 64 -> 80; offers []
+      shape: CUES cue(3w) cue(2w) cue(2w) blank prose(64w) blank MORE offer(7w) offer(6w)
+   spike6 cap3-min | 3.5-lite HIGH X2#3: shown words 55 -> 63; offers []
+      shape: CUES cue(4w) cue(5w) blank prose(55w) blank MORE offer(6w)
+   spike6 one-first | 3.5-lite HIGH X2#4: shown words 0 -> 67; offers []
+      shape: CUES cue(5w) MORE offer(5w) offer(4w) blank prose(55w)
+   spike6 cap3-min | 3.5-lite HIGH X4#4: shown words 47 -> 63; offers []
+      shape: CUES cue(3w) cue(4w) prose(47w) MORE offer(7w) offer(6w)
+   spike6 cap3-min | 3.5-lite HIGH X5#3: shown words 45 -> 59; offers []
+      shape: CUES cue(4w) blank prose(45w) blank MORE offer(6w) offer(5w)
+   spike6 cap3-min | 3.5-lite HIGH X5#4: shown words 59 -> 65; offers []
+      shape: CUES cue(4w) blank prose(59w) MORE offer(4w)
+   spike6 strict-ex | 3.5-lite HIGH X5#1: shown words 67 -> 79; offers []
+      shape: CUES cue(4w) cue(3w) prose(67w) blank MORE offer(5w) offer(4w)
+   spike6 cap3-min | 3.5-lite HIGH X6#3: shown words 59 -> 72; offers []
+      shape: CUES cue(3w) cue(2w) cue(2w) blank prose(59w) blank MORE offer(4w) offer(6w)
+   spike6 cap3-min | 3.5-lite HIGH X6#4: shown words 58 -> 70; offers []
+      shape: CUES cue(3w) cue(4w) blank prose(58w) blank MORE offer(5w) offer(4w)
+   spike6 cap3-min | 3.5-lite HIGH M1#3: shown words 0 -> 72; offers []
+      shape: CUES cue(3w) cue(3w) MORE offer(6w) offer(5w) blank prose(58w)
+   spike6 cap3-min | 3.5-lite HIGH M1#4: shown words 53 -> 67; offers []
+      shape: CUES cue(4w) blank prose(53w) blank MORE offer(5w) offer(6w)
+   spike6 strict-ex | 3.5-lite HIGH M1#3: shown words 70 -> 83; offers []
+      shape: CUES cue(3w) blank prose(70w) blank MORE offer(5w) offer(5w)
+   spike6 one-first | 3.5-lite HIGH M1#1: shown words 44 -> 49; offers []
+      shape: CUES cue(3w) prose(44w) MORE offer(3w)
+   spike6 one-first | 3.5-lite HIGH M1#2: shown words 48 -> 59; offers []
+      shape: CUES cue(2w) cue(2w) prose(48w) MORE offer(5w) offer(3w)
+   spike6 cap3-min | 3.5-lite HIGH S1Q07#1: shown words 93 -> 109; offers []
+      shape: CUES cue(5w) cue(5w) cue(5w) prose(93w) blank MORE offer(6w) offer(7w)
+   spike6 cap3-min | 3.5-lite HIGH S1Q07#2: shown words 94 -> 106; offers []
+      shape: CUES cue(5w) cue(5w) cue(6w) blank prose(2w) prose(92w) blank MORE offer(4w) offer(5w)
+   spike6 cap3-min | 3.5-lite HIGH S1Q07#4: shown words 102 -> 113; offers []
+      shape: CUES cue(5w) cue(5w) cue(5w) prose(1w) prose(101w) MORE offer(4w) offer(4w)
+   spike6 one-first | 3.5-lite HIGH S1Q07#1: shown words 117 -> 129; offers []
+      shape: CUES cue(4w) cue(4w) cue(4w) blank prose(117w) blank MORE offer(4w) offer(5w)
+   spike6 one-first | 3.5-lite HIGH S1Q07#3: shown words 92 -> 109; offers []
+      shape: CUES cue(5w) cue(5w) cue(5w) blank prose(92w) blank MORE offer(4w) offer(4w) offer(5w)
+empty with both filters (no spoken answer in the reply): 0
+cue reports differ: 0; offers reports differ: 125; a report not made exactly once: 0; a sentinel in the NEW output that the OLD output does not have: 124; a result that depends on the chunk size: 0
+a sentinel shown with the OLD filter too (known: a reply that closes its cue block with a second __CUES__ line): 1 (spike6 cap3-min | 3.5-lite HIGH S1Q07#4)
+   repro- cue | - ?#1: ["handling vLLM batching and concurrency limits","node affinity and GPU resource requests"] -> []
+   repro- cue | - ?#2: ["managing cold starts with pre-warmed pods","tuning stabilization windows for traffic spikes"] -> []
+   repro- cue | - ?#4: ["Scale-to-zero cold-start trade-offs"] -> []
+   repro- cue | - ?#5: ["GPU-aware resource allocation","Model warm-up time mitigation"] -> []
+   repro- cue | - ?#8: ["scale-to-zero cold start latency trade-offs","queue-based concurrency scaling parameters"] -> []
+   repro- cue | - ?#9: ["Scale-to-zero trade-offs for cold starts"] -> []
+   repro- cue | - ?#12: ["GPU memory limits and batching thresholds","Scale-to-zero trade-offs for asynchronous jobs"] -> []
+   spike- current | 3.5-lite HIGH S1Q09#4: ["VNet integration and private endpoint routing","Blue-green deployment slot switching on App Service"] -> []
+   spike- current | 3.1-lite LOW S1Q07#1: ["Handling feature staleness in online path","Fallback strategies for feature store misses"] -> []
+   spike- current | 3.1-lite LOW S1Q07#2: ["Feature store online-offline skew mitigation","Canary vs blue-green deployment trade-offs","Automated retraining trigger logic"] -> []
+   spike- current | 3.5-lite HIGH S1Q07#3: ["Handling missing online feature values gracefully","Shadow deployment rollback strategies"] -> []
+   spike- group | 3.1-lite LOW S1Q04F#3: ["Distributed sorting via MapReduce or Spark","Approximate top-K with sketches like T-Digest"] -> []
+   spike- current | 3.5-lite HIGH S1Q04F#1: ["min-heap optimization for streaming data","distributed partitioning via PySpark"] -> []
+   spike- current | 3.5-lite HIGH S1Q04F#2: ["time complexity trade-offs of O(n) partition","memory footprint optimization with streaming chunks"] -> []
+   spike- current | 3.5-lite HIGH S1Q04F#3: ["distributed sorting with PySpark for out-of-core data","heap-based streaming for memory efficiency"] -> []
+   spike- current | 3.5-lite HIGH S1Q04F#4: ["distributed sorting with PySpark for out-of-core datasets","bucket sort optimizations for bounded integer scores"] -> []
+   spike- group | 3.5-lite HIGH S1Q04F#1: ["Memory mapping for out-of-core datasets","Vectorized sorting in C extensions"] -> []
+   spike- group | 3.5-lite HIGH S1Q04F#2: ["IEEE 754 bit-level radix sorting for floats","Distributed partitioning across PySpark worker nodes"] -> []
+   spike- current | 3.5-lite HIGH S1Q08F#2: ["Propensity score matching for causal inference","Off-policy evaluation techniques"] -> []
+   spike- current | 3.5-lite HIGH S1Q08F#3: ["inverse propensity scoring for debiasing","counterfactual uplift modeling techniques"] -> []
+REPLAY NOT AS PREDICTED (expected 0 changed, each from 0 words)
+
+known with the OLD filter: 1 reply shows a sentinel (expected 1)
+REPLAY CALIBRATION OK

@@ -1,0 +1,68 @@
+follow-up rows 228; answered 227; unanswered 1: h40b:R07F
+
+BY PARENT PRESENCE in the prompt transcript (parent cover >= 0.5 = present):
+  parent present                                           n 117  101/117 in-app A; twins 382/423
+  parent absent                                            n 110  69/110 in-app A; twins 254/375
+
+BY GAP (parent dispatch -> follow-up dispatch):
+  0-90 s                                                   n  81  69/81 in-app A; twins 293/327
+  90-120 s                                                 n  36  32/36 in-app A; twins 89/96
+  120-150 s                                                n   3  2/3 in-app A; twins 16/27
+  150-180 s                                                n  89  57/89 in-app A; twins 213/300
+  180- s                                                   n  18  10/18 in-app A; twins 25/48
+  gap unknown                                              n   0  0/0 in-app A
+
+PARENT ABSENT, split by gap (is absence = eviction?):
+  absent, gap 0-120 s                                      n   0  0/0 in-app A
+  absent, gap 120- s                                       n 110  69/110 in-app A; twins 254/375
+
+EAR: the dispatched (pinned) line carries the parent (parent cover in the pinned line >= 0.5 = merged):
+  merged                                                   n   1  0/1 in-app A; twins 3/9
+  not merged                                               n 226  170/226 in-app A; twins 633/789
+  merged rows: h40d:R07F(w)
+
+EAR: the dispatched text covers < 0.6 of the roster follow-up (partial or paraphrased):
+  partial                                                  n  69  53/69 in-app A; twins 143/189
+  rows: s50e:S1Q02F(A,whisper,0.55) s50e:S1Q03F(A,whisper,0.4) s50e:S1Q05F(A,whisper,0.56) s50e:S1Q10F(A,whisper,0.55) s50e:S2Q02F(w,whisper,0.38) s50e:S2Q04F(A,whisper,0.57) s50e:S2Q06F(w,live,0.54) s50f:S1Q02F(A,whisper,0.55) s50f:S1Q03F(A,whisper,0.4) s50f:S1Q05F(A,whisper,0.56) s50f:S1Q10F(A,whisper,0.55) s50f:S2Q02F(A,whisper,0.38) s50f:S2Q04F(A,whisper,0.57) s50f:S2Q06F(w,whisper,0.54) s50g:S1Q02F(A,whisper,0.55) s50g:S1Q03F(A,whisper,0.4) s50g:S1Q05F(A,whisper,0.56) s50g:S1Q10F(A,whisper,0.55) s50g:S2Q02F(w,whisper,0.38) s50g:S2Q04F(A,whisper,0.57) s50g:S2Q06F(w,whisper,0.54) s50h:S1Q02F(A,whisper,0.55) s50h:S1Q03F(A,whisper,0.4) s50h:S1Q05F(A,whisper,0.56) s50h:S1Q10F(A,whisper,0.55) s50h:S2Q02F(A,whisper,0.38) s50h:S2Q04F(A,whisper,0.57) s50h:S2Q06F(w,whisper,0.54) s50h:S2Q10F(w,whisper,0.3) s50i:S1Q01F(A,whisper,0.56) s50i:S1Q02F(A,whisper,0.55) s50i:S1Q03F(A,whisper,0.4) s50i:S1Q04F(A,whisper,0.33) s50i:S1Q05F(A,live,0.56) s50i:S1Q10F(A,whisper,0.55) s50i:S2Q02F(A,whisper,0.38) s50i:S2Q04F(A,whisper,0.57) s50i:S2Q06F(w,whisper,0.54) s50j:S1Q02F(A,whisper,0.55) s50j:S1Q03F(A,whisper,0.4) s50j:S1Q05F(A,whisper,0.56) s50j:S1Q10F(A,live,0.36) s50j:S2Q02F(w,whisper,0.38) s50j:S2Q04F(A,whisper,0.57) s50j:S2Q06F(w,live,0.54) s50j:S2Q08F(A,whisper,0.3) s50j:S2Q09F(A,whisper,0.56) s50k:S1Q02F(A,whisper,0.55) s50k:S1Q03F(A,whisper,0.5) s50k:S1Q05F(A,whisper,0.56) s50k:S1Q10F(A,whisper,0.55) s50k:S2Q02F(w,whisper,0.38) s50k:S2Q04F(A,whisper,0.57) s50k:S2Q06F(w,whisper,0.54) s50l:S1Q02F(A,whisper,0.55) s50l:S1Q03F(A,whisper,0.4) s50l:S1Q05F(A,whisper,0.56) s50l:S1Q10F(A,whisper,0.55) s50l:S2Q02F(A,whisper,0.46) s50l:S2Q04F(A,whisper,0.57) s50l:S2Q06F(A,live,0.54) s50m:S1Q02F(A,whisper,0.55) s50m:S1Q03F(w,whisper,0.4) s50m:S1Q05F(A,whisper,0.56) s50m:S1Q10F(A,whisper,0.55) s50m:S2Q02F(w,whisper,0.38) s50m:S2Q04F(A,whisper,0.57) s50m:S2Q06F(w,whisper,0.54) h40d:R07F(w,live,0)
+
+BY SOURCE:
+  whisper                                                  n 207  157/207 in-app A; twins 564/706
+  live                                                     n  20  13/20 in-app A; twins 72/92
+
+OFF-TOPIC (t <= 1) answers, with the parent present vs absent:
+  off-topic, parent present                                n   1  0/1 in-app A; twins 3/9
+  off-topic, parent absent                                 n  19  0/19 in-app A; twins 11/65
+
+PER ROSTER FOLLOW-UP (across hours): in-app A / answered, twins A / n, parent absent in how many hours
+  R02F    hours 4  in-app 0/4  twins 7/27  parent absent 4/4  gaps 153,155,154,155
+  R04F    hours 4  in-app 3/4  twins 24/27  parent absent 4/4  gaps 154,154,154,154
+  R07F    hours 4  in-app 2/3  twins 21/27  parent absent 0/3  gaps 81,?,81,84
+  R09F    hours 4  in-app 1/4  twins 13/27  parent absent 4/4  gaps 155,155,153,148
+  R11F    hours 4  in-app 1/4  twins 5/27  parent absent 4/4  gaps 156,153,153,150
+  R13F    hours 4  in-app 4/4  twins 26/27  parent absent 4/4  gaps 154,154,153,126
+  R17F    hours 4  in-app 4/4  twins 25/27  parent absent 0/4  gaps 79,79,80,82
+  R22F    hours 4  in-app 2/4  twins 23/27  parent absent 0/4  gaps 78,78,77,79
+  R22F2   hours 4  in-app 4/4  twins 27/27  parent absent 0/4  gaps 68,63,63,65
+  R26F    hours 4  in-app 4/4  twins 27/27  parent absent 0/4  gaps 77,80,80,76
+  R28F    hours 4  in-app 4/4  twins 26/27  parent absent 0/4  gaps 78,78,79,79
+  R31F    hours 4  in-app 4/4  twins 27/27  parent absent 0/4  gaps 79,79,81,55
+  S1Q01F  hours 9  in-app 9/9  twins 24/24  parent absent 0/9  gaps 67,67,67,67,65,67,67,67,67
+  S1Q02F  hours 9  in-app 9/9  twins 22/24  parent absent 0/9  gaps 86,88,86,86,87,86,86,86,86
+  S1Q03F  hours 9  in-app 8/9  twins 24/24  parent absent 0/9  gaps 83,83,83,83,85,83,83,83,83
+  S1Q04F  hours 9  in-app 1/9  twins 9/24  parent absent 9/9  gaps 156,156,156,156,158,156,156,156,156
+  S1Q05F  hours 9  in-app 9/9  twins 22/24  parent absent 9/9  gaps 189,189,189,188,189,189,189,189,189
+  S1Q06F  hours 9  in-app 8/9  twins 17/24  parent absent 9/9  gaps 157,157,157,157,157,157,157,157,157
+  S1Q07F  hours 9  in-app 8/9  twins 24/24  parent absent 9/9  gaps 159,158,158,157,158,162,158,158,158
+  S1Q08F  hours 9  in-app 9/9  twins 22/24  parent absent 9/9  gaps 158,156,156,156,156,162,156,155,156
+  S1Q09F  hours 9  in-app 9/9  twins 24/24  parent absent 0/9  gaps 99,99,99,99,96,99,99,100,99
+  S1Q10F  hours 9  in-app 9/9  twins 23/24  parent absent 0/9  gaps 101,99,100,101,100,106,100,101,101
+  S2Q01F  hours 9  in-app 6/9  twins 18/24  parent absent 0/9  gaps 65,65,65,65,63,66,66,65,65
+  S2Q02F  hours 9  in-app 4/9  twins 11/24  parent absent 0/9  gaps 87,87,87,87,90,87,87,87,87
+  S2Q03F  hours 9  in-app 9/9  twins 24/24  parent absent 0/9  gaps 82,82,82,82,84,82,82,82,82
+  S2Q04F  hours 9  in-app 9/9  twins 23/24  parent absent 9/9  gaps 158,158,158,158,159,158,158,158,158
+  S2Q05F  hours 9  in-app 6/9  twins 24/24  parent absent 9/9  gaps 158,153,159,158,158,158,158,159,161
+  S2Q06F  hours 9  in-app 1/9  twins 3/24  parent absent 9/9  gaps 190,190,190,190,191,190,190,190,190
+  S2Q07F  hours 9  in-app 5/9  twins 17/24  parent absent 9/9  gaps 158,157,158,157,157,158,157,158,157
+  S2Q08F  hours 9  in-app 4/9  twins 18/24  parent absent 9/9  gaps 157,157,157,157,157,159,156,157,157
+  S2Q09F  hours 9  in-app 9/9  twins 24/24  parent absent 0/9  gaps 96,96,96,96,91,94,96,96,97
+  S2Q10F  hours 9  in-app 5/9  twins 18/24  parent absent 0/9  gaps 96,97,97,97,97,97,97,97,97

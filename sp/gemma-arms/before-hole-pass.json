@@ -1,0 +1,35 @@
+{
+ "gemma-4-31b-it_high": {
+  "S2Q10": "empty (cut retried: true)"
+ },
+ "gemma-4-31b-it_min": {},
+ "gemma-4-31b-it_high-r2": {
+  "S2Q02": "empty (cut retried: true)"
+ },
+ "gemma-4-31b-it_high-r3": {},
+ "gemma-4-31b-it_min-r2": {},
+ "gemma-4-31b-it_min-r3": {},
+ "gemma-4-26b-a4b-it_high": {
+  "S1Q04": "no answer within 600 s: 1187 thought parts and 0 answer chars in, last byte 0 s before the cap",
+  "S1Q10": "no answer within 180 s: 357 thought parts and 0 answer chars in, last byte 0 s before the cap",
+  "S2Q02F": "no answer within 180 s: 355 thought parts and 0 answer chars in, last byte 0 s before the cap",
+  "S2Q05": "no answer within 180 s: 356 thought parts and 0 answer chars in, last byte 0 s before the cap",
+  "S2Q07": "no answer within 180 s: 356 thought parts and 0 answer chars in, last byte 0 s before the cap",
+  "S2Q07F": "no answer within 180 s: 358 thought parts and 0 answer chars in, last byte 0 s before the cap",
+  "S2Q08": "no answer within 180 s: 356 thought parts and 0 answer chars in, last byte 0 s before the cap",
+  "S2Q09": "no answer within 180 s: 353 thought parts and 0 answer chars in, last byte 0 s before the cap"
+ },
+ "gemma-4-26b-a4b-it_min": {},
+ "gemma-4-26b-a4b-it_high-r2": {
+  "S1Q06": "no answer within 180 s: 357 thought parts and 0 answer chars in, last byte 0 s before the cap",
+  "S2Q02F": "no answer within 180 s: 355 thought parts and 0 answer chars in, last byte 0 s before the cap"
+ },
+ "gemma-4-26b-a4b-it_high-r3": {
+  "S1Q04": "no answer within 180 s: 355 thought parts and 0 answer chars in, last byte 0 s before the cap",
+  "S2Q02": "no answer within 180 s: 356 thought parts and 0 answer chars in, last byte 0 s before the cap",
+  "S2Q07F": "no answer within 180 s: 353 thought parts and 0 answer chars in, last byte 1 s before the cap",
+  "S2Q10F": "no answer within 180 s: 354 thought parts and 0 answer chars in, last byte 0 s before the cap"
+ },
+ "gemma-4-26b-a4b-it_min-r2": {},
+ "gemma-4-26b-a4b-it_min-r3": {}
+}

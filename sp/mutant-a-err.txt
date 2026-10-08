@@ -1,0 +1,47 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must the arms > suppresses a fenced block and keeps the prose around it
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must the arms > suppresses it when the text arrives one character at a time
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > the offers block BEFORE the spoken answer (spec 2026-09-30 offers-before-answer): the answer is shown, the offers are kept > the partial line after the offers — digits, the bar, a CR, then the label (CRLF after the bar): held — the same expression as the cue block
+AssertionError: expected 2 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 2
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:361:30
+    359|     it.each(ROWS)('the partial line after the offers — %s', async (_st…
+    360|         const r = await runStripTimed([LEAD, partial, rest]);
+    361|         expect(r.shownAfter).toBe(shownAfter);
+       |                              ^
+    362|         expect(r.out).toBe(answer);
+    363|         expect(r.sugg).toEqual(offers);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — digits, the bar, a stray CR, then the phrase: held (CUE_LINE takes whitespace after the bar, and CR is whitespace)
+AssertionError: expected 2 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 2
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:785:33
+    783|     it.each(ROWS)('partial state — %s', async (_state, partial, rest, …
+    784|         const r = await runCuesTimed([HEAD, partial, rest]);
+    785|         expect(r.reportedAfter).toBe(reportedAfter);
+       |                                 ^
+    786|         expect(r.cues).toEqual(cues);
+    787|         expect(r.out.join('')).toBe(prose);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

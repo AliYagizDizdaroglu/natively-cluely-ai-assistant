@@ -1,0 +1,12 @@
+fix(filter): a math pair keeps its closing $ and rac waits for its second group
+
+Re-applied from worktree elastic-hertz-4344f1 (base fed4b07), line for line. In the streaming spoken-notation
+filter the money branch claimed a pair's CLOSING $ (a stray "dollar"), and rac{a} was released before its
+second group. The money branch now holds only a $ that does not close a pair (or is followed by another $), and
+rac{a}{b} is held, bounded at 40 characters per group. One more real output change, inside the requirement:
+"That is $100,000$." now gives "That is 100,000." (before: a stray $, even on the whole string). Tests: the new
+cases fail on the old filter at chunk sizes 1-3 and pass after; suite 1089 passed, 0 failed, 4 skipped; tsc
+electron 6 (pre-existing), root 0. 624 saved replies through the old and new BUILT filter at 6 chunk sizes: 0
+changed. Opus review: APPROVE (fuzz 20,000 strings: 0 newly chunk-dependent, 156 newly stable).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

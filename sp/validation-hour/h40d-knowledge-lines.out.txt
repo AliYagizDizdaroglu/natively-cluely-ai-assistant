@@ -1,0 +1,7 @@
+run: 2026-10-02T11-39-41-h40d  (run window: interview60.timeline.json bytes 37093..732222)
+knowledge-mode lines: restored-from-settings 1; ENABLED before/inside/after the run window 1/0/0; DISABLED 0/0/0
+  ENABLED  2026-10-02T10:32:02.424Z  before the run window
+dispatch windows (whole log): 47 (2 before the run window, 45 inside, 0 after); with an Intent classified line 47 (100.0%)
+rule 1(g) reading: OK (last toggle before the run window ENABLED, no DISABLED inside, Intent classified on 47 of 47 windows)
+
+[exit 0]

@@ -1,0 +1,236 @@
+{
+ "S1Q01": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Sound tabular/non-linear rationale, serving efficiency, logistic-regression baseline with lift framing; 72 words, natural first-person speech."
+ },
+ "S1Q02": {
+  "correctness": 1,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Arithmetic right (9500, 5000, 3000 TP, 31.6% recall) but calling 31.6 versus 30 'perfect rounding' glosses the reconciliation."
+ },
+ "S1Q03": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Holdout control group plus difference-in-differences correctly separates model effect from seasonality and mix; 99 words, slightly over spoken length."
+ },
+ "S1Q04": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Stable index tie-break, correct precision/recall/lift-over-prevalence, sensible invalid-k, empty and no-positive handling; 131 words needs trimming."
+ },
+ "S1Q05": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Chronological split, ColumnTransformer fit on train only, TimeSeriesSplit, buffer for the 30-day label window; 138 words, too long."
+ },
+ "S1Q06": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Left join preserving zero-call customers, 30-day window, ingested_at cutoff, count gives zero; 122 words and dictates SQL verbally."
+ },
+ "S1Q07": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Shared feature store and registry against skew, sensible batch/online stack; training stage thin; 148 words, long for speech."
+ },
+ "S1Q08": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Request-id logging, delayed outcome join, propensity weighting, uplift-aware retraining selection; assignment mechanism thin; 142 words."
+ },
+ "S1Q09": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Blob, Azure ML, ACR, AKS, Data Factory, managed identity, Azure Monitor map cleanly with operational reasons; 94 words, speakable."
+ },
+ "S1Q10": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Managed identity to Postgres and Blob, Key Vault for residual secrets, separate resource groups, VNets, private endpoints; 91 words."
+ },
+ "S2Q01": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Textract parsing, semantic chunking, hybrid retrieval, cross-encoder rerank, assembly, generation checks; embedding stage skipped; 132 words."
+ },
+ "S2Q02": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Gives unit, denominator, dataset construction and uncertainty for each of the three metrics; 150 words, well past spoken length."
+ },
+ "S2Q03": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Accurate contrast of fixed retrieval, decomposition and dynamic agent, with a cost-of-error justification; 145 words, too long."
+ },
+ "S2Q04": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Correct one-over-c-plus-rank accumulation, one-based ranks, score then id tie-break, top-k slice; 83 words, natural speech."
+ },
+ "S2Q05": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Relevance sort, dedup set, per-document cap of two, skip-if-not-fit implemented as asked; 'maximize' overclaims greedy; 108 words."
+ },
+ "S2Q06": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Semaphore of eight, wait_for timeout, ordered awaiting of tasks, per-case try/except so failures stay isolated; 70 words."
+ },
+ "S2Q07": {
+  "correctness": 2,
+  "on_topic": 1,
+  "delivery": 0,
+  "reason": "Sharding, ACL metadata, filtered search, RAGAS evaluation are sound, but citations missing and a whole latency-SLA drift; 179 words."
+ },
+ "S2Q08": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Dual-vector versioning, batched backfill, CDC for in-flight updates, shadow quality comparison, toggle cutover and rollback; 133 words."
+ },
+ "S2Q10": {
+  "correctness": 1,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Idempotency key and ack-after-write are right, but atomic transaction or two-phase commit across vector store and Postgres misstates outbox; 130 words."
+ },
+ "S1Q01F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Covers all three options with sound criteria: interpretable baseline, unstructured data, deterministic business logic. Natural first-person, 76 words."
+ },
+ "S1Q02F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Correct on ranking versus imbalance-limited precision; adds ROI and calibration as what's still needed. 111 words, needs trimming."
+ },
+ "S1Q03F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Exactly the uplift argument: persuadables versus sure-leavers and sure-stayers. Spoken well at 82 words."
+ },
+ "S1Q04F": {
+  "correctness": 1,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Heap partial selection is right, but 'Thai sorting rules' is garbled and a vector database is irrelevant to sorting."
+ },
+ "S1Q05F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Correct: repeated snapshots fine for time-varying state; customer-level holdout prevents per-customer memorisation. 69 natural words."
+ },
+ "S1Q06F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Composite customer/time indexes plus bitemporal versioning for corrections is right. 119 words across two paragraphs, too long."
+ },
+ "S1Q07F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Idempotent checkpointing against duplicate campaign actions and pinning an artifact hash for version consistency. Both halves answered, 77 words."
+ },
+ "S1Q08F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Names the feedback loop clearly and offers exposure features or propensity matching as mitigation. 78 spoken words."
+ },
+ "S1Q09F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Sensible split with real operational reasons: managed endpoints, App Service for the web layer, AKS for GPU-heavy control."
+ },
+ "S1Q10F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Good triage by signal: 403 to RBAC, timeout to network, token failure to identity. 110 words, slightly long."
+ },
+ "S2Q01F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Identifies chunking, context assembly and generation as post-retrieval failure points. Correct and directly answers, 81 words."
+ },
+ "S2Q02F": {
+  "correctness": 2,
+  "on_topic": 1,
+  "delivery": 0,
+  "reason": "Ablation and judge-bias ideas are sound, but the final third defends an unasked model switch. 179 words, far too long."
+ },
+ "S2Q03F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Step limit, token budget, validation before proceeding, explicit fallback. Answers stopping, budgets and failure policy, 77 words."
+ },
+ "S2Q04F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Right reason: incomparable score scales; weighting by a per-source coefficient on reciprocal ranks is correct. 88 words."
+ },
+ "S2Q05F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Concrete redundant-boilerplate example, MMR for diversity, agentic second hop. Correct but 103 words in two paragraphs."
+ },
+ "S2Q06F": {
+  "correctness": 2,
+  "on_topic": 1,
+  "delivery": 1,
+  "reason": "Strong deterministic testing answer, but barely addresses extending to transient retries within an overall deadline. 126 words."
+ },
+ "S2Q07F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Two checkpoints, gateway and data access layer, with re-verification during retrieval for mid-query revocation. Concise 59 words."
+ },
+ "S2Q08F": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Shadow traffic with Recall@K and NDCG, plus count and metadata reconciliation against source. Answers completeness and currency, 69 words."
+ },
+ "S2Q09F": {
+  "correctness": 2,
+  "on_topic": 1,
+  "delivery": 0,
+  "reason": "Two-thirds re-answers the prior Azure placement question; only the last paragraph covers regional pinning and Policy. 167 words."
+ },
+ "S2Q10F": {
+  "correctness": 2,
+  "on_topic": 1,
+  "delivery": 2,
+  "reason": "Poison handling and the delete-versus-update race are correct, but dead-letter replay is never addressed. 83 words, spoken well."
+ }
+}

@@ -1,0 +1,38 @@
+feat(harness): the run script relaunches the app itself
+
+NATIVELY_AUTOSTART_MEETING=1 (dev-only, env-gated like the detector chain
+test) starts a meeting on launch; interview60.run.mjs gains app:start /
+app:stop / probe, and auto now stops, rebuilds, relaunches, probes quota,
+runs the hour and snapshots the run's logs into interview60.runs/.
+
+NATIVELY_LIVE_MODE seeds (and, via setLiveMode, persists) the Live mode so
+the very first unattended launch comes up listening in Auto, before
+anything has been saved to disk yet (controller ruling on top of the
+brief's Step 8 fallback, which required a click nobody could make).
+
+Proof — seeded first launch (env: NATIVELY_LIVE_MODE=auto):
+  2026-09-02T21:34:02.501Z [LOG] [Main] Live Mode → auto
+  2026-09-02T21:34:02.502Z [LOG] [Main] Starting Meeting... {"title":"autostart","source":"env"}
+
+Proof — unseeded relaunch (env: NATIVELY_AUTOSTART_MEETING=1 only; mode
+restored from the disk write the seeded launch made):
+  2026-09-02T21:34:37.075Z [LOG] [Main] Starting Meeting... {"title":"autostart","source":"env"}
+  2026-09-02T21:34:37.076Z [LOG] [Main] Live Mode restored → auto
+
+preflight: the checks this task exercises were green — probe played, "app
+heard the clip via Live" heard the actual clip text, Live mode is AUTO.
+gemini-3.1-flash-lite and gemini-3.5-flash-lite both returned HTTP 429
+(RESOURCE_EXHAUSTED, quotaId GenerateRequestsPerDayPerProjectPerModel-
+FreeTier, limit 500/day) — a pre-existing external quota condition on this
+API key, unrelated to this change, confirmed non-transient by rechecking
+the endpoint directly across several minutes. preflight therefore printed
+NOT READY rather than READY; the literal READY line could not be captured
+for this proof.
+
+Also fixes a bug found while proving this live: appStart() captured its
+log-offset before spawning, but main.ts unconditionally resets
+natively_debug.log to a fresh file at app.whenReady() (rotating the old
+one into .log.1), so the stale offset could never be reached. appStart()
+now waits for that reset before reading from 0.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

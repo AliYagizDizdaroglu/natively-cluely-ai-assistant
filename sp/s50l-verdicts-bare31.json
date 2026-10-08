@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers data fit, inference latency, and a logistic regression baseline with AUC lift; 114 words is too long."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic exact: 9,500 churners, 5,000 scored, 3,000 true positives, 31.6 percent recall, consistency judged correctly."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Holdout RCT plus difference-in-differences and cohort segmentation address seasonality and mix directly; 93 words runs long."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct sort, tie-break by row order, lift over prevalence, and all three edge cases; 148 words is far too long."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split with a thirty-day embargo buffer and ColumnTransformer fit only on train; 118 words too long."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Left join, window and ingested-at guards are right, but never filters event type to support calls as asked."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All seven components plus shared feature definitions and registry named correctly; at 161 words it is the longest answer."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Request-id logging, variant tagging, closed-window retrain filter and delayed outcome join all covered; 135 words too long."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service mapped correctly with operational reasoning, but 127 words exceeds a comfortable spoken length."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "User-assigned managed identity, RBAC, Key Vault references and private endpoints answer all four parts; 98 words slightly long."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks all eight stages including hybrid retrieval and cross-encoder reranking, tied to contract analysis; 108 words long."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives a single gold-token denominator for F1, which has two, though units and uncertainty are otherwise addressed."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sharp three-way comparison ending in the conditional-evidence case that justifies an agent; 107 words too long."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct one over c plus rank accumulation with document id tie-break and top k slice, at a natural length."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy relevance sort with dedup set, per-document cap of two, and budget skip all handled; 90 words slightly long."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore of eight, per-case timeout, isolated failure capture, and gather preserving order are all correct; 94 words long."
+  },
+  "S2Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Claims an atomic write across vector store and database, which is not achievable, and never handles deletions."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioning, shadow backfill, dual writes, offline parity, canary cutover and toggle rollback all covered; 140 words too long."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure service per component with a clear managed-versus-custom boundary; 150 words is far past spoken length."
+  },
+  "S2Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Idempotency key design is sound but the Azure messaging half, peek-lock, duplicate detection, dead-lettering, is absent."
+  }
+}

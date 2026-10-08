@@ -1,0 +1,2 @@
+﻿non2.mjs: "process.env.GEMMA_MAX_TRIES" x1; "transientError: lastErr, cutRetried" x0
+sidecar --dry with the N2-less runner: EXIT 2; NOT READY: no *-h40b run folder yet

@@ -1,0 +1,54 @@
+cases 200000; the port without the early close vs the BUILT stripCueBlock on the first 3000: 0 mismatch(es)
+
+[none] no early close (today): 0 case(s) differ from extractCues
+
+[spec] /^\d+\s*(\|.*)?$/: 142 case(s) differ from extractCues; report earlier than today in 112510, same 87490, LATER 0
+   text "__CUES__\n\r\t\r21212|\r` "
+   chunks ["_","_CUES__\n\r\t\r2","1212|\r` "]
+   got  {"cues":[],"prose":"\r\t\r21212|\r` ","calls":1}
+   want {"cues":[],"prose":""}
+   text " __CUES__\n212\t|\r-"
+   chunks [" __CUES__\n2","12\t|\r-"]
+   got  {"cues":[],"prose":"212\t|\r-","calls":1}
+   want {"cues":["-"],"prose":""}
+   text "__CUES__\r\n12|\r\t2 12|"
+   chunks ["_","_","CU","ES__\r\n12|\r\t","2 1","2|"]
+   got  {"cues":[],"prose":"12|\r\t2 12|","calls":1}
+   want {"cues":["2 12|"],"prose":""}
+   text "\n__CUES__\n12| |"
+   chunks ["\n__CUES__\n","1","2| |"]
+   got  {"cues":[],"prose":"12| |","calls":1}
+   want {"cues":["|"],"prose":""}
+   text "__CUES__1|\r__CUES____CUES__\n__CUES__\n1| a\n"
+   chunks ["__C","U","ES__1|\r","__CUES__","__CUES__\n__C","UE","S_","_","\n1|"," ","a\n"]
+   got  {"cues":[],"prose":"1|\r__CUES____CUES__\n__CUES__\n1| a\n","calls":1}
+   want {"cues":["__CUES____CUES__"],"prose":"__CUES__\n1| a\n"}
+   text "__CUES__1|   1| a\n   "
+   chunks ["__CUES__1","|  "," 1","| a\n ","  "]
+   got  {"cues":[],"prose":"1|   1| a\n   ","calls":1}
+   want {"cues":["1| a"],"prose":""}
+   text "  \n__CUES__\n1| 3."
+   chunks ["  \n__CUE","S","__\n","1","| 3."]
+   got  {"cues":[],"prose":"1| 3.","calls":1}
+   want {"cues":["3."],"prose":""}
+   text " __CUES__  2| b c\n1|\t 1`"
+   chunks [" __CUES__  2","| ","b ","c\n1","|\t 1`"]
+   got  {"cues":["b c"],"prose":"1|\t 1`","calls":1}
+   want {"cues":["b c","1"],"prose":""}
+
+[wide] /^\d+\s*(\|\s*.*)?$/: 0 case(s) differ from extractCues; report earlier than today in 112427, same 87573, LATER 0
+
+named cases:
+   "1|\rabc"                trimmed "1|\rabc"              CUE_LINE true  spec-prefix false wide-prefix true
+   "1|  x"                  trimmed "1|  x"                CUE_LINE true  spec-prefix false wide-prefix true
+   "1|\r"                   trimmed "1|"                   CUE_LINE false spec-prefix true  wide-prefix true
+   "1| Spa\r"               trimmed "1| Spa"               CUE_LINE true  spec-prefix true  wide-prefix true
+   "1| Sp\ra"               trimmed "1| Sp\ra"             CUE_LINE false spec-prefix false wide-prefix false
+   "1 2"                    trimmed "1 2"                  CUE_LINE false spec-prefix false wide-prefix false
+   "1 |"                    trimmed "1 |"                  CUE_LINE false spec-prefix true  wide-prefix true
+   " 1| x"                  trimmed "1| x"                 CUE_LINE true  spec-prefix true  wide-prefix true
+   "10 million | shards"    trimmed "10 million | shards"  CUE_LINE false spec-prefix false wide-prefix false
+   chunks ["__CUES__\n1| a\n","2|\rb","\nZ"] [none]: cues ["a","b"] prose "Z" reported after chunk 3
+   chunks ["__CUES__\n1| a\n","2|\rb","\nZ"] [spec]: cues ["a"] prose "2|\rb\nZ" reported after chunk 2
+   chunks ["__CUES__\n1| a\n","2|\rb","\nZ"] [wide]: cues ["a","b"] prose "Z" reported after chunk 3
+   extractCues: {"cues":["a","b"],"prose":"Z"}

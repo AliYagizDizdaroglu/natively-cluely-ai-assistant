@@ -1,0 +1,19 @@
+﻿EQ-TWINS |G_twin| 4; front complete pairs 20 of 20; back complete pairs 12 of 12; holes none; empty prose (scored wrong, not off-topic) none
+3a  gain front: consensus-acceptable block 10 - no-block 7 = +3 on 20 pairs (PASS >= +ceil(0.20*20) = +4; FAIL <= +max(floor(0.05*20), ceil(20/21)) = +1)  =>  INCONCLUSIVE
+3a-back (reported, decides only in 4b)  back: block 7 - no-block 2 = +5 on 12 pairs
+4b  consensus-wrong block <= no-block per leg: front 0 <= 0: holds; back 0 <= 0: holds  =>  PASS
+4c  consensus-off-topic front: block 0 - no-block 0 = +0 (U1: FAIL only if >= +2; margin not used)  =>  PASS
+2c  TTFT median paired block - no-block +90 ms (PASS <= +500, FAIL > +1000): PASS; stalls > 10 s: block 0 <= no-block 0 + 2: PASS; p90 block 4493 <= no-block 4617 + 2000: PASS [sitting condition holds: every front rep started both steps within 15 min]  =>  PASS
+2b  thinking: paired median thoughtsTokenCount block - no-block +29 (PASS <= +150); coverage 20/20 pairs with a finite thoughts on both sides (100 %)  =>  PASS
+2d  length: paired median words block - no-block +3 (PASS <= +5, FAIL > +10)  =>  PASS
+reported: either grader, front: wrong block 0 no-block 0; off-topic block 0 no-block 0
+front leg, per item (reps in order; Y both graders acceptable, X both consensus wrong, o both on_topic <= 1, w otherwise; a hole leaves its pair out):
+  S1Q04F     block YwwYw  no-block wwwww   acceptable block 2 no-block 0 of 5
+  S1Q06F     block YYwYY  no-block Ywwww   acceptable block 4 no-block 1 of 5
+  S2Q05F     block wwwww  no-block YYwYY   acceptable block 0 no-block 4 of 5
+  S2Q08F     block YYYYw  no-block YwwYw   acceptable block 4 no-block 2 of 5
+back leg, per item (reps in order; Y both graders acceptable, X both consensus wrong, o both on_topic <= 1, w otherwise; a hole leaves its pair out):
+  S1Q04F     block YYw  no-block wwY   acceptable block 2 no-block 1 of 3
+  S1Q06F     block YYY  no-block www   acceptable block 3 no-block 0 of 3
+  S2Q05F     block Yww  no-block wwY   acceptable block 1 no-block 1 of 3
+  S2Q08F     block Yww  no-block www   acceptable block 1 no-block 0 of 3

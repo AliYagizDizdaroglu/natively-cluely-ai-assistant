@@ -1,0 +1,18 @@
+        // A non-English socket holds no repair object, so every pause signal must still be harmless there. The `?.` guards on the
+        // empty-FINAL and UtteranceEnd clears are checked by nothing else (electron/tsconfig.json has no strictNullChecks).
+        it.each(['indonesian', 'auto'])('%s: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final are harmless', (language) => {
+            const { stt, seen } = start(language);
+            const errors = vi.spyOn(console, 'error').mockImplementation(() => { });
+            const ends: number[] = [];
+            stt.on('utterance-end', (e: { at: number }) => ends.push(e.at));
+            lives[0].fire('Results', results('hello there', true));
+            lives[0].fire('Results', results('', true));
+            lives[0].fire('Results', results('', false));
+            lives[0].fire('UtteranceEnd', { type: 'UtteranceEnd', last_word_end: 1.2 });
+            lives[0].fire('Results', results('and more', true, true));
+            stt.stop();
+            expect(seen).toEqual([['hello there', true], ['and more', true]]);
+            expect(ends).toHaveLength(1);
+            expect(repairs()).toEqual([]);
+            expect(errors).not.toHaveBeenCalled();        // a swallowed TypeError in the Transcript handler shows up here
+        });

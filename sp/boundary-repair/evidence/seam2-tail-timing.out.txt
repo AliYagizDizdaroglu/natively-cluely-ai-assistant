@@ -1,0 +1,5 @@
+H11#1     LOST     |T|=4 tail tripled[47.28-47.68] after[47.68-48.00] a[48.00-48.24] code[48.24-48.40] | F1 ends 47.50 | F2 first after[47.66-48.06] | F2first.start - tail0.end = -0.02s
+M28#1     LOST     |T|=2 tail between[84.02-84.42] training[84.42-84.82] | F1 ends 84.24 | F2 first training[84.40-84.96] | F2first.start - tail0.end = -0.02s
+M06#2     LOST     |T|=1 tail machine[211.29-211.53] | F1 ends 211.36 | F2 first learning[211.52-212.00] | F2first.start - tail0.end = -0.01s
+M06#3     LOST     |T|=1 tail machine[418.40-418.64] | F1 ends 418.47 | F2 first learning[418.63-419.11] | F2first.start - tail0.end = -0.01s
+M28#3     LOST     |T|=1 tail consistent[497.68-498.16] | F1 ends 498.13 | F2 first between[498.21-498.69] | F2first.start - tail0.end = 0.05s

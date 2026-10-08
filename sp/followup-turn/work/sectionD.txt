@@ -1,0 +1,87 @@
+// ───────────────────────── D. launch-grader.mjs (addendum G1 + G3): everything except the real model call ─────────────────────────
+if (want('D')) {
+    console.log('\n=== D. launch-grader.mjs: fresh cwd per attempt, memory pre-check, permissions, at most 2 at once (a stand-in for the claude binary; NO model call) ===');
+    const FT = path.dirname(R);
+    const LG = await import(new URL(`file:///${path.join(R, 'launch-grader.mjs').replace(/\\/g, '/')}`).href);
+    const AG = await import(new URL(`file:///${path.join(R, 'audit-graders.mjs').replace(/\\/g, '/')}`).href);
+    // helpers
+    check('projectSlug reproduces the REAL project folder name of F\\grading (200 characters + "-" + the base-36 hash: ...-followup-7potx7)', fs.existsSync(path.join(PROJECTS, LG.projectSlug(path.join(FT, 'grading')))) && LG.projectSlug(path.join(FT, 'grading')).endsWith('-7potx7'));
+    check('... a short cwd keeps its full slug (non-alphanumerics -> "-")', LG.projectSlug('C:\\a\\b c') === 'C--a-b-c');
+    check('absRule: C:\\Users\\x\\y.json -> Read(//c/Users/x/y.json) (Windows paths are normalized to /c/... in permission rules)', LG.absRule('Read', 'C:\\Users\\x\\y.json') === 'Read(//c/Users/x/y.json)' && LG.absRule('Edit', 'D:/q/r') === 'Edit(//d/q/r)');
+    const proj = path.join(tmp, 'projects-D');
+    const cwdA = path.join(tmp, 'cwdA');
+    fs.mkdirSync(path.join(proj, LG.projectSlug(cwdA), 'memory'), { recursive: true });
+    check('memoryEntries: an EMPTY memory\\ folder (as the real 22:19 probe left) reads [] ...', LG.memoryEntries(cwdA, proj).length === 0 && LG.memoryEntries(path.join(tmp, 'never-existed'), proj).length === 0);
+    fs.writeFileSync(path.join(proj, LG.projectSlug(cwdA), 'memory', 'note.md'), 'x');
+    check('... and a memory\\ folder holding one file reads one entry (the pre-launch refusal)', LG.memoryEntries(cwdA, proj).length === 1);
+    const template = AG.dispatchTemplate(AG.DISPATCH_FILE);
+    const bdir = 'C:/x/blind';
+    const prompt = LG.buildPrompt(template, { blindDir: bdir, slot: 'blind-3.g1' });
+    check('buildPrompt: the registered dispatch text with ONLY the pairs path, the verdicts path and the tag substituted passes the audit\'s own dispatch check', AG.dispatchProblem(prompt, template, { blindDir: bdir, files: AG.ownFiles('blind-3.g1'), tag: 'blind-3.g1' }) === null && prompt.includes('pairs.blind-3.json') && prompt.includes('verdicts.blind-3.g1.json') && prompt.includes('`blind-3.g1`'));
+    check('... and the same prompt audited as another slot does not', AG.dispatchProblem(prompt, template, { blindDir: bdir, files: AG.ownFiles('blind-4.g1'), tag: 'blind-4.g1' }) !== null);
+    const { args, rules } = LG.claudeArgs({ prompt, blindDir: bdir, slot: 'blind-3.g1' });
+    check('claude argv: -p <prompt> --model opus --output-format json, dontAsk, tools Read/Write/Edit/Bash, strict MCP, no --dangerously-skip-permissions', args[0] === '-p' && args[1] === prompt && args.includes('opus') && args[args.indexOf('--output-format') + 1] === 'json' && args[args.indexOf('--permission-mode') + 1] === 'dontAsk' && args[args.indexOf('--tools') + 1] === 'Read,Write,Edit,Bash' && args.includes('--strict-mcp-config') && !args.some((a) => /dangerously/.test(a)));
+    check('permission rules: Read own pairs + the grader-instruction file, Edit own verdicts, Bash(node -e *) and Bash(cd *); nothing for another file', rules.length === 5 && rules[0] === 'Read(//c/x/blind/pairs.blind-3.json)' && /^Read\(\/\/c\/Users\/sotka\/OneDrive\/Masaüstü\/.*interview60\.grader-prompt\.md\)$/.test(rules[1]) && rules[2] === 'Edit(//c/x/blind/verdicts.blind-3.g1.json)' && rules[3] === 'Bash(node -e *)' && rules[4] === 'Bash(cd *)');
+    // at most 2 graders at once
+    const base = path.join(tmp, 'slots'); fs.mkdirSync(base);
+    const r1 = LG.acquireSlot('a', base), r2 = LG.acquireSlot('b', base), r3 = LG.acquireSlot('c', base);
+    check('at most 2 graders at once: slots 1 and 2 are granted, the third launcher is refused', !!r1 && !!r2 && r3 === null);
+    r1(); const r4 = LG.acquireSlot('d', base);
+    check('... a released slot is granted again; a dead launcher\'s slot (stale pid) is reclaimed', !!r4 && (() => { fs.writeFileSync(path.join(base, '.slots', 'slot-2', 'pid'), '999999'); const x = LG.acquireSlot('e', base); return !!x && fs.readFileSync(path.join(base, '.slots', 'slot-2', 'label'), 'utf8') === 'e'; })());
+    fs.rmSync(base, { recursive: true, force: true });
+
+    // the CLI against a stand-in for the claude binary (TURN_FAKE_CLAUDE): it records its argv, writes the verdicts file named in the prompt and a transcript
+    const fakeDir = path.join(tmp, 'fake'); fs.mkdirSync(fakeDir, { recursive: true });
+    const fake = path.join(fakeDir, 'fake-claude.mjs');
+    fs.writeFileSync(fake, `import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto';
+const a = process.argv.slice(2); const dir = process.env.FAKE_DIR; const sid = crypto.randomUUID();
+fs.appendFileSync(path.join(dir, 'calls.jsonl'), JSON.stringify({ args: a, cwd: process.cwd() }) + '\\n');
+const prompt = a[1]; const v = /<VERDICTS_FILE> = (.+)/.exec(prompt); const o = /into the file (\\S+)/.exec(prompt);
+if (v && !process.env.FAKE_NO_WRITE) fs.writeFileSync(v[1].trim(), JSON.stringify({ 'pilot:P1#1': { correctness: 2, on_topic: 2, delivery: 2 } }));
+if (o) fs.writeFileSync(o[1].replace(/[.]$/, ''), '3');
+const slug = 'fake-slug-' + sid.slice(0, 6); fs.mkdirSync(path.join(process.env.TURN_PROJECTS, slug), { recursive: true });
+const use = [{ type: 'tool_use', name: 'Read', input: {} }, ...(o || v ? [{ type: 'tool_use', name: 'Write', input: {} }] : [])];
+const lines = [{ type: 'user', message: { role: 'user', content: process.env.FAKE_MEMORY ? '# Memory Index' : 'hi' } }, { type: 'assistant', message: { role: 'assistant', model: 'claude-opus-5-5', content: use } }];
+fs.writeFileSync(path.join(process.env.TURN_PROJECTS, slug, sid + '.jsonl'), lines.map((l) => JSON.stringify(l)).join('\\n') + '\\n');
+process.stdout.write(JSON.stringify({ type: 'result', subtype: 'success', is_error: false, session_id: sid, modelUsage: { 'claude-opus-5-5': {} }, result: 'DONE' }));
+`);
+    const gdir = path.join(tmp, 'grading-D'), pdir = path.join(tmp, 'pilot-D'), projD = path.join(tmp, 'projects-fake');
+    fs.mkdirSync(projD, { recursive: true });
+    const lenv = (extra = {}) => ({ ...process.env, TURN_GRADING_DIR: gdir, TURN_PROJECTS: projD, TURN_FAKE_CLAUDE: fake, FAKE_DIR: fakeDir, ...extra });
+    const lg = (a, extra) => { const x = spawnSync(process.execPath, [path.join(R, 'launch-grader.mjs'), ...a], { encoding: 'utf8', env: lenv(extra) }); return { code: x.status, out: `${x.stdout}${x.stderr}` }; };
+    const winDir = (p) => p.replace(/\\/g, '/');
+    let x = lg(['--make-pilot', winDir(pdir)]);
+    check('--make-pilot writes a synthetic pairs.blind-1.json (4 items) and nothing else', x.code === 0 && fs.existsSync(path.join(pdir, 'pairs.blind-1.json')) && JSON.parse(fs.readFileSync(path.join(pdir, 'pairs.blind-1.json'), 'utf8')).items.length === 4 && fs.readdirSync(pdir).length === 1);
+    check('... and refuses to overwrite it', lg(['--make-pilot', winDir(pdir)]).code === 2);
+    x = lg(['blind-1.g1', '--pilot', winDir(pdir), '--dry-run']);
+    check('--dry-run: prints cwd, argv (prompt as length + sha12) and the rules; creates no cwd, calls nothing', x.code === 0 && /DRY RUN blind-1\.g1 attempt 1/.test(x.out) && /<prompt \d+ chars>/.test(x.out) && !fs.existsSync(gdir) && !fs.existsSync(path.join(fakeDir, 'calls.jsonl')));
+    x = lg(['blind-1.g1', '--pilot', winDir(pdir)]);
+    const calls = () => (fs.existsSync(path.join(fakeDir, 'calls.jsonl')) ? fs.readFileSync(path.join(fakeDir, 'calls.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l)) : []);
+    const rec = () => (fs.existsSync(path.join(pdir, 'launches.jsonl')) ? fs.readFileSync(path.join(pdir, 'launches.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l)) : []);
+    check('a launch: exit 0, ids printed (session, model, cwd name, memory ABSENT, verdict keys), one record in launches.jsonl', x.code === 0 && /blind-1\.g1 a1: session [0-9a-f-]{36} model claude-opus-5-5 exit 0 cwd pilot-blind-1\.g1-a1 memory ABSENT projectMemory=0 claudeMem=0 verdicts 1 keys/.test(x.out) && rec().length === 1 && rec()[0].slot === 'blind-1.g1' && rec()[0].attempt === 1 && rec()[0].model === 'claude-opus-5-5' && rec()[0].exit === 0, x.out.slice(0, 160));
+    check('... the cwd is a fresh, EMPTY folder grading\\pilot-blind-1.g1-a1 under the grading dir, and claude ran INSIDE it', fs.existsSync(path.join(gdir, 'pilot-blind-1.g1-a1')) && fs.readdirSync(path.join(gdir, 'pilot-blind-1.g1-a1')).length === 0 && calls().length === 1 && path.resolve(calls()[0].cwd) === path.resolve(path.join(gdir, 'pilot-blind-1.g1-a1')));
+    check('... the prompt it was given passes the audit\'s dispatch check for that slot (dispatch text, only paths and tag substituted)', AG.dispatchProblem(calls()[0].args[1], template, { blindDir: winDir(pdir), files: AG.ownFiles('blind-1.g1'), tag: 'blind-1.g1' }) === null);
+    x = lg(['blind-1.g1', '--pilot', winDir(pdir)]);
+    check('a second launch of the same slot is refused while its verdicts exist (move the earlier attempt away before a re-grade): exit 2, no call', x.code === 2 && calls().length === 1);
+    fs.renameSync(path.join(pdir, 'verdicts.blind-1.g1.json'), path.join(pdir, 'verdicts.blind-1.g1.attempt1.json'));
+    x = lg(['blind-1.g1', '--pilot', winDir(pdir)]);
+    check('... with the verdicts moved away the SAME attempt number still cannot reuse its cwd: REFUSED, exit 2, no call', x.code === 2 && /already exists/.test(x.out) && calls().length === 1);
+    x = lg(['blind-1.g1', '--pilot', winDir(pdir), '--attempt', '2']);
+    check('--attempt 2 gets its own fresh cwd (a2) and a second record', x.code === 0 && fs.existsSync(path.join(gdir, 'pilot-blind-1.g1-a2')) && rec().length === 2 && rec()[1].attempt === 2 && calls().length === 2);
+    fs.renameSync(path.join(pdir, 'verdicts.blind-1.g1.json'), path.join(pdir, 'verdicts.blind-1.g1.attempt2.json'));
+    const cwd3 = path.join(gdir, 'pilot-blind-1.g1-a3');
+    fs.mkdirSync(path.join(projD, LG.projectSlug(cwd3), 'memory'), { recursive: true }); fs.writeFileSync(path.join(projD, LG.projectSlug(cwd3), 'memory', 'note.md'), 'x');
+    x = lg(['blind-1.g1', '--pilot', winDir(pdir), '--attempt', '3']);
+    check('G1: a non-empty memory\\ in the attempt\'s projects folder -> REFUSED before the launch (exit 2, claude not called)', x.code === 2 && /non-empty memory/.test(x.out) && calls().length === 2);
+    x = lg(['blind-2.g1', '--pilot', winDir(pdir)]);
+    check('a slot whose pairs file does not exist is a usage error (exit 2), nothing created', x.code === 2 && !fs.existsSync(path.join(gdir, 'pilot-blind-2.g1-a1')));
+    x = lg(['blind-1.g2', '--pilot', winDir(pdir)], { FAKE_NO_WRITE: '1' });
+    check('a grader that exits 0 but wrote no verdicts file: the launch line says MISSING/INVALID and the exit code is 1', x.code === 1 && /verdicts MISSING\/INVALID/.test(x.out));
+    // G1 calibration: two probes in a row from two fresh cwds
+    x = lg(['--probe-pair']);
+    check('--probe-pair (stand-in claude): two fresh cwds, each Read x1 + Write x1, both memory ABSENT -> PROBE PAIR OK', x.code === 0 && /PROBE PAIR OK/.test(x.out) && (x.out.match(/memory ABSENT projectMemory=0 claudeMem=0/g) ?? []).length === 2 && /tools \{"Read":1,"Write":1\}/.test(x.out), x.out.split('\n').slice(-2).join(' | ').slice(0, 160));
+    x = lg(['--probe-pair'], { FAKE_MEMORY: '1' });
+    check('--probe-pair where the first probe\'s transcript carries a memory marker -> PROBE PAIR FAILED, exit 1 (the helper answers differently when the effect is present)', x.code === 1 && /PROBE PAIR FAILED/.test(x.out) && /LOADED/.test(x.out));
+    check('the real folder F\\grading was not touched by any of this', !fs.existsSync(path.join(FT, 'grading', 'pilot-blind-1.g1-a1')) && !fs.existsSync(path.join(FT, 'grading', '.slots')));
+}
+//@@END-SECTION-D@@

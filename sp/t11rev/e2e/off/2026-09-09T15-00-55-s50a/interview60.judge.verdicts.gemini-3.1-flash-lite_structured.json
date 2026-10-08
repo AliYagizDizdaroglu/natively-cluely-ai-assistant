@@ -1,0 +1,122 @@
+{
+ "S1Q01": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Accurate XGBoost rationale - regularisation, native missing values, inference speed - plus a logistic-regression baseline; only fault is 101-word length."
+ },
+ "S1Q02": {
+  "correctness": 1,
+  "on_topic": 2,
+  "delivery": 2,
+  "reason": "Arithmetic right (9,500 churners, 3,000 true positives, 31.6 percent recall) but 31.6 versus 30 percent is not a rounding difference."
+ },
+ "S1Q03": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Randomised holdout plus difference-in-differences is exactly right; slightly overclaims the full 1.4-point drop as model uplift, and runs 97 words."
+ },
+ "S1Q04": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 0,
+  "reason": "Sorting, stable tie-break, lift formula and edge cases all correct, but stray LaTeX k-dollar tokens are unspeakable; 150 words."
+ },
+ "S1Q05": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Chronological split with a thirty-day embargo gap and ColumnTransformer fitted only on train is the right leakage-safe answer; 114 words."
+ },
+ "S1Q06": {
+  "correctness": 1,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Never filters event type to support calls, and the ingested-at filter, if placed in WHERE, would drop zero-call customers."
+ },
+ "S1Q07": {
+  "correctness": 1,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Feature store correctly identified as the shared component, but training is never described despite being an explicitly requested stage; 159 words."
+ },
+ "S1Q08": {
+  "correctness": 1,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Logging, delayed outcome joins and propensity-weighted retraining are sound, but the experiment assignment mechanism itself is never designed."
+ },
+ "S1Q09": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Correct Azure mapping across Blob, AML training, registry, ACR, AKS, Data Factory, managed identity and Monitor, with reasons; 120 words."
+ },
+ "S1Q10": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Managed identity, Entra authentication to PostgreSQL, Key Vault fallback and private-endpoint separation all correct; only defect is 129-word length."
+ },
+ "S2Q01": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "All eight stages covered accurately, with semantic chunking and hybrid search mapped to contract review; 141 words is far too long."
+ },
+ "S2Q02": {
+  "correctness": 1,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Extraction and multi-hop definitions are complete, but the hallucination metric gives no dataset construction or uncertainty as explicitly asked."
+ },
+ "S2Q03": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Genuinely compares all three approaches and prices the agent's latency and cost against its robustness; 130 words is too long."
+ },
+ "S2Q04": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 0,
+  "reason": "Reciprocal rank fusion and document-id tie-break are correct, but stray LaTeX c-dollar and k-dollar tokens cannot be spoken as written."
+ },
+ "S2Q05": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Greedy sort, seen-set dedup, two-per-document cap and budget check all correct; 97 words and a snake_case identifier hurt delivery."
+ },
+ "S2Q06": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Semaphore, per-case timeout race, local error catching and ordered Promise.all satisfy every requirement; 87 words is just over the band."
+ },
+ "S2Q07": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Per-tenant namespaces, PostgreSQL ACL metadata, pre-filtered search and RAGAS evaluation are all correct; 140 words is far too long to speak."
+ },
+ "S2Q08": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Versioning, dual-write backfill, shadow evaluation, canary cutover and config rollback all covered correctly; 142 words is well over spoken length."
+ },
+ "S2Q09": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Blob, Event Grid, Service Bus, Functions, AI Search, Azure OpenAI and App Insights correctly placed and justified; 122 words."
+ },
+ "S2Q10": {
+  "correctness": 2,
+  "on_topic": 2,
+  "delivery": 1,
+  "reason": "Message-id idempotency key in Cosmos DB with an atomic commit correctly makes replay safe; 105 words is too long."
+ }
+}

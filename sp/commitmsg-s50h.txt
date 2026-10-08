@@ -1,0 +1,25 @@
+docs(passes): s50h — flash-lite at thinking MEDIUM, which lite does not honor; in-app 10/20
+
+The second thinking-level flight (42d82c5), NATIVELY_GEMINI_THINKING_LEVEL=MEDIUM.
+Compliance from the per-answer usage lines settles the open question: of 43
+verbal requests, 38 spent zero thought tokens and five spent 362–625, so on
+gemini-3.1-flash-lite MEDIUM behaves as the MINIMAL default (three probes on the
+captured bytes had shown the same). This hour is therefore a third default-level
+replicate, not a second thinking arm.
+
+Mechanical gates all passed (40/40 heard and answered, 15/15 long questions
+whole, 0 doubles, 1 designed supersede, 0 cut, 0 fallback redirects, no 503 or
+429). TTFT p90 4.7 s, p50 1.7 s, with two Google-side stalls of 44 s and 60 s on
+the primary call during which the 4 s fallback did not redirect; the 60 s one
+(S2Q09) delivered its answer after the harness attribution window, so the record
+carries it as no answer.
+
+Quality: 10/20 mains (s50e 15, s50f 14, s50g LOW 16) and 12/20 follow-ups
+(13, 18, 16). Against s50g the flip table is 0 up, 6 down; every miss is an
+omitted sub-part or a misplaced product (LangSmith again), plus the stalled
+S2Q09. Words p50 111 against 81 on the LOW hour. Bare lite arm 16/20, 3.5-lite
+16/20, qwen 15/20, gpt-oss 16/20; 3.6 and 3.5 flash 5/5 on the app's bytes
+(3.8 and 3.7 flash all 503). Graded by Opus agents on the frozen prompt
+8564ba96369a; record and index generated in this checkout.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

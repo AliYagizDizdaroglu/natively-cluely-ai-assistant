@@ -1,0 +1,1 @@
+﻿& "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\register-once.ps1" -Name Natively-router-smoke -InMinutes 3 -Execute cmd.exe -Argument '/c ""C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\launch-router-smoke.cmd""' -WorkingDirectory "C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant" -LimitMinutes 50

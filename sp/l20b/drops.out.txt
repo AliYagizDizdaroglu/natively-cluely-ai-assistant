@@ -1,0 +1,17 @@
+r1 S1Q02F~a1 +65s run clock, during the question: code 1011 "Internal error encountered."
+   generationComplete for: S1Q02
+   output in this attempt: [S1Q02] With one hundred [S1Q02] thousand subscribers,[S1Q02]  a nine point five[S1Q02]  percent churn rate[S1Q02]  means nine thousand[S1Q02]  five hundred total churners.[S1Q02]  Targeting[S1Q02]  the top five percent[S1Q02]  of the band reaches[S1Q02]  five thousand subscribers.[S1Q02]  Catching thirty[S1Q02]  percent of the churners[S1Q02]  yields two thousand[S1Q02]  eight hundred fifty true[…
+r1 S1Q02     +98s run clock, 4.0 s after its end: code 1011 "Internal error encountered."
+   generationComplete for: none
+   output in this attempt: (none)
+r1 S1Q04~a1  +144s run clock, 11.6 s after its end: code 1011 "Internal error encountered."
+   generationComplete for: none
+   output in this attempt: (none)
+
+S1Q02: Can you reconcile the metrics on your CV? Your CV reports a 9.5 percent churn rate, a top 5 percent risk band capturing 30 percent of churners, and 60 percent precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?
+
+S1Q02F: What can you conclude from a PR AUC of 0.38 and an ROC AUC of 0.88, and what else would you need before deciding the model is useful? [Follow-up to: Can you reconcile the metrics on your CV? Your CV reports a 9.5 percent churn rate, a top 5 percent risk band capturing 30 percent of churners, and 60 percent precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?]
+
+S1Q04: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.
+
+S1Q04F: How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]

@@ -1,0 +1,9 @@
+feat(answer): let the sentence in progress at 80 words finish
+
+The 40-word floor dropped whole the sentence that would cross 80, taking the
+second half of otherwise correct answers with it: all six non-acceptable after6
+answers were cut at 40-72 words and five were acceptable uncut. The floor now
+equals the limit; the harness budget row states the new policy (a cut answer
+has >= 80 words, p50 <= 100, max <= 130).
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

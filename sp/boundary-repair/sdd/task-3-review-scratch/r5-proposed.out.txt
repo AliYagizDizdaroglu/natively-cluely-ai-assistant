@@ -1,0 +1,30 @@
+proposed test file: 13913 B (MAIN 13159 B); ASCII-only additions: true; still NFC: true
+
+[final (MAIN as is)] Tests 68 passed (68)
+
+[v3 module (t3-orig) = the RED state] Tests 10 failed | 58 passed (68)
+   failed: negative #28 with the interim running on: a digit token at the cut ("ninety two percent" -> "92%.") is no cut
+   failed: "twenty five" -> "25": the same shape (v3 restored "five")
+   failed: "all right" -> "Alright": a final token longer than the interim's is a merge, not a re-spelling (v3 restored "right")
+   failed: "break" -> "breaks": a longer final token is refused even when it is only an inflection, so a word lost right after it stays lost (v3 restored "even")
+   failed: a re-spelling keeps its first letter: "put" for "cut" is no cut ("cat" for "cut" still is — the edge above)
+   failed: an interim with a non-ASCII letter that splits the tokenisers ("İ") is no cut
+   failed: an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+   failed: clear() between F1 and F2 (the adapter's empty final / UtteranceEnd) forgets the cut
+   failed: clear() also forgets the latest interim: a final after a pause is not a cut of it
+   failed: speechFinal on F1 (Deepgram heard the utterance end there) leaves no cut; on F2 it does not stop the repair
+
+[digit rule dropped] Tests 1 failed | 67 passed (68)
+   failed: "twenty five" -> "25": the same shape (v3 restored "five")
+   Expected: "last week, then rolled it back."
+   Received: "two last week, then rolled it back."
+
+[\p{M} dropped from the guard] Tests 1 failed | 67 passed (68)
+   failed: an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+   Expected: "and your last role."
+   Received: "re sume and your last role."
+
+junction removed: true; MAIN's vitest still present: true
+mirror tree deleted: true
+
+rule-v4 probe, interim "…92 percent for each", F1 "…92%.", F2 "For each …": {"text":"percent For each of those metrics, define the unit of evaluation,","restored":["percent"]}

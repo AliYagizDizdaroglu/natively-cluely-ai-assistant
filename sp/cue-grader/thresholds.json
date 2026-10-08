@@ -1,0 +1,9 @@
+{
+ "goodPct": 80,
+ "wrongPct": 3,
+ "emptyPct": 5,
+ "addsMin": 2,
+ "ngMin": 5,
+ "axisPct": 50,
+ "agreePct": 75
+}

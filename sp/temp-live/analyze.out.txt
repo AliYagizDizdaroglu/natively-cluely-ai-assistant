@@ -1,0 +1,20 @@
+TIMING AND SHAPE (3.8 Live; first word measured from the end of the question audio)
+  LT04   answered 24/24  first word p50 1.73 s  p90 2.45 s  | words p50 61  | apologies 0  premature 24  cap 1
+  LTDEF  answered 24/24  first word p50 1.82 s  p90 2.63 s  | words p50 59  | apologies 0  premature 24  cap 0
+  LPRIOR answered 22/24  first word p50 2.00 s  p90 6.84 s  | words p50 64  | apologies 0  premature 23  cap 0
+  APP    (3.5-lite HIGH 0.4, offline text call; first token from request send, NOT comparable with Live's clock) first token p50 3.85 s, words p50 66
+
+QUALITY (blind, frozen grader prompt; 4 verdict files; graded 94 of 94 keys)
+  LT04   graded 24 of 24  acceptable (mean of graders) 11.5  wrong (both graders) 2
+  LTDEF  graded 24 of 24  acceptable (mean of graders) 11.5  wrong (both graders) 0
+  LPRIOR graded 22 of 24  acceptable (mean of graders) 9.0  wrong (both graders) 1
+  APP    graded 24 of 24  acceptable (mean of graders) 7.5  wrong (both graders) 0
+  per item, acceptable summed over reps (graded count):  item   LT04   LTDEF  LPRIOR   APP
+    S2Q02     2.0/3  1.5/3  0.0/3  0.5/3
+    S2Q06F    0.0/3  0.0/3  0.0/3  0.0/3
+    S2Q07F    1.0/3  1.0/3  2.0/3  0.0/3
+    S1Q02     1.0/3  3.0/3  0.0/2  3.0/3
+    S1Q04F    2.0/3  2.0/3  2.5/3  0.0/3
+    S2Q02F    1.0/3  0.0/3  1.0/3  1.0/3
+    S2Q10F    2.0/3  3.0/3  2.0/3  1.0/3
+    S1Q02F    2.5/3  1.0/3  1.5/2  2.0/3

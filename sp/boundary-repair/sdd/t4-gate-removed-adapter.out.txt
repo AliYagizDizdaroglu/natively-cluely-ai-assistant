@@ -1,0 +1,12 @@
+﻿
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts (6 tests | 1 failed) 26ms
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > a non-English connection passes every transcript through untouched, with no repair line 11ms
+     → expected [ [ …(2) ], …(2) ] to deeply equal [ [ …(2) ], …(2) ]
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  22:18:54
+   Duration  2.52s (transform 121ms, setup 0ms, collect 150ms, tests 26ms, environment 1.31s, prepare 162ms)
+

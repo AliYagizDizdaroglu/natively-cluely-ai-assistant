@@ -1,0 +1,5 @@
+CURRENT  A0_real              exit 0  10/10 passed  
+CURRENT  A1_clock_constant_0  exit 0  10/10 passed  
+PROPOSED A0_real              exit 0  11/11 passed  
+PROPOSED A1_clock_constant_0  exit 1  10/11 passed  NOT PASSED: the 5 s window runs on the arrival clock: F2 5001 ms after F1 is emitt :: AssertionError: expected [ [ …(2) ], [ …(2) ], [ …(2) ] ] to deeply equal [ [ …(2) ], [ …(2) ], [ …(2) ] ]
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true

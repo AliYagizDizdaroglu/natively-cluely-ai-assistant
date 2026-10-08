@@ -1,0 +1,98 @@
+[
+ {
+  "id": "plain",
+  "text": "Our inference service has a p 99 latency of eight hundred milliseconds against an SLA of 500 at about 4,000 requests per second. How would you bring it back under the SLAA?",
+  "lostDg": [
+   "800 ms"
+  ],
+  "lostLive": []
+ },
+ {
+  "id": "titleFirst",
+  "text": "Optimize our inference latency. Our service has AP ninety nine of eight hundred milliseconds against an SLA of 500 at about 4,000 requests per second. How would you bring it back under the SLAA?",
+  "lostDg": [
+   "p99",
+   "800 ms"
+  ],
+  "lostLive": [
+   "SLA"
+  ]
+ },
+ {
+  "id": "merged",
+  "text": "Optimize our inference latency. Our service has AP99 of eight hundred milliseconds against an SLA of five hundred, at about 4,000 requests per second. How would you bring it back under the SLAA?",
+  "lostDg": [
+   "p99",
+   "800 ms",
+   "500 ms SLA"
+  ],
+  "lostLive": [
+   "800 ms",
+   "500 ms SLA"
+  ]
+ },
+ {
+  "id": "askLast",
+  "text": "So we run an inference service behind a load balancer, It serves a recommendation model. Traffic is about 4,000 requests per second on a normal day. The p 99 latency is sitting at 800 and our SLA says 500. How would you bring it back under the SLA?",
+  "lostDg": [],
+  "lostLive": [
+   "800 ms",
+   "500 ms SLA",
+   "SLA"
+  ]
+ },
+ {
+  "id": "askFirst",
+  "text": "How would you bring our inference latency back under this law? The p 99 is eight hundred milliseconds, the SLA is 500, and we serve about 4,000 requests per second.",
+  "lostDg": [
+   "800 ms"
+  ],
+  "lostLive": []
+ },
+ {
+  "id": "twoPart",
+  "text": "RP 99 is eight hundred milliseconds against an SLA of 500 at 4,000 requests per second. How would you bring it back under the SLA? And separately, how would you know the fix actually held?",
+  "lostDg": [
+   "p99",
+   "800 ms"
+  ],
+  "lostLive": []
+ },
+ {
+  "id": "selfCorrect",
+  "text": "How would you scale the actually, let me put that differently. R p 99 is eight hundred milliseconds against an SLA of 500 at 4,000 requests per second. How would you bring it back under the SLA?",
+  "lostDg": [
+   "800 ms"
+  ],
+  "lostLive": []
+ },
+ {
+  "id": "filler",
+  "text": "So, I guess what I'm really asking is this. We've got a p 99 of eight hundred milliseconds, slot is 500, and we're at about 4,000 requests per second. How would you bring it back under this law?",
+  "lostDg": [
+   "800 ms",
+   "SLA"
+  ],
+  "lostLive": []
+ },
+ {
+  "id": "trailing",
+  "text": "RP 99 is eight hundred milliseconds against an SLA of 500 at 4,000 requests per second. How would you bring it back under the SLA? Take your time. There's no single right answer here.",
+  "lostDg": [
+   "p99",
+   "800 ms"
+  ],
+  "lostLive": [
+   "500 ms SLA"
+  ]
+ },
+ {
+  "id": "longRamble",
+  "text": "Let me give you some background before I ask this. We have a recommendation service that a few product teams depend on, It has grown organically over about two years, nobody has really owned the performance work, and lately the numbers have got worse. The p 99 latency is eight hundred milliseconds now. Our SLA with those teams is 500, and we are serving roughly thousand requests per second at peak. How would you bring it back under the SLAA?",
+  "lostDg": [
+   "800 ms",
+   "4,000 rps"
+  ],
+  "lostLive": []
+ }
+]

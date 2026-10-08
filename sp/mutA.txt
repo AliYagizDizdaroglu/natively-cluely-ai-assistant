@@ -1,0 +1,39 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+ ✓ electron/test/golden/interview60.chains.test.ts (2 tests) 5ms
+ ❯ electron/ipcHandlers.typedPrompt.test.ts (2 tests | 1 failed) 17ms
+   × gemini-chat-stream sends the typed verbal prompt > names a verbal prompt or the cue rule in exactly three lines: the typed import and its two verbal branches 13ms
+     → expected [ …(3) ] to deeply equal [ …(3) ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/ipcHandlers.typedPrompt.test.ts > gemini-chat-stream sends the typed verbal prompt > names a verbal prompt or the cue rule in exactly three lines: the typed import and its two verbal branches
+AssertionError: expected [ …(3) ] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+  Array [
+    "import { VERBAL_TYPED_PROMPT } from \"./llm/prompts\"",
+-   "let verbalSystemPrompt = VERBAL_TYPED_PROMPT;",
++   "let verbalSystemPrompt = VERBAL_WHAT_TO_ANSWER_PROMPT;",
+    "verbalSystemPrompt = `${kr.systemPromptInjection}\\n\\n${VERBAL_TYPED_PROMPT}`;",
+  ]
+
+ ❯ electron/ipcHandlers.typedPrompt.test.ts:22:81
+     20|     it('names a verbal prompt or the cue rule in exactly three lines: …
+     21|         // the hands-free prompt, CUE_RULE or the sentinel reaching th…
+     22|         expect(mentioning(/VERBAL_\w+_PROMPT|CUE_RULE|CUES_SENTINEL|__…
+       |                                                                                 ^
+     23|             'import { VERBAL_TYPED_PROMPT } from "./llm/prompts"',
+     24|             'let verbalSystemPrompt = VERBAL_TYPED_PROMPT;',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 3 passed (4)
+   Start at  20:56:37
+   Duration  3.14s (transform 122ms, setup 0ms, collect 130ms, tests 22ms, environment 3.62s, prepare 661ms)
+

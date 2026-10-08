@@ -1,0 +1,50 @@
+﻿M1-revert: exit=1 Tests 1 failed | 15 passed (16)
+    failed: the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite > M1 (h40c review): both legs first tokens land in the same tick after the 
+throw-back-first: exit=1 Tests 2 failed | 14 passed (16)
+    failed: the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite > both legs fail before a first token: the fronts error propagates, as the 
+    failed: the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite > both legs fail on the trigger path (the front never answers by the trigge
+deliver-no-close: exit=1 Tests 2 failed | 14 passed (16)
+    failed: the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite > closing on the winners sentinel aborts the winners request 42ms
+    failed: the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite > trigger path, closing on the winners sentinel: both legs end up aborted (
+hedge-any-primary: exit=1 Tests 1 failed | 15 passed (16)
+    failed: the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite > a non-lite primary is not hedged: it keeps the ordinary stall race 13ms
+trigger-back-only: exit=1 Tests 2 failed | 14 passed (16)
+    failed: the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite > front answers slowly, past the trigger, but before the back: front wins, 
+    failed: the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite > front is slow, back fails before its first token: front still wins once i
+both-empty-throws: exit=0 Tests 31 passed (31)
+front-empty-no-back: exit=0 Tests 31 passed (31)
+no-clearTimeout: exit=0 Tests 16 passed (16)
+hedge-label-as-fallback: exit=1 Tests 3 failed | 12 passed (15)
+    failed: the hedge winner is named through generateStream, not just LLMHelper > back wins: the bar names gemini-3.1-flash-lite (hedge), ahead of the words it w
+    failed: the hedge winner is named through generateStream, not just LLMHelper > front wins: the bar names gemini-3.5-flash-lite (hedge) 8ms
+    failed: the hedge winner is named through generateStream, not just LLMHelper > both legs 503, then the redirect answers: the redirect re-enters the hedge 8ms
+no-hedge-branch-in-watch: exit=1 Tests 3 failed | 12 passed (15)
+    failed: the hedge winner is named through generateStream, not just LLMHelper > back wins: the bar names gemini-3.1-flash-lite (hedge), ahead of the words it w
+    failed: the hedge winner is named through generateStream, not just LLMHelper > front wins: the bar names gemini-3.5-flash-lite (hedge) 5ms
+    failed: the hedge winner is named through generateStream, not just LLMHelper > both legs 503, then the redirect answers: the redirect re-enters the hedge 4ms
+session-ignores-question: exit=1 Tests 2 failed | 9 passed (11)
+    failed: SessionTracker.addAssistantMessage — questionContext (fix round 1, C1) > a passed question is stored as questionContext, trimmed 11ms
+    failed: runWhatShouldISay and the follow-up parent (NATIVELY_FOLLOWUP_PARENT) > flag on, a two-fragment parent (R09 shape: two STT finals before the answer): 
+engine-drops-settled: exit=1 Tests 2 failed | 4 passed (6)
+    failed: runWhatShouldISay and the follow-up parent (NATIVELY_FOLLOWUP_PARENT) > flag on, a two-fragment parent (R09 shape: two STT finals before the answer): 
+    failed: runWhatShouldISay and the follow-up parent (NATIVELY_FOLLOWUP_PARENT) > the verbal call site pins the settled question as addAssistantMessage's second
+engine-no-restore: exit=1 Tests 2 failed | 4 passed (6)
+    failed: runWhatShouldISay and the follow-up parent (NATIVELY_FOLLOWUP_PARENT) > flag on: the parent question and its answer come back ahead of the follow-up 1
+    failed: runWhatShouldISay and the follow-up parent (NATIVELY_FOLLOWUP_PARENT) > flag on, a two-fragment parent (R09 shape: two STT finals before the answer): 
+parent-no-dup-check: exit=1 Tests 2 failed | 10 passed (12)
+    failed: withParentExchange > flag on, the window still holds the previous answer (a short gap): unchanged 16ms
+    failed: runWhatShouldISay and the follow-up parent (NATIVELY_FOLLOWUP_PARENT) > flag on, short gap (R07F, 81 s): the prompt already holds the exchange and is 
+parent-always-on: exit=1 Tests 3 failed | 9 passed (12)
+    failed: withParentExchange > flag off: returns the very same array (the shipped prompt is untouched) 20ms
+    failed: runWhatShouldISay and the follow-up parent (NATIVELY_FOLLOWUP_PARENT) > flag unset (shipped): the prompt carries only the follow-up — the h40a/h40b sh
+    failed: runWhatShouldISay and the follow-up parent (NATIVELY_FOLLOWUP_PARENT) > flag off, the same two-fragment parent: the prompt stays the follow-up alone 4
+judge-no-paraphrase-guard: exit=1 Tests 1 failed | 17 passed (18)
+    failed: pairAnswers > does not let an unverified Live question= claim a real item — the after8 fabrication (fix round 1, I1: a paraphrase is checked against t
+judge-no-question: exit=1 Tests 1 failed | 17 passed (18)
+    failed: pairAnswers > claims an answer anchored on a Live paraphrase by the question= it dispatched (h40b R07F: the anchor is the paraphrase's first 80 chars 
+metrics-no-paraphrase-guard: exit=1 Tests 1 failed | 36 passed | 2 skipped (39)
+    failed: claimOf: a paraphrase-anchored answer is claimed by its dispatched question (h40b R07F) > does not let an unverified Live question= claim a real item 
+metrics-no-question: exit=1 Tests 1 failed | 36 passed | 2 skipped (39)
+    failed: claimOf: a paraphrase-anchored answer is claimed by its dispatched question (h40b R07F) > claims the paraphrase-anchored answer by its dispatched ques
+startup-reads-trigger-when-off: exit=1 Tests 1 failed | 10 passed (11)
+    failed: describeVerbalHedgeAtStartup > off (unset): the off line, and a junk trigger is never read 7ms

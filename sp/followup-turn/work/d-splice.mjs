@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+let f = 'R/scripts/grader-session-calibrate.mjs';
+let s = fs.readFileSync(f, 'utf8');
+if (!s.includes('//@@END-SECTION-C@@')) throw new Error('marker');
+s = s.replace('//@@END-SECTION-C@@\n', () => `${fs.readFileSync('work/sectionD.txt', 'utf8')}`);
+s = s.replace("// and everything with no argument. A transient file lives in a temp folder, removed at the end.", "//   node grader-session-calibrate.mjs --only D    (the launcher R/launch-grader.mjs against a stand-in for the claude binary; NO model call)\n// and everything with no argument. A transient file lives in a temp folder, removed at the end.");
+fs.writeFileSync(f, s);
+f = 'R/launch-grader.mjs';
+s = fs.readFileSync(f, 'utf8');
+if (!s.includes(".replace(/\\D/g, '').slice(0, 14)")) throw new Error('stamp anchor');
+s = s.replace(".replace(/\\D/g, '').slice(0, 14)", ".replace(/\\D/g, '').slice(0, 17)");
+fs.writeFileSync(f, s);
+console.log('ok');

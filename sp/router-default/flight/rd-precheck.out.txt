@@ -1,0 +1,12 @@
+PRECHECK start 2026-10-07T02:54:01+03 label=rd at=2026-10-07 02:54 tz-offset=03:00:00
+PRECHECK flight-task: OK state=Ready next=2026-10-07 03:00 expected=2026-10-07 03:00
+PRECHECK arming-record: OK T 2026-10-07 03:00 = At + 6 = NextRunTime, complete 2026-10-07T02:27:29
+PRECHECK arming-record sha256=ac7470580362c6314d1eeb2d00b647023893e2918958999589144fc7085785de
+PRECHECK other-tasks: OK Running other than Natively-flight-rd and Natively-flight-rd-precheck: 0
+PRECHECK electron: OK electron.exe processes: 0
+PRECHECK port: OK port 5180 held: False
+PRECHECK tail: OK tail.exe watchers: 0
+PRECHECK error-log: OK natively-rd-launcher-error.log present: False
+PRECHECK dry-twin: OK result=0x0 in 8 s; new log bytes 5463 chars; GUARD OK line: True; NIGHT GATES OK line: True
+PRECHECK audio-state INFO: default playback device: volume=93% muted=False
+PRECHECK OK 2026-10-07T02:54:13+03

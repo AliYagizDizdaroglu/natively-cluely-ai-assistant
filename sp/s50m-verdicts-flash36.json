@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic all correct, but calls the implied 57 percent precision consistent with the reported 60 percent after rounding, which it is not."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names the join-condition placement, the ingested-at gate, and COUNT on a column so zero-call customers survive the left join."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers all seven components and correctly shares the feature store and registry, but at 134 words it is far too long to say."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, deterministic assignment, delayed outcome join and control-group or IPW retraining are all right; 96 words is too long."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Defends only extraction F1, gives no uncertainty, ignores the hallucination and multi-hop metrics, and drifts into listing the tools used."
+  }
+}

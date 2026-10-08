@@ -1,0 +1,65 @@
+check-smoke-hedge  mode=off  since=2026-09-26T10:32:00.000Z
+debug-log=C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad/cal-h40c/h40b-copy/natively_debug.log (6523 lines in window)  diag-log=C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad/cal-h40c/h40b-copy/verbal-diag.log (421 lines in window)
+
+windows found: 46
+
+per-window:
+  2026-09-26T10:33:29.950Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:33:46.994Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:34:07.717Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:35:15.648Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  AMBIGUOUS - 2 "verbal stall race: trying" line(s) (want exactly 1)
+  2026-09-26T10:37:50.550Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:38:57.812Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:40:21.027Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:42:54.977Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:45:01.794Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:46:08.077Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:47:31.603Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:48:32.586Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:49:53.099Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:52:28.030Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:53:37.815Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:55:02.510Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:57:35.781Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T10:58:42.488Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:01:22.316Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:03:56.530Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:05:01.548Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:07:41.017Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:08:46.673Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:10:05.716Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:11:24.729Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:12:26.931Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:13:34.303Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:14:53.769Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:15:59.728Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:17:20.338Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:18:38.014Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:19:41.074Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:20:49.519Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:22:10.115Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:23:29.052Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:25:07.148Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:26:27.383Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:27:33.294Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:29:08.135Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:30:26.489Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:31:31.522Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:33:08.978Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:34:40.323Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:35:58.977Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:37:06.569Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+  2026-09-26T11:38:36.815Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+
+request counts (warm-up/front/back-started/stall-race/stalled - NOT usage lines, which overcount ~5x):
+  gemma-4-31b-it: warmup=10 front=0 backStarted=0 stallRace=0 stalled=0
+  gemini-3.1-flash-lite: warmup=1 front=0 backStarted=0 stallRace=46 stalled=5
+  gemini-3.5-flash-lite: warmup=6 front=0 backStarted=0 stallRace=1 stalled=0
+
+[PASS] startup line
+  (info) startup line absent (pre-dates the build)
+[PASS] no unhandled rejection / uncaught exception
+[PASS] off-mode per-answer rules
+  (info) 2026-09-26T10:35:15.648Z [answer] route=VERBAL-TECHNICAL (selected model, filtered): AMBIGUOUS - 2 "verbal stall race: trying" line(s) (want exactly 1)
+
+PASS overall (mode=off)

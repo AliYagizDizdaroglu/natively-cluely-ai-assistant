@@ -1,0 +1,1531 @@
+h40d-rule3.mjs calibration (brief C, r4 rule 3 and its 3a noise reading)
+written by instruments\run-cal-C.mjs on 2026-10-01T12:00:19.337Z; every expectation below was written from the brief and r4 BEFORE the run
+instrument calibrated: h40d-rule3.mjs  sha256/16 d57ab68c6520dca3  17096 bytes  (compare before relying on it: a changed instrument is an uncalibrated one)
+
+================================================================
+CASE R1  h40c (R20 won by 3.1-lite, as h40c's own join): the baseline the floor comes from
+expected: 35 of 45 = 28 mains + 7 follow-ups; 0 wrong on the 40 gated items (R09F wrong, excluded); 3a PASS, 3b PASS, exit 0; twins 36/37/38 (3.5-lite HIGH) and 37/37/36 (3.1-lite LOW); combined band 36 to 38, in-app 1 below; noise: 35 against 36 / 37 / 38, gap 1, WITHIN 1, MET; below all three own twins R04F R14 R23; the no-cue twins "absent", no crash
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c R20=gemini-3.1-flash-lite
+----------------------------------------------------------------
+h40d-rule3: run 2026-09-29T11-42-00-h40c  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 35 of 45  | mains 28/33, follow-ups 7/12
+per-item best: {"acceptable":35,"weak":8,"unanswered":1,"wrong":1}
+WRONG answers on the 40 gated items: 0
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R09F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable
+3a: in-app acceptable 35 of 45, floor 35 -> PASS
+3b: wrong live in-app answers on the 40 gated items 0 -> PASS
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): PASS
+
+not acceptable (per answer):
+  R02F    weak       c1 t2 d2
+  R04F    weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    weak       c1 t1 d2
+  R14     weak       c1 t2 d2
+  R22     weak       c1 t2 d2
+  R22F    weak       c1 t2 d2
+  R23     weak       c1 t2 d2
+  R05     unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: 36 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r2: 37 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r3: 38 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low: 37 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r2: 37 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r3: 36 / 43, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-no-cues-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x7
+combined band of the cue twins (3.5-lite HIGH and 3.1-lite LOW reps, each on its own graded ids): 36 to 38 (6 of 6 reps merged); in-app 35 is 1 below it
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  graded ids per cue twin rep: 44 / 44 / 44; shared by all three and on the roster: 44; not shared: R05
+  in-app acceptable on the shared ids: 35 of 44
+  cue twin reps' acceptable on the same ids: 36 / 37 / 38; lowest 36
+  gap = lowest - in-app = 1 -> in-app 1 below the lowest cue twin: WITHIN 1
+  noise condition (in-app at most 1 below the lowest cue twin): MET  (3a holds, so this is informational)
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    A   3.5H | A w A | w A A | absent
+  R02    A   3.5H | A A A | A A A | absent
+  R02F   w   3.5H | w w X | w w w | absent
+  R03    A   3.5H | A A A | A A A | absent
+  R04    A   3.5H | A A A | A A A | absent
+  R04F   w * 3.5H | A A A | A A w | absent
+  R05    -   3.5H | - - - | - - - | absent
+  R06    A   3.5H | A A A | A A A | absent
+  R07    A   3.5H | A A A | A A A | absent
+  R07F   A   3.5H | A A A | A A A | absent
+  R08    w   3.5H | A w w | X w A | absent
+  R09    A   3.5H | A A A | A A A | absent
+  R09F   X   3.5H | X w X | A w X | absent
+  R10    A   3.5H | A A A | A A - | absent
+  R11    A   3.5H | A A A | A A A | absent
+  R11F   w   3.5H | w w w | X X X | absent
+  R12    A   3.5H | A A A | A A w | absent
+  R13    A   3.5H | A A A | w A A | absent
+  R13F   A   3.5H | A A A | A A A | absent
+  R14    w * 3.5H | A A A | A A A | absent
+  R15    A   3.5H | A A A | A A A | absent
+  R16    A   3.5H | A A A | A A A | absent
+  R17    A   3.5H | w A A | A A A | absent
+  R17F   A   3.5H | A A A | A A A | absent
+  R18    A   3.5H | A A A | A A A | absent
+  R19    A   3.5H | A A A | A A A | absent
+  R20    A   3.1L | A A A | A A A | absent
+  R21    A   3.5H | A A A | A A A | absent
+  R22    w   3.5H | w w w | w w w | absent
+  R22F   w   3.5H | w w w | A A A | absent
+  R22F2  A   3.5H | A A A | A A A | absent
+  R23    w * 3.5H | A A A | A A A | absent
+  R24    A   3.5H | A A A | A A A | absent
+  R25    A   3.5H | A A A | A A A | absent
+  R26    A   3.5H | A A A | A A A | absent
+  R26F   A   3.5H | A A A | A A A | absent
+  R27    A   3.5H | w A A | A w A | absent
+  R28    A   3.5H | A A A | A A A | absent
+  R28F   A   3.5H | A A A | A A A | absent
+  R29    A   3.5H | A A A | A A A | absent
+  R30    A   3.5H | A A A | w w A | absent
+  R31    A   3.5H | A A A | A A A | absent
+  R31F   A   3.5H | A A A | A A A | absent
+  R32    A   3.5H | A A A | A A A | absent
+  R33    A   3.5H | w A A | A A w | absent
+in-app below all three of its own twins (*): R04F R14 R23
+in-app above all three of its own twins (+): none
+no-cue twins: absent (gemini-3.5-flash-lite_captured-no-cues-high, gemini-3.5-flash-lite_captured-no-cues-high-r2, gemini-3.5-flash-lite_captured-no-cues-high-r3 have no judge file and no answers file in this run folder)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /ACCEPTABLE \(items\) 35 of 45 {2}\| mains 28\/33, follow-ups 7\/12/; ok: has /WRONG answers on the 40 gated items: 0\r?\n/; ok: has /excluded follow-ups \(reported, not gated\): 1 -> R09F/; ok: has /3a: in-app acceptable 35 of 45, floor 35 -> PASS/; ok: has /3b: .* 0 -> PASS/; ok: has /RULE 3 \(3a and 3b only; 3c is h40d-twins\.mjs's\): PASS/; ok: has /captured-high: 36 \/ 44, wrong 1/; ok: has /captured-high-r2: 37 \/ 44, wrong 0/; ok: has /captured-high-r3: 38 \/ 44, wrong 2/; ok: has /captured-low: 37 \/ 44, wrong 2/; ok: has /captured-low-r2: 37 \/ 44, wrong 1/; ok: has /captured-low-r3: 36 \/ 43, wrong 2/; ok: has /combined band of the cue twins .*: 36 to 38 \(6 of 6 reps merged\); in-app 35 is 1 below it/; ok: has /in-app acceptable on the shared ids: 35 of 44/; ok: has /cue twin reps' acceptable on the same ids: 36 \/ 37 \/ 38; lowest 36/; ok: has /gap = lowest - in-app = 1 -> .*WITHIN 1/; ok: has /noise condition .*: MET/; ok: has /in-app below all three of its own twins \(\*\): R04F R14 R23\r?\n/; ok: has /captured-no-cues-high: absent/; ok: has /R01 {4}A {3}3\.5H \| A w A \| w A A \| absent/; ok: has /R20 {4}A {3}3\.1L/; ok: has /the 5 excluded follow-ups' best in-app grades .*: R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable\r?\n/; ok: text-leak check: 0 of 702 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE R2  h40b
+expected: 35 of 45 = 27 mains + 8 follow-ups; R09F and R11F wrong, both excluded, 0 gated; PASS, exit 0; noise: 35 against 38 / 36 / 39, gap 1, WITHIN 1; no-cue twins absent
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-26T11-39-51-h40b
+----------------------------------------------------------------
+h40d-rule3: run 2026-09-26T11-39-51-h40b  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 43 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 35 of 45  | mains 27/33, follow-ups 8/12
+per-item best: {"acceptable":35,"weak":6,"unanswered":2,"wrong":2}
+WRONG answers on the 40 gated items: 0
+wrong answers on the 5 excluded follow-ups (reported, not gated): 2 -> R09F, R11F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F acceptable, R09F wrong, R11F wrong, R13F acceptable
+3a: in-app acceptable 35 of 45, floor 35 -> PASS
+3b: wrong live in-app answers on the 40 gated items 0 -> PASS
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): PASS
+
+not acceptable (per answer):
+  R02F    weak       c1 t2 d2
+  R07     weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    wrong      c1 t0 d2
+  R12     weak       c1 t2 d2
+  R26     weak       c1 t2 d2
+  R30     weak       c1 t2 d1
+  R05     unanswered  (no in-app answer)
+  R07F    unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: 38 / 44, wrong 3, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r2: 36 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r3: 39 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low: 40 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r2: 40 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r3: 38 / 44, wrong 3, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-no-cues-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x7
+combined band of the cue twins (3.5-lite HIGH and 3.1-lite LOW reps, each on its own graded ids): 36 to 40 (6 of 6 reps merged); in-app 35 is 1 below it
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  graded ids per cue twin rep: 44 / 44 / 44; shared by all three and on the roster: 44; not shared: R05
+  in-app acceptable on the shared ids: 35 of 44
+  cue twin reps' acceptable on the same ids: 38 / 36 / 39; lowest 36
+  gap = lowest - in-app = 1 -> in-app 1 below the lowest cue twin: WITHIN 1
+  noise condition (in-app at most 1 below the lowest cue twin): MET  (3a holds, so this is informational)
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    A   3.5H | A A A | A A A | absent
+  R02    A   3.5H | A A A | A A A | absent
+  R02F   w   3.5H | X w w | A A w | absent
+  R03    A   3.5H | w w A | A A A | absent
+  R04    A   3.5H | A A A | A A A | absent
+  R04F   A   3.5H | A A A | A A A | absent
+  R05    -   3.5H | - - - | - - - | absent
+  R06    A   3.5H | A A A | A A A | absent
+  R07    w * 3.5H | A A A | w A A | absent
+  R07F   - * 3.5H | A A A | A A A | absent
+  R08    w   3.5H | A w A | w w X | absent
+  R09    A   3.5H | A A A | A A A | absent
+  R09F   X   3.5H | X X X | w A X | absent
+  R10    A   3.5H | A A A | A A A | absent
+  R11    A   3.5H | w A A | A A A | absent
+  R11F   X   3.5H | X w X | X w X | absent
+  R12    w * 3.5H | A A A | A A A | absent
+  R13    A   3.5H | A A A | A A A | absent
+  R13F   A   3.5H | A A A | A A A | absent
+  R14    A   3.5H | A A A | A A A | absent
+  R15    A   3.5H | A A A | A A A | absent
+  R16    A   3.5H | A A A | A A A | absent
+  R17    A   3.5H | A A A | A A A | absent
+  R17F   A   3.5H | A A A | A A w | absent
+  R18    A   3.5H | A A A | A A A | absent
+  R19    A   3.5H | A A A | A A A | absent
+  R20    A   3.5H | A A A | A A A | absent
+  R21    A   3.5H | A A A | A A A | absent
+  R22    A   3.5H | A w w | A w A | absent
+  R22F   A   3.5H | A w A | A A A | absent
+  R22F2  A   3.5H | A A A | A A A | absent
+  R23    A   3.5H | A A A | A w A | absent
+  R24    A   3.5H | A A A | A A A | absent
+  R25    A   3.5H | A A A | A A A | absent
+  R26    w   3.5H | w A A | A A A | absent
+  R26F   A   3.5H | A A A | A A A | absent
+  R27    A   3.5H | A A A | A A A | absent
+  R28    A   3.5H | A A A | A A A | absent
+  R28F   A   3.5H | A A A | A A A | absent
+  R29    A   3.5H | A A A | A A A | absent
+  R30    w   3.5H | A w w | A A A | absent
+  R31    A   3.5H | A A A | A A A | absent
+  R31F   A   3.5H | A A A | A A A | absent
+  R32    A   3.5H | A A A | A A A | absent
+  R33    A   3.5H | A A A | A A w | absent
+in-app below all three of its own twins (*): R07 R07F R12
+in-app above all three of its own twins (+): none
+no-cue twins: absent (gemini-3.5-flash-lite_captured-no-cues-high, gemini-3.5-flash-lite_captured-no-cues-high-r2, gemini-3.5-flash-lite_captured-no-cues-high-r3 have no judge file and no answers file in this run folder)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /ACCEPTABLE \(items\) 35 of 45 {2}\| mains 27\/33, follow-ups 8\/12/; ok: has /WRONG answers on the 40 gated items: 0\r?\n/; ok: has /excluded follow-ups \(reported, not gated\): 2 -> R09F, R11F/; ok: has /RULE 3 \(3a and 3b only; 3c is h40d-twins\.mjs's\): PASS/; ok: has /in-app acceptable on the shared ids: 35 of 44/; ok: has /cue twin reps' acceptable on the same ids: 38 \/ 36 \/ 39; lowest 36/; ok: has /gap = lowest - in-app = 1 -> .*WITHIN 1/; ok: has /no-cue twins: absent/; ok: text-leak check: 0 of 1180 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE R3  h40a (R09, the salary card, graded wrong on a gated item)
+expected: 3b FAIL (R09 wrong on the 40 gated items), 3a PASS at 39, exit 1; noise: 39 against 37 / 42 / 38, in-app ABOVE the lowest; no-cue twins absent
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-24T08-20-12-h40a
+----------------------------------------------------------------
+h40d-rule3: run 2026-09-24T08-20-12-h40a  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 39 of 45  | mains 29/33, follow-ups 10/12
+per-item best: {"weak":4,"acceptable":39,"wrong":2}
+WRONG answers on the 40 gated items: 1 -> R09
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R02F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F wrong, R04F acceptable, R09F weak, R11F acceptable, R13F acceptable
+3a: in-app acceptable 39 of 45, floor 35 -> PASS
+3b: wrong live in-app answers on the 40 gated items 1 -> FAIL
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): 3b FAIL
+
+not acceptable (per answer):
+  R01     weak       c1 t2 d2
+  R02F    wrong      c0 t2 d2
+  R08     weak       c1 t2 d2
+  R09     wrong      c0 t0 d0
+  R09F    weak       c1 t1 d2
+  R16     weak       c1 t1 d1
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: 37 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r2: 42 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r3: 38 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low: 41 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r2: 39 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r3: 39 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-no-cues-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x7
+combined band of the cue twins (3.5-lite HIGH and 3.1-lite LOW reps, each on its own graded ids): 37 to 42 (6 of 6 reps merged); in-app 39 is inside it
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  graded ids per cue twin rep: 44 / 44 / 44; shared by all three and on the roster: 44; not shared: R09
+  in-app acceptable on the shared ids: 39 of 44
+  cue twin reps' acceptable on the same ids: 37 / 42 / 38; lowest 37
+  gap = lowest - in-app = -2 -> in-app ABOVE the lowest cue twin
+  noise condition (in-app at most 1 below the lowest cue twin): MET  (3a holds, so this is informational)
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    w * 3.5H | A A A | A A A | absent
+  R02    A   3.5H | A A A | A A A | absent
+  R02F   X * 3.5H | w w w | A A A | absent
+  R03    A   3.5H | w A w | A A A | absent
+  R04    A   3.5H | A A A | A A A | absent
+  R04F   A   3.5H | A A A | A A A | absent
+  R05    A   3.5H | A A A | A A A | absent
+  R06    A   3.5H | A A A | A A A | absent
+  R07    A   3.5H | A A A | A A A | absent
+  R07F   A   3.5H | A A A | A A A | absent
+  R08    w   3.5H | w A w | w w w | absent
+  R09    X   3.5H | - - - | - - - | absent
+  R09F   w   3.5H | A A w | A A w | absent
+  R10    A   3.5H | A A A | A A A | absent
+  R11    A   3.5H | A A A | A A A | absent
+  R11F   A   3.5H | A A A | A w A | absent
+  R12    A   3.5H | A A w | A A A | absent
+  R13    A   3.5H | A A A | A A A | absent
+  R13F   A   3.5H | w A A | A A A | absent
+  R14    A   3.5H | A A A | A A A | absent
+  R15    A   3.5H | A A A | A A A | absent
+  R16    w   3.5H | A w w | A A A | absent
+  R17    A   3.5H | A A A | A A A | absent
+  R17F   A   3.5H | A A A | A w A | absent
+  R18    A   3.5H | A A A | A A A | absent
+  R19    A   3.5H | A A A | A A A | absent
+  R20    A   3.5H | A A A | A A A | absent
+  R21    A   3.5H | A A A | A A A | absent
+  R22    A   3.5H | A A A | w A A | absent
+  R22F   A   3.5H | A A A | A A A | absent
+  R22F2  A   3.5H | A A A | A A A | absent
+  R23    A   3.5H | A A A | A A A | absent
+  R24    A   3.5H | w A A | A A A | absent
+  R25    A   3.5H | A A A | A A A | absent
+  R26    A   3.5H | A A A | A A A | absent
+  R26F   A   3.5H | A A A | A A A | absent
+  R27    A   3.5H | A A A | A w A | absent
+  R28    A   3.5H | A A A | A A w | absent
+  R28F   A   3.5H | A A A | A w A | absent
+  R29    A   3.5H | A A A | A A A | absent
+  R30    A   3.5H | w A A | w A w | absent
+  R31    A   3.5H | A A A | A A A | absent
+  R31F   A   3.5H | A A A | A A A | absent
+  R32    A   3.5H | A A A | A A w | absent
+  R33    A   3.5H | w A A | A A A | absent
+in-app below all three of its own twins (*): R01 R02F
+in-app above all three of its own twins (+): none
+no-cue twins: absent (gemini-3.5-flash-lite_captured-no-cues-high, gemini-3.5-flash-lite_captured-no-cues-high-r2, gemini-3.5-flash-lite_captured-no-cues-high-r3 have no judge file and no answers file in this run folder)
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /ACCEPTABLE \(items\) 39 of 45/; ok: has /WRONG answers on the 40 gated items: 1 -> R09\r?\n/; ok: has /3a: in-app acceptable 39 of 45, floor 35 -> PASS/; ok: has /3b: .* 1 -> FAIL/; ok: has /RULE 3 \(3a and 3b only; 3c is h40d-twins\.mjs's\): 3b FAIL/; ok: has /in-app acceptable on the shared ids: 39 of 44/; ok: has /cue twin reps' acceptable on the same ids: 37 \/ 42 \/ 38; lowest 37/; ok: has /gap = lowest - in-app = -2 -> in-app ABOVE the lowest cue twin/; ok: has /no-cue twins: absent/; ok: text-leak check: 0 of 1187 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE R4  the FAILING noise case: h40c with two in-app acceptable items set to weak in memory (--demote 2)
+expected: 33 of 45, 3a MISS, exit 1; noise: 33 against 36 (36 / 37 / 38), gap 3, NOT WITHIN 1, condition NOT MET; the mutation banner is printed
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c R20=gemini-3.1-flash-lite --demote 2
+----------------------------------------------------------------
+h40d-rule3: run 2026-09-29T11-42-00-h40c  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+*** IN-MEMORY MUTATION (--demote 2): acceptable in-app items are set to weak before any reading below. CALIBRATION, NOT A READING. ***
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+--demote: set to weak in memory: R01 R02
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 33 of 45  | mains 26/33, follow-ups 7/12
+per-item best: {"weak":10,"acceptable":33,"unanswered":1,"wrong":1}
+WRONG answers on the 40 gated items: 0
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R09F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable
+3a: in-app acceptable 33 of 45, floor 35 -> MISS
+3b: wrong live in-app answers on the 40 gated items 0 -> PASS
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): 3a MISS - a 3a miss reads as noise only with the noise reading below MET and 3c PASS (r4 rule 3a)
+
+not acceptable (per answer):
+  R01     weak       c2 t2 d2
+  R02     weak       c2 t2 d2
+  R02F    weak       c1 t2 d2
+  R04F    weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    weak       c1 t1 d2
+  R14     weak       c1 t2 d2
+  R22     weak       c1 t2 d2
+  R22F    weak       c1 t2 d2
+  R23     weak       c1 t2 d2
+  R05     unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: 36 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r2: 37 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r3: 38 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low: 37 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r2: 37 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r3: 36 / 43, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-no-cues-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x7
+combined band of the cue twins (3.5-lite HIGH and 3.1-lite LOW reps, each on its own graded ids): 36 to 38 (6 of 6 reps merged); in-app 33 is 3 below it
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  graded ids per cue twin rep: 44 / 44 / 44; shared by all three and on the roster: 44; not shared: R05
+  in-app acceptable on the shared ids: 33 of 44
+  cue twin reps' acceptable on the same ids: 36 / 37 / 38; lowest 36
+  gap = lowest - in-app = 3 -> in-app 3 below the lowest cue twin: NOT WITHIN 1
+  noise condition (in-app at most 1 below the lowest cue twin): NOT MET  (3a MISSED: it reads as noise only with 3c PASS too, decided by h40d-twins.mjs; else an other FAIL, r4 section 5)
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    w   3.5H | A w A | w A A | absent
+  R02    w * 3.5H | A A A | A A A | absent
+  R02F   w   3.5H | w w X | w w w | absent
+  R03    A   3.5H | A A A | A A A | absent
+  R04    A   3.5H | A A A | A A A | absent
+  R04F   w * 3.5H | A A A | A A w | absent
+  R05    -   3.5H | - - - | - - - | absent
+  R06    A   3.5H | A A A | A A A | absent
+  R07    A   3.5H | A A A | A A A | absent
+  R07F   A   3.5H | A A A | A A A | absent
+  R08    w   3.5H | A w w | X w A | absent
+  R09    A   3.5H | A A A | A A A | absent
+  R09F   X   3.5H | X w X | A w X | absent
+  R10    A   3.5H | A A A | A A - | absent
+  R11    A   3.5H | A A A | A A A | absent
+  R11F   w   3.5H | w w w | X X X | absent
+  R12    A   3.5H | A A A | A A w | absent
+  R13    A   3.5H | A A A | w A A | absent
+  R13F   A   3.5H | A A A | A A A | absent
+  R14    w * 3.5H | A A A | A A A | absent
+  R15    A   3.5H | A A A | A A A | absent
+  R16    A   3.5H | A A A | A A A | absent
+  R17    A   3.5H | w A A | A A A | absent
+  R17F   A   3.5H | A A A | A A A | absent
+  R18    A   3.5H | A A A | A A A | absent
+  R19    A   3.5H | A A A | A A A | absent
+  R20    A   3.1L | A A A | A A A | absent
+  R21    A   3.5H | A A A | A A A | absent
+  R22    w   3.5H | w w w | w w w | absent
+  R22F   w   3.5H | w w w | A A A | absent
+  R22F2  A   3.5H | A A A | A A A | absent
+  R23    w * 3.5H | A A A | A A A | absent
+  R24    A   3.5H | A A A | A A A | absent
+  R25    A   3.5H | A A A | A A A | absent
+  R26    A   3.5H | A A A | A A A | absent
+  R26F   A   3.5H | A A A | A A A | absent
+  R27    A   3.5H | w A A | A w A | absent
+  R28    A   3.5H | A A A | A A A | absent
+  R28F   A   3.5H | A A A | A A A | absent
+  R29    A   3.5H | A A A | A A A | absent
+  R30    A   3.5H | A A A | w w A | absent
+  R31    A   3.5H | A A A | A A A | absent
+  R31F   A   3.5H | A A A | A A A | absent
+  R32    A   3.5H | A A A | A A A | absent
+  R33    A   3.5H | w A A | A A w | absent
+in-app below all three of its own twins (*): R02 R04F R14 R23
+in-app above all three of its own twins (+): none
+no-cue twins: absent (gemini-3.5-flash-lite_captured-no-cues-high, gemini-3.5-flash-lite_captured-no-cues-high-r2, gemini-3.5-flash-lite_captured-no-cues-high-r3 have no judge file and no answers file in this run folder)
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /IN-MEMORY MUTATION \(--demote 2\)/; ok: has /--demote: set to weak in memory: \S+ \S+\r?\n/; ok: has /ACCEPTABLE \(items\) 33 of 45/; ok: has /3a: in-app acceptable 33 of 45, floor 35 -> MISS/; ok: has /RULE 3 \(3a and 3b only; 3c is h40d-twins\.mjs's\): 3a MISS/; ok: has /in-app acceptable on the shared ids: 33 of 44/; ok: has /cue twin reps' acceptable on the same ids: 36 \/ 37 \/ 38; lowest 36/; ok: has /gap = lowest - in-app = 3 -> in-app 3 below the lowest cue twin: NOT WITHIN 1/; ok: has /noise condition .*: NOT MET/; ok: text-leak check: 0 of 702 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE R4b  the noise threshold's BOUNDARY: h40c with ONE in-app acceptable item set to weak in memory (--demote 1): gap 2, one past the allowed 1 (R1 is gap 1)
+expected: 34 of 45, 3a MISS (34 < 35), exit 1; noise: 34 against 36, gap 2, NOT WITHIN 1, condition NOT MET
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c R20=gemini-3.1-flash-lite --demote 1
+----------------------------------------------------------------
+h40d-rule3: run 2026-09-29T11-42-00-h40c  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+*** IN-MEMORY MUTATION (--demote 1): acceptable in-app items are set to weak before any reading below. CALIBRATION, NOT A READING. ***
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+--demote: set to weak in memory: R01
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 34 of 45  | mains 27/33, follow-ups 7/12
+per-item best: {"weak":9,"acceptable":34,"unanswered":1,"wrong":1}
+WRONG answers on the 40 gated items: 0
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R09F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable
+3a: in-app acceptable 34 of 45, floor 35 -> MISS
+3b: wrong live in-app answers on the 40 gated items 0 -> PASS
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): 3a MISS - a 3a miss reads as noise only with the noise reading below MET and 3c PASS (r4 rule 3a)
+
+not acceptable (per answer):
+  R01     weak       c2 t2 d2
+  R02F    weak       c1 t2 d2
+  R04F    weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    weak       c1 t1 d2
+  R14     weak       c1 t2 d2
+  R22     weak       c1 t2 d2
+  R22F    weak       c1 t2 d2
+  R23     weak       c1 t2 d2
+  R05     unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: 36 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r2: 37 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r3: 38 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low: 37 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r2: 37 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r3: 36 / 43, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-no-cues-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x7
+combined band of the cue twins (3.5-lite HIGH and 3.1-lite LOW reps, each on its own graded ids): 36 to 38 (6 of 6 reps merged); in-app 34 is 2 below it
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  graded ids per cue twin rep: 44 / 44 / 44; shared by all three and on the roster: 44; not shared: R05
+  in-app acceptable on the shared ids: 34 of 44
+  cue twin reps' acceptable on the same ids: 36 / 37 / 38; lowest 36
+  gap = lowest - in-app = 2 -> in-app 2 below the lowest cue twin: NOT WITHIN 1
+  noise condition (in-app at most 1 below the lowest cue twin): NOT MET  (3a MISSED: it reads as noise only with 3c PASS too, decided by h40d-twins.mjs; else an other FAIL, r4 section 5)
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    w   3.5H | A w A | w A A | absent
+  R02    A   3.5H | A A A | A A A | absent
+  R02F   w   3.5H | w w X | w w w | absent
+  R03    A   3.5H | A A A | A A A | absent
+  R04    A   3.5H | A A A | A A A | absent
+  R04F   w * 3.5H | A A A | A A w | absent
+  R05    -   3.5H | - - - | - - - | absent
+  R06    A   3.5H | A A A | A A A | absent
+  R07    A   3.5H | A A A | A A A | absent
+  R07F   A   3.5H | A A A | A A A | absent
+  R08    w   3.5H | A w w | X w A | absent
+  R09    A   3.5H | A A A | A A A | absent
+  R09F   X   3.5H | X w X | A w X | absent
+  R10    A   3.5H | A A A | A A - | absent
+  R11    A   3.5H | A A A | A A A | absent
+  R11F   w   3.5H | w w w | X X X | absent
+  R12    A   3.5H | A A A | A A w | absent
+  R13    A   3.5H | A A A | w A A | absent
+  R13F   A   3.5H | A A A | A A A | absent
+  R14    w * 3.5H | A A A | A A A | absent
+  R15    A   3.5H | A A A | A A A | absent
+  R16    A   3.5H | A A A | A A A | absent
+  R17    A   3.5H | w A A | A A A | absent
+  R17F   A   3.5H | A A A | A A A | absent
+  R18    A   3.5H | A A A | A A A | absent
+  R19    A   3.5H | A A A | A A A | absent
+  R20    A   3.1L | A A A | A A A | absent
+  R21    A   3.5H | A A A | A A A | absent
+  R22    w   3.5H | w w w | w w w | absent
+  R22F   w   3.5H | w w w | A A A | absent
+  R22F2  A   3.5H | A A A | A A A | absent
+  R23    w * 3.5H | A A A | A A A | absent
+  R24    A   3.5H | A A A | A A A | absent
+  R25    A   3.5H | A A A | A A A | absent
+  R26    A   3.5H | A A A | A A A | absent
+  R26F   A   3.5H | A A A | A A A | absent
+  R27    A   3.5H | w A A | A w A | absent
+  R28    A   3.5H | A A A | A A A | absent
+  R28F   A   3.5H | A A A | A A A | absent
+  R29    A   3.5H | A A A | A A A | absent
+  R30    A   3.5H | A A A | w w A | absent
+  R31    A   3.5H | A A A | A A A | absent
+  R31F   A   3.5H | A A A | A A A | absent
+  R32    A   3.5H | A A A | A A A | absent
+  R33    A   3.5H | w A A | A A w | absent
+in-app below all three of its own twins (*): R04F R14 R23
+in-app above all three of its own twins (+): none
+no-cue twins: absent (gemini-3.5-flash-lite_captured-no-cues-high, gemini-3.5-flash-lite_captured-no-cues-high-r2, gemini-3.5-flash-lite_captured-no-cues-high-r3 have no judge file and no answers file in this run folder)
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /--demote: set to weak in memory: R01\r?\n/; ok: has /ACCEPTABLE \(items\) 34 of 45/; ok: has /3a: in-app acceptable 34 of 45, floor 35 -> MISS/; ok: has /in-app acceptable on the shared ids: 34 of 44/; ok: has /gap = lowest - in-app = 2 -> in-app 2 below the lowest cue twin: NOT WITHIN 1/; ok: has /noise condition .*: NOT MET/; ok: text-leak check: 0 of 702 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE R5  the floor parameter: h40c with --floor 36 (3a misses by one while the noise reading is still MET: the shape of "a 3a miss read as noise")
+expected: 3a MISS (35 < 36), exit 1; noise condition MET (gap 1) with the note that 3a missed and 3c must PASS too
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c R20=gemini-3.1-flash-lite --floor 36
+----------------------------------------------------------------
+h40d-rule3: run 2026-09-29T11-42-00-h40c  (3a floor 36; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 35 of 45  | mains 28/33, follow-ups 7/12
+per-item best: {"acceptable":35,"weak":8,"unanswered":1,"wrong":1}
+WRONG answers on the 40 gated items: 0
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R09F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable
+3a: in-app acceptable 35 of 45, floor 36 -> MISS
+3b: wrong live in-app answers on the 40 gated items 0 -> PASS
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): 3a MISS - a 3a miss reads as noise only with the noise reading below MET and 3c PASS (r4 rule 3a)
+
+not acceptable (per answer):
+  R02F    weak       c1 t2 d2
+  R04F    weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    weak       c1 t1 d2
+  R14     weak       c1 t2 d2
+  R22     weak       c1 t2 d2
+  R22F    weak       c1 t2 d2
+  R23     weak       c1 t2 d2
+  R05     unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: 36 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r2: 37 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r3: 38 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low: 37 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r2: 37 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r3: 36 / 43, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-no-cues-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x7
+combined band of the cue twins (3.5-lite HIGH and 3.1-lite LOW reps, each on its own graded ids): 36 to 38 (6 of 6 reps merged); in-app 35 is 1 below it
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  graded ids per cue twin rep: 44 / 44 / 44; shared by all three and on the roster: 44; not shared: R05
+  in-app acceptable on the shared ids: 35 of 44
+  cue twin reps' acceptable on the same ids: 36 / 37 / 38; lowest 36
+  gap = lowest - in-app = 1 -> in-app 1 below the lowest cue twin: WITHIN 1
+  noise condition (in-app at most 1 below the lowest cue twin): MET  (3a MISSED: it reads as noise only with 3c PASS too, decided by h40d-twins.mjs; else an other FAIL, r4 section 5)
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    A   3.5H | A w A | w A A | absent
+  R02    A   3.5H | A A A | A A A | absent
+  R02F   w   3.5H | w w X | w w w | absent
+  R03    A   3.5H | A A A | A A A | absent
+  R04    A   3.5H | A A A | A A A | absent
+  R04F   w * 3.5H | A A A | A A w | absent
+  R05    -   3.5H | - - - | - - - | absent
+  R06    A   3.5H | A A A | A A A | absent
+  R07    A   3.5H | A A A | A A A | absent
+  R07F   A   3.5H | A A A | A A A | absent
+  R08    w   3.5H | A w w | X w A | absent
+  R09    A   3.5H | A A A | A A A | absent
+  R09F   X   3.5H | X w X | A w X | absent
+  R10    A   3.5H | A A A | A A - | absent
+  R11    A   3.5H | A A A | A A A | absent
+  R11F   w   3.5H | w w w | X X X | absent
+  R12    A   3.5H | A A A | A A w | absent
+  R13    A   3.5H | A A A | w A A | absent
+  R13F   A   3.5H | A A A | A A A | absent
+  R14    w * 3.5H | A A A | A A A | absent
+  R15    A   3.5H | A A A | A A A | absent
+  R16    A   3.5H | A A A | A A A | absent
+  R17    A   3.5H | w A A | A A A | absent
+  R17F   A   3.5H | A A A | A A A | absent
+  R18    A   3.5H | A A A | A A A | absent
+  R19    A   3.5H | A A A | A A A | absent
+  R20    A   3.1L | A A A | A A A | absent
+  R21    A   3.5H | A A A | A A A | absent
+  R22    w   3.5H | w w w | w w w | absent
+  R22F   w   3.5H | w w w | A A A | absent
+  R22F2  A   3.5H | A A A | A A A | absent
+  R23    w * 3.5H | A A A | A A A | absent
+  R24    A   3.5H | A A A | A A A | absent
+  R25    A   3.5H | A A A | A A A | absent
+  R26    A   3.5H | A A A | A A A | absent
+  R26F   A   3.5H | A A A | A A A | absent
+  R27    A   3.5H | w A A | A w A | absent
+  R28    A   3.5H | A A A | A A A | absent
+  R28F   A   3.5H | A A A | A A A | absent
+  R29    A   3.5H | A A A | A A A | absent
+  R30    A   3.5H | A A A | w w A | absent
+  R31    A   3.5H | A A A | A A A | absent
+  R31F   A   3.5H | A A A | A A A | absent
+  R32    A   3.5H | A A A | A A A | absent
+  R33    A   3.5H | w A A | A A w | absent
+in-app below all three of its own twins (*): R04F R14 R23
+in-app above all three of its own twins (+): none
+no-cue twins: absent (gemini-3.5-flash-lite_captured-no-cues-high, gemini-3.5-flash-lite_captured-no-cues-high-r2, gemini-3.5-flash-lite_captured-no-cues-high-r3 have no judge file and no answers file in this run folder)
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /3a: in-app acceptable 35 of 45, floor 36 -> MISS/; ok: has /noise condition .*: MET {2}\(3a MISSED: it reads as noise only with 3c PASS too/; ok: text-leak check: 0 of 702 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE R6  the no-cue column WITH data: --nocue pointed at h40c's 3.1-lite LOW family as a stand-in (the real no-cue family does not exist before Friday)
+expected: the three stand-in reps are listed as merged and the last column of a row equals the 3.1-lite LOW twins: R01 reads A w A | w A A | w A A; no "absent" anywhere
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c R20=gemini-3.1-flash-lite --nocue gemini-3.1-flash-lite_captured-low
+----------------------------------------------------------------
+h40d-rule3: run 2026-09-29T11-42-00-h40c  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.1-flash-lite_captured-low)
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 35 of 45  | mains 28/33, follow-ups 7/12
+per-item best: {"acceptable":35,"weak":8,"unanswered":1,"wrong":1}
+WRONG answers on the 40 gated items: 0
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R09F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable
+3a: in-app acceptable 35 of 45, floor 35 -> PASS
+3b: wrong live in-app answers on the 40 gated items 0 -> PASS
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): PASS
+
+not acceptable (per answer):
+  R02F    weak       c1 t2 d2
+  R04F    weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    weak       c1 t1 d2
+  R14     weak       c1 t2 d2
+  R22     weak       c1 t2 d2
+  R22F    weak       c1 t2 d2
+  R23     weak       c1 t2 d2
+  R05     unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: 36 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r2: 37 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r3: 38 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low: 37 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r2: 37 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r3: 36 / 43, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low: 37 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r2: 37 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r3: 36 / 43, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x10
+combined band of the cue twins (3.5-lite HIGH and 3.1-lite LOW reps, each on its own graded ids): 36 to 38 (6 of 6 reps merged); in-app 35 is 1 below it
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  graded ids per cue twin rep: 44 / 44 / 44; shared by all three and on the roster: 44; not shared: R05
+  in-app acceptable on the shared ids: 35 of 44
+  cue twin reps' acceptable on the same ids: 36 / 37 / 38; lowest 36
+  gap = lowest - in-app = 1 -> in-app 1 below the lowest cue twin: WITHIN 1
+  noise condition (in-app at most 1 below the lowest cue twin): MET  (3a holds, so this is informational)
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    A   3.5H | A w A | w A A | w A A
+  R02    A   3.5H | A A A | A A A | A A A
+  R02F   w   3.5H | w w X | w w w | w w w
+  R03    A   3.5H | A A A | A A A | A A A
+  R04    A   3.5H | A A A | A A A | A A A
+  R04F   w * 3.5H | A A A | A A w | A A w
+  R05    -   3.5H | - - - | - - - | - - -
+  R06    A   3.5H | A A A | A A A | A A A
+  R07    A   3.5H | A A A | A A A | A A A
+  R07F   A   3.5H | A A A | A A A | A A A
+  R08    w   3.5H | A w w | X w A | X w A
+  R09    A   3.5H | A A A | A A A | A A A
+  R09F   X   3.5H | X w X | A w X | A w X
+  R10    A   3.5H | A A A | A A - | A A -
+  R11    A   3.5H | A A A | A A A | A A A
+  R11F   w   3.5H | w w w | X X X | X X X
+  R12    A   3.5H | A A A | A A w | A A w
+  R13    A   3.5H | A A A | w A A | w A A
+  R13F   A   3.5H | A A A | A A A | A A A
+  R14    w * 3.5H | A A A | A A A | A A A
+  R15    A   3.5H | A A A | A A A | A A A
+  R16    A   3.5H | A A A | A A A | A A A
+  R17    A   3.5H | w A A | A A A | A A A
+  R17F   A   3.5H | A A A | A A A | A A A
+  R18    A   3.5H | A A A | A A A | A A A
+  R19    A   3.5H | A A A | A A A | A A A
+  R20    A   3.1L | A A A | A A A | A A A
+  R21    A   3.5H | A A A | A A A | A A A
+  R22    w   3.5H | w w w | w w w | w w w
+  R22F   w   3.5H | w w w | A A A | A A A
+  R22F2  A   3.5H | A A A | A A A | A A A
+  R23    w * 3.5H | A A A | A A A | A A A
+  R24    A   3.5H | A A A | A A A | A A A
+  R25    A   3.5H | A A A | A A A | A A A
+  R26    A   3.5H | A A A | A A A | A A A
+  R26F   A   3.5H | A A A | A A A | A A A
+  R27    A   3.5H | w A A | A w A | A w A
+  R28    A   3.5H | A A A | A A A | A A A
+  R28F   A   3.5H | A A A | A A A | A A A
+  R29    A   3.5H | A A A | A A A | A A A
+  R30    A   3.5H | A A A | w w A | w w A
+  R31    A   3.5H | A A A | A A A | A A A
+  R31F   A   3.5H | A A A | A A A | A A A
+  R32    A   3.5H | A A A | A A A | A A A
+  R33    A   3.5H | w A A | A A w | A A w
+in-app below all three of its own twins (*): R04F R14 R23
+in-app above all three of its own twins (+): none
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /gemini-3\.1-flash-lite_captured-low: 37 \/ 44, wrong 2/; ok: has /R01 {4}A {3}3\.5H \| A w A \| w A A \| w A A/; ok: has not /\| absent/; ok: has not /no-cue twins: absent/; ok: text-leak check: 0 of 702 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE R7  NOT MERGED vs absent: --nocue pointed at h40c's captured-minimal family (an answers file for rep 1 only, no judge file at all)
+expected: rep 1 reads NOT MERGED, reps 2 and 3 read absent, the table column reads - - - (not "absent": the family is not wholly absent), exit 0
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c R20=gemini-3.1-flash-lite --nocue gemini-3.1-flash-lite_captured-minimal
+----------------------------------------------------------------
+h40d-rule3: run 2026-09-29T11-42-00-h40c  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.1-flash-lite_captured-minimal)
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 35 of 45  | mains 28/33, follow-ups 7/12
+per-item best: {"acceptable":35,"weak":8,"unanswered":1,"wrong":1}
+WRONG answers on the 40 gated items: 0
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R09F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable
+3a: in-app acceptable 35 of 45, floor 35 -> PASS
+3b: wrong live in-app answers on the 40 gated items 0 -> PASS
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): PASS
+
+not acceptable (per answer):
+  R02F    weak       c1 t2 d2
+  R04F    weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    weak       c1 t1 d2
+  R14     weak       c1 t2 d2
+  R22     weak       c1 t2 d2
+  R22F    weak       c1 t2 d2
+  R23     weak       c1 t2 d2
+  R05     unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: 36 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r2: 37 / 44, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r3: 38 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low: 37 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r2: 37 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r3: 36 / 43, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-minimal: NOT MERGED (answers file present, no merged judge file)
+  gemini-3.1-flash-lite_captured-minimal-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-minimal-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x7
+combined band of the cue twins (3.5-lite HIGH and 3.1-lite LOW reps, each on its own graded ids): 36 to 38 (6 of 6 reps merged); in-app 35 is 1 below it
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  graded ids per cue twin rep: 44 / 44 / 44; shared by all three and on the roster: 44; not shared: R05
+  in-app acceptable on the shared ids: 35 of 44
+  cue twin reps' acceptable on the same ids: 36 / 37 / 38; lowest 36
+  gap = lowest - in-app = 1 -> in-app 1 below the lowest cue twin: WITHIN 1
+  noise condition (in-app at most 1 below the lowest cue twin): MET  (3a holds, so this is informational)
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    A   3.5H | A w A | w A A | - - -
+  R02    A   3.5H | A A A | A A A | - - -
+  R02F   w   3.5H | w w X | w w w | - - -
+  R03    A   3.5H | A A A | A A A | - - -
+  R04    A   3.5H | A A A | A A A | - - -
+  R04F   w * 3.5H | A A A | A A w | - - -
+  R05    -   3.5H | - - - | - - - | - - -
+  R06    A   3.5H | A A A | A A A | - - -
+  R07    A   3.5H | A A A | A A A | - - -
+  R07F   A   3.5H | A A A | A A A | - - -
+  R08    w   3.5H | A w w | X w A | - - -
+  R09    A   3.5H | A A A | A A A | - - -
+  R09F   X   3.5H | X w X | A w X | - - -
+  R10    A   3.5H | A A A | A A - | - - -
+  R11    A   3.5H | A A A | A A A | - - -
+  R11F   w   3.5H | w w w | X X X | - - -
+  R12    A   3.5H | A A A | A A w | - - -
+  R13    A   3.5H | A A A | w A A | - - -
+  R13F   A   3.5H | A A A | A A A | - - -
+  R14    w * 3.5H | A A A | A A A | - - -
+  R15    A   3.5H | A A A | A A A | - - -
+  R16    A   3.5H | A A A | A A A | - - -
+  R17    A   3.5H | w A A | A A A | - - -
+  R17F   A   3.5H | A A A | A A A | - - -
+  R18    A   3.5H | A A A | A A A | - - -
+  R19    A   3.5H | A A A | A A A | - - -
+  R20    A   3.1L | A A A | A A A | - - -
+  R21    A   3.5H | A A A | A A A | - - -
+  R22    w   3.5H | w w w | w w w | - - -
+  R22F   w   3.5H | w w w | A A A | - - -
+  R22F2  A   3.5H | A A A | A A A | - - -
+  R23    w * 3.5H | A A A | A A A | - - -
+  R24    A   3.5H | A A A | A A A | - - -
+  R25    A   3.5H | A A A | A A A | - - -
+  R26    A   3.5H | A A A | A A A | - - -
+  R26F   A   3.5H | A A A | A A A | - - -
+  R27    A   3.5H | w A A | A w A | - - -
+  R28    A   3.5H | A A A | A A A | - - -
+  R28F   A   3.5H | A A A | A A A | - - -
+  R29    A   3.5H | A A A | A A A | - - -
+  R30    A   3.5H | A A A | w w A | - - -
+  R31    A   3.5H | A A A | A A A | - - -
+  R31F   A   3.5H | A A A | A A A | - - -
+  R32    A   3.5H | A A A | A A A | - - -
+  R33    A   3.5H | w A A | A A w | - - -
+in-app below all three of its own twins (*): R04F R14 R23
+in-app above all three of its own twins (+): none
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /gemini-3\.1-flash-lite_captured-minimal: NOT MERGED \(answers file present, no merged judge file\)/; ok: has /gemini-3\.1-flash-lite_captured-minimal-r2: absent/; ok: has /R01 {4}A {3}3\.5H \| A w A \| w A A \| - - -/; ok: text-leak check: 0 of 702 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE R8  an UNDECIDED noise reading: --cue pointed at the captured-minimal family (not merged)
+expected: UNDECIDED naming the not-merged rep(s); the rest of the report still prints; exit 0 (3a and 3b are read on the in-app file)
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c R20=gemini-3.1-flash-lite --cue gemini-3.1-flash-lite_captured-minimal
+----------------------------------------------------------------
+h40d-rule3: run 2026-09-29T11-42-00-h40c  (3a floor 35; cue family gemini-3.1-flash-lite_captured-minimal; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 35 of 45  | mains 28/33, follow-ups 7/12
+per-item best: {"acceptable":35,"weak":8,"unanswered":1,"wrong":1}
+WRONG answers on the 40 gated items: 0
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R09F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable
+3a: in-app acceptable 35 of 45, floor 35 -> PASS
+3b: wrong live in-app answers on the 40 gated items 0 -> PASS
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): PASS
+
+not acceptable (per answer):
+  R02F    weak       c1 t2 d2
+  R04F    weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    weak       c1 t1 d2
+  R14     weak       c1 t2 d2
+  R22     weak       c1 t2 d2
+  R22F    weak       c1 t2 d2
+  R23     weak       c1 t2 d2
+  R05     unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.1-flash-lite_captured-minimal: NOT MERGED (answers file present, no merged judge file)
+  gemini-3.1-flash-lite_captured-minimal-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-minimal-r3: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low: 37 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r2: 37 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low-r3: 36 / 43, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-no-cues-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x4
+combined band of the cue twins (3.5-lite HIGH and 3.1-lite LOW reps, each on its own graded ids): 36 to 37 (3 of 6 reps merged); in-app 35 is 1 below it
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  UNDECIDED - cue twin rep(s) not merged: gemini-3.1-flash-lite_captured-minimal: NOT MERGED; gemini-3.1-flash-lite_captured-minimal-r2: absent; gemini-3.1-flash-lite_captured-minimal-r3: absent
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    A   3.5H | - - - | w A A | absent
+  R02    A   3.5H | - - - | A A A | absent
+  R02F   w   3.5H | - - - | w w w | absent
+  R03    A   3.5H | - - - | A A A | absent
+  R04    A   3.5H | - - - | A A A | absent
+  R04F   w   3.5H | - - - | A A w | absent
+  R05    -   3.5H | - - - | - - - | absent
+  R06    A   3.5H | - - - | A A A | absent
+  R07    A   3.5H | - - - | A A A | absent
+  R07F   A   3.5H | - - - | A A A | absent
+  R08    w   3.5H | - - - | X w A | absent
+  R09    A   3.5H | - - - | A A A | absent
+  R09F   X   3.5H | - - - | A w X | absent
+  R10    A   3.5H | - - - | A A - | absent
+  R11    A   3.5H | - - - | A A A | absent
+  R11F   w   3.5H | - - - | X X X | absent
+  R12    A   3.5H | - - - | A A w | absent
+  R13    A   3.5H | - - - | w A A | absent
+  R13F   A   3.5H | - - - | A A A | absent
+  R14    w   3.5H | - - - | A A A | absent
+  R15    A   3.5H | - - - | A A A | absent
+  R16    A   3.5H | - - - | A A A | absent
+  R17    A   3.5H | - - - | A A A | absent
+  R17F   A   3.5H | - - - | A A A | absent
+  R18    A   3.5H | - - - | A A A | absent
+  R19    A   3.5H | - - - | A A A | absent
+  R20    A   3.1L | A A A | - - - | absent
+  R21    A   3.5H | - - - | A A A | absent
+  R22    w   3.5H | - - - | w w w | absent
+  R22F   w   3.5H | - - - | A A A | absent
+  R22F2  A   3.5H | - - - | A A A | absent
+  R23    w   3.5H | - - - | A A A | absent
+  R24    A   3.5H | - - - | A A A | absent
+  R25    A   3.5H | - - - | A A A | absent
+  R26    A   3.5H | - - - | A A A | absent
+  R26F   A   3.5H | - - - | A A A | absent
+  R27    A   3.5H | - - - | A w A | absent
+  R28    A   3.5H | - - - | A A A | absent
+  R28F   A   3.5H | - - - | A A A | absent
+  R29    A   3.5H | - - - | A A A | absent
+  R30    A   3.5H | - - - | w w A | absent
+  R31    A   3.5H | - - - | A A A | absent
+  R31F   A   3.5H | - - - | A A A | absent
+  R32    A   3.5H | - - - | A A A | absent
+  R33    A   3.5H | - - - | A A w | absent
+in-app below all three of its own twins (*): none
+in-app above all three of its own twins (+): none
+no-cue twins: absent (gemini-3.5-flash-lite_captured-no-cues-high, gemini-3.5-flash-lite_captured-no-cues-high-r2, gemini-3.5-flash-lite_captured-no-cues-high-r3 have no judge file and no answers file in this run folder)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /UNDECIDED - cue twin rep\(s\) not merged: gemini-3\.1-flash-lite_captured-minimal: NOT MERGED/; ok: has not /gap = lowest/; ok: text-leak check: 0 of 702 sensitive strings found in the output (must be 0)]
+
+================================================================
+CASE R9  INCOMPLETE: a holdout40 run folder with a timeline and NO merged in-app judge file, instrument relocated (byte-identical copy: true) to a folder with no verdicts file
+expected: 3a/3b INCOMPLETE naming the missing file and that the arm is not graded, exit 3
+command: node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\rule3-fixtures\copy-no-verdicts\h40d-rule3.mjs C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\rule3-fixtures\no-judge
+----------------------------------------------------------------
+h40d-rule3: run no-judge  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+RULE 3a / 3b: INCOMPLETE - interview60.judge.json is missing from the run folder; h40d-verdicts-inapp.json is missing: the in-app arm is not graded
+exit code: 3
+reads as expected: YES   [ok: exit 3; ok: has /RULE 3a \/ 3b: INCOMPLETE - interview60\.judge\.json is missing from the run folder; h40d-verdicts-inapp\.json is missing: the in-app arm is not graded/]
+
+================================================================
+CASE R10  INCOMPLETE, the other flavour: the same, relocated beside a dummy h40d-verdicts-inapp.json
+expected: INCOMPLETE saying the verdicts file exists: graded, not merged (run h40d-merge.cmd), exit 3
+command: node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\rule3-fixtures\copy-with-verdicts\h40d-rule3.mjs C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\rule3-fixtures\no-judge
+----------------------------------------------------------------
+h40d-rule3: run no-judge  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+RULE 3a / 3b: INCOMPLETE - interview60.judge.json is missing from the run folder; h40d-verdicts-inapp.json exists beside this script: graded, not merged (run h40d-merge.cmd)
+exit code: 3
+reads as expected: YES   [ok: exit 3; ok: has /h40d-verdicts-inapp\.json exists beside this script: graded, not merged \(run h40d-merge\.cmd\)/]
+
+================================================================
+CASE R11  a run folder that is not holdout40's (br1, scenario50, 40 items)
+expected: refused, exit 2, naming the roster size
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-30T11-45-30-br1
+----------------------------------------------------------------
+[stderr] h40d-rule3: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-30T11-45-30-br1 is not a holdout40 run folder: its roster has 40 spoken items (45 expected) and 5 of the 5 excluded follow-ups missing from it
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /is not a holdout40 run folder: its roster has 40 spoken items \(45 expected\)/]
+
+================================================================
+CASE R12  a winners argument naming an id that is not on the roster
+expected: refused, exit 2
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c R99=gemini-3.5-flash-lite
+----------------------------------------------------------------
+[stderr] h40d-rule3: "R99=gemini-3.5-flash-lite" is not <rosterId>=gemini-3.5-flash-lite or <rosterId>=gemini-3.1-flash-lite
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /"R99=gemini-3\.5-flash-lite" is not <rosterId>=/]
+
+================================================================
+CASE R13  a winners argument naming a model that is not one of the two
+expected: refused, exit 2
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c R20=3.1
+----------------------------------------------------------------
+[stderr] h40d-rule3: "R20=3.1" is not <rosterId>=gemini-3.5-flash-lite or <rosterId>=gemini-3.1-flash-lite
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /"R20=3\.1" is not <rosterId>=/]
+
+================================================================
+CASE R14  a usage error: no run folder
+expected: exit 2
+command: node h40d-rule3.mjs 
+----------------------------------------------------------------
+[stderr] h40d-rule3: usage: node h40d-rule3.mjs <run-dir> [<id>=<winner model> ...] [--floor n] [--cue stem] [--low stem] [--nocue stem] [--reasons] [--demote n]
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /usage: node h40d-rule3\.mjs <run-dir>/]
+
+================================================================
+CASE R15  a usage error: an unknown option
+expected: exit 2
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c --floorr 35
+----------------------------------------------------------------
+[stderr] h40d-rule3: unknown option --floorr
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /unknown option --floorr/]
+
+================================================================
+CASE R16  the counting ruling for a DOUBLE: a text-stripped copy of h40c's in-app judge file (no question, answer or reason text, only ids, numbers and verdicts) with the second answer R18#2 set to wrong in memory of the fixture; R18's first answer stays acceptable
+expected: 3a still counts R18 once and acceptable (35 of 45), 3b counts EVERY delivered answer: 1 wrong on the 40 gated items, named R18#2; 3b FAIL, exit 1 (the best-of rule does not wash it out)
+command: node h40d-rule3.mjs C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\rule3-fixtures\double-wrong
+----------------------------------------------------------------
+h40d-rule3: run double-wrong  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 35 of 45  | mains 28/33, follow-ups 7/12
+per-item best: {"acceptable":35,"weak":8,"unanswered":1,"wrong":1}
+WRONG answers on the 40 gated items: 1 -> R18#2
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R09F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable
+3a: in-app acceptable 35 of 45, floor 35 -> PASS
+3b: wrong live in-app answers on the 40 gated items 1 -> FAIL
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): 3b FAIL
+
+not acceptable (per answer):
+  R02F    weak       c1 t2 d2
+  R04F    weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    weak       c1 t1 d2
+  R14     weak       c1 t2 d2
+  R18#2   wrong      c0 t2 d2
+  R22     weak       c1 t2 d2
+  R22F    weak       c1 t2 d2
+  R23     weak       c1 t2 d2
+  R05     unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-high-r3: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low-r3: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x1
+combined band of the cue twins: none merged
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  UNDECIDED - cue twin rep(s) not merged: gemini-3.5-flash-lite_captured-high: absent; gemini-3.5-flash-lite_captured-high-r2: absent; gemini-3.5-flash-lite_captured-high-r3: absent
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    A   3.5H | - - - | - - - | absent
+  R02    A   3.5H | - - - | - - - | absent
+  R02F   w   3.5H | - - - | - - - | absent
+  R03    A   3.5H | - - - | - - - | absent
+  R04    A   3.5H | - - - | - - - | absent
+  R04F   w   3.5H | - - - | - - - | absent
+  R05    -   3.5H | - - - | - - - | absent
+  R06    A   3.5H | - - - | - - - | absent
+  R07    A   3.5H | - - - | - - - | absent
+  R07F   A   3.5H | - - - | - - - | absent
+  R08    w   3.5H | - - - | - - - | absent
+  R09    A   3.5H | - - - | - - - | absent
+  R09F   X   3.5H | - - - | - - - | absent
+  R10    A   3.5H | - - - | - - - | absent
+  R11    A   3.5H | - - - | - - - | absent
+  R11F   w   3.5H | - - - | - - - | absent
+  R12    A   3.5H | - - - | - - - | absent
+  R13    A   3.5H | - - - | - - - | absent
+  R13F   A   3.5H | - - - | - - - | absent
+  R14    w   3.5H | - - - | - - - | absent
+  R15    A   3.5H | - - - | - - - | absent
+  R16    A   3.5H | - - - | - - - | absent
+  R17    A   3.5H | - - - | - - - | absent
+  R17F   A   3.5H | - - - | - - - | absent
+  R18    A   3.5H | - - - | - - - | absent
+  R19    A   3.5H | - - - | - - - | absent
+  R20    A   3.5H | - - - | - - - | absent
+  R21    A   3.5H | - - - | - - - | absent
+  R22    w   3.5H | - - - | - - - | absent
+  R22F   w   3.5H | - - - | - - - | absent
+  R22F2  A   3.5H | - - - | - - - | absent
+  R23    w   3.5H | - - - | - - - | absent
+  R24    A   3.5H | - - - | - - - | absent
+  R25    A   3.5H | - - - | - - - | absent
+  R26    A   3.5H | - - - | - - - | absent
+  R26F   A   3.5H | - - - | - - - | absent
+  R27    A   3.5H | - - - | - - - | absent
+  R28    A   3.5H | - - - | - - - | absent
+  R28F   A   3.5H | - - - | - - - | absent
+  R29    A   3.5H | - - - | - - - | absent
+  R30    A   3.5H | - - - | - - - | absent
+  R31    A   3.5H | - - - | - - - | absent
+  R31F   A   3.5H | - - - | - - - | absent
+  R32    A   3.5H | - - - | - - - | absent
+  R33    A   3.5H | - - - | - - - | absent
+in-app below all three of its own twins (*): none
+in-app above all three of its own twins (+): none
+no-cue twins: absent (gemini-3.5-flash-lite_captured-no-cues-high, gemini-3.5-flash-lite_captured-no-cues-high-r2, gemini-3.5-flash-lite_captured-no-cues-high-r3 have no judge file and no answers file in this run folder)
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /ACCEPTABLE \(items\) 35 of 45/; ok: has /WRONG answers on the 40 gated items: 1 -> R18#2\r?\n/; ok: has /3a: in-app acceptable 35 of 45, floor 35 -> PASS/; ok: has /3b: .* 1 -> FAIL/; ok: has /RULE 3 \(3a and 3b only; 3c is h40d-twins\.mjs's\): 3b FAIL/]
+
+================================================================
+CASE R17  a corrupt in-app judge file (invalid JSON holding the marker SECRET-SNIPPET): the error must not echo the file's text
+expected: exit 2, "is not valid JSON", the marker absent from the output
+command: node h40d-rule3.mjs C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\rule3-fixtures\bad-json
+----------------------------------------------------------------
+h40d-rule3: run bad-json  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+[stderr] h40d-rule3: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\rule3-fixtures\bad-json\interview60.judge.json: is not valid JSON
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /interview60\.judge\.json: is not valid JSON/; ok: has not /SECRET-SNIPPET/]
+
+================================================================
+CASE R18  an in-app judge item with a verdict outside acceptable / weak / wrong (R01 = "great"; text-stripped copy of h40c)
+expected: refused, exit 2, naming the item and the verdict
+command: node h40d-rule3.mjs C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\rule3-fixtures\bad-verdict
+----------------------------------------------------------------
+h40d-rule3: run bad-verdict  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+[stderr] h40d-rule3: in-app judge item R01 has verdict "great"; expected acceptable, weak or wrong
+exit code: 2
+reads as expected: YES   [ok: exit 2; ok: has /in-app judge item R01 has verdict "great"; expected acceptable, weak or wrong/]
+
+================================================================
+CASE R19  a MIXED-GRADER hour: text-stripped copies of h40c's in-app file and its three cue twins, with the grader model of cue rep 2 set to claude-opus-5-6
+expected: the summary line lists both graders (x3 and x1) and carries the MORE THAN ONE GRADER flag; the in-app pin line still MATCHES; 3a / 3b read as on h40c (35, 0), exit 0
+command: node h40d-rule3.mjs C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\rule3-fixtures\mixed-grader R20=gemini-3.1-flash-lite
+----------------------------------------------------------------
+h40d-rule3: run mixed-grader  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 35 of 45  | mains 28/33, follow-ups 7/12
+per-item best: {"acceptable":35,"weak":8,"unanswered":1,"wrong":1}
+WRONG answers on the 40 gated items: 0
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R09F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable
+3a: in-app acceptable 35 of 45, floor 35 -> PASS
+3b: wrong live in-app answers on the 40 gated items 0 -> PASS
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): PASS
+
+not acceptable (per answer):
+  R02F    weak       c1 t2 d2
+  R04F    weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    weak       c1 t1 d2
+  R14     weak       c1 t2 d2
+  R22     weak       c1 t2 d2
+  R22F    weak       c1 t2 d2
+  R23     weak       c1 t2 d2
+  R05     unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: 36 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r2: 37 / 44, wrong 0, grader claude-opus-5-6, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r3: 38 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low-r3: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x3, claude-opus-5-6 8564ba96369a x1   *** MORE THAN ONE GRADER MODEL OR PROMPT STAMP ***
+combined band of the cue twins (3.5-lite HIGH and 3.1-lite LOW reps, each on its own graded ids): 36 to 38 (3 of 6 reps merged); in-app 35 is 1 below it
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  graded ids per cue twin rep: 44 / 44 / 44; shared by all three and on the roster: 44; not shared: R05
+  in-app acceptable on the shared ids: 35 of 44
+  cue twin reps' acceptable on the same ids: 36 / 37 / 38; lowest 36
+  gap = lowest - in-app = 1 -> in-app 1 below the lowest cue twin: WITHIN 1
+  noise condition (in-app at most 1 below the lowest cue twin): MET  (3a holds, so this is informational)
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    A   3.5H | A w A | - - - | absent
+  R02    A   3.5H | A A A | - - - | absent
+  R02F   w   3.5H | w w X | - - - | absent
+  R03    A   3.5H | A A A | - - - | absent
+  R04    A   3.5H | A A A | - - - | absent
+  R04F   w * 3.5H | A A A | - - - | absent
+  R05    -   3.5H | - - - | - - - | absent
+  R06    A   3.5H | A A A | - - - | absent
+  R07    A   3.5H | A A A | - - - | absent
+  R07F   A   3.5H | A A A | - - - | absent
+  R08    w   3.5H | A w w | - - - | absent
+  R09    A   3.5H | A A A | - - - | absent
+  R09F   X   3.5H | X w X | - - - | absent
+  R10    A   3.5H | A A A | - - - | absent
+  R11    A   3.5H | A A A | - - - | absent
+  R11F   w   3.5H | w w w | - - - | absent
+  R12    A   3.5H | A A A | - - - | absent
+  R13    A   3.5H | A A A | - - - | absent
+  R13F   A   3.5H | A A A | - - - | absent
+  R14    w * 3.5H | A A A | - - - | absent
+  R15    A   3.5H | A A A | - - - | absent
+  R16    A   3.5H | A A A | - - - | absent
+  R17    A   3.5H | w A A | - - - | absent
+  R17F   A   3.5H | A A A | - - - | absent
+  R18    A   3.5H | A A A | - - - | absent
+  R19    A   3.5H | A A A | - - - | absent
+  R20    A   3.1L | - - - | A A A | absent
+  R21    A   3.5H | A A A | - - - | absent
+  R22    w   3.5H | w w w | - - - | absent
+  R22F   w   3.5H | w w w | - - - | absent
+  R22F2  A   3.5H | A A A | - - - | absent
+  R23    w * 3.5H | A A A | - - - | absent
+  R24    A   3.5H | A A A | - - - | absent
+  R25    A   3.5H | A A A | - - - | absent
+  R26    A   3.5H | A A A | - - - | absent
+  R26F   A   3.5H | A A A | - - - | absent
+  R27    A   3.5H | w A A | - - - | absent
+  R28    A   3.5H | A A A | - - - | absent
+  R28F   A   3.5H | A A A | - - - | absent
+  R29    A   3.5H | A A A | - - - | absent
+  R30    A   3.5H | A A A | - - - | absent
+  R31    A   3.5H | A A A | - - - | absent
+  R31F   A   3.5H | A A A | - - - | absent
+  R32    A   3.5H | A A A | - - - | absent
+  R33    A   3.5H | w A A | - - - | absent
+in-app below all three of its own twins (*): R04F R14 R23
+in-app above all three of its own twins (+): none
+no-cue twins: absent (gemini-3.5-flash-lite_captured-no-cues-high, gemini-3.5-flash-lite_captured-no-cues-high-r2, gemini-3.5-flash-lite_captured-no-cues-high-r3 have no judge file and no answers file in this run folder)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /graders across the merged files \(in-app \+ twins\): claude-opus-5-5 8564ba96369a x3, claude-opus-5-6 8564ba96369a x1 {3}\*\*\* MORE THAN ONE GRADER MODEL OR PROMPT STAMP \*\*\*/; ok: has /-> model MATCH, stamp MATCH/; ok: has /3a: in-app acceptable 35 of 45, floor 35 -> PASS/]
+
+================================================================
+CASE R20  the grader-pin line: a text-stripped copy of h40c's in-app file graded by claude-opus-5-6 with prompt stamp ffffffffffff
+expected: the pin line reads model DIFFERS, stamp DIFFERS (r4 section 6: GRADER DRIFT is then the controller's to apply); the counts still print, exit 0
+command: node h40d-rule3.mjs C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\rule3-fixtures\pin-differs R20=gemini-3.1-flash-lite
+----------------------------------------------------------------
+h40d-rule3: run pin-differs  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+in-app judge: grader claude-opus-5-6, stamp ffffffffffff, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model DIFFERS, stamp DIFFERS
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 35 of 45  | mains 28/33, follow-ups 7/12
+per-item best: {"acceptable":35,"weak":8,"unanswered":1,"wrong":1}
+WRONG answers on the 40 gated items: 0
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R09F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable
+3a: in-app acceptable 35 of 45, floor 35 -> PASS
+3b: wrong live in-app answers on the 40 gated items 0 -> PASS
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): PASS
+
+not acceptable (per answer):
+  R02F    weak       c1 t2 d2
+  R04F    weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    weak       c1 t1 d2
+  R14     weak       c1 t2 d2
+  R22     weak       c1 t2 d2
+  R22F    weak       c1 t2 d2
+  R23     weak       c1 t2 d2
+  R05     unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-high-r3: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low-r3: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-6 ffffffffffff x1
+combined band of the cue twins: none merged
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  UNDECIDED - cue twin rep(s) not merged: gemini-3.5-flash-lite_captured-high: absent; gemini-3.5-flash-lite_captured-high-r2: absent; gemini-3.5-flash-lite_captured-high-r3: absent
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    A   3.5H | - - - | - - - | absent
+  R02    A   3.5H | - - - | - - - | absent
+  R02F   w   3.5H | - - - | - - - | absent
+  R03    A   3.5H | - - - | - - - | absent
+  R04    A   3.5H | - - - | - - - | absent
+  R04F   w   3.5H | - - - | - - - | absent
+  R05    -   3.5H | - - - | - - - | absent
+  R06    A   3.5H | - - - | - - - | absent
+  R07    A   3.5H | - - - | - - - | absent
+  R07F   A   3.5H | - - - | - - - | absent
+  R08    w   3.5H | - - - | - - - | absent
+  R09    A   3.5H | - - - | - - - | absent
+  R09F   X   3.5H | - - - | - - - | absent
+  R10    A   3.5H | - - - | - - - | absent
+  R11    A   3.5H | - - - | - - - | absent
+  R11F   w   3.5H | - - - | - - - | absent
+  R12    A   3.5H | - - - | - - - | absent
+  R13    A   3.5H | - - - | - - - | absent
+  R13F   A   3.5H | - - - | - - - | absent
+  R14    w   3.5H | - - - | - - - | absent
+  R15    A   3.5H | - - - | - - - | absent
+  R16    A   3.5H | - - - | - - - | absent
+  R17    A   3.5H | - - - | - - - | absent
+  R17F   A   3.5H | - - - | - - - | absent
+  R18    A   3.5H | - - - | - - - | absent
+  R19    A   3.5H | - - - | - - - | absent
+  R20    A   3.1L | - - - | - - - | absent
+  R21    A   3.5H | - - - | - - - | absent
+  R22    w   3.5H | - - - | - - - | absent
+  R22F   w   3.5H | - - - | - - - | absent
+  R22F2  A   3.5H | - - - | - - - | absent
+  R23    w   3.5H | - - - | - - - | absent
+  R24    A   3.5H | - - - | - - - | absent
+  R25    A   3.5H | - - - | - - - | absent
+  R26    A   3.5H | - - - | - - - | absent
+  R26F   A   3.5H | - - - | - - - | absent
+  R27    A   3.5H | - - - | - - - | absent
+  R28    A   3.5H | - - - | - - - | absent
+  R28F   A   3.5H | - - - | - - - | absent
+  R29    A   3.5H | - - - | - - - | absent
+  R30    A   3.5H | - - - | - - - | absent
+  R31    A   3.5H | - - - | - - - | absent
+  R31F   A   3.5H | - - - | - - - | absent
+  R32    A   3.5H | - - - | - - - | absent
+  R33    A   3.5H | - - - | - - - | absent
+in-app below all three of its own twins (*): none
+in-app above all three of its own twins (+): none
+no-cue twins: absent (gemini-3.5-flash-lite_captured-no-cues-high, gemini-3.5-flash-lite_captured-no-cues-high-r2, gemini-3.5-flash-lite_captured-no-cues-high-r3 have no judge file and no answers file in this run folder)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /in-app judge: grader claude-opus-5-6, stamp ffffffffffff/; ok: has /grader pin \(r4 section 2\): claude-opus-5-5 stamp 8564ba96369a -> model DIFFERS, stamp DIFFERS/; ok: has /ACCEPTABLE \(items\) 35 of 45/]
+
+================================================================
+CASE R21  the leak check's POSITIVE CONTROL: h40c with --reasons (the graders' reason text is printed on purpose)
+expected: the runner's leak scan FINDS reason strings in the output (at least 1); this proves the scan can fail; the output is not saved
+command: node h40d-rule3.mjs C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c R20=gemini-3.1-flash-lite --reasons
+----------------------------------------------------------------
+(output not saved: it carries the sensitive text on purpose)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: positive control: 9 of 702 sensitive strings found in the output (must be at least 1)]
+
+================================================================
+CASE R22  a HOLE in a cue twin rep: text-stripped copies of h40c's in-app file and cue twins, rep 2 with R10 removed (the ids the three reps SHARE shrink by one)
+expected: shared 43 (R05 and R10 not shared); in-app 34 of 43 (R10 was acceptable in-app); reps 35 / 36 / 37 on the shared ids (each of reps 1 and 3 loses its acceptable R10, rep 2 never had one: 36 of 43); lowest 35; gap 1, WITHIN 1
+command: node h40d-rule3.mjs C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\rule3-fixtures\cue-hole R20=gemini-3.1-flash-lite
+----------------------------------------------------------------
+h40d-rule3: run cue-hole  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 35 of 45  | mains 28/33, follow-ups 7/12
+per-item best: {"acceptable":35,"weak":8,"unanswered":1,"wrong":1}
+WRONG answers on the 40 gated items: 0
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R09F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable
+3a: in-app acceptable 35 of 45, floor 35 -> PASS
+3b: wrong live in-app answers on the 40 gated items 0 -> PASS
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): PASS
+
+not acceptable (per answer):
+  R02F    weak       c1 t2 d2
+  R04F    weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    weak       c1 t1 d2
+  R14     weak       c1 t2 d2
+  R22     weak       c1 t2 d2
+  R22F    weak       c1 t2 d2
+  R23     weak       c1 t2 d2
+  R05     unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: 36 / 44, wrong 1, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r2: 36 / 43, wrong 0, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.5-flash-lite_captured-high-r3: 38 / 44, wrong 2, grader claude-opus-5-5, stamp 8564ba96369a
+  gemini-3.1-flash-lite_captured-low: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low-r3: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x4
+combined band of the cue twins (3.5-lite HIGH and 3.1-lite LOW reps, each on its own graded ids): 36 to 38 (3 of 6 reps merged); in-app 35 is 1 below it
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  graded ids per cue twin rep: 44 / 43 / 44; shared by all three and on the roster: 43; not shared: R05 R10
+  in-app acceptable on the shared ids: 34 of 43
+  cue twin reps' acceptable on the same ids: 35 / 36 / 37; lowest 35
+  gap = lowest - in-app = 1 -> in-app 1 below the lowest cue twin: WITHIN 1
+  noise condition (in-app at most 1 below the lowest cue twin): MET  (3a holds, so this is informational)
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    A   3.5H | A w A | - - - | absent
+  R02    A   3.5H | A A A | - - - | absent
+  R02F   w   3.5H | w w X | - - - | absent
+  R03    A   3.5H | A A A | - - - | absent
+  R04    A   3.5H | A A A | - - - | absent
+  R04F   w * 3.5H | A A A | - - - | absent
+  R05    -   3.5H | - - - | - - - | absent
+  R06    A   3.5H | A A A | - - - | absent
+  R07    A   3.5H | A A A | - - - | absent
+  R07F   A   3.5H | A A A | - - - | absent
+  R08    w   3.5H | A w w | - - - | absent
+  R09    A   3.5H | A A A | - - - | absent
+  R09F   X   3.5H | X w X | - - - | absent
+  R10    A   3.5H | A - A | - - - | absent
+  R11    A   3.5H | A A A | - - - | absent
+  R11F   w   3.5H | w w w | - - - | absent
+  R12    A   3.5H | A A A | - - - | absent
+  R13    A   3.5H | A A A | - - - | absent
+  R13F   A   3.5H | A A A | - - - | absent
+  R14    w * 3.5H | A A A | - - - | absent
+  R15    A   3.5H | A A A | - - - | absent
+  R16    A   3.5H | A A A | - - - | absent
+  R17    A   3.5H | w A A | - - - | absent
+  R17F   A   3.5H | A A A | - - - | absent
+  R18    A   3.5H | A A A | - - - | absent
+  R19    A   3.5H | A A A | - - - | absent
+  R20    A   3.1L | - - - | A A A | absent
+  R21    A   3.5H | A A A | - - - | absent
+  R22    w   3.5H | w w w | - - - | absent
+  R22F   w   3.5H | w w w | - - - | absent
+  R22F2  A   3.5H | A A A | - - - | absent
+  R23    w * 3.5H | A A A | - - - | absent
+  R24    A   3.5H | A A A | - - - | absent
+  R25    A   3.5H | A A A | - - - | absent
+  R26    A   3.5H | A A A | - - - | absent
+  R26F   A   3.5H | A A A | - - - | absent
+  R27    A   3.5H | w A A | - - - | absent
+  R28    A   3.5H | A A A | - - - | absent
+  R28F   A   3.5H | A A A | - - - | absent
+  R29    A   3.5H | A A A | - - - | absent
+  R30    A   3.5H | A A A | - - - | absent
+  R31    A   3.5H | A A A | - - - | absent
+  R31F   A   3.5H | A A A | - - - | absent
+  R32    A   3.5H | A A A | - - - | absent
+  R33    A   3.5H | w A A | - - - | absent
+in-app below all three of its own twins (*): R04F R14 R23
+in-app above all three of its own twins (+): none
+no-cue twins: absent (gemini-3.5-flash-lite_captured-no-cues-high, gemini-3.5-flash-lite_captured-no-cues-high-r2, gemini-3.5-flash-lite_captured-no-cues-high-r3 have no judge file and no answers file in this run folder)
+exit code: 0
+reads as expected: YES   [ok: exit 0; ok: has /graded ids per cue twin rep: 44 \/ 43 \/ 44; shared by all three and on the roster: 43; not shared: R05 R10/; ok: has /in-app acceptable on the shared ids: 34 of 43/; ok: has /cue twin reps' acceptable on the same ids: 35 \/ 36 \/ 37; lowest 35/; ok: has /gap = lowest - in-app = 1 -> .*WITHIN 1/]
+
+================================================================
+CASE R23  the counting ruling for a double, mirrored: R18's FIRST answer wrong, its second (R18#2) acceptable (text-stripped fixture)
+expected: 3a counts R18 once by its BEST answer: still 35 of 45; 3b counts every delivered answer: 1 wrong on the 40 gated items, named R18; 3b FAIL, exit 1
+command: node h40d-rule3.mjs C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\rule3-fixtures\double-first-wrong
+----------------------------------------------------------------
+h40d-rule3: run double-first-wrong  (3a floor 35; cue family gemini-3.5-flash-lite_captured-high; low family gemini-3.1-flash-lite_captured-low; no-cue family gemini-3.5-flash-lite_captured-no-cues-high)
+in-app judge: grader claude-opus-5-5, stamp 8564ba96369a, 45 graded answers
+grader pin (r4 section 2): claude-opus-5-5 stamp 8564ba96369a -> model MATCH, stamp MATCH
+roster 45 items (33 mains, 12 follow-ups)
+ACCEPTABLE (items) 35 of 45  | mains 28/33, follow-ups 7/12
+per-item best: {"acceptable":35,"weak":8,"unanswered":1,"wrong":1}
+WRONG answers on the 40 gated items: 1 -> R18
+wrong answers on the 5 excluded follow-ups (reported, not gated): 1 -> R09F
+the 5 excluded follow-ups' best in-app grades (r4: reported beside 3b, never inside it): R02F weak, R04F weak, R09F wrong, R11F weak, R13F acceptable
+3a: in-app acceptable 35 of 45, floor 35 -> PASS
+3b: wrong live in-app answers on the 40 gated items 1 -> FAIL
+RULE 3 (3a and 3b only; 3c is h40d-twins.mjs's): 3b FAIL
+
+not acceptable (per answer):
+  R02F    weak       c1 t2 d2
+  R04F    weak       c1 t2 d2
+  R08     weak       c1 t2 d2
+  R09F    wrong      c0 t2 d2
+  R11F    weak       c1 t1 d2
+  R14     weak       c1 t2 d2
+  R18     wrong      c0 t2 d2
+  R22     weak       c1 t2 d2
+  R22F    weak       c1 t2 d2
+  R23     weak       c1 t2 d2
+  R05     unanswered  (no in-app answer)
+
+twin arms (acceptable / graded, grader):
+  gemini-3.5-flash-lite_captured-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-high-r3: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.1-flash-lite_captured-low-r3: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r2: absent (no judge file and no answers file in the run folder)
+  gemini-3.5-flash-lite_captured-no-cues-high-r3: absent (no judge file and no answers file in the run folder)
+graders across the merged files (in-app + twins): claude-opus-5-5 8564ba96369a x1
+combined band of the cue twins: none merged
+
+3a NOISE READING (r4 rule 3a): the in-app count on the ids the three cue twin reps share, against each rep's count on the same ids
+  UNDECIDED - cue twin rep(s) not merged: gemini-3.5-flash-lite_captured-high: absent; gemini-3.5-flash-lite_captured-high-r2: absent; gemini-3.5-flash-lite_captured-high-r3: absent
+
+per item: in-app best | winner | its twins r1 r2 r3 | the other model's twins | no-cue twins  (* = in-app below all three of its own twins, + = above all three)
+  R01    A   3.5H | - - - | - - - | absent
+  R02    A   3.5H | - - - | - - - | absent
+  R02F   w   3.5H | - - - | - - - | absent
+  R03    A   3.5H | - - - | - - - | absent
+  R04    A   3.5H | - - - | - - - | absent
+  R04F   w   3.5H | - - - | - - - | absent
+  R05    -   3.5H | - - - | - - - | absent
+  R06    A   3.5H | - - - | - - - | absent
+  R07    A   3.5H | - - - | - - - | absent
+  R07F   A   3.5H | - - - | - - - | absent
+  R08    w   3.5H | - - - | - - - | absent
+  R09    A   3.5H | - - - | - - - | absent
+  R09F   X   3.5H | - - - | - - - | absent
+  R10    A   3.5H | - - - | - - - | absent
+  R11    A   3.5H | - - - | - - - | absent
+  R11F   w   3.5H | - - - | - - - | absent
+  R12    A   3.5H | - - - | - - - | absent
+  R13    A   3.5H | - - - | - - - | absent
+  R13F   A   3.5H | - - - | - - - | absent
+  R14    w   3.5H | - - - | - - - | absent
+  R15    A   3.5H | - - - | - - - | absent
+  R16    A   3.5H | - - - | - - - | absent
+  R17    A   3.5H | - - - | - - - | absent
+  R17F   A   3.5H | - - - | - - - | absent
+  R18    A   3.5H | - - - | - - - | absent
+  R19    A   3.5H | - - - | - - - | absent
+  R20    A   3.5H | - - - | - - - | absent
+  R21    A   3.5H | - - - | - - - | absent
+  R22    w   3.5H | - - - | - - - | absent
+  R22F   w   3.5H | - - - | - - - | absent
+  R22F2  A   3.5H | - - - | - - - | absent
+  R23    w   3.5H | - - - | - - - | absent
+  R24    A   3.5H | - - - | - - - | absent
+  R25    A   3.5H | - - - | - - - | absent
+  R26    A   3.5H | - - - | - - - | absent
+  R26F   A   3.5H | - - - | - - - | absent
+  R27    A   3.5H | - - - | - - - | absent
+  R28    A   3.5H | - - - | - - - | absent
+  R28F   A   3.5H | - - - | - - - | absent
+  R29    A   3.5H | - - - | - - - | absent
+  R30    A   3.5H | - - - | - - - | absent
+  R31    A   3.5H | - - - | - - - | absent
+  R31F   A   3.5H | - - - | - - - | absent
+  R32    A   3.5H | - - - | - - - | absent
+  R33    A   3.5H | - - - | - - - | absent
+in-app below all three of its own twins (*): none
+in-app above all three of its own twins (+): none
+no-cue twins: absent (gemini-3.5-flash-lite_captured-no-cues-high, gemini-3.5-flash-lite_captured-no-cues-high-r2, gemini-3.5-flash-lite_captured-no-cues-high-r3 have no judge file and no answers file in this run folder)
+exit code: 1
+reads as expected: YES   [ok: exit 1; ok: has /ACCEPTABLE \(items\) 35 of 45/; ok: has /WRONG answers on the 40 gated items: 1 -> R18\r?\n/; ok: has /3a: in-app acceptable 35 of 45, floor 35 -> PASS/; ok: has /3b: .* 1 -> FAIL/]
+
+================================================================
+CROSS-CHECK against recheck-r3-scratch/noise-gap.mjs (the pre-existing script that produced r4's noise numbers; other code, same data)
+[in-app on shared, cue twin r1 / r2 / r3 on shared, lowest, gap]
+  h40a: h40d-rule3 [39,37,42,38,37,-2]   noise-gap [39,37,42,38,37,-2]  -> IDENTICAL
+  h40b: h40d-rule3 [35,38,36,39,36,1]   noise-gap [35,38,36,39,36,1]  -> IDENTICAL
+  h40c: h40d-rule3 [35,36,37,38,36,1]   noise-gap [35,36,37,38,36,1]  -> IDENTICAL
+  cross-check: ok
+
+NOTES
+- every case prints ids, counts and verdict classes only; the graders' reason text, the answers, the questions and what was heard are never printed (the opt-in --reasons exists for the controller). Each case also runs a text-leak scan: none of the sensitive strings of the run's judge files may appear in the output; R21 is its positive control (the same scan must FIND the reasons when --reasons prints them; that output is not saved). The first run of that control found the scan BLIND (0 of 570): its file-name pattern skipped the in-app interview60.judge.json, where the reasons print; the pattern was fixed in the runner (no expectation was changed) and the control then found 9.
+- the no-cue twins do not exist in h40a-h40c: they read "absent" in the twin list, in every table row and in the summary line, and nothing crashes (R1-R3). R6 and R7 exercise the same column on real files of other families.
+- R4 / R5: --demote and --floor are a calibration switch and the re-pin switch (section 6 option (i)); --demote prints a banner so its output cannot be taken for a reading.
+- R9 / R10 run byte-identical relocated copies of the instrument (sha256/16 d57ab68c6520dca3; identical: true) so the two INCOMPLETE readings do not depend on whether VH holds a verdicts file yet.
+
+================================================================
+SUMMARY rule3: 24 of 24 cases read as expected

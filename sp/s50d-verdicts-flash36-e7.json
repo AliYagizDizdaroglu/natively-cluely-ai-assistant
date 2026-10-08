@@ -1,0 +1,7 @@
+{
+  "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Numbers all correct, but says 57 percent aligns with 60 within rounding; it does not, and that was the question."},
+  "S1Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Both point-in-time predicates in the join, count on a column for zeros; the event-type 'where' phrasing is slightly loose."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Logging with variant, matured point-in-time outcome join, control-only or treatment-as-feature retraining; sound but 103 words."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Explicit unit, denominator, construction and interval for each metric; intervals plausible. Far past a spoken length."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Clean threshold (path depends on intermediate results) plus a fair three-way comparison anchored to the three-document case."}
+}

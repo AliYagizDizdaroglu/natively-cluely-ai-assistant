@@ -1,0 +1,27 @@
+R05 roster (3 words): Redis or Memcached?
+timeline: startSec 593.237 clipSecs 2.5945 playedAt 1790937825347; next R06 startSec 655.8315
+window: start 593237 end 655831.5 (run base "2026-10-02T10:33:52.110Z"; t0 1790937232110)
+absolute 2026-10-02T10:43:45.347Z .. 2026-10-02T10:44:47.941Z
+2026-10-02T10:43:47.387Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="Riedes"
+2026-10-02T10:43:47.390Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text=""
+2026-10-02T10:43:47.601Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="Riedes"
+2026-10-02T10:43:48.594Z [LOG] [LiveCaption] fragment " Re"
+2026-10-02T10:43:48.706Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="Riedes or MAMC"
+2026-10-02T10:43:49.607Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text="Riedes or MEMC eight."
+2026-10-02T10:43:49.613Z [LOG] [LiveCaption] fragment "ady"
+2026-10-02T10:43:49.614Z [LOG] [LiveCaption] fragment " or MCX."
+2026-10-02T10:43:50.018Z [LOG] [Main] turn: classify finals=1 question="Riedes or MEMC eight."
+2026-10-02T10:43:50.248Z [LOG] [Main] turn: close reason=not-a-question
+2026-10-02T10:43:54.207Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-10-02T10:43:59.126Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-10-02T10:44:05.339Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-10-02T10:44:11.164Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-10-02T10:44:16.426Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text=""
+2026-10-02T10:44:16.430Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-10-02T10:44:22.907Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-10-02T10:44:28.230Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-10-02T10:44:33.635Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-10-02T10:44:34.573Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text=""
+2026-10-02T10:44:34.574Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-10-02T10:44:39.468Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""
+2026-10-02T10:44:45.290Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text=""

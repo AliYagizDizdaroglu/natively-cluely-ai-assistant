@@ -1,0 +1,108 @@
+﻿EARLIER-QUESTION REF TESTS: 47/47 passed
+LINES MISMATCH s50m:S1Q01F: 6/7 sha 2c247a2956c7/aeb03e13d64d
+LINES MISMATCH s50m:S1Q02: 1/2 sha 66f0b5fee9a0/57ecf26b5431
+LINES MISMATCH s50m:S1Q02F: 7/8 sha ee0c8a4a4781/371de184f139
+LINES MISMATCH s50m:S1Q03: 1/2 sha 0eb78aff0c3f/3d6f49a3278a
+LINES MISMATCH s50m:S1Q03F: 3/4 sha dfd03e55c66e/b9ec063ca220
+MISMATCH s50m:S1Q04F: dist cue=constraint why= chars=543 sha=eb2175419cfc ref cue=constraint why= chars=537 expected 1517a406f91a
+LINES MISMATCH s50m:S1Q05: 1/2 sha a968f38cd1e5/0c4c3701a6df
+LINES MISMATCH s50m:S1Q06: 1/2 sha a21cc4959701/8893166fad56
+MISMATCH s50m:S1Q06F: dist cue=pronoun why= chars=523 sha=6b018cfb7376 ref cue=pronoun why= chars=517 expected 7b56db720d4a
+LINES MISMATCH s50m:S1Q07: 1/2 sha 684f1445650e/c3a58ee0aba7
+LINES MISMATCH s50m:S1Q08: 1/2 sha 1128ff890282/da454a57b3ac
+LINES MISMATCH s50m:S1Q09: 1/2 sha 2877adac5e59/d14571ba59bc
+LINES MISMATCH s50m:S1Q09F: 4/5 sha 439b418f7737/9556ad57ce59
+LINES MISMATCH s50m:S1Q10: 1/2 sha 4d481bde60d7/850b11e3f6f4
+LINES MISMATCH s50m:S1Q10F: 4/5 sha d69aecd3b981/e7dfc969383f
+LINES MISMATCH s50m:S2Q01: 2/3 sha 3d66d378dd1c/cdea50e69de6
+LINES MISMATCH s50m:S2Q01F: 3/4 sha f35b50ebc45c/244fc29935a3
+LINES MISMATCH s50m:S2Q02: 1/2 sha 12371591adaf/a40d9de3ebb9
+LINES MISMATCH s50m:S2Q02F: 5/6 sha a8e408171bfb/ced1002407be
+LINES MISMATCH s50m:S2Q03: 2/3 sha 0aac2f381899/eed0b53b6671
+LINES MISMATCH s50m:S2Q03F: 3/4 sha 927d54d7de52/45c08375abb3
+LINES MISMATCH s50m:S2Q04: 1/2 sha 3e0a952b568c/e3313d0ee09e
+LINES MISMATCH s50m:S2Q05: 1/2 sha 080eac367ff4/ebca7269d789
+MISMATCH s50m:S2Q05F: dist cue=pronoun why= chars=467 sha=46165528dfaa ref cue=pronoun why= chars=461 expected 14f0bdf3225d
+LINES MISMATCH s50m:S2Q06: 1/2 sha 116ad3b3f737/88d50b266d06
+LINES MISMATCH s50m:S2Q07: 2/3 sha 523cb465f66e/84de5aad5298
+LINES MISMATCH s50m:S2Q08: 2/3 sha c1441df01126/23b0a725671a
+MISMATCH s50m:S2Q08F: dist cue=pronoun why= chars=438 sha=2373342a60b3 ref cue=pronoun why= chars=432 expected 1023c0fe5a55
+LINES MISMATCH s50m:S2Q09: 1/2 sha d2b818a7b664/38e861f2bc97
+LINES MISMATCH s50m:S2Q09F: 4/5 sha 4777c26abd63/87833a678b3c
+LINES MISMATCH s50m:S2Q10: 1/2 sha 0681f22af688/90654b34dfd6
+LINES MISMATCH s50m:S2Q10F: 3/4 sha 1e08804668dd/ec2950d47f5b
+MISMATCH s50m:D1: dist cue=pronoun why= chars=256 sha=c57e125820d0 ref cue=pronoun why= chars=250 expected f6ad3669b3ff
+MISMATCH s50m:D2: dist cue=pronoun why= chars=268 sha=8c3fe34fdc42 ref cue=pronoun why= chars=262 expected 6ea69e3d2ba2
+MISMATCH s50m:D3: dist cue=pronoun why= chars=239 sha=2fe4a13a570b ref cue=pronoun why= chars=233 expected 08567b93635d
+LINES MISMATCH s50l:S1Q01F: 6/7 sha 2c247a2956c7/aeb03e13d64d
+LINES MISMATCH s50l:S1Q02: 1/2 sha 8c01151cce7d/da904542d0c7
+LINES MISMATCH s50l:S1Q02F: 7/8 sha ee0c8a4a4781/371de184f139
+LINES MISMATCH s50l:S1Q03: 1/2 sha b7ab13253ce5/35c2e99bcc2f
+LINES MISMATCH s50l:S1Q03F: 3/4 sha 7af54fe4ff7d/f0c95b7fcf0b
+MISMATCH s50l:S1Q04F: dist cue=constraint why= chars=543 sha=eb2175419cfc ref cue=constraint why= chars=537 expected 1517a406f91a
+LINES MISMATCH s50l:S1Q05: 1/2 sha a968f38cd1e5/0c4c3701a6df
+LINES MISMATCH s50l:S1Q06: 1/2 sha a21cc4959701/8893166fad56
+MISMATCH s50l:S1Q06F: dist cue=pronoun why= chars=523 sha=6b018cfb7376 ref cue=pronoun why= chars=517 expected 7b56db720d4a
+LINES MISMATCH s50l:S1Q07: 1/2 sha 684f1445650e/c3a58ee0aba7
+LINES MISMATCH s50l:S1Q08: 1/2 sha 1128ff890282/da454a57b3ac
+LINES MISMATCH s50l:S1Q09: 1/2 sha 2877adac5e59/d14571ba59bc
+LINES MISMATCH s50l:S1Q09F: 4/5 sha 439b418f7737/9556ad57ce59
+LINES MISMATCH s50l:S1Q10: 1/2 sha 59343d9cbd58/2b2f92ea1ec1
+LINES MISMATCH s50l:S1Q10F: 4/5 sha 95c237172d85/e5cbd103723a
+LINES MISMATCH s50l:S2Q01: 2/3 sha 3d66d378dd1c/cdea50e69de6
+LINES MISMATCH s50l:S2Q01F: 3/4 sha f35b50ebc45c/244fc29935a3
+LINES MISMATCH s50l:S2Q02: 1/2 sha 12371591adaf/a40d9de3ebb9
+LINES MISMATCH s50l:S2Q02F: 5/6 sha 847b5b4fa262/e7cdf058f452
+LINES MISMATCH s50l:S2Q03: 2/3 sha a21c27221bb8/4cd60bdae222
+LINES MISMATCH s50l:S2Q03F: 3/4 sha 927d54d7de52/45c08375abb3
+LINES MISMATCH s50l:S2Q04: 1/2 sha 3e0a952b568c/e3313d0ee09e
+LINES MISMATCH s50l:S2Q05: 2/3 sha f66d9d96a66a/bc1bd3b6e68e
+MISMATCH s50l:S2Q05F: dist cue=pronoun why= chars=467 sha=46165528dfaa ref cue=pronoun why= chars=461 expected 14f0bdf3225d
+LINES MISMATCH s50l:S2Q06: 1/2 sha 14e628c27318/85fd61d1902a
+LINES MISMATCH s50l:S2Q07: 2/3 sha c3f66c6e3224/3091428a1c5a
+LINES MISMATCH s50l:S2Q08: 2/3 sha b95e8a805ea2/3e25600ce704
+MISMATCH s50l:S2Q08F: dist cue=pronoun why= chars=438 sha=ce35104b6896 ref cue=pronoun why= chars=432 expected 6e6f2f50ae27
+LINES MISMATCH s50l:S2Q09: 1/2 sha d2b818a7b664/38e861f2bc97
+LINES MISMATCH s50l:S2Q09F: 4/5 sha 61da4ad60fb9/67db7f2b6d37
+LINES MISMATCH s50l:S2Q10: 1/2 sha cfee67837588/41528a5ac7f8
+LINES MISMATCH s50l:S2Q10F: 3/4 sha 1e08804668dd/ec2950d47f5b
+MISMATCH s50l:D1: dist cue=pronoun why= chars=256 sha=c57e125820d0 ref cue=pronoun why= chars=250 expected f6ad3669b3ff
+MISMATCH s50l:D2: dist cue=pronoun why= chars=263 sha=654237aa7a9a ref cue=pronoun why= chars=257 expected 0dc1568434da
+MISMATCH s50l:D3: dist cue=pronoun why= chars=239 sha=2fe4a13a570b ref cue=pronoun why= chars=233 expected 08567b93635d
+LINES MISMATCH s50k:S1Q01F: 6/7 sha 2c247a2956c7/aeb03e13d64d
+LINES MISMATCH s50k:S1Q02: 1/2 sha 66f0b5fee9a0/57ecf26b5431
+LINES MISMATCH s50k:S1Q02F: 7/8 sha ee0c8a4a4781/371de184f139
+LINES MISMATCH s50k:S1Q03: 1/2 sha 0eb78aff0c3f/3d6f49a3278a
+LINES MISMATCH s50k:S1Q03F: 3/4 sha dfd03e55c66e/b9ec063ca220
+LINES MISMATCH s50k:S1Q04: 1/2 sha 3b59058e580a/ef7ccfb21184
+MISMATCH s50k:S1Q04F: dist cue=constraint why= chars=541 sha=541761c5bbd2 ref cue=constraint why= chars=535 expected 7beee26f9f8f
+LINES MISMATCH s50k:S1Q05: 1/2 sha a968f38cd1e5/0c4c3701a6df
+LINES MISMATCH s50k:S1Q06: 1/2 sha a21cc4959701/8893166fad56
+MISMATCH s50k:S1Q06F: dist cue=pronoun why= chars=524 sha=8aef85927c2f ref cue=pronoun why= chars=518 expected 907c4fd34ca1
+LINES MISMATCH s50k:S1Q07: 1/2 sha 684f1445650e/c3a58ee0aba7
+LINES MISMATCH s50k:S1Q08: 1/2 sha 1128ff890282/da454a57b3ac
+LINES MISMATCH s50k:S1Q09: 1/2 sha 2877adac5e59/d14571ba59bc
+LINES MISMATCH s50k:S1Q09F: 4/5 sha 439b418f7737/9556ad57ce59
+LINES MISMATCH s50k:S1Q10: 1/2 sha 4d481bde60d7/850b11e3f6f4
+LINES MISMATCH s50k:S1Q10F: 4/5 sha d69aecd3b981/e7dfc969383f
+LINES MISMATCH s50k:S2Q01: 2/3 sha 3d66d378dd1c/cdea50e69de6
+LINES MISMATCH s50k:S2Q01F: 3/4 sha f35b50ebc45c/244fc29935a3
+LINES MISMATCH s50k:S2Q02: 1/2 sha 12371591adaf/a40d9de3ebb9
+LINES MISMATCH s50k:S2Q02F: 3/4 sha 91e94ad7e1c3/3adc71357461
+LINES MISMATCH s50k:S2Q03: 2/3 sha 0aac2f381899/eed0b53b6671
+LINES MISMATCH s50k:S2Q03F: 3/4 sha 927d54d7de52/45c08375abb3
+LINES MISMATCH s50k:S2Q04: 1/2 sha 3e0a952b568c/e3313d0ee09e
+LINES MISMATCH s50k:S2Q05: 1/2 sha 080eac367ff4/ebca7269d789
+MISMATCH s50k:S2Q05F: dist cue=pronoun why= chars=467 sha=46165528dfaa ref cue=pronoun why= chars=461 expected 14f0bdf3225d
+LINES MISMATCH s50k:S2Q06: 1/2 sha 3a3061a32baa/00e8a8f509cb
+LINES MISMATCH s50k:S2Q07: 2/3 sha 523cb465f66e/84de5aad5298
+LINES MISMATCH s50k:S2Q08: 2/3 sha c1441df01126/23b0a725671a
+MISMATCH s50k:S2Q08F: dist cue=pronoun why= chars=438 sha=2373342a60b3 ref cue=pronoun why= chars=432 expected 1023c0fe5a55
+LINES MISMATCH s50k:S2Q09: 1/2 sha d2b818a7b664/38e861f2bc97
+LINES MISMATCH s50k:S2Q09F: 4/5 sha 30832d3b080f/d535cf318b37
+LINES MISMATCH s50k:S2Q10: 1/2 sha 0681f22af688/90654b34dfd6
+LINES MISMATCH s50k:S2Q10F: 3/4 sha 1e08804668dd/ec2950d47f5b
+MISMATCH s50k:D1: dist cue=pronoun why= chars=256 sha=c57e125820d0 ref cue=pronoun why= chars=250 expected f6ad3669b3ff
+MISMATCH s50k:D2: dist cue=pronoun why= chars=268 sha=8c3fe34fdc42 ref cue=pronoun why= chars=262 expected 6ea69e3d2ba2
+MISMATCH s50k:D3: dist cue=pronoun why= chars=239 sha=2fe4a13a570b ref cue=pronoun why= chars=233 expected 08567b93635d
+PARITY DIST: 126 fixture entries (21 with a block) + 29 invented cases + 117 captured prompt-line rows; mismatches 106

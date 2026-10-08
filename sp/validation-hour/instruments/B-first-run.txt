@@ -1,0 +1,721 @@
+h40d-twins calibration, 2026-10-01T11:41:31.017Z
+adapter: <VH>\h40d-twins.mjs
+chain: <MAIN>\.claude\worktrees\whole-turn  filter sha256/16 42d9bc42dbd17870  CUE_RULE sha256/12 8e15e4e7dd41
+
+==============================================================================================================
+CASE 1  h40c, captured-low as the control, --pre-cue   (r4 section 4 known case: expected PASS)
+==============================================================================================================
+Expected before the run (r4 section 4): band cue [36, 38] against control [36, 37] (the control r3 is 36 of 43) -> overlap; gated wrong control 1 / 0 / 0
+(R08 in r1; total 1), cue 0 / 0 / 0 (0 <= 1 + 1) -> no stop; all-ids wrong control 2 / 1 / 2, cue 1 / 0 / 2; PASS; the cue check marked not applicable.
+$ node <VH>\h40d-twins.mjs <MAIN>\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c --control gemini-3.1-flash-lite_captured-low --pre-cue
+  | h40d-twins: run 2026-09-29T11-42-00-h40c
+  | chain: <MAIN>\.claude\worktrees\whole-turn
+  |   verbalStreamFilter.js sha256/16 42d9bc42dbd17870 (r4 section 2's combined build: 42d9bc42dbd17870 -> MATCH); cue limits 3 x 5, CUE_RULE sha256/12 8e15e4e7dd41
+  | mode: PRE-CUE KNOWN CASE: the cue check is NOT APPLICABLE and is not read; the reading line is not a verdict
+  | gated ids: every id but R02F R04F R09F R11F R13F (r4 rule 3b); wrong clause governing: DEFAULT sums with a margin of one
+  | cue twins (gemini-3.5-flash-lite_captured-high)
+  |   rep 1  interview60.answers.gemini-3.5-flash-lite_captured-high.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 36 (weak 7); wrong: gated 0, all ids 1  [verdict-wrong 0 gated / 1 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 723 p90 955 (n 44); ttft p50 3248 p90 4021 ms (n 44)
+  |   rep 2  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 37 (weak 7); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 748 p90 988 (n 44); ttft p50 3393 p90 4065 ms (n 44)
+  |   rep 3  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 38 (weak 4); wrong: gated 0, all ids 2  [verdict-wrong 0 gated / 2 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 750 p90 923 (n 44); ttft p50 3525 p90 4155 ms (n 44)
+  | no-cue twins (control) (gemini-3.1-flash-lite_captured-low)
+  |   rep 1  interview60.answers.gemini-3.1-flash-lite_captured-low.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 37 (weak 5); wrong: gated 1, all ids 2  [verdict-wrong 1 gated / 2 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 711 p90 900 (n 44); ttft p50 4612 p90 6438 ms (n 44)
+  |   rep 2  interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 37 (weak 6); wrong: gated 0, all ids 1  [verdict-wrong 0 gated / 1 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 685 p90 929 (n 44); ttft p50 4825 p90 6720 ms (n 44)
+  |   rep 3  interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json
+  |     ids 44 (gated 39): answered 43, true holes 1, empty prose 0
+  |       true holes: R10 (HTTP 503)
+  |     acceptable 36 (weak 5); wrong: gated 0, all ids 2  [verdict-wrong 0 gated / 2 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 686 p90 928 (n 43); ttft p50 5102 p90 6918 ms (n 43)
+  | graders over the judge files (model / stamp: files): claude-opus-5-5 / prompt stamp 8564ba96369a: 6
+  | band (all ids, acceptable per rep): control [36, 37] (reps 37 / 37 / 36)  cue [36, 38] (reps 36 / 37 / 38)  -> OVERLAP (cue max 38 >= control min 36)
+  | wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 0 (0 / 0 / 0) vs control 1 (1 / 0 / 0) + 1 -> no stop
+  | wrong on the gated ids, STRICT alternative (per rep): worst control rep 1; cue rep(s) above it: none -> no stop
+  | wrong on all ids, printed beside (never gated): control 2 / 1 / 2, cue 1 / 0 / 2
+  | cue check: NOT APPLICABLE (--pre-cue); benchDecide was fed present = shaped = n so only the band can stop it
+  | rule 3c reading: PASS  [PRE-CUE KNOWN CASE: the cue check is NOT APPLICABLE and was not read; this line is not a verdict]
+  | EXIT 0
+  ASSERT OK   1 band: output contains "control [36, 37] (reps 37 / 37 / 36)  cue [36, 38] (reps 36 / 37 / 38)  -> OVERLAP"
+  ASSERT OK   1 gated default: output contains "cue 0 (0 / 0 / 0) vs control 1 (1 / 0 / 0) + 1 -> no stop"
+  ASSERT OK   1 gated strict: output contains "worst control rep 1; cue rep(s) above it: none -> no stop"
+  ASSERT OK   1 all-ids: output contains "control 2 / 1 / 2, cue 1 / 0 / 2"
+  ASSERT OK   1 control r3 hole: output contains "answered 43, true holes 1"
+  ASSERT OK   1 hole named: output contains "R10 (HTTP 503)"
+  ASSERT OK   1 not applicable mark: output contains "PRE-CUE KNOWN CASE"
+  ASSERT OK   1 reading: output contains "rule 3c reading: PASS"
+  ASSERT OK   1 exit: got 0, expected 0
+
+==============================================================================================================
+CASE 2  h40b the same way   (r4 section 4: expected PASS under the default AND the strict alternative)
+==============================================================================================================
+Expected before the run: band cue [36, 39] against control [38, 40] -> overlap; gated wrong control 0 / 0 / 1 (R08 in r3; total 1), cue 0 / 0 / 0; PASS, both readings.
+$ node <VH>\h40d-twins.mjs <MAIN>\electron\test\golden\interview60.runs\2026-09-26T11-39-51-h40b --control gemini-3.1-flash-lite_captured-low --pre-cue
+  | h40d-twins: run 2026-09-26T11-39-51-h40b
+  | chain: <MAIN>\.claude\worktrees\whole-turn
+  |   verbalStreamFilter.js sha256/16 42d9bc42dbd17870 (r4 section 2's combined build: 42d9bc42dbd17870 -> MATCH); cue limits 3 x 5, CUE_RULE sha256/12 8e15e4e7dd41
+  | mode: PRE-CUE KNOWN CASE: the cue check is NOT APPLICABLE and is not read; the reading line is not a verdict
+  | gated ids: every id but R02F R04F R09F R11F R13F (r4 rule 3b); wrong clause governing: DEFAULT sums with a margin of one
+  | cue twins (gemini-3.5-flash-lite_captured-high)
+  |   rep 1  interview60.answers.gemini-3.5-flash-lite_captured-high.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 38 (weak 3); wrong: gated 0, all ids 3  [verdict-wrong 0 gated / 3 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 751 p90 928 (n 44); ttft p50 3943 p90 44315 ms (n 44)
+  |   rep 2  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 36 (weak 7); wrong: gated 0, all ids 1  [verdict-wrong 0 gated / 1 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 705 p90 958 (n 44); ttft p50 4882 p90 41826 ms (n 44)
+  |   rep 3  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 39 (weak 3); wrong: gated 0, all ids 2  [verdict-wrong 0 gated / 2 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 783 p90 931 (n 44); ttft p50 3888 p90 22032 ms (n 44)
+  | no-cue twins (control) (gemini-3.1-flash-lite_captured-low)
+  |   rep 1  interview60.answers.gemini-3.1-flash-lite_captured-low.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 40 (weak 3); wrong: gated 0, all ids 1  [verdict-wrong 0 gated / 1 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 732 p90 1020 (n 44); ttft p50 3778 p90 6909 ms (n 44)
+  |   rep 2  interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 40 (weak 4); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 714 p90 905 (n 44); ttft p50 4673 p90 16462 ms (n 44)
+  |   rep 3  interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 38 (weak 3); wrong: gated 1, all ids 3  [verdict-wrong 1 gated / 3 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 711 p90 892 (n 44); ttft p50 9292 p90 21491 ms (n 44)
+  | graders over the judge files (model / stamp: files): claude-opus-5-5 / prompt stamp 8564ba96369a: 6
+  | band (all ids, acceptable per rep): control [38, 40] (reps 40 / 40 / 38)  cue [36, 39] (reps 38 / 36 / 39)  -> OVERLAP (cue max 39 >= control min 38)
+  | wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 0 (0 / 0 / 0) vs control 1 (0 / 0 / 1) + 1 -> no stop
+  | wrong on the gated ids, STRICT alternative (per rep): worst control rep 1; cue rep(s) above it: none -> no stop
+  | wrong on all ids, printed beside (never gated): control 1 / 0 / 3, cue 3 / 1 / 2
+  | cue check: NOT APPLICABLE (--pre-cue); benchDecide was fed present = shaped = n so only the band can stop it
+  | rule 3c reading: PASS  [PRE-CUE KNOWN CASE: the cue check is NOT APPLICABLE and was not read; this line is not a verdict]
+  | EXIT 0
+  ASSERT OK   2 band: output contains "control [38, 40] (reps 40 / 40 / 38)  cue [36, 39] (reps 38 / 36 / 39)  -> OVERLAP"
+  ASSERT OK   2 gated default: output contains "cue 0 (0 / 0 / 0) vs control 1 (0 / 0 / 1) + 1 -> no stop"
+  ASSERT OK   2 gated strict: output contains "worst control rep 1; cue rep(s) above it: none -> no stop"
+  ASSERT OK   2 reading: output contains "rule 3c reading: PASS"
+  ASSERT OK   2 exit: got 0, expected 0
+$ node <VH>\h40d-twins.mjs <MAIN>\electron\test\golden\interview60.runs\2026-09-26T11-39-51-h40b --control gemini-3.1-flash-lite_captured-low --pre-cue --strict
+  | h40d-twins: run 2026-09-26T11-39-51-h40b
+  | chain: <MAIN>\.claude\worktrees\whole-turn
+  |   verbalStreamFilter.js sha256/16 42d9bc42dbd17870 (r4 section 2's combined build: 42d9bc42dbd17870 -> MATCH); cue limits 3 x 5, CUE_RULE sha256/12 8e15e4e7dd41
+  | mode: PRE-CUE KNOWN CASE: the cue check is NOT APPLICABLE and is not read; the reading line is not a verdict
+  | gated ids: every id but R02F R04F R09F R11F R13F (r4 rule 3b); wrong clause governing: STRICT per-rep alternative (--strict)
+  | cue twins (gemini-3.5-flash-lite_captured-high)
+  |   rep 1  interview60.answers.gemini-3.5-flash-lite_captured-high.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 38 (weak 3); wrong: gated 0, all ids 3  [verdict-wrong 0 gated / 3 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 751 p90 928 (n 44); ttft p50 3943 p90 44315 ms (n 44)
+  |   rep 2  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 36 (weak 7); wrong: gated 0, all ids 1  [verdict-wrong 0 gated / 1 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 705 p90 958 (n 44); ttft p50 4882 p90 41826 ms (n 44)
+  |   rep 3  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 39 (weak 3); wrong: gated 0, all ids 2  [verdict-wrong 0 gated / 2 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 783 p90 931 (n 44); ttft p50 3888 p90 22032 ms (n 44)
+  | no-cue twins (control) (gemini-3.1-flash-lite_captured-low)
+  |   rep 1  interview60.answers.gemini-3.1-flash-lite_captured-low.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 40 (weak 3); wrong: gated 0, all ids 1  [verdict-wrong 0 gated / 1 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 732 p90 1020 (n 44); ttft p50 3778 p90 6909 ms (n 44)
+  |   rep 2  interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 40 (weak 4); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 714 p90 905 (n 44); ttft p50 4673 p90 16462 ms (n 44)
+  |   rep 3  interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json
+  |     ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+  |     acceptable 38 (weak 3); wrong: gated 1, all ids 3  [verdict-wrong 1 gated / 3 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 711 p90 892 (n 44); ttft p50 9292 p90 21491 ms (n 44)
+  | graders over the judge files (model / stamp: files): claude-opus-5-5 / prompt stamp 8564ba96369a: 6
+  | band (all ids, acceptable per rep): control [38, 40] (reps 40 / 40 / 38)  cue [36, 39] (reps 38 / 36 / 39)  -> OVERLAP (cue max 39 >= control min 38)
+  | wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 0 (0 / 0 / 0) vs control 1 (0 / 0 / 1) + 1 -> no stop
+  | wrong on the gated ids, STRICT alternative (per rep): worst control rep 1; cue rep(s) above it: none -> no stop
+  | wrong on all ids, printed beside (never gated): control 1 / 0 / 3, cue 3 / 1 / 2
+  | cue check: NOT APPLICABLE (--pre-cue); benchDecide was fed present = shaped = n so only the band can stop it
+  | rule 3c reading: PASS  [PRE-CUE KNOWN CASE: the cue check is NOT APPLICABLE and was not read; this line is not a verdict]
+  | EXIT 0
+  ASSERT OK   2 strict governing reading: output contains "rule 3c reading: PASS"
+  ASSERT OK   2 strict exit: got 0, expected 0
+
+==============================================================================================================
+CASE 3  the cue check WITH cues: Thursday's bench cue answer files copied under the flight naming (twins-bench\), --answers-only
+==============================================================================================================
+Expected before the run (SP\cuebench\cuebench-score.out.txt): per rep blocks present 38/39, 39/39, 39/39; shaped 38/39, 38/39, 39/39; over 3 lines 0 / 1 / 0;
+words over 5, blocks 7/39, 8/39, 7/39 and lines 10/102, 11/108, 12/105; ttft p90 5217 / 4571 / 5133 ms. (No verdicts exist for these reps: the bench graded blind pairs, not
+interview60.judge.* files, so only the parts that need no verdicts are tested; nothing is invented.)
+$ node <VH>\h40d-twins.mjs <VH>\instruments\twins-bench --answers-only --cue gemini-3.5-flash-lite_cues
+  | h40d-twins: run twins-bench
+  | chain: <MAIN>\.claude\worktrees\whole-turn
+  |   verbalStreamFilter.js sha256/16 42d9bc42dbd17870 (r4 section 2's combined build: 42d9bc42dbd17870 -> MATCH); cue limits 3 x 5, CUE_RULE sha256/12 8e15e4e7dd41
+  | mode: ANSWERS-ONLY: no verdicts read
+  | gated ids: every id but R02F R04F R09F R11F R13F (r4 rule 3b); wrong clause governing: DEFAULT sums with a margin of one
+  | cue twins (gemini-3.5-flash-lite_cues)
+  |   rep 1  interview60.answers.gemini-3.5-flash-lite_cues.json
+  |     ids 39 (gated 39): answered 38, true holes 0, empty prose 1
+  |       empty prose: S2Q06F  NO-TEXT RECORD: rawLen 0, finish MALFORMED_RESPONSE; counts wrong in the all-ids line, an absent block in the cue check, in no gated clause, not a hole
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 1
+  |     cue check (net of true holes, n 39): blocks present 38/39 (97.4%), shaped 38/39 (97.4%); over 3 lines 0/39 (0.0%); over 5 words: blocks 7/39 (17.9%), lines 10/102 (9.8%)
+  |     thoughts p50 954 p90 1277 (n 38); ttft p50 4052 p90 5217 ms (n 38)
+  |   rep 2  interview60.answers.gemini-3.5-flash-lite_cues-r2.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 0
+  |     cue check (net of true holes, n 39): blocks present 39/39 (100.0%), shaped 38/39 (97.4%); over 3 lines 1/39 (2.6%); over 5 words: blocks 8/39 (20.5%), lines 11/108 (10.2%)
+  |     thoughts p50 983 p90 1268 (n 39); ttft p50 4048 p90 4571 ms (n 39)
+  |   rep 3  interview60.answers.gemini-3.5-flash-lite_cues-r3.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 0
+  |     cue check (net of true holes, n 39): blocks present 39/39 (100.0%), shaped 39/39 (100.0%); over 3 lines 0/39 (0.0%); over 5 words: blocks 7/39 (17.9%), lines 12/105 (11.4%)
+  |     thoughts p50 963 p90 1309 (n 39); ttft p50 3852 p90 5133 ms (n 39)
+  | no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high)
+  |   no answers files in this folder: skipped
+  | answers files absent (skipped): control rep 1 answers (interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high.json); control rep 2 answers (interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r2.json); control rep 3 answers (interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r3.json)
+  | cue check (benchDecide's own rule, 90% of n in every cue rep): holds in every cue rep
+  | empty-prose wrong, all reps (verdict-wrongs not read): cue gated 0 / all 1; control gated 0 / all 0
+  | rule 3c reading: NOT COMPUTED  [--answers-only: no verdicts were read]
+  | EXIT 0
+  ASSERT OK   3 cue-check lines read: got 3, expected 3
+  ASSERT OK   3 rep 1 present/shaped/over-3/over-5: output contains "blocks present 38/39 (97.4%), shaped 38/39 (97.4%); over 3 lines 0/39 (0.0%); over 5 words: blocks 7/39 (17.9%), lines 10/102 (9.8%)"
+  ASSERT OK   3 rep 2 present/shaped/over-3/over-5: output contains "blocks present 39/39 (100.0%), shaped 38/39 (97.4%); over 3 lines 1/39 (2.6%); over 5 words: blocks 8/39 (20.5%), lines 11/108 (10.2%)"
+  ASSERT OK   3 rep 3 present/shaped/over-3/over-5: output contains "blocks present 39/39 (100.0%), shaped 39/39 (100.0%); over 3 lines 0/39 (0.0%); over 5 words: blocks 7/39 (17.9%), lines 12/105 (11.4%)"
+  ASSERT OK   3 ttft p90 rep 1: output contains "p90 5217 ms"
+  ASSERT OK   3 ttft p90 rep 2: output contains "p90 4571 ms"
+  ASSERT OK   3 ttft p90 rep 3: output contains "p90 5133 ms"
+  ASSERT OK   3 benchDecide cue rule holds: output contains "holds in every cue rep"
+  ASSERT OK   3 reading is not a verdict: output contains "rule 3c reading: NOT COMPUTED"
+  ASSERT OK   3 exit: got 0, expected 0
+  independent: cuebench-score.mjs --cue-dir <WT>\electron\test\golden (the bench's own scorer on the original files), its per-rep cue columns:
+    | rep 1: n=39 ... blocks present 38/39  shaped 38/39 (over 3 lines: 0)  words over 5, reported: blocks 7/39, lines 10/102  ttft p90 control 4712 / cue 5217 ms
+    | rep 2: n=39 ... blocks present 39/39  shaped 38/39 (over 3 lines: 1)  words over 5, reported: blocks 8/39, lines 11/108  ttft p90 control 4524 / cue 4571 ms
+    | rep 3: n=39 ... blocks present 39/39  shaped 39/39 (over 3 lines: 0)  words over 5, reported: blocks 7/39, lines 12/105  ttft p90 control 4475 / cue 5133 ms
+  ASSERT OK   3 rep 1: adapter equals the bench's own scorer: got ["38/39","38/39","0","7/39","10/102"], expected ["38/39","38/39","0","7/39","10/102"]
+  ASSERT OK   3 rep 2: adapter equals the bench's own scorer: got ["39/39","38/39","1","8/39","11/108"], expected ["39/39","38/39","1","8/39","11/108"]
+  ASSERT OK   3 rep 3: adapter equals the bench's own scorer: got ["39/39","39/39","0","7/39","12/105"], expected ["39/39","39/39","0","7/39","12/105"]
+  ASSERT OK   3 the bench scorer printed three rep rows: got 3, expected 3
+
+==============================================================================================================
+CASE 4  synthetic, in memory from h40c captured-high: cues on every id, five / four 4-line blocks in one rep (control = h40c captured-low, real)
+==============================================================================================================
+Expected before the run (r4): five 4-line blocks -> shaped 39 of 44 (88.6%) -> STOP; four -> 40 of 44 (90.9%) -> PASS (0.9 x 44 = 39.6).
+  -- 5 four-line blocks in rep 1 (ids R01 R02 R02F R03 R04):
+    cue rep 1: ids 44, answered 44, holes [], empty prose [], acceptable 36, wrong gated 0 / all 1, cue check n 44 present 44 shaped 39
+    cue rep 2: ids 44, answered 44, holes [], empty prose [], acceptable 37, wrong gated 0 / all 0, cue check n 44 present 44 shaped 44
+    band (all ids, acceptable per rep): control [36, 37] (reps 37 / 37 / 36)  cue [36, 38] (reps 36 / 37 / 38)  -> OVERLAP (cue max 38 >= control min 36)
+    wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 0 (0 / 0 / 0) vs control 1 (1 / 0 / 0) + 1 -> no stop
+    wrong on the gated ids, STRICT alternative (per rep): worst control rep 1; cue rep(s) above it: none -> no stop
+    wrong on all ids, printed beside (never gated): control 2 / 1 / 2, cue 1 / 0 / 2
+    cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%); shaped 39/44 (88.6%) / 44/44 (100.0%) / 44/44 (100.0%) -> FAILS in rep(s) 1
+    rule 3c reading: STOP (cue-attributable FAIL: cue blocks present + shaped under 90% in rep(s) 1)
+    exit 1
+  ASSERT OK   4 (5 blocks) rep 1 shaped of n: got [39,44], expected [39,44]
+  ASSERT OK   4 (5 blocks) rep 1 present of n: got [44,44], expected [44,44]
+  ASSERT OK   4 (5 blocks) over-3 count in rep 1: got 5, expected 5
+  ASSERT OK   4 (5 blocks) reading: got "STOP", expected "STOP"
+  ASSERT OK   4 (5 blocks) exit: got 1, expected 1
+  ASSERT OK   4 (5 blocks) only the cue check speaks: got [true,false], expected [true,false]
+  -- 4 four-line blocks in rep 1 (ids R01 R02 R02F R03):
+    cue rep 1: ids 44, answered 44, holes [], empty prose [], acceptable 36, wrong gated 0 / all 1, cue check n 44 present 44 shaped 40
+    cue rep 2: ids 44, answered 44, holes [], empty prose [], acceptable 37, wrong gated 0 / all 0, cue check n 44 present 44 shaped 44
+    band (all ids, acceptable per rep): control [36, 37] (reps 37 / 37 / 36)  cue [36, 38] (reps 36 / 37 / 38)  -> OVERLAP (cue max 38 >= control min 36)
+    wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 0 (0 / 0 / 0) vs control 1 (1 / 0 / 0) + 1 -> no stop
+    wrong on the gated ids, STRICT alternative (per rep): worst control rep 1; cue rep(s) above it: none -> no stop
+    wrong on all ids, printed beside (never gated): control 2 / 1 / 2, cue 1 / 0 / 2
+    cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%); shaped 40/44 (90.9%) / 44/44 (100.0%) / 44/44 (100.0%) -> holds in every cue rep
+    rule 3c reading: PASS
+    exit 0
+  ASSERT OK   4 (4 blocks) rep 1 shaped of n: got [40,44], expected [40,44]
+  ASSERT OK   4 (4 blocks) rep 1 present of n: got [44,44], expected [44,44]
+  ASSERT OK   4 (4 blocks) over-3 count in rep 1: got 4, expected 4
+  ASSERT OK   4 (4 blocks) reading: got "PASS", expected "PASS"
+  ASSERT OK   4 (4 blocks) exit: got 0, expected 0
+  ASSERT OK   4 (4 blocks) only the cue check speaks: got [true,false], expected [true,false]
+
+==============================================================================================================
+CASE 5  a hole case: 3 transientError plus 1 empty prose (a block-only twin) in a cue rep   (expected: not INCOMPLETE, wrong +1, cue-check n = 41)
+==============================================================================================================
+  -- rep 1: ids R17 R22 R22F -> transientError; R27 -> a raw that is one cue block alone, prose empty (all four ids were graded weak, a gated id each)
+  baseline (cues injected, nothing modified):
+    cue rep 1: ids 44, answered 44, holes [], empty prose [], acceptable 36, wrong gated 0 / all 1, cue check n 44 present 44 shaped 44
+    band (all ids, acceptable per rep): control [36, 37] (reps 37 / 37 / 36)  cue [36, 38] (reps 36 / 37 / 38)  -> OVERLAP (cue max 38 >= control min 36)
+    wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 0 (0 / 0 / 0) vs control 1 (1 / 0 / 0) + 1 -> no stop
+    wrong on the gated ids, STRICT alternative (per rep): worst control rep 1; cue rep(s) above it: none -> no stop
+    wrong on all ids, printed beside (never gated): control 2 / 1 / 2, cue 1 / 0 / 2
+    cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%); shaped 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%) -> holds in every cue rep
+    rule 3c reading: PASS
+    exit 0
+  modified:
+    cue rep 1: ids 44, answered 40, holes [R17 R22 R22F], empty prose [R27:block-only/stripCueBlock/gated], acceptable 36, wrong gated 1 / all 2, cue check n 41 present 41 shaped 41
+    band (all ids, acceptable per rep): control [36, 37] (reps 37 / 37 / 36)  cue [36, 38] (reps 36 / 37 / 38)  -> OVERLAP (cue max 38 >= control min 36)
+    wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 1 (1 / 0 / 0) vs control 1 (1 / 0 / 0) + 1 -> no stop
+    wrong on the gated ids, STRICT alternative (per rep): worst control rep 1; cue rep(s) above it: none -> no stop
+    wrong on all ids, printed beside (never gated): control 2 / 1 / 2, cue 2 / 0 / 2
+    cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 41/41 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%); shaped 41/41 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%) -> holds in every cue rep
+    rule 3c reading: PASS
+    exit 0
+  ASSERT OK   5 true holes in rep 1: got 3, expected 3
+  ASSERT OK   5 not INCOMPLETE: got [], expected []
+  ASSERT OK   5 cue-check n = 44 - 3: got 41, expected 41
+  ASSERT OK   5 cue check present / shaped of 41: got [41,41], expected [41,41]
+  ASSERT OK   5 all-ids wrong = baseline + 1: got 2, expected 2
+  ASSERT OK   5 gated wrong = baseline + 1 (a block-only twin on a gated id): got 1, expected 1
+  ASSERT OK   5 the empty prose is a block-only twin emptied by stripCueBlock: got ["block-only","stripCueBlock",true], expected ["block-only","stripCueBlock",true]
+  ASSERT OK   5 acceptable unchanged (the four ids were weak): got 36, expected 36
+  ASSERT OK   5 reading (cue total 1 <= control total 1 + 1): got "PASS", expected "PASS"
+
+==============================================================================================================
+CASE 6  4 transientError in a rep -> INCOMPLETE   (and 3 stays decided: case 5)
+==============================================================================================================
+  -- cue side: rep 2 ids R01 R08 R22 R22F -> transientError
+    cue rep 2: ids 44, answered 40, holes [R01 R08 R22 R22F], empty prose [], acceptable 37, wrong gated 0 / all 0, cue check n 40 present 40 shaped 40
+    band (all ids, acceptable per rep): control [36, 37] (reps 37 / 37 / 36)  cue [36, 38] (reps 36 / 37 / 38)  -> OVERLAP (cue max 38 >= control min 36)
+    wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 0 (0 / 0 / 0) vs control 1 (1 / 0 / 0) + 1 -> no stop
+    wrong on the gated ids, STRICT alternative (per rep): worst control rep 1; cue rep(s) above it: none -> no stop
+    wrong on all ids, printed beside (never gated): control 2 / 1 / 2, cue 1 / 0 / 2
+    cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 44/44 (100.0%) / 40/40 (100.0%) / 44/44 (100.0%); shaped 44/44 (100.0%) / 40/40 (100.0%) / 44/44 (100.0%) -> holds in every cue rep
+    rule 3c reading: INCOMPLETE (more than 3 true holes: cue rep 2 (4))
+    exit 3
+  ASSERT OK   6 cue rep 2 holes: got 4, expected 4
+  ASSERT OK   6 reading: got "INCOMPLETE", expected "INCOMPLETE"
+  ASSERT OK   6 exit: got 3, expected 3
+  ASSERT OK   6 names the rep and count: output contains "more than 3 true holes: cue rep 2 (4)"
+  -- control side (the symmetric rule): control rep 1 ids R01 R13 R22 R30 -> transientError
+    control rep 1: ids 44, answered 40, holes [R01 R13 R22 R30], empty prose [], acceptable 37, wrong gated 1 / all 2, cue check n 40 present 0 shaped 0
+    band (all ids, acceptable per rep): control [36, 37] (reps 37 / 37 / 36)  cue [36, 38] (reps 36 / 37 / 38)  -> OVERLAP (cue max 38 >= control min 36)
+    wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 0 (0 / 0 / 0) vs control 1 (1 / 0 / 0) + 1 -> no stop
+    wrong on the gated ids, STRICT alternative (per rep): worst control rep 1; cue rep(s) above it: none -> no stop
+    wrong on all ids, printed beside (never gated): control 2 / 1 / 2, cue 1 / 0 / 2
+    cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%); shaped 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%) -> holds in every cue rep
+    rule 3c reading: INCOMPLETE (more than 3 true holes: control rep 1 (4))
+    exit 3
+  ASSERT OK   6 control reading: got "INCOMPLETE", expected "INCOMPLETE"
+  ASSERT OK   6 names the control rep: output contains "control rep 1 (4)"
+
+==============================================================================================================
+CASE 7  the real empty-prose cases: s50l captured-high-r3 S1Q06, s50m captured-high-r2 S2Q06   (expected: wrong in the all-ids line, filterCodeFences, kept out of the gated clause)
+==============================================================================================================
+Both folders are scenario50 hours: every id is a "gated" id here (none is one of the five holdout follow-ups), so the kind alone keeps the record out of the gated clause.
+Run twice per folder: --answers-only (the stage and the empty-prose contribution), and full with the SAME family on both sides and --pre-cue (these hours predate cue mode; verdicts exist),
+where the all-ids wrong of the rep with the empty record must be its verdict-wrongs + 1 and its gated wrong must stay at its verdict-wrongs.
+$ node <VH>\h40d-twins.mjs <MAIN>\electron\test\golden\interview60.runs\2026-09-21T08-22-34-s50l --answers-only
+  | h40d-twins: run 2026-09-21T08-22-34-s50l
+  | chain: <MAIN>\.claude\worktrees\whole-turn
+  |   verbalStreamFilter.js sha256/16 42d9bc42dbd17870 (r4 section 2's combined build: 42d9bc42dbd17870 -> MATCH); cue limits 3 x 5, CUE_RULE sha256/12 8e15e4e7dd41
+  | mode: ANSWERS-ONLY: no verdicts read
+  | gated ids: every id but R02F R04F R09F R11F R13F (r4 rule 3b); wrong clause governing: DEFAULT sums with a margin of one
+  | cue twins (gemini-3.5-flash-lite_captured-high)
+  |   rep 1  interview60.answers.gemini-3.5-flash-lite_captured-high.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 0
+  |     cue check (net of true holes, n 39): blocks present 0/39 (0.0%), shaped 0/39 (0.0%); over 3 lines 0/39 (0.0%); over 5 words: blocks 0/39 (0.0%), lines 0/0 (0.0%); records with no cues field 39
+  |     thoughts p50 849 p90 1194 (n 39); ttft p50 3834 p90 4839 ms (n 39)
+  |   rep 2  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 0
+  |     cue check (net of true holes, n 39): blocks present 0/39 (0.0%), shaped 0/39 (0.0%); over 3 lines 0/39 (0.0%); over 5 words: blocks 0/39 (0.0%), lines 0/0 (0.0%); records with no cues field 39
+  |     thoughts p50 890 p90 1142 (n 39); ttft p50 3907 p90 4740 ms (n 39)
+  |   rep 3  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json
+  |     ids 39 (gated 39): answered 38, true holes 0, empty prose 1
+  |       empty prose: S1Q06  PIPELINE EVENT: emptied by filterCodeFences (a fenced answer, dropped by design, cues or not); all-ids line only, never the gated clause
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 1
+  |     cue check (net of true holes, n 39): blocks present 0/39 (0.0%), shaped 0/39 (0.0%); over 3 lines 0/39 (0.0%); over 5 words: blocks 0/39 (0.0%), lines 0/0 (0.0%); records with no cues field 39
+  |     thoughts p50 887 p90 1160 (n 38); ttft p50 3855 p90 4764 ms (n 38)
+  | no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high)
+  |   no answers files in this folder: skipped
+  | answers files absent (skipped): control rep 1 answers (interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high.json); control rep 2 answers (interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r2.json); control rep 3 answers (interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r3.json)
+  | cue check (benchDecide's own rule, 90% of n in every cue rep): FAILS in rep(s) 1, 2, 3
+  | empty-prose wrong, all reps (verdict-wrongs not read): cue gated 0 / all 1; control gated 0 / all 0
+  | rule 3c reading: NOT COMPUTED  [--answers-only: no verdicts were read]
+  | EXIT 0
+  ASSERT OK   7 S1Q06 named: output contains "empty prose: S1Q06  PIPELINE EVENT: emptied by filterCodeFences"
+  ASSERT OK   7 S1Q06 all-ids contribution: output contains "empty-prose wrong, all reps (verdict-wrongs not read): cue gated 0 / all 1"
+  ASSERT OK   7 S1Q06 answers-only exit: got 0, expected 0
+$ node <VH>\h40d-twins.mjs <MAIN>\electron\test\golden\interview60.runs\2026-09-21T08-22-34-s50l --cue gemini-3.5-flash-lite_captured-high --control gemini-3.5-flash-lite_captured-high --pre-cue
+  | h40d-twins: run 2026-09-21T08-22-34-s50l
+  | chain: <MAIN>\.claude\worktrees\whole-turn
+  |   verbalStreamFilter.js sha256/16 42d9bc42dbd17870 (r4 section 2's combined build: 42d9bc42dbd17870 -> MATCH); cue limits 3 x 5, CUE_RULE sha256/12 8e15e4e7dd41
+  | mode: PRE-CUE KNOWN CASE: the cue check is NOT APPLICABLE and is not read; the reading line is not a verdict
+  | gated ids: every id but R02F R04F R09F R11F R13F (r4 rule 3b); wrong clause governing: DEFAULT sums with a margin of one
+  | cue twins (gemini-3.5-flash-lite_captured-high)
+  |   rep 1  interview60.answers.gemini-3.5-flash-lite_captured-high.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     acceptable 37 (weak 2); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 849 p90 1194 (n 39); ttft p50 3834 p90 4839 ms (n 39)
+  |   rep 2  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     acceptable 35 (weak 4); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 890 p90 1142 (n 39); ttft p50 3907 p90 4740 ms (n 39)
+  |   rep 3  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json
+  |     ids 39 (gated 39): answered 38, true holes 0, empty prose 1
+  |       empty prose: S1Q06  PIPELINE EVENT: emptied by filterCodeFences (a fenced answer, dropped by design, cues or not); all-ids line only, never the gated clause
+  |     acceptable 35 (weak 3); wrong: gated 0, all ids 1  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 1 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 887 p90 1160 (n 38); ttft p50 3855 p90 4764 ms (n 38)
+  | no-cue twins (control) (gemini-3.5-flash-lite_captured-high)
+  |   rep 1  interview60.answers.gemini-3.5-flash-lite_captured-high.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     acceptable 37 (weak 2); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 849 p90 1194 (n 39); ttft p50 3834 p90 4839 ms (n 39)
+  |   rep 2  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     acceptable 35 (weak 4); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 890 p90 1142 (n 39); ttft p50 3907 p90 4740 ms (n 39)
+  |   rep 3  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json
+  |     ids 39 (gated 39): answered 38, true holes 0, empty prose 1
+  |       empty prose: S1Q06  PIPELINE EVENT: emptied by filterCodeFences (a fenced answer, dropped by design, cues or not); all-ids line only, never the gated clause
+  |     acceptable 35 (weak 3); wrong: gated 0, all ids 1  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 1 all]
+  |     thoughts p50 887 p90 1160 (n 38); ttft p50 3855 p90 4764 ms (n 38)
+  | graders over the judge files (model / stamp: files): claude-opus-5 / prompt stamp 8564ba96369a: 6
+  | band (all ids, acceptable per rep): control [35, 37] (reps 37 / 35 / 35)  cue [35, 37] (reps 37 / 35 / 35)  -> OVERLAP (cue max 37 >= control min 35)
+  | wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 0 (0 / 0 / 0) vs control 0 (0 / 0 / 0) + 1 -> no stop
+  | wrong on the gated ids, STRICT alternative (per rep): worst control rep 0; cue rep(s) above it: none -> no stop
+  | wrong on all ids, printed beside (never gated): control 0 / 0 / 1, cue 0 / 0 / 1
+  | cue check: NOT APPLICABLE (--pre-cue); benchDecide was fed present = shaped = n so only the band can stop it
+  | rule 3c reading: PASS  [PRE-CUE KNOWN CASE: the cue check is NOT APPLICABLE and was not read; this line is not a verdict]
+  | EXIT 0
+  ASSERT OK   7 S1Q06 full exit: got 0, expected 0
+  ASSERT OK   7 S1Q06 rep 3: counted wrong in the all-ids line: output contains "wrong: gated 0, all ids 1"
+  ASSERT OK   7 S1Q06 rep 3: kept out of the gated clause: output contains "plus empty prose 0 gated / 1 all"
+$ node <VH>\h40d-twins.mjs <MAIN>\electron\test\golden\interview60.runs\2026-09-22T08-22-50-s50m --answers-only
+  | h40d-twins: run 2026-09-22T08-22-50-s50m
+  | chain: <MAIN>\.claude\worktrees\whole-turn
+  |   verbalStreamFilter.js sha256/16 42d9bc42dbd17870 (r4 section 2's combined build: 42d9bc42dbd17870 -> MATCH); cue limits 3 x 5, CUE_RULE sha256/12 8e15e4e7dd41
+  | mode: ANSWERS-ONLY: no verdicts read
+  | gated ids: every id but R02F R04F R09F R11F R13F (r4 rule 3b); wrong clause governing: DEFAULT sums with a margin of one
+  | cue twins (gemini-3.5-flash-lite_captured-high)
+  |   rep 1  interview60.answers.gemini-3.5-flash-lite_captured-high.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 0
+  |     cue check (net of true holes, n 39): blocks present 0/39 (0.0%), shaped 0/39 (0.0%); over 3 lines 0/39 (0.0%); over 5 words: blocks 0/39 (0.0%), lines 0/0 (0.0%); records with no cues field 39
+  |     thoughts p50 911 p90 1206 (n 39); ttft p50 3858 p90 4712 ms (n 39)
+  |   rep 2  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json
+  |     ids 39 (gated 39): answered 38, true holes 0, empty prose 1
+  |       empty prose: S2Q06  PIPELINE EVENT: emptied by filterCodeFences (a fenced answer, dropped by design, cues or not); all-ids line only, never the gated clause
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 1
+  |     cue check (net of true holes, n 39): blocks present 0/39 (0.0%), shaped 0/39 (0.0%); over 3 lines 0/39 (0.0%); over 5 words: blocks 0/39 (0.0%), lines 0/0 (0.0%); records with no cues field 39
+  |     thoughts p50 892 p90 1062 (n 38); ttft p50 3733 p90 4363 ms (n 38)
+  |   rep 3  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 0
+  |     cue check (net of true holes, n 39): blocks present 0/39 (0.0%), shaped 0/39 (0.0%); over 3 lines 0/39 (0.0%); over 5 words: blocks 0/39 (0.0%), lines 0/0 (0.0%); records with no cues field 39
+  |     thoughts p50 899 p90 1095 (n 39); ttft p50 3860 p90 4475 ms (n 39)
+  | no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high)
+  |   no answers files in this folder: skipped
+  | answers files absent (skipped): control rep 1 answers (interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high.json); control rep 2 answers (interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r2.json); control rep 3 answers (interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r3.json)
+  | cue check (benchDecide's own rule, 90% of n in every cue rep): FAILS in rep(s) 1, 2, 3
+  | empty-prose wrong, all reps (verdict-wrongs not read): cue gated 0 / all 1; control gated 0 / all 0
+  | rule 3c reading: NOT COMPUTED  [--answers-only: no verdicts were read]
+  | EXIT 0
+  ASSERT OK   7 S2Q06 named: output contains "empty prose: S2Q06  PIPELINE EVENT: emptied by filterCodeFences"
+  ASSERT OK   7 S2Q06 all-ids contribution: output contains "empty-prose wrong, all reps (verdict-wrongs not read): cue gated 0 / all 1"
+  ASSERT OK   7 S2Q06 answers-only exit: got 0, expected 0
+$ node <VH>\h40d-twins.mjs <MAIN>\electron\test\golden\interview60.runs\2026-09-22T08-22-50-s50m --cue gemini-3.5-flash-lite_captured-high --control gemini-3.5-flash-lite_captured-high --pre-cue
+  | h40d-twins: run 2026-09-22T08-22-50-s50m
+  | chain: <MAIN>\.claude\worktrees\whole-turn
+  |   verbalStreamFilter.js sha256/16 42d9bc42dbd17870 (r4 section 2's combined build: 42d9bc42dbd17870 -> MATCH); cue limits 3 x 5, CUE_RULE sha256/12 8e15e4e7dd41
+  | mode: PRE-CUE KNOWN CASE: the cue check is NOT APPLICABLE and is not read; the reading line is not a verdict
+  | gated ids: every id but R02F R04F R09F R11F R13F (r4 rule 3b); wrong clause governing: DEFAULT sums with a margin of one
+  | cue twins (gemini-3.5-flash-lite_captured-high)
+  |   rep 1  interview60.answers.gemini-3.5-flash-lite_captured-high.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     acceptable 33 (weak 6); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 911 p90 1206 (n 39); ttft p50 3858 p90 4712 ms (n 39)
+  |   rep 2  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json
+  |     ids 39 (gated 39): answered 38, true holes 0, empty prose 1
+  |       empty prose: S2Q06  PIPELINE EVENT: emptied by filterCodeFences (a fenced answer, dropped by design, cues or not); all-ids line only, never the gated clause
+  |     acceptable 30 (weak 8); wrong: gated 0, all ids 1  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 1 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 892 p90 1062 (n 38); ttft p50 3733 p90 4363 ms (n 38)
+  |   rep 3  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     acceptable 33 (weak 6); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+  |     cue check: NOT APPLICABLE (--pre-cue: no cue mode on this hour, nothing was read)
+  |     thoughts p50 899 p90 1095 (n 39); ttft p50 3860 p90 4475 ms (n 39)
+  | no-cue twins (control) (gemini-3.5-flash-lite_captured-high)
+  |   rep 1  interview60.answers.gemini-3.5-flash-lite_captured-high.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     acceptable 33 (weak 6); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 911 p90 1206 (n 39); ttft p50 3858 p90 4712 ms (n 39)
+  |   rep 2  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json
+  |     ids 39 (gated 39): answered 38, true holes 0, empty prose 1
+  |       empty prose: S2Q06  PIPELINE EVENT: emptied by filterCodeFences (a fenced answer, dropped by design, cues or not); all-ids line only, never the gated clause
+  |     acceptable 30 (weak 8); wrong: gated 0, all ids 1  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 1 all]
+  |     thoughts p50 892 p90 1062 (n 38); ttft p50 3733 p90 4363 ms (n 38)
+  |   rep 3  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     acceptable 33 (weak 6); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+  |     thoughts p50 899 p90 1095 (n 39); ttft p50 3860 p90 4475 ms (n 39)
+  | graders over the judge files (model / stamp: files): claude-opus-5 / prompt stamp 8564ba96369a: 6
+  | band (all ids, acceptable per rep): control [30, 33] (reps 33 / 30 / 33)  cue [30, 33] (reps 33 / 30 / 33)  -> OVERLAP (cue max 33 >= control min 30)
+  | wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 0 (0 / 0 / 0) vs control 0 (0 / 0 / 0) + 1 -> no stop
+  | wrong on the gated ids, STRICT alternative (per rep): worst control rep 0; cue rep(s) above it: none -> no stop
+  | wrong on all ids, printed beside (never gated): control 0 / 1 / 0, cue 0 / 1 / 0
+  | cue check: NOT APPLICABLE (--pre-cue); benchDecide was fed present = shaped = n so only the band can stop it
+  | rule 3c reading: PASS  [PRE-CUE KNOWN CASE: the cue check is NOT APPLICABLE and was not read; this line is not a verdict]
+  | EXIT 0
+  ASSERT OK   7 S2Q06 full exit: got 0, expected 0
+  ASSERT OK   7 S2Q06 rep 2: counted wrong in the all-ids line: output contains "wrong: gated 0, all ids 1"
+  ASSERT OK   7 S2Q06 rep 2: kept out of the gated clause: output contains "plus empty prose 0 gated / 1 all"
+
+==============================================================================================================
+CASE 8  synthetic, in memory: block-only twins on gated ids against a 0 / 0 / 0 control (control = h40c captured-high, real; cue = a copy with cues injected)
+==============================================================================================================
+Expected before the run (r4): two gated block-only twins -> STOP under the default (2 > 0 + 1); ONE -> named, no STOP under the default (1 <= 1), STOP under the strict
+alternative; both readings printed. Extra contrasts: two twins on EXCLUDED follow-ups -> all-ids line only, no STOP; the same ids with the strict flag governing.
+  ASSERT OK   8 the control is 0 / 0 / 0 on the gated ids: got [0,0,0], expected [0,0,0]
+  gated ids used: rep 1 R17 R22; rep 2 R01
+  -- 8a: two gated block-only twins in ONE rep (rep 1)
+    cue rep 1: ids 44, answered 42, holes [], empty prose [R17:block-only/stripCueBlock/gated R22:block-only/stripCueBlock/gated], acceptable 36, wrong gated 2 / all 3, cue check n 44 present 44 shaped 44
+    band (all ids, acceptable per rep): control [36, 38] (reps 36 / 37 / 38)  cue [36, 38] (reps 36 / 37 / 38)  -> OVERLAP (cue max 38 >= control min 36)
+    wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 2 (2 / 0 / 0) vs control 0 (0 / 0 / 0) + 1 -> STOP (2 > 1)
+    wrong on the gated ids, STRICT alternative (per rep): worst control rep 0; cue rep(s) above it: 1 -> STOP
+    wrong on all ids, printed beside (never gated): control 1 / 0 / 2, cue 3 / 0 / 2
+    cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%); shaped 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%) -> holds in every cue rep
+    rule 3c reading: STOP (cue-attributable FAIL: wrong (default): cue gated wrong total 2 exceeds the control's 0 + 1)
+    exit 1
+  ASSERT OK   8a gated wrong per cue rep: got [2,0,0], expected [2,0,0]
+  ASSERT OK   8a default STOP (2 > 0 + 1): got [true,"STOP",1], expected [true,"STOP",1]
+  ASSERT OK   8a strict also stops: got [1], expected [1]
+  -- 8b: one gated block-only twin in each of two reps (rep 1 and rep 2)
+    cue rep 1: ids 44, answered 43, holes [], empty prose [R17:block-only/stripCueBlock/gated], acceptable 36, wrong gated 1 / all 2, cue check n 44 present 44 shaped 44
+    cue rep 2: ids 44, answered 43, holes [], empty prose [R01:block-only/stripCueBlock/gated], acceptable 37, wrong gated 1 / all 1, cue check n 44 present 44 shaped 44
+    band (all ids, acceptable per rep): control [36, 38] (reps 36 / 37 / 38)  cue [36, 38] (reps 36 / 37 / 38)  -> OVERLAP (cue max 38 >= control min 36)
+    wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 2 (1 / 1 / 0) vs control 0 (0 / 0 / 0) + 1 -> STOP (2 > 1)
+    wrong on the gated ids, STRICT alternative (per rep): worst control rep 0; cue rep(s) above it: 1, 2 -> STOP
+    wrong on all ids, printed beside (never gated): control 1 / 0 / 2, cue 2 / 1 / 2
+    cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%); shaped 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%) -> holds in every cue rep
+    rule 3c reading: STOP (cue-attributable FAIL: wrong (default): cue gated wrong total 2 exceeds the control's 0 + 1)
+    exit 1
+  ASSERT OK   8b gated wrong per cue rep: got [1,1,0], expected [1,1,0]
+  ASSERT OK   8b default STOP (2 > 0 + 1): got [true,"STOP",1], expected [true,"STOP",1]
+  -- 8c: ONE gated block-only twin (named in the rep line); default and strict both printed
+    cue rep 1: ids 44, answered 43, holes [], empty prose [R17:block-only/stripCueBlock/gated], acceptable 36, wrong gated 1 / all 2, cue check n 44 present 44 shaped 44
+    band (all ids, acceptable per rep): control [36, 38] (reps 36 / 37 / 38)  cue [36, 38] (reps 36 / 37 / 38)  -> OVERLAP (cue max 38 >= control min 36)
+    wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 1 (1 / 0 / 0) vs control 0 (0 / 0 / 0) + 1 -> no stop
+    wrong on the gated ids, STRICT alternative (per rep): worst control rep 0; cue rep(s) above it: 1 -> STOP
+    wrong on all ids, printed beside (never gated): control 1 / 0 / 2, cue 2 / 0 / 2
+    cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%); shaped 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%) -> holds in every cue rep
+    rule 3c reading: PASS
+    exit 0
+  ASSERT OK   8c gated wrong per cue rep: got [1,0,0], expected [1,0,0]
+  ASSERT OK   8c default: no STOP (1 <= 0 + 1): got [false,"PASS",0], expected [false,"PASS",0]
+  ASSERT OK   8c strict alternative: STOP in rep 1: got [1], expected [1]
+  ASSERT OK   8c the twin is named in the rep line: output contains "empty prose: R17  BLOCK-ONLY TWIN"
+  ASSERT OK   8c both readings are printed: output contains "STRICT alternative (per rep): worst control rep 0; cue rep(s) above it: 1 -> STOP"
+    band (all ids, acceptable per rep): control [36, 38] (reps 36 / 37 / 38)  cue [36, 38] (reps 36 / 37 / 38)  -> OVERLAP (cue max 38 >= control min 36)
+    wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 1 (1 / 0 / 0) vs control 0 (0 / 0 / 0) + 1 -> no stop
+    wrong on the gated ids, STRICT alternative (per rep): worst control rep 0; cue rep(s) above it: 1 -> STOP
+    wrong on all ids, printed beside (never gated): control 1 / 0 / 2, cue 2 / 0 / 2
+    cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%); shaped 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%) -> holds in every cue rep
+    rule 3c reading: STOP (cue-attributable FAIL: wrong (strict): cue rep(s) 1 have more gated wrong than the worst control rep's 0)
+    exit 1
+  ASSERT OK   8c with --strict governing: STOP, exit 1: got ["STOP",1], expected ["STOP",1]
+  -- 8d: two block-only twins on EXCLUDED follow-ups (R02F, R04F) in rep 1: all-ids line only
+    cue rep 1: ids 44, answered 42, holes [], empty prose [R02F:block-only/stripCueBlock R04F:block-only/stripCueBlock], acceptable 35, wrong gated 0 / all 3, cue check n 44 present 44 shaped 44
+    band (all ids, acceptable per rep): control [36, 38] (reps 36 / 37 / 38)  cue [35, 38] (reps 35 / 37 / 38)  -> OVERLAP (cue max 38 >= control min 36)
+    wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 0 (0 / 0 / 0) vs control 0 (0 / 0 / 0) + 1 -> no stop
+    wrong on the gated ids, STRICT alternative (per rep): worst control rep 0; cue rep(s) above it: none -> no stop
+    wrong on all ids, printed beside (never gated): control 1 / 0 / 2, cue 3 / 0 / 2
+    cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%); shaped 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%) -> holds in every cue rep
+    rule 3c reading: PASS
+    exit 0
+  ASSERT OK   8d gated wrong unchanged: got [0,0,0], expected [0,0,0]
+  ASSERT OK   8d all-ids wrong = baseline + 2: got 3, expected 3
+  ASSERT OK   8d reading: got "PASS", expected "PASS"
+
+==============================================================================================================
+CASE 9  the real no-text record: the bench's cues-r1 S2Q06F (rawLen 0, MALFORMED_RESPONSE)   (expected: named no-text, wrong in the all-ids line, absent in the cue check, in neither side's gated clause)
+==============================================================================================================
+The same bench copy is given as BOTH sides so each side's gated clause is printed; --answers-only (no verdicts exist for these reps).
+$ node <VH>\h40d-twins.mjs <VH>\instruments\twins-bench --answers-only --cue gemini-3.5-flash-lite_cues --control gemini-3.5-flash-lite_cues
+  | h40d-twins: run twins-bench
+  | chain: <MAIN>\.claude\worktrees\whole-turn
+  |   verbalStreamFilter.js sha256/16 42d9bc42dbd17870 (r4 section 2's combined build: 42d9bc42dbd17870 -> MATCH); cue limits 3 x 5, CUE_RULE sha256/12 8e15e4e7dd41
+  | mode: ANSWERS-ONLY: no verdicts read
+  | gated ids: every id but R02F R04F R09F R11F R13F (r4 rule 3b); wrong clause governing: DEFAULT sums with a margin of one
+  | cue twins (gemini-3.5-flash-lite_cues)
+  |   rep 1  interview60.answers.gemini-3.5-flash-lite_cues.json
+  |     ids 39 (gated 39): answered 38, true holes 0, empty prose 1
+  |       empty prose: S2Q06F  NO-TEXT RECORD: rawLen 0, finish MALFORMED_RESPONSE; counts wrong in the all-ids line, an absent block in the cue check, in no gated clause, not a hole
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 1
+  |     cue check (net of true holes, n 39): blocks present 38/39 (97.4%), shaped 38/39 (97.4%); over 3 lines 0/39 (0.0%); over 5 words: blocks 7/39 (17.9%), lines 10/102 (9.8%)
+  |     thoughts p50 954 p90 1277 (n 38); ttft p50 4052 p90 5217 ms (n 38)
+  |   rep 2  interview60.answers.gemini-3.5-flash-lite_cues-r2.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 0
+  |     cue check (net of true holes, n 39): blocks present 39/39 (100.0%), shaped 38/39 (97.4%); over 3 lines 1/39 (2.6%); over 5 words: blocks 8/39 (20.5%), lines 11/108 (10.2%)
+  |     thoughts p50 983 p90 1268 (n 39); ttft p50 4048 p90 4571 ms (n 39)
+  |   rep 3  interview60.answers.gemini-3.5-flash-lite_cues-r3.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 0
+  |     cue check (net of true holes, n 39): blocks present 39/39 (100.0%), shaped 39/39 (100.0%); over 3 lines 0/39 (0.0%); over 5 words: blocks 7/39 (17.9%), lines 12/105 (11.4%)
+  |     thoughts p50 963 p90 1309 (n 39); ttft p50 3852 p90 5133 ms (n 39)
+  | no-cue twins (control) (gemini-3.5-flash-lite_cues)
+  |   rep 1  interview60.answers.gemini-3.5-flash-lite_cues.json
+  |     ids 39 (gated 39): answered 38, true holes 0, empty prose 1
+  |       empty prose: S2Q06F  NO-TEXT RECORD: rawLen 0, finish MALFORMED_RESPONSE; counts wrong in the all-ids line, an absent block in the cue check, in no gated clause, not a hole
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 1
+  |     control records that carry a cue block: 38 of 39 (reported; a no-cue twin should carry none)
+  |     thoughts p50 954 p90 1277 (n 38); ttft p50 4052 p90 5217 ms (n 38)
+  |   rep 2  interview60.answers.gemini-3.5-flash-lite_cues-r2.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 0
+  |     control records that carry a cue block: 39 of 39 (reported; a no-cue twin should carry none)
+  |     thoughts p50 983 p90 1268 (n 39); ttft p50 4048 p90 4571 ms (n 39)
+  |   rep 3  interview60.answers.gemini-3.5-flash-lite_cues-r3.json
+  |     ids 39 (gated 39): answered 39, true holes 0, empty prose 0
+  |     verdicts not read; empty-prose wrong: gated 0, all ids 0
+  |     control records that carry a cue block: 39 of 39 (reported; a no-cue twin should carry none)
+  |     thoughts p50 963 p90 1309 (n 39); ttft p50 3852 p90 5133 ms (n 39)
+  | cue check (benchDecide's own rule, 90% of n in every cue rep): holds in every cue rep
+  | empty-prose wrong, all reps (verdict-wrongs not read): cue gated 0 / all 1; control gated 0 / all 1
+  | rule 3c reading: NOT COMPUTED  [--answers-only: no verdicts were read]
+  | EXIT 0
+  ASSERT OK   9 named as no-text with its finish reason: output contains "empty prose: S2Q06F  NO-TEXT RECORD: rawLen 0, finish MALFORMED_RESPONSE"
+  ASSERT OK   9 cue side: wrong gated 0 / all 1: output contains "empty-prose wrong, all reps (verdict-wrongs not read): cue gated 0 / all 1; control gated 0 / all 1"
+  ASSERT OK   9 absent in the cue check (38 of 39 present in that rep): output contains "blocks present 38/39 (97.4%), shaped 38/39"
+  ASSERT OK   9 not a hole: output contains "answered 38, true holes 0, empty prose 1"
+  ASSERT OK   9 exit: got 0, expected 0
+  contrast (in memory): S2Q06F given rawLen > 0 and a block alone -> S2Q06F: block-only/stripCueBlock/gated; gated empty-prose wrong 1
+  ASSERT OK   9 contrast: with text it WOULD enter the gated clause: got ["block-only",1], expected ["block-only",1]
+
+==============================================================================================================
+X1  independent cross-check: the adapter's thoughts / ttft p50 / p90 per rep against h40d-thoughts-noise.mjs on h40c
+==============================================================================================================
+  h40d-thoughts-noise.mjs rows (cue r1-r3, control r1-r3): [[723,955,3248,4021],[748,988,3393,4065],[750,923,3525,4155],[711,900,4612,6438],[685,929,4825,6720],[686,928,5102,6918]]
+  adapter rows                                           : [[723,955,3248,4021],[748,988,3393,4065],[750,923,3525,4155],[711,900,4612,6438],[685,929,4825,6720],[686,928,5102,6918]]
+  ASSERT OK   X1 six rows of four numbers equal: got [[723,955,3248,4021],[748,988,3393,4065],[750,923,3525,4155],[711,900,4612,6438],[685,929,4825,6720],[686,928,5102,6918]], expected [[723,955,3248,4021],[748,988,3393,4065],[750,923,3525,4155],[711,900,4612,6438],[685,929,4825,6720],[686,928,5102,6918]]
+
+==============================================================================================================
+X2  independent cross-check: acceptable / verdict-wrong counts against B-expected-counts.mjs (written before the adapter, no shared code), h40c and h40b
+==============================================================================================================
+  h40c independent [acceptable, wrong all, wrong gated] control r1-r3 then cue r1-r3: [[37,2,1],[37,1,0],[36,2,0],[36,1,0],[37,0,0],[38,2,0]]
+  h40c adapter                                                                     : [[37,2,1],[37,1,0],[36,2,0],[36,1,0],[37,0,0],[38,2,0]]
+  ASSERT OK   X2 h40c twelve counts equal: got [[37,2,1],[37,1,0],[36,2,0],[36,1,0],[37,0,0],[38,2,0]], expected [[37,2,1],[37,1,0],[36,2,0],[36,1,0],[37,0,0],[38,2,0]]
+  h40b independent [acceptable, wrong all, wrong gated] control r1-r3 then cue r1-r3: [[40,1,0],[40,0,0],[38,3,1],[38,3,0],[36,1,0],[39,2,0]]
+  h40b adapter                                                                     : [[40,1,0],[40,0,0],[38,3,1],[38,3,0],[36,1,0],[39,2,0]]
+  ASSERT OK   X2 h40b twelve counts equal: got [[40,1,0],[40,0,0],[38,3,1],[38,3,0],[36,1,0],[39,2,0]], expected [[40,1,0],[40,0,0],[38,3,1],[38,3,0],[36,1,0],[39,2,0]]
+
+==============================================================================================================
+X3  independent cross-check: the stage that empties the two real records, against the re-checker's replay-stages.mjs
+==============================================================================================================
+  | s50l S1Q06: raw words 43, fence markers 2; after stripCueBlock 43, filterCodeFences 0, filterVerbalLines 0, stripSuggestionBlock 0, stripSpokenNotation 0
+  | s50m S2Q06: raw words 54, fence markers 2; after stripCueBlock 54, filterCodeFences 0, filterVerbalLines 0, stripSuggestionBlock 0, stripSpokenNotation 0
+  ASSERT OK   X3 both records still have words after stripCueBlock and none after filterCodeFences: got true, expected true
+
+==============================================================================================================
+X4  the stage table: synthetic raw texts through the SHIPPED chain, each classified (decided before the run)
+==============================================================================================================
+  a  cue block alone                         -> block-only / stripCueBlock / gated clause
+  ASSERT OK   X4 a kind / stage / gated: got ["block-only","stripCueBlock",true], expected ["block-only","stripCueBlock",true]
+  b  cue block + offers block, no prose      -> block-only / stripSuggestionBlock / gated clause
+  ASSERT OK   X4 b kind / stage / gated: got ["block-only","stripSuggestionBlock",true], expected ["block-only","stripSuggestionBlock",true]
+  c  cue block + a fenced answer             -> pipeline / filterCodeFences / all-ids line only
+  ASSERT OK   X4 c kind / stage / gated: got ["pipeline","filterCodeFences",false], expected ["pipeline","filterCodeFences",false]
+  d  fenced answer, no block                 -> pipeline / filterCodeFences / all-ids line only
+  ASSERT OK   X4 d kind / stage / gated: got ["pipeline","filterCodeFences",false], expected ["pipeline","filterCodeFences",false]
+  e  a dropped complexity line, no block     -> other / filterVerbalLines / all-ids line only
+  ASSERT OK   X4 e kind / stage / gated: got ["other","filterVerbalLines",false], expected ["other","filterVerbalLines",false]
+  f  cue block + a dropped complexity line   -> block-only / filterVerbalLines / gated clause
+  ASSERT OK   X4 f kind / stage / gated: got ["block-only","filterVerbalLines",true], expected ["block-only","filterVerbalLines",true]
+  ASSERT OK   X4 g  rawLen 0 -> no-text, finish named, not gated: got ["no-text","MALFORMED_RESPONSE",false], expected ["no-text","MALFORMED_RESPONSE",false]
+  h  stored prose empty but the chain leaves words of the raw    -> REFUSED: X01: the stored prose is empty but the chain loaded from <MAIN>\.claude\worktrees\whole-turn leaves words of its raw text: that is not the build that flew (--dist)
+  ASSERT OK   X4 h refused: got true, expected true
+  i  recorded cues differ from the replayed block                -> REFUSED: X01: the cue block replayed through the chain loaded from <MAIN>\.claude\worktrees\whole-turn differs from the recorded cues: that is not the build that flew (--dist)
+  ASSERT OK   X4 i refused: got true, expected true
+  j  empty prose with neither rawLen nor raw                     -> REFUSED: X01: empty prose and neither rawLen nor raw on the record: a no-text record cannot be told from a filtered answer
+  ASSERT OK   X4 j refused: got true, expected true
+
+==============================================================================================================
+X5  boundary refusals and INCOMPLETE paths (each must refuse or stop reading; in memory)
+==============================================================================================================
+  a  --pre-cue on a family that carries cue blocks                   -> REFUSED: interview60.answers.gemini-3.5-flash-lite_captured-high.json: --pre-cue, but 44 record(s) carry a cue block (R01 R02 R02F R03 R04 ...): this is a cue hour, run it without --pre-cue
+  ASSERT OK   X5 a  --pre-cue on a family that carries cu: got true, expected true
+  b  judge file of rep 2 handed to rep 1 (another answers file)      -> REFUSED: interview60.judge.gemini-3.5-flash-lite_captured-high.json: the graded answer of R01 differs from the answers file's: the judge file was merged from another answers file
+  ASSERT OK   X5 b  judge file of rep 2 handed to rep 1 (: got true, expected true
+  c  a verdict that is not verdictOf of its own scores               -> REFUSED: interview60.judge.gemini-3.5-flash-lite_captured-high.json: R01 carries verdict "acceptable", but verdictOf(0, 2, 2) is "wrong"
+  ASSERT OK   X5 c  a verdict that is not verdictOf of it: got true, expected true
+  d  an id missing from one rep (and its graded item)                -> REFUSED: interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json holds a different id set from interview60.answers.gemini-3.5-flash-lite_captured-high.json: extra [], lacking [R03] (an arm that stopped early cannot be com
+  ASSERT OK   X5 d  an id missing from one rep (and its g: got true, expected true
+  e  a graded id the answers file did not answer                     -> REFUSED: interview60.judge.gemini-3.5-flash-lite_captured-high.json: graded id(s) R03 that the answers file did not answer
+  ASSERT OK   X5 e  a graded id the answers file did not: got true, expected true
+  f  one judge file missing                                          -> INCOMPLETE (exit 3): files missing: cue rep 3 judge (interview60.judge.gemini-3.5-flash-lite_captured-high-r3.json)
+  ASSERT OK   X5 f  one judge file missing: got true, expected true
+  g  an ungraded (error) verdict                                     -> INCOMPLETE (exit 3): answered ids with no graded verdict: cue rep 1 [R01]
+  ASSERT OK   X5 g  an ungraded (error) verdict: got true, expected true
+  h  a whole answers file missing                                    -> INCOMPLETE (exit 3): files missing: cue rep 2 answers (interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json)
+  ASSERT OK   X5 h  a whole answers file missing: got true, expected true
+  i  --pre-cue and --answers-only together                           -> REFUSED: --pre-cue and --answers-only are exclusive
+  ASSERT OK   X5 i  --pre-cue and --answers-only together: got true, expected true
+
+==============================================================================================================
+X6  CLI misuse and the wrong build (each must refuse or stop reading)
+==============================================================================================================
+$ node <VH>\h40d-twins.mjs <MAIN>\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c --control gemini-3.1-flash-lite_captured-low
+  | h40d-twins: run 2026-09-29T11-42-00-h40c
+  | [stderr] REFUSED: interview60.answers.gemini-3.5-flash-lite_captured-high.json: 44 record(s) carry no cues array (R01 R02 R02F R03 R04 ...): a cue-hour answers file records cues on every record; for a pre-cue hour use --pre-cue
+  | EXIT 2
+  ASSERT OK   X6a a cue-hour reading on a pre-cue family is refused: output contains "carry no cues array"
+  ASSERT OK   X6a exit: got 2, expected 2
+$ node <VH>\h40d-twins.mjs <MAIN>\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c --control gemini-3.1-flash-lite_captured-low --pre-cue --dist <MAIN>
+  | [stderr] REFUSED: the filter chain in <MAIN> has no stripCueBlock: it is not the cue build (a pre-cue dist cannot name the stage that emptied a record)
+  | EXIT 2
+  ASSERT OK   X6b MAIN's pre-merge dist (no stripCueBlock) is refused: output contains "has no stripCueBlock"
+  ASSERT OK   X6b exit: got 2, expected 2
+$ node <VH>\h40d-twins.mjs <MAIN>\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c --control gemini-3.1-flash-lite_captured-low --prcue
+  | [stderr] REFUSED: unknown option --prcue; usage: h40d-twins.mjs <run-dir> [--cue <family>] [--control <family>] [--strict] [--pre-cue | --answers-only] [--dist <checkout>]
+  | EXIT 2
+  ASSERT OK   X6c an unknown option is refused: output contains "unknown option --prcue"
+  ASSERT OK   X6c exit: got 2, expected 2
+$ node <VH>\h40d-twins.mjs <MAIN>\electron\test\golden\interview60.runs\2026-09-29T11-42-00-h40c --pre-cue --answers-only
+  | h40d-twins: run 2026-09-29T11-42-00-h40c
+  | [stderr] REFUSED: --pre-cue and --answers-only are exclusive
+  | EXIT 2
+  ASSERT OK   X6d the exclusive flags are refused: output contains "exclusive"
+  ASSERT OK   X6d exit: got 2, expected 2
+$ node <VH>\h40d-twins.mjs <MAIN>\electron\test\golden\interview60.runs\no-such-run
+  | [stderr] REFUSED: <MAIN>\electron\test\golden\interview60.runs\no-such-run does not exist
+  | EXIT 2
+  ASSERT OK   X6e a missing folder is refused: output contains "does not exist"
+  ASSERT OK   X6e exit: got 2, expected 2
+$ node <VH>\h40d-twins.mjs <VH>\instruments\twins-bench --cue gemini-3.5-flash-lite_cues --control gemini-3.5-flash-lite_cues
+  | h40d-twins: run twins-bench
+  | chain: <MAIN>\.claude\worktrees\whole-turn
+  |   verbalStreamFilter.js sha256/16 42d9bc42dbd17870 (r4 section 2's combined build: 42d9bc42dbd17870 -> MATCH); cue limits 3 x 5, CUE_RULE sha256/12 8e15e4e7dd41
+  | mode: h40d reading (the cue check is read)
+  | gated ids: every id but R02F R04F R09F R11F R13F (r4 rule 3b); wrong clause governing: DEFAULT sums with a margin of one
+  | cue twins (gemini-3.5-flash-lite_cues)
+  |   none read
+  | no-cue twins (control) (gemini-3.5-flash-lite_cues)
+  |   none read
+  | graders over the judge files (model / stamp: files): none
+  | rule 3c reading: INCOMPLETE (files missing: cue rep 1 judge (interview60.judge.gemini-3.5-flash-lite_cues.json); cue rep 2 judge (interview60.judge.gemini-3.5-flash-lite_cues-r2.json); cue rep 3 judge (interview60.judge.gemini-3.5-flash-lite_cues-r3.json); control rep 1 judge (interview60.judge.gemini-3.5-flash-lite_cues.json); control rep 2 judge (interview60.judge.gemini-3.5-flash-lite_cues-r2.json); control rep 3 judge (interview60.judge.gemini-3.5-flash-lite_cues-r3.json))
+  | EXIT 3
+  ASSERT OK   X6f the bench folder has no judge files: INCOMPLETE, not a silent pass: output contains "rule 3c reading: INCOMPLETE (files missing:"
+  ASSERT OK   X6f exit: got 3, expected 3
+
+==============================================================================================================
+SUMMARY: 125 assertions, 125 OK, 0 FAIL

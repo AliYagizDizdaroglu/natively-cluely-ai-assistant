@@ -1,0 +1,28 @@
+docs(passes): s50l — 3.5-lite HIGH flies clean, and misses the swap bar it was sent to clear
+
+The proof flight for gemini-3.5-flash-lite at HIGH as the answer model. The shipped
+default did not move; the hour rode NATIVELY_VERBAL_PRIMARY_MODEL.
+
+Best in-app hour in the series: 19 acceptable / 1 weak / 0 wrong of 20 mains and 19 of 20
+follow-ups, quality gate passing a third flight running. 44 of 45 answer requests went to
+3.5-lite at HIGH with 599-1269 thought tokens and none at zero; the single 3.1-lite
+request is the one BEHAVIORAL route, at LOW with 837 thoughts, so the per-model table is
+correct in both directions. Zero stall redirects.
+
+All three fixes proved themselves on live bytes. The 3.5 arms wrote LaTeX in raw four
+times and a code fence once, and not one dollar sign, backslash or fence reached spoken
+text in any arm or any in-app answer. The word guard held: every in-app answer ends on a
+sentence boundary, none at 200 words, max 152.
+
+The model question, though, comes back a wash against the pre-registered rule. On the 38
+shared ids the 3.1-lite LOW twin scored 33/34/34 and the 3.5-lite HIGH twin 34/36/35 --
+mean +1.3, per-question 8 up to 3 down, and the bands touch at 34. The rule wanted band
+separation OR mean +4 with 2:1, so 3.5 does not earn the default and 3.1-lite LOW stays.
+
+What the frozen grader cannot see is where 3.5 actually won. Over three reps of 39, 3.1
+put 6 answers past 150 words and topped out at 224; 3.5 put ZERO past 150 and topped out
+at 146, with p50 74 against 89. The rubric holds that length alone is never below 1, so
+the axis with the largest real gap is the one the score is blind to. Recorded here, not
+acted on -- moving the bar after seeing the data is how a pre-registered rule dies.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

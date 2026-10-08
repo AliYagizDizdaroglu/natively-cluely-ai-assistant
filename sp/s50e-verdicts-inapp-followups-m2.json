@@ -1,0 +1,22 @@
+{
+  "S1Q01F": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers all three regimes with sound reasons: interpretability, tabular non-linearity, unstructured data, deterministic compliance. Natural prose but 96 words, slightly long."},
+  "S1Q02F": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Reads PR-AUC against the 9.5% base rate correctly and names imbalance, cost-benefit and segment stability. 134 words, two paragraphs; needs trimming."},
+  "S1Q03F": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Exactly the uplift argument: high-risk are often unpersuadable; targets incremental effect via uplift modelling. Natural spoken first person, 81 words."},
+  "S1Q04F": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Quickselect and precomputed sort keys are right, but 'Thai sorting rules' misreads the tie rule and would embarrass; stability never addressed."},
+  "S1Q05F": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct: repeated snapshots legitimate for evolving labels; customer-level holdout stops identity leakage and optimistic metrics. 106 words, a bit long."},
+  "S1Q06F": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Indexes omit ingested_at, and 'always retrieve the latest valid record' contradicts the point-in-time cutoff, though versioning for corrections is right."},
+  "S1Q07F": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Idempotent tasks, checkpointed state, resume on incomplete records, pinned model version per run: directly on point. 92 words, slightly long."},
+  "S1Q08F": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Names the feedback loop from treated customers and mitigates with uplift modelling or treatment as a feature. Natural spoken answer, 83 words."},
+  "S1Q09F": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sensible split: managed endpoints for scoring, App Service for light APIs, AKS for GPU and orchestration control. 103 words, slightly long."},
+  "S1Q10F": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Clean triage: 401 identity, 403 RBAC assignment, timeout means private endpoint or NSG. Concrete and correct; 98 words, a touch long."},
+  "S2Q01F": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correctly blames chunking, embedding and context assembly for wrong answers from right documents; parsing and reranking unmentioned. 92 words, slightly long."},
+  "S2Q02F": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Real ablations: human transcript ceiling, BM25 baseline, zero-shot versus agent on fixed context; judge bias via stronger judge, position shuffling. 133 words."},
+  "S2Q03F": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Step limit, token budget, retry cap, schema validation, fallback or human escalation: precisely the controls asked for. Natural, 75 words."},
+  "S2Q04F": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Right reason: BM25 and cosine scores are incomparable in scale; weighting applied to reciprocal rank contributions before summing. Crisp, 66 words."},
+  "S2Q05F": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Gives the redundant-cluster failure case, then MMR for diversity and query decomposition for multi-hop. Example is generic but valid; 80 words."},
+  "S2Q06F": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Mock clock and cancellation tokens are right, but k6 ramping is not deterministic, and the retry-within-deadline extension is barely designed."},
+  "S2Q07F": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Gateway plus retrieval-filter checks are correct, but never handles revocation mid-query: no recheck before citations are returned. 97 words."},
+  "S2Q08F": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Shadow comparison and canary address quality, not completeness or currency: no document-count reconciliation or backfill lag watermark. Well-sized, 62 words."},
+  "S2Q09F": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Region-pinned storage, search and AKS, Private Link for service traffic, plus the regional SKU caveat. Correct and specific; 93 words."},
+  "S2Q10F": {"correctness": 2, "on_topic": 1, "delivery": 1, "reason": "Max delivery count and monotonic version numbers are right, but dead-letter replay is never covered. 105 words, slightly long."}
+}

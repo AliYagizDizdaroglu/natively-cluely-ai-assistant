@@ -1,0 +1,26 @@
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+ ❯ electron/llm/verbalStreamFilter.test.ts (143 tests | 2 failed) 239ms
+   × the offers block BEFORE the spoken answer (spec 2026-09-30 offers-before-answer): the answer is shown, the offers are kept > a trailing block with a stray line, streamed: the stray line is dropped, not shown (today's rule; the block does not lead) 32ms
+     → expected { …(4) } to deeply equal { out: 'Answer first.\n', …(3) }
+   × the offers block BEFORE the spoken answer (spec 2026-09-30 offers-before-answer): the answer is shown, the offers are kept > logs one fixed line per stream when the block leads (the live proof that the branch fired; the build marker), and none when the answer comes first 7ms
+     → expected "warn" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st warn call:
+
+    Array [
+      "[verbalStreamFilter] stripSuggestionBlock: offers block before the spoken answer (shown after it)",
+    ]
+
+
+Number of calls: 1
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 141 passed (143)
+   Start at  21:37:24
+   Duration  6.18s (transform 581ms, setup 0ms, collect 713ms, tests 239ms, environment 3.14s, prepare 457ms)
+

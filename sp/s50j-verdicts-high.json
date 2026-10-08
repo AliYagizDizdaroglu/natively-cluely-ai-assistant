@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Covers data fit, native missing-value handling, latency/serialization, and a regularized logistic baseline with a PR lift check."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic exact (9500 churners, 5000 predicted, 2850 TP, 57 percent precision, 30 percent recall) and the consistency verdict is defensible."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout, propensity matching for mix, and difference-in-differences against unaffected lines address all three confounders."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Stable descending sort for row-order ties and all three edge cases handled, but 125 words and a clipped opening clause."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "ColumnTransformer inside a Pipeline plus a thirty-day embargo gap nails the label-window leakage; evaluation metric left unnamed."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Never says the event predicates must sit in the ON clause or that the count must be over an event column, so zero-call rows would break."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every requested stage covered and shared transform logic named, but 153 words is far past a spoken answer."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, hash-based assignment, assignment-keyed outcome join, maturity window and inverse propensity weighting all correct; 127 words and enumerated."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure mapping with operational reasons for all eight areas, but 114 words reads as a list of services."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, correct RBAC role names, Key Vault fallback and private endpoints; 98 words and environment separation is thin."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All stages mapped to Document Intelligence experience, though the hallucination-free claim overreaches and it runs 89 words."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Unit, denominator, dataset construction and uncertainty given for each of the three metrics; 106 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Names the real dividing line, conditional routing, and contrasts all three approaches; 114 words."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "RRF formula, one-based ranks and deterministic doc-id tie-break all correct, but the answer opens mid-sentence without a verb."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy sort with budget counter, seen-id set and per-document cap of two; 86 words and the closing clause muddles skip versus stop."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore at eight, per-case timeout race, isolated failure capture and order preserved by original index."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant partitioning, Postgres metadata, filter-time ACL enforcement and Ragas evaluation all sound; 108 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioned parallel index, CDC dual-write, shadow comparison, gradual cutover and flagged rollback; 130 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure service per component plus a clear managed-versus-custom line; 116 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Peek-Lock plus a hashed idempotency key in durable state makes redelivery safe; 96 words."
+  }
+}

@@ -1,0 +1,53 @@
++0.87s [S1Q02 comp=on] setupComplete 868 ms
++29.62s [S1Q02 comp=on] clip end (26.2 s)
++32.27s [S1Q02 comp=on] first word 2652 ms after clip end
++58.09s [S1Q02 comp=on] close {"code":1000,"reason":""}
++60.50s [S1Q02 comp=off] setupComplete 994 ms
++92.24s [S1Q02 comp=off] clip end (26.2 s)
++94.54s [S1Q02 comp=off] first word 2302 ms after clip end
++132.85s [S1Q02 comp=off] close {"code":1000,"reason":""}
++135.02s [S2Q08 comp=off] setupComplete 734 ms
++158.28s [S2Q08 comp=off] clip end (19.3 s)
++218.32s [S2Q08 comp=off] no output in 60 s
++218.41s [S2Q08 comp=off] close {"code":1000,"reason":""}
++220.87s [S2Q08 comp=on] setupComplete 1043 ms
++243.05s [S2Q08 comp=on] clip end (19.3 s)
++247.05s [S2Q08 comp=on] close {"code":1011,"reason":"Internal error encountered."}
++249.24s [S2Q01 comp=on] setupComplete 646 ms
++267.34s [S2Q01 comp=on] clip end (16.3 s)
++327.40s [S2Q01 comp=on] no output in 60 s
++327.47s [S2Q01 comp=on] close {"code":1000,"reason":""}
++329.57s [S2Q01 comp=off] setupComplete 667 ms
++347.26s [S2Q01 comp=off] clip end (16.3 s)
++407.28s [S2Q01 comp=off] no output in 60 s
++407.35s [S2Q01 comp=off] close {"code":1000,"reason":""}
++409.40s [S1Q06 comp=off] setupComplete 610 ms
++439.30s [S1Q06 comp=off] clip end (27.7 s)
++442.33s [S1Q06 comp=off] first word 3030 ms after clip end
++470.69s [S1Q06 comp=off] close {"code":1000,"reason":""}
++472.75s [S1Q06 comp=on] setupComplete 612 ms
++502.70s [S1Q06 comp=on] clip end (27.7 s)
++505.19s [S1Q06 comp=on] first word 2490 ms after clip end
++537.51s [S1Q06 comp=on] close {"code":1000,"reason":""}
++539.58s [S1Q04 comp=on] setupComplete 634 ms
++572.10s [S1Q04 comp=on] clip end (30.4 s)
++632.13s [S1Q04 comp=on] no output in 60 s
++632.20s [S1Q04 comp=on] close {"code":1000,"reason":""}
++634.31s [S1Q04 comp=off] setupComplete 680 ms
++666.96s [S1Q04 comp=off] clip end (30.4 s)
++669.00s [S1Q04 comp=off] close {"code":1011,"reason":"Internal error encountered."}
+
+id      comp  setup   first word  last word  words  premature  close
+S1Q02   on      868      2.7 s     6.9 s     57  false      1000 
+S1Q02   off     994      2.3 s     5.5 s     60  false      1000 
+S2Q08   off     734          -         -      0  false      1000 
+S2Q08   on     1043          -         -      0  false      1011 Internal error encountered.
+S2Q01   on      646          -         -      0  false      1000 
+S2Q01   off     667          -         -      0  false      1000 
+S1Q06   off     610      3.0 s     9.3 s     68  false      1000 
+S1Q06   on      612      2.5 s    12.6 s     96  false      1000 
+S1Q04   on      634          -         -      0  false      1000 
+S1Q04   off     680          -         -      0  false      1011 Internal error encountered.
+compression on: answered 2/5; abnormal closes 1
+compression off: answered 2/5; abnormal closes 1
+answered 4/10; abnormal closes 2; wrote C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/l20/health/2026-09-28T15-05-34-014Z.json

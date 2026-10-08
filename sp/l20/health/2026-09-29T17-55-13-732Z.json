@@ -1,0 +1,102 @@
+{
+ "model": "gemini-3.8-live",
+ "compression": "on",
+ "t0Iso": "2026-09-29T17:55:13.732Z",
+ "results": [
+  {
+   "id": "S1Q02",
+   "comp": "on",
+   "openedAt": 5,
+   "setupMs": 1349,
+   "clipSeconds": 26.2,
+   "clipEndMs": 29209,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1850,
+   "lastWordMs": 7234,
+   "text": "With one hundred thousand subscribers and a nine point five percent churn rate, there are nine thousand five hundred churners. Targeting the top five percent bands captures five thousand subscribers, and the thirty percent recall means two thousand eight hundred fifty of them are true positives. This results in a fifty-seven percent precision, which is consistent with the sixty percent stated in the C-V due to rounding.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q08",
+   "comp": "on",
+   "openedAt": 61039,
+   "setupMs": 786,
+   "clipSeconds": 19.3,
+   "clipEndMs": 82121,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the roll back.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1318,
+   "lastWordMs": 6272,
+   "text": "I use schema versioning in the vector database to track the model and dimension, running an async backfill for existing data. To prevent data loss, I implement dualwrites during migration so live updates hit both models. I then compare retrieval quality using offline evals before cutting over, keeping the old embeddings intact for an immediate rollback if needed.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q01",
+   "comp": "on",
+   "openedAt": 112169,
+   "setupMs": 606,
+   "clipSeconds": 16.3,
+   "clipEndMs": 129903,
+   "heard": "Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those stages. To your document intelligence experience.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1271,
+   "lastWordMs": 9378,
+   "text": "For ingestion and parsing, I use AWS Textract to extract raw text and layout structure from diverse documents. I then chunk the text semantically, preserving paragraph boundaries to maintain coherence. I generate embeddings using XLM-RoBERTa to feed a hybrid retrieval system combining dense vectors and sparse keywords. For retrieval and re-ranking, I employ agentic query decomposition to pull highly relevant chunks across multiple hops before re-ranking for precision. Finally, I assemble this context into prompts for GPT-5, utilizing human-in-the-loop checkpoints to verify factual accuracy and ensure reliable, hallucination-free generation.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q06",
+   "comp": "on",
+   "openedAt": 174485,
+   "setupMs": 717,
+   "clipSeconds": 27.7,
+   "clipEndMs": 204061,
+   "heard": "Now is sequel one. Construct a point in time feature. You have a snapshots table with a customer ID and a snapshot time and an events table with a customer ID, an event time, an ingested at time. And an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot. Includes only events ingested by the snapshot time and preserves customers with zero calls.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 2160,
+   "lastWordMs": 2894,
+   "text": "```sql\nSELECT \n  s.customer_id, \n  s.snapshot_time, \n  COUNT(e.customer_id) \n  AS support_call_count\nFROM snapshots s\nLEFT JOIN events e \n  ON s.customer_id = e.customer_id\n  AND e.event_type = 'support_call'\n  AND e.event_time >= s.snapshot_time - INTERVAL '30 days'\n  AND e.event_time < s.snapshot_time\n  AND e.ingested_at <= s.snapshot_time\nGROUP BY \n  s.customer_id, \n  s.snapshot_time;\n```",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q04",
+   "comp": "on",
+   "openedAt": 215501,
+   "setupMs": 765,
+   "clipSeconds": 30.4,
+   "clipEndMs": 247859,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return precision at K, recall at K, and lift over the population prevalence. Assume binary labels and finite scores. And break score ties by original row order. Tell me what it does. Invalid K for empty inputs. And when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1235,
+   "lastWordMs": 10218,
+   "text": "I would implement the function with defensive checks at the top to handle edge cases, returning zero for all metrics if the input is empty or $k$ is invalid. To correctly handle score ties and rank items, I'd create an indexed array where each element stores the score, original index, and true label. I would then sort this array primarily by score in descending order and secondarily by the original index in ascending order to preserve row order for ties. After slicing the top $k$ items, I'd sum the true labels to find the number of true positives, from which I'd calculate precision as true positives over $k$, recall as true positives over total positive labels, and lift by dividing precision by the overall population prevalence.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  }
+ ]
+}

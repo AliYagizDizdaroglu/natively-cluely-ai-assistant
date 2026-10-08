@@ -1,0 +1,14 @@
+docs(passes): L20c, 3.8 Live as the answerer against the app: STOP, no racer
+
+The rule (PREREGISTER-l20c.md, written 2026-09-29 20:53 before any L20c audio
+and before any grading) is applied as written. 38 scenario50 items, 3 Live
+reps against 4 samples of the app with 3.5-flash-lite HIGH first, 299 answers
+graded blind by eight claude-opus-5-5 graders (model read from each
+transcript), two per packet. Quality fails: Live mean rate 0.617 against the
+app's 0.752 (bar 0.702), and Live's worst rep 0.566 is below the app's worst
+sample 0.658. Safety and that night's reliability pass; the 3-day health gate
+is still running and cannot change a STOP. Live's first word comes 4 to 5 s
+sooner at the median. br1's in-app answers ride along as a reported-only
+sample (0.770).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

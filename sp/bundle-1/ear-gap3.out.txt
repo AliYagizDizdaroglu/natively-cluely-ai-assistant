@@ -1,0 +1,35 @@
+2026-09-03T13-54-10-liveonly       utts   0 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 0.0
+2026-09-03T15-05-21-liveonly2      utts   0 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 0.0
+2026-09-04T08-09-38-after4         utts   0 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 0.0
+2026-09-04T22-43-34-after5         utts   0 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 0.0
+2026-09-05T13-50-01-after6         utts   0 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 0.0
+2026-09-06T08-14-21-after7         utts   0 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 0.0
+2026-09-07T08-14-12-after8         utts   0 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 0.0
+2026-09-08T08-44-56-after9         utts   0 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 0.0
+2026-09-09T15-00-55-s50a           utts   0 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 0.0
+2026-09-11T08-22-32-s50b           utts  42 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 67.6
+2026-09-12T08-22-49-s50c           utts  43 maxConsecUncaptioned 1 speech_s 5.9 span_s 15.9 maxWall_lastCaption->U_s 71.9
+2026-09-13T08-22-36-s50d           utts  43 maxConsecUncaptioned 1 speech_s 22.2 span_s 32.2 maxWall_lastCaption->U_s 156.2
+2026-09-14T08-22-28-s50e           utts  43 maxConsecUncaptioned 1 speech_s 8.9 span_s 18.9 maxWall_lastCaption->U_s 69.8
+2026-09-15T08-22-29-s50f           utts  44 maxConsecUncaptioned 3 speech_s 31.1 span_s 101.5 maxWall_lastCaption->U_s 160.7
+2026-09-16T08-42-43-s50g           utts  43 maxConsecUncaptioned 1 speech_s 22.7 span_s 32.7 maxWall_lastCaption->U_s 155.2
+2026-09-16T11-41-44-s50h           utts  42 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 70.3
+2026-09-18T08-22-57-s50i           utts  43 maxConsecUncaptioned 1 speech_s 22.7 span_s 32.7 maxWall_lastCaption->U_s 80.7
+2026-09-19T08-22-41-s50j           utts  45 maxConsecUncaptioned 3 speech_s 61.5 span_s 273.2 maxWall_lastCaption->U_s 158.6
+2026-09-20T11-22-43-s50k           utts  45 maxConsecUncaptioned 2 speech_s 32.6 span_s 188.4 maxWall_lastCaption->U_s 236.9
+2026-09-21T08-22-34-s50l           utts  43 maxConsecUncaptioned 1 speech_s 12.0 span_s 22.0 maxWall_lastCaption->U_s 160.5
+2026-09-22T08-22-50-s50m           utts  43 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 158.7
+2026-09-24T08-20-12-h40a           utts  46 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 152.3
+2026-09-26T11-39-51-h40b           utts  46 maxConsecUncaptioned 1 speech_s 11.7 span_s 21.7 maxWall_lastCaption->U_s 69.5
+2026-09-29T11-42-00-h40c           utts  46 maxConsecUncaptioned 2 speech_s 205.0 span_s 224.1 maxWall_lastCaption->U_s 228.4
+2026-09-30T02-38-22-cuesmoke       utts  22 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 71.0
+2026-09-30T11-45-30-br1            utts  43 maxConsecUncaptioned 7 speech_s 107.9 span_s 604.7 maxWall_lastCaption->U_s 644.3
+2026-09-30T13-46-52-cuesmoke       utts  22 maxConsecUncaptioned 10 speech_s 204.2 span_s 1108.0 maxWall_lastCaption->U_s 1171.7
+2026-10-01T02-37-41-cuesmoke       utts  22 maxConsecUncaptioned 3 speech_s 33.5 span_s 134.8 maxWall_lastCaption->U_s 80.9
+2026-10-02T11-39-41-h40d           utts  46 maxConsecUncaptioned 3 speech_s 31.7 span_s 179.8 maxWall_lastCaption->U_s 234.6
+2026-10-06T01-12-56-eq             utts  44 maxConsecUncaptioned 1 speech_s 18.6 span_s 28.6 maxWall_lastCaption->U_s 159.5
+2026-10-06T22-25-42-router-smoke   utts  48 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 0.0
+2026-10-06T23-01-59-router-smoke   utts  48 maxConsecUncaptioned 1 speech_s 6.2 span_s 16.2 maxWall_lastCaption->U_s 23.8
+2026-10-07T00-22-47-router-default utts  48 maxConsecUncaptioned 0 speech_s 0.0 span_s 0.0 maxWall_lastCaption->U_s 0.0
+POOLED runs 33 utterances 1000 uncaptioned 75 max consecutive 10 max span_s 1108.0
+per-run max wall (last caption -> an uncaptioned U) s: sorted 0,0,0,0,0,0,0,0,0,0,0,24,68,69,70,70,71,72,81,81,152,155,156,159,159,160,161,161,228,235,237,644,1172

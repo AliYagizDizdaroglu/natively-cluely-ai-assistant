@@ -1,0 +1,257 @@
+launchers-rd-cal.mjs: the launcher family (plan Task 18 step 2)
+generator C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\gen-launchers-rd.mjs sha256/12 562a16c5c199; source C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\launch-rd-src.txt sha256/12 7155790525e1
+
+GENERATOR
+ok   G1    all four values given: BOTH FILES PASS, each value on exactly ONE set line per launcher, the router env block, the flight call router-default-r1, --require-precheck in the flight launcher only, the sha lines, wav:check, the two router dist proofs, no eq name left
+      GENERATOR: BOTH FILES PASS; 118 and 110 lines
+ok   G2    --check --armed on the filled pair -> exit 0, GENERATOR: BOTH FILES PASS
+      GENERATOR: BOTH FILES PASS
+ok   G3    no values: four placeholders, each on its own set line; --check passes, --check --armed FAILS naming the placeholder
+      GENERATOR: FAILED (2 check(s))
+ok   G4    values given one run at a time are kept by the next run (an option left out keeps what the file holds)
+      GENERATOR: BOTH FILES PASS
+ok   G5a   --commit 39 characters
+      REFUSED: --commit "abcdef0123456789abcdef0123456789abcdef0" is not a full 40 character lowercase hash
+ok   G5b   --commit uppercase
+      REFUSED: --commit "ABCDEF0123456789ABCDEF0123456789ABCDEF01" is not a full 40 character lowercase hash
+ok   G5c   --commit 41 characters
+      REFUSED: --commit "abcdef0123456789abcdef0123456789abcdef010" is not a full 40 character lowercase hash
+ok   G5d   --t "2026-10-07 08:45" (T + 75 min is exactly 10:00, the quota reset)
+      REFUSED: --t "2026-10-07 08:45" is not a "yyyy-MM-dd HH:mm" time whose run (T + 75 min) stays inside one quota day (the day resets at 10:00 local = 07:00Z)
+ok   G5e   --t "2026-10-07 09:00" (the run crosses the reset)
+      REFUSED: --t "2026-10-07 09:00" is not a "yyyy-MM-dd HH:mm" time whose run (T + 75 min) stays inside one quota day (the day resets at 10:00 local = 07:00Z)
+ok   G5f   --t "2026-10-07 09:59" (one minute before the reset: the run crosses it)
+      REFUSED: --t "2026-10-07 09:59" is not a "yyyy-MM-dd HH:mm" time whose run (T + 75 min) stays inside one quota day (the day resets at 10:00 local = 07:00Z)
+ok   G5g   --t "2026-10-08 08:45" (the next day reset)
+      REFUSED: --t "2026-10-08 08:45" is not a "yyyy-MM-dd HH:mm" time whose run (T + 75 min) stays inside one quota day (the day resets at 10:00 local = 07:00Z)
+ok   G5h   --t "2026-10-07 00:14" (one minute short of now + 15 min)
+      REFUSED: --t 2026-10-07 00:14 is less than 15 min after now (T must be at least now + 15 min; a T in the past is refused)
+ok   G5i   --t "2026-10-06 23:00" (a T in the past)
+      REFUSED: --t 2026-10-06 23:00 is less than 15 min after now (T must be at least now + 15 min; a T in the past is refused)
+ok   G5j   --t "2026-10-05 21:00" (the eq hour T)
+      REFUSED: --t 2026-10-05 21:00 is less than 15 min after now (T must be at least now + 15 min; a T in the past is refused)
+ok   G5ja  --t "2026-10-07 00:00" (T equal to now)
+      REFUSED: --t 2026-10-07 00:00 is less than 15 min after now (T must be at least now + 15 min; a T in the past is refused)
+ok   G5jb  --t "2026-10-08 00:01" (one minute past now + 24 h)
+      REFUSED: --t 2026-10-08 00:01 is more than 24 h after now
+ok   G5jc  --t "2026-10-09 03:00" (two days ahead)
+      REFUSED: --t 2026-10-09 03:00 is more than 24 h after now
+ok   G5k   --t "2026-10-07 23:00 " (a trailing space)
+      REFUSED: --t "2026-10-07 23:00 " is not a "yyyy-MM-dd HH:mm" time whose run (T + 75 min) stays inside one quota day (the day resets at 10:00 local = 07:00Z)
+ok   G5l   --t "2026-10-07T23:00" (the ISO form)
+      REFUSED: --t "2026-10-07T23:00" is not a "yyyy-MM-dd HH:mm" time whose run (T + 75 min) stays inside one quota day (the day resets at 10:00 local = 07:00Z)
+ok   G5m   --t "2026-10-07 25:00" (an impossible time)
+      REFUSED: --t "2026-10-07 25:00" is not a "yyyy-MM-dd HH:mm" time whose run (T + 75 min) stays inside one quota day (the day resets at 10:00 local = 07:00Z)
+ok   G5n   --t "2026-02-30 23:00" (an impossible date)
+      REFUSED: --t "2026-02-30 23:00" is not a "yyyy-MM-dd HH:mm" time whose run (T + 75 min) stays inside one quota day (the day resets at 10:00 local = 07:00Z)
+ok   G5o   --deadline-min "0"
+      REFUSED: --deadline-min "0" is not a whole number of minutes from 1 to 240
+ok   G5p   --deadline-min "241"
+      REFUSED: --deadline-min "241" is not a whole number of minutes from 1 to 240
+ok   G5q   --deadline-min "30 "
+      REFUSED: --deadline-min "30 " is not a whole number of minutes from 1 to 240
+ok   G5r   --deadline-min "abc"
+      REFUSED: --deadline-min "abc" is not a whole number of minutes from 1 to 240
+ok   G5s   --deadline-min "04"
+      REFUSED: --deadline-min "04" is not a whole number of minutes from 1 to 240
+ok   G5t   --deadline-min "-5"
+      REFUSED: --deadline-min "-5" is not a whole number of minutes from 1 to 240
+ok   G5u   --ctx-sha12 "a1b2c3d4e5f"
+      REFUSED: --ctx-sha12 "a1b2c3d4e5f" is not 12 lowercase hex characters
+ok   G5v   --ctx-sha12 "A1B2C3D4E5F6"
+      REFUSED: --ctx-sha12 "A1B2C3D4E5F6" is not 12 lowercase hex characters
+ok   G5w   --ctx-sha12 "a1b2c3d4e5f60"
+      REFUSED: --ctx-sha12 "a1b2c3d4e5f60" is not 12 lowercase hex characters
+ok   G5ua  --extra-requests "-1"
+      REFUSED: --extra-requests "-1" is not a whole number of requests from 0 to 9999
+ok   G5ub  --extra-requests "10000"
+      REFUSED: --extra-requests "10000" is not a whole number of requests from 0 to 9999
+ok   G5uc  --extra-requests "5 "
+      REFUSED: --extra-requests "5 " is not a whole number of requests from 0 to 9999
+ok   G5ud  --extra-requests "many"
+      REFUSED: --extra-requests "many" is not a whole number of requests from 0 to 9999
+ok   G5x   an unknown option
+      REFUSED: unknown option --bogus
+ok   G5y   a stray positional argument
+      REFUSED: unexpected argument extra
+ok   G5z   --passes with a path separator
+      REFUSED: --passes must be distinct file names like PREREGISTER-router-default.md, comma separated: sub/PREREGISTER-router-default.md
+ok   G5za  --passes with a duplicate
+      REFUSED: --passes must be distinct file names like PREREGISTER-router-default.md, comma separated: a.md,a.md
+ok   G5zb  --passes not a .md
+      REFUSED: --passes must be distinct file names like PREREGISTER-router-default.md, comma separated: notes.txt
+ok   G5zc  --commit with no value
+      REFUSED: --commit needs a value
+ok   G5zd  --check together with --commit is refused (a check writes nothing)
+      REFUSED: --check writes nothing, so it takes no --commit, --t, --deadline-min, --ctx-sha12 or --passes
+ok   G5ze  --armed without --check is refused
+      REFUSED: --armed belongs to --check
+ok   G5zf  --out a folder that does not exist is refused
+      REFUSED: --out is not a folder: C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\cal\launchers\no-such-folder
+ok   G6a   --t 2026-10-07 00:15 (exactly now + 15 min) accepted: the bound is inclusive
+      GENERATOR: BOTH FILES PASS
+ok   G6b   --t 2026-10-07 08:44 (the last T whose run ends before the reset) accepted: the bound is inclusive
+      GENERATOR: BOTH FILES PASS
+ok   G6c   --t 2026-10-07 10:00 (T exactly at the reset) accepted: the bound is inclusive
+      GENERATOR: BOTH FILES PASS
+ok   G6d   --t 2026-10-07 04:30 (an early-morning T) accepted: the bound is inclusive
+      GENERATOR: BOTH FILES PASS
+ok   G6e   --t 2026-10-07 23:00 (the earlier fallback T) accepted: the bound is inclusive
+      GENERATOR: BOTH FILES PASS
+ok   G6f   --t 2026-10-08 00:00 (exactly now + 24 h) accepted: the bound is inclusive
+      GENERATOR: BOTH FILES PASS
+ok   G6g   --deadline-min 1 accepted
+      GENERATOR: BOTH FILES PASS
+ok   G6h   --deadline-min 240 accepted
+      GENERATOR: BOTH FILES PASS
+ok   G6i   two --passes names accepted and carried into the sha-lines call
+      GENERATOR: BOTH FILES PASS
+
+TAMPER (--check reads the written bytes back against the source)
+ok   T1    a trailing space added to a set line
+          - 1 source line(s) are missing from the file |     - 1 line(s) differ from the source, the first at line 31
+ok   T2    one CRLF turned into a bare LF
+          - 1 line end(s) are a bare LF |     - 116 lines, the source gives 117
+ok   T3    one character of a rem line changed
+          - 1 source line(s) are missing from the file |     - 1 line(s) differ from the source, the first at line 2
+ok   T4    a line deleted
+          - 116 lines, the source gives 117 |     - 1 source line(s) are missing from the file
+ok   T5    a UTF-8 BOM put at the start
+          - a UTF-8 BOM at the start |     - 3 byte(s) above 126
+ok   T6    a non-ASCII byte put into a rem line
+          - 1 byte(s) above 126 |     - 1 source line(s) are missing from the file
+ok   T7    the placeholder-free value replaced by a different valid commit
+ok   T8    the flight call changed to another label
+          - 1 source line(s) are missing from the file |     - 1 line(s) differ from the source, the first at line 107
+ok   T9    the file truncated (the last two lines gone)
+          - 115 lines, the source gives 117 |     - 1 source line(s) are missing from the file
+ok   T10   the --require-precheck argument removed from the flight guard line
+          - 1 source line(s) are missing from the file |     - 1 line(s) differ from the source, the first at line 101
+ok   T0    control: the untouched pair passes --check --armed
+      GENERATOR: BOTH FILES PASS
+
+LINT (a copy of the generator beside a MUTATED source: refused, nothing written)
+ok   L0    control: the UNMUTATED source through the same copy of the generator -> exit 0 (so the refusals below are the mutations' doing)
+      GENERATOR: BOTH FILES PASS
+ok   L1    a trailing space after a set value
+        launch-rd.cmd line 31: trailing whitespace (a trailing space after a set value is part of the value in cmd)
+ok   L2    a parenthesis inside an echo of an if-block (the 2026-09-20 failure shape)
+        launch-rd.cmd line 20: an echo inside an if-block holds one of ( ) & | < > ^ % ! or a quote
+ok   L3    a percent sign inside an echo of an if-block
+        launch-rd.cmd line 16: an echo inside an if-block holds one of ( ) & | < > ^ % ! or a quote
+ok   L4    a parenthesis in a rem line
+        launch-rd.cmd line 23: a rem line holds one of % ( ) & | < > ^
+ok   L5    a non-ASCII character
+        launch-rd.cmd line 87: a character outside printable ASCII
+ok   L6    an @@ token on a line that is not a placeholder set line
+        launch-rd.cmd line 30: an @@ token outside the four placeholder set lines
+ok   L7    an unknown macro
+      REFUSED: unknown macro {{TT}}
+ok   L8    a digit directly before >> (a handle redirect)
+        launch-rd.cmd line 88: a digit directly before >> would read as a handle redirect
+ok   L9    an if-block that is never closed (the last block of the flight launcher loses its closing parenthesis)
+        launch-rd.cmd: an if-block is never closed
+ok   L9b   a closing parenthesis missing in the MIDDLE (two blocks run together): flagged because a block opens inside an open one
+        launch-rd.cmd line 24: an if-block opens while the previous one is still open (a closing parenthesis is missing)
+ok   L10   a duplicated set line for a registered value (two NATIVELY_RD_T lines)
+        launch-rd.cmd: not exactly one NATIVELY_RD_T line
+ok   L11   a section the generator does not use
+      REFUSED: section tail-extra is not used by any launcher
+ok   L12   a section missing (tail-dry renamed)
+      REFUSED: section tail-drx is not used by any launcher
+ok   L13   the registered-T set line removed
+        launch-rd.cmd: not exactly one NATIVELY_RD_T line
+ok   L14   the dry guard line gets --require-precheck too (the twins no longer differ by exactly that one argument): the structure check FAILS, exit 1
+      GENERATOR: FAILED (1 check(s))
+
+HELPERS on a stub tree (a copy of the guard calibration's stub, cal\launcher-stub: a throwaway repo, never MAIN)
+ok   H1    rd-sha-lines: the committed registration -> HEAD line, its sha256, ARMING absent, exit 0
+      ARMING absent
+ok   H2    rd-sha-lines: an arming record present -> its sha256 line
+      ARMING sha256=2444d5d1260a35419186c616a315473209326b1fdaef2e38febf164fa9a719e0
+ok   H3    rd-sha-lines: a text that is not committed at HEAD -> "MISSING at HEAD", exit 1
+      ARMING sha256=2444d5d1260a35419186c616a315473209326b1fdaef2e38febf164fa9a719e0
+ok   H4    rd-sha-lines: the working copy edited after the commit -> the line still prints the COMMITTED text's sha256
+      ARMING sha256=2444d5d1260a35419186c616a315473209326b1fdaef2e38febf164fa9a719e0
+ok   H5    rd-sha-lines: a --passes name with a path separator -> usage, exit 2
+      usage: node rd-sha-lines.mjs --root <MAIN> --passes a.md,b.md --arming <file>
+ok   H6    rd-proofs (before the run): the cue build proof passes, the three router markers read True, three sha256 lines, "RD PROOFS: ALL PASSED", exit 0
+      RD PROOFS: ALL PASSED
+ok   H7    rd-proofs --same-as-log with the unchanged dist -> three "unchanged since the run started: yes", ALL PASSED, exit 0
+      RD PROOFS: ALL PASSED
+ok   H8    rd-proofs --same-as-log after audio/LiveRouterSession.js changed during the run -> FAILED (sha-changed audio/LiveRouterSession), exit 1 (the other two still read yes)
+      RD PROOFS: FAILED (sha-changed audio/LiveRouterSession)
+ok   H9    rd-proofs --same-as-log after services/routerArbiter.js changed during the run -> FAILED (sha-changed services/routerArbiter), exit 1 (the other two still read yes)
+      RD PROOFS: FAILED (sha-changed services/routerArbiter)
+ok   H10   rd-proofs --same-as-log after services/routeReader.js changed during the run -> FAILED (sha-changed services/routeReader), exit 1 (the other two still read yes)
+      RD PROOFS: FAILED (sha-changed services/routeReader)
+ok   H11   rd-proofs --same-as-log with NO "DIST BEFORE THE RUN" banner in the log -> FAILED (sha-before-not-found), exit 1
+      RD PROOFS: FAILED (sha-before-not-found audio/LiveRouterSession, sha-before-not-found services/routerArbiter, sha-before-not-found services/routeReader)
+ok   H11c  rd-proofs in the launcher's real shape (its stdout APPENDED to the log after the AFTER banner), complete before section -> exit 0
+      exit 0
+ok   H11b  rd-proofs in the real shape with a before section that LACKS the routeReader line: the after line must not be compared with itself -> FAILED (sha-before-not-found routeReader), exit 1
+      exit 1
+ok   H11d  MUTANT: rd-proofs without the AFTER-banner bound reads H11b as a PASS (the vacuous path the review found) -> H11b would read BAD
+      exit 0 (0 = the vacuous pass)
+ok   H12   rd-proofs: the built main.js without the [Router] flag line code -> FAILED (marker main), exit 1
+      RD PROOFS: FAILED (marker main [Router] flag NATIVELY_LIVE_ROUTER=)
+ok   H13   rd-proofs: LiveRouterSession.js without ROUTER_SHAS_OK -> FAILED, exit 1
+      RD PROOFS: FAILED (marker audio/LiveRouterSession ROUTER_SHAS_OK)
+ok   H14   rd-proofs: routeReader.js missing from the dist -> FAILED (routeReader.js missing), exit 1
+      RD PROOFS: FAILED (services/routeReader.js missing)
+ok   H15   rd-proofs: the cue build proof fails (CUE_LINE_PREFIX renamed) -> FAILED (dist-proof), exit 1
+      RD PROOFS: FAILED (dist-proof)
+ok   H16   rd-proofs: a relative --root -> usage, exit 2 (dist-proof.mjs fails on a relative root)
+      usage: node rd-proofs.mjs --root <MAIN, absolute> [--same-as-log <launcher log>]
+
+EXIT CODES (cmd.exe running the GENERATED launchers in the stub tree; the helpers sit beside the launcher as in the real folder)
+ok   X9    cwd without interview60.flight.mjs -> exit 9 "wrong working directory"
+      exit 9; error log: wrong working directory: C:\Users\sotka\OneDrive\Masast\natively-lab\sp\router-default\flight\cal\launchers\empty-cwd
+ok   X8    live40.wav missing -> exit 8
+      exit 8; error log: live40.wav missing - build the audio first
+ok   X7    live40.questions.mjs missing -> exit 7
+      exit 7; error log: live40 roster missing from this checkout
+ok   X6    the harness without the appStop marker -> exit 6
+      exit 6; error log: the harness does not stop the app when a run ends - pick 5952b23 into this checkout
+ok   X12   the commit still a placeholder -> exit 12 "not a full 40 character hash"
+      exit 12; error log: NATIVELY_FLIGHT_COMMIT is not a full 40 character hash - the placeholder was not filled in - run gen-launchers-rd.mjs with the commit
+ok   X12b  the launcher's commit check refuses a 39-character hash -> exit 12
+      exit 12
+ok   X12c  the launcher's commit check refuses a 41-character hash -> exit 12
+      exit 12
+ok   X12d  the launcher's commit check refuses an uppercase hash -> exit 12
+      exit 12
+ok   X12e  the launcher's commit check refuses non-hex characters -> exit 12
+      exit 12
+ok   X14   a committed text missing at HEAD (the --passes list names one that is not there) -> exit 14
+      exit 14; error log: a committed text is missing at HEAD - see flight-rd-dry.launcher.log
+ok   X5    wav:check failing (the stub harness exits 1 for it) -> exit 5
+      exit 5; error log: live40.wav does not match the live40 roster - see flight-rd-dry.launcher.log
+ok   X5b   the dry launcher's own log shows the sha lines FIRST (SHA LINES HEAD, PASSES ... sha256=, ARMING absent) before the wav:check failure
+      === LAUNCHER rd-dry start Wed 10/07/2026  1:54:01.55 commit c5825a1566641852d02d7421fc0bf0a0e37ac301 T 2026-10-07 01:58 ===  / SHA LINES HEAD c5825a1566641852d02d7421fc0bf0a0e37ac301 / PASSES PREREGISTER-router-default.md sha256=8a75203bf3c0e8a97876ddef5965df2e294277e85f7a59864dafcc6c30783f29 / PASS ...[366 more chars]
+ok   X3    the router dist proofs failing before the run (routeReader.js missing from the dist) -> exit 3
+      exit 3; error log: router dist proofs 1 failed - see flight-rd-dry.launcher.log
+ok   X4    every step before the guard passing, the guard then refusing (no RESULT-smoke.md at LAB in this stub layout) -> exit 4 "behavioural guard failed"
+      exit 4; error log: behavioural guard failed - see flight-rd-dry.launcher.log
+ok   X4b   the log names the guard's first failing check as r6 (the smoke result): every earlier guard check passed through the REAL launcher environment (roster, models, hedge, router flag, earlier-question, T window, tree, ANSWER_MODELS, arms, cue build, router build)
+      GUARD FAILED: (r6)
+ok   X4c   the log holds the BEFORE banner and "RD PROOFS: ALL PASSED" (the proofs ran inside the launcher)
+ok   X4d   the FLIGHT launcher through the same ladder stops at the guard too (exit 4) and never starts the flight: no "FLIGHT EXIT" line in its log
+      exit 4
+ok   X5a   DRY launcher, the guard exiting 10 (window only): exit 10 and NO error log written
+      exit 10; error log absent
+ok   X5b2  the dry log ENDS with the launcher line "GUARD WINDOW ONLY exit 10" and the guard's own g4-clock line is just above it
+      === LAUNCHER rd-dry GUARD WINDOW ONLY exit 10 - only g4-clock failed - no error log written ===
+ok   X5c   DRY launcher, the guard exiting 1 (a real failure): exit 4 and the error log IS written
+      exit 4; error log PRESENT
+ok   X5d   a real failure leaves the guard line last in the dry log (no WINDOW ONLY line)
+      GUARD FAILED: (r6) stub: a real failure
+ok   X5e   the FLIGHT launcher, the guard exiting 10: the window is a real failure there: exit 4, the error log IS written, no flight
+      exit 4; error log PRESENT
+ok   X5f   MUTANT: the exit-10 branch removed from the dry launcher reads the window-only failure as a real one (exit 4, error log written) -> X5a would read BAD
+      mutant exit 4; error log PRESENT
+
+ok   Z1    clean-up: %TEMP%\natively-rd-launcher-error.log is ABSENT (the precheck's error-log gate requires it absent at arming)
+      C:\Users\sotka\AppData\Local\Temp\natively-rd-launcher-error.log
+
+LAUNCHER CALIBRATION OK 122/122

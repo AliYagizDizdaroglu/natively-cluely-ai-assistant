@@ -1,0 +1,33 @@
+# L20c notes (records, not rules — the rule is PREREGISTER-l20c.md)
+
+- **Pre-flight, 20:55–21:00 local:** ad-hoc health probe (`l20/health-probe.mjs`, compression on): 5/5 answered, 0 abnormal closes.
+  - Console: `l20/health/adhoc-l20c-202609292055.console.txt`; json `l20/health/2026-09-29T17-55-13-732Z.json`.
+  - Not a scheduled gate run.
+- **Runs** (`go.mjs`, sequential; consoles in `runs/r<n>.console.txt`, status in `go.log`):
+  - r1 21:00:09–21:15:32
+  - r2 21:15:32–21:29:18
+  - r3 21:29:18–21:44:33
+  - all exit 0; extraction exit 0 each.
+- **Mechanics** (`mechanics-l20c.mjs` → `mechanics.out.txt`):
+  - r1: 17/18 answered, hole S1Q09F, 0 of 9 sessions abnormal; first word p50 1.3 s, max 58.0 s.
+  - r2: 18/18, 0 abnormal; p50 1.3 s, max 2.0 s.
+  - r3: 18/18, 0 abnormal; p50 1.9 s, max 5.4 s.
+  - Pooled 54 (a hole = no first word): p50 1.4 s, p90 2.4 s.
+  - **Condition 4 (reliability tonight): 53/54 ≥ 52 → PASS.**
+- **The tail** (`tail.mjs`), both in r1's S1Q09 pair, one session, closed 1000:
+  - **S1Q09:** silent for 58.0 s after the question, then a complete 92-word answer. No holding line and no error: a stall. In a racer the text path would have won.
+  - **S1Q09F:** the model DID answer (62 words, "I'd use Azure Machine Learning Managed Endpoints…"), but its turn began BEFORE the follow-up clip ended (premature). The registered extraction drops premature output, so it is a hole.
+  - Premature speech is the failure the racer's manual-turn spike must remove.
+  - ET10b had 1/10 premature; L20b reported premature starts separately.
+- **`drops.mjs` exited 1:** it reads `app-baseline.json`, which exists only for L20's items, and `make-l20c.mjs` did not copy it.
+  - Nothing is lost: mechanics shows 0 abnormal sessions of 27, so drops.mjs would list none.
+  - Not re-run.
+- **Against L20b** (17:21–18:15, same harness, different 20 items):
+  - 58/60 answered, 3 of 32 sessions abnormal (1011);
+  - pooled p50 2.3 s, p90 12.9 s (holding lines on 4 hard items).
+  - L20c's 18 items are all "normal" by L20's split. L20b's slow tail came from the hard items.
+- **Next** (per the rule): grading on Wed 30 Sep.
+  - `blind.mjs` builds the 38-item batch (L20b + L20c + s50m 3.5-lite HIGH x4, plus br1 if it has flown).
+  - Calibrate `score.mjs` on synthetic verdicts first.
+  - 8 Opus graders.
+  - `gate.mjs` supplies condition 5; it can be final only after Thu 1 Oct 20:00.

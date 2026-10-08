@@ -1,0 +1,35 @@
+﻿sliced NEW 63 lines (from the MAX_TRIES_ENV block), OLD 39 lines (literal pre-Task-4)
+46656 sequences of length 6 over {CLEAN, CUT, T429, T503, ERR, TIMEOUT}
+
+(1) env unset: calls differ 0; stored record identical 25776; differs ONLY by N2's cutRetried key on a transient record: 20880 (cutRetried:false 17496, cutRetried:true 3384); differs otherwise 0; spoken-record cutRetried differs 0; sleeps-only differences 5832; scripts exhausted 0
+(1) env 4: calls differ 0; stored record identical 25776; differs ONLY by N2's cutRetried key on a transient record: 20880 (cutRetried:false 17496, cutRetried:true 3384); differs otherwise 0; spoken-record cutRetried differs 0; sleeps-only differences 5832; scripts exhausted 0
+
+(2) GEMMA_MAX_TRIES=1: NEW vs ROUND1 over 46656: calls differ 0; record differs only by N2's cutRetried key 33696; record differs otherwise 0
+    NEW: 11 distinct behaviours, max calls 2, sidecar under-counts 0, over-counts 0
+  [CLEAN] calls 1, sidecar charges 1, spoken="full answer" cutRetried=false
+  [CUT,CLEAN] calls 2, sidecar charges 2, spoken="full answer" cutRetried=true
+  [CUT,CUT] calls 2, sidecar charges 2, spoken="partial" cutRetried=true
+  [CUT,T429] calls 2, sidecar charges 2, transientError="HTTP 429" cutRetried=true
+  [CUT,T503] calls 2, sidecar charges 2, transientError="HTTP 503" cutRetried=true
+  [CUT,ERR] calls 2, sidecar charges 2, spoken="partial" cutRetried=true
+  [CUT,TIMEOUT] calls 2, sidecar charges 2, spoken="partial" cutRetried=true
+  [T429] calls 1, sidecar charges 1, transientError="HTTP 429" cutRetried=false
+  [T503] calls 1, sidecar charges 1, transientError="HTTP 503" cutRetried=false
+  [ERR] calls 1, sidecar charges 1, transientError="fetch failed" cutRetried=false
+  [TIMEOUT] calls 1, sidecar charges 1, transientError="no answer within 180 s: 0 thought parts and 0 answer chars in" cutRetried=false
+    ROUND1 (no N2) for comparison: under-counts 2
+
+(3) calibration: OLD vs OLD differs on 0 (must be 0); NO_M1 vs OLD at 4: calls differ on 972 (972 make a 5th call; re-review 1 measured 162); NO_N2 at 1: under-counts 2 (must be 2)
+(4) GEMMA_MAX_TRIES="abc": exit 2, calls 0, stderr "GEMMA_MAX_TRIES is not a finite number: \"abc\""
+(4) GEMMA_MAX_TRIES="Infinity": exit 2, calls 0, stderr "GEMMA_MAX_TRIES is not a finite number: \"Infinity\""
+(4) GEMMA_MAX_TRIES="1e999": exit 2, calls 0, stderr "GEMMA_MAX_TRIES is not a finite number: \"1e999\""
+(4) GEMMA_MAX_TRIES="NaN": exit 2, calls 0, stderr "GEMMA_MAX_TRIES is not a finite number: \"NaN\""
+(4) GEMMA_MAX_TRIES="": exit -, calls 1
+(4) GEMMA_MAX_TRIES="  ": exit -, calls 1
+(4) GEMMA_MAX_TRIES="0": exit -, calls 1
+(4) GEMMA_MAX_TRIES="-3": exit -, calls 1
+(4) GEMMA_MAX_TRIES="2.5": exit -, calls 3
+(4) GEMMA_MAX_TRIES=" 4 ": exit -, calls 4
+(4) GEMMA_MAX_TRIES="1": exit -, calls 1
+(4) GEMMA_MAX_TRIES=(unset): exit -, calls 4
+(4) calibration: NO_M6 with 'abc' -> exit -, calls 61 (unbounded until the CLEAN on call 61)

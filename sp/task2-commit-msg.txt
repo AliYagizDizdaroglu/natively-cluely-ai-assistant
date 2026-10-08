@@ -1,0 +1,8 @@
+fix(answer): keep the first character of a short opening chunk
+
+filterCodeFences sliced its 3-character carry from a negative index when the
+first chunk was shorter, dropping the leading character: Gemini opens with
+two-character chunks ("I’", "So", "To") routinely, and 14 of 57 delivered
+after6 answers began "’d start by…".
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

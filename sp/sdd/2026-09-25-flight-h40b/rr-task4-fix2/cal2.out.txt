@@ -1,0 +1,10 @@
+﻿as expected  REAL score-cal.mjs on the untouched fixture: OK (exit 0; expected OK)  case A: ok | case B: ok | case C: ok
+    last line: CALIBRATION OK (fixture: C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/flash-h40b-fixture/flash)
+    fixture flash/ unchanged by the run: true (blind interview60.answers.gemini-3.5-flash_def.json interview60.answers.gemini-3.6-flash_def.json interview60.answers.gemini-3.7-flash_def-r2.json interview60.answers.gemini-3.7-flash_def-r3.json interview60.answers.gemini-3.7-flash_def.json interview60.answers.gemini-3.8-flash_def-r2.json interview60.answers.gemini-3.8-flash_def-r3.json interview60.answers.gemini-3.8-flash_def.json tiers.json)
+as expected  control: unmodified scorer copy, complete copy fx/full: OK (exit 0; expected OK)  case A: ok | case B: ok | case C: ok
+as expected  M2 target: answeredCount always 0: FAILED (exit 1; expected FAILED)  case A: FAIL (5 of 10 checks) | case B: ok | case C: ok  [first failing print: on tier 1: answered 0 of 6 (ids × reps)]
+as expected  round 1's id-level count under the new print (ids with EVERY rep): FAILED (exit 1; expected FAILED)  case A: FAIL (3 of 10 checks) | case B: ok | case C: ok  [first failing print: on tier 1: answered 2 of 6 (ids × reps)]
+as expected  answeredCount counts rep 1 only: FAILED (exit 1; expected FAILED)  case A: FAIL (3 of 10 checks) | case B: ok | case C: ok  [first failing print: on tier 1: answered 2 of 6 (ids × reps)]
+as expected  answeredCount always "full" (ids x reps, never looks at the files): OK (exit 0; expected OK)  case A: ok | case B: ok | case C: ok
+as expected  N1 reverted (totals[t] created inside the id loop again): OK (exit 0; expected OK)  case A: ok | case B: ok | case C: ok
+fx/full/flash after the variants: blind tiers.json

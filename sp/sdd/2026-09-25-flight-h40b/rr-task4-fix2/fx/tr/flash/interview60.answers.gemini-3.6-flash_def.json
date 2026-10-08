@@ -1,0 +1,79 @@
+{
+ "R01": {
+  "id": "R01",
+  "q": "fixture question R01",
+  "model": "gemini-3.6-flash_def",
+  "transientError": "HTTP 503",
+  "cutRetried": false
+ },
+ "R11F": {
+  "id": "R11F",
+  "q": "fixture question R11F",
+  "model": "gemini-3.6-flash_def",
+  "transientError": "HTTP 503",
+  "cutRetried": false
+ },
+ "R12": {
+  "id": "R12",
+  "q": "fixture question R12",
+  "model": "gemini-3.6-flash_def",
+  "transientError": "HTTP 503",
+  "cutRetried": false
+ },
+ "R17F": {
+  "id": "R17F",
+  "q": "fixture question R17F",
+  "model": "gemini-3.6-flash_def",
+  "transientError": "HTTP 503",
+  "cutRetried": false
+ },
+ "R23": {
+  "id": "R23",
+  "q": "fixture question R23",
+  "model": "gemini-3.6-flash_def",
+  "transientError": "HTTP 503",
+  "cutRetried": false
+ },
+ "R26F": {
+  "id": "R26F",
+  "q": "fixture question R26F",
+  "model": "gemini-3.6-flash_def",
+  "transientError": "HTTP 503",
+  "cutRetried": false
+ },
+ "R27": {
+  "id": "R27",
+  "q": "fixture question R27",
+  "model": "gemini-3.6-flash_def",
+  "transientError": "HTTP 503",
+  "cutRetried": false
+ },
+ "R28": {
+  "id": "R28",
+  "q": "fixture question R28",
+  "model": "gemini-3.6-flash_def",
+  "transientError": "HTTP 503",
+  "cutRetried": false
+ },
+ "R30": {
+  "id": "R30",
+  "q": "fixture question R30",
+  "model": "gemini-3.6-flash_def",
+  "transientError": "HTTP 503",
+  "cutRetried": false
+ },
+ "R31F": {
+  "id": "R31F",
+  "q": "fixture question R31F",
+  "model": "gemini-3.6-flash_def",
+  "transientError": "HTTP 503",
+  "cutRetried": false
+ },
+ "R32": {
+  "id": "R32",
+  "q": "fixture question R32",
+  "model": "gemini-3.6-flash_def",
+  "transientError": "HTTP 503",
+  "cutRetried": false
+ }
+}

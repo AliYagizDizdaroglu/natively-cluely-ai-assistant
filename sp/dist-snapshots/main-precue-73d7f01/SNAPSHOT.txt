@@ -1,0 +1,4 @@
+source C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\dist-electron
+taken 2026-10-01T11:45:14.920Z
+files 910 bytes 11611637
+verbalStreamFilter.js sha256/12 d8fee6ca0170

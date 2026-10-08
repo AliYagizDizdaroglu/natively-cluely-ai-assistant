@@ -1,0 +1,49 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+ ✓ electron/ipcHandlers.typedPrompt.test.ts (2 tests) 4ms
+ ✓ electron/test/golden/cueArm.test.ts (3 tests) 5ms
+ ✓ electron/llm/knowledgePromptBudget.test.ts (8 tests) 8ms
+ ✓ electron/llm/prompts.test.ts (31 tests) 17ms
+stdout | electron/LLMHelper.geminiSystemInstruction.test.ts > non-Gemma Gemini models get the system prompt as systemInstruction, like Gemma does > verbal answer on gemini-3.1-flash-lite → systemInstruction carries the prompt, the user turn carries only the question
+[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+stderr | electron/LLMHelper.geminiSystemInstruction.test.ts > non-Gemma Gemini models get the system prompt as systemInstruction, like Gemma does > verbal answer on gemini-3.1-flash-lite → systemInstruction carries the prompt, the user turn carries only the question
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+stderr | electron/LLMHelper.geminiSystemInstruction.test.ts > non-Gemma Gemini models get the system prompt as systemInstruction, like Gemma does > typed chat (no verbal override) keeps the inlined form it was measured with
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+ ✓ electron/LLMHelper.geminiSystemInstruction.test.ts (2 tests) 12ms
+stdout | electron/LLMHelper.customNotes.test.ts > custom notes reach the hands-free answer paths > streamChat with the verbal override (technical path) carries the <user_context> block
+[LLMHelper] <user_context> appended to the system prompt (66 chars)
+
+stderr | electron/LLMHelper.customNotes.test.ts > custom notes reach the hands-free answer paths > streamChat with the verbal override (technical path) carries the <user_context> block
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+stdout | electron/LLMHelper.customNotes.test.ts > custom notes reach the hands-free answer paths > streamVerbalWithGeminiFlash (behavioral / fast path) carries the <user_context> block
+[LLMHelper] <user_context> appended to the system prompt (66 chars)
+[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+stdout | electron/LLMHelper.customNotes.test.ts > custom notes reach the hands-free answer paths > no notes → no block on either path
+[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+stderr | electron/LLMHelper.customNotes.test.ts > custom notes reach the hands-free answer paths > no notes → no block on either path
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+ ✓ electron/LLMHelper.customNotes.test.ts (3 tests) 17ms
+
+ Test Files  6 passed (6)
+      Tests  49 passed (49)
+   Start at  15:29:44
+   Duration  3.76s (transform 681ms, setup 0ms, collect 2.61s, tests 64ms, environment 10.55s, prepare 1.38s)
+

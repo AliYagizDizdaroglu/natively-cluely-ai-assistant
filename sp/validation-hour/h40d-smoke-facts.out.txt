@@ -1,0 +1,85 @@
+run 2026-10-02T11-39-41-h40d
+log window 2026-10-02T10:32:01.026Z .. 2026-10-02T11:39:40.483Z; timeline items 45
+
+cue blocks: 47
+  10:33:26Z  ?       2 line(s), words 3/3:  ["Docker layer caching","Dependency ordering strategy"]
+  10:33:43Z  ?       3 line(s), words 3/4/5:  ["Custom metrics autoscaling","Queue length and latency","Scale to zero with KEDA"]
+  10:34:04Z  R01     2 line(s), words 3/4:  ["Standard Python dictionary","Hash table index array"]
+  10:35:11Z  R02     3 line(s), words 5/4/5:  ["Hash map and linked list","O(1) lookups and updates","Evicting tail on capacity overflow"]
+  10:37:46Z  R02F    3 line(s), words 2/3/3:  ["Mutex locks","Reader-writer lock optimization","Minimizing lock contention"]
+  10:38:55Z  R03     2 line(s), words 3/4:  ["Frequency hash map","Min-heap of size 100"]
+  10:40:16Z  R04     2 line(s), words 4/5:  ["Hash set duplicate tracking","Returns null on empty input"]
+  10:42:50Z  R04F    1 line(s), words 4:  ["Adjacent comparison, O(1) space"]
+  10:44:59Z  R06     3 line(s), words 3/3/2:  ["Client idempotency key","Database unique constraint","State caching"]
+  10:46:03Z  R07     2 line(s), words 3/3:  ["Atomic status updates","Message visibility timeouts"]
+  10:47:26Z  R07F    2 line(s), words 4/4:  ["Atomic conditional database updates","Visibility timeout lease expiration"]
+  10:48:28Z  R08     2 line(s), words 4/3:  ["Kafka transactions and idempotency","External side-effect handling"]
+  10:49:57Z  R09     2 line(s), words 4/3:  ["Window function Dense Rank","Filter rank two"]
+  10:52:24Z  R09F    1 line(s), words 4:  ["CTE with dense rank"]
+  10:53:34Z  R10     2 line(s), words 4/4:  ["Replicas for read traffic","Sharding for write traffic"]
+  10:55:04Z  R11     3 line(s), words 4/4/5:  ["Traffic burstiness and algorithm","Distributed state via Redis","Latency budget and failure mode"]
+  10:57:33Z  R11F    2 line(s), words 4/3:  ["Load distribution via balancer","Stateless state management"]
+  10:58:42Z  R12     2 line(s), words 3/5:  ["Asynchronous queue-based fan-out","Third-party gateway API limits and"]
+  11:01:46Z  R13     3 line(s), words 5/5/5:  ["Kafka and Airflow ingestion pipelines","Offline S3 and online Redis","Point-in-time joins prevent train-serve skew"]
+  11:03:51Z  R13F    3 line(s), words 4/4/2:  ["Airflow sensors and timeouts","Fallback or DAG halt","Automated alerting"]
+  11:04:59Z  R14     3 line(s), words 3/2/3:  ["ONNX and TensorRT","Redis caching","Triton and FastAPI"]
+  11:07:33Z  R15     2 line(s), words 4/4:  ["Bias is underfitting assumptions","Variance is overfitting fluctuations"]
+  11:08:42Z  R16     2 line(s), words 5/5:  ["Evaluation metrics and class weights","Core feature pipeline and architecture"]
+  11:10:03Z  R17     2 line(s), words 4/3:  ["Global aggregations before splitting","Post-event indicators included"]
+  11:11:25Z  R17F    2 line(s), words 3/4:  ["Global statistics pre-computation","Target encoding or scaling"]
+  11:12:24Z  R18     3 line(s), words 2/3/3:  ["Imbalanced datasets","Rare positive classes","False positive penalty"]
+  11:13:32Z  R19     2 line(s), words 2/4:  ["Calibration requirement","Post-processing and ECE validation"]
+  11:14:49Z  R20     3 line(s), words 3/2/3:  ["Query-key dot product","Softmax normalization","Weighted value sum"]
+  11:15:55Z  R21     2 line(s), words 4/5:  ["Retrieval for dynamic facts","Fine-tuning for tone and style"]
+  11:17:16Z  R22     2 line(s), words 2/3:  ["Deterministic validation","Agentic retry loops"]
+  11:18:36Z  R22F    3 line(s), words 2/3/3:  ["LLM-as-judge evals","Human-annotated gold set","Tool validation rates"]
+  11:19:41Z  R22F2   3 line(s), words 3/3/3:  ["Stale gold sets","Judge model drift","Production log mining"]
+  11:20:45Z  R23     2 line(s), words 4/4:  ["~30.7 GB raw memory","Scalar or product quantization"]
+  11:22:12Z  R24     3 line(s), words 1/3/2:  ["LLM-as-judge","Deterministic tool checks","Human-in-the-loop sampling"]
+  11:23:32Z  R25     3 line(s), words 3/4/2:  ["SageMaker Model Monitor","Baselines and statistical tests","CloudWatch alerting"]
+  11:25:13Z  R26     3 line(s), words 4/2/3:  ["Decouple with separate jobs","Partition-level merging","Chunking and optimization"]
+  11:26:29Z  R26F    2 line(s), words 3/4:  ["Row-level hashing validation","Production logic shadow run"]
+  11:27:40Z  R27     2 line(s), words 4/4:  ["Shadow for risk mitigation","Canary for traffic shifting"]
+  11:29:09Z  R28     2 line(s), words 3/3:  ["Lineage and reproducibility","Centralized model registry"]
+  11:30:24Z  R28F    2 line(s), words 4/4:  ["Hardware and CUDA stochasticity","Unversioned upstream data drift"]
+  11:31:30Z  R29     3 line(s), words 3/3/3:  ["Centralized data governance","Fine-grained access control","Unified asset lineage"]
+  11:31:32Z  R29     3 line(s), words 2/2/2:  ["Centralized governance","Fine-grained security","Delta Sharing"]
+  11:33:06Z  R30     3 line(s), words 3/4/3:  ["Bedrock batch inference","Fifty percent cost discount","Throughput over latency"]
+  11:35:00Z  R31     2 line(s), words 4/3:  ["Math doesn't add up","3,600 extra orders"]
+  11:36:02Z  R31F    3 line(s), words 4/4/3:  ["Statistical significance and duration","Traffic randomization and bias","Downstream margin impact"]
+  11:37:11Z  R32     3 line(s), words 5/5/5:  ["Baseline cache state and traffic","Load test concurrency and duration","Algorithmic gains versus hardware scaling"]
+  11:38:37Z  R33     2 line(s), words 3/4:  ["Yes, thresholds shifted","Check false negative rate"]
+
+shape: empty 0, one line 2, two lines 25, three lines 20, more than three 0
+words per cue line: n 112, median 3, max 5, lines over 5 words 0; words per block: median 8
+items with more than one block: ? x2, R29 x2; items with no block: R05
+
+cues trimmed lines: 4
+  10:42:50Z  R04F    [cleaned 1]  {"rawLines":1,"dropped":[],"cut":[],"cleaned":["Adjacent comparison, $O(1)$ space"]}
+  10:58:42Z  R12     [cut 1]  {"rawLines":2,"dropped":[],"cut":["Third-party gateway API limits and network egress"],"cleaned":[]}
+  11:01:46Z  R13     [cut 1]  {"rawLines":3,"dropped":[],"cut":["Offline S3 and online Redis storage"],"cleaned":[]}
+  11:37:11Z  R32     [cut 1]  {"rawLines":3,"dropped":[],"cut":["Baseline cache state and traffic shape"],"cleaned":[]}
+
+answers: full lines 46 (failed 0), superseded streams 1
+  superseded at 11:31:30Z  R29
+hedge: gemini-3.5-flash-lite won 41 (at median 3855 ms, max 11112 ms); gemini-3.1-flash-lite won 6 (at median 9095.5 ms, max 10895 ms)
+lines with "Knowledge mode (stream): returning generated intro response": 0
+lines with "__negotiationCoaching": 0
+lines with "turn: close reason=not-a-question": 16
+lines with "boundary repair: restored": 0
+
+first token (diag, this run): n 46, median 4865 ms, p90 9834 ms, max 11664 ms
+
+report rows:
+  - PASS  Answered hands-free: 44/44 dispatched, 0 to nobody   (before: 26/52)
+  - PASS  Heard by either detector: 44/45   (before: 51/52)
+  - PASS  Surfaced detections per question: 0 doubles, 0 extended, 1 superseded, 1 caught, 0 unclaimed   (before: 12 doubles, 1 invented)
+  - FAIL  Long questions answered whole: 0 of 1 (dispatched text covers ≥ 80% of the question)   (before: not in the roster)
+  - PASS  Answer TTFT p90 · detect p50: 9.8 s · 2.1 s   (before: 3.7 s (answer-only pass) · 4.1 s)
+  - PASS  Cue block above every spoken answer: 45/45 present, 45 well-formed, 4 trimmed   (before: not logged (before cue mode))
+  **GATE FAILED — STT socket closes / lost utterances / fragment chips; Interview-acceptable answers (Opus 5 judge); Long questions answered whole**
+
+dist now: main.js written 2026-09-30T21:03:29.295Z; limits 3 x 5; CUE_RULE sha256/12 8e15e4e7dd41
+dist CUE_SHAPE_RULE: - At most 3 lines, each at most 5 words. The first line is the answer itself in the fewest words that carry it: one or two words when that is enough (asked "Tabs or spaces?", the whole block is 1| Spaces). A one-part question gets exactly one line. Add a line only for another part the QUESTION names, never for a point you add on your own; when it names more than 3 parts, group related parts into themes so every part is still covered in 3 lines.
+
+[exit 0]

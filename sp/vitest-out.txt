@@ -1,0 +1,12 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn[39m
+
+ [32m✓[39m src/lib/answerMessages.test.ts [2m([22m[2m23 tests[22m[2m)[22m[90m 17[2mms[22m[39m
+ [32m✓[39m src/components/CueBlock.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[90m 191[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m25 passed[39m[22m[90m (25)[39m
+[2m   Start at [22m 23:48:12
+[2m   Duration [22m 2.89s[2m (transform 155ms, setup 0ms, collect 419ms, tests 209ms, environment 2.73s, prepare 324ms)[22m
+

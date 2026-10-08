@@ -1,0 +1,14 @@
+﻿2026-09-26T11-39-51-h40b: 12 field(s) differ
+   .run.items.9.answered: false -> true
+   .run.items.9.answeredAt: null -> 1790419651603
+   .run.items.9.dispatches: 0 -> 1
+   .run.items.9.coverage: 0 -> 1
+   .run.answered: 43 -> 44
+   .run.delivered: 43 -> 44
+   .run.answersToNobody: 1 -> 0
+   .pairs.8.id: "?" -> "R07F"
+   .pairs.8.kind: "unknown" -> "spoken"
+   .pairs.8.level: null -> "followup"
+   .pairs.8.topic: null -> "Backend & systems"
+   .pairs.8.question: null -> "And if the worker that claimed it crashes halfway? [Follow-up to: Two workers pick up the same job from a queue. How do
+runs compared: 27, runs with any difference: 1, errors: 0

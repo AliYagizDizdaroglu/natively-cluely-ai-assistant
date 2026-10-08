@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct XGBoost rationale for messy tabular data plus a sensible logistic-regression baseline, spoken at a natural length."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic is right end to end: 9,500 churners, 3,000 true positives, 31.6 percent recall, consistent with the claim."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Holdout plus difference-in-differences is the right design, but the raw LaTeX percent markup cannot be read aloud."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every edge case asked, but claiming lift of one with no positive labels is wrong and recall is left hedged."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Chronological split with an embargo gap and a ColumnTransformer fitted on train only is exactly the leakage-safe answer."
+  },
+  "S1Q06": {
+    "correctness": 0,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Puts the event type filter in the where clause, which turns the left join into an inner join and drops zero-call customers."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every stage and names the shared feature and model artifacts, but runs far past a spoken length."
+  },
+  "S1Q08": {
+    "correctness": 0,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Says it filters out control data where offers were shown then relies on the control group; contradictory and mislabels treatment."
+  },
+  "S1Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sound Azure mapping, but Azure API Gateway is not a service; also well over a spoken length."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC, Key Vault and per-environment isolation are all correct; only the length needs trimming."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every stage accurately and maps it to the experience, but well over a spoken length."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Defines unit, denominator, dataset and uncertainty, but conflates a Wilson interval with seed variance and the LaTeX markup is unspeakable."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correctly ties agent complexity to paths not known in advance and contrasts all three options; slightly long."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Reciprocal rank fusion scoring, one-based ranks and id tie-break are all right; stray dollar-sign artifacts need editing."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy relevance-first with dedup, per-document cap and budget skip matches the spec exactly, but exceeds a spoken length."
+  },
+  "S2Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Claims a worker pool with a counter then describes fixed batches of eight; contradictory concurrency mechanism, though timeout and failure isolation are right."
+  },
+  "S2Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Index, metadata, permissions and evaluation are covered, but the required deletions are never handled and keys sit in the metadata store."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual write, backfill with CDC replay, shadow comparison, cutover and column-level rollback are all correct, but too long."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service choice is apt and the managed-versus-custom line is well drawn; over a spoken length."
+  },
+  "S2Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Idempotency key plus a Cosmos state table is right, but a transactional batch cannot span the vector store and Cosmos."
+  }
+}

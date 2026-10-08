@@ -1,0 +1,622 @@
+[
+ {
+  "arm": "cue",
+  "rep": 1,
+  "raw": "__CUES__\n1| Prometheus custom metrics\n2| KEDA for queues\n3| Scale-to-zero and cold starts\n\nI scale inference services using Kubernetes HPA with Prometheus custom metrics, tracking request queue depth and p95 latency rather than just CPU. For event-driven pipelines, I use KEDA to scale directly from message queues. I also configure scale-to-zero for idle endpoints while keeping a minimum replica floor for heavy models to avoid cold starts.\n\n__MORE__\n1| handling vLLM batching and concurrency limits\n2| node affinity and GPU resource requests",
+  "out": 123,
+  "finish": "STOP",
+  "shape": [
+   "CUES",
+   "cue(3w)",
+   "cue(3w)",
+   "cue(4w)",
+   "blank",
+   "prose(54w)",
+   "blank",
+   "MORE",
+   "offer(6w)",
+   "offer(6w)"
+  ],
+  "cues": [
+   "Prometheus custom metrics",
+   "KEDA for queues",
+   "Scale-to-zero and cold starts"
+  ],
+  "offers": [
+   "handling vLLM batching and concurrency limits",
+   "node affinity and GPU resource requests"
+  ],
+  "w": [
+   83,
+   69,
+   69,
+   69,
+   54,
+   54
+  ]
+ },
+ {
+  "arm": "cue",
+  "rep": 2,
+  "raw": "__CUES__\n1| Custom queue depth metrics\n2| KEDA for event-driven scaling\n\nFor a model inference service, I rely on KEDA or the Horizontal Pod Autoscaler driven by custom metrics rather than basic CPU or memory. Since model workloads are queue-bound, I track request concurrency and queue depth via Prometheus, setting up scale-up triggers for traffic spikes and scale-to-zero for idle pods to optimize infrastructure costs.\n\n__MORE__\n1| managing cold starts with pre-warmed pods\n2| tuning stabilization windows for traffic spikes",
+  "out": 116,
+  "finish": "STOP",
+  "shape": [
+   "CUES",
+   "cue(4w)",
+   "cue(4w)",
+   "blank",
+   "prose(54w)",
+   "blank",
+   "MORE",
+   "offer(6w)",
+   "offer(6w)"
+  ],
+  "cues": [
+   "Custom queue depth metrics",
+   "KEDA for event-driven scaling"
+  ],
+  "offers": [
+   "managing cold starts with pre-warmed pods",
+   "tuning stabilization windows for traffic spikes"
+  ],
+  "w": [
+   80,
+   69,
+   69,
+   69,
+   54,
+   54
+  ]
+ },
+ {
+  "arm": "cue",
+  "rep": 3,
+  "raw": "__CUES__\n1| KEDA custom metrics\n2| Resource requests and limits\n3| Prometheus and warm pools\n\nI use Horizontal Pod Autoscaler combined with KEDA to scale inference services on custom metrics like queue depth and request latency rather than basic CPU. I set strict resource requests and limits to prevent CPU throttling while maximizing node utilization, driven by Prometheus scrape metrics. For sudden traffic bursts, I maintain warm pools so incoming requests hit ready instances instantly without cold-start lag.",
+  "out": 98,
+  "finish": "STOP",
+  "shape": [
+   "CUES",
+   "cue(3w)",
+   "cue(4w)",
+   "cue(4w)",
+   "blank",
+   "prose(63w)"
+  ],
+  "cues": [
+   "KEDA custom metrics",
+   "Resource requests and limits",
+   "Prometheus and warm pools"
+  ],
+  "offers": [],
+  "w": [
+   78,
+   63,
+   63,
+   63,
+   63,
+   63
+  ]
+ },
+ {
+  "arm": "cue",
+  "rep": 4,
+  "raw": "__CUES__\n1| KEDA with custom metrics\n2| Queue depth and latency\n3| Resource requests and limits\n\nFor model inference, I use KEDA with Prometheus to scale on custom metrics like queue depth or request latency rather than standard CPU usage. Because ML workloads are bursty, tracking pending inference requests ensures we spin up pods before latency spikes, while carefully tuning resource requests prevents out-of-memory errors.\n\n__MORE__\n1| Scale-to-zero cold-start trade-offs",
+  "out": 105,
+  "finish": "STOP",
+  "shape": [
+   "CUES",
+   "cue(4w)",
+   "cue(4w)",
+   "cue(4w)",
+   "blank",
+   "prose(49w)",
+   "blank",
+   "MORE",
+   "offer(3w)"
+  ],
+  "cues": [
+   "KEDA with custom metrics",
+   "Queue depth and latency",
+   "Resource requests and limits"
+  ],
+  "offers": [
+   "Scale-to-zero cold-start trade-offs"
+  ],
+  "w": [
+   70,
+   54,
+   54,
+   54,
+   49,
+   49
+  ]
+ },
+ {
+  "arm": "cue",
+  "rep": 5,
+  "raw": "__CUES__\n1| KEDA with custom metrics\n2| Queue depth and latency scaling\n3| Minimum baseline for cold starts\nI use KEDA with custom metrics like queue depth or request latency rather than just CPU, because ML workloads don't scale linearly with CPU usage. I keep a minimum baseline of pods running to absorb sudden spikes and avoid cold starts, and I configure careful scale-down windows to prevent pod thrashing during traffic dips.\n__MORE__\n1| GPU-aware resource allocation\n2| Model warm-up time mitigation",
+  "out": 114,
+  "finish": "STOP",
+  "shape": [
+   "CUES",
+   "cue(4w)",
+   "cue(5w)",
+   "cue(5w)",
+   "prose(54w)",
+   "MORE",
+   "offer(3w)",
+   "offer(4w)"
+  ],
+  "cues": [
+   "KEDA with custom metrics",
+   "Queue depth and latency scaling",
+   "Minimum baseline for cold starts"
+  ],
+  "offers": [
+   "GPU-aware resource allocation",
+   "Model warm-up time mitigation"
+  ],
+  "w": [
+   82,
+   64,
+   64,
+   64,
+   54,
+   54
+  ]
+ },
+ {
+  "arm": "cue",
+  "rep": 6,
+  "raw": "__CUES__\n1| KEDA with custom metrics\n2| Queue depth and GPU utilization\nI handle autoscaling for model inference on Kubernetes using KEDA driven by custom metrics like request queue depth and GPU utilization, rather than relying solely on CPU. That way, when traffic spikes, pods scale out based on actual batch backpressure, and I configure proper scale-down cooldowns to prevent thrashing during traffic dips.",
+  "out": 86,
+  "finish": "STOP",
+  "shape": [
+   "CUES",
+   "cue(4w)",
+   "cue(5w)",
+   "prose(52w)"
+  ],
+  "cues": [
+   "KEDA with custom metrics",
+   "Queue depth and GPU utilization"
+  ],
+  "offers": [],
+  "w": [
+   64,
+   52,
+   52,
+   52,
+   52,
+   52
+  ]
+ },
+ {
+  "arm": "cue",
+  "rep": 7,
+  "raw": "__CUES__\n1| KEDA with custom metrics\n2| Queue depth and GPU load\n3| Managing cold-start latency\n\nI handle autoscaling using KEDA tied to custom metrics like queue depth rather than just CPU or memory, since ML workloads bottleneck on GPU utilization and batching queues. I configure Prometheus to drive scaling triggers so pods scale dynamically under traffic spikes, while keeping minimum replicas or warm pools to eliminate cold-start delays.",
+  "out": 91,
+  "finish": "STOP",
+  "shape": [
+   "CUES",
+   "cue(4w)",
+   "cue(5w)",
+   "cue(3w)",
+   "blank",
+   "prose(53w)"
+  ],
+  "cues": [
+   "KEDA with custom metrics",
+   "Queue depth and GPU load",
+   "Managing cold-start latency"
+  ],
+  "offers": [],
+  "w": [
+   69,
+   53,
+   53,
+   53,
+   53,
+   53
+  ]
+ },
+ {
+  "arm": "cue",
+  "rep": 8,
+  "raw": "__CUES__\n1| KEDA custom metrics\n2| Precise resource requests\n3| Minimum baseline replicas\n\nI rely on KEDA with custom metrics like request queue depth or GPU utilization, since standard CPU and memory metrics don't reflect true model load. I set precise resource requests and limits to prevent pod throttling and ensure predictable scheduling. To handle sudden traffic spikes without cold start delays, I always maintain a baseline of minimum replicas and configure cluster autoscaling for the underlying nodes.\n\n__MORE__\n1| scale-to-zero cold start latency trade-offs\n2| queue-based concurrency scaling parameters",
+  "out": 125,
+  "finish": "STOP",
+  "shape": [
+   "CUES",
+   "cue(3w)",
+   "cue(3w)",
+   "cue(3w)",
+   "blank",
+   "prose(65w)",
+   "blank",
+   "MORE",
+   "offer(5w)",
+   "offer(4w)"
+  ],
+  "cues": [
+   "KEDA custom metrics",
+   "Precise resource requests",
+   "Minimum baseline replicas"
+  ],
+  "offers": [
+   "scale-to-zero cold start latency trade-offs",
+   "queue-based concurrency scaling parameters"
+  ],
+  "w": [
+   90,
+   77,
+   77,
+   77,
+   65,
+   65
+  ]
+ },
+ {
+  "arm": "cue",
+  "rep": 9,
+  "raw": "__CUES__\n1| KEDA and custom metrics\n2| Queue length over CPU usage\n\nI use KEDA combined with Prometheus to drive autoscaling based on custom inference metrics like queue depth or request latency rather than just CPU. For GPU workloads, tracking active request concurrency ensures we scale up before latency spikes, and scaling down uses a cool-down window to prevent thrashing during traffic bursts.\n\n__MORE__\n1| Scale-to-zero trade-offs for cold starts",
+  "out": 99,
+  "finish": "STOP",
+  "shape": [
+   "CUES",
+   "cue(4w)",
+   "cue(5w)",
+   "blank",
+   "prose(51w)",
+   "blank",
+   "MORE",
+   "offer(5w)"
+  ],
+  "cues": [
+   "KEDA and custom metrics",
+   "Queue length over CPU usage"
+  ],
+  "offers": [
+   "Scale-to-zero trade-offs for cold starts"
+  ],
+  "w": [
+   70,
+   58,
+   58,
+   58,
+   51,
+   51
+  ]
+ },
+ {
+  "arm": "cue",
+  "rep": 10,
+  "raw": "__CUES__\n1| KEDA with custom metrics\n2| Queue depth and GPU utilization\n3| Readiness probes for model weights\n\nFor model inference, I use KEDA with Prometheus custom metrics rather than standard CPU scaling, tracking request queue depth and GPU utilization instead. I configure horizontal autoscaling based on concurrent requests, and set readiness probes to ensure pods only receive traffic after model weights are loaded into memory.",
+  "out": 84,
+  "finish": "STOP",
+  "shape": [
+   "CUES",
+   "cue(4w)",
+   "cue(5w)",
+   "cue(5w)",
+   "blank",
+   "prose(48w)"
+  ],
+  "cues": [
+   "KEDA with custom metrics",
+   "Queue depth and GPU utilization",
+   "Readiness probes for model weights"
+  ],
+  "offers": [],
+  "w": [
+   66,
+   48,
+   48,
+   48,
+   48,
+   48
+  ]
+ },
+ {
+  "arm": "cue",
+  "rep": 11,
+  "raw": "__CUES__\n1| KEDA and Prometheus autoscaling\n2| Custom queue depth metrics\n3| Baseline min-replicas for cold starts\n\nI use KEDA combined with Prometheus to handle autoscaling for model inference services, scaling based on custom queue depth or request latency rather than raw CPU. For ML workloads where cold starts are expensive, I maintain a baseline of min-replicas to keep model weights loaded in memory, and tune cooldown periods to prevent rapid scaling thrashing during traffic bursts.",
+  "out": 102,
+  "finish": "STOP",
+  "shape": [
+   "CUES",
+   "cue(4w)",
+   "cue(4w)",
+   "cue(5w)",
+   "blank",
+   "prose(59w)"
+  ],
+  "cues": [
+   "KEDA and Prometheus autoscaling",
+   "Custom queue depth metrics",
+   "Baseline min-replicas for cold starts"
+  ],
+  "offers": [],
+  "w": [
+   76,
+   59,
+   59,
+   59,
+   59,
+   59
+  ]
+ },
+ {
+  "arm": "cue",
+  "rep": 12,
+  "raw": "__CUES__\n1| Custom metrics via KEDA\n2| Baseline replicas for cold starts\nI use KEDA for autoscaling model inference on Kubernetes because standard CPU metrics don't reflect GPU workloads or queue backlogs. I hook it up to Prometheus to scale based on active request queue length, while keeping a minimum replica count warm to avoid expensive model cold starts.\n__MORE__\n1| GPU memory limits and batching thresholds\n2| Scale-to-zero trade-offs for asynchronous jobs",
+  "out": 104,
+  "finish": "STOP",
+  "shape": [
+   "CUES",
+   "cue(4w)",
+   "cue(5w)",
+   "prose(47w)",
+   "MORE",
+   "offer(6w)",
+   "offer(5w)"
+  ],
+  "cues": [
+   "Custom metrics via KEDA",
+   "Baseline replicas for cold starts"
+  ],
+  "offers": [
+   "GPU memory limits and batching thresholds",
+   "Scale-to-zero trade-offs for asynchronous jobs"
+  ],
+  "w": [
+   73,
+   61,
+   61,
+   61,
+   47,
+   47
+  ]
+ },
+ {
+  "arm": "nocue",
+  "rep": 1,
+  "raw": "I'd use KEDA combined with Prometheus metrics like queue depth or inference latency rather than just CPU utilization, because ML workloads are often memory or GPU-bound. I configure custom scaling triggers so pods scale up proactively under load, and set proper resource requests to ensure nodes can schedule new pods instantly without starving existing traffic.",
+  "out": 64,
+  "finish": "STOP",
+  "shape": [
+   "prose(55w)"
+  ],
+  "cues": [],
+  "offers": [],
+  "w": [
+   55,
+   55,
+   55,
+   55,
+   55,
+   55
+  ]
+ },
+ {
+  "arm": "nocue",
+  "rep": 2,
+  "raw": "For model inference on Kubernetes, I use KEDA or the Horizontal Pod Autoscaler driven by queue length or GPU utilization rather than CPU. Inference workloads bottleneck on throughput before CPU spikes, so scaling on queue depth ensures tight responsiveness. I also set readiness probes and cooldown periods so new pods aren't slammed before model weights load.",
+  "out": 65,
+  "finish": "STOP",
+  "shape": [
+   "prose(56w)"
+  ],
+  "cues": [],
+  "offers": [],
+  "w": [
+   56,
+   56,
+   56,
+   56,
+   56,
+   56
+  ]
+ },
+ {
+  "arm": "nocue",
+  "rep": 3,
+  "raw": "I'd use KEDA with custom metrics like request queue depth or GPU utilization rather than standard CPU-based HPA, since ML workloads are bottlenecked by throughput and batching. By scraping Prometheus metrics, KEDA can scale pods from zero when idle and aggressively add replicas as concurrency spikes, ensuring our p95 inference latency stays within SLAs.",
+  "out": 70,
+  "finish": "STOP",
+  "shape": [
+   "prose(54w)"
+  ],
+  "cues": [],
+  "offers": [],
+  "w": [
+   54,
+   54,
+   54,
+   54,
+   54,
+   54
+  ]
+ },
+ {
+  "arm": "nocue",
+  "rep": 4,
+  "raw": "For model inference, I use KEDA paired with Prometheus to scale pods based on custom metrics like request queue depth or GPU utilization rather than just CPU. I always keep a minimum number of warm replicas running to absorb sudden spikes and eliminate cold starts for low-latency endpoints.",
+  "out": 54,
+  "finish": "STOP",
+  "shape": [
+   "prose(48w)"
+  ],
+  "cues": [],
+  "offers": [],
+  "w": [
+   48,
+   48,
+   48,
+   48,
+   48,
+   48
+  ]
+ },
+ {
+  "arm": "nocue",
+  "rep": 5,
+  "raw": "I use HPA driven by custom Prometheus metrics like request latency or queue depth rather than raw CPU, because inference load spikes don't correlate linearly with basic resource usage. I also configure KEDA when scaling on event queues, and tune startup probes carefully so large model containers get enough time to load weights into memory without triggering premature restarts.",
+  "out": 67,
+  "finish": "STOP",
+  "shape": [
+   "prose(59w)"
+  ],
+  "cues": [],
+  "offers": [],
+  "w": [
+   59,
+   59,
+   59,
+   59,
+   59,
+   59
+  ]
+ },
+ {
+  "arm": "nocue",
+  "rep": 6,
+  "raw": "I'd set up horizontal autoscaling using KEDA or Prometheus custom metrics rather than standard CPU or memory. For model inference, CPU doesn't reflect queue depth or concurrency, so scaling on active requests per pod ensures we handle traffic spikes without blowing up p95 latencies or over-provisioning GPUs during quiet hours.",
+  "out": 66,
+  "finish": "STOP",
+  "shape": [
+   "prose(50w)"
+  ],
+  "cues": [],
+  "offers": [],
+  "w": [
+   50,
+   50,
+   50,
+   50,
+   50,
+   50
+  ]
+ },
+ {
+  "arm": "nocue",
+  "rep": 7,
+  "raw": "I'd use KEDA with Prometheus custom metrics like request queue depth and GPU utilization, since standard CPU metrics don't reflect actual inference load. I also configure minimum replicas to prevent cold starts on critical endpoints and set scale-down stabilization windows to avoid thrashing during traffic bursts.",
+  "out": 57,
+  "finish": "STOP",
+  "shape": [
+   "prose(46w)"
+  ],
+  "cues": [],
+  "offers": [],
+  "w": [
+   46,
+   46,
+   46,
+   46,
+   46,
+   46
+  ]
+ },
+ {
+  "arm": "nocue",
+  "rep": 8,
+  "raw": "For model inference on Kubernetes, I use HPA or KEDA driven by custom metrics like request queue depth or GPU concurrency, rather than standard CPU. Since inference workloads are accelerator-bound, scaling on active concurrency ensures we add pods before latency spikes. I also maintain a minimum replica count to avoid cold starts on heavy models while scaling dynamically under load.",
+  "out": 70,
+  "finish": "STOP",
+  "shape": [
+   "prose(60w)"
+  ],
+  "cues": [],
+  "offers": [],
+  "w": [
+   60,
+   60,
+   60,
+   60,
+   60,
+   60
+  ]
+ },
+ {
+  "arm": "nocue",
+  "rep": 9,
+  "raw": "For model inference services, I use KEDA with Prometheus to autoscale based on custom metrics like request queue depth or GPU utilization rather than just CPU or memory. That ensures pods scale up proactively when inference batching queues grow to protect p95 latency, and scale back down when idle to optimize infrastructure costs.",
+  "out": 61,
+  "finish": "STOP",
+  "shape": [
+   "prose(53w)"
+  ],
+  "cues": [],
+  "offers": [],
+  "w": [
+   53,
+   53,
+   53,
+   53,
+   53,
+   53
+  ]
+ },
+ {
+  "arm": "nocue",
+  "rep": 10,
+  "raw": "For model inference on Kubernetes, I rely on KEDA or custom metrics through Prometheus rather than standard CPU and memory, because inference workloads depend heavily on queue depth and GPU utilization. I configure scaling triggers based on concurrent active requests so pods spin up before latency degrades. To handle cold starts, I keep a minimum replica count during peak hours and use container image optimization and local caching so weights load instantly when scaling up.",
+  "out": 82,
+  "finish": "STOP",
+  "shape": [
+   "prose(75w)"
+  ],
+  "cues": [],
+  "offers": [],
+  "w": [
+   75,
+   75,
+   75,
+   75,
+   75,
+   75
+  ]
+ },
+ {
+  "arm": "nocue",
+  "rep": 11,
+  "raw": "I use KEDA combined with custom metrics like request queue depth or GPU memory pressure, rather than basic CPU thresholds, since inference workloads hit hardware bottlenecks first. I configure scale triggers based on traffic concurrency, while maintaining a minimum replica count to avoid cold starts on heavy models.",
+  "out": 54,
+  "finish": "STOP",
+  "shape": [
+   "prose(48w)"
+  ],
+  "cues": [],
+  "offers": [],
+  "w": [
+   48,
+   48,
+   48,
+   48,
+   48,
+   48
+  ]
+ },
+ {
+  "arm": "nocue",
+  "rep": 12,
+  "raw": "I use KEDA combined with HPA, scaling on custom metrics like queue depth or active inference requests rather than just CPU. Since ML workloads bottleneck on GPU utilization and request concurrency, I feed Prometheus metrics into KEDA to trigger scale-out events early, while tuning cooldown windows to prevent rapid pod thrashing.",
+  "out": 62,
+  "finish": "STOP",
+  "shape": [
+   "prose(51w)"
+  ],
+  "cues": [],
+  "offers": [],
+  "w": [
+   51,
+   51,
+   51,
+   51,
+   51,
+   51
+  ]
+ }
+]

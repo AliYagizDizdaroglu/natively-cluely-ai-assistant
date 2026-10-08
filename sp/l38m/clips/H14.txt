@@ -1,0 +1,1 @@
+A CloudFormation update fails halfway and rolls back, but the rollback fails too. What do you do?

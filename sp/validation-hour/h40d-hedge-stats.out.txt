@@ -1,0 +1,19 @@
+h40c hedge stats: C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-10-02T11-39-41-h40d
+verbal hedge flag at startup (read before the run's own window, I2): on trigger=5000ms
+answer-dispatch windows (dispatch + supersede starts): 45
+hedge lines: front=45 won-by=45 back-started=9 no-answer=0 (of which front-empty/back-empty: 0)
+redirects (a second front= line inside one window, both legs having failed): 0 (0 of 45 windows)
+back-start reasons: {"trigger":9}
+winner split by model (won-by lines, global count, descriptive only): {"gemini-3.5-flash-lite":39,"gemini-3.1-flash-lite":6}
+other= counts: {"not-started":36,"aborted":9}
+answering model per window, won-by line or "none" (N10 — never the stale head label): {"gemini-3.5-flash-lite":38,"gemini-3.1-flash-lite":6,"none":1}
+answer failures (I4/N5, R2 resolutions folded in): 0 = 0 clean (a failure line with no won-by at all) + 0 resolved-ambiguous (raw Stream-failed lines: 0)
+windows with BOTH a failure line and a won-by line, resolved via that window's own [Answer] full: text, never assumed (R2): 0 total — 0 a real failure (charged above), 0 a real delivered answer (not charged), 0 UNRESOLVED (no [Answer] full: line in the window)
+first token n=44 median=4.878s p90=9.834s (covers 44 of 44 won-by windows, floor 90%, R6)
+rule 2 vs h40b, ALWAYS computed and reported, VOID included (C1) (median<=6.026s, p90<=13.608s, failures<=0): median PASS, p90 PASS, failures PASS; verdict: PASS
+playback start 13:33 local — IN WINDOW 12:00-15:00
+hedge runs (front= line count, the VOID(c) and front-coverage denominator, N1): 45; front-error share of them: 0%
+rule 1 — mechanical eligibility (C1, VOID not FAIL): not void
+rule 1 — 3.5-lite share, REPORTED ONLY, never gating (I3: numerator = windows whose last won-by is exactly gemini-3.5-flash-lite; denominator = windows with a won-by line): 38 of 44 (86%)
+
+[exit 0]

@@ -1,0 +1,14 @@
+fix(pass-record): a run flown with the hedge says so
+
+The pass record named the in-app model from "Default Model set to", so an
+hour flown with NATIVELY_VERBAL_HEDGE=1 would have been recorded as
+gemini-3.1-flash-lite although 3.5-flash-lite starts first and writes
+most answers. The record now reads the app's `[Main] verbal hedge:`
+startup line into meta.verbalHedge and, when it is present, renders one
+"Verbal hedge" line; with the hedge on and a lite primary the in-app
+model reads "hedge (gemini-3.5-flash-lite front, gemini-3.1-flash-lite
+back)". Runs without the line (every run before da28f25) render byte for
+byte as before, and their INDEX rows are unchanged. The parse is tested
+against describeVerbalHedgeAtStartup's own output.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

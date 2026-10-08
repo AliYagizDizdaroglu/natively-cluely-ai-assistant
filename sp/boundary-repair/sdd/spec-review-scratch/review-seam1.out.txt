@@ -1,0 +1,8 @@
+finals speechFinal: {"true":23,"false":52}; cuts followed by a final: 23
+{"TAIL1 sf=false":1,"NORMAL sf=false":17,"OTHER sf=false":1,"REPAIRED sf=false":4}
+S1Q01F#1  TAIL1    LOST     sf=false strict   emptyFinalsBetween=0 gap=4621 |T|=1 
+S2Q07#1   OTHER    LOST     sf=false tolerant emptyFinalsBetween=0 gap=3201 |T|=3 
+M13#1     REPAIRED LOST     sf=false strict   emptyFinalsBetween=0 gap=1692 |T|=2 restored=["infrastructure"] 
+S2Q07#3   REPAIRED LOST     sf=false tolerant emptyFinalsBetween=0 gap=3190 |T|=2 restored=["service"] 
+S2Q07#4   REPAIRED LOST     sf=false tolerant emptyFinalsBetween=0 gap=3207 |T|=2 restored=["service"] 
+S2Q07#5   REPAIRED LOST     sf=false strict   emptyFinalsBetween=0 gap=2999 |T|=3 restored=["support"] 

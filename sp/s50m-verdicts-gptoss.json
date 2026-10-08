@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly ties XGBoost's missing-value handling, imbalance and latency to the constraints, and names a logistic-regression baseline."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Back-solves 4,750 flagged from the reported precision instead of using the definitional 5,000 band, so the 57-vs-60 check is skipped."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names holdout control, difference-in-differences and propensity adjustment, directly separating model effect from seasonality and mix."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Formulas and all three edge cases are right, but the symbolic run of equals signs and slashes needs verbalizing."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "The 30-day embargo between train cutoff and validation start plus train-only ColumnTransformer fit is exactly the leakage-safe answer."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Point-in-time filter is right, but describing the event predicates as a filter alongside a LEFT JOIN would drop the zero-call customers."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every named stage and correctly identifies the shared feature store and registry, but runs roughly 160 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Deterministic hash assignment, immutable prediction log and delayed outcome join are all sound, but the answer is far over length."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service is correctly placed with an operational reason, but at roughly 155 words it is far too long."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, AAD token auth to Postgres, Key Vault fallback and per-environment isolation all correct, but well over length."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All eight stages accurately described, but the stage-label-colon format and 150-word length give a stilted spoken register."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives unit, denominator, construction and uncertainty for all three metrics; long and the plus-minus figures need verbalizing."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "States the right justification criterion and contrasts all three approaches crisply in natural spoken length."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Exact RRF formula, one-based ranks, configurable constant and deterministic tie-break all covered; the inline fraction needs speaking out."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Greedy relevance sort with budget fit, id dedup and two-per-document cap covers every stated requirement in speakable prose."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, per-case wait_for timeout, indexed result slots and isolated failures address all four constraints correctly."
+  },
+  "S2Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Design is sound but an inverted index is mislabelled as mapping document ids to embedding vectors for similarity search."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-column versioning, CDC dual-write, offline comparison and instant rollback cover all six parts, but it is over length."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "All seven Azure components placed idiomatically and the managed-versus-custom tradeoff answered in a natural sixty words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Duplicate detection, deterministic message id, transactional processed flag and complete-after-write make the crash case genuinely idempotent."
+  }
+}

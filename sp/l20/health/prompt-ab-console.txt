@@ -1,0 +1,32 @@
+wav formats: {"S2Q08":{"rate":24000,"ch":1,"bits":16},"S1Q04":{"rate":24000,"ch":1,"bits":16},"S2Q01":{"rate":24000,"ch":1,"bits":16},"S1Q02":{"rate":24000,"ch":1,"bits":16}}
++32.00s [S2Q08 full] close {"code":1011,"reason":"Internal error encountered."}
++64.32s [S2Q08 minimal] close {"code":1011,"reason":"Internal error encountered."}
++115.69s [S1Q04 minimal] close {"code":1011,"reason":"Internal error encountered."}
++187.50s [S1Q04 full] close {"code":1011,"reason":"Internal error encountered."}
++209.84s [S2Q01 full] close {"code":1011,"reason":"Internal error encountered."}
++238.55s [S2Q01 minimal] close {"code":1011,"reason":"Internal error encountered."}
++271.46s [S1Q02 minimal] first word 2485 ms after clip end
++302.26s [S1Q02 minimal] close {"code":1000,"reason":""}
++336.32s [S1Q02 full] first word 3346 ms after clip end
++363.77s [S1Q02 full] close {"code":1000,"reason":""}
+
+id      arm      first word  words  thoughts  close
+S2Q08   full             -      0         -  1011 Internal error encountered.
+        heard: Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throug
+S2Q08   minimal          -      0         -  1011 Internal error encountered.
+        heard: Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throug
+S1Q04   minimal          -      0         -  1011 Internal error encountered.
+        heard: Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return preci
+S1Q04   full             -      0         -  1011 Internal error encountered.
+        heard: Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return preci
+S2Q01   full             -      0         -  1011 Internal error encountered.
+        heard: Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those
+S2Q01   minimal          -      0         -  1011 Internal error encountered.
+        heard: Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those
+S1Q02   minimal      2.5 s     67       310  1000 
+        heard: Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same 
+S1Q02   full         3.3 s     58       942  1000 
+        heard: Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same 
+full: answered 1/4; abnormal closes 3
+minimal: answered 1/4; abnormal closes 3
+wrote C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/l20/health/prompt-ab-2026-09-28T15-26-13-969Z.json

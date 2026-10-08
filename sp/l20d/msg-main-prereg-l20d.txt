@@ -1,0 +1,9 @@
+docs(passes): pre-register L20d, 3.8 Live with a short instruction written for Live
+
+Written before any L20d audio. The user reopened L20c ("start with this now"): one short instruction (sha256
+e29bf381...1f3f) replaces the app's text-model prompt, on L20c's 38 items, three runs, graded in one blind batch
+with the app's same four s50m samples and L20c's old Live answers as a reported-only anchor. PROCEED (a fast-starter
+design spec) needs quality, band, safety, reliability and speed; the user kept reliability and speed in the rule
+(amendment 1, "A, keep both"). Opus reviewed it before data; its fixes are visible as amendments 2-12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

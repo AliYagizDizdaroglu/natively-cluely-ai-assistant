@@ -1,0 +1,17 @@
+fix(chat): a typed answer carries no cue block
+
+gemini-chat-stream sent the hands-free verbal prompt, which ends with CUE_RULE,
+and forwards raw tokens to the bubble with nothing stripping the block (cue
+mode v1, never shipped). The verbal prompt without the rule is now its own
+export, VERBAL_TYPED_PROMPT — byte for byte what MAIN ships today — and the
+hands-free prompt is derived from it plus CUE_RULE so the two cannot drift;
+both typed branches send the typed one, pinned by a source-text test because
+the handler has no unit harness.
+
+Also, from Task 1's review and the final review: the bullet's position under
+the block's rules is pinned, the shape comment cites the committed
+pre-registration (passes/PREREGISTER-spike6.md), and three doc comments say
+what the code does (the cap is CUE_MAX_WORDS; trimCues caps, the engine logs;
+the sentinel opens hands-free answers only).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

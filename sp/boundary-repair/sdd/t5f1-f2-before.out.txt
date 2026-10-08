@@ -1,0 +1,3 @@
+﻿[as expected] v1 (before F2) + the `>` mutant: the gap, it survives: 0 failed | 5 passed (5); failing: none
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true
+scenarios that differed from the prediction: 0

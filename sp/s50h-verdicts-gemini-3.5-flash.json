@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic all correct (9,500 churners, 5,000 flagged, 2,850 TP, 30% recall, 57% precision) and answers consistency, but stray dollar signs before counts need editing before speaking."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct point-in-time logic: left join with window and ingested-at predicates in the ON clause, count of an events column giving zero for non-matches; runs past 85 words."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers all four asked sub-parts (index namespaces, Postgres metadata and citation offsets, ACL pre-filter, LLM-as-judge eval) soundly, but is well over the spoken length target."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service is correctly placed for its role and the managed-versus-custom tradeoff is argued, but at roughly 135 words it is far too long to say."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names the right mechanisms for repeat-safety: peek-lock with deterministic MessageIds, idempotent upserts on deterministic chunk IDs, and a durable processed-chunk check; concise and natural."
+  }
+}

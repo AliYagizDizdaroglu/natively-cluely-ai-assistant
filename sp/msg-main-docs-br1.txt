@@ -1,0 +1,11 @@
+docs(passes): br1's record, and the four offline 3.8 Live tests (ET10, ET10b, L20, L20b)
+
+br1 is the scenario50 S1+S2 app hour on 0ef42a0, flown 2026-09-30 13:30 for
+the Deepgram boundary repair. Its record is ungraded (the probe has no answer
+arms), and its INDEX row reads "unknown" for roster and commit because only a
+flight writes that metadata. The four offline tests of gemini-3.8-live as the
+answerer get their pre-registrations and result notes in h40c's layout; they
+have no INDEX row (the index is generated from flight folders only). L20b's
+result carries one appended times-only note.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

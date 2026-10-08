@@ -1,0 +1,3 @@
+electron/test/golden/passes/2026-10-01-l38h-result.md
+electron/test/golden/passes/PREREGISTER-l38h.md
+electron/test/golden/passes/2026-10-01-live-router-summary.md

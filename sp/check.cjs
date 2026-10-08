@@ -1,0 +1,14 @@
+const fs = require('fs');
+const dir = 'C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-09-12T08-22-49-s50c/';
+const v = JSON.parse(fs.readFileSync(dir + 'interview60.judge.verdicts.gemini-3.5-flash-lite.json', 'utf8'));
+const p = JSON.parse(fs.readFileSync(dir + 'interview60.judge.pairs.gemini-3.5-flash-lite.json', 'utf8'));
+const keys = Object.keys(v);
+console.log('parsed OK; verdict keys =', keys.length, '; items =', p.items.length);
+console.log('missing:', p.items.map(i => i.key).filter(k => !(k in v)).join(',') || 'none');
+console.log('extra:', keys.filter(k => !p.items.some(i => i.key === k)).join(',') || 'none');
+console.log('shape ok:', keys.every(k => ['correctness', 'on_topic', 'delivery'].every(f => Number.isInteger(v[k][f]) && v[k][f] >= 0 && v[k][f] <= 2) && typeof v[k].reason === 'string'));
+console.log('correctness2 AND on_topic2:', keys.filter(k => v[k].correctness === 2 && v[k].on_topic === 2).length);
+const zero = keys.filter(k => v[k].correctness === 0 || v[k].on_topic === 0);
+console.log('correctness0 OR on_topic0:', zero.length, zero.join(',') || '');
+const tot = keys.map(k => [k, v[k].correctness + v[k].on_topic + v[k].delivery]).sort((a, b) => a[1] - b[1]);
+console.log('lowest totals:', tot.slice(0, 8).map(x => x[0] + '=' + x[1]).join(' '));

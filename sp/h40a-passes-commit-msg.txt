@@ -1,0 +1,16 @@
+passes: h40a holdout40 baseline, graded
+
+The first hour on holdout40 (45 items, never tuned on), flown on the
+shipped default: 3.1-flash-lite LOW with the 3.5-flash-lite HIGH
+fallback, commit 32230a2. 45/45 heard and answered hands-free, 0
+doubles, TTFT p90 7.8 s. Graded by claude-opus-5-5, read from all 14
+grading transcripts; prompt 8564ba96369a.
+
+In-app 39 of 45 acceptable (mains 29/33, follow-ups 10/12), 2 wrong:
+R09, a SQL question the app answered with a negotiation-coaching card
+after classifying "salary" as negotiation, and R02F. On the 44 captured
+ids the live hour (39) sits inside the 3.1-lite LOW twin band 41/39/39;
+the 3.5-lite HIGH reps 37/42/38 overlap it. A baseline: bands, no pass
+rule.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

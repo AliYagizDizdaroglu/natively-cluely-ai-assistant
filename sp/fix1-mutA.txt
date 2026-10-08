@@ -1,0 +1,63 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+ ❯ electron/ipcHandlers.typedPrompt.test.ts (2 tests | 2 failed) 30ms
+   × gemini-chat-stream sends the typed verbal prompt > names a verbal prompt or the cue rule in exactly three lines: the typed import and its two verbal branches 22ms
+     → expected [ …(3) ] to deeply equal [ …(3) ]
+   × gemini-chat-stream sends the typed verbal prompt > sends that variable: every line that names it is its declaration, the knowledge branch and the one call 5ms
+     → expected [ …(3) ] to deeply equal [ …(3) ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/ipcHandlers.typedPrompt.test.ts > gemini-chat-stream sends the typed verbal prompt > names a verbal prompt or the cue rule in exactly three lines: the typed import and its two verbal branches
+AssertionError: expected [ …(3) ] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+  Array [
+    "import { VERBAL_TYPED_PROMPT } from \"./llm/prompts\"",
+-   "let verbalSystemPrompt = VERBAL_TYPED_PROMPT;",
++   "let verbalSystemPrompt = VERBAL_WHAT_TO_ANSWER_PROMPT;",
+    "verbalSystemPrompt = `${kr.systemPromptInjection}\\n\\n${VERBAL_TYPED_PROMPT}`;",
+  ]
+
+ ❯ electron/ipcHandlers.typedPrompt.test.ts:22:81
+     20|     it('names a verbal prompt or the cue rule in exactly three lines: …
+     21|         // the hands-free prompt, CUE_RULE or the sentinel reaching th…
+     22|         expect(mentioning(/VERBAL_\w+_PROMPT|CUE_RULE|CUES_SENTINEL|__…
+       |                                                                                 ^
+     23|             'import { VERBAL_TYPED_PROMPT } from "./llm/prompts"',
+     24|             'let verbalSystemPrompt = VERBAL_TYPED_PROMPT;',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  electron/ipcHandlers.typedPrompt.test.ts > gemini-chat-stream sends the typed verbal prompt > sends that variable: every line that names it is its declaration, the knowledge branch and the one call
+AssertionError: expected [ …(3) ] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+  Array [
+-   "let verbalSystemPrompt = VERBAL_TYPED_PROMPT;",
++   "let verbalSystemPrompt = VERBAL_WHAT_TO_ANSWER_PROMPT;",
+    "verbalSystemPrompt = `${kr.systemPromptInjection}\\n\\n${VERBAL_TYPED_PROMPT}`;",
+    "stream = llmHelper.streamVerbalWithGeminiFlash(userContent, verbalSystemPrompt, undefined, selectedModel);",
+  ]
+
+ ❯ electron/ipcHandlers.typedPrompt.test.ts:30:84
+     28|     it('sends that variable: every line that names it is its declarati…
+     29|         // a line that re-assigns or wraps the prompt between the pin …
+     30|         expect(mentioning(/\bverbalSystemPrompt\b|streamVerbalWithGemi…
+       |                                                                                    ^
+     31|             'let verbalSystemPrompt = VERBAL_TYPED_PROMPT;',
+     32|             'verbalSystemPrompt = `${kr.systemPromptInjection}\\n\\n${…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  21:20:54
+   Duration  3.84s (transform 79ms, setup 0ms, collect 69ms, tests 30ms, environment 2.13s, prepare 239ms)
+

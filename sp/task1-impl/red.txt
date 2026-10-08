@@ -1,0 +1,360 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must the arms > suppresses a fenced block and keeps the prose around it
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must the arms > suppresses it when the text arrives one character at a time
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+ ❯ electron/llm/verbalStreamFilter.test.ts (105 tests | 13 failed) 257ms
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > reports the cues and releases the prose as soon as a partial line cannot be a cue line (final review I2, Appendix B) 31ms
+     → expected 4 to be 2 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > a paragraph with no newline at chunk size 1: the report fires on the chunk that carries the first prose character, the prose streams, the whole equals extractCues 3ms
+     → expected 143 to be 61 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > a paragraph with no newline at chunk size 3: the report fires on the chunk that carries the first prose character, the prose streams, the whole equals extractCues 2ms
+     → expected 48 to be 21 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > a paragraph with no newline at chunk size 4: the report fires on the chunk that carries the first prose character, the prose streams, the whole equals extractCues 2ms
+     → expected 36 to be 16 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > a paragraph with no newline at chunk size 7: the report fires on the chunk that carries the first prose character, the prose streams, the whole equals extractCues 2ms
+     → expected 21 to be 9 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — prose: closes 3ms
+     → expected 3 to be 2 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — prose that starts with a number: closes 3ms
+     → expected 3 to be 2 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — prose that starts with a count: closes 2ms
+     → expected 3 to be 2 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — prose that starts with a year: closes 3ms
+     → expected 3 to be 2 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — prose with a digit start and a bar later: closes 2ms
+     → expected 3 to be 2 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — a numbered list marker: closes 2ms
+     → expected 3 to be 2 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — a bullet: closes 1ms
+     → expected 3 to be 2 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > text on the sentinel's own line: a cue there is held to its newline, prose there closes the block at once 20ms
+     → expected { out: [ 'Ten million\nZ' ], …(3) } to deeply equal { out: [ 'Ten', ' million\nZ' ], …(3) }
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > A. the front wins with a chunked cue block: cues once, block gone, prose intact, winner named (hedge)
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 5ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > A. the front wins with a chunked cue block: cues once, block gone, prose intact, winner named (hedge)
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > A0. control: the same answer with NO block reports [] once, so the assertion above is not vacuous
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 3ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > A0. control: the same answer with NO block reports [] once, so the assertion above is not vacuous
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > B. the back wins after the trigger: cues once, the front is aborted, winner named 3.1-lite (hedge)
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > B. the back wins after the trigger: cues once, the front is aborted, winner named 3.1-lite (hedge)
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > B. the back wins after the trigger: cues once, the front is aborted, winner named 3.1-lite (hedge)
+[LLMHelper] verbal hedge: back started at 5000ms reason=trigger
+[LLMHelper] verbal hedge: won by gemini-3.1-flash-lite at 5000ms; other=aborted
+[Answer] budget: words=19 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > C. both legs 503, the redirected answer carries the block: cues once
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: back started at 2ms reason=front-error
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > C. both legs 503, the redirected answer carries the block: cues once
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[LLMHelper] verbal hedge: gemini-3.5-flash-lite failed before its first token: got status: 503 Service Unavailable
+[LLMHelper] verbal hedge: no answer - front error, back error
+[WhatToAnswerLLM] verbal primary failed before first token (got status: 503 Service Unavailable) — redirecting to gemini-3.5-flash-lite
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D. the once-guard holds across the fallback: the first stream reports, dies with no prose, the redirect must not report again
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 2ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D. the once-guard holds across the fallback: the first stream reports, dies with no prose, the redirect must not report again
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[WhatToAnswerLLM] verbal primary failed before first token (socket hang up) — redirecting to gemini-3.1-flash-lite
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D2. a stream that dies after its first prose chunk was shown is not redirected: one report with its own cue, its words, then the error
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 2ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D2. a stream that dies after its first prose chunk was shown is not redirected: one report with its own cue, its words, then the error
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[WhatToAnswerLLM] verbal primary failed before first token (socket hang up) — redirecting to gemini-3.1-flash-lite
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D3. a stream that dies after the early close but before its first words clear the filters is redirected: its cue over the redirect's prose
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D3. a stream that dies after the early close but before its first words clear the filters is redirected: its cue over the redirect's prose
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[WhatToAnswerLLM] verbal primary failed before first token (socket hang up) — redirecting to gemini-3.1-flash-lite
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > E. hedge OFF (NATIVELY_VERBAL_HEDGE=0), the old stall race: cues once, so both policies feed the same chain
+[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > E. hedge OFF (NATIVELY_VERBAL_HEDGE=0), the old stall race: cues once, so both policies feed the same chain
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+ ❯ electron/llm/WhatToAnswerLLM.hedgeCues.test.ts (8 tests | 2 failed) 334ms
+   × hedge x cue mode > D2. a stream that dies after its first prose chunk was shown is not redirected: one report with its own cue, its words, then the error 53ms
+     → expected [ 'gemini-3.5-flash-lite', …(1) ] to deeply equal [ 'gemini-3.5-flash-lite' ]
+   × hedge x cue mode > D3. a stream that dies after the early close but before its first words clear the filters is redirected: its cue over the redirect's prose 27ms
+     → expected "spy" to be called with arguments: [ [ 'first stream cue a' ] ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+    Array [
+-     "first stream cue a",
++     "thirty gigabytes in float32",
++     "int8, then shard",
+    ],
+  ]
+
+
+Number of calls: 1
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > reports the cues and releases the prose as soon as a partial line cannot be a cue line (final review I2, Appendix B)
+AssertionError: expected 4 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 4
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:616:33
+    614|     it('reports the cues and releases the prose as soon as a partial l…
+    615|         const r = await runCuesTimed(['__CUES__\n1| a\n', 'Ten ', 'mil…
+    616|         expect(r.reportedAfter).toBe(2);                           // …
+       |                                 ^
+    617|         expect(r.out).toEqual(['Ten ', 'million ', 'vectors.']);   // …
+    618|         expect(r.cues).toEqual(['a']);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > a paragraph with no newline at chunk size 1: the report fires on the chunk that carries the first prose character, the prose streams, the whole equals extractCues
+AssertionError: expected 143 to be 61 // Object.is equality
+
+- Expected
++ Received
+
+- 61
++ 143
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:629:33
+    627|         const r = await runCuesTimed(chunks);
+    628|         const firstProseChunk = Math.floor(NO_NL.indexOf('Ten') / size…
+    629|         expect(r.reportedAfter).toBe(firstProseChunk);                …
+       |                                 ^
+    630|         expect(r.out.join('')).toBe(extractCues(NO_NL).prose);
+    631|         expect(r.cues).toEqual(extractCues(NO_NL).cues);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > a paragraph with no newline at chunk size 3: the report fires on the chunk that carries the first prose character, the prose streams, the whole equals extractCues
+AssertionError: expected 48 to be 21 // Object.is equality
+
+- Expected
++ Received
+
+- 21
++ 48
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:629:33
+    627|         const r = await runCuesTimed(chunks);
+    628|         const firstProseChunk = Math.floor(NO_NL.indexOf('Ten') / size…
+    629|         expect(r.reportedAfter).toBe(firstProseChunk);                …
+       |                                 ^
+    630|         expect(r.out.join('')).toBe(extractCues(NO_NL).prose);
+    631|         expect(r.cues).toEqual(extractCues(NO_NL).cues);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > a paragraph with no newline at chunk size 4: the report fires on the chunk that carries the first prose character, the prose streams, the whole equals extractCues
+AssertionError: expected 36 to be 16 // Object.is equality
+
+- Expected
++ Received
+
+- 16
++ 36
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:629:33
+    627|         const r = await runCuesTimed(chunks);
+    628|         const firstProseChunk = Math.floor(NO_NL.indexOf('Ten') / size…
+    629|         expect(r.reportedAfter).toBe(firstProseChunk);                …
+       |                                 ^
+    630|         expect(r.out.join('')).toBe(extractCues(NO_NL).prose);
+    631|         expect(r.cues).toEqual(extractCues(NO_NL).cues);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > a paragraph with no newline at chunk size 7: the report fires on the chunk that carries the first prose character, the prose streams, the whole equals extractCues
+AssertionError: expected 21 to be 9 // Object.is equality
+
+- Expected
++ Received
+
+- 9
++ 21
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:629:33
+    627|         const r = await runCuesTimed(chunks);
+    628|         const firstProseChunk = Math.floor(NO_NL.indexOf('Ten') / size…
+    629|         expect(r.reportedAfter).toBe(firstProseChunk);                …
+       |                                 ^
+    630|         expect(r.out.join('')).toBe(extractCues(NO_NL).prose);
+    631|         expect(r.cues).toEqual(extractCues(NO_NL).cues);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — prose: closes
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — prose that starts with a number: closes
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — prose that starts with a count: closes
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — prose that starts with a year: closes
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — prose with a digit start and a bar later: closes
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — a numbered list marker: closes
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — a bullet: closes
+AssertionError: expected 3 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 3
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:662:33
+    660|     it.each(ROWS)('partial state — %s', async (_state, partial, rest, …
+    661|         const r = await runCuesTimed([HEAD, partial, rest]);
+    662|         expect(r.reportedAfter).toBe(reportedAfter);
+       |                                 ^
+    663|         expect(r.cues).toEqual(cues);
+    664|         expect(r.out.join('')).toBe(prose);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > text on the sentinel's own line: a cue there is held to its newline, prose there closes the block at once
+AssertionError: expected { out: [ 'Ten million\nZ' ], …(3) } to deeply equal { out: [ 'Ten', ' million\nZ' ], …(3) }
+
+- Expected
++ Received
+
+  Object {
+    "calls": 1,
+    "cues": Array [],
+    "out": Array [
+-     "Ten",
+-     " million
++     "Ten million
+  Z",
+    ],
+-   "reportedAfter": 1,
++   "reportedAfter": 2,
+  }
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:671:68
+    669|     it("text on the sentinel's own line: a cue there is held to its ne…
+    670|         expect(await runCuesTimed(['__CUES__ 1| Spa', 'ces\nZ'])).toEq…
+    671|         expect(await runCuesTimed(['__CUES__Ten', ' million\nZ'])).toE…
+       |                                                                    ^
+    672|         expect(extractCues('__CUES__Ten million\nZ')).toEqual({ cues: …
+    673|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/15]⎯
+
+ FAIL  electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D2. a stream that dies after its first prose chunk was shown is not redirected: one report with its own cue, its words, then the error
+AssertionError: expected [ 'gemini-3.5-flash-lite', …(1) ] to deeply equal [ 'gemini-3.5-flash-lite' ]
+
+- Expected
++ Received
+
+  Array [
+    "gemini-3.5-flash-lite",
++   "gemini-3.5-flash-lite",
+  ]
+
+ ❯ electron/llm/WhatToAnswerLLM.hedgeCues.test.ts:147:25
+    145|         const onCues = vi.fn();
+    146|         const chunks = await run(onCues);
+    147|         expect(asked()).toEqual(['gemini-3.5-flash-lite']);          /…
+       |                         ^
+    148|         expect(onCues).toHaveBeenCalledTimes(1);
+    149|         expect(onCues).toHaveBeenCalledWith(['first stream cue a']);  …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/15]⎯
+
+ FAIL  electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D3. a stream that dies after the early close but before its first words clear the filters is redirected: its cue over the redirect's prose
+AssertionError: expected "spy" to be called with arguments: [ [ 'first stream cue a' ] ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+    Array [
+-     "first stream cue a",
++     "thirty gigabytes in float32",
++     "int8, then shard",
+    ],
+  ]
+
+
+Number of calls: 1
+
+ ❯ electron/llm/WhatToAnswerLLM.hedgeCues.test.ts:167:24
+    165|         expect(asked()).toEqual(['gemini-3.5-flash-lite', 'gemini-3.5-…
+    166|         expect(onCues).toHaveBeenCalledTimes(1);
+    167|         expect(onCues).toHaveBeenCalledWith(['first stream cue a']);  …
+       |                        ^
+    168|         expect(spoken(chunks)).toContain('Ten million vectors take abo…
+    169|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/15]⎯
+
+ Test Files  2 failed (2)
+      Tests  15 failed | 98 passed (113)
+   Start at  20:20:35
+   Duration  13.24s (transform 2.76s, setup 0ms, collect 6.67s, tests 591ms, environment 8.83s, prepare 933ms)
+

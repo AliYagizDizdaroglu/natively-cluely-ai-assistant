@@ -1,0 +1,1 @@
+﻿& "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\register-once.ps1" -Name Natively-rd-predry -InMinutes 2 -Execute cmd.exe -Argument '/c ""C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\launch-rd-dry.cmd""' -WorkingDirectory "C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant" -LimitMinutes 30

@@ -1,0 +1,9 @@
+docs(passes): the Live router with a hard-path model (L38H) and a one-page router summary
+
+L38H: 3.8 Flash and 3.7 Flash on the hard path were not measurable on the free tier
+(3.8: 2 of 20 answered; 3.7: 3 of 10). With 3.5-lite HIGH: the router answered 10 of 12
+easy questions right at 0.8 s p50 and marked 10 of 10 hard ones hard; the hard path scored
+4-6 of 10 acceptable, 0 wrong, first token 4.4 s p50. The summary gathers L38R, L38F,
+L38P and L38H in one place. Spikes; none is a ship decision.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

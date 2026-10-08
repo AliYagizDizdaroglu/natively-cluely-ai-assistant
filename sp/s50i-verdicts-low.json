@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct tabular/missing-value and latency reasoning plus an explicit logistic-regression baseline, in natural spoken length."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic is right: 9,500 churners, 5,000 targeted, 2,850 true positives, 57 percent precision, 30 percent recall, consistent within rounding."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout plus difference-in-differences is the right way to separate model effect from seasonality and mix."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct precision, recall, lift and stable tie-break, and all three edge cases answered, but about 140 words."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split with a 30-day embargo and a ColumnTransformer pipeline fit on train only; embargo phrasing loose and roughly 95 words."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Left join with the type, window and ingested-at predicates in the join plus count of the event column preserves zero-call customers; about 90 words."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every stage and names the feature store as the shared component, but runs past 100 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Prediction logging, sticky hash assignment, 30-day windowed outcome join and retraining selection all addressed; roughly 115 words."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Azure service mapping is accurate across storage, compute, registry, ACR, AKS, Data Factory, Entra ID and App Insights; over 100 words."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC, Entra auth to PostgreSQL, Key Vault fallback, private endpoints and per-subscription separation; about 140 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every stage from parsing to generation and ties it to financial document work, but around 100 words."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Mostly solid definitions, but Cohen's Kappa is inter-annotator agreement, not an uncertainty estimate; also about 140 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Clear comparison of fixed retrieval, decomposition and dynamic agents with the cost and latency trade-off, but roughly 130 words."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accumulator map with one over c plus rank, descending sort and document id tie-break is exactly the requested fusion."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Greedy relevance-first with a seen-id set, per-document counter and skip-on-overflow matches every stated constraint, spoken concisely."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, per-case try-catch, race-based timeout and ordered await cover concurrency, isolation and order."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-partitioned index, PostgreSQL metadata, pre-filtered ACLs, async queue and RAGAS evaluation all covered, but about 160 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioning, backfill, dual-write sync, A/B quality comparison, gradual cutover and config rollback all present, but close to 185 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Blob, Event Grid, Service Bus, Container Apps, AI Search, Azure OpenAI and App Insights fit, with a justified custom worker; over 110 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Idempotency key in durable state, atomic write plus state update, and ack only after commit is the right at-least-once pattern; about 125 words."
+  }
+}

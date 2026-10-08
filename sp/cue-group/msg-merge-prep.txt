@@ -1,0 +1,14 @@
+merge: cue mode (feat/whole-turn-answers at 8a13abb) into fix/coding-style-suffix-all-gemini at fed4b07
+
+PREP branch merge/cue-mode-prep, not MAIN's branch. It lands on MAIN only if
+the 2026-10-01 05:00 cue re-smoke and the cue bench both pass, after an Opus
+merge review (the user's rule, 2026-09-30).
+
+The merge is textually clean. Since the merge base 0ef42a0, MAIN gained only
+four docs commits (e3db5cb, c7e991d, ee5f8ac, fed4b07: 14 files under
+electron/test/golden/passes/). So the merged tree equals the cue head 8a13abb
+everywhere outside passes/ (checked: empty diff): the code that lands is the
+code the re-smoke flies. The cue branch touches none of the files the user
+keeps modified in MAIN's working tree.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

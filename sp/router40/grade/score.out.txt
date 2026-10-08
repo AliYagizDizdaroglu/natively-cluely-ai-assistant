@@ -1,0 +1,45 @@
+READING 2: NOT SAFE  (AF answered 1; wrong R 2 vs L 0)
+numbers: acc A 37, L 43, R 41, ORACLE 42; wrong L 0, R 2
+
+quality (acceptable / answered / wrong, per group)
+  group                            A               L               R          ORACLE
+  EASY                 18/20/0 of 20   19/20/0 of 20   19/20/0 of 20   18/20/0 of 20
+  HARD standalone       7/11/1 of 11    8/11/0 of 11    8/11/0 of 11    8/11/0 of 11
+  HARD follow-up       12/15/0 of 16   16/16/0 of 16   14/16/2 of 16   16/16/0 of 16
+  HARD (both)          19/26/1 of 27   24/27/0 of 27   22/27/2 of 27   24/27/0 of 27
+  ALL                  37/46/1 of 47   43/47/0 of 47   41/47/2 of 47   42/47/0 of 47
+
+routing by live40 class (nine class columns)
+  row                   answer      hard    silent   missing   apology malformed       cut     early  too-long   n
+  E                         19         1         0         0         0         0         0         0         0  20
+  H                          1        10         0         0         0         0         0         0         0  11
+  QF                         1         8         0         0         0         0         0         0         0   9
+  AF                         1         6         0         0         0         0         0         0         0   7
+
+routing by live40 group
+  row                   answer      hard    silent   missing   apology malformed       cut     early  too-long   n
+  EASY                      19         1         0         0         0         0         0         0         0  20
+  HARD standalone            1        10         0         0         0         0         0         0         0  11
+  HARD follow-up             2        14         0         0         0         0         0         0         0  16
+
+routing by l38base consensus label
+  row                   answer      hard    silent   missing   apology malformed       cut     early  too-long   n
+  EASY                       5         1         0         0         0         0         0         0         0   6
+  HARD                      17        24         0         0         0         0         0         0         0  41
+  split                      0         0         0         0         0         0         0         0         0   0
+EASY caught 19/20; AF answered 1/7; QF answered 1/9; H answered 1/11; exact "hard" on HARD 24/27; HARD not answered 24/27 (denominators exclude missing); M 0 []
+
+latency (seconds)
+  Live first text on R's answered items: n 22, p50 0.72, p90 1.18; A on the same items: p50 1.06, p90 1.45
+  "hard" decision time: n 25, p50 0.80, p90 1.63
+  L TTFT on R's answered items: p50 6.47, p90 13.08; by group: EASY 8.63/13.08; HARD standalone 4.81/12.02; HARD follow-up 3.98/11.44; ALL 4.43/12.02
+  lead = p50 L TTFT - p50 Live first text on R's answered items = 5749 ms
+  composed R first text: parallel p50 1.58 p90 11.37; serial p50 3.46 p90 11.80
+
+misroute costs
+  false EASY (a HARD item R answered), AF first then H then QF: RH10[AF] dAcc -1 dWrong 1; RH05[H] dAcc 0 dWrong 0; RH08[QF] dAcc -1 dWrong 1
+  false HARD (an EASY item not answered): 1; RE09(hard) latency cost 3.30 s, L acc vs A acc
+
+paired lists: R vs L differ on [RH08,RH10]; R vs A differ on HARD [EF03,RH08,RH19,RH14,RH17,RH16,RH18]; A vs L differ on [RE01,EF03,RH10,RH19,RH14,RH17,RE14,RH16,RH18,RE19]
+health: {"chains":31,"retried":1,"abnormalAttempts":1,"closes":{"1000":31,"1006":1},"missing":0}
+test-retest of A: 41/46 items graded the same (original 36/46 acceptable, new 37/46); different [RE08,EF03,RH05,RH17,RE19]

@@ -1,0 +1,306 @@
+guard-h40d.mjs calibration - 2026-10-01 (instrument builder A; r4 section 7.4)
+
+SETUP
+  guard under test: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\guard-h40d.mjs (the real file, run as a child; cwd = the stub tree or MAIN's root; node v22.19.0); sha256/16 c912a89b72e1009f
+  stub tree: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal - a throwaway git repo (never MAIN) built from REAL files of the cue worktree WT (tip c2fff1e, whose dist-electron is the combined cue build): its LLMHelper.ts, prompts.ts, IntentClassifier.ts, the golden roster/flight files and the dist-electron files the guard reads or requires; stub base commit 0d5c9e3
+  MAIN: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant (HEAD 73d7f01eb84e484c73a31d26e0bcbb0c9c65c912; the cue code head d83fdfe is d83fdfe13e81d7b5da55ec38fed6231f5fe7a745); MAIN and WT are only read
+  layout mirror C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal-layout: copies of the guard + its helpers in SP\validation-hour\-shaped folders; the faithful copy is byte-identical to the guard (sha256 equal)
+  every case: the child inherits this session's environment minus every NATIVELY_* name (the launcher's clean slate), plus NATIVELY_STT_PROVIDER=deepgram, NATIVELY_ROSTER=holdout40, NATIVELY_FLIGHT_COMMIT=<the stub HEAD> and --settings <the -on stub> unless the case says otherwise
+  a case counts as ok only if the exit code, the named check tag, the wanted message fragments (and the unwanted ones: no value is leaked) all read as expected, and a failing guard printed exactly one stderr line and no GUARD OK
+
+PURE PREDICATE CALIBRATION (guard-h40d-git-cal.mjs: captured status strings incl. the real capture of MAIN, no git call)
+  GIT_PATHSPEC = ["electron","src","premium","scripts","package.json","natively_debug.log.1"]; KNOWN_DIRTY has 7 paths
+  ok   1. the real captured status in the guard's own scope (MAIN today) is fully allowlisted :: got [] want []
+  ok   2. ... and the guard would quote these seven allowlisted paths present (r4's three tracked paths and h40c's four untracked scratch paths), in git's own order :: got ["electron/test/golden/interview60.chains.json","electron/test/golden/interview60.report.md","natively_debug.log.1","electron/test/golden/openrouter-probes/","e ...[394 more chars]
+  ok   3. the whole-tree capture: the three r4 paths and the four scratch paths are allowlisted; two stray untracked ROOT files are not (outside the guard's scope, so they never reach it) :: got ["resume_prompt.txt","retry_claude_print.bat"] want ["resume_prompt.txt","retry_claude_print.bat"]
+  ok   4. natively_debug.log.1 is allowlisted when it is shown :: got ["natively_debug.log.1"] want ["natively_debug.log.1"]
+  ok   5. empty status :: got [] want []
+  ok   6. empty status: nothing allowlisted present :: got [] want []
+  ok   7. a peer edit to a tracked source file alongside the known files is NOT allowlisted :: got ["electron/llm/verbalHedge.ts"] want ["electron/llm/verbalHedge.ts"]
+  ok   8. an untracked file outside the known list is NOT allowlisted :: got ["electron/llm/newFile.ts"] want ["electron/llm/newFile.ts"]
+  ok   9. the build script (scripts/, in scope since h40d) modified is NOT allowlisted :: got ["scripts/build-electron.js"] want ["scripts/build-electron.js"]
+  ok   10. package.json modified is NOT allowlisted :: got ["package.json"] want ["package.json"]
+  ok   11. a staged new file is NOT allowlisted :: got ["src/new.tsx"] want ["src/new.tsx"]
+  ok   12. a deleted tracked file is NOT allowlisted :: got ["electron/LLMHelper.ts"] want ["electron/LLMHelper.ts"]
+  ok   13. a file next to an allowlisted one with a similar name is NOT allowlisted :: got ["electron/test/golden/interview60.chains.json.bak"] want ["electron/test/golden/interview60.chains.json.bak"]
+  ok   14. an untracked file INSIDE an allowlisted untracked dir is reported by git as the dir (collapsed), which is allowlisted; a different dir is not :: got ["electron/test/golden/other-probes/"] want ["electron/test/golden/other-probes/"]
+  ok   15. a rename is read by its destination path :: got [] want []
+  ok   16. a rename INTO a non-allowlisted path is reported :: got ["electron/llm/x.md"] want ["electron/llm/x.md"]
+  ok   17. CRLF line endings are stripped :: got [] want []
+  ok   18. the first line's leading status space survives (guard-br1's 2026-09-30 trim bug): a dirty FIRST line is still read from column 3 :: got ["electron/zz.ts"] want ["electron/zz.ts"]
+  ok   19. backslash paths are normalised :: got [] want []
+  PREDICATE CALIBRATION OK 19/19
+
+STUB TREE CASES (each breaks one premise of the correct environment A1)
+ok   A1  the correct environment (the hedge variable UNSET, every override cleared, the registered commit = the stub HEAD, a .env with an unrelated name, --settings the -on stub) -> GUARD OK
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\kmode-stubs\settings-on.json, mtime 2026-10-01T06:12:53.670Z), .env carries none of the guarded names, question detector unchanged, ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"]
+ok   A2  the same, run through the layout mirror (a byte-identical COPY of the guard in SP\validation-hour\-shaped folders, the copy the mutants and the fake dist-proofs use) -> GUARD OK
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-O ...[348 more chars]
+ok   B1  commit unset
+      exit 1 :: GUARD FAILED: (10b) NATIVELY_FLIGHT_COMMIT is not set - the launcher must set it to the commit this flight is registered for (the registered HEAD)
+ok   B2  commit wrong (forty zeros: a full hash that is not HEAD)
+      exit 1 :: GUARD FAILED: (10b) MAIN HEAD is 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, not the registered commit 0000000000000000000000000000000000000000 (NATIVELY_FLIGHT_COMMIT) - a peer or a later commit moved the tree since registration, or the merge has not landed
+ok   B3  commit abbreviated (the first 7 characters of the right hash)
+      exit 1 :: GUARD FAILED: (10b) NATIVELY_FLIGHT_COMMIT is "0d5c9e3", not a full 40-hex commit hash - the controller fills in the registered HEAD at arming
+ok   B4  commit = the launcher placeholder token (brief D: "make the placeholder impossible to run by accident")
+      exit 1 :: GUARD FAILED: (10b) NATIVELY_FLIGHT_COMMIT is "<REGISTERED_HEAD>", not a full 40-hex commit hash - the controller fills in the registered HEAD at arming
+ok   B5  commit with a trailing space (a cmd `set X=value ` artifact): trimmed, so the right commit still passes -> GUARD OK
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-O ...[348 more chars]
+ok   B6  tree dirty: a tracked source file under electron/ edited (a peer edit)
+      exit 1 :: GUARD FAILED: (10b) the tree the flight's rebuild will compile is not clean: electron/knowledge/IntentClassifier.ts
+ok   B7  tree dirty: an UNTRACKED file under electron/ that is not on the list
+      exit 1 :: GUARD FAILED: (10b) the tree the flight's rebuild will compile is not clean: electron/llm/newFile.ts
+ok   B8  tree dirty: the build script scripts/build-electron.js edited (in scope since h40d)
+      exit 1 :: GUARD FAILED: (10b) the tree the flight's rebuild will compile is not clean: scripts/build-electron.js
+ok   B9  tree dirty: an untracked file under src/
+      exit 1 :: GUARD FAILED: (10b) the tree the flight's rebuild will compile is not clean: src/new.tsx
+ok   B10 tree dirty: package.json edited
+      exit 1 :: GUARD FAILED: (10b) the tree the flight's rebuild will compile is not clean: package.json
+ok   B11 the MAIN-like allowlisted dirt only: the three tracked files r4 names modified, the four untracked scratch paths, two stray untracked root files and a tracked root doc edited (outside the scope) -> GUARD OK, the allowlisted paths named
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [electron/test/golden/interview60.chains.json, electron/test/golden/interview60.report.md, natively_debug.log.1, electron/test/golden/openrouter-probes/, electron/test/golden/openrouter.probe.mjs, electron/test/golden/zai-probes/, electron/test/golden/zai.probe.mjs], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\kmode-stubs\settings-on.json, mtime 2026-10-01T06:12:53.670Z), .env carries none of the guarded names, question detector unchanged, ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"]
+ok   B12 restored: after B6-B11 undid their edits the correct environment passes again (nothing is stuck)
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-O ...[348 more chars]
+ok   B13 the scope boundary, by design: ONLY a tracked root doc (README.md) edited and a stray untracked root file -> GUARD OK (neither can change the app; a spurious refusal at 13:30 would lose the flight)
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-O ...[348 more chars]
+ok   B14 r4 7.5: a chains run leaves an untracked electron/test/golden/interview60.chains.stale-1.json (gitignored by MAIN's own rule `electron/test/golden/*.stale-*.json`) -> GUARD OK
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-O ...[348 more chars]
+ok   B15 git unusable: the stub's .git moved aside, so `git rev-parse HEAD` fails
+      exit 1 :: GUARD FAILED: (10b) git rev-parse HEAD failed: Command failed: git -C C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal rev-parse HEAD fatal: not a git repository (or any of the parent directories): .git
+ok   E1  .env declares NATIVELY_VERBAL_HEDGE (a dummy value)
+      exit 1 :: GUARD FAILED: (10a) .env declares NATIVELY_VERBAL_HEDGE - this would reach the app and never reach this guard (see the header comment); remove it from .env before the flight
+ok   E2  .env declares NATIVELY_FOLLOWUP_PARENT in the `export NAME=` form
+      exit 1 :: GUARD FAILED: (10a) .env declares NATIVELY_FOLLOWUP_PARENT - this would reach the app and never reach this guard (see the header comment); remove it from .env before the flight
+ok   E3  .env declares NATIVELY_QUESTION_DETECTION_MODEL in the `NAME: value` form
+      exit 1 :: GUARD FAILED: (10a) .env declares NATIVELY_QUESTION_DETECTION_MODEL - this would reach the app and never reach this guard (see the header comment); remove it from .env before the flight
+ok   E4  .env declares two guarded names with CRLF line ends: both named, no value printed
+      exit 1 :: GUARD FAILED: (10a) .env declares NATIVELY_VERBAL_HEDGE_TRIGGER_MS, NATIVELY_GEMINI_THINKING_LEVEL - this would reach the app and never reach this guard (see the header comment); remove it from .env before the flight
+ok   E5  .env absent altogether -> still GUARD OK (the scan is not a requirement that a .env exist)
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-O ...[348 more chars]
+ok   E6  NATIVELY_QUESTION_DETECTION_MODEL set in the process environment
+      exit 1 :: GUARD FAILED: (10a) NATIVELY_QUESTION_DETECTION_MODEL is set - the pre-registration says the Groq question detector is unchanged; unset it
+ok   H1  the hedge variable set to 1
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set ("1") - h40d flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   H2  the hedge variable set to 0
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set ("0") - h40d flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   H3  the hedge variable set to a typo (abc)
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set ("abc") - h40d flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   H4  the hedge variable set to the empty string (what a spawn can leave; cmd's `set X=` unsets instead)
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set ("") - h40d flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   H5  the 09-26 build: verbalHedge.js with the OLD default (unset = off) -> the guard-br1 `hedge` check FAILS
+      exit 1 :: GUARD FAILED: (6) the built default is not the hedge: "[Main] verbal hedge: off", want "[Main] verbal hedge: on trigger=5000ms" - rebuild from a tree with the hedge default (f745d7e)
+ok   H6  the 09-26 stand-in itself (SP\guard-h40c-cal\...\verbalHedge.js, hand-copied then) as the built module -> FAILS
+      exit 1 :: GUARD FAILED: (6) the built verbalHedge.describeVerbalHedgeAtStartup threw on an empty environment: V2.describeVerbalHedgeAtStartup is not a function
+ok   H7  the hedge module missing from the dist
+      exit 1 :: GUARD FAILED: (6) dist-electron/electron/llm/verbalHedge.js does not load: Cannot find module 'C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal/dist-electron/electron/llm/verbalHedge.js' Require stack: - C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal/package.json. Run npm run build:electron.
+ok   T1  trigger override 1 ms
+      exit 1 :: GUARD FAILED: (7) the hedge trigger is 1ms, not the probed 5000ms - NATIVELY_VERBAL_HEDGE_TRIGGER_MS is set
+ok   T2  trigger override junk (abc): the built code refuses it
+      exit 1 :: GUARD FAILED: (7) NATIVELY_VERBAL_HEDGE_TRIGGER_MS refuses this environment: NATIVELY_VERBAL_HEDGE_TRIGGER_MS="abc" is not a positive whole number of milliseconds; unset it for the default
+ok   T3  trigger set to its own default (5000): the same behaviour the hour tests -> GUARD OK (only a different value refuses)
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-O ...[348 more chars]
+ok   F1  follow-up parent flag on
+      exit 1 :: GUARD FAILED: (8) the follow-up flag is set; h40d flies it OFF
+ok   F2  follow-up parent flag junk (abc): the built code refuses it
+      exit 1 :: GUARD FAILED: (8) NATIVELY_FOLLOWUP_PARENT refuses this environment: NATIVELY_FOLLOWUP_PARENT="abc" is not 1, 0 or unset
+ok   F3  the follow-up module missing from the dist
+      exit 1 :: GUARD FAILED: (8) dist-electron/electron/llm/followUpParent.js does not load: Cannot find module 'C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal/dist-electron/electron/llm/followUpParent.js' Require stack: - C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal/package.json. Run npm run build:electron.
+ok   O1  answer-model override (gemini-3.5-flash-lite)
+      exit 1 :: GUARD FAILED: (3) an answer-model override is set: gemini-3.1-flash-lite resolves to gemini-3.5-flash-lite
+ok   O2  thinking-level override (HIGH)
+      exit 1 :: GUARD FAILED: (3) the app would think at HIGH, not the shipped LOW - NATIVELY_GEMINI_THINKING_LEVEL is set
+ok   O3  answer-model override junk (bogus): the built code refuses it
+      exit 1 :: GUARD FAILED: (3) the answer-model override refuses this environment: NATIVELY_VERBAL_PRIMARY_MODEL="bogus" is not a model this build will answer with. Allowed: gemini-3.1-flash-lite, gemini-3.5-flash-lite. Unset the variable to use the selected model.
+ok   O4  thinking-level override junk (bogus): the built code refuses it
+      exit 1 :: GUARD FAILED: (3) the thinking-level override refuses this environment: NATIVELY_GEMINI_THINKING_LEVEL="bogus" is not a Gemini thinking level; use one of MINIMAL, LOW, MEDIUM, HIGH or leave it unset
+ok   R1  the wrong roster (scenario50)
+      exit 1 :: GUARD FAILED: (1) the harness would load roster scenario50, not holdout40 - NATIVELY_ROSTER did not arrive
+ok   R2  no roster variable at all (the harness default interview60)
+      exit 1 :: GUARD FAILED: (1) the harness would load roster interview60, not holdout40 - NATIVELY_ROSTER did not arrive
+ok   R3  a leftover NATIVELY_SCENARIOS=S1 (holdout40 has no scenarios: roster.mjs throws instead of running a shorter hour)
+      exit 1 :: GUARD FAILED: (1) roster.mjs does not load under this environment: NATIVELY_SCENARIOS names S1, which holdout40 does not have. Known: A1, A2, A3, A4, A5, A6, A7
+ok   R4  a roster name that does not exist (bogus)
+      exit 1 :: GUARD FAILED: (1) roster.mjs does not load under this environment: NATIVELY_ROSTER=bogus is not a roster. Known: interview60, scenario50, holdout40
+ok   R5  holdout40 with 44 items (a clean tree at a commit that drops one)
+      exit 1 :: GUARD FAILED: (1) holdout40 loaded 44 items, expected 45
+ok   M1  the build's default answer model changed (gemini-3.1-flash)
+      exit 1 :: GUARD FAILED: (2) the build's default answer model is gemini-3.1-flash, not gemini-3.1-flash-lite
+ok   M2  the build's stall fallback changed (gemini-3.5-flash)
+      exit 1 :: GUARD FAILED: (2) the build's stall fallback is gemini-3.5-flash, not gemini-3.5-flash-lite
+ok   M3  the model modules the guard requires missing from the dist (verbalPrimaryModel.js)
+      exit 1 :: GUARD FAILED: (2) dist-electron does not load: Cannot find module 'C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal/dist-electron/electron/llm/verbalPrimaryModel.js' Require stack: - C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal/package.json. Run npm run build:electron.
+ok   M4  the built LLMHelper.js missing
+      exit 1 :: GUARD FAILED: (2) cannot read dist-electron/electron/LLMHelper.js: ENOENT
+ok   L1  the 3.5-lite LOW->HIGH turn removed from the built thinking levels
+      exit 1 :: GUARD FAILED: (4) the gemini-3.5-flash-lite fallback would fly at a level it ignores
+ok   L2  the 3.1-lite primary turned off LOW in the built thinking levels
+      exit 1 :: GUARD FAILED: (4) gemini-3.1-flash-lite would not fly at LOW
+ok   K1  R09 in the dist: a bare "salary" negotiation term back in the build
+      exit 1 :: GUARD FAILED: (5) the build still lists bare "salary" as a negotiation term - rebuild after the R09 fix
+ok   K2  R09 in the dist: the phrase terms gone
+      exit 1 :: GUARD FAILED: (5) the build lacks the R09 phrase terms - rebuild after the R09 fix
+ok   K3  R09 in the SOURCE (a clean tree at a commit that reverts it)
+      exit 1 :: GUARD FAILED: (5) the source still lists bare "salary" as a negotiation term - the build would not match the tree the pass record names
+ok   G1  the hedge log line gone from the built LLMHelper.js
+      exit 1 :: GUARD FAILED: (6b) the build does not carry the hedge log line (verbal hedge: front=) - rebuild after the hedge lands
+ok   G2  streamGeminiWithHedge gone from the SOURCE (a clean tree at a commit that drops it)
+      exit 1 :: GUARD FAILED: (6b) the source does not carry streamGeminiWithHedge - the build would not match the tree the pass record names
+ok   G3  the hedge winner regex gone from the built WhatToAnswerLLM.js
+      exit 1 :: GUARD FAILED: (6b) the build does not carry the hedge winner regex (HEDGE_WINNER / \(hedge\)__) in WhatToAnswerLLM.js - rebuild after the hedge lands
+ok   S1  a stale build: electron/LLMHelper.ts newer than dist-electron/electron/LLMHelper.js
+      exit 1 :: GUARD FAILED: (9) dist-electron/electron/LLMHelper.js (2026-10-01T13:08:01.109Z) is older than electron/LLMHelper.ts (2026-10-01T13:08:56.245Z) - the build is stale, rebuild
+ok   N1  a Groq id added to ANSWER_MODELS (a clean tree at a commit that adds it)
+      exit 1 :: GUARD FAILED: (11) ANSWER_MODELS is ["gemini-3.1-flash-lite","gemini-3.5-flash-lite","groq/llama-3.3-70b-versatile"], not exactly ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"] - the arm-removal commit is not in this tree, or the export was renamed or reordered
+ok   N2  ANSWER_MODELS: a Groq id in place of the fallback
+      exit 1 :: GUARD FAILED: (11) ANSWER_MODELS is ["gemini-3.1-flash-lite","groq/llama-3.3-70b-versatile"], not exactly ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"] - the arm-removal commit is not in this tree, or the export was renamed or reordered
+ok   N3  ANSWER_MODELS reordered
+      exit 1 :: GUARD FAILED: (11) ANSWER_MODELS is ["gemini-3.5-flash-lite","gemini-3.1-flash-lite"], not exactly ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"] - the arm-removal commit is not in this tree, or the export was renamed or reordered
+ok   N4  ANSWER_MODELS export removed (the "no Groq id" reading would have passed this)
+      exit 1 :: GUARD FAILED: (11) ANSWER_MODELS is undefined, not exactly ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"] - the arm-removal commit is not in this tree, or the export was renamed or reordered
+ok   N5  interview60.flight.mjs that does not load (a syntax error)
+      exit 1 :: GUARD FAILED: (11) interview60.flight.mjs does not load under this environment: Unexpected token '}'
+ok   Q1  a dist WITHOUT CUE_LINE_PREFIX (the early close absent; every other cue marker present)
+      exit 1 :: GUARD FAILED: (12) the dist is not the combined cue build: dist-proof.mjs exit 1, 2 failing line(s): BAD filter x0 "CUE_LINE_PREFIX" | NOT THE COMBINED BUILD (1 check(s) failed)
+ok   Q2  the built filter without `function trimCues` (named by the guard's own sub-check, the dist-proof lines appended)
+      exit 1 :: GUARD FAILED: (12) the built filter (dist-electron/electron/llm/verbalStreamFilter.js) has no "function trimCues" - this is not the cue build; dist-proof.mjs exit 1, 2 failing line(s): BAD filter x0 "function trimCues" | NOT THE COMBINED BUILD (1 check(s) failed)
+ok   Q3  the SOURCE prompts.ts without a CUE_RULE declaration (a clean tree at a commit; the name survives in a comment, which must not count)
+      exit 1 :: GUARD FAILED: (12) the source electron/llm/prompts.ts does not declare CUE_RULE - the build would not match the tree the pass record names
+ok   Q4  the SOURCE prompts.ts without a VERBAL_TYPED_PROMPT declaration
+      exit 1 :: GUARD FAILED: (12) the source electron/llm/prompts.ts does not declare VERBAL_TYPED_PROMPT - the build would not match the tree the pass record names
+ok   Q5  a dist with the CUE_RULE changed (the benched rule's hash no longer reads 8e15e4e7dd41)
+      exit 1 :: GUARD FAILED: (12) the dist is not the combined cue build: dist-proof.mjs exit 1, 2 failing line(s): BAD CUE_RULE sha256/12 e90048368474 (the benched rule is 8e15e4e7dd41); ok limits 3 x 5 | NOT THE COMBINED BUILD (1 check(s) failed)
+ok   Q6  the built filter missing altogether
+      exit 1 :: GUARD FAILED: (12) cannot read dist-electron/electron/llm/verbalStreamFilter.js: ENOENT
+ok   Q7  a dist-proof that exits 0 and prints nothing (a replaced, no-op dist-proof: an exit code alone would pass it)
+      exit 1 :: GUARD FAILED: (12) the dist is not the combined cue build: dist-proof.mjs exited 0 but did not print its verdict line "DIST PROOF: THE COMBINED BUILD, every marker as expected" - it is not the dist-proof this guard was calibrated against
+ok   Q8  a dist-proof that prints the verdict but no filter sha
+      exit 1 :: GUARD FAILED: (12) dist-proof.mjs printed its verdict but no "filter sha256/16" line - it is not the dist-proof this guard was calibrated against
+ok   Q9  no dist-proof.mjs at all
+      exit 1 :: GUARD FAILED: (12) the dist is not the combined cue build: dist-proof.mjs exit 1; it crashed before its verdict: Error: Cannot find module 'C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal-layout\dp-missing\dist-proof.mjs'
+ok   W1  check 13: --settings the -off stub (knowledgeMode false)
+      exit 1 :: GUARD FAILED: (13) knowledge mode is not ON: knowledgeMode is false (the boolean true is required) in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\kmode-stubs\settings-off.json (mtime 2026-10-01T06:12:53.672Z) - turn Context ON in the user's own app
+ok   W2  check 13: --settings the -absent stub (no knowledgeMode key: main.ts restores nothing)
+      exit 1 :: GUARD FAILED: (13) knowledge mode is not ON: knowledgeMode is absent (main.ts restores nothing: knowledge mode OFF) in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\kmode-stubs\settings-absent.json (mtime 2026-10-01T06:12:53.674Z) - turn Context ON in the user's own app
+ok   W3  check 13: --settings the -on stub -> passes (GUARD OK, the mtime and the key printed)
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-O ...[348 more chars]
+ok   W4  check 13: --settings the -broken stub (not JSON): FAILED, and the file's text is not quoted
+      exit 1 :: GUARD FAILED: (13) cannot read the persisted settings C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\kmode-stubs\settings-broken.json: not valid JSON
+ok   W5  check 13: --settings a missing file
+      exit 1 :: GUARD FAILED: (13) cannot read the persisted settings C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\kmode-stubs\settings-missing.json: ENOENT
+ok   W6  check 13: knowledgeMode the STRING "true" is not the boolean true (r4: `=== true`; main.ts:687 would take any truthy value, the toggle only writes a boolean)
+      exit 1 :: GUARD FAILED: (13) knowledge mode is not ON: knowledgeMode is "true" (the boolean true is required) in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal-appdata\string-true.json (mtime 2026-10-01T13:07:43.626Z) - turn Context ON in the user's own app
+ok   W7  check 13: a settings file that is a JSON array
+      exit 1 :: GUARD FAILED: (13) C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal-appdata\array.json is not a JSON object
+ok   W8  check 13 default path: APPDATA = a folder whose natively\settings.json is ON, no --settings -> GUARD OK from %APPDATA%\natively\settings.json
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-O ...[375 more chars]
+ok   W9  check 13 default path: APPDATA = a folder whose natively\settings.json is OFF -> FAILED
+      exit 1 :: GUARD FAILED: (13) knowledge mode is not ON: knowledgeMode is false (the boolean true is required) in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal-appdata\off\natively\settings.json (mtime 2026-10-01T06:12:53.672Z) - turn Context ON in the user's own app
+ok   W10 check 13 default path: APPDATA unset and no --settings
+      exit 1 :: GUARD FAILED: (13) APPDATA is not set, so the persisted settings (%APPDATA%\natively\settings.json) cannot be found
+ok   W11 the real %APPDATA%\natively\settings.json via the admin share (INFORMATION: the reading depends on the user's own toggle, so it is recorded, not counted)
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in //localhost/C$/Users/sotka/AppData/Roaming/natively/settings.json, mtime 2026-09-12T00:09:43.918Z), .env carries none of the guarded names, question detector unchanged, ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"]
+ok   I1  a built module whose shape changed (geminiThinking.js no longer exports thinkingLevelForModel): the guard's own crash ends as ONE named line, not a stack trace
+      exit 1 :: GUARD FAILED: (internal) the guard itself crashed: TypeError: T.thinkingLevelForModel is not a function     at file:///C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/validation-hour/guard-h40d.mjs:112:7
+ok   Y1  a dist-proof child that outlives its timeout (a copy of the guard with the 120 s timeout cut to 1 ms): a named failure, not a hang
+      exit 1 :: GUARD FAILED: (12) the dist is not the combined cue build: could not run C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\guard-cal-layout\mutant-timeout-dp\dist-proof.mjs: spawnSync C:\Program Files\nodejs\node.exe ETIMEDOUT
+ok   Y2  git rev-parse that outlives its timeout (cut to 1 ms)
+      exit 1 :: GUARD FAILED: (10b) git rev-parse HEAD failed: spawnSync git ETIMEDOUT
+ok   Y3  git status that outlives its timeout (cut to 1 ms)
+      exit 1 :: GUARD FAILED: (10b) git status failed: spawnSync git ETIMEDOUT
+ok   U1  usage: --settings with no file
+      exit 1 :: GUARD FAILED: (usage) --settings needs a file
+ok   U2  usage: an unknown argument is refused, not ignored
+      exit 1 :: GUARD FAILED: (usage) unknown argument(s): --setings C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\kmode-stubs\settings-on.json (the only option is --settings <file>, for calibration)
+
+AGAINST MAIN'S ROOT (MAIN is pre-merge until later today: its dist is the 09-30 br1 build, not the cue build)
+ok   X1  MAIN's root, the plausible environment, NATIVELY_FLIGHT_COMMIT = the cue code head d83fdfe (a registered commit MAIN has not reached) -> FAILS at 10b: not merged yet
+      exit 1 :: GUARD FAILED: (10b) MAIN HEAD is 73d7f01eb84e484c73a31d26e0bcbb0c9c65c912, not the registered commit d83fdfe13e81d7b5da55ec38fed6231f5fe7a745 (NATIVELY_FLIGHT_COMMIT) - a peer or a later commit moved the tree since registration, or the merge has not landed
+ok   X2  MAIN's root, NATIVELY_FLIGHT_COMMIT unset -> FAILS at 10b
+      exit 1 :: GUARD FAILED: (10b) NATIVELY_FLIGHT_COMMIT is not set - the launcher must set it to the commit this flight is registered for (the registered HEAD)
+ok   X3  MAIN's root, NATIVELY_FLIGHT_COMMIT = MAIN's own HEAD (10b passes: HEAD pinned, the tree clean but for the allowlisted paths) -> FAILS at 12: MAIN's pre-merge dist is not the cue build
+      exit 1 :: GUARD FAILED: (12) the built filter (dist-electron/electron/llm/verbalStreamFilter.js) has no "function trimCues" - this is not the cue build; dist-proof.mjs exit 1, 8 failing line(s): BAD prompts x0 "CUE_MAX_LINES = 3" | BAD filter x0 "function trimCues" | BAD engine x0 "[Answer] cues trimmed:" | BAD prompts x0 "A one-part question gets exactly one line. Add a line only" | BAD ipc x0 "VERBAL_TYPED_PROMPT" | BAD ipc x2 "VERBAL_WHAT_TO_ANSWER_PROMPT" | BAD filter x0 "CUE_LINE_PREFIX" | BAD filter x0 "offers block before the spoken answer"; it crashed before its verdict: TypeError [ERR_INVALID_ARG_TYPE]: The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined
+ok   X4  MAIN's real dist: the hedge variable set to 1
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set ("1") - h40d flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   X5  MAIN's real dist: the hedge variable set to 0
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set ("0") - h40d flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   X6  MAIN's real dist: trigger override 1 ms
+      exit 1 :: GUARD FAILED: (7) the hedge trigger is 1ms, not the probed 5000ms - NATIVELY_VERBAL_HEDGE_TRIGGER_MS is set
+ok   X7  MAIN's real dist: follow-up flag on
+      exit 1 :: GUARD FAILED: (8) the follow-up flag is set; h40d flies it OFF
+ok   X8  MAIN's real dist: answer-model override
+      exit 1 :: GUARD FAILED: (3) an answer-model override is set: gemini-3.1-flash-lite resolves to gemini-3.5-flash-lite
+ok   X9  MAIN's real dist: thinking-level override
+      exit 1 :: GUARD FAILED: (3) the app would think at HIGH, not the shipped LOW - NATIVELY_GEMINI_THINKING_LEVEL is set
+ok   X10 MAIN's real dist: the wrong roster
+      exit 1 :: GUARD FAILED: (1) the harness would load roster scenario50, not holdout40 - NATIVELY_ROSTER did not arrive
+
+WRONG FOLDER (the launcher's own folder guard exits 9 before the guard; if it were run anyway)
+ok   Z1  the guard run with cwd = VH\instruments (not a checkout): the roster import fails, by name
+      exit 1 :: GUARD FAILED: (1) roster.mjs does not load under this environment: Cannot find module 'C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\instruments\electron\test\golden\roster.mjs' imported from C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour\guard-h40d.mjs
+
+LAUNCHER SEAM (cmd.exe running a .cmd of `set` lines, then the guard; the parent environment may carry a variable the .cmd must clear)
+ok   K1  the launcher's block with the hedge variable cleared (`set NATIVELY_VERBAL_HEDGE=`) and the commit set -> GUARD OK
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-O ...[375 more chars]
+ok   K2  the PARENT environment carries NATIVELY_VERBAL_HEDGE=1 (a persistent user/machine variable); the .cmd's `set NATIVELY_VERBAL_HEDGE=` unsets it for the node child -> GUARD OK
+      exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build and the source, HEAD pinned at 0d5c9e361e4f2c0d2443ada87fce86e42b0ce232, tree clean but for the allowlisted paths present [none], cue build proven (dist-proof exit 0, filter sha256/16 42d9bc42dbd17870, function trimCues built, CUE_RULE and VERBAL_TYPED_PROMPT declared in the source), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-O ...[375 more chars]
+ok   K3  the same parent variable and NO clearing line -> the guard refuses (the variable arrives)
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set ("1") - h40d flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   K4  the h40c launcher's own line, `set NATIVELY_VERBAL_HEDGE=1`, left in -> the guard refuses
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set ("1") - h40d flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   K5  a trailing space after the clearing `=` (`set NATIVELY_VERBAL_HEDGE= `): cmd stores a one-space value, so it is SET, and the guard refuses: the launcher generator must not leave one
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set (" ") - h40d flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   K6  a plain-token placeholder for the commit (`set NATIVELY_FLIGHT_COMMIT=REGISTERED_HEAD_PLACEHOLDER`) -> the guard refuses, naming it
+      exit 1 :: GUARD FAILED: (10b) NATIVELY_FLIGHT_COMMIT is "REGISTERED_HEAD_PLACEHOLDER", not a full 40-hex commit hash - the controller fills in the registered HEAD at arming
+ok   K7  OBSERVATION about cmd (not a guard case): an ANGLE-BRACKET placeholder (`set NATIVELY_FLIGHT_COMMIT=<REGISTERED_HEAD>`) is an input redirection: cmd aborts the whole batch with "The syntax of the command is incorrect." (exit 255) before the guard runs, so the launcher's placeholder must be a plain token (K6) to get the guard's named refusal
+      exit 255 :: The syntax of the command is incorrect.
+
+PORT CHECK against the original (guard-br1.mjs `hedge`, run as a child on the same stub dist as this guard)
+ok   P1  the good dist (the cue worktree's build: the hedge is the default): guard-br1 hedge -> exit 0 "hedge check says OK"; this guard -> exit 0 GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ...[898 more chars]
+ok   P2  the 09-26 behaviour (the real build's verbalHedge.js with the OLD default: unset = off): guard-br1 hedge -> exit 1 "hedge check says FAIL: the built default is not the hedge: "[Main] verbal hedge: off""; this guard -> exit 1 GUARD FAILED: (6) the built default is not the hedge: "[Main] verbal hedge: off", want "[Main] verbal hedge: on trigger=5000ms" - rebuild from a tree  ...[32 more chars]
+ok   P3  the 09-26 stand-in file (no describeVerbalHedgeAtStartup): guard-br1 hedge -> exit 1 "hedge check says FAIL: describeVerbalHedgeAtStartup threw: H.describeVerbalHedgeAtStartup is not a function"; this guard -> exit 1 GUARD FAILED: (6) the built verbalHedge.describeVerbalHedgeAtStartup threw on an empty environment: V2.describeVerbalHedgeAtStartup is not a function
+
+MAIN'S LIVE TREE THROUGH THE GUARD'S OWN PREDICATE (information)
+  git status --porcelain -- electron src premium scripts package.json natively_debug.log.1: 7 line(s); unexpected: []; allowlisted paths present: ["electron/test/golden/interview60.chains.json","electron/test/golden/interview60.report.md","natively_debug.log.1","electron/test/golden/openrouter-probes/","electron/test/golden/openrouter.probe.mjs","electron/test/golden/zai-probes/","electron/test/golden/zai.probe.mjs"]
+  git status --porcelain (whole tree): 9 line(s); the paths outside the guard's scope that a strict whole-tree reading would object to: ["resume_prompt.txt","retry_claude_print.bat"]
+
+MUTATION SUITE (rule 8): a copy of the guard with ONE check switched off, run over the cases that must notice it. "caught" = every listed case turned BAD and A1 stayed ok.
+ok   hedge-variable-not-checked (check 6, the "set to anything refuses" rule)
+      cases that turned BAD: [H1, H2, H3, H4] (must be [H1, H2, H3, H4]); A1 stayed ok
+ok   hedge-default-not-read (check 6, the guard-br1 `hedge` read)
+      cases that turned BAD: [H5] (must be [H5]); A1 stayed ok
+ok   trigger-not-checked (check 7)
+      cases that turned BAD: [T1] (must be [T1]); A1 stayed ok
+ok   follow-up-not-checked (check 8)
+      cases that turned BAD: [F1] (must be [F1]); A1 stayed ok
+ok   commit-not-compared (check 10b)
+      cases that turned BAD: [B2] (must be [B2]); A1 stayed ok
+ok   tree-not-checked (check 10b)
+      cases that turned BAD: [B6, B7, B8, B9, B10] (must be [B6, B7, B8, B9, B10]); A1 stayed ok
+ok   staleness-not-checked (check 9)
+      cases that turned BAD: [S1] (must be [S1]); A1 stayed ok
+ok   roster-count-not-checked (check 1)
+      cases that turned BAD: [R5] (must be [R5]); A1 stayed ok
+ok   override-not-checked (check 3)
+      cases that turned BAD: [O1] (must be [O1]); A1 stayed ok
+ok   groq-test-only (check 11 as the loose "no id contains a slash" reading: h40c's R1 finding)
+      cases that turned BAD: [N3, N4] (must be [N3, N4]); A1 stayed ok
+ok   dist-proof-verdict-ignored (check 12)
+      cases that turned BAD: [Q1, Q2, Q5] (must be [Q1, Q2, Q5]); A1 stayed ok
+ok   cue-source-not-checked (check 12)
+      cases that turned BAD: [Q3, Q4] (must be [Q3, Q4]); A1 stayed ok
+ok   trimCues-not-checked (check 12, the guard's own sub-check)
+      cases that turned BAD: [Q2] (must be [Q2]); A1 stayed ok
+ok   knowledge-mode-not-checked (check 13)
+      cases that turned BAD: [W1, W2, W6, W9] (must be [W1, W2, W6, W9]); A1 stayed ok
+ok   settings-default-path-wrong (check 13: %APPDATA%\settings.json instead of %APPDATA%\natively\settings.json)
+      cases that turned BAD: [W8, W9] (must be [W8, W9]); A1 stayed ok
+ok   env-scan-skipped (check 10a)
+      cases that turned BAD: [E1, E2, E3, E4] (must be [E1, E2, E3, E4]); A1 stayed ok
+ok   uncaught-handler-removed (the guard's own crash must end as one named line)
+      cases that turned BAD: [I1] (must be [I1]); A1 stayed ok
+ok   one-line-fold-removed (every failure is exactly one stderr line)
+      cases that turned BAD: [H7] (must be [H7]); A1 stayed ok
+
+FINAL: the stub tree as left on disk, correct environment
+ok   exit 0 :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front ...[848 more chars]
+
+GUARD CALIBRATION OK 129/129: 108 cases (stub tree, MAIN's root, the cmd.exe launcher seam), 18/18 mutants caught, the pure predicate, the layout mirror and the final stub state ok; 2 informational case recorded and not counted

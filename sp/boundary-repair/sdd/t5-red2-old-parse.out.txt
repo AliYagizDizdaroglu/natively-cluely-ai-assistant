@@ -1,0 +1,71 @@
+﻿[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ❯ electron/test/golden/interview60.turns-finals.test.ts (5 tests | 2 failed) 39ms
+   × finalsFrom: the interviewer finals as the turn tracker saw them > a final directly followed by a boundary-repair line replays as the restored words + the raw text 15ms
+     → expected [ { at: 1790680767826, …(1) }, …(2) ] to deeply equal [ { at: 1790680767826, …(1) }, …(2) ]
+   × finalsFrom: the interviewer finals as the turn tracker saw them > keeps interims and empty finals out, and drops finals before `since` 2ms
+     → expected [ …(2) ] to deeply equal [ …(2) ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/test/golden/interview60.turns-finals.test.ts > finalsFrom: the interviewer finals as the turn tracker saw them > a final directly followed by a boundary-repair line replays as the restored words + the raw text
+AssertionError: expected [ { at: 1790680767826, …(1) }, …(2) ] to deeply equal [ { at: 1790680767826, …(1) }, …(2) ]
+
+- Expected
++ Received
+
+  Array [
+    Object {
+      "at": 1790680767826,
+      "text": "How do you cut",
+    },
+    Object {
+      "at": 1790680769373,
+-     "text": "hallucinations in a rag answer without just making it refuse?",
++     "text": "in a rag answer without just making it refuse?",
+    },
+    Object {
+      "at": 1790680771000,
+      "text": "Okay.",
+    },
+  ]
+
+ ❯ electron/test/golden/interview60.turns-finals.test.ts:24:36
+     22| describe('finalsFrom: the interviewer finals as the turn tracker saw t…
+     23|     it('a final directly followed by a boundary-repair line replays as…
+     24|         expect(finalsFrom(LOG, 0)).toEqual([
+       |                                    ^
+     25|             { at: at('2026-09-29T11:19:27.826Z'), text: 'How do you cu…
+     26|             { at: at('2026-09-29T11:19:29.373Z'), text: 'hallucination…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  electron/test/golden/interview60.turns-finals.test.ts > finalsFrom: the interviewer finals as the turn tracker saw them > keeps interims and empty finals out, and drops finals before `since`
+AssertionError: expected [ …(2) ] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+  Array [
+-   "hallucinations in a rag answer without just making it refuse?",
++   "in a rag answer without just making it refuse?",
+    "Okay.",
+  ]
+
+ ❯ electron/test/golden/interview60.turns-finals.test.ts:33:14
+     31|     it('keeps interims and empty finals out, and drops finals before `…
+     32|         expect(finalsFrom(LOG, at('2026-09-29T11:19:29.000Z')).map((f)…
+     33|             .toEqual(['hallucinations in a rag answer without just mak…
+       |              ^
+     34|     });
+     35| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  22:49:01
+   Duration  2.49s (transform 61ms, setup 0ms, collect 69ms, tests 39ms, environment 1.37s, prepare 187ms)
+

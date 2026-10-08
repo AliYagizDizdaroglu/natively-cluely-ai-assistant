@@ -1,0 +1,47 @@
+{
+ "schema": "cues-export-eq/1",
+ "runDir": "C:/Users/sotka/OneDrive/Masaüstü/natively-lab/sp/flight-eq/b10cal-tmp-mut/r3-c5",
+ "registeredHead": "56bda9eb64b65a190c73788b5f86a550f6809f6a",
+ "window": {
+  "startedAt": "2026-10-05T23:00:00.000Z",
+  "endedAt": "2026-10-05T23:06:40.000Z"
+ },
+ "entries": [
+  {
+   "id": "S1Q01",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-05T23:00:17.000Z",
+   "cues": [
+    "cue one 0",
+    "cue two 0"
+   ],
+   "empty": null,
+   "logLine": 9
+  },
+  {
+   "id": "S1Q02",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-05T23:01:32.000Z",
+   "cues": [
+    "cue one 1",
+    "cue two 1"
+   ],
+   "empty": null,
+   "logLine": 13
+  },
+  {
+   "id": "S1Q03",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-05T23:02:52.000Z",
+   "cues": [
+    "cue one 2",
+    "cue two 2"
+   ],
+   "empty": null,
+   "logLine": 17
+  }
+ ]
+}

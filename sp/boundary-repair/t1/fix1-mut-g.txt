@@ -1,0 +1,31 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts (58 tests | 1 failed) 24ms
+   × deepgramBoundaryRepair synthetic edges (the symptom's strings) > F2 starting with the interim's first tail word is the normal case, even when that word repeats 7ms
+     → expected 'in in a rag answer without just makin…' to be 'in a rag answer without just making i…' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair synthetic edges (the symptom's strings) > F2 starting with the interim's first tail word is the normal case, even when that word repeats
+AssertionError: expected 'in in a rag answer without just makin…' to be 'in a rag answer without just making i…' // Object.is equality
+
+Expected: "in a rag answer without just making it refuse?"
+Received: "in in a rag answer without just making it refuse?"
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:130:82
+    128|     it('F2 starting with the interim\'s first tail word is the normal …
+    129|         const I3 = { text: 'How do you cut hallucinations in in a rag …
+    130|         expect(play([I3, { ...F1, text: 'How do you cut hallucinations…
+       |                                                                                  ^
+    131|     });
+    132| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 57 passed (58)
+   Start at  17:47:58
+   Duration  2.44s (transform 105ms, setup 0ms, collect 105ms, tests 24ms, environment 1.35s, prepare 194ms)
+

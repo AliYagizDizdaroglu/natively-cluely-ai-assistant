@@ -1,0 +1,26 @@
+S1Q01F#1  finals 2 | missing vs script: prefer | BOUNDARY LOSS unresumed-tail "prefer" TRUE +4621ms (F2 "logistic regression, a neural network, o") | after repair missing: prefer
+S1Q10#1   finals 5 | missing vs script: postgresql | after repair missing: postgresql
+S2Q07#1   finals 6 | missing vs script: service 10 million | after repair missing: service 10 million
+M13#1     finals 2 | missing vs script: infrastructure | BOUNDARY LOSS unresumed-tail "infrastructure as" TRUE +1692ms (F2 "as code without committing them?")
+          repaired: "How do you manage secrets in infrastructure as code without committing them?" | after repair missing: none
+S1Q01F#2  finals 2 | missing vs script: none | after repair missing: none
+S1Q10#2   finals 5 | missing vs script: postgresql | after repair missing: postgresql
+S2Q07#2   finals 6 | missing vs script: 10 million | after repair missing: 10 million
+M13#2     finals 2 | missing vs script: none | after repair missing: none
+S1Q01F#3  finals 2 | missing vs script: none | after repair missing: none
+S1Q10#3   finals 5 | missing vs script: postgresql | after repair missing: postgresql
+S2Q07#3   finals 6 | missing vs script: service 10 million
+          repaired: "Design a multi tenant Rag service over 10,000,000 documents, it has to support document updates and deletions, access controlled retrieval, citations, asynchron" | after repair missing: 10 million
+M13#3     finals 2 | missing vs script: none | after repair missing: none
+S1Q01F#4  finals 2 | missing vs script: none | after repair missing: none
+S1Q10#4   finals 5 | missing vs script: postgresql | after repair missing: postgresql
+S2Q07#4   finals 6 | missing vs script: service 10 million
+          repaired: "Design a multi tenant rag service over 10,000,000 documents, it has to support document updates and deletions, access controlled retrieval, citations, asynchron" | after repair missing: 10 million
+M13#4     finals 2 | missing vs script: none | after repair missing: none
+S1Q01F#5  finals 2 | missing vs script: none | after repair missing: none
+S1Q10#5   finals 5 | missing vs script: postgresql | after repair missing: postgresql
+S2Q07#5   finals 6 | missing vs script: 10 million support | BOUNDARY LOSS resumed "support" TRUE +2999ms
+          repaired: "Design a multi tenant rag service over 10,000,000 documents, it has to support document updates and deletions, access controlled retrieval, citations, asynchron" | after repair missing: 10 million
+M13#5     finals 2 | missing vs script: none | after repair missing: none
+
+plays 20; cuts 18; resumed losses 1 (TRUE 1, FALSE 0); unresumed tails 2 (TRUE 2, FALSE 0); plays with a loss 3; plays the repair made more complete 4

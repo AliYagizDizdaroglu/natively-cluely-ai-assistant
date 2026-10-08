@@ -1,0 +1,1 @@
+Given tables customers and payments, write the SQL for each customer's second-highest payment and the month it happened.

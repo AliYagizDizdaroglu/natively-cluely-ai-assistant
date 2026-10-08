@@ -1,0 +1,30 @@
+﻿mirror tsconfig = MAIN's electron/tsconfig.json (514 B); noImplicitAny/strict in it: {"noImplicitAny":true,"strict":false,"strictNullChecks":false}
+
+[as expected] control: the files as they are in MAIN
+   tsc exit 0, 0 output line(s), 0 in the test file, 0 elsewhere
+
+[as expected] (1) MUTANT A in the adapter: bare clear() at the empty-FINAL branch
+   tsc exit 0, 0 output line(s), 0 in the test file, 0 elsewhere
+
+[as expected] (1) MUTANT B in the adapter: bare clear() at the UtteranceEnd handler
+   tsc exit 0, 0 output line(s), 0 in the test file, 0 elsewhere
+
+[as expected] (2) type error in the new empty-FINAL test: a method the spy does not have
+   tsc exit 2, 1 output line(s), 1 in the test file, 0 elsewhere
+   | electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts(198,59): error TS2339: Property 'noSuchMethod' does not exist on type 'MockInstance<{ (...data: any[]): void; (message?: any, ...optionalParams: any[]): void; }>'.
+   line 198: expect(errors).not.toHaveBeenCalled(); errors.noSuchMethod();
+
+[as expected] (2) type error in the new UtteranceEnd test: toHaveLength with a string
+   tsc exit 2, 1 output line(s), 1 in the test file, 0 elsewhere
+   | electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts(212,53): error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.
+   line 212: expect(ends, language).toHaveLength('1');
+
+[as expected] (2) type error in the new UtteranceEnd test: the [key, code] table read as a number
+   tsc exit 2, 1 output line(s), 1 in the test file, 0 elsewhere
+   | electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts(206,23): error TS2322: Type 'string' is not assignable to type 'number'.
+   line 206: const n: number = code;
+
+junction to MAIN's node_modules removed: true; MAIN's typescript still present: true
+scratch tree deleted: true
+
+variants that differed from the expectation: 0

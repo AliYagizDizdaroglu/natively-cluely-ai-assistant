@@ -1,0 +1,32 @@
+
+ RUN  v2.1.9 C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/boundary-repair/sdd/t4-mirror5
+
+ ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts (8 tests | 1 failed) 29ms
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > an UtteranceEnd on a non-English or multi connection is harmless and still re-emitted 9ms
+     → Cannot read properties of null (reading 'clear')
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  22:41:57
+   Duration  2.04s (transform 130ms, setup 0ms, collect 167ms, tests 29ms, environment 1.29s, prepare 216ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > an UtteranceEnd on a non-English or multi connection is harmless and still re-emitted
+TypeError: Cannot read properties of null (reading 'clear')
+ ❯ electron/audio/DeepgramStreamingSTT.ts:260:86
+    258|                 live.on(LiveTranscriptionEvents.SpeechStarted, () => {…
+    259|                 // An UtteranceEnd is a pause for the boundary repair …
+    260|                 live.on(LiveTranscriptionEvents.UtteranceEnd, () => { …
+       |                                                                                      ^
+    261| 
+    262|                 // Flush buffered audio
+ ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:27:79
+ ❯ Object.fire electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:27:55
+ ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:208:41
+ ❯ playSeam electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:126:13
+ ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:208:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

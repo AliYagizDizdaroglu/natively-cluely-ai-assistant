@@ -1,0 +1,51 @@
+﻿router40 L: model fixed, thinking LOW, cap 60 (arg 60, P9 CAP' 60, recorded same/none), resume 0 stored, dry false, calibration false
+RE01  56 words, ttft 11532 ms, total 11649 ms, thoughts 571, STOP, attempts 1
+RH01  58 words, ttft 10174 ms, total 10364 ms, thoughts 598, STOP, attempts 1
+RE02  59 words, ttft 8849 ms, total 9024 ms, thoughts 806, STOP, attempts 1
+EF01  68 words, ttft 7598 ms, total 7746 ms, thoughts 552, STOP, attempts 1
+   RH03 attempt 1: fetch: fetch failed, retry after 8000 ms
+RH03  59 words, ttft 11760 ms, total 11930 ms, thoughts 565, STOP, attempts 2
+RE03  56 words, ttft 9211 ms, total 9481 ms, thoughts 703, STOP, attempts 1
+EF02  54 words, ttft 11439 ms, total 11603 ms, thoughts 729, STOP, attempts 1
+RE08  58 words, ttft 13583 ms, total 13739 ms, thoughts 661, STOP, attempts 1
+RE04  68 words, ttft 13078 ms, total 13314 ms, thoughts 669, STOP, attempts 1
+EF03  55 words, ttft 13980 ms, total 14079 ms, thoughts 537, STOP, attempts 1
+RE05  71 words, ttft 15804 ms, total 16007 ms, thoughts 610, STOP, attempts 1
+RH04  55 words, ttft 15000 ms, total 15184 ms, thoughts 612, STOP, attempts 1
+RE06  80 words, ttft 6472 ms, total 6754 ms, thoughts 587, STOP, attempts 1
+RH07  103 words, ttft 1576 ms, total 2177 ms, thoughts 117, STOP, attempts 1
+RH08  62 words, ttft 4180 ms, total 4321 ms, thoughts 876, STOP, attempts 1
+RE07  61 words, ttft 3479 ms, total 3739 ms, thoughts 730, STOP, attempts 1
+EF04  58 words, ttft 3042 ms, total 3179 ms, thoughts 588, STOP, attempts 1
+RH05  58 words, ttft 3057 ms, total 3211 ms, thoughts 648, STOP, attempts 1
+RH06  52 words, ttft 3089 ms, total 3241 ms, thoughts 646, STOP, attempts 1
+RH09  132 words, ttft 5581 ms, total 6010 ms, thoughts 999, STOP, attempts 1
+RH10  68 words, ttft 5811 ms, total 5972 ms, thoughts 769, STOP, attempts 1
+RH11  60 words, ttft 3594 ms, total 3793 ms, thoughts 693, STOP, attempts 1
+RE09  89 words, ttft 4022 ms, total 4405 ms, thoughts 732, STOP, attempts 1
+RH19  52 words, ttft 4222 ms, total 4364 ms, thoughts 898, STOP, attempts 1
+RE10  50 words, ttft 4314 ms, total 4592 ms, thoughts 665, STOP, attempts 1
+RE11  67 words, ttft 4056 ms, total 4167 ms, thoughts 628, STOP, attempts 1
+EF05  59 words, ttft 3507 ms, total 3685 ms, thoughts 577, STOP, attempts 1
+RH12  53 words, ttft 4809 ms, total 4856 ms, thoughts 917, STOP, attempts 1
+RH13  51 words, ttft 2952 ms, total 3090 ms, thoughts 637, STOP, attempts 1
+RH14  63 words, ttft 2249 ms, total 2606 ms, thoughts 123, STOP, attempts 1
+RE12  63 words, ttft 3193 ms, total 3357 ms, thoughts 499, STOP, attempts 1
+RE13  81 words, ttft 4205 ms, total 4494 ms, thoughts 825, STOP, attempts 1
+RH17  104 words, ttft 1513 ms, total 2024 ms, thoughts 135, STOP, attempts 1
+RE14  53 words, ttft 3076 ms, total 3214 ms, thoughts 556, STOP, attempts 1
+RH02  64 words, ttft 3299 ms, total 3480 ms, thoughts 575, STOP, attempts 1
+RE15  60 words, ttft 3270 ms, total 3362 ms, thoughts 499, STOP, attempts 1
+RH15  52 words, ttft 4431 ms, total 4549 ms, thoughts 955, STOP, attempts 1
+RH16  63 words, ttft 3840 ms, total 4005 ms, thoughts 737, STOP, attempts 1
+RE16  67 words, ttft 3278 ms, total 3447 ms, thoughts 564, STOP, attempts 1
+EF06  63 words, ttft 3975 ms, total 4216 ms, thoughts 117, STOP, attempts 1
+RE17  71 words, ttft 8632 ms, total 8913 ms, thoughts 642, STOP, attempts 1
+EF07  62 words, ttft 11373 ms, total 11525 ms, thoughts 817, STOP, attempts 1
+RH18  56 words, ttft 9037 ms, total 9194 ms, thoughts 744, STOP, attempts 1
+RE18  55 words, ttft 9165 ms, total 9337 ms, thoughts 670, STOP, attempts 1
+RH20  62 words, ttft 12023 ms, total 12207 ms, thoughts 585, STOP, attempts 1
+RE19  56 words, ttft 11872 ms, total 12053 ms, thoughts 519, STOP, attempts 1
+RE20  67 words, ttft 10505 ms, total 10644 ms, thoughts 689, STOP, attempts 1
+COMPLETE: 47 answers, 0 holes, cap 60
+router40 3.1-lite requests sent: 48 (counter lite-quota.answers.jsonl, file sha12 560b9c77a820)

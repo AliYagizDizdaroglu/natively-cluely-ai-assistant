@@ -1,0 +1,11 @@
+PRECHECK start 2026-10-05T21:59:01+03 label=eqcal at=2026-10-05 21:59 tz-offset=03:00:00
+PRECHECK flight-task: OK state=Ready next=2026-10-05 22:05 expected=2026-10-05 22:05
+PRECHECK arming-record: OK T 2026-10-05 22:05 = At + 6 = NextRunTime, complete 2026-10-05T21:54:00
+PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+PRECHECK electron: OK electron.exe processes: 0
+PRECHECK port: OK port 5180 held: False
+PRECHECK tail: OK tail.exe watchers: 0
+PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+PRECHECK audio-state INFO: default playback device: volume=93% muted=False
+PRECHECK OK 2026-10-05T21:59:09+03

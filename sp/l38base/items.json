@@ -1,0 +1,1410 @@
+[
+ {
+  "id": "S1Q01",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the production constraints, and what baseline you would compare it against.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S1Q01F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Under what conditions would you prefer logistic regression, a neural network, or a rules-based approach?",
+  "parentText": "Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the production constraints, and what baseline you would compare it against.",
+  "parentId": "S1Q01"
+ },
+ {
+  "id": "S1Q02",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Can you reconcile the metrics on your CV? Your CV reports a 9.5 percent churn rate, a top 5 percent risk band capturing 30 percent of churners, and 60 percent precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S1Q02F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "What can you conclude from a PR AUC of 0.38 and an ROC AUC of 0.88, and what else would you need before deciding the model is useful?",
+  "parentText": "Can you reconcile the metrics on your CV? Your CV reports a 9.5 percent churn rate, a top 5 percent risk band capturing 30 percent of churners, and 60 percent precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+  "parentId": "S1Q02"
+ },
+ {
+  "id": "S1Q03",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S1Q03F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Why might targeting the highest-risk customers be less profitable than targeting the customers with the largest estimated treatment effect?",
+  "parentText": "Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?",
+  "parentId": "S1Q03"
+ },
+ {
+  "id": "S1Q04",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S1Q04F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
+  "parentText": "Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.",
+  "parentId": "S1Q04"
+ },
+ {
+  "id": "S1Q05",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S1Q05F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout?",
+  "parentText": "Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.",
+  "parentId": "S1Q05"
+ },
+ {
+  "id": "S1Q06",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S1Q06F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
+  "parentText": "Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.",
+  "parentId": "S1Q06"
+ },
+ {
+  "id": "S1Q07",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S1Q07F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions?",
+  "parentText": "Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.",
+  "parentId": "S1Q07"
+ },
+ {
+  "id": "S1Q08",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S1Q08F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How could repeatedly training on customers affected by previous campaigns introduce bias?",
+  "parentText": "Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
+  "parentId": "S1Q08"
+ },
+ {
+  "id": "S1Q09",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Translate your AWS experience into an Azure deployment: describe an Azure implementation of that churn platform, covering object storage, training, model artifacts, container images, online inference, scheduling, identity, and monitoring, and explain the operational reasons for your choices.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S1Q09F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Which workload would you put on Azure Machine Learning managed endpoints, which on Azure App Service, and which on AKS, and why?",
+  "parentText": "Translate your AWS experience into an Azure deployment: describe an Azure implementation of that churn platform, covering object storage, training, model artifacts, container images, online inference, scheduling, identity, and monitoring, and explain the operational reasons for your choices.",
+  "parentId": "S1Q09"
+ },
+ {
+  "id": "S1Q10",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Secure the churn platform without embedded credentials: how would your inference service access the model artifacts and PostgreSQL using Azure identity and networking controls? Explain the authentication, the authorization, how you handle secrets where that is unavoidable, and how you separate environments.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S1Q10F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "The application receives an authorization error after deployment. How would you distinguish an identity problem from a permissions problem or a network problem?",
+  "parentText": "Secure the churn platform without embedded credentials: how would your inference service access the model artifacts and PostgreSQL using Azure identity and networking controls? Explain the authentication, the authorization, how you handle secrets where that is unavoidable, and how you separate environments.",
+  "parentId": "S1Q10"
+ },
+ {
+  "id": "S2Q01",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Explain your RAG pipeline precisely: walk through ingestion, parsing, chunking, embedding, retrieval, reranking, context assembly, and generation, and map those stages to your document intelligence experience.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S2Q01F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Which of those stages can cause a correct source document to produce an incorrect answer?",
+  "parentText": "Explain your RAG pipeline precisely: walk through ingestion, parsing, chunking, embedding, retrieval, reranking, context assembly, and generation, and map those stages to your document intelligence experience.",
+  "parentId": "S2Q01"
+ },
+ {
+  "id": "S2Q02",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Defend the improvements reported on your CV: you report extraction F1 increasing from 72.4 percent to 95.4 percent, hallucinations decreasing by 84 percent, and multi-hop accuracy reaching 92 percent. For each of those metrics, define the unit of evaluation, the denominator, how the dataset was constructed, and the uncertainty.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S2Q02F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "What ablations would separate the contributions of OCR, classification, retrieval, prompting, and agent orchestration, and how would you check for LLM judge bias?",
+  "parentText": "Defend the improvements reported on your CV: you report extraction F1 increasing from 72.4 percent to 95.4 percent, hallucinations decreasing by 84 percent, and multi-hop accuracy reaching 92 percent. For each of those metrics, define the unit of evaluation, the denominator, how the dataset was constructed, and the uncertainty.",
+  "parentId": "S2Q02"
+ },
+ {
+  "id": "S2Q03",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "When does an agent justify its complexity? Consider a question that requires evidence from three documents, and compare a fixed retrieval workflow, query decomposition, and an agent that chooses tools dynamically.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S2Q03F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "What stopping conditions, budgets, and failure policies would prevent loops and unnecessary tool calls?",
+  "parentText": "When does an agent justify its complexity? Consider a question that requires evidence from three documents, and compare a fixed retrieval workflow, query decomposition, and an agent that chooses tools dynamically.",
+  "parentId": "S2Q03"
+ },
+ {
+  "id": "S2Q04",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S2Q04F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source?",
+  "parentText": "Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.",
+  "parentId": "S2Q04"
+ },
+ {
+  "id": "S2Q05",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S2Q05F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies.",
+  "parentText": "Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.",
+  "parentId": "S2Q05"
+ },
+ {
+  "id": "S2Q06",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S2Q06F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically?",
+  "parentText": "Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.",
+  "parentId": "S2Q06"
+ },
+ {
+  "id": "S2Q07",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S2Q07F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "A user loses access to a document while a query is running. Where and when must authorization be checked?",
+  "parentText": "Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.",
+  "parentId": "S2Q07"
+ },
+ {
+  "id": "S2Q08",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S2Q08F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+  "parentText": "Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+  "parentId": "S2Q08"
+ },
+ {
+  "id": "S2Q09",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S2Q09F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How would your design change if the documents and their processing had to remain within an approved region?",
+  "parentText": "Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.",
+  "parentId": "S2Q09"
+ },
+ {
+  "id": "S2Q10",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Make ingestion recoverable under duplicate delivery: suppose queue messages may arrive more than once, and workers may crash after writing embeddings but before acknowledging a message. How would you use Azure messaging and durable state to make the processing safe to repeat?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S2Q10F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How would you handle poison documents, dead-letter replay, and a delete event racing with an older update?",
+  "parentText": "Make ingestion recoverable under duplicate delivery: suppose queue messages may arrive more than once, and workers may crash after writing embeddings but before acknowledging a message. How would you use Azure messaging and durable state to make the processing safe to repeat?",
+  "parentId": "S2Q10"
+ },
+ {
+  "id": "S3Q01",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "What does async actually buy you? Explain what happens when an async FastAPI endpoint calls a blocking HTTP client, or performs expensive CPU work.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S3Q01F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "When would you use asynchronous I/O, a thread pool, separate processes, or an external worker?",
+  "parentText": "What does async actually buy you? Explain what happens when an async FastAPI endpoint calls a blocking HTTP client, or performs expensive CPU work.",
+  "parentId": "S3Q01"
+ },
+ {
+  "id": "S3Q02",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Define a useful latency contract: an AI endpoint has a p50 latency of 400 milliseconds and a p99 latency of 8 seconds. Explain why that matters, and how you would separate gateway time, queueing, retrieval, and generation.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S3Q02F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "For streaming responses, how do time to first token, inter-token delay, and total completion time change that contract?",
+  "parentText": "Define a useful latency contract: an AI endpoint has a p50 latency of 400 milliseconds and a p99 latency of 8 seconds. Explain why that matters, and how you would separate gateway time, queueing, retrieval, and generation.",
+  "parentId": "S3Q02"
+ },
+ {
+  "id": "S3Q03",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Which failures should be retried? An upstream LLM returns rate-limit errors, timeouts, and occasional server errors. Explain retryability, exponential backoff, jitter, deadlines, circuit breakers, and idempotency.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S3Q03F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "A timeout occurs after the provider may already have processed the request. What duplicate work or billing risks remain?",
+  "parentText": "Which failures should be retried? An upstream LLM returns rate-limit errors, timeouts, and occasional server errors. Explain retryability, exponential backoff, jitter, deadlines, circuit breakers, and idempotency.",
+  "parentId": "S3Q03"
+ },
+ {
+  "id": "S3Q04",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Implement a token-bucket rate limiter: write a per-tenant in-memory limiter using an injected monotonic clock, a capacity B, and a refill rate r. Each accepted request consumes one token. Return an admission decision, and an estimated wait time when it rejects.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S3Q04F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "What breaks with multiple API workers? Describe how you would make the admission decision atomic using shared storage.",
+  "parentText": "Implement a token-bucket rate limiter: write a per-tenant in-memory limiter using an injected monotonic clock, a capacity B, and a refill rate r. Each accepted request consumes one token. Return an admission decision, and an estimated wait time when it rejects.",
+  "parentId": "S3Q04"
+ },
+ {
+  "id": "S3Q05",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Implement a bounded TTL cache: build get and put operations with expiry, a maximum entry count, and LRU eviction, using an injected clock. Then explain what a safe cache key must include for an authenticated AI request.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S3Q05F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How would you prevent concurrent misses from triggering many identical upstream requests, and when should an answer never be cached?",
+  "parentText": "Implement a bounded TTL cache: build get and put operations with expiry, a maximum entry count, and LRU eviction, using an injected clock. Then explain what a safe cache key must include for an authenticated AI request.",
+  "parentId": "S3Q05"
+ },
+ {
+  "id": "S3Q06",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Build a streaming AI endpoint: implement a FastAPI endpoint around an asynchronous token iterator you are given. Validate the request, obtain the tenant from an authentication dependency, impose a deadline, and stop the upstream work when the client disconnects.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S3Q06F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How do you report a provider failure after the response headers have been sent, and what information belongs in the logs rather than in the client response?",
+  "parentText": "Build a streaming AI endpoint: implement a FastAPI endpoint around an asynchronous token iterator you are given. Validate the request, obtain the tenant from an authentication dependency, impose a deadline, and stop the upstream work when the client disconnects.",
+  "parentId": "S3Q06"
+ },
+ {
+  "id": "S3Q07",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Design a shared AI gateway: several product teams need access to multiple LLM deployments. Design the authentication, the tenant quotas, the routing, request validation, usage accounting, observability, and provider isolation.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S3Q07F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "One tenant generates a traffic spike. How do you preserve capacity for the others while still using spare capacity efficiently?",
+  "parentText": "Design a shared AI gateway: several product teams need access to multiple LLM deployments. Design the authentication, the tenant quotas, the routing, request validation, usage accounting, observability, and provider isolation.",
+  "parentId": "S3Q07"
+ },
+ {
+  "id": "S3Q08",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Add provider failover and caching: extend that gateway to survive a provider outage while respecting data residency, output-format requirements, latency, and spending limits, and define which requests can fail over automatically.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S3Q08F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "A streamed response has already delivered 200 tokens. Would you fail over mid-response? Explain the client-visible behaviour and the alternatives.",
+  "parentText": "Add provider failover and caching: extend that gateway to survive a provider outage while respecting data residency, output-format requirements, latency, and spending limits, and define which requests can fail over automatically.",
+  "parentId": "S3Q08"
+ },
+ {
+  "id": "S3Q09",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Divide responsibility between the gateway and the application: for Azure API Management, or Kong, in front of Python services, decide where authentication, quotas, schema validation, retries, caching, and telemetry belong.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S3Q09F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How could retries or rate limits configured at multiple layers interact badly, and how would you verify the effective behaviour?",
+  "parentText": "Divide responsibility between the gateway and the application: for Azure API Management, or Kong, in front of Python services, decide where authentication, quotas, schema validation, retries, caching, and telemetry belong.",
+  "parentId": "S3Q09"
+ },
+ {
+  "id": "S3Q10",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Debug an Azure private-connectivity failure: after public access to an upstream service is disabled, your deployed application times out, while local development still works through another route. Describe your investigation of name resolution, routing, private endpoints, network rules, TLS, and identity.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S3Q10F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "What tests would you run from inside the application's actual runtime, to avoid misleading results from your laptop?",
+  "parentText": "Debug an Azure private-connectivity failure: after public access to an upstream service is disabled, your deployed application times out, while local development still works through another route. Describe your investigation of name resolution, routing, private endpoints, network rules, TLS, and identity.",
+  "parentId": "S3Q10"
+ },
+ {
+  "id": "S4Q01",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Distinguish the three probe types: explain startup, readiness, and liveness probes for a model server that needs 90 seconds to load its model.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S4Q01F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Should temporary unavailability of an upstream database fail the liveness probe? Defend your decision.",
+  "parentText": "Distinguish the three probe types: explain startup, readiness, and liveness probes for a model server that needs 90 seconds to load its model.",
+  "parentId": "S4Q01"
+ },
+ {
+  "id": "S4Q02",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Optimize inference systematically: a service spends its time on preprocessing, model execution, and network calls. How would you profile it before changing worker counts, batch size, model precision, or the implementation language?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S4Q02F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Explain the trade-offs between throughput and latency when you introduce dynamic batching.",
+  "parentText": "Optimize inference systematically: a service spends its time on preprocessing, model execution, and network calls. How would you profile it before changing worker counts, batch size, model precision, or the implementation language?",
+  "parentId": "S4Q02"
+ },
+ {
+  "id": "S4Q03",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Recognize training-serving skew: offline performance is strong, but production predictions degrade immediately after release. What would you inspect before concluding that the population has drifted?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S4Q03F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How would you distinguish preprocessing differences, stale features, a model-version mismatch, and genuine concept drift?",
+  "parentText": "Recognize training-serving skew: offline performance is strong, but production predictions degrade immediately after release. What would you inspect before concluding that the population has drifted?",
+  "parentId": "S4Q03"
+ },
+ {
+  "id": "S4Q04",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Implement a batched inference adapter: given a synchronous model that exposes predict, taking a batch, write an adapter that accepts records, validates the feature shape, processes configurable batches, and returns predictions in the input order. Define whether invalid records fail the whole request, or produce per-record errors.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S4Q04F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How would you handle a batch that fails because of one record, without repeatedly executing the batches that already succeeded?",
+  "parentText": "Implement a batched inference adapter: given a synchronous model that exposes predict, taking a batch, write an adapter that accepts records, validates the feature shape, processes configurable batches, and returns predictions in the input order. Define whether invalid records fail the whole request, or produce per-record errors.",
+  "parentId": "S4Q04"
+ },
+ {
+  "id": "S4Q05",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Build an asynchronous micro-batcher: implement a component that collects requests until either 32 items are ready, or the oldest item has waited 10 milliseconds, and then calls a provided async predict batch function. Return each result to its original caller, and bound the pending queue.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S4Q05F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Handle caller cancellation, batch failure, overload, and shutdown. Which invariants must hold so that no caller waits forever?",
+  "parentText": "Build an asynchronous micro-batcher: implement a component that collects requests until either 32 items are ready, or the oldest item has waited 10 milliseconds, and then calls a provided async predict batch function. Return each result to its original caller, and bound the pending queue.",
+  "parentId": "S4Q05"
+ },
+ {
+  "id": "S4Q06",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Calculate serving metrics from logs: given records containing a timestamp, a model version, a status code, and a latency, write Python to report the request count, the 5xx rate, and the nearest-rank p95 latency for each minute and model version. Assume the input fits in memory, and define how you handle invalid records.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S4Q06F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Why is averaging per-instance p95 values not a correct fleet-wide p95, and how would you aggregate at larger scale?",
+  "parentText": "Calculate serving metrics from logs: given records containing a timestamp, a model version, a status code, and a latency, write Python to report the request count, the 5xx rate, and the nearest-rank p95 latency for each minute and model version. Assume the input fits in memory, and define how you handle invalid records.",
+  "parentId": "S4Q06"
+ },
+ {
+  "id": "S4Q07",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Size and autoscale an inference service: normal load is 100 requests per second, peaks reach 500, and a measured replica handles 40 requests per second while meeting the latency target. Estimate the baseline capacity, then incorporate headroom, replica failure, startup time, and burst handling.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S4Q07F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Which signals would drive the scaling: CPU, GPU utilization, queue depth, concurrency, or latency? When might each of them mislead you?",
+  "parentText": "Size and autoscale an inference service: normal load is 100 requests per second, peaks reach 500, and a measured replica handles 40 requests per second while meeting the latency target. Estimate the baseline capacity, then incorporate headroom, replica failure, startup time, and burst handling.",
+  "parentId": "S4Q07"
+ },
+ {
+  "id": "S4Q08",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Roll out a new model safely: extend that service to release a model with different feature requirements and a larger memory footprint. Compare shadowing, canary, and blue-green deployment, and define the technical and the model-quality gates.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S4Q08F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How would you roll back if an associated database migration or feature change is incompatible with the old model?",
+  "parentText": "Roll out a new model safely: extend that service to release a model with different feature requirements and a larger memory footprint. Compare shadowing, canary, and blue-green deployment, and define the technical and the model-quality gates.",
+  "parentId": "S4Q08"
+ },
+ {
+  "id": "S4Q09",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Write and review an AKS workload configuration: draft the Kubernetes manifests for a model-serving Deployment and Service. Include resource requests and limits, probes, graceful termination, a non-root security context, and configuration handling, and explain your assumptions.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S4Q09F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "What would you add for autoscaling, disruption tolerance, workload identity, and network isolation?",
+  "parentText": "Write and review an AKS workload configuration: draft the Kubernetes manifests for a model-serving Deployment and Service. Include resource requests and limits, probes, graceful termination, a non-root security context, and configuration handling, and explain your assumptions.",
+  "parentId": "S4Q09"
+ },
+ {
+  "id": "S4Q10",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Diagnose a broken rollout: a new AKS rollout produces intermittent 502s. Some pods restart, while others remain Pending. Walk through the evidence you would gather, and the order of your checks.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S4Q10F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How would your response differ for a pod that was OOM killed, a failed readiness probe, an image-pull failure, and insufficient node capacity?",
+  "parentText": "Diagnose a broken rollout: a new AKS rollout produces intermittent 502s. Some pods restart, while others remain Pending. Walk through the evidence you would gather, and the order of your checks.",
+  "parentId": "S4Q10"
+ },
+ {
+  "id": "S5Q01",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Explain consistency in an AI workflow: a document upload is stored successfully, but its searchable representation is not ready. What should the API return, and how should a client discover progress?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S5Q01F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "What does read your own writes mean here, and what would providing it cost?",
+  "parentText": "Explain consistency in an AI workflow: a document upload is stored successfully, but its searchable representation is not ready. What should the API return, and how should a client discover progress?",
+  "parentId": "S5Q01"
+ },
+ {
+  "id": "S5Q02",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Define testing for nondeterministic outputs: distinguish unit tests, API contract tests, integration tests, end-to-end tests, load tests, and model-quality evaluations for an LLM product, and give a concrete example of each.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S5Q02F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "Which tests should block a release, and how would you avoid fragile assertions based on exact generated wording?",
+  "parentText": "Define testing for nondeterministic outputs: distinguish unit tests, API contract tests, integration tests, end-to-end tests, load tests, and model-quality evaluations for an LLM product, and give a concrete example of each.",
+  "parentId": "S5Q02"
+ },
+ {
+  "id": "S5Q03",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Define the trust boundary for an agent: a retail assistant retrieves a document containing instructions to reveal customer information, and it has tools for looking up orders. How should the system treat retrieved content, and how should it authorize tool calls?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S5Q03F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "What controls must live outside the model, and how would you test for unauthorized tool arguments and data leakage?",
+  "parentText": "Define the trust boundary for an agent: a retail assistant retrieves a document containing instructions to reveal customer information, and it has tools for looking up orders. How should the system treat retrieved content, and how should it authorize tool calls?",
+  "parentId": "S5Q03"
+ },
+ {
+  "id": "S5Q04",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Measure reliability without mixing tenants: given a requests table with a request id, a tenant id, a model version, a started at time, a latency in milliseconds, and a status code, write PostgreSQL returning the hourly request count, the 5xx rate, and p95 latency by tenant and model version. Show only groups with at least 100 requests.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S5Q04F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "What index or partitioning strategy would you consider at high volume, and how would you use a query plan to validate your choice?",
+  "parentText": "Measure reliability without mixing tenants: given a requests table with a request id, a tenant id, a model version, a started at time, a latency in milliseconds, and a status code, write PostgreSQL returning the hourly request count, the 5xx rate, and p95 latency by tenant and model version. Show only groups with at least 100 requests.",
+  "parentId": "S5Q04"
+ },
+ {
+  "id": "S5Q05",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Make job creation idempotent: design the PostgreSQL schema and the Python transaction flow for a POST to document jobs, with a tenant-scoped idempotency key. Concurrent identical requests must return the same job, and reuse of the key with a different payload must return a conflict.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S5Q05F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How do you reliably publish work after committing the job? Explain your recovery if the process crashes between the database commit and the message publication.",
+  "parentText": "Make job creation idempotent: design the PostgreSQL schema and the Python transaction flow for a POST to document jobs, with a tenant-scoped idempotency key. Concurrent identical requests must return the same job, and reuse of the key with a different payload must return a conflict.",
+  "parentId": "S5Q05"
+ },
+ {
+  "id": "S5Q06",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Write a representative load test: using Locust or k6, implement a test for short requests, long streaming requests, and invalid requests. Include multiple tenants, a ramp-up, steady load, and a spike, and define measurable pass and fail criteria.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S5Q06F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How will you avoid a test dominated by cache hits, account for slow responses reducing generated traffic, and separate backend capacity from provider quotas?",
+  "parentText": "Write a representative load test: using Locust or k6, implement a test for short requests, long streaming requests, and invalid requests. Include multiple tenants, a ramp-up, steady load, and a spike, and define measurable pass and fail criteria.",
+  "parentId": "S5Q06"
+ },
+ {
+  "id": "S5Q07",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Design a retail shopping assistant end to end: the assistant answers product questions, checks inventory, and retrieves authenticated order status. Design the API, the retrieval, tool execution, authorization, the streaming interface, state storage, and monitoring, and explain where freshness is critical.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S5Q07F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "The model recommends an out-of-stock product, or requests another customer's order. Where should each of those errors be prevented or detected?",
+  "parentText": "Design a retail shopping assistant end to end: the assistant answers product questions, checks inventory, and retrieves authenticated order status. Design the API, the retrieval, tool execution, authorization, the streaming interface, state storage, and monitoring, and explain where freshness is critical.",
+  "parentId": "S5Q07"
+ },
+ {
+  "id": "S5Q08",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Lead a production incident: after a release, p95 latency doubles, LLM spending triples, and answer-quality complaints rise, while the HTTP error rate remains normal. Explain your first 15 minutes, your mitigation options, and your investigation.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S5Q08F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "What evidence would distinguish an agent loop, a cache failure, a retrieval regression, and a provider slowdown, and what if a rollback only partly resolves the problem?",
+  "parentText": "Lead a production incident: after a release, p95 latency doubles, LLM spending triples, and answer-quality complaints rise, while the HTTP error rate remains normal. Explain your first 15 minutes, your mitigation options, and your investigation.",
+  "parentId": "S5Q08"
+ },
+ {
+  "id": "S5Q09",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Design the Azure delivery pipeline: describe CI/CD for the application, the infrastructure, and the model and prompt artifacts. Include dependency and image checks, tests, the identity used for deployment, artifact promotion, evaluation gates, staged release, and rollback.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S5Q09F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How do you ensure the artifact tested in staging is the one released to production, and how would you handle a prompt-only release?",
+  "parentText": "Design the Azure delivery pipeline: describe CI/CD for the application, the infrastructure, and the model and prompt artifacts. Include dependency and image checks, tests, the identity used for deployment, artifact promotion, evaluation gates, staged release, and rollback.",
+  "parentId": "S5Q09"
+ },
+ {
+  "id": "S5Q10",
+  "set": "scenario50",
+  "kind": "main",
+  "text": "Plan recovery from a regional outage: the retail assistant must recover within one hour, and lose no more than 15 minutes of committed application data. Design an Azure recovery strategy covering PostgreSQL, object storage, search indexes, queues, configuration, and model access, and state where rebuilds are acceptable.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "S5Q10F",
+  "set": "scenario50",
+  "kind": "followup",
+  "text": "How would you test those recovery targets? What happens to in-flight jobs, and how do you prevent duplicate processing or conflicting writes during failover?",
+  "parentText": "Plan recovery from a regional outage: the retail assistant must recover within one hour, and lose no more than 15 minutes of committed application data. Design an Azure recovery strategy covering PostgreSQL, object storage, search indexes, queues, configuration, and model access, and state where rebuilds are acceptable.",
+  "parentId": "S5Q10"
+ },
+ {
+  "id": "W01",
+  "set": "interview60",
+  "kind": "main",
+  "text": "To start, what is the difference between a Docker image and a container?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "W02",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Why do Docker layers matter for build times?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "W03",
+  "set": "interview60",
+  "kind": "main",
+  "text": "When would you use S3 Standard versus S3 Glacier for training data?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "W04",
+  "set": "interview60",
+  "kind": "main",
+  "text": "What is a SageMaker endpoint, and what does it actually host?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "W05",
+  "set": "interview60",
+  "kind": "main",
+  "text": "What is a DAG, and why does Airflow use that structure?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "W06",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Why version model artifacts alongside code?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "W07",
+  "set": "interview60",
+  "kind": "main",
+  "text": "What is the difference between a pod and a deployment?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "W08",
+  "set": "interview60",
+  "kind": "main",
+  "text": "What is the difference between data drift and concept drift?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "W09",
+  "set": "interview60",
+  "kind": "main",
+  "text": "What problem does infrastructure as code actually solve?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "W10",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you organise an S3 bucket layout for a training dataset that gets versioned weekly?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "W11",
+  "set": "interview60",
+  "kind": "main",
+  "text": "What goes in a multi-stage Dockerfile for a Python model server, and why?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "W12",
+  "set": "interview60",
+  "kind": "main",
+  "text": "What is the difference between an Airflow operator and a sensor?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M01",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you detect data drift in a model that is already running in production?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M02",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Walk me through how you would structure a SageMaker pipeline for a scheduled retraining.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M03",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you handle autoscaling for a model inference service on Kubernetes?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M04",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Why would you use CloudFormation instead of configuring things by hand in the console?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M05",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How do you secure training data in S3 that contains customer information?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "C01F1",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "What is the time complexity of what you just wrote, and can you do better?",
+  "parentText": "Now take a look at this problem on screen and walk me through how you would solve it.",
+  "parentId": "C01"
+ },
+ {
+  "id": "C01F2",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "Which inputs would break that solution?",
+  "parentText": "Now take a look at this problem on screen and walk me through how you would solve it.",
+  "parentId": "C01"
+ },
+ {
+  "id": "M06",
+  "set": "interview60",
+  "kind": "main",
+  "text": "What does a good CI pipeline for a machine learning repository actually test?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M07",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you handle a task in Airflow that intermittently fails because of an upstream API?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M08",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Your training image is eight gigabytes. How would you approach shrinking it?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M09",
+  "set": "interview60",
+  "kind": "main",
+  "text": "When would you choose a real-time endpoint over batch transform?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M10",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Which metrics would you put on a dashboard for a production recommendation model?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M11",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How do you manage GPU resources across multiple teams sharing one cluster?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M12",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you roll out a new model version without risking a bad deployment?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M13",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How do you manage secrets in infrastructure as code without committing them?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M14",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you make a large S3 training dataset load faster into a training job?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M15",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you pass data between Airflow tasks when the payload is too large for XCom?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M16",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How does the SageMaker Model Registry fit into a deployment workflow?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M17",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you monitor a model where ground truth labels arrive weeks late?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M18",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How do you handle CUDA and driver compatibility in containers for GPU training?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "C02F1",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "Walk me through why your grouping key is correct, and what it costs per string.",
+  "parentText": "Here is another one on screen. Take a look and talk me through your approach.",
+  "parentId": "C02"
+ },
+ {
+  "id": "C02F2",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "How would that change if the strings were unicode instead of lowercase letters?",
+  "parentText": "Here is another one on screen. Take a look and talk me through your approach.",
+  "parentId": "C02"
+ },
+ {
+  "id": "M19",
+  "set": "interview60",
+  "kind": "main",
+  "text": "What is your approach to health checks for a model serving container?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M20",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you test a data pipeline, given the data itself keeps changing?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M21",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you structure stacks for development, staging, and production?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M22",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you approach hyperparameter tuning at scale without burning the budget?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M23",
+  "set": "interview60",
+  "kind": "main",
+  "text": "What would make you decide to retrain a model rather than just alerting on drift?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M24",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you backfill a year of data without overwhelming the scheduler?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M25",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you handle a dataset that must be deleted on request for compliance?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M26",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How do you keep base images patched across many model services?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M27",
+  "set": "interview60",
+  "kind": "main",
+  "text": "When would you reach for a service mesh in an ML serving stack, and when would you not?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "M28",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How do you keep feature engineering consistent between training and serving?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "H01",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Your model accuracy dropped fifteen percent overnight, but the input schema is unchanged. How do you debug that?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "H02",
+  "set": "interview60",
+  "kind": "main",
+  "text": "A SageMaker endpoint serving ten thousand requests per second has p99 latency creeping up. How do you diagnose and fix it?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "H03",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you design a pipeline that retrains, validates, and deploys with no human in the loop, and what guardrails would you put in?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "C03F1",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "How does your implementation tell a full queue from an empty one?",
+  "parentText": "Last one on screen. Walk me through it, and mention the time complexity.",
+  "parentId": "C03"
+ },
+ {
+  "id": "C03F2",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "What would you change to make that safe for two threads?",
+  "parentText": "Last one on screen. Walk me through it, and mention the time complexity.",
+  "parentId": "C03"
+ },
+ {
+  "id": "H04",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Inference pods are being evicted under load and you cannot reproduce it in staging. How do you approach that?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "H05",
+  "set": "interview60",
+  "kind": "main",
+  "text": "A DAG that ran fine for months now misses its SLA every night. Where do you start?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "H06",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Training jobs are throttling on S3 reads at scale. What is happening and how do you fix it?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "H07",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you tell a genuine drift alert apart from a broken upstream feature pipeline?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "H08",
+  "set": "interview60",
+  "kind": "main",
+  "text": "The same image behaves differently on your laptop and in the cluster. How do you track that down?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "H09",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Someone changed a resource by hand and now your stack will not update. What do you do?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "H10",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you roll back a model that is already serving traffic and has written bad data downstream?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "H11",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Your training job costs tripled after a code change with no accuracy gain. How do you find the cause?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "H12",
+  "set": "interview60",
+  "kind": "main",
+  "text": "How would you design for a region outage in a serving stack that must stay available?",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "L01",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Let's do a design question. We have a recommendation model that is retrained every night on about two terabytes of click data, and it serves roughly five thousand requests per second during the day. Walk me through how you would build the training pipeline, how you would validate a new model before it replaces the old one, and how you would roll it out so that a bad model never reaches all of the traffic at once.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "L01F1",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "And in that design, what happens when the nightly training job finishes late?",
+  "parentText": "Let's do a design question. We have a recommendation model that is retrained every night on about two terabytes of click data, and it serves roughly five thousand requests per second during the day. Walk me through how you would build the training pipeline, how you would validate a new model before it replaces the old one, and how you would roll it out so that a bad model never reaches all of the traffic at once.",
+  "parentId": "L01"
+ },
+ {
+  "id": "L01F2",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "How would you notice that the new model is worse only for one segment of users?",
+  "parentText": "Let's do a design question. We have a recommendation model that is retrained every night on about two terabytes of click data, and it serves roughly five thousand requests per second during the day. Walk me through how you would build the training pipeline, how you would validate a new model before it replaces the old one, and how you would roll it out so that a bad model never reaches all of the traffic at once.",
+  "parentId": "L01"
+ },
+ {
+  "id": "L02",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Here is another one. Imagine you are serving three different models on GPUs in Kubernetes. One of them has very spiky traffic, one has a strict latency budget of fifty milliseconds, and the third is a batch scoring job that runs for hours. Tell me how you would lay out the cluster, how you would schedule and autoscale each of those workloads, and how you would keep the GPU bill from running away.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "L02F1",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "What would you change in that layout if the spiky one started stealing capacity from the latency-sensitive one?",
+  "parentText": "Here is another one. Imagine you are serving three different models on GPUs in Kubernetes. One of them has very spiky traffic, one has a strict latency budget of fifty milliseconds, and the third is a batch scoring job that runs for hours. Tell me how you would lay out the cluster, how you would schedule and autoscale each of those workloads, and how you would keep the GPU bill from running away.",
+  "parentId": "L02"
+ },
+ {
+  "id": "L02F2",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "And how would you know the autoscaler is actually keeping up?",
+  "parentText": "Here is another one. Imagine you are serving three different models on GPUs in Kubernetes. One of them has very spiky traffic, one has a strict latency budget of fifty milliseconds, and the third is a batch scoring job that runs for hours. Tell me how you would lay out the cluster, how you would schedule and autoscale each of those workloads, and how you would keep the GPU bill from running away.",
+  "parentId": "L02"
+ },
+ {
+  "id": "L03",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Let's talk about monitoring. Say you have twenty models in production, owned by four different teams, and today each team watches its own dashboards by hand. Design me a monitoring setup that catches data drift, prediction drift and plain infrastructure failures across all of them, and explain who gets paged for what, and how you would keep the false alarms low enough that people do not start ignoring it.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "L03F1",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "Which of those signals would you compute in real time, and which ones once a day?",
+  "parentText": "Let's talk about monitoring. Say you have twenty models in production, owned by four different teams, and today each team watches its own dashboards by hand. Design me a monitoring setup that catches data drift, prediction drift and plain infrastructure failures across all of them, and explain who gets paged for what, and how you would keep the false alarms low enough that people do not start ignoring it.",
+  "parentId": "L03"
+ },
+ {
+  "id": "L03F2",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "How does a new team onboard a model into that system?",
+  "parentText": "Let's talk about monitoring. Say you have twenty models in production, owned by four different teams, and today each team watches its own dashboards by hand. Design me a monitoring setup that catches data drift, prediction drift and plain infrastructure failures across all of them, and explain who gets paged for what, and how you would keep the false alarms low enough that people do not start ignoring it.",
+  "parentId": "L03"
+ },
+ {
+  "id": "L04",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Now a data engineering one. You own a feature pipeline in Airflow that builds daily features for a fraud model from about a dozen upstream tables, and the upstream data regularly arrives late or gets corrected a few days after the fact. Walk me through how you would design the DAG so that late data and corrections are handled correctly, how you would backfill a month without overwhelming the warehouse, and how you would make sure training and serving see the same feature values.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "L04F1",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "In that design, what exactly happens when one of the twelve upstream tables is corrected for last Tuesday?",
+  "parentText": "Now a data engineering one. You own a feature pipeline in Airflow that builds daily features for a fraud model from about a dozen upstream tables, and the upstream data regularly arrives late or gets corrected a few days after the fact. Walk me through how you would design the DAG so that late data and corrections are handled correctly, how you would backfill a month without overwhelming the warehouse, and how you would make sure training and serving see the same feature values.",
+  "parentId": "L04"
+ },
+ {
+  "id": "L04F2",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "And where would you store the features so that serving can read them fast?",
+  "parentText": "Now a data engineering one. You own a feature pipeline in Airflow that builds daily features for a fraud model from about a dozen upstream tables, and the upstream data regularly arrives late or gets corrected a few days after the fact. Walk me through how you would design the DAG so that late data and corrections are handled correctly, how you would backfill a month without overwhelming the warehouse, and how you would make sure training and serving see the same feature values.",
+  "parentId": "L04"
+ },
+ {
+  "id": "L05",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Let's go to infrastructure. We have development, staging and production, each in its own AWS account, and today every environment is slightly different because people fixed things by hand over the years. Describe how you would bring all of that under infrastructure as code, how you would structure the stacks and the parameters so that the same definitions produce all three environments, and how a change would move from a developer's branch to production safely.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "L05F1",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "How would you deal with the resources that already exist and were created by hand?",
+  "parentText": "Let's go to infrastructure. We have development, staging and production, each in its own AWS account, and today every environment is slightly different because people fixed things by hand over the years. Describe how you would bring all of that under infrastructure as code, how you would structure the stacks and the parameters so that the same definitions produce all three environments, and how a change would move from a developer's branch to production safely.",
+  "parentId": "L05"
+ },
+ {
+  "id": "L05F2",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "And what stops someone from applying a change straight to production from their laptop?",
+  "parentText": "Let's go to infrastructure. We have development, staging and production, each in its own AWS account, and today every environment is slightly different because people fixed things by hand over the years. Describe how you would bring all of that under infrastructure as code, how you would structure the stacks and the parameters so that the same definitions produce all three environments, and how a change would move from a developer's branch to production safely.",
+  "parentId": "L05"
+ },
+ {
+  "id": "L06",
+  "set": "interview60",
+  "kind": "main",
+  "text": "Last design question. Picture a team of eight people shipping model changes a few times a week, and right now a release means someone runs a notebook and copies files around. I want a continuous delivery setup for the models: what gets tested automatically, what gates a candidate has to pass, who approves what, how the rollout to serving works, and how you roll back when a model that passed every gate still misbehaves in production.",
+  "parentText": null,
+  "parentId": null
+ },
+ {
+  "id": "L06F1",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "Which of those gates would you make a hard block and which just a warning?",
+  "parentText": "Last design question. Picture a team of eight people shipping model changes a few times a week, and right now a release means someone runs a notebook and copies files around. I want a continuous delivery setup for the models: what gets tested automatically, what gates a candidate has to pass, who approves what, how the rollout to serving works, and how you roll back when a model that passed every gate still misbehaves in production.",
+  "parentId": "L06"
+ },
+ {
+  "id": "L06F2",
+  "set": "interview60",
+  "kind": "followup",
+  "text": "And how long would that whole pipeline take from merge to serving, realistically?",
+  "parentText": "Last design question. Picture a team of eight people shipping model changes a few times a week, and right now a release means someone runs a notebook and copies files around. I want a continuous delivery setup for the models: what gets tested automatically, what gates a candidate has to pass, who approves what, how the rollout to serving works, and how you roll back when a model that passed every gate still misbehaves in production.",
+  "parentId": "L06"
+ }
+]

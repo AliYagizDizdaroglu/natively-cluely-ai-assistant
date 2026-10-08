@@ -1,0 +1,1 @@
+How would you notice that the new model is worse only for one segment of users?

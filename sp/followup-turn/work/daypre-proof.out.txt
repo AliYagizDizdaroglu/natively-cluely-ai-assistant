@@ -1,0 +1,22 @@
+step 6.1: OK
+step 6.1 (no answer files, no stop marker): OK (none)
+step 6.2: exit 0; OK
+step 6.3 s50m: exit 0; OK
+step 6.3 s50m REPLAY_BREAK: exit 1; OK
+step 6.3 s50l: exit 0; OK
+step 6.3 s50l REPLAY_BREAK: exit 1; OK
+step 6.3 s50k: exit 0; OK
+step 6.3 s50k REPLAY_BREAK: exit 1; OK
+step 6.4: exit 0; OK
+step 6.5a: exit 0; OK
+step 6.5b: exit 0; OK
+step 6.5c: exit 0; OK
+step 6.5d (extra: mock-fetch runner self-test): exit 0; OK
+step 6.5e (extra: grader-session instruments): exit 0; OK
+step 6.6: exit 0; OK
+step 6.7 (quota ledger): exit 0; OK
+step 6.7 headroom gemini-3.5-flash-lite: 500 - used 84 (app-log mentions 0 + answer-file records 84) = 416, needs >= 290: OK
+step 6.7 headroom gemini-3.1-flash-lite: 500 - used 0 (app-log mentions 0 + answer-file records 0) = 500, needs >= 98: OK
+step 6.8 front: exit 0; OK
+step 6.8 back: exit 0; OK
+ALL PRECONDITIONS HOLD (6.7 headroom computed above)

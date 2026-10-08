@@ -1,0 +1,8 @@
+﻿[final-noruns] test test.v4.ts (4115 B) + module mod.m1.mjs (2119 B), WITHOUT interview60.runs/
+ Test Files  1 passed (1)
+      Tests  3 passed | 2 skipped (5)
+  ✓ a final directly followed by a boundary-repair line replays as the restored words + the raw text
+  ✓ keeps interims and empty finals out, and drops finals before `since`
+  ✓ refuses a boundary-repair line that is not right under its own final (one synchronous handler writes both lines)
+as expected: the Tests line contains "3 passed | 2 skipped (5)"
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true

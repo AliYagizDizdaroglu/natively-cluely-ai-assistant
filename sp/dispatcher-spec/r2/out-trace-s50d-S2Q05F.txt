@@ -1,0 +1,15 @@
+===== s50d S2Q05F [fix]
+2026-09-13T08-22-36-s50d [fix jitter=50]: 39/40 once; doubles []; never [S2Q09]; drops 0; absorbed 1 (whisper 0); subs 0; unmatched 0; reorders 2; supersedes 0
+trace S2Q05F: {"n":1,"lat":3700,"budget":4200,"path":"unfinished","finished":false,"fromLive":false,"finals":2,"cov":"0.92","closes":["continuation-expired"],"live":["Construct an example where that greedy policy give"],"logFirst":"08:03:28.437","logGate":5977,"vadDev":-1,"blips":0,"voiceOff":"08:03:22.462"}
+  08:03:14.482 voice ON
+  08:03:17.980 final "Construct an example where that greedy policy gives"
+  08:03:18.022 voice OFF
+  08:03:18.482 voice ON
+  08:03:22.413 final "poor coverage, and tell me how you would incorporate redundancy or mul"
+  08:03:22.462 voice OFF
+  08:03:23.662 classify finals=2
+  08:03:26.162 dispatch finals=2 fromLive=false live=1 path=unfinished "Construct an example where that greedy policy gives poor cov"
+  08:03:34.162 close continuation-expired
+  08:03:23.850 <verdict unknown> {"kind":"declined","verdict":"unknown","again":false}
+  08:03:24.734 <live rv=match> {"kind":"revived","by":"live","rule":"forward","how":"residual","score":1,"remScore":0.2,"residual":15,"hits":15,"finals":2} q="Construct an example where that greedy policy give"
+

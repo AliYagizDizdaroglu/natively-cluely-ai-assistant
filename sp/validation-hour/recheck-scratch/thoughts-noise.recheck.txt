@@ -1,0 +1,98 @@
+=================== node h40d-thoughts-noise.mjs 2026-09-20T11-22-43-s50k
+run: 2026-09-20T11-22-43-s50k
+cue twins (gemini-3.5-flash-lite_captured-high)
+  -r1 interview60.answers.gemini-3.5-flash-lite_captured-high.json: answered 39, holes 0, empty prose 0, no thoughts 0; thoughts p50 874 p90 1209; ttft p50 3851 p90 5140 ms
+  -r2 interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json: answered 39, holes 0, empty prose 0, no thoughts 0; thoughts p50 897 p90 1144; ttft p50 3906 p90 9935 ms
+  -r3 interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json: answered 39, holes 0, empty prose 0, no thoughts 0; thoughts p50 905 p90 1179; ttft p50 3749 p90 4864 ms
+  pooled: n 117, thoughts p50 895 p90 1179; ttft p50 3851 p90 5443 ms; rep medians [874, 897, 905] spread 31; one rep against the other two pooled: [31, 2, 10] max 31
+  theil-sen ms per thought token, pooled reps: all 2.89 (n 117), stalls over 10000 ms excluded 2.90 (n 114)
+no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high): no answers file
+
+=================== node h40d-thoughts-noise.mjs 2026-09-21T08-22-34-s50l
+run: 2026-09-21T08-22-34-s50l
+cue twins (gemini-3.5-flash-lite_captured-high)
+  -r1 interview60.answers.gemini-3.5-flash-lite_captured-high.json: answered 39, holes 0, empty prose 0, no thoughts 0; thoughts p50 849 p90 1194; ttft p50 3834 p90 4839 ms
+  -r2 interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json: answered 39, holes 0, empty prose 0, no thoughts 0; thoughts p50 890 p90 1142; ttft p50 3907 p90 4740 ms
+  -r3 interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json: answered 38, holes 0, empty prose 1 [S1Q06], no thoughts 0; thoughts p50 887 p90 1160; ttft p50 3855 p90 4764 ms
+  pooled: n 116, thoughts p50 882 p90 1157; ttft p50 3855 p90 4740 ms; rep medians [849, 890, 887] spread 41; one rep against the other two pooled: [38, 20, 6] max 38
+  theil-sen ms per thought token, pooled reps: all 2.81 (n 116), stalls over 10000 ms excluded 2.81 (n 116)
+no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high): no answers file
+
+=================== node h40d-thoughts-noise.mjs 2026-09-22T08-22-50-s50m
+run: 2026-09-22T08-22-50-s50m
+cue twins (gemini-3.5-flash-lite_captured-high)
+  -r1 interview60.answers.gemini-3.5-flash-lite_captured-high.json: answered 39, holes 0, empty prose 0, no thoughts 0; thoughts p50 911 p90 1206; ttft p50 3858 p90 4712 ms
+  -r2 interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json: answered 38, holes 0, empty prose 1 [S2Q06], no thoughts 0; thoughts p50 892 p90 1062; ttft p50 3733 p90 4363 ms
+  -r3 interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json: answered 39, holes 0, empty prose 0, no thoughts 0; thoughts p50 899 p90 1095; ttft p50 3860 p90 4475 ms
+  pooled: n 116, thoughts p50 900 p90 1140; ttft p50 3858 p90 4536 ms; rep medians [911, 892, 899] spread 19; one rep against the other two pooled: [13, 12, 1] max 13
+  theil-sen ms per thought token, pooled reps: all 2.71 (n 116), stalls over 10000 ms excluded 2.75 (n 115)
+no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high): no answers file
+
+=================== node h40d-thoughts-noise.mjs 2026-09-24T08-20-12-h40a
+run: 2026-09-24T08-20-12-h40a
+cue twins (gemini-3.5-flash-lite_captured-high)
+  -r1 interview60.answers.gemini-3.5-flash-lite_captured-high.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 735 p90 913; ttft p50 3462 p90 6648 ms
+  -r2 interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 765 p90 919; ttft p50 3606 p90 11658 ms
+  -r3 interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 744 p90 921; ttft p50 3681 p90 30283 ms
+  pooled: n 132, thoughts p50 749 p90 919; ttft p50 3531 p90 24913 ms; rep medians [735, 765, 744] spread 30; one rep against the other two pooled: [18, 30, 9] max 30
+  theil-sen ms per thought token, pooled reps: all 4.02 (n 132), stalls over 10000 ms excluded 3.77 (n 109)
+no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high): no answers file
+
+=================== node h40d-thoughts-noise.mjs 2026-09-26T11-39-51-h40b
+run: 2026-09-26T11-39-51-h40b
+cue twins (gemini-3.5-flash-lite_captured-high)
+  -r1 interview60.answers.gemini-3.5-flash-lite_captured-high.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 751 p90 928; ttft p50 3943 p90 44315 ms
+  -r2 interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 705 p90 958; ttft p50 4882 p90 41826 ms
+  -r3 interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 783 p90 931; ttft p50 3888 p90 22032 ms
+  pooled: n 132, thoughts p50 758 p90 929; ttft p50 4027 p90 37601 ms; rep medians [751, 705, 783] spread 78; one rep against the other two pooled: [22, 67, 50] max 67
+  theil-sen ms per thought token, pooled reps: all 2.62 (n 132), stalls over 10000 ms excluded 2.94 (n 89)
+no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high): no answers file
+
+=================== node h40d-thoughts-noise.mjs 2026-09-29T11-42-00-h40c
+run: 2026-09-29T11-42-00-h40c
+cue twins (gemini-3.5-flash-lite_captured-high)
+  -r1 interview60.answers.gemini-3.5-flash-lite_captured-high.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 723 p90 955; ttft p50 3248 p90 4021 ms
+  -r2 interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 748 p90 988; ttft p50 3393 p90 4065 ms
+  -r3 interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 750 p90 923; ttft p50 3525 p90 4155 ms
+  pooled: n 132, thoughts p50 744 p90 983; ttft p50 3355 p90 4114 ms; rep medians [723, 748, 750] spread 27; one rep against the other two pooled: [25, 17, 19] max 25
+  theil-sen ms per thought token, pooled reps: all 3.29 (n 132), stalls over 10000 ms excluded 3.29 (n 132)
+no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high): no answers file
+
+=================== CALIBRATION: h40c, cue = control (same files) -> difference 0, PASS
+rule 2c: thoughts coverage cue 132/132 control 132/132 -> thinking tokens decide
+rule 2c: cue pooled median thoughts - control pooled median thoughts = 0 tokens (threshold +150); p90 difference 0 (reported)
+rule 2c: cue pooled median ttft - control pooled median ttft = 0 ms (fallback threshold +1000; the 0.5 s line is reported: within); p90 difference 0 ms (reported)
+rule 2c reading: PASS
+rule 2c holes: cue 0, control 0 (a rep with more than 3 true holes makes 3c INCOMPLETE; 2c is read on the ids answered); empty prose: cue 0, control 0 (each counts wrong in 3c)
+
+=================== CALIBRATION: h40c, cue = control + 200 tokens -> FAIL
+rule 2c: thoughts coverage cue 132/132 control 132/132 -> thinking tokens decide
+rule 2c: cue pooled median thoughts - control pooled median thoughts = 200 tokens (threshold +150); p90 difference 200 (reported)
+rule 2c: cue pooled median ttft - control pooled median ttft = 0 ms (fallback threshold +1000; the 0.5 s line is reported: within); p90 difference 0 ms (reported)
+rule 2c reading: FAIL  [CALIBRATION RUN, not a reading]
+rule 2c holes: cue 0, control 0 (a rep with more than 3 true holes makes 3c INCOMPLETE; 2c is read on the ids answered); empty prose: cue 0, control 0 (each counts wrong in 3c)
+
+=================== CALIBRATION: h40c, cue = control + 150 tokens -> PASS at the boundary
+rule 2c reading: PASS  [CALIBRATION RUN, not a reading]
+
+=================== CALIBRATION: h40c, cue = control + 151 tokens -> FAIL
+rule 2c reading: FAIL  [CALIBRATION RUN, not a reading]
+
+=================== CALIBRATION: h40c, --exclude R10,R20 (ids dropped on both sides: answered counts fall by 2)
+run: 2026-09-29T11-42-00-h40c  excluded ids: R10 R20
+  -r1 interview60.answers.gemini-3.5-flash-lite_captured-high.json: answered 42, holes 0, empty prose 0, no thoughts 0; thoughts p50 731 p90 955; ttft p50 3248 p90 4021 ms
+  -r2 interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json: answered 42, holes 0, empty prose 0, no thoughts 0; thoughts p50 755 p90 988; ttft p50 3410 p90 4065 ms
+  -r3 interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json: answered 42, holes 0, empty prose 0, no thoughts 0; thoughts p50 758 p90 923; ttft p50 3525 p90 4127 ms
+  -r1 interview60.answers.gemini-3.5-flash-lite_captured-high.json: answered 42, holes 0, empty prose 0, no thoughts 0; thoughts p50 731 p90 955; ttft p50 3248 p90 4021 ms
+  -r2 interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json: answered 42, holes 0, empty prose 0, no thoughts 0; thoughts p50 755 p90 988; ttft p50 3410 p90 4065 ms
+  -r3 interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json: answered 42, holes 0, empty prose 0, no thoughts 0; thoughts p50 758 p90 923; ttft p50 3525 p90 4127 ms
+rule 2c reading: PASS
+rule 2c holes: cue 0, control 0 (a rep with more than 3 true holes makes 3c INCOMPLETE; 2c is read on the ids answered); empty prose: cue 0, control 0 (each counts wrong in 3c)
+
+=================== CALIBRATION: h40c, the control family absent (no captured-no-cues-high on h40c) -> no 2c reading
+no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high): no answers file
+
+=================== CALIBRATION: --control-dir (h40c's captured-high as cue against h40b's captured-high read from h40b's folder: different bytes, a nonzero difference is expected; exercises the option only)
+no-cue twins (control) (gemini-3.5-flash-lite_captured-high)  [from C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-09-26T11-39-51-h40b]
+rule 2c: cue pooled median thoughts - control pooled median thoughts = -14 tokens (threshold +150); p90 difference 54 (reported)
+rule 2c reading: PASS

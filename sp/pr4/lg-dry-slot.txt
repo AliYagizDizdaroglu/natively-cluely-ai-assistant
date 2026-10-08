@@ -1,0 +1,2 @@
+launch-grader: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\followup-turn\R\blind\pairs.blind-1.json does not exist
+usage: node launch-grader.mjs <blind-N.gX> [--attempt k] [--rerun] [--dry-run] | pilot --pilot <C:/ dir> [--attempt k] [--dry-run] | cwdprobe-1|cwdprobe-2 --probe [--dry-run] | --make-pilot <C:/ dir>

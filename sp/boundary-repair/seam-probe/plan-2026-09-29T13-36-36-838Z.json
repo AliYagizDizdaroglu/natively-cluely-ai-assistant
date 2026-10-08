@@ -1,0 +1,131 @@
+{
+ "rate": 24000,
+ "plan": [
+  {
+   "play": 1,
+   "id": "S1Q01F",
+   "startS": 2,
+   "endS": 8.999500000000001
+  },
+  {
+   "play": 1,
+   "id": "S1Q10",
+   "startS": 12.999500000000001,
+   "endS": 33.379000000000005
+  },
+  {
+   "play": 1,
+   "id": "S2Q07",
+   "startS": 37.379000000000005,
+   "endS": 59.578500000000005
+  },
+  {
+   "play": 1,
+   "id": "M13",
+   "startS": 63.578500000000005,
+   "endS": 68.283
+  },
+  {
+   "play": 2,
+   "id": "S1Q01F",
+   "startS": 72.283,
+   "endS": 79.2825
+  },
+  {
+   "play": 2,
+   "id": "S1Q10",
+   "startS": 83.2825,
+   "endS": 103.662
+  },
+  {
+   "play": 2,
+   "id": "S2Q07",
+   "startS": 107.662,
+   "endS": 129.8615
+  },
+  {
+   "play": 2,
+   "id": "M13",
+   "startS": 133.8615,
+   "endS": 138.566
+  },
+  {
+   "play": 3,
+   "id": "S1Q01F",
+   "startS": 142.566,
+   "endS": 149.56550000000001
+  },
+  {
+   "play": 3,
+   "id": "S1Q10",
+   "startS": 153.56550000000001,
+   "endS": 173.94500000000002
+  },
+  {
+   "play": 3,
+   "id": "S2Q07",
+   "startS": 177.94500000000002,
+   "endS": 200.14450000000002
+  },
+  {
+   "play": 3,
+   "id": "M13",
+   "startS": 204.14450000000002,
+   "endS": 208.84900000000002
+  },
+  {
+   "play": 4,
+   "id": "S1Q01F",
+   "startS": 212.84900000000002,
+   "endS": 219.84850000000003
+  },
+  {
+   "play": 4,
+   "id": "S1Q10",
+   "startS": 223.84850000000003,
+   "endS": 244.22800000000004
+  },
+  {
+   "play": 4,
+   "id": "S2Q07",
+   "startS": 248.22800000000004,
+   "endS": 270.4275
+  },
+  {
+   "play": 4,
+   "id": "M13",
+   "startS": 274.4275,
+   "endS": 279.132
+  },
+  {
+   "play": 5,
+   "id": "S1Q01F",
+   "startS": 283.132,
+   "endS": 290.1315
+  },
+  {
+   "play": 5,
+   "id": "S1Q10",
+   "startS": 294.1315,
+   "endS": 314.511
+  },
+  {
+   "play": 5,
+   "id": "S2Q07",
+   "startS": 318.511,
+   "endS": 340.7105
+  },
+  {
+   "play": 5,
+   "id": "M13",
+   "startS": 344.7105,
+   "endS": 349.415
+  }
+ ],
+ "script": {
+  "S1Q01F": "Under what conditions would you prefer logistic regression, a neural network, or a rules-based approach?",
+  "S1Q10": "Secure the churn platform without embedded credentials: how would your inference service access the model artifacts and PostgreSQL using Azure identity and networking controls? Explain the authentication, the authorization, how you handle secrets where that is unavoidable, and how you separate environments.",
+  "S2Q07": "Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.",
+  "M13": "How do you manage secrets in infrastructure as code without committing them?"
+ }
+}

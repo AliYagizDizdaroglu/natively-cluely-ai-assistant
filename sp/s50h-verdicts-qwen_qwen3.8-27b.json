@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct data/latency rationale plus two named baselines; natural spoken length."
+  },
+  "S1Q02": {
+    "correctness": 0,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Figures do reconcile (2850 TP, 57% precision, 30% recall); answer confuses precision with recall and wrongly calls them inconsistent."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Difference-in-differences with control, mix segmentation and confounder check; concise and directly responsive."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Core metrics right but the zero-prevalence lift is self-contradictory (1.0 for empty, 0.0 for no positives); long with underscored identifiers."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Window-adjusted chronological cutoff and train-only ColumnTransformer are exactly right; about 95 words."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Lateral join with ingested-at guard and coalesce is right, but never filters on the support-call event type."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested stage and names the shared feature store correctly, but runs roughly 180 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Prediction log, holdout assignment, delayed join and mature-outcome retraining all addressed; slightly over length."
+  },
+  "S1Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Azure service mapping is accurate, but the closing claim that an all-native stack minimizes vendor lock-in is backwards; long."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Managed identity, Entra ID Postgres auth, Key Vault fallback and per-environment isolation all covered correctly."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Walks every named stage with plausible concrete tooling and ties it back to prior work; well-sized."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Defines unit, denominator, construction and uncertainty for all three metrics; about 165 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sound contrast of fixed workflow, decomposition and dynamic agent with a clear justification threshold; over length."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct one-based 1/(c+rank) accumulation with a deterministic first-seen-rank tie-break; crisp."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy relevance order with dedup set, per-document cap of two and skip-if-unfit; slightly long."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore, per-case wait_for and gather with return_exceptions gives order and isolated failures; code tokens spoken raw."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Per-tenant namespaces, relational metadata with ACLs, query-time filtering and an evaluation plan, all within length."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioned parallel index, batched backfill, dual-write sync, pointer cutover and instant rollback; about 105 words."
+  },
+  "S2Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Good Azure mapping but skips the explicitly asked work queue, going straight from Event Grid to Functions; long."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Service Bus at-least-once plus a durable idempotency key in Cosmos correctly makes redelivery safe; slightly long."
+  }
+}

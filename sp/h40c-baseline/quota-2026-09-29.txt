@@ -1,0 +1,15 @@
+quota day starts 2026-09-29T07:00:00.000Z (10:00 local); generated 2026-09-29T07:48:22.094Z
+
+1. app logs, lines at/after the reset naming a lite model
+  natively_debug.log: last line 2026-09-26T20:26:19.510Z; 0 lines since the reset; lite mentions {}
+  C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn/natively_debug.log: absent
+
+2. files written since the reset that could hold model calls
+  2026-09-29T07:46:42.531Z       2610  MAIN/electron/test/golden/interview60.runs/flight-h40c-dry.launcher.log
+  2026-09-29T07:16:34.559Z       1066  SP/copy-probe-wav.mjs
+  2026-09-29T07:05:48.296Z       3578  SP/l20/health/probe-schedule.log
+  2026-09-29T07:13:35.920Z       3862  SP/launch-smoke-cues.cmd
+  2026-09-29T07:13:28.512Z       1722  SP/make-smoke-dryruns.mjs
+  5 file(s)
+
+Budget (h40c pre-registration, quota note): 3.1-lite ~270 + cue smoke 30 Sep 05:00 ~60 = ~330 of 500; 3.5-lite ~243 + smoke ~2 = ~245 of 500. Lite usage since the reset: 0. Checked 2026-09-29 10:49 local.

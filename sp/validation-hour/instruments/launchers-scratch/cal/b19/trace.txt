@@ -1,0 +1,5 @@
+run wav:check
+guard
+run app:start
+run probe
+run app:stop

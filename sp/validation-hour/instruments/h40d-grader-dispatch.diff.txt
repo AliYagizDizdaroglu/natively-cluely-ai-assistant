@@ -1,0 +1,110 @@
+diff --git "a/C:\\Users\\sotka\\AppData\\Local\\Temp\\claude\\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\\9c5886c7-cdbd-48af-b8bc-e9275012ec64\\scratchpad\\h40c-grader-dispatch.txt" "b/C:\\Users\\sotka\\AppData\\Local\\Temp\\claude\\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\\9c5886c7-cdbd-48af-b8bc-e9275012ec64\\scratchpad\\validation-hour\\h40d-grader-dispatch.txt"
+index 0a30e66..0197dad 100644
+--- "a/C:\\Users\\sotka\\AppData\\Local\\Temp\\claude\\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\\9c5886c7-cdbd-48af-b8bc-e9275012ec64\\scratchpad\\h40c-grader-dispatch.txt"
++++ "b/C:\\Users\\sotka\\AppData\\Local\\Temp\\claude\\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\\9c5886c7-cdbd-48af-b8bc-e9275012ec64\\scratchpad\\validation-hour\\h40d-grader-dispatch.txt"
+@@ -1,29 +1,81 @@
+-h40c grading-agent dispatch text. Written 2026-09-29 ~13:35, during the flight, BEFORE any h40c data
+-existed. It is h40b's in-app dispatch text verbatim (agent-a75bedc970d3f2404, claude-opus-5-5,
+-2026-09-26), with only the two paths and the tag changed per arm. Dispatch with model "opus"; read the
+-model field of each transcript afterwards and require claude-opus-5-5 (PREREGISTER-h40c: grader pinned).
++h40d grading-agent dispatch text. Written 2026-10-01 14:45 local, BEFORE any h40d data existed (the flight is
++Friday 2026-10-02 13:30). It is h40c's dispatch text verbatim (itself h40b's in-app dispatch text verbatim,
++agent-a75bedc970d3f2404, claude-opus-5-5, 2026-09-26), with only the paths and the tag changed per arm. Dispatch
++with model "opus"; read the model field of each transcript afterwards with h40d-grader-models.mjs and require
++claude-opus-5-5 (PREREGISTER-h40d.r4.md section 2 and section 6: grader pinned).
++
++SP = C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad
++VH = SP\validation-hour
++RUN = MAIN\electron\test\golden\interview60.runs\<stamp>-h40d
+ 
+ Rulings, made before the data:
+-- ONE grading agent per arm, as on h40b (18 agents, one per arm). The in-app arm's single grade is the
+-  rule-3 grade. The runbook's earlier "two Opus agents" line is superseded: the pre-registration names
+-  no second in-app grader and no way to combine two, and h40b's 35, the floor, came from one grader.
+-- Arms graded: inapp (rule 3) + captured-low, -r2, -r3 and captured-high, -r2, -r3 (the per-item twin
+-  reading the pre-registration requires reported). Bare, low, high and minimal arms are optional and
+-  are not needed by any rule or required row.
+-- Tags and files: inapp -> PAIRS <run>\interview60.judge.pairs.json, VERDICTS <SP>\h40c-verdicts-inapp.json;
+-  captured-low -> interview60.judge.pairs.gemini-3.1-flash-lite_captured-low.json -> h40c-verdicts-captured-low.json;
+-  likewise -r2, -r3, and gemini-3.5-flash-lite_captured-high{,-r2,-r3} -> h40c-verdicts-captured-high{,-r2,-r3}.json.
+-- Merge: cwd MAIN, h40c-merge.cmd <model id> <run dir>, only after the flight task has ended.
+-
+-Counting rulings, written ~15:40 after the flight ended and the 7 graders were dispatched, BEFORE
+-any verdict came back (read from the pairs keys only, never from grades):
+-- The in-app pairs hold 45 answers: 44 roster items + R18#2 (R18 answered twice); R05 has no answer.
+-- Rule 3's "acceptable of 45" counts roster ITEMS, as h40b's 35 did (mains: the per-question best
+-  answer, the pass record's own "best of a main's answers"; follow-ups: their single answer).
+-  R05 counts as not acceptable. R18 counts once.
+-- Rule 3's zero-wrong clause reads "the live in-app answers on the 40 items": EVERY delivered answer,
+-  so R18#2 counts on its own. If R18#2 is graded wrong while R18's first answer is acceptable, the
+-  clause FAILS on it and the note says exactly that; the best-of rule does not wash it out.
++- ONE grading agent per graded arm: ten agents, all in ONE session (r4 section 2; review Q1), as h40c's seven and
++  h40b's eighteen were one per arm. The in-app arm's single grade is the rule-3 grade. There is no second in-app
++  grader: the pre-registration names none and no way to combine two, and h40c's 35, the floor, came from one grader.
++- Arms graded (ten): inapp (rule 3); captured-high, -r2, -r3 (the cue twins); captured-no-cues-high, -r2, -r3 (the
++  no-cue twins, the control); captured-low, -r2, -r3 (the back leg's cue twins, always graded, r4 section 2). The
++  bare, low, high and minimal arms are run by the flight and are not graded, as on h40c.
++- Tags and files. Each tag's PAIRS file is in RUN, its VERDICTS file in VH (RUN and VERDICTS below are substituted
++  with the full paths):
++  inapp                      PAIRS interview60.judge.pairs.json                                                 VERDICTS h40d-verdicts-inapp.json
++  captured-high              PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_captured-high.json             VERDICTS h40d-verdicts-captured-high.json
++  captured-high-r2           PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r2.json          VERDICTS h40d-verdicts-captured-high-r2.json
++  captured-high-r3           PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r3.json          VERDICTS h40d-verdicts-captured-high-r3.json
++  captured-no-cues-high      PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high.json     VERDICTS h40d-verdicts-captured-no-cues-high.json
++  captured-no-cues-high-r2   PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high-r2.json  VERDICTS h40d-verdicts-captured-no-cues-high-r2.json
++  captured-no-cues-high-r3   PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high-r3.json  VERDICTS h40d-verdicts-captured-no-cues-high-r3.json
++  captured-low               PAIRS interview60.judge.pairs.gemini-3.1-flash-lite_captured-low.json              VERDICTS h40d-verdicts-captured-low.json
++  captured-low-r2            PAIRS interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r2.json           VERDICTS h40d-verdicts-captured-low-r2.json
++  captured-low-r3            PAIRS interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r3.json           VERDICTS h40d-verdicts-captured-low-r3.json
++- Merge: cwd MAIN, h40d-merge.cmd <model id> <run dir>, only after the flight task has ended.
++
++GRADER DRIFT, in order (r4 section 6). The pre-registration's own text, verbatim:
++
++- **Grader.** Pinned to `claude-opus-5-5` from every grading transcript (`h40d-grader-models.mjs`). **GRADER DRIFT
++  (review B, I5c; re-check I5(g)), decided now:** the `opus` alias is read from ONE throwaway probe agent — model
++  "opus", a one-line task — dispatched BEFORE any h40d grader, its model read from its own transcript with
++  `h40d-grader-models.mjs` (§9.5; and once more at arming, §11; ruling 5). If it no longer resolves to
++  `claude-opus-5-5`, the hour is graded by the new model, every merge names it, and the transcripts and the result
++  note name it. Rules computed within this hour and graded by that one grader together — **3b and 3c — still gate**.
++  Rules compared against h40c's grader — **3a's floor of 35 — are reported, not gated**, and the verdict word carries
++  the modifier: e.g. "PASS EXCEPT 3a (GRADER DRIFT)", which is not a validation. **The controller's default is exactly
++  that: (ii) grade anyway with the new model, 3a reported, the result saying GRADER DRIFT, the hour not validated, a
++  re-fly once a pinned grader exists.** The user's alternative, (i) a dated re-pin amendment written BEFORE grading:
++  h40c's own in-app pairs file (`interview60.judge.pairs.json` of h40c's run folder) is re-graded by the new model
++  with the same dispatch text, BEFORE h40d's in-app pairs are graded in the same session, and that count becomes 3a's
++  floor under the new grader; under (i), 3a gates against the re-graded floor and a PASS validates, reported as "PASS
++  (grader re-pinned to <id>)". **The choice is made now, in the veto window before arming, and written into §11 — not
++  at grading time, and never after h40d's 3a number is known** (§12, "Only the user").
++
++The order that text fixes (derived from it; r4 governs wherever this paraphrase differs):
++1. FIRST, before any h40d grader is dispatched: ONE throwaway probe agent, model "opus", a one-line task (for example:
++   Reply with the single word OK.), and its model read from its own transcript with h40d-grader-models.mjs. Once more
++   at arming, r4 section 11.
++2. It reads claude-opus-5-5: no drift. Dispatch the ten graders with the text below, model "opus", read each grader's
++   model from its own transcript, and pass --model claude-opus-5-5 to every merge.
++3. It reads anything else: GRADER DRIFT. The choice written into section 11 BEFORE arming decides, and is never made
++   after h40d's 3a number is known. (ii), the controller's default: grade anyway with the new model; every merge
++   names it; the transcripts and the result note name it; 3b and 3c still gate; 3a's floor of 35 is reported, not
++   gated; the verdict word carries the modifier, for example "PASS EXCEPT 3a (GRADER DRIFT)", which is not a
++   validation; re-fly once a pinned grader exists. (i), the user's alternative: a dated re-pin amendment is written
++   BEFORE grading; h40c's own in-app pairs file (interview60.judge.pairs.json of h40c's run folder) is re-graded by
++   the new model with the same dispatch text BEFORE h40d's in-app pairs are graded, in the same session, and that
++   count becomes 3a's floor under the new grader. r4 does not fix that re-grade's tag or verdicts file name: the
++   amendment names them.
++
++Counting rulings (r4 section 4, "Counting rulings, before any verdict", verbatim; they stand before any verdict
++comes back):
++
++- An item answered twice counts once toward 3a (its best answer) and both answers count for 3b (h40c's ruling).
++- An item with no captured prompt (unanswered in-app) is absent from every captured arm; bands are read on the ids
++  each rep answered; the number of ids per rep is printed with every count.
++- A twin record with `transientError` is a true hole; a twin record with empty `spoken` and no `transientError` is
++  empty prose and counts wrong in 3c's all-ids line, and in its gated clause only as rule 3c's "wrong" says (a block-only twin yes, a `filterCodeFences` emptying no, a no-text record no); neither is re-graded by hand.
++- A same-day re-run of a twin arm passes `--only` with that rep's `transientError` ids (never a bare resume, which re-draws empty prose too); the filled ids are graded by the pinned grader, named, and
++  excluded from 2c.
++- The cue twins' `cues` arrays are the RAW blocks; the in-app `[Answer] cues:` lines are the DISPLAYED blocks (after
++  `trimCues`); the two are never compared line for line — the in-app trims are quoted, the twins' overruns counted.
++- Grades are the graders'; nothing is re-graded by hand. "Wrong" has the one definition of rule 3 everywhere.
+ 
+ ----- dispatch text (substitute RUN, VERDICTS and TAG) -----
+ You are grading one arm of an interview-answer flight, using a frozen grading instrument.

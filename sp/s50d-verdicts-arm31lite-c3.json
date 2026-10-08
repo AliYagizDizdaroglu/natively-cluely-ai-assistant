@@ -1,0 +1,22 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sound data, production and baseline reasoning; logistic regression baseline named. Natural speech but about 100 words, needs trimming."},
+  "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "True positives 2850 and recall 30 percent right, but band is 5000 so precision is 57; calls it consistent without saying so."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Holdout control isolates seasonality, matching handles mix; addresses all confounders. Roughly 95 words, slightly long for speech."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Stable sort by index, correct precision, recall and lift formulas, sensible edge-case answers. About 140 words, too long spoken."},
+  "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Chronological split, ColumnTransformer fit on train only, thirty-day embargo for label window. Correct but roughly 130 words."},
+  "S1Q06": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Left join, window and ingestion predicates right, zero-call preserved, but never filters event type to support calls. Slightly long."},
+  "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers every requested stage and names the shared feature store correctly. About 160 words, far beyond the spoken band."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Request-id logging, async outcome join, variant stored, retrain only on matured windows. Sound; roughly 110 words."},
+  "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Accurate Azure mapping across storage, training, registry, ACR, AKS, ADF, identity, monitoring with reasons. About 120 words."},
+  "S1Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Managed identity, RBAC, Entra auth to Postgres, Key Vault references, private endpoints per environment. Correct; slightly over length."},
+  "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Walks every stage, layout-aware parsing, hybrid retrieval, cross-encoder rerank, tied to financial documents. Roughly 110 words."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Defines unit, denominator, construction and uncertainty for each metric plausibly. Around 180 words, well past a spoken answer."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Compares all three approaches, names dependent-step limitation and the latency and cost price. About 105 words."},
+  "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct reciprocal rank fusion accumulation with deterministic score-then-id tie-break and top k slice. Natural, about eighty words."},
+  "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Greedy relevance sort, dedup set, per-document cap of two, skip when over budget. Correct; roughly 110 words."},
+  "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Semaphore caps eight, timeout race, order preserved by index mapping, errors captured per case. Natural spoken length."},
+  "S2Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Tenant namespaces, relational metadata with ACL filters, async queue reindex, retrieval plus citation evaluation. Around 125 words."},
+  "S2Q08": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Dual write, backfill, flag cutover and rollback are right, but cosine similarity between different-dimension vectors is impossible."},
+  "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct Azure placement for every component and a sensible managed-versus-custom boundary. Roughly 115 words, over the band."},
+  "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Message-id dedup table, conditional upsert, idempotent replay after crash before acknowledgement. Correct pattern; about 110 words."}
+}

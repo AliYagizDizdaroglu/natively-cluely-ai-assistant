@@ -1,0 +1,6 @@
+docs(harness): state the budget row's after6 baseline and policy
+
+The row's before text now matches its own output on after6 (36 of 55 cut
+under 80 words) and the README's row description says the floor-80 policy.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

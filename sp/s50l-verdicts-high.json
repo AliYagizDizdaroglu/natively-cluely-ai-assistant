@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Covers data fit, latency and deployment constraints, and a named logistic-regression baseline; natural spoken length."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic all correct, but calling a three-point precision gap consistent within rounding misses the question's point; over length."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout plus cohort-level regression adjustment correctly separates model effect from seasonality and mix; well-paced."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct tie-break, metrics and lift; the invalid-k case is hedged as zero or raise, and it runs long."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Thirty-day buffer on the chronological split plus ColumnTransformer inside the Pipeline is exactly right; well over 85 words."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Left join with the window, ingestion cutoff and event-type predicate in the join preserves zero-call customers; too long."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All seven stages plus a shared feature store as the batch-online commonality; length well past a spoken answer."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, hashed assignment, request-id outcome joins and propensity-weighted mature windows all handled; far too long to say."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure mapping across all eight components with operational reasoning; length roughly double the spoken target."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, private endpoints, RBAC, Key Vault and per-environment isolation all covered correctly; over length."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every named stage walked through with layout-aware parsing, hybrid retrieval and cross-encoder reranking; much too long spoken."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Unit, denominator, dataset and uncertainty given for all three metrics with correct interval methods; very long."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Names non-determinism as the justification and contrasts all three approaches; overlong and never weighs the agent's cost."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct one-based reciprocal rank accumulation, deterministic id tie-break and top-k slice; slightly over spoken length."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy sort, seen-set dedup, per-document cap of two and budget skip all correct; well over 85 words."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore cap, per-case timeout race, local error capture and order preservation all right; far too long."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-partitioned index, Postgres metadata, filter-time permission enforcement and Ragas evaluation all addressed; a little over length."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-field versioning, async backfill, dual-write sync, shadow comparison, flag cutover and revert rollback; very long."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sound Azure placement for all seven components plus a justified custom parsing component; over spoken length."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-lock plus a Cosmos dedup key on message id makes the repeat safe; crisp spoken length."
+  }
+}

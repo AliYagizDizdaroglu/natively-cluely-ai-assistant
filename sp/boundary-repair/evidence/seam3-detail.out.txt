@@ -1,0 +1,106 @@
+REPAIR L04#1 restored "upstream" -> TRUE (the script holds it before F2)
+   interim before the cut: "from about a dozen upstream tables, and the upstream data regularly arrive"
+   cut final (speech_final false): "from about a dozen upstream tables, and the"
+   next final +2959 ms: "data regularly arrives late or gets corrected a few days after the fact."
+repairs 1, true against the script 1
+
+L04#3 script: Now a data engineering one. You own a feature pipeline in Airflow that builds daily features for a fraud model from about a dozen upstream tables, and the upstream data regularly arrives late or gets corrected a few days after the fact. Walk me through how you would design the DAG so that late data and corrections are handled correctly, how you would backfill a month without overwhelming the warehouse, and how you would make sure training and serving see the same feature values.
+   interim    Now a
+   interim    Now a data engineering one.
+   FINAL   sf Now a data engineering one.
+   interim    You own a fee
+   interim    You own a feature pipeline in
+   interim    You own a feature pipeline in Airflow that builds
+   interim    You own a feature pipeline in Airflow that builds daily features for
+   FINAL      You own a feature pipeline in Airflow that builds daily features for a fraud model
+   interim    from about a dozen
+   interim    from about a dozen upstream tables,
+   interim    from about a dozen upstream tables,
+   interim    from about a dozen upstream tables, and the upstream data
+   interim    from about a dozen upstream tables, and the upstream data regularly arrive
+   FINAL      from about a dozen upstream tables, and the upstream data regularly arrives late
+   interim    or gets corrected a
+   interim    or gets corrected a few days after the
+   FINAL   sf gets corrected a few days after the fact.
+   interim    Walk me through
+   interim    Walk me through how you would design
+   interim    Walk me through how you would design the DAG so that late
+   interim    Walk me through how you would design the DAG so that late data and corrections
+   FINAL      Walk me through how you would design the DAG so that late
+   interim    data and corrections are handled
+   interim    and corrections are handled correctly, how
+   interim    data and corrections are handled correctly, how you would backfill a
+   interim    data and corrections are handled correctly, how you would backfill a month without over
+   FINAL      data and corrections are handled correctly, how you would back
+   interim    a month without overwhelming
+   interim    a month without overwhelming the warehouse,
+   interim    a month without overwhelming the warehouse, and how you would make
+   interim    a month without overwhelming the warehouse, and how you would make sure training and
+   FINAL      a month without overwhelming the warehouse, and how you would make
+   interim    sure training and serving
+   interim    sure training and serving see the same feature
+   FINAL   sf sure training and serving see the same feature values.
+
+S1Q07#1 script: Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.
+   interim    Design the
+   interim    Design the next version of the
+   interim    Design the next version of the Churn platform,
+   interim    Design the next version of the Churn platform,
+   FINAL      Design the next version of the Churn platform,
+   interim    it has to support
+   interim    it has to support nightly scoring for
+   interim    it has to support nightly scoring for four hundred
+   interim    it has to support nightly scoring for 400,000 customers,
+   interim    it has to support nightly scoring for 400,000 customers,
+   FINAL      it has to support nightly scoring for 400,000 customers,
+   interim    and on demand scoring
+   interim    and on demand scoring for customer
+   FINAL   sf and on demand scoring for customer service agents.
+   interim    Cover Ingest
+   interim    Cover ingestion:
+   interim    Cover ingestion, feature computation,
+   interim    Cover ingestion, feature computation,
+   interim    Cover ingestion, feature computation, training,
+   FINAL      Cover ingestion, feature computation,
+   interim    training, model registration,
+   interim    training, model registration,
+   interim    training, model registration, serving,
+   interim    training, model registration, serving, prediction storage,
+   FINAL      training, model registration, serving, prediction storage,
+   interim    and monitoring,
+   interim    and monitoring,
+   interim    and monitoring, and identify what
+   interim    and monitoring, and identify what should be shared between
+   interim    and monitoring, and identify what should be shared between the batch and the online
+   FINAL      and monitoring, and identify what should be shared between the batch and the online path.
+
+S2Q04#1 script: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.
+   interim    Merge two
+   interim    Merge to retrieval result
+   interim    Merge to retrieval result lists,
+   interim    Merge two retrieval result lists, Implement
+   FINAL      Merge two retrieval result lists,
+   interim    Implement reciprocal
+   interim    Implement reciprocal rank fusion for a
+   interim    Implement reciprocal rank fusion for a keyword list and
+   FINAL   sf Implement reciprocal rank fusion for a keyword list and a vector list.
+   interim    Each list
+   interim    Each list contains unique
+   interim    Each list contains unique document ids ordered
+   interim    Each list contains unique documenteds ordered from best to worst.
+   FINAL   sf Each list contains unique documenteds ordered from best to worst.
+   interim    Use one
+   interim    Use one based ranks and a configurable
+   interim    Use one based ranks and a configurable positive
+   interim    Use one based ranks and a configurable positive constant c,
+   interim    Use one based ranks and a configurable positive constant c,
+   FINAL      Use one based ranks and a configurable positive constant c,
+   interim    with each
+   interim    with each contribution being one
+   interim    with each contribution being one over c plus rank,
+   interim    with each contribution being one over c plus rank, and return
+   FINAL      with each contribution being one over c plus rank,
+   interim    and return the top k unique
+   interim    and return the top k unique ids with deterministic
+   interim    and return the top k unique ids with deterministic tie breaking.
+   FINAL   sf and return the top k unique ids with deterministic tie breaking.

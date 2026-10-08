@@ -1,0 +1,11 @@
+﻿tier 1  gemini-3.8-flash  R02F(4/7) R08(6/7)
+tier 2  gemini-3.7-flash  R03(2/7) R09F(3/7) R16(3/7)
+tier 3  gemini-3.6-flash  R01(1/7) R11F(1/7) R12(1/7) R17F(1/7) R23(1/7) R26F(1/7) R27(1/7) R28(1/7) R30(1/7) R31F(1/7) R32(1/7)
+skipped (h40a evidence): R09 (1/7, no captured prompt)
+
+plan (budget 18/model/day):
+  tier 1  gemini-3.8-flash  2 ids x 3 reps = 6 requests (budget 18)
+  tier 2  gemini-3.7-flash  3 ids x 3 reps = 9 requests (budget 18)
+  tier 3  gemini-3.6-flash  11 ids x 1 rep = 11 requests (budget 18)
+  tier 3b gemini-3.5-flash  11 ids x 1 rep = 11 requests (budget 18)
+NOT READY: no *-h40b run folder yet

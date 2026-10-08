@@ -1,0 +1,693 @@
+# Review package: MAIN working tree vs e78f7c7
+HEAD: e78f7c7   branch: fix/coding-style-suffix-all-gemini
+
+STAT modified electron/llm/verbalHedge.ts  3726 bytes  sha256 55a273eda3ce9629
+STAT modified electron/llm/verbalHedge.test.ts  5190 bytes  sha256 9da6352ed4eec85a
+STAT modified electron/LLMHelper.verbalHedge.test.ts  25697 bytes  sha256 f852da5b1a9f6d97
+STAT modified electron/LLMHelper.abortOnClose.test.ts  19346 bytes  sha256 4ebd4b8a1b1c5015
+STAT modified electron/LLMHelper.geminiThinking.test.ts  5855 bytes  sha256 70e10ced199a121d
+STAT modified electron/LLMHelper.stallFallback.test.ts  9888 bytes  sha256 53de4939d4f55330
+STAT modified electron/llm/WhatToAnswerLLM.answeringModel.test.ts  18361 bytes  sha256 ce1fe90d3b189c55
+STAT modified electron/LLMHelper.verbalPrimary.test.ts  6512 bytes  sha256 ddd493555618f046
+STAT modified electron/test/golden/interview60.pass-record.test.ts  18612 bytes  sha256 288f2ba6ed17f9f3
+STAT modified electron/LLMHelper.ts  197668 bytes  sha256 4251a061ed772b5d
+
+===== electron/llm/verbalHedge.ts =====
+diff --git a/electron/llm/verbalHedge.ts b/electron/llm/verbalHedge.ts
+index c668ddd..ebcbb8d 100644
+--- a/electron/llm/verbalHedge.ts
++++ b/electron/llm/verbalHedge.ts
+@@ -1,29 +1,37 @@
+ /**
+  * The verbal hedge (NATIVELY_VERBAL_HEDGE): gemini-3.5-flash-lite (HIGH) starts first; with no
+  * first token by the trigger, or a failure before its first token, gemini-3.1-flash-lite (LOW)
+- * is started beside it and the first token wins. Default OFF so a flight can compare the two —
+- * see docs/superpowers/specs/2026-09-24-verbal-hedge-proposal.md and LLMHelper.streamGeminiWithHedge.
++ * is started beside it and the first token wins — see
++ * docs/superpowers/specs/2026-09-24-verbal-hedge-proposal.md and LLMHelper.streamGeminiWithHedge.
+  *
+- * Same shape as geminiThinkingLevelFromEnv/firstTokenTimeoutMs: unset/empty/'0' is off, '1' is
+- * on, anything else throws — a typo must not fly silently OFF.
++ * The shipped default since flight h40c (2026-09-29, holdout40): first token median 4.1 s, p90
++ * 6.5 s, 0 failures, 35 of 45 acceptable — a PASS on all three rules of
++ * electron/test/golden/passes/PREREGISTER-h40c.md (result: passes/2026-09-29-h40c-result.md),
++ * which licensed this default and nothing else. NATIVELY_VERBAL_HEDGE=0 restores the previous
++ * policy, the stall race: gemini-3.1-flash-lite (LOW) first, gemini-3.5-flash-lite raced in when
++ * its first token is late (10 s at the shipped LOW).
++ *
++ * Same shape as geminiThinkingLevelFromEnv/firstTokenTimeoutMs: unset/empty/'1' is on, '0' is
++ * off, anything else throws — a typo must not fly silently, on or off.
+  */
+ export const VERBAL_HEDGE_ENV = 'NATIVELY_VERBAL_HEDGE';
+ export const VERBAL_HEDGE_TRIGGER_ENV = 'NATIVELY_VERBAL_HEDGE_TRIGGER_MS';
+ // The value probed 2026-09-25 (H1-H3), fixed before any counted window.
+ export const DEFAULT_HEDGE_TRIGGER_MS = 5000;
+ 
++// Unset means ON; only an explicit '0' opts out.
+ export function verbalHedgeEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+     const raw = env[VERBAL_HEDGE_ENV]?.trim();
+-    if (!raw || raw === '0') return false;
+-    if (raw === '1') return true;
+-    throw new Error(`${VERBAL_HEDGE_ENV}="${raw}" is not "1" or "0"/unset; a typo must not fly silently off`);
++    if (!raw || raw === '1') return true;
++    if (raw === '0') return false;
++    throw new Error(`${VERBAL_HEDGE_ENV}="${raw}" is not "1" (or unset) for on, or "0" for off; a typo must not fly silently on or off`);
+ }
+ 
+ /**
+  * How long the front gets before the back is started beside it. NATIVELY_VERBAL_HEDGE_TRIGGER_MS
+  * overrides the default, in firstTokenTimeoutMs's shape: a positive whole number of
+  * milliseconds, or refused.
+  */
+ export function verbalHedgeTriggerMs(env: NodeJS.ProcessEnv = process.env): number {
+     const raw = env[VERBAL_HEDGE_TRIGGER_ENV]?.trim();
+     if (raw) {
+@@ -36,22 +44,23 @@ export function verbalHedgeTriggerMs(env: NodeJS.ProcessEnv = process.env): numb
+ }
+ 
+ /**
+  * The startup-time validate-and-describe step (h40c re-review N1). Called once at app launch,
+  * before credentials/IPC/window setup, so a junk value can exit the process cleanly instead of
+  * leaving a windowless zombie that still holds the single-instance lock (a bad value used to
+  * surface only on the first verbal answer, mid-interview, throwing on every answer since — and
+  * even after that was moved to startup, throwing INSIDE the async initializeApp() left nothing
+  * on screen and the process alive, holding the lock, until killed).
+  *
+- * The trigger is read ONLY when the hedge is on: a junk NATIVELY_VERBAL_HEDGE_TRIGGER_MS changed
+- * nothing while the flag was unset before this function existed, and must still change nothing —
+- * an unset flag is exactly today's behaviour apart from the one `off` log line.
++ * The trigger is read ONLY when the hedge is on. On is the default now (h40c, 2026-09-29), so a
++ * junk NATIVELY_VERBAL_HEDGE_TRIGGER_MS refuses to start unless NATIVELY_VERBAL_HEDGE=0 — while
++ * the flag defaulted to off it changed nothing. That is intended: a typo must not fly silently
++ * with a trigger nobody chose. With =0 the trigger is never read and the line is just `off`.
+  *
+  * Returns the line to log; throws (does not log) on a bad value, so the caller can catch it and
+  * exit rather than starting with a config nobody chose.
+  */
+ export function describeVerbalHedgeAtStartup(env: NodeJS.ProcessEnv = process.env): string {
+     if (!verbalHedgeEnabled(env)) return '[Main] verbal hedge: off';
+     const triggerMs = verbalHedgeTriggerMs(env);
+     return `[Main] verbal hedge: on trigger=${triggerMs}ms`;
+ }
+
+===== electron/llm/verbalHedge.test.ts =====
+diff --git a/electron/llm/verbalHedge.test.ts b/electron/llm/verbalHedge.test.ts
+index 4949b47..b01c44d 100644
+--- a/electron/llm/verbalHedge.test.ts
++++ b/electron/llm/verbalHedge.test.ts
+@@ -1,31 +1,36 @@
+ import { describe, it, expect } from 'vitest';
+ import { verbalHedgeEnabled, verbalHedgeTriggerMs, describeVerbalHedgeAtStartup, VERBAL_HEDGE_ENV, VERBAL_HEDGE_TRIGGER_ENV, DEFAULT_HEDGE_TRIGGER_MS } from './verbalHedge';
+ 
+ /**
+- * NATIVELY_VERBAL_HEDGE gates the hedge behind a default-off flag, same shape as the other
+- * env switches in this directory (geminiThinkingLevelFromEnv): unset/empty/'0' is off, '1' is
+- * on, anything else throws — a typo must not fly silently OFF (h40c plan, global constraints).
++ * NATIVELY_VERBAL_HEDGE is default-ON since flight h40c passed (2026-09-29), same shape as the
++ * other env switches in this directory (geminiThinkingLevelFromEnv): unset/empty/'1' is on, '0'
++ * is the explicit opt-out back to the previous stall race, anything else throws — a typo must
++ * not fly silently, in either direction (h40c plan, global constraints).
+  */
+ describe('verbalHedgeEnabled', () => {
+-    it('off when unset, empty, or explicit 0', () => {
+-        expect(verbalHedgeEnabled({})).toBe(false);
+-        expect(verbalHedgeEnabled({ [VERBAL_HEDGE_ENV]: '' })).toBe(false);
+-        expect(verbalHedgeEnabled({ [VERBAL_HEDGE_ENV]: '0' })).toBe(false);
++    it('on when unset or empty: the hedge is the shipped default', () => {
++        expect(verbalHedgeEnabled({})).toBe(true);
++        expect(verbalHedgeEnabled({ [VERBAL_HEDGE_ENV]: '' })).toBe(true);
+     });
+ 
+     it('on for exactly 1', () => {
+         expect(verbalHedgeEnabled({ [VERBAL_HEDGE_ENV]: '1' })).toBe(true);
+     });
+ 
++    it('off for exactly 0: the explicit opt-out back to the previous stall race', () => {
++        expect(verbalHedgeEnabled({ [VERBAL_HEDGE_ENV]: '0' })).toBe(false);
++    });
++
+     it('refuses anything else, naming the variable', () => {
+         expect(() => verbalHedgeEnabled({ [VERBAL_HEDGE_ENV]: 'true' })).toThrow(/NATIVELY_VERBAL_HEDGE.*true/);
++        expect(() => verbalHedgeEnabled({ [VERBAL_HEDGE_ENV]: 'yes' })).toThrow(/NATIVELY_VERBAL_HEDGE.*yes/);
+     });
+ });
+ 
+ /**
+  * How long the front (3.5-lite) gets before the back (3.1-lite) is started beside it —
+  * 5000 ms is the value probed 2026-09-25 (H1-H3), fixed before any counted window.
+  * NATIVELY_VERBAL_HEDGE_TRIGGER_MS overrides it, in firstTokenTimeoutMs's shape: a positive
+  * whole number of milliseconds, or refused.
+  */
+ describe('verbalHedgeTriggerMs', () => {
+@@ -43,35 +48,47 @@ describe('verbalHedgeTriggerMs', () => {
+         expect(() => verbalHedgeTriggerMs({ [VERBAL_HEDGE_TRIGGER_ENV]: 'fast' })).toThrow(/NATIVELY_VERBAL_HEDGE_TRIGGER_MS/);
+         expect(() => verbalHedgeTriggerMs({ [VERBAL_HEDGE_TRIGGER_ENV]: '2.5' })).toThrow(/NATIVELY_VERBAL_HEDGE_TRIGGER_MS/);
+     });
+ });
+ 
+ /**
+  * The startup-time validate-and-describe step (h40c re-review N1): main.ts calls this once,
+  * before credentials/IPC/window setup, and exits the process on a throw rather than continuing
+  * with a windowless zombie holding the single-instance lock — logic worth unit-testing on its
+  * own, since main.ts itself has no test file. The trigger env is read ONLY when the hedge is on
+- * — a junk NATIVELY_VERBAL_HEDGE_TRIGGER_MS while unset changed nothing before this function
+- * existed, and must still change nothing now.
++ * — and on is the default now, so a junk NATIVELY_VERBAL_HEDGE_TRIGGER_MS refuses to start
++ * unless NATIVELY_VERBAL_HEDGE=0 (a typo must not fly silently).
+  */
+ describe('describeVerbalHedgeAtStartup', () => {
+-    it('off (unset): the off line, and a junk trigger is never read', () => {
+-        expect(describeVerbalHedgeAtStartup({})).toBe('[Main] verbal hedge: off');
+-        expect(describeVerbalHedgeAtStartup({ [VERBAL_HEDGE_TRIGGER_ENV]: 'not-a-number' })).toBe('[Main] verbal hedge: off');
++    it('unset: the on line at the default trigger — the exact text the flight harness reads', () => {
++        expect(describeVerbalHedgeAtStartup({})).toBe('[Main] verbal hedge: on trigger=5000ms');
++    });
++
++    it('explicit 0: the off line, and a junk trigger is never read', () => {
++        expect(describeVerbalHedgeAtStartup({ [VERBAL_HEDGE_ENV]: '0' })).toBe('[Main] verbal hedge: off');
++        expect(describeVerbalHedgeAtStartup({ [VERBAL_HEDGE_ENV]: '0', [VERBAL_HEDGE_TRIGGER_ENV]: 'not-a-number' })).toBe('[Main] verbal hedge: off');
+     });
+ 
+     it('on, trigger unset: the default trigger in the line', () => {
+         expect(describeVerbalHedgeAtStartup({ [VERBAL_HEDGE_ENV]: '1' })).toBe(`[Main] verbal hedge: on trigger=${DEFAULT_HEDGE_TRIGGER_MS}ms`);
+     });
+ 
+     it('on, trigger set: the overridden trigger in the line', () => {
+         expect(describeVerbalHedgeAtStartup({ [VERBAL_HEDGE_ENV]: '1', [VERBAL_HEDGE_TRIGGER_ENV]: '300' })).toBe('[Main] verbal hedge: on trigger=300ms');
+     });
+ 
++    it('unset, trigger set: the overridden trigger in the line — the override needs no flag', () => {
++        expect(describeVerbalHedgeAtStartup({ [VERBAL_HEDGE_TRIGGER_ENV]: '300' })).toBe('[Main] verbal hedge: on trigger=300ms');
++    });
++
+     it('on, junk trigger: throws (the trigger IS read once the hedge is on)', () => {
+         expect(() => describeVerbalHedgeAtStartup({ [VERBAL_HEDGE_ENV]: '1', [VERBAL_HEDGE_TRIGGER_ENV]: 'not-a-number' })).toThrow(/NATIVELY_VERBAL_HEDGE_TRIGGER_MS/);
+     });
+ 
++    it('unset, junk trigger: throws — on is the default, so the trigger IS read and a typo refuses to start', () => {
++        expect(() => describeVerbalHedgeAtStartup({ [VERBAL_HEDGE_TRIGGER_ENV]: 'not-a-number' })).toThrow(/NATIVELY_VERBAL_HEDGE_TRIGGER_MS/);
++    });
++
+     it('a junk enabled value throws, naming the variable', () => {
+         expect(() => describeVerbalHedgeAtStartup({ [VERBAL_HEDGE_ENV]: 'yes' })).toThrow(/NATIVELY_VERBAL_HEDGE.*yes/);
+     });
+ });
+
+===== electron/LLMHelper.verbalHedge.test.ts =====
+diff --git a/electron/LLMHelper.verbalHedge.test.ts b/electron/LLMHelper.verbalHedge.test.ts
+index 005c25e..cf53817 100644
+--- a/electron/LLMHelper.verbalHedge.test.ts
++++ b/electron/LLMHelper.verbalHedge.test.ts
+@@ -92,25 +92,26 @@ async function drain(gen: AsyncGenerator<string, void, unknown>) {
+ }
+ 
+ /** The technical route's exact call (WhatToAnswerLLM → streamChat with the verbal prompt). */
+ const technical = (helper: LLMHelper) =>
+     helper.streamChat('how do you make ingestion idempotent', undefined, undefined, VERBAL_WHAT_TO_ANSWER_PROMPT, false, 'gemini-3.1-flash-lite');
+ 
+ /** The models the SDK was actually asked, in order. */
+ const asked = () => generateContentStream.mock.calls.map((c) => c[0].model);
+ 
+ /**
+- * The verbal hedge (NATIVELY_VERBAL_HEDGE=1): gemini-3.5-flash-lite starts first; with no first
+- * token by the trigger (default 5000 ms), or a pre-token failure, gemini-3.1-flash-lite starts
+- * beside it and the first token wins — the other request is aborted through its own signal
+- * (never AbortSignal.any: it leaks under Electron 33). Off unless the flag is set, so a flight
+- * can compare the shipped stall race against the hedge — see verbalHedge.ts and
++ * The verbal hedge, the shipped default since flight h40c (2026-09-29): gemini-3.5-flash-lite
++ * starts first; with no first token by the trigger (default 5000 ms), or a pre-token failure,
++ * gemini-3.1-flash-lite starts beside it and the first token wins — the other request is aborted
++ * through its own signal (never AbortSignal.any: it leaks under Electron 33). Most cases below set
++ * NATIVELY_VERBAL_HEDGE=1 in beforeEach; the default-on pin unsets it, and the opt-out pin sets
++ * '0', which restores the previous stall race — see verbalHedge.ts and
+  * docs/superpowers/specs/2026-09-24-verbal-hedge-proposal.md.
+  */
+ describe('the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite', () => {
+     const savedHedge = process.env[VERBAL_HEDGE_ENV];
+     const savedTrigger = process.env[VERBAL_HEDGE_TRIGGER_ENV];
+     const savedLevel = process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+ 
+     beforeEach(() => {
+         vi.useFakeTimers();
+         generateContentStream.mockClear();
+@@ -257,21 +258,21 @@ describe('the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-
+             const chunks = await out;
+             expect(chunks).toEqual([]);
+             expect(asked()).toEqual(['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite']);
+             const line = warn.mock.calls.map((c) => c.join(' ')).find((l) => l.includes('no answer'));
+             expect(line).toMatch(/no answer - front empty, back empty/);
+         } finally {
+             warn.mockRestore();
+         }
+     });
+ 
+-    it('both legs fail before a first token: the fronts error propagates, as the shipped race does', async () => {
++    it('both legs fail before a first token: the fronts error propagates, as the opt-out stall race (NATIVELY_VERBAL_HEDGE=0) does', async () => {
+         // Distinct text per leg (h40c review M4): a bare 'error' step on both legs made this
+         // pass even if the code threw the BACK's error first — the assertion below pins which
+         // one it must be.
+         plan.push({ error: '503 front' }, { error: '503 back' });
+         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+         try {
+             const helper = new LLMHelper('fake-gemini-key');
+             const out = drain(technical(helper));
+             // Attach the rejection handler in the same tick `out` is created — both legs fail fast
+             // enough (no timer needed) that an `await` in between would leave `out` briefly
+@@ -383,41 +384,60 @@ describe('the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-
+             // The critical assertion: the loser — whichever it is — is aborted, never left
+             // running unaborted just because it also happened to produce a token.
+             expect(signals[loserIdx]?.aborted).toBe(true);
+             const line = log.mock.calls.map((c) => c.join(' ')).find((l) => l.includes('won by'));
+             expect(line).toMatch(/other=aborted/);
+         } finally {
+             log.mockRestore();
+         }
+     });
+ 
+-    it('default-off pin: the flag unset behaves exactly like today, and logs no hedge line', async () => {
++    it('default-on pin: with the variable UNSET the technical route takes the hedge — front 3.5-lite first, the hedge sentinel, the back never starts', async () => {
+         delete process.env[VERBAL_HEDGE_ENV];
++        plan.push(['I would key every message ', 'by document id.']);
++        const log = vi.spyOn(console, 'log').mockImplementation(() => {});
++        try {
++            const helper = new LLMHelper('fake-gemini-key');
++            const out = drain(technical(helper));
++            await vi.advanceTimersByTimeAsync(10_000);
++            const chunks = await out;
++            expect(generateContentStream).toHaveBeenCalledTimes(1);
++            expect(asked()).toEqual(['gemini-3.5-flash-lite']);
++            expect(chunks[0]).toBe('__model_source:gemini-3.5-flash-lite (hedge)__');
++            const line = log.mock.calls.map((c) => c.join(' ')).find((l) => l.includes('won by'));
++            expect(line).toMatch(/won by gemini-3\.5-flash-lite at \d+ms; other=not-started/);
++        } finally {
++            log.mockRestore();
++        }
++    });
++
++    it("opt-out pin: '0' behaves exactly like the previous stall race (3.1-lite first, 3.5-lite raced in at 10 s), and logs no hedge line", async () => {
++        process.env[VERBAL_HEDGE_ENV] = '0';
+         plan.push('silent', ['fallback answer']);
+         const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+         try {
+             const helper = new LLMHelper('fake-gemini-key');
+             const out = drain(technical(helper));
+             await vi.advanceTimersByTimeAsync(9_999);
+             expect(generateContentStream).toHaveBeenCalledTimes(1);
+             await vi.advanceTimersByTimeAsync(1);
+             expect(generateContentStream).toHaveBeenCalledTimes(2);
+             const chunks = await out;
+             expect(asked()).toEqual(['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite']);
+             expect(chunks[0]).toBe('__model_source:gemini-3.5-flash-lite (fallback)__');
+             expect(log.mock.calls.some((c) => c.join(' ').includes('verbal hedge'))).toBe(false);
+         } finally {
+             log.mockRestore();
+         }
+     });
+ 
+-    it('default-off pin: an invalid flag value throws, naming the variable, instead of flying silently off', async () => {
++    it('invalid-value pin: an invalid flag value throws, naming the variable, instead of flying silently on or off', async () => {
+         process.env[VERBAL_HEDGE_ENV] = 'yes';
+         plan.push(['unused']);
+         const helper = new LLMHelper('fake-gemini-key');
+         await expect(drain(technical(helper))).rejects.toThrow(/NATIVELY_VERBAL_HEDGE/);
+     });
+ 
+     it('the behavioral route takes the same hedge (one implementation): front 3.5-lite first', async () => {
+         plan.push(['Behavioral answer.']);
+         const helper = new LLMHelper('fake-gemini-key');
+         const chunks = await drain(helper.streamVerbalWithGeminiFlash('tell me about a conflict', VERBAL_WHAT_TO_ANSWER_PROMPT));
+
+===== electron/LLMHelper.abortOnClose.test.ts =====
+diff --git a/electron/LLMHelper.abortOnClose.test.ts b/electron/LLMHelper.abortOnClose.test.ts
+index c607424..2335652 100644
+--- a/electron/LLMHelper.abortOnClose.test.ts
++++ b/electron/LLMHelper.abortOnClose.test.ts
+@@ -109,30 +109,31 @@ const lateFirstChunk = (respondAfterMs: number, order: string[], head: string) =
+  * | break after 3 chunks              | loop 3.8 s | event loop drained 247.7 s |
+  * | break after 3 chunks + abort()    | loop 2.8 s | event loop drained 3.0 s   |
+  *
+  * IteratorClose does not stop the request: the SDK's response stays open about
+  * four minutes after the consumer stops reading. The spoken word budget closes
+  * the answer stream early on ~44 of 52 answers an hour, so without an abort
+  * every cut leaves a request open for minutes.
+  */
+ describe('Gemini stream aborts on early close', () => {
+     const savedTimeout = process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS;
+-    // This file exercises today's race (the hedge off) — h40c review M5: an un-cleared
+-    // NATIVELY_VERBAL_HEDGE from the shell made every case here fail spuriously, or throw on a
+-    // junk value.
++    // This file exercises the stall race, so it pins the hedge off with NATIVELY_VERBAL_HEDGE='0'.
++    // The hedge is the shipped default since h40c (2026-09-29): left unset it takes these cases
++    // through the hedge instead (h40c review M5 saw the same from a flight or smoke shell that
++    // exported the flag, or a throw on a junk value).
+     const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+ 
+     beforeEach(() => {
+         lastSignal = null;
+         generateContentStream.mockReset();
+         generateContentStream.mockImplementation(defaultImpl);
+-        delete process.env.NATIVELY_VERBAL_HEDGE;
++        process.env.NATIVELY_VERBAL_HEDGE = '0';
+     });
+ 
+     afterEach(() => {
+         if (savedTimeout === undefined) delete process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS; else process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS = savedTimeout;
+         if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
+     });
+ 
+     it('aborts the request when the consumer closes the stream early', async () => {
+         generateContentStream.mockImplementation(heldOpenUntilAbort);
+         const helper = new LLMHelper('fake-gemini-key');
+@@ -284,28 +285,28 @@ const gemmaCompletesNaturally = async (params: any) => {
+  * model-source sentinel and that chunk OUTSIDE `yield* gemmaGen`: a consumer that
+  * stops on either must close gemmaGen to reach the abort in streamWithGeminiModel's
+  * yield-level finally. Its stall branch answers from Flash while gemmaGen is still
+  * blocked in next(), with no yield to close at, so it aborts the request through its
+  * stop signal at the deadline. Reached by any gemma-* selection and by every
+  * screenshot question from the chat IPC, which pins gemma-4-31b-it.
+  */
+ describe('Gemma guarded stream aborts on early close', () => {
+     const savedTtft = process.env.NATIVELY_GEMMA_TTFT_MS;
+     const savedVisionTtft = process.env.NATIVELY_GEMMA_VISION_TTFT_MS;
+-    // See the note on the same lines in the describe block above (h40c review M5).
++    // See the note on the same lines in the describe block above (the hedge pinned off, h40c review M5).
+     const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+ 
+     beforeEach(() => {
+         gemmaSignal = null;
+         generateContentStream.mockReset();
+         generateContentStream.mockImplementation(defaultImpl);
+-        delete process.env.NATIVELY_VERBAL_HEDGE;
++        process.env.NATIVELY_VERBAL_HEDGE = '0';
+     });
+ 
+     afterEach(() => {
+         if (savedTtft === undefined) delete process.env.NATIVELY_GEMMA_TTFT_MS; else process.env.NATIVELY_GEMMA_TTFT_MS = savedTtft;
+         if (savedVisionTtft === undefined) delete process.env.NATIVELY_GEMMA_VISION_TTFT_MS; else process.env.NATIVELY_GEMMA_VISION_TTFT_MS = savedVisionTtft;
+         if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
+     });
+ 
+     const gemmaRoute = (helper: LLMHelper) =>
+         helper.streamChat('q', undefined, undefined, undefined, false, 'gemma-4-31b-it');
+
+===== electron/LLMHelper.geminiThinking.test.ts =====
+diff --git a/electron/LLMHelper.geminiThinking.test.ts b/electron/LLMHelper.geminiThinking.test.ts
+index 3d9fcda..2cd642a 100644
+--- a/electron/LLMHelper.geminiThinking.test.ts
++++ b/electron/LLMHelper.geminiThinking.test.ts
+@@ -42,29 +42,31 @@ async function drain(gen: AsyncGenerator<string, void, unknown>) {
+ 
+ /**
+  * Flights s50b–s50f all ran the verbal answer at the provider's default thinking level
+  * (MINIMAL on gemini-3.1-flash-lite: zero thought tokens). The 2026-09-17 paired bench
+  * proved LOW (+21 on 117 pairs, 24:3, zero wrong answers), so LOW is what the request
+  * carries with nothing set; the environment still overrides it, and every answer's usage
+  * line in the log proves the model honoured whichever level was sent.
+  */
+ describe('verbal Gemini call carries the thinking level, LOW by default, from NATIVELY_GEMINI_THINKING_LEVEL', () => {
+     const saved = process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+-    // h40c review M2: a shell that exports NATIVELY_VERBAL_HEDGE (a flight or smoke shell) routed
+-    // the default primary model through the hedge instead of the plain call this file checks,
+-    // changing the model, the level and the log line — same fix as LLMHelper.stallFallback.test.ts.
++    // This file checks the plain call, so it pins the hedge off with NATIVELY_VERBAL_HEDGE='0'. The
++    // hedge is the shipped default since h40c (2026-09-29): left unset it routes the default primary
++    // model through the hedge instead, changing the model, the level and the log line (h40c review
++    // M2 saw the same from a flight or smoke shell that exported the flag) — same as
++    // LLMHelper.stallFallback.test.ts.
+     const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+     const savedTrigger = process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
+     beforeEach(() => {
+         generateContentStream.mockClear();
+         delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+-        delete process.env.NATIVELY_VERBAL_HEDGE;
++        process.env.NATIVELY_VERBAL_HEDGE = '0';
+         delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
+     });
+     afterEach(() => {
+         if (saved === undefined) delete process.env.NATIVELY_GEMINI_THINKING_LEVEL; else process.env.NATIVELY_GEMINI_THINKING_LEVEL = saved;
+         if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
+         if (savedTrigger === undefined) delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS; else process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS = savedTrigger;
+     });
+ 
+     it('unset → thinkingConfig.thinkingLevel LOW on the request (the shipped default)', async () => {
+         const helper = new LLMHelper('fake-gemini-key');
+
+===== electron/LLMHelper.stallFallback.test.ts =====
+diff --git a/electron/LLMHelper.stallFallback.test.ts b/electron/LLMHelper.stallFallback.test.ts
+index 006f1df..d550059 100644
+--- a/electron/LLMHelper.stallFallback.test.ts
++++ b/electron/LLMHelper.stallFallback.test.ts
+@@ -51,31 +51,32 @@ const technical = (helper: LLMHelper) =>
+ 
+ /**
+  * Flight s50h (2026-09-16): two technical answers waited 44 s and 60 s for a first token and
+  * the 4 s fallback never fired — it existed only on the behavioral route
+  * (streamVerbalWithGeminiFlash); the 40 technical answers of every hour go through streamChat,
+  * which raced nothing. Both routes now share one stall race.
+  */
+ describe('a stalled primary on the technical verbal route falls back to the other Flash Lite', () => {
+     const savedLevel = process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+     const savedTimeout = process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS;
+-    // This file exercises today's race (the hedge off) — h40c review M5: a shell that exports
+-    // NATIVELY_VERBAL_HEDGE (a flight or smoke shell) made every case here fail spuriously, or
+-    // throw on a junk value, because the flag was never cleared.
++    // This file exercises the stall race, so it pins the hedge off with NATIVELY_VERBAL_HEDGE='0'.
++    // The hedge is the shipped default since h40c (2026-09-29): left unset it takes these cases
++    // through the hedge instead (h40c review M5 saw the same from a flight or smoke shell that
++    // exported the flag, or a throw on a junk value).
+     const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+     beforeEach(() => {
+         vi.useFakeTimers();
+         generateContentStream.mockClear();
+         plan.length = 0;
+         delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+         delete process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS;
+-        delete process.env.NATIVELY_VERBAL_HEDGE;
++        process.env.NATIVELY_VERBAL_HEDGE = '0';
+     });
+     afterEach(() => {
+         vi.useRealTimers();
+         if (savedLevel === undefined) delete process.env.NATIVELY_GEMINI_THINKING_LEVEL; else process.env.NATIVELY_GEMINI_THINKING_LEVEL = savedLevel;
+         if (savedTimeout === undefined) delete process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS; else process.env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS = savedTimeout;
+         if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
+     });
+ 
+     it('at MINIMAL, primary silent for 4 s → the answer streams from gemini-3.5-flash-lite, announced by the fallback sentinel', async () => {
+         process.env.NATIVELY_GEMINI_THINKING_LEVEL = 'MINIMAL';
+
+===== electron/llm/WhatToAnswerLLM.answeringModel.test.ts =====
+diff --git a/electron/llm/WhatToAnswerLLM.answeringModel.test.ts b/electron/llm/WhatToAnswerLLM.answeringModel.test.ts
+index ccdc5bb..31e2e19 100644
+--- a/electron/llm/WhatToAnswerLLM.answeringModel.test.ts
++++ b/electron/llm/WhatToAnswerLLM.answeringModel.test.ts
+@@ -99,32 +99,33 @@ const named = (chunks: string[]) => chunks.flatMap((c) => [...c.matchAll(/__mode
+  *  - the stall race's switch never reached the bar: LLMHelper announces it as the head sentinel
+  *    of the stream it hands back, and stripModelSentinel strips head sentinels. s50m's
+  *    verbal-diag.log shows all four of the hour's switches stripped within 2 ms of the stall;
+  *  - a 503 before the first token was "redirected" to 3.5-lite again, because the error fallback
+  *    named a constant and streamVerbalWithGeminiFlash re-resolved it through the override, which
+  *    ignores what it is given. A second 503 meant no answer at all.
+  */
+ describe('the answer is named after, and falls back from, the model that actually answered', () => {
+     const savedModel = process.env[VERBAL_PRIMARY_MODEL_ENV];
+     const savedLevel = process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+-    // This describe exercises today's race (the hedge off) — h40c review M5: an un-cleared
+-    // NATIVELY_VERBAL_HEDGE from the shell made 8 of these cases fail spuriously, or throw on a
+-    // junk value.
++    // This describe exercises the stall race, so it pins the hedge off with NATIVELY_VERBAL_HEDGE='0'.
++    // The hedge is the shipped default since h40c (2026-09-29): left unset it takes these cases
++    // through the hedge instead (h40c review M5 saw the same from a flight or smoke shell that
++    // exported the flag, or a throw on a junk value).
+     const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+     beforeEach(() => {
+         generateContentStream.mockClear();
+         plan.length = 0;
+         signals.length = 0;
+         delete process.env[VERBAL_PRIMARY_MODEL_ENV];
+         // The shipped LOW, so the stall budget is the shipped 10 s.
+         delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+-        delete process.env.NATIVELY_VERBAL_HEDGE;
++        process.env.NATIVELY_VERBAL_HEDGE = '0';
+     });
+     afterEach(() => {
+         vi.useRealTimers();
+         if (savedModel === undefined) delete process.env[VERBAL_PRIMARY_MODEL_ENV]; else process.env[VERBAL_PRIMARY_MODEL_ENV] = savedModel;
+         if (savedLevel === undefined) delete process.env.NATIVELY_GEMINI_THINKING_LEVEL; else process.env.NATIVELY_GEMINI_THINKING_LEVEL = savedLevel;
+         if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
+     });
+ 
+     it('override on: the technical route names the model it calls', async () => {
+         process.env[VERBAL_PRIMARY_MODEL_ENV] = 'gemini-3.5-flash-lite';
+@@ -242,21 +243,21 @@ describe('the answer is named after, and falls back from, the model that actuall
+             for await (const chunk of answerStream) if (!/^__model_source:/.test(chunk) && ++words === 2) break;
+             return 'closed' as const;
+         })();
+         // Real timers: a close waiting on an un-aborted request loses this race.
+         const raced = await Promise.race([loop, new Promise<'timeout'>((resolve) => { timer = setTimeout(() => resolve('timeout'), 500); })]);
+         clearTimeout(timer!);
+         expect(raced).toBe('closed');
+         expect(signals[0]?.aborted).toBe(true);
+     });
+ 
+-    it('override off: a 503 on 3.1-lite still goes to 3.5-lite — the shipped pairing is unchanged', async () => {
++    it('override off: a 503 on 3.1-lite still goes to 3.5-lite — the pairing of the opt-out stall race (NATIVELY_VERBAL_HEDGE=0) is unchanged', async () => {
+         plan.push('error', ['Recovered.']);
+         const chunks = await answer(TECHNICAL);
+         expect(asked()).toEqual(['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite']);
+         expect(named(chunks)).toEqual(['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite (fallback)']);
+     });
+ });
+ 
+ /**
+  * The verbal hedge (NATIVELY_VERBAL_HEDGE=1) announces its winner as
+  * `__model_source:<model> (hedge)__`, ahead of its first token, on the RAW stream — exactly
+
+===== electron/LLMHelper.verbalPrimary.test.ts =====
+diff --git a/electron/LLMHelper.verbalPrimary.test.ts b/electron/LLMHelper.verbalPrimary.test.ts
+index 1539080..9839e2b 100644
+--- a/electron/LLMHelper.verbalPrimary.test.ts
++++ b/electron/LLMHelper.verbalPrimary.test.ts
+@@ -41,30 +41,31 @@ const technical = (helper: LLMHelper) =>
+ /**
+  * Flight s50l measures gemini-3.5-flash-lite at HIGH as the PRIMARY answer model, which
+  * s50k's band-vs-band read earned as a candidate (3.1 LOW 26/28/31 against 3.5 HIGH
+  * 34/29/34 on the same captured bytes, a pass at exactly both thresholds with the bands
+  * still overlapping). The swap rides an environment variable so the shipped default is
+  * untouched until a proof flight earns it — the same route the thinking level took.
+  */
+ describe('NATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only', () => {
+     const saved = process.env[VERBAL_PRIMARY_MODEL_ENV];
+     const savedLevel = process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+-    // h40c review M2: a shell that exports NATIVELY_VERBAL_HEDGE (a flight or smoke shell) routed
+-    // the two lite models through the hedge instead of the plain call this file checks, changing
+-    // which model answers — same fix as LLMHelper.stallFallback.test.ts.
++    // This file checks the plain call, so it pins the hedge off with NATIVELY_VERBAL_HEDGE='0'. The
++    // hedge is the shipped default since h40c (2026-09-29): left unset it routes the two lite models
++    // through the hedge instead, changing which model answers (h40c review M2 saw the same from a
++    // flight or smoke shell that exported the flag) — same as LLMHelper.stallFallback.test.ts.
+     const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+     const savedTrigger = process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
+     beforeEach(() => {
+         generateContentStream.mockClear();
+         delete process.env[VERBAL_PRIMARY_MODEL_ENV];
+         delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+-        delete process.env.NATIVELY_VERBAL_HEDGE;
++        process.env.NATIVELY_VERBAL_HEDGE = '0';
+         delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
+     });
+     afterEach(() => {
+         if (saved === undefined) delete process.env[VERBAL_PRIMARY_MODEL_ENV];
+         else process.env[VERBAL_PRIMARY_MODEL_ENV] = saved;
+         if (savedLevel === undefined) delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+         else process.env.NATIVELY_GEMINI_THINKING_LEVEL = savedLevel;
+         if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE;
+         else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
+         if (savedTrigger === undefined) delete process.env.NATIVELY_VERBAL_HEDGE_TRIGGER_MS;
+
+===== electron/test/golden/interview60.pass-record.test.ts =====
+diff --git a/electron/test/golden/interview60.pass-record.test.ts b/electron/test/golden/interview60.pass-record.test.ts
+index 82d13e5..d50dd18 100644
+--- a/electron/test/golden/interview60.pass-record.test.ts
++++ b/electron/test/golden/interview60.pass-record.test.ts
+@@ -220,21 +220,21 @@ describe('the grader model — a pass names the model that graded it', () => {
+         expect(row).toMatch(/\| model\\\|x \+ unrecorded \|$/);
+     });
+ });
+ 
+ describe('verbalHedgeFromLog (h40c review, fix round 1, Minor 1): the regex M6 exists for, proved against the real describe function', () => {
+     // A debug log line looks like "<ISO> [LOG] <text>" — the timestamp and level prefix that
+     // M6's regex must see past, not just a hand-typed "[Main] verbal hedge: …" fixture.
+     const at = (line: string) => `2026-09-26T10:00:00.000Z [LOG] ${line}`;
+ 
+     it('reads off and on-trigger from the real describeVerbalHedgeAtStartup output', () => {
+-        expect(verbalHedgeFromLog(at(describeVerbalHedgeAtStartup({})))).toBe('off');
++        expect(verbalHedgeFromLog(at(describeVerbalHedgeAtStartup({ NATIVELY_VERBAL_HEDGE: '0' } as any)))).toBe('off');
+         expect(verbalHedgeFromLog(at(describeVerbalHedgeAtStartup({ NATIVELY_VERBAL_HEDGE: '1' } as any)))).toBe('on trigger=5000ms');
+     });
+ 
+     it('is null when the log holds no hedge line at all (every run before da28f25)', () => {
+         expect(verbalHedgeFromLog(at('=== Natively session started 2026-09-26T10:00:00.000Z ==='))).toBeNull();
+     });
+ });
+ 
+ describe.skipIf(!fs.existsSync(path.join(S50A, 'interview60.judge.json')))('collectPass on the real s50a run (skipped where the run folder is absent)', () => {
+     let p: any;
+
+===== electron/LLMHelper.ts =====
+diff --git a/electron/LLMHelper.ts b/electron/LLMHelper.ts
+index c11ebd6..2a2c5f9 100644
+--- a/electron/LLMHelper.ts
++++ b/electron/LLMHelper.ts
+@@ -3384,21 +3384,22 @@ This rule overrides ALL other instructions including formatting, brevity, or out
+    * is caught here.
+    */
+   private async * streamGeminiWithStallFallback(
+     userMessage: string,
+     primaryModel: string,
+     imagePaths: string[] | undefined,
+     systemInstruction: string,
+   ): AsyncGenerator<string, void, unknown> {
+     // The verbal hedge (NATIVELY_VERBAL_HEDGE=1): 3.5-lite HIGH first, 3.1-lite LOW raced in when it
+     // is silent, the first token wins — see streamGeminiWithHedge. Only the two Flash Lites hedge;
+-    // any other primary keeps the race below. Off unless the flag is set, so a flight compares the two.
++    // any other primary keeps the race below. The hedge is the default since the h40c pass (2026-09-29);
++    // NATIVELY_VERBAL_HEDGE=0 restores the stall race below for the two Flash Lites too.
+     if (verbalHedgeEnabled() && (primaryModel === GEMINI_FLASH_MODEL || primaryModel === GEMINI_FLASH_FALLBACK_MODEL)) {
+       yield* this.streamGeminiWithHedge(userMessage, imagePaths, systemInstruction);
+       return;
+     }
+ 
+     const FALLBACK_MODEL = primaryModel === GEMINI_FLASH_FALLBACK_MODEL
+       ? GEMINI_FLASH_MODEL
+       : GEMINI_FLASH_FALLBACK_MODEL;
+     const timeoutMs = firstTokenTimeoutMs();
+ 
+@@ -3454,22 +3455,22 @@ This rule overrides ALL other instructions including formatting, brevity, or out
+     }
+   }
+ 
+   /**
+    * The verbal hedge — docs/superpowers/specs/2026-09-24-verbal-hedge-proposal.md, the policy of
+    * electron/test/golden/hedge-live.policy.mjs (runHedge), probed live 2026-09-25: PROCEED.
+    * gemini-3.5-flash-lite (HIGH) starts first. With no first token by the trigger, or on a failure
+    * before its first token, gemini-3.1-flash-lite (LOW) starts BESIDE it and 3.5-lite keeps running;
+    * the first token wins and the other request is aborted at once through its own stop signal
+    * (never AbortSignal.any: it leaks under Electron 33). A leg that fails leaves the other to finish.
+-   * Both failing throws the front's error so WhatToAnswerLLM's pre-token redirect applies, as with
+-   * today's race; both ending empty ends empty, as today. The winner is announced as
++   * Both failing throws the front's error so WhatToAnswerLLM's pre-token redirect applies, and both
++   * ending empty ends empty, as in the stall race (NATIVELY_VERBAL_HEDGE=0). The winner is announced as
+    * `__model_source:<model> (hedge)__` ahead of its first token: the head label named the shipped
+    * primary before any request was made, and a bar that names the wrong model was the 2026-09-22
+    * bug class (783991a, 47def85).
+    */
+   private async * streamGeminiWithHedge(
+     userMessage: string,
+     imagePaths: string[] | undefined,
+     systemInstruction: string,
+   ): AsyncGenerator<string, void, unknown> {
+     const FRONT = GEMINI_FLASH_FALLBACK_MODEL, BACK = GEMINI_FLASH_MODEL;
+@@ -3520,21 +3521,21 @@ This rule overrides ALL other instructions including formatting, brevity, or out
+     const legs: Leg[] = reason === 'trigger' ? [front, back] : [back];
+     const winner = await new Promise<{ leg: Leg; value: string } | null>((resolve) => {
+       let alive = legs.length;
+       for (const leg of legs) leg.first.then((r) => { if (r.kind === 'token') resolve({ leg, value: r.value }); else if (--alive === 0) resolve(null); });
+     });
+     if (!winner) {
+       const f = front.settled!, b = back.settled!;
+       console.warn(`[LLMHelper] verbal hedge: no answer - front ${f.kind}, back ${b.kind}`);
+       if (f.kind === 'error') throw f.err;
+       if (b.kind === 'error') throw b.err;
+-      return;   // both empty: nothing to say, as today
++      return;   // both empty: nothing to say, as in the stall race (NATIVELY_VERBAL_HEDGE=0)
+     }
+     const loser = winner.leg === front ? back : front;
+     // A leg the loser never got to finish — still pending, OR it also produced a token in the
+     // same tick the winner did (h40c review M1: two sockets can both deliver before either
+     // .then() runs) — is aborted and labelled 'aborted', not 'empty': only a leg that is
+     // genuinely done (failed or empty) is left alone.
+     const other = loser.settled?.kind === 'error' ? 'failed' : loser.settled?.kind === 'empty' ? 'empty' : 'aborted';
+     if (loser.settled?.kind !== 'error' && loser.settled?.kind !== 'empty') loser.stop.abort();   // its pending next() rejects into `first` (already caught): no unhandled rejection
+     console.log(`[LLMHelper] verbal hedge: won by ${winner.leg.model} at ${since()}ms; other=${other}`);
+     yield* deliver(winner.leg, winner.value);
+

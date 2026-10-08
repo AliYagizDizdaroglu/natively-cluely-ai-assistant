@@ -1,0 +1,11 @@
+docs(passes): the second cue re-smoke PASSES: its record and its result
+
+The 05:00 run on the combined build (d83fdfe, dist proven before and after, no rebuild) meets all three
+pre-registered conditions: CHECK EXIT 0 (22 answers, 0 failed, 0 block-only, 0 malformed, 7 trimmed), 20/20
+answered hands-free with 8 of 8 long questions whole, and the cue row 20/20 present and well-formed. The offers
+fix fired live on two answers and recovered both (budget words 101 and 72), which the v2 build would have shown as
+block-only. The early close's hold is GONE (R2 and B under 15 ms in 0 of 21, against 15 and 16 of 21 at 16:12;
+cues to first token median 50 ms, was 218.5 ms). The generic gate's two FAIL rows are named: one lost utterance
+re-finalized 7.2 s later (S1Q02F answered on time) and the judge not run. INDEX.md is not committed (worktree).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

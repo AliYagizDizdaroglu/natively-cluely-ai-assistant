@@ -1,0 +1,24 @@
+﻿[f4c-nothrow1] test test.v4.ts (4115 B) + module mut.nothrow1.mjs (1946 B), WITH interview60.runs/
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+  ✓ a final directly followed by a boundary-repair line replays as the restored words + the raw text
+  ✓ keeps interims and empty finals out, and drops finals before `since`
+  × refuses a boundary-repair line that is not right under its own final (one synchronous handler writes both lines)
+  ✓ reproduces the committed 2026-09-09T15-00-55-s50a fixture's finals from its run log (skipped where the run folder is absent)
+  ✓ reproduces the committed 2026-09-08T08-44-56-after9 fixture's finals from its run log (skipped where the run folder is absent)
+  failure: AssertionError: expected [Function] to throw an error
+  at: electron/test/golden/interview60.turns-finals.test.ts:37:64
+as expected: the Tests line contains "1 failed | 4 passed (5)"
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true
+[f4c-nothrow2] test test.v4.ts (4115 B) + module mut.nothrow2.mjs (1939 B), WITH interview60.runs/
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+  ✓ a final directly followed by a boundary-repair line replays as the restored words + the raw text
+  ✓ keeps interims and empty finals out, and drops finals before `since`
+  × refuses a boundary-repair line that is not right under its own final (one synchronous handler writes both lines)
+  ✓ reproduces the committed 2026-09-09T15-00-55-s50a fixture's finals from its run log (skipped where the run folder is absent)
+  ✓ reproduces the committed 2026-09-08T08-44-56-after9 fixture's finals from its run log (skipped where the run folder is absent)
+  failure: AssertionError: expected [Function] to throw an error
+  at: electron/test/golden/interview60.turns-finals.test.ts:38:59
+as expected: the Tests line contains "1 failed | 4 passed (5)"
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true

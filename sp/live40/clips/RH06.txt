@@ -1,0 +1,1 @@
+Should temporary unavailability of an upstream database fail the liveness probe? Defend your decision.

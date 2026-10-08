@@ -1,0 +1,22 @@
+# Arming tools build report (steps 8, 10, 11–13) — transcribed by the controller from the Sonnet builder's final message (its Write was refused), 2026-10-05 21:31 TST
+
+Per-case appendix (74 KB, every calibration case expected → actual): C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\appendix.md (regenerate: node scratchpad\appendix.mjs <out>). Calibration outputs are in E: guard-eq-cal.txt, launchers-eq-cal.txt, eq-precheck-cal.txt, eq-precheck-task-cal.txt, register-eq-cal.txt.
+
+| Tool | Files (sha256/12) | Calibration | Verdict |
+|---|---|---|---|
+| 8 guard | guard-eq.mjs 3b49e62f9542; guard-eq-git.mjs 8e972fe18bbe (19/19) | guard-eq-cal.txt: GUARD CALIBRATION OK 208/208, 167 cases, 38/38 mutants caught | PASS |
+| 8 helper | guard-eq-head-check.mjs cfc3b1b12c0f | live on MAIN: HEAD → GUARD OK; HEAD's parent → GUARD FAILED: (10b) | PASS |
+| 10 launchers | launch-eq-src.txt 163970b6228e; gen-launchers-eq.mjs cfcb62e621a9; launch-eq.cmd 6bd971f39d01 / launch-eq-dry.cmd 86e923340c02 (placeholder versions) | launchers-eq-cal.txt 72/72 | PASS |
+| 10 helpers | eq-sha-lines.mjs e424aaf7a261; eq-proofs.mjs 457c1585ca49; launch-eq-check.mjs d0d8e2711e1e | inside the 72/72 | PASS |
+| 12 precheck | eq-precheck.ps1 9a703bca9b41 (BOM); eq-precheck-cal-tasks.ps1 da0985f126ba | eq-precheck-cal.txt 30/30; eq-precheck-task-cal.txt: run as a real scheduled task, PRECHECK OK, 0x0 | PASS |
+| 13 register | register-eq.ps1 3d3c89611ecc (BOM) | register-eq-cal.txt 27/27 | PASS |
+
+Drivers: guard-eq-cal.mjs 762113735997, launchers-eq-cal.mjs 10c0e67153ff, eq-precheck-cal.mjs 1fe0bfee9835, eq-precheck-task-cal.mjs 3a3c5f176528, register-eq-cal.mjs 790c9aa2ff50. Ran against night-gates.ps1 5e6cd2acaed4, eq-b4-cal.mjs aa8dad977672, window-eq.mjs ca664e741ad0.
+
+Key flips (builder's words): old parity line → (g1); night-gates stub exit 1 → (g2); NATIVELY_FLIGHT_FOCUSED unset/on/empty/yes → (g3); T 18:00/19:29/01:01 → (g4), 19:30 and 01:00 pass; precheck file missing / 2 h old / ending PRECHECK FAILED → (g5), now at T+10 accepted, T+11 refused; earlier-question flag unset/0/yes/"1 " → (e1); HEAD moved (commit = parent) → (10b) in stub and on MAIN's real HEAD (m7); roster wrong (S1 only, S1+S3, holdout40) → (1); arming record absent → PRECHECK FAILED (1): arming-record and the dummy task read back Disabled; stamp At−3 → FAILED, At−4 → OK; two T: lines or no ARMING COMPLETE → FAILED; -At '00:09' → usage exit 2; dry twin missing a line / exit 1 / slow / unregistered → each FAILED.
+
+Controller steps at arming (builder's list): 8) review; node guard-eq-cal.mjs → 208/208 (~2.5 min; re-run when night-gates or the smoke result changes); node guard-eq-head-check.mjs --t "<T>". 9) commit texts; committed names must equal the launcher's --passes list (default PREREGISTER-flight-eq.md + flight-eq-AMENDMENT-A1.md … A6.md) or the dry run exits 14; then guard-eq-head-check --t "<T>" --expect-head <sha>. 10) T = first quarter-hour >= now+45, >= 19:30, <= 01:00; node gen-launchers-eq.mjs --commit <HEAD> --t "<T>" --passes "<names>", then --check --armed; node launch-eq-check.mjs and --launcher E\launch-eq-dry.cmd → LAUNCH CHECK OK. 11) register-eq.ps1 -Which dry; Start-ScheduledTask Natively-flight-eq-dry; log: GUARD OK, NIGHT GATES OK, PASSES lines, ARMING absent; duration vs 240 s. 13) register-eq.ps1 -Which armed -T "<T>", then -Which verify -T "<T>". 14) ARMING-flight-eq.md.tmp → rename; one T: line = T; last line ARMING COMPLETE <stamp> <= T−10. Overrun: register-eq.ps1 -Which supersede, regenerate from step 10.
+
+Judgment calls: -At = T−6 (A5); dummy task trigger At+6 with action `cmd /c exit 0`, deleted after each case; additions beyond A2: e2 mtime check, helpers, register-eq modes armed/verify/supersede, precheck -DryLog/-DryTimeoutSec; bug found by calibration: a task with no trigger read triggers=1 (@($null).Count is 1) — fixed.
+
+Not shown (builder): no Opus review; the dry launcher was not run for real (writes into MAIN; its guards-only chain ran as a copy with the log redirected into E); guard cal cases A1–A3, X3, X4, K1–K3 depend on this machine's real night-gate state and MAIN at b42ca32; g1 depends on RESULT-smoke-eq.md's format; electron gate flipped with a node.exe copy named electron.exe; real tasks never registered; night gates at the real T and -WakeToRun not checked; launch-eq*.cmd in E hold placeholders until step 10.

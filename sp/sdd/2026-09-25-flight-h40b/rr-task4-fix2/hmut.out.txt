@@ -1,0 +1,18 @@
+﻿harness runNew without M1 guard: EXIT 1
+    FAIL M1 (fix round 2): three failures then a cut, MAX_TRIES=4 -- ends at 4 calls (cut kept), NOT a 5th request. The cut IS the last allowed attempt, so it gets no re-ask at all (correctly) -- see the exhaustive check below for the general claim.
+    1 named case(s) FAILED
+    M1 (calls/outcome match, cutRetried excluded): 972 mismatches of 46656
+    N2 (stored record's cutRetried correct on every transient-ending sequence): 21204/21204 correct
+    N2 at MAX_TRIES=1: 156/156 correct
+    OVERALL: 2 check group(s) FAILED
+harness runNew without N2 field: EXIT 1
+    FAIL 429, MAX_TRIES=1: recorded, never retried
+    FAIL N2 (fix round 2): cut, MAX_TRIES=1, re-ask comes back 429 -> STORED RECORD now has cutRetried:true (was missing before this fix)
+    FAIL N2: cut, MAX_TRIES=1, re-ask comes back 503 -> same fix
+    FAIL 429, MAX_TRIES=4 (default): retries up to 4 times, all fail
+    FAIL N2 at MAX_TRIES=4: a cut FIRST (room left for its re-ask), then 3 transient failures use up the remaining budget -- 4 calls, and the transient record now carries cutRetried:true (was missing before N2)
+    5 named case(s) FAILED
+    M1 (calls/outcome match, cutRetried excluded): 0 mismatches of 46656
+    N2 (stored record's cutRetried correct on every transient-ending sequence): 0/20880 correct
+    N2 at MAX_TRIES=1: 0/156 correct
+    OVERALL: 7 check group(s) FAILED

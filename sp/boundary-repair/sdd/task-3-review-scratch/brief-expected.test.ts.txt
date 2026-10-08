@@ -1,0 +1,210 @@
+import { describe, it, expect } from 'vitest';
+import { createBoundaryRepair } from './deepgramBoundaryRepair';
+import fixtures from './deepgramBoundaryRepair.fixtures.json';
+
+/**
+ * The fixture file is a byte-for-byte copy of the design's fixtures-v3.json (2026-09-29): every
+ * sequence was extracted VERBATIM from a non-holdout run log (the `run` field) as [interim I,
+ * final F1, final F2] with atMs relative to I, and expectedF2 is what the reference rule-v3.mjs
+ * emits for F2 — checked by the extractor to equal what it emitted inside the full stream. Only
+ * `symptom` (flight h40c R22, the reported defect) comes from a holdout run, as the reproduction;
+ * `seam` is a live seam-probe recording (S2Q07 play 3, the tolerant "RAC" -> "Rag" cut).
+ * The synthetic edges at the end reuse the symptom's strings and one real interim from the logs.
+ */
+type Fixture = { run: string; cls: string; events: { text: string; isFinal: boolean; atMs: number }[]; expectedF2: string };
+
+function lastFinal(f: Fixture): string {
+    const r = createBoundaryRepair();
+    let out = '';
+    for (const e of f.events) {
+        const res = r.onTranscript(e.text, e.isFinal, e.atMs);
+        if (e.isFinal) out = res.text;
+    }
+    return out;
+}
+const lastRaw = (f: Fixture): string => f.events[f.events.length - 1].text;
+
+describe('deepgramBoundaryRepair reproduces the reference (rule-v3.mjs) on the extracted fixtures', () => {
+    it('the fixture file is the design\'s: 1 symptom, 1 seam, 15 positives that change F2, 28 negatives that do not', () => {
+        expect(fixtures.positives).toHaveLength(15);
+        expect(fixtures.negatives).toHaveLength(28);
+        for (const f of [fixtures.symptom, fixtures.seam, ...fixtures.positives]) expect(f.expectedF2).not.toBe(lastRaw(f));
+        for (const f of fixtures.negatives) expect(f.expectedF2).toBe(lastRaw(f));
+    });
+
+    it(`symptom — ${fixtures.symptom.run}: restores "hallucinations"`, () => {
+        expect(lastFinal(fixtures.symptom)).toBe(fixtures.symptom.expectedF2);
+    });
+
+    it(`seam — ${fixtures.seam.run}: the tolerant cut ("RAC" re-spelled "Rag" at the cut) restores "service"`, () => {
+        expect(lastFinal(fixtures.seam)).toBe(fixtures.seam.expectedF2);
+    });
+
+    describe('positives: every distinct v3 repair in the non-holdout logs', () => {
+        fixtures.positives.forEach((f, i) => {
+            it(`#${i + 1} ${f.run}: -> "${f.expectedF2.slice(0, 50)}"`, () => {
+                expect(lastFinal(f)).toBe(f.expectedF2);
+            });
+        });
+    });
+
+    describe('negatives: cuts the rule leaves alone (NORMAL, the |T| == 1 tail whether re-heard or really lost, number-formatted evidence, tolerant re-cover, turn boundaries)', () => {
+        fixtures.negatives.forEach((f, i) => {
+            it(`#${i + 1} ${f.cls} ${f.run}: "${lastRaw(f).slice(0, 40)}" unchanged`, () => {
+                expect(lastFinal(f)).toBe(lastRaw(f));
+            });
+        });
+    });
+
+    it('pins the documented residuals as NOT repaired: real losses in the |T| == 1 tail ("between", "scaling") and number-formatted evidence ("eighty" / "84%")', () => {
+        const byF2 = (start: string): Fixture => {
+            const f = fixtures.negatives.find((n) => lastRaw(n).startsWith(start));
+            if (!f) throw new Error(`fixture missing: F2 starting "${start}"`);
+            return f;
+        };
+        for (const f of [byF2('training and serving?'), byF2('for a model inference service on Kubernetes?'), byF2('by 84%,')]) {
+            expect(lastFinal(f)).toBe(lastRaw(f));
+        }
+    });
+});
+
+describe('deepgramBoundaryRepair synthetic edges (the symptom\'s strings)', () => {
+    const [I, F1, F2] = fixtures.symptom.events;                 // atMs 0 / 17 / 1564
+    const play = (events: Fixture['events']): string => lastFinal({ run: 'synthetic', cls: 'EDGE', events, expectedF2: '' });
+
+    it('the window is 5000 ms from F1\'s arrival, inclusive: 5000 restores, 5001 does not', () => {
+        expect(play([I, F1, { ...F2, atMs: F1.atMs + 5000 }])).toBe(fixtures.symptom.expectedF2);
+        expect(play([I, F1, { ...F2, atMs: F1.atMs + 5001 }])).toBe(F2.text);
+    });
+
+    it('a final that is not a prefix of its interim is no cut — only F1\'s LAST token may differ (the tolerant cut)', () => {
+        expect(play([I, { ...F1, text: 'How do we cut' }, F2])).toBe(F2.text);
+        expect(play([I, { ...F1, text: 'How do you cat' }, F2])).toBe(fixtures.symptom.expectedF2);
+    });
+
+    it('an interim-only stream passes through unchanged and leaves nothing to repair', () => {
+        const r = createBoundaryRepair();
+        expect(r.onTranscript('How do', false, 0)).toEqual({ text: 'How do', restored: null });
+        expect(r.onTranscript(I.text, false, 500)).toEqual({ text: I.text, restored: null });
+        expect(r.onTranscript(I.text, true, 1000)).toEqual({ text: I.text, restored: null });    // equal to its interim: no cut
+        expect(r.onTranscript(F2.text, true, 2000)).toEqual({ text: F2.text, restored: null });
+    });
+
+    it('any final clears the remembered cut: only the NEXT final can be repaired', () => {
+        expect(play([I, F1, { text: 'Okay.', isFinal: true, atMs: 500 }, F2])).toBe(F2.text);
+    });
+
+    it('an interim between F1 and F2 does not disturb the repair (after7 M13: the log has "as code without" at 07:38:26.576Z between the two finals)', () => {
+        const m13 = fixtures.positives[2];                       // 2026-09-06T08-14-21-after7, "infrastructure"
+        const [i, f1, f2] = m13.events;
+        expect(m13.run).toBe('2026-09-06T08-14-21-after7');
+        expect(play([i, f1, { text: 'as code without', isFinal: false, atMs: f1.atMs + 2 }, f2])).toBe(m13.expectedF2);
+    });
+
+    it('restores the interim\'s own spelling, index-aligned past an apostrophe word before the cut', () => {
+        const I2 = { text: 'How\'d you cut RAG hallucinations in a rag answer without just making', isFinal: false, atMs: 0 };
+        expect(play([I2, { ...F1, text: 'How\'d you cut' }, { ...F2, text: 'hallucinations in a rag answer without just making it refuse?' }]))
+            .toBe('RAG hallucinations in a rag answer without just making it refuse?');
+    });
+
+    it('a punctuation-only final is no cut (it has no tokens) and does not throw', () => {
+        expect(play([I, { ...F1, text: '?' }, { ...F2, text: 'you cut hallucinations in a rag answer without just making it refuse?' }]))
+            .toBe('you cut hallucinations in a rag answer without just making it refuse?');
+    });
+
+    it('a one-word final is never a tolerant cut: a late "Wow." does not remember the interim', () => {
+        expect(play([I, { ...F1, text: 'Wow.' }, { ...F2, text: 'you cut hallucinations in a rag answer without just making it refuse?' }]))
+            .toBe('you cut hallucinations in a rag answer without just making it refuse?');
+    });
+
+    it('a final with no interim before it is not compared with an older interim', () => {
+        expect(play([I, F1, { text: 'How do you', isFinal: true, atMs: 500 }, F2])).toBe(F2.text);
+    });
+
+    it('a loss of three words is left alone: at most two skipped words are restored', () => {
+        expect(play([I, F1, { ...F2, text: 'rag answer without just making it refuse?' }])).toBe('rag answer without just making it refuse?');
+    });
+
+    it('F2 starting with the interim\'s first tail word is the normal case, even when that word repeats', () => {
+        const I3 = { text: 'How do you cut hallucinations in in a rag answer without just making', isFinal: false, atMs: 0 };
+        expect(play([I3, { ...F1, text: 'How do you cut hallucinations' }, F2])).toBe(F2.text);
+    });
+});
+
+describe('deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses', () => {
+    const [I, F1, F2] = fixtures.symptom.events;                 // atMs 0 / 17 / 1564
+    const play = (events: Fixture['events']): string => lastFinal({ run: 'synthetic', cls: 'EDGE', events, expectedF2: '' });
+    const at = (text: string, isFinal: boolean, atMs: number) => ({ text, isFinal, atMs });
+
+    // Negative #28 as logged has the interim stopping at "percent" and a 5852 ms gap. With the interim running on and
+    // F2 inside the window, v3 restored "two percent" — a FALSE insertion (probe-inputs.out.txt): smart_format wrote
+    // "ninety two percent" as the one token "92%", so T was shifted by two words.
+    it('negative #28 with the interim running on: a digit token at the cut ("ninety two percent" -> "92%.") is no cut', () => {
+        expect(play([at('accuracy reaching ninety two percent for each', false, 0), at('accuracy reaching 92%.', true, 688), at('For each of those metrics, define the unit of evaluation,', true, 2688)]))
+            .toBe('For each of those metrics, define the unit of evaluation,');
+    });
+
+    it('"twenty five" -> "25": the same shape (v3 restored "five")', () => {
+        expect(play([at('we cut latency by twenty five last quarter', false, 0), at('We cut latency by 25', true, 100), at('last quarter. What changed?', true, 2100)]))
+            .toBe('last quarter. What changed?');
+    });
+
+    it('"all right" -> "Alright": a final token longer than the interim\'s is a merge, not a re-spelling (v3 restored "right")', () => {
+        expect(play([at('thanks all right so tell me about', false, 0), at('Thanks. Alright.', true, 100), at('So tell me about your last project.', true, 2100)]))
+            .toBe('So tell me about your last project.');
+    });
+
+    // A documented RECALL COST, not a fix (DESIGN-v4 §4, §8): an inflection is longer too, and it does not shift T — the 7
+    // "break" -> "breaks" cuts in the logs are aligned and lost nothing. Here "even" IS lost after the inflected cut; v3
+    // restored it, v4 does not, because the same length test is what refuses the merges above. Pinned so the cost is known.
+    it('"break" -> "breaks": a longer final token is refused even when it is only an inflection, so a word lost right after it stays lost (v3 restored "even")', () => {
+        expect(play([at('the deploy would break even before the rollout', false, 0), at('The deploy would breaks', true, 100), at('before the rollout finishes.', true, 2100)]))
+            .toBe('before the rollout finishes.');
+    });
+
+    it('a re-spelling keeps its first letter: "put" for "cut" is no cut ("cat" for "cut" still is — the edge above)', () => {
+        expect(play([I, { ...F1, text: 'How do you put' }, F2])).toBe(F2.text);
+    });
+
+    // The spec review's Turkish probe (probe-lang.out.txt): "İ" lowercases to "i" + a combining dot, so tok() holds one
+    // token more than rawTok() and v3 restored "zmir projesinde" — a shifted Traw. The adapter never sends non-English
+    // audio here; this is the module's own floor (v2's guard).
+    it('an interim whose comparison tokens do not line up with its spelled tokens is no cut', () => {
+        expect(play([at('Peki İzmir projesinde hangi veritabanını seçtiniz', false, 0), at('Peki', true, 100), at('projesinde hangi veritabanını seçtiniz?', true, 2100)]))
+            .toBe('projesinde hangi veritabanını seçtiniz?');
+    });
+
+    // Accented English stays aligned ("résumé" -> "r" + "sum" in both tokenisers) but is fragments: v3 restored "r sum"
+    // (the v4 review's M2 probe). 0 interims with a non-ASCII letter in the 28 English logs and the seam recordings.
+    it('an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"', () => {
+        expect(play([at('tell me about your résumé and your last role', false, 0), at('Tell me about your', true, 100), at('and your last role.', true, 2100)]))
+            .toBe('and your last role.');
+    });
+
+    it('clear() between F1 and F2 (the adapter\'s empty final / UtteranceEnd) forgets the cut', () => {
+        const r = createBoundaryRepair();
+        r.onTranscript(I.text, false, I.atMs);
+        r.onTranscript(F1.text, true, F1.atMs);
+        r.clear();
+        expect(r.onTranscript(F2.text, true, F2.atMs)).toEqual({ text: F2.text, restored: null });
+    });
+
+    it('clear() also forgets the latest interim: a final after a pause is not a cut of it', () => {
+        const r = createBoundaryRepair();
+        r.onTranscript(I.text, false, I.atMs);
+        r.clear();
+        r.onTranscript(F1.text, true, F1.atMs);
+        expect(r.onTranscript(F2.text, true, F2.atMs)).toEqual({ text: F2.text, restored: null });
+    });
+
+    it('speechFinal on F1 (Deepgram heard the utterance end there) leaves no cut; on F2 it does not stop the repair', () => {
+        const r = createBoundaryRepair();
+        r.onTranscript(I.text, false, I.atMs);
+        r.onTranscript(F1.text, true, F1.atMs, true);
+        expect(r.onTranscript(F2.text, true, F2.atMs)).toEqual({ text: F2.text, restored: null });
+        const r2 = createBoundaryRepair();
+        r2.onTranscript(I.text, false, I.atMs);
+        r2.onTranscript(F1.text, true, F1.atMs, false);
+        expect(r2.onTranscript(F2.text, true, F2.atMs, true).text).toBe(fixtures.symptom.expectedF2);
+    });
+});

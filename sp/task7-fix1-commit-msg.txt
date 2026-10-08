@@ -1,0 +1,11 @@
+fix(flight): hasCueRule fails closed — every replayable id, not any
+
+.some() over every captured entry let a single cue-carrying prompt gate the
+captured-no-cues arms open on a mixed hour, so answers.mjs --no-cues would
+then refuse the first id without the rule, mid-flight, instead of the flight
+skipping cleanly. hasCueRule now scopes through capturedOnly, exactly what
+the arm replays, and requires ALL of those ids to carry the rule, not merely
+one; the skip log line now names how many carry it, or lack it, in numbers,
+computed once before the loop rather than per arm.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

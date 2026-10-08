@@ -1,0 +1,15 @@
+﻿HEAD 7408aac fix(router): pad only in silence; the keepalive is a 20 ms frame
+dirty: 
+tsc root exit 0
+tsc electron exit 2 errors 6
+build exit 0
+grep 'ROUTER_SHAS_OK' files=2
+grep 'gemini-3.8-live' files=4
+grep '[Router] flag NATIVELY_LIVE_ROUTER=' files=1
+grep 'stripUnknownMarkers' files=3
+grep 'generation !== this.generation' files=1
+grep 'routerArbiter.forward' files=1
+suite exit 0
+ Test Files  123 passed | 1 skipped (124)
+      Tests  1515 passed | 9 skipped (1524)
+DONE

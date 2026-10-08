@@ -1,0 +1,54 @@
+reader diff on router40-R (47 items, variant B). Classes and word counts only.
+old reader: read-r.pre-A8.mjs sha256 01a4fbe39388cda0d45366c8b112f3e3bdcf8044e14e5a7fa7715cd206c210b5
+fixed reader: read-r.mjs sha256 297f87656b0d3ac5872cfbb9e5db3840591a04e39bcfdfcf532e3b4214870db7
+run file: router40-R.json sha256 bf01ec3a48ca2a9b346e42058fbd5e5fa3f092c3a1831345e294857129b524b7; answers: aea7c112b83e7d681c3e613a76b9ee6867c9e2b1674d7d047162edb2980fabe9
+id    live40-class  old-class  new-class  old-w  new-w  changed
+RE01  E             answer     answer        48     48  -
+RH01  QF            hard       hard           1      1  -
+RE02  E             answer     answer        59     59  -
+EF01  QF            hard       hard           1      1  -
+RH03  H             hard       hard           1      1  -
+RE03  E             answer     answer        50     50  -
+EF02  AF            hard       hard           1      1  -
+RE08  E             answer     answer        47     47  -
+RE04  E             answer     answer        49     49  -
+EF03  QF            hard       hard           1      1  -
+RE05  E             answer     answer        37     37  -
+RH04  H             hard       hard           1      1  -
+RE06  E             answer     answer        50     50  -
+RH07  H             hard       hard           1      1  -
+RH08  QF            answer     answer         1      1  -
+RE07  E             answer     answer        39     39  -
+EF04  QF            hard       hard           1      1  -
+RH05  H             answer     answer        71     71  -
+RH06  QF            hard       hard           1      1  -
+RH09  H             hard       hard           1      1  -
+RH10  AF            answer     answer         1      1  -
+RH11  QF            hard       hard           1      1  -
+RE09  E             hard       hard           1      1  -
+RH19  H             hard       hard           1      1  -
+RE10  E             answer     answer        30     30  -
+RE11  E             answer     answer        52     52  -
+EF05  QF            hard       hard           1      1  -
+RH12  H             hard       hard           1      1  -
+RH13  AF            hard       hard           1      1  -
+RH14  AF            hard       hard           1      1  -
+RE12  E             answer     answer        70     70  -
+RE13  E             answer     answer        31     31  -
+RH17  H             hard       hard           1      1  -
+RE14  E             answer     answer        57     57  -
+RH02  AF            hard       hard           1      1  -
+RE15  E             answer     answer        37     37  -
+RH15  H             hard       hard           1      1  -
+RH16  AF            hard       hard           1      1  -
+RE16  E             answer     answer        52     52  -
+EF06  QF            hard       hard           1      1  -
+RE17  E             answer     answer        52     52  -
+EF07  AF            hard       hard           1      1  -
+RH18  H             hard       hard           1      1  -
+RE18  E             answer     answer        42     42  -
+RH20  H             hard       hard           1      1  -
+RE19  E             answer     answer        56     56  -
+RE20  E             answer     answer        52     52  -
+summary: 0 items change class; 0 change word count; 0 change T (text not shown).
+transitions: answer -> answer x22; hard -> hard x25

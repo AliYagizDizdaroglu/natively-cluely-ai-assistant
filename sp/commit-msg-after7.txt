@@ -1,0 +1,12 @@
+docs(golden): after7 flight report of record (Deepgram, fixes E-G)
+
+Hour 2026-09-06 07:13-08:14 UTC on gemini-3.1-flash-live-preview + Deepgram:
+judge 47 acceptable / 7 weak / 0 wrong of 54 spoken (gate passes the quality
+bar); 0 socket closes (from 299), 0 answers missing their first character
+(from 14), budget row p50 89 / max 117 / 0 cut under 80. Two rows stay red:
+2 doubles (Live re-fired M04 and M27 20-26 s after the answer, outside the
+deduper's 20 s window) and the stt row's lost-utterance count (27 empty
+finals, every one finalized within 5 s - a metric artifact under a healthy
+socket). Arms: 3.1 49/52, 3.5 47/52 (1 wrong), gemma 49/52.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

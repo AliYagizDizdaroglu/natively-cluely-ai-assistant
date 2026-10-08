@@ -1,0 +1,8 @@
+W: n 17  CONSISTENT 15  CONTRADICTS 0  GUESS 2  DEFLECT 0
+E: n 18  CONSISTENT 12  CONTRADICTS 2  GUESS 4  DEFLECT 0
+AF1  W: ok ok ok   E: ok ok guess
+AF2  W: ok guess guess   E: CONTRA guess CONTRA
+AF3  W: ok ok ok   E: ok ok ok
+AF4  W: ok - ok   E: ok ok ok
+AF5  W: ok ok ok   E: ok ok ok
+AF6  W: ok ok ok   E: ok guess guess

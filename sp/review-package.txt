@@ -1,0 +1,1906 @@
+=== COMMITS (oldest first) ===
+af73604 feat(golden): add the scenario50 question set and make the harness roster-aware
+99f81d0 fix(reconcile): WORDS_PER_SEC must be a lower bound on speech, not one roster's p10
+bf9c087 fix(gate): scale the counting rows with the roster instead of hardcoding 52
+bfb3546 fix(gate): a CODING route on a coding question is not a misroute
+
+=== STAT ===
+ .gitignore                                         |   8 +
+ electron/services/questionReconcile.test.ts        |  22 +-
+ electron/services/questionReconcile.ts             |  23 +-
+ electron/test/golden/interview60.answers.mjs       |  15 +-
+ .../test/golden/interview60.build-audio-local.mjs  |  28 +-
+ electron/test/golden/interview60.build-audio.mjs   |   6 +-
+ .../test/golden/interview60.calibrate-audio.mjs    |  12 +-
+ electron/test/golden/interview60.cues.mjs          |   2 +-
+ electron/test/golden/interview60.flight.mjs        |   6 +-
+ electron/test/golden/interview60.metrics.mjs       |  38 +-
+ electron/test/golden/interview60.metrics.test.ts   |  87 +++-
+ electron/test/golden/interview60.run.mjs           |  16 +-
+ electron/test/golden/roster.mjs                    | 109 +++++
+ electron/test/golden/roster.test.ts                |  97 ++++
+ electron/test/golden/scenario50.questions.mjs      | 503 +++++++++++++++++++++
+ electron/test/golden/scenario50.source.md          | 233 ++++++++++
+ 16 files changed, 1163 insertions(+), 42 deletions(-)
+
+=== DIFF ===
+diff --git a/.gitignore b/.gitignore
+index 9bc95e4..442cd16 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -255,11 +255,19 @@ electron/test/golden/interview60.run*.log
+ electron/test/golden/interview60.run.err
+ 
+ # interview60 run snapshots (logs + JSON per run; the report page is the deliverable)
+ electron/test/golden/interview60.runs/
+ electron/test/golden/interview60.cues/
+ electron/test/golden/interview60.cues.log
+ electron/test/golden/interview60.cues.pid
+ 
+ # interview60 flight launcher outputs: the extra answer arms and the files it moves aside
+ electron/test/golden/interview60.answers.*.json
++
++# scenario50 roster — generated audio only (rebuild: NATIVELY_ROSTER=scenario50
++# interview60.build-audio-local.mjs). The .questions.mjs and .source.md are the
++# deliverable and stay tracked; the .txt stamps beside each clip are what make the
++# builder notice an edited question, and they live with the clips.
++electron/test/golden/scenario50.wav
++electron/test/golden/scenario50-tts/
++electron/test/golden/scenario50-tts-local/
+ electron/test/golden/*.stale-*.json
+diff --git a/electron/services/questionReconcile.test.ts b/electron/services/questionReconcile.test.ts
+index 5f7aa75..1b1b991 100644
+--- a/electron/services/questionReconcile.test.ts
++++ b/electron/services/questionReconcile.test.ts
+@@ -110,36 +110,56 @@ describe('reconcileLiveQuestion — phantom guard (2026-09-04 after5 hour, Groq
+ });
+ 
+ describe('reconcileWindowMs — how far back the transcript must be read to cover a claim', () => {
+     // after9 measured 79 spoken clips: 2.66 words/sec median, 2.24 at p10, 1.71 min. The six
+     // long questions ran 24.6-28.5s and Live reported them 3.3-5.3s after the clip ended.
+     // A fixed 15s window therefore covered only the tail of a long question, and L03 was
+     // answered as "that people do not start ignoring it." — the transcript line the
+     // reconciler fell back to once Live's whole question scored below the floor.
+     it('keeps the 15s floor for a short claim, so nothing changes for ordinary questions', () => {
+         expect(reconcileWindowMs('What is a DAG?')).toBe(15_000);
+-        expect(reconcileWindowMs('How would you detect data drift in a model that is already in production?')).toBe(15_000);
++        // The floor covers claims up to 11 words. It reached 16 words while WORDS_PER_SEC was
++        // 2.24; lowering that to 1.6 (see the constant's comment) moved the boundary down, so a
++        // 14-word question now gets a window sized to itself rather than the flat floor. That is
++        // the intended direction — the floor exists so SHORT claims are unaffected, and a longer
++        // window on a mid-length question is the thing the sizing is for.
++        expect(reconcileWindowMs('What is the difference between a pod and a deployment?')).toBe(15_000);
++        expect(reconcileWindowMs('How would you detect data drift in a model that is already in production?')).toBeGreaterThan(15_000);
+     });
+     it('covers L03: 69 words spoken in 25.9s, reported 5.3s after the clip ended', () => {
+         const L03 = 'Let\'s talk about monitoring. Say you have twenty models in production, owned by four different teams, '
+             + 'and today each team watches its own dashboards by hand. Design me a monitoring setup that catches data '
+             + 'drift, prediction drift, and plain infrastructure problems, tells you which team owns the alert, and '
+             + 'keeps the false alarm rate low enough that people do not start ignoring it.';
+         expect(reconcileWindowMs(L03)).toBeGreaterThan(25_900 + 5_300);
+     });
+     it('covers L04, the longest in the roster: 84 words in 28.5s, reported 4.5s later', () => {
+         const claim = new Array(84).fill('feature').join(' ');
+         expect(reconcileWindowMs(claim)).toBeGreaterThan(28_500 + 4_500);
+     });
+     it('caps a runaway claim so the window cannot swallow the previous question', () => {
+         expect(reconcileWindowMs(new Array(500).fill('word').join(' '))).toBeLessThanOrEqual(60_000);
+     });
++
++    // WORDS_PER_SEC is a LOWER BOUND on speaking rate, and 2.24 (interview60's p10) is not
++    // one: rendering the scenario50 roster produced clips down to 1.55 w/s, because its
++    // questions are comma-heavy lists the voice pauses through. Measured over all 179
++    // rendered clips of both rosters, 12 of scenario50's fell OUTSIDE the window at 2.24 —
++    // the window stopping short of the question's start is precisely the L03 defect.
++    // Replaying the 195 live dispatches of after7/8/9 at rates down to 1.4 produced zero
++    // new corroborations, and the closest uncorroborated claim held at 0.474, under MATCH.
++    it('covers the slowest clip ever rendered: 26 words in 16.8s (1.55 w/s), reported 5.3s later', () => {
++        expect(reconcileWindowMs(new Array(26).fill('pipeline').join(' '))).toBeGreaterThan(16_800 + 5_300);
++    });
++    it('covers a 43-word question read at 1.89 w/s (scenario50 S2Q07, 22.7s)', () => {
++        expect(reconcileWindowMs(new Array(43).fill('pipeline').join(' '))).toBeGreaterThan(22_700 + 5_300);
++    });
+ });
+ 
+ describe('reconcileLiveQuestion — a question longer than any single transcript line', () => {
+     // after9 L03, verbatim: the Deepgram finals of the hour, offsets from the moment Live
+     // reported the question. The question took 25.9s to ask and Live reported it 5.3s later,
+     // so it is spread over seven lines and covers at most 0.19 of any one of them — below the
+     // floor, and the hour answered the last line instead: "that people do not start ignoring it."
+     const L03_WINDOW: RecentSpeech[] = [
+         sp("Let's talk about monitoring.", -27562),
+         sp('Say you have 20 models in production owned by four different teams,', -22383),
+diff --git a/electron/services/questionReconcile.ts b/electron/services/questionReconcile.ts
+index 036b962..e70c139 100644
+--- a/electron/services/questionReconcile.ts
++++ b/electron/services/questionReconcile.ts
+@@ -35,29 +35,42 @@ export function sameAnchor(a: string, b: string): boolean {
+ 
+ /**
+  * How far back the interviewer transcript must be read to corroborate a Live claim.
+  *
+  * reconcileLiveQuestion scores Live's text against the lines in this window and REPLACES it
+  * with the latest line when nothing clears PARAPHRASE. A fixed 15s window is shorter than a
+  * long question: after9's six long questions ran 24.6-28.5s and Live reported each 3.3-5.3s
+  * after the clip ended, so the window held only the tail, Live's whole question scored below
+  * the floor, and L03 was answered as "that people do not start ignoring it."
+  *
+- * Sized from the claim's own spoken length. WORDS_PER_SEC is the p10 of the 79 clips measured
+- * in that hour (median 2.66, min 1.71), so the window over-covers median-rate speech by ~19%.
++ * Sized from the claim's own spoken length. WORDS_PER_SEC is a LOWER BOUND on speaking rate,
++ * not a typical one: too high and the window stops short of the question's own start, which is
++ * the L03 defect. It was first set to 2.24, the p10 of interview60's 79 clips — but that is a
++ * property of one roster, not of speech. Rendering scenario50 (2026-09-08) produced clips down
++ * to 1.55 w/s, its questions being comma-heavy lists the voice pauses through, and 12 of its
++ * 100 clips fell outside the window at 2.24. Across all 179 clips of both rosters every one is
++ * covered at 1.8; 1.6 keeps margin for a human interviewer, who pauses mid-question in ways a
++ * synthesiser does not.
++ *
++ * Widening is not free in principle — a longer window joins more text, and the joined score can
++ * only rise — so it was measured: replaying the 195 live dispatches of after7/8/9 at rates from
++ * 2.24 down to 1.4 produced ZERO new corroborations, and the closest uncorroborated claim held
++ * at 0.474, below MATCH, at every rate.
++ *
+  * LAG_MS covers the gap between the interviewer finishing and Live reporting it (3.3-5.3s
+  * measured) plus the STT's own finalisation. The floor is the 15s this used to be, so a claim
+- * under 16 words keeps exactly today's behaviour. The cap stops a runaway claim from reaching
++ * under 12 words keeps exactly today's behaviour. The cap stops a runaway claim from reaching
+  * back into the previous question, where an unrelated line could win the anchor — the same
+- * failure sameAnchor's window guard exists for (after8 W08).
++ * failure sameAnchor's window guard exists for (after8 W08). The cap binds first past ~83
++ * words, so a question longer than that is covered only if it is read faster than 1.6 w/s.
+  */
+-const WORDS_PER_SEC = 2.24;
++const WORDS_PER_SEC = 1.6;
+ const LAG_MS = 8_000;
+ const MIN_WINDOW_MS = 15_000;
+ export const RECONCILE_MAX_WINDOW_MS = 60_000;
+ 
+ export function reconcileWindowMs(liveText: string): number {
+     const spoken = ((liveText.match(/[A-Za-z0-9']+/g) ?? []).length / WORDS_PER_SEC) * 1000;
+     return Math.min(RECONCILE_MAX_WINDOW_MS, Math.max(MIN_WINDOW_MS, Math.round(spoken + LAG_MS)));
+ }
+ 
+ const MATCH = 0.5;
+diff --git a/electron/test/golden/interview60.answers.mjs b/electron/test/golden/interview60.answers.mjs
+index 6163fe3..4f82084 100644
+--- a/electron/test/golden/interview60.answers.mjs
++++ b/electron/test/golden/interview60.answers.mjs
+@@ -15,21 +15,21 @@
+  *   node electron/test/golden/interview60.answers.mjs
+  *   node electron/test/golden/interview60.answers.mjs --model gemma-4-31b-it   # another arm of the comparison → interview60.answers.<model>.json
+  *
+  * Resumable: results are written per question; transient errors (429/5xx)
+  * are recorded as such and never scored as model failures.
+  */
+ import fs from 'fs';
+ import path from 'path';
+ import { createRequire } from 'module';
+ import { fileURLToPath } from 'url';
+-import { INTERVIEW } from './interview60.questions.mjs';
++import { INTERVIEW, ROSTER_ITEMS, ROSTER_NAME } from './roster.mjs';
+ import { VERBAL_CHECKS } from './problems.verbal.mjs';
+ 
+ const HERE = path.dirname(fileURLToPath(import.meta.url));
+ const PROJ = path.resolve(HERE, '../../..');
+ const require = createRequire(path.join(PROJ, 'package.json'));
+ const P = require(path.join(PROJ, 'dist-electron/electron/llm/prompts.js'));
+ const { filterVerbalLines, stripSuggestionBlock, stripSpokenNotation } =
+     require(path.join(PROJ, 'dist-electron/electron/llm/verbalStreamFilter.js'));
+ 
+ const KEY = fs.readFileSync(path.join(PROJ, '.env'), 'utf8').match(/^GEMINI_API_KEY=(.+)$/m)[1].trim();
+@@ -160,20 +160,33 @@ async function answerStreamedGroq(question) {
+     async function* gen() { for (const ch of raw) yield ch; }
+     let spoken = '', offers = null;
+     for await (const p of stripSpokenNotation(stripSuggestionBlock(filterVerbalLines(gen()), (o) => { offers = o; }))) spoken += p;
+     spoken = spoken.trim();
+     return { spoken, offers, words: words(spoken), ttft, total, finish, rawLen: raw.length };
+ }
+ 
+ const answerStreamed = (question) => (IS_GROQ ? answerStreamedGroq(question) : answerStreamedGemini(question));
+ 
+ const store = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : {};
++// A resumed store must belong to THIS roster. It is keyed by item id, so an
++// interview60 file resumed under scenario50 would keep every foreign answer and
++// hand the judge a mixed export that looks like one run. Checked against the whole
++// roster, not the scenario subset, so building a set scenario by scenario still
++// accumulates. The flight moves old files aside, so reaching this means a manual
++// run against a stale one.
++const knownIds = new Set(ROSTER_ITEMS.map((i) => i.id));
++const foreign = Object.keys(store).filter((id) => !knownIds.has(id));
++if (foreign.length) {
++    console.error(`\n${path.basename(OUT)} holds ${foreign.length} answer(s) that are not in roster ${ROSTER_NAME} (${foreign.slice(0, 3).join(', ')}${foreign.length > 3 ? ', ...' : ''}).`);
++    console.error('Move it aside before resuming — otherwise it is exported as if it were this roster.');
++    process.exit(3);
++}
+ // Base roster plus the long design questions. Follow-ups are left out: answered
+ // standalone they have no parent to follow up on, so they would measure nothing and
+ // cost every arm 18 requests (2026-09-08 roster).
+ const todo = INTERVIEW.filter((i) => (i.kind ?? 'spoken') === 'spoken' && i.level !== 'followup').slice(0, LIMIT);
+ console.log(`ANSWER-ONLY PASS  model=${MODEL}  ${todo.length} spoken questions\n`);
+ 
+ for (const item of todo) {
+     if (store[item.id]?.spoken) { continue; }
+     let r, lastErr;
+     for (let a = 0; a < 4; a++) {
+diff --git a/electron/test/golden/interview60.build-audio-local.mjs b/electron/test/golden/interview60.build-audio-local.mjs
+index e6830b9..41db10c 100644
+--- a/electron/test/golden/interview60.build-audio-local.mjs
++++ b/electron/test/golden/interview60.build-audio-local.mjs
+@@ -7,57 +7,71 @@
+  * 3.5 fallback — were still answering fine. Spending the remaining Gemini budget
+  * on the STIMULUS rather than on the SYSTEM UNDER TEST is the wrong trade, and
+  * local TTS is free and unmetered.
+  *
+  * The voice is more robotic than Gemini's, which is a real risk to detection
+  * accuracy — so interview60.calibrate-audio.mjs must confirm the live detector
+  * actually hears these clips BEFORE an hour is spent on them.
+  *
+  *   node electron/test/golden/interview60.build-audio-local.mjs
+  *
+- * Output: electron/test/golden/interview60.wav  (24 kHz mono 16-bit)
++ * Output: electron/test/golden/<roster>.wav  (24 kHz mono 16-bit); the roster and
++ * its audio directory come from roster.mjs (NATIVELY_ROSTER).
+  */
+ import fs from 'fs';
+ import path from 'path';
+ import { execFileSync } from 'child_process';
+ import { fileURLToPath } from 'url';
+-import { INTERVIEW } from './interview60.questions.mjs';
++import { INTERVIEW, TTS_LOCAL_DIR, WAV_NAME, rosterLabel } from './roster.mjs';
+ 
+ const HERE = path.dirname(fileURLToPath(import.meta.url));
+ const PROJ = path.resolve(HERE, '../../..');
+-const TTS_DIR = path.join(HERE, 'interview60-tts-local');
+-const OUT_WAV = path.join(HERE, 'interview60.wav');
++const TTS_DIR = path.join(HERE, TTS_LOCAL_DIR);
++const OUT_WAV = path.join(HERE, WAV_NAME);
+ const SR = 24000;
+ const BYTES_PER_SEC = SR * 2;
+ const VOICE = process.env.SAPI_VOICE || 'Microsoft David Desktop';
+ const RATE = Number(process.env.SAPI_RATE || 0);   // -10..10, 0 = normal
+ 
+ fs.mkdirSync(TTS_DIR, { recursive: true });
+ const words = (s) => (s.trim().match(/\S+/g) || []).length;
+ 
+-/** Render one question to a 24 kHz mono 16-bit WAV via System.Speech. */
++/**
++ * Render one question to a 24 kHz mono 16-bit WAV via System.Speech.
++ *
++ * Clips are cached by id, so EDITING A QUESTION would otherwise keep speaking the old
++ * wording for a whole hour with nothing to show for it — the run log, the timeline and
++ * the judge would all carry the new text while the audio said the old. The rendered
++ * text is written beside each clip and re-rendered whenever it differs. (Measured
++ * 2026-09-08: merging the opening sentence of 44 scenario50 questions changed their
++ * text without changing a single id.)
++ */
+ function speak(item) {
+     const out = path.join(TTS_DIR, `${item.id}.wav`);
+-    if (fs.existsSync(out)) return out;
++    const stamp = path.join(TTS_DIR, `${item.id}.txt`);
++    const cachedText = fs.existsSync(stamp) ? fs.readFileSync(stamp, 'utf8') : null;
++    if (fs.existsSync(out) && cachedText === item.q) return out;
++    if (fs.existsSync(out)) console.log(`  ${item.id.padEnd(6)} text changed — re-rendering`);
+     const ps = `
+ $ErrorActionPreference = 'Stop'
+ Add-Type -AssemblyName System.Speech
+ $s = New-Object System.Speech.Synthesis.SpeechSynthesizer
+ try { $s.SelectVoice(${JSON.stringify(VOICE)}) } catch { }
+ $s.Rate = ${RATE}
+ $fmt = New-Object System.Speech.AudioFormat.SpeechAudioFormatInfo(${SR}, [System.Speech.AudioFormat.AudioBitsPerSample]::Sixteen, [System.Speech.AudioFormat.AudioChannel]::Mono)
+ $s.SetOutputToWaveFile(${JSON.stringify(out)}, $fmt)
+ $s.Speak(${JSON.stringify(item.q)})
+ $s.SetOutputToNull()
+ $s.Dispose()
+ `;
+     execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps], { stdio: 'pipe' });
++    fs.writeFileSync(stamp, item.q);
+     return out;
+ }
+ 
+ /** WAV -> raw PCM body (SAPI writes a standard 44-byte header, but find 'data' to be safe). */
+ function pcmOf(wavPath) {
+     const b = fs.readFileSync(wavPath);
+     const i = b.indexOf(Buffer.from('data', 'ascii'), 12);
+     if (i < 0) throw new Error(`no data chunk in ${wavPath}`);
+     const len = b.readUInt32LE(i + 4);
+     return b.subarray(i + 8, i + 8 + len);
+@@ -67,21 +81,21 @@ function wavHeader(dataBytes) {
+     const h = Buffer.alloc(44);
+     h.write('RIFF', 0); h.writeUInt32LE(36 + dataBytes, 4); h.write('WAVE', 8);
+     h.write('fmt ', 12); h.writeUInt32LE(16, 16); h.writeUInt16LE(1, 20); h.writeUInt16LE(1, 22);
+     h.writeUInt32LE(SR, 24); h.writeUInt32LE(BYTES_PER_SEC, 28); h.writeUInt16LE(2, 32); h.writeUInt16LE(16, 34);
+     h.write('data', 36); h.writeUInt32LE(dataBytes, 40);
+     return h;
+ }
+ 
+ const parts = [];
+ const suspect = [];
+-console.log(`voice: ${VOICE}   rate: ${RATE}\nBuilding ${INTERVIEW.length} items -> ${path.relative(PROJ, OUT_WAV)}\n`);
++console.log(`voice: ${VOICE}   rate: ${RATE}\nroster: ${rosterLabel()}\nBuilding ${INTERVIEW.length} items -> ${path.relative(PROJ, OUT_WAV)}\n`);
+ 
+ for (const item of INTERVIEW) {
+     const pcm = pcmOf(speak(item));
+     const secs = pcm.length / BYTES_PER_SEC;
+     const wps = words(item.q) / secs;
+     // Same guard as the Gemini builder: an implausible rate means a truncated or
+     // padded clip, which would look like a detection bug an hour downstream.
+     if (wps < 1.6 || wps > 5.0) suspect.push(`${item.id} ${wps.toFixed(2)} w/s`);
+     parts.push(pcm, Buffer.alloc(Math.round((item.gapMs / 1000) * BYTES_PER_SEC)));
+     const tag = item.kind === 'screenshot' ? '  [SCREENSHOT CUE]' : '';
+diff --git a/electron/test/golden/interview60.build-audio.mjs b/electron/test/golden/interview60.build-audio.mjs
+index 468b82e..f6dafc6 100644
+--- a/electron/test/golden/interview60.build-audio.mjs
++++ b/electron/test/golden/interview60.build-audio.mjs
+@@ -8,26 +8,26 @@
+  * model defect downstream, so a bad clip is rejected here rather than debugged
+  * an hour later.
+  *
+  *   node electron/test/golden/interview60.build-audio.mjs
+  *
+  * Output: electron/test/golden/interview60.wav  (24 kHz mono 16-bit)
+  */
+ import fs from 'fs';
+ import path from 'path';
+ import { fileURLToPath } from 'url';
+-import { INTERVIEW } from './interview60.questions.mjs';
++import { INTERVIEW, TTS_GEMINI_DIR, WAV_NAME } from './roster.mjs';
+ 
+ const HERE = path.dirname(fileURLToPath(import.meta.url));
+ const PROJ = path.resolve(HERE, '../../..');
+-const TTS_DIR = path.join(HERE, 'interview60-tts');
+-const OUT_WAV = path.join(HERE, 'interview60.wav');
++const TTS_DIR = path.join(HERE, TTS_GEMINI_DIR);
++const OUT_WAV = path.join(HERE, WAV_NAME);
+ const SR = 24000;                 // Gemini TTS returns 24 kHz mono s16le
+ const BYTES_PER_SEC = SR * 2;
+ 
+ fs.mkdirSync(TTS_DIR, { recursive: true });
+ 
+ const KEY = fs.readFileSync(path.join(PROJ, '.env'), 'utf8').match(/^GEMINI_API_KEY=(.+)$/m)[1].trim();
+ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+ const words = (s) => (s.trim().match(/\S+/g) || []).length;
+ 
+ async function tts(item) {
+diff --git a/electron/test/golden/interview60.calibrate-audio.mjs b/electron/test/golden/interview60.calibrate-audio.mjs
+index 869b319..c684966 100644
+--- a/electron/test/golden/interview60.calibrate-audio.mjs
++++ b/electron/test/golden/interview60.calibrate-audio.mjs
+@@ -9,56 +9,58 @@
+  *
+  * Pass bar: every sampled question detected exactly once, with heard text close
+  * enough to the original that routing would be unaffected.
+  *
+  *   node electron/test/golden/interview60.calibrate-audio.mjs
+  */
+ import fs from 'fs';
+ import path from 'path';
+ import { createRequire } from 'module';
+ import { fileURLToPath } from 'url';
+-import { INTERVIEW } from './interview60.questions.mjs';
++import { calibrationSample, TTS_LOCAL_DIR, rosterLabel } from './roster.mjs';
+ 
+ const HERE = path.dirname(fileURLToPath(import.meta.url));
+ const PROJ = path.resolve(HERE, '../../..');
+ const require = createRequire(path.join(PROJ, 'package.json'));
+ const { GeminiLiveRouter, LIVE_ROUTER_MODEL } =
+     require(path.join(PROJ, 'dist-electron/electron/audio/GeminiLiveRouter.js'));
+ 
+ const KEY = fs.readFileSync(path.join(PROJ, '.env'), 'utf8').match(/^GEMINI_API_KEY=(.+)$/m)[1].trim();
+-const TTS_DIR = path.join(HERE, 'interview60-tts-local');
++const TTS_DIR = path.join(HERE, TTS_LOCAL_DIR);
+ const SR = 24000, FRAME_MS = 20, FRAME_BYTES = (SR / 1000) * FRAME_MS * 2;
+ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+ 
+ // A deliberate spread: shortest, a mid-length design question, the longest hard
+ // one, and a screenshot cue (which is NOT a question — it should ideally NOT fire).
+ // L01 and L04: the long multi-sentence design questions (2026-09-08) — the clips most
+ // likely to be split into several finals, so the detector must be proven on them too.
+-const SAMPLE = ['W02', 'M02', 'H03', 'C01', 'L01', 'L04'].map((id) => INTERVIEW.find((x) => x.id === id));
++// Roster-specific and risk-chosen; see SAMPLES in roster.mjs. Throws rather than
++// quietly sampling fewer clips than it names.
++const SAMPLE = calibrationSample();
+ 
+ function pcmOf(id) {
+     const b = fs.readFileSync(path.join(TTS_DIR, `${id}.wav`));
+     const i = b.indexOf(Buffer.from('data', 'ascii'), 12);
+     return b.subarray(i + 8, i + 8 + b.readUInt32LE(i + 4));
+ }
+ 
+ /** crude token overlap — enough to tell "heard it" from "heard something else" */
+ function overlap(a, b) {
+     const norm = (s) => new Set((s.toLowerCase().match(/[a-z]+/g) || []).filter((w) => w.length > 3));
+     const A = norm(a), B = norm(b);
+     if (!A.size) return 0;
+     let hit = 0;
+     for (const w of A) if (B.has(w)) hit++;
+     return hit / A.size;
+ }
+ 
+-console.log(`listener: ${LIVE_ROUTER_MODEL}\nvoice: Windows SAPI (local)\n`);
++console.log(`listener: ${LIVE_ROUTER_MODEL}\nvoice: Windows SAPI (local)\nroster: ${rosterLabel()}\nsample: ${SAMPLE.map((s) => s.id).join(', ')}\n`);
+ 
+ const router = new GeminiLiveRouter(() => KEY);
+ let state = 'idle';
+ const events = [];
+ router.on('status', (s) => { state = s.state; if (s.state !== 'connected') console.log(`   [${s.state}]${s.reason ? ' ' + s.reason : ''}`); });
+ router.on('question', (q) => events.push({ ...q, at: Date.now() }));
+ void router.start();
+ for (let i = 0; i < 200 && state !== 'connected'; i++) await sleep(200);
+ if (state !== 'connected') { console.log('FAILED to connect'); process.exit(1); }
+ 
+@@ -68,21 +70,21 @@ for (const item of SAMPLE) {
+     const before = events.length;
+     const pcm = pcmOf(item.id);
+     for (let o = 0; o < pcm.length; o += FRAME_BYTES) {
+         router.write(pcm.subarray(o, o + FRAME_BYTES), SR);
+         await sleep(FRAME_MS);
+     }
+     const spokeAt = Date.now();
+     for (let t = 0; t < 5000; t += FRAME_MS) { router.write(silence, SR); await sleep(FRAME_MS); }
+     const fired = events.slice(before);
+     const isCue = item.kind === 'screenshot';
+-    const isLong = item.level === 'long';
++    const isLong = item.level === 'long' || !!item.long;
+     // Best hearing over every fire: a long question sometimes fires once mid-clip on the
+     // scenario alone and again, whole, after the ask (2 of 18 long plays, 2026-09-08) —
+     // that is a pipeline question for the hour's own 'answered whole' row, not a voice
+     // defect, so a long item passes on ≥ 1 fire scored by its best event.
+     const ov = Math.max(0, ...fired.map((f) => overlap(item.q, f.question)));
+     rows.push({ id: item.id, isCue, isLong, n: fired.length, heard: fired[0]?.question ?? null, intent: fired[0]?.intent ?? null, ms: fired[0] ? fired[0].at - spokeAt : null, ov });
+     console.log(`  ${item.id.padEnd(4)} fired=${fired.length}${isCue ? ' (cue — firing is optional)' : ''}  overlap=${(ov * 100).toFixed(0)}%  ${fired[0] ? `+${fired[0].at - spokeAt}ms intent=${fired[0].intent}` : ''}`);
+     if (fired[0]) console.log(`        heard: "${fired[0].question}"`);
+     for (let t = 0; t < 1500; t += FRAME_MS) { router.write(silence, SR); await sleep(FRAME_MS); }
+ }
+diff --git a/electron/test/golden/interview60.cues.mjs b/electron/test/golden/interview60.cues.mjs
+index 96237fe..791429c 100644
+--- a/electron/test/golden/interview60.cues.mjs
++++ b/electron/test/golden/interview60.cues.mjs
+@@ -18,21 +18,21 @@
+  * Every failure is a log line: a render error, a display that could not spawn, an
+  * image that did not load (the display reports it) — an hour with nothing on screen
+  * must never be silent.
+  */
+ import fs from 'node:fs';
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+ import { spawn } from 'node:child_process';
+ import { createRequire } from 'node:module';
+ import { CODING } from './problems.coding.mjs';
+-import { INTERVIEW } from './interview60.questions.mjs';
++import { INTERVIEW } from './roster.mjs';
+ 
+ const HERE = path.dirname(fileURLToPath(import.meta.url));
+ // Resolved from the project root like harness.mjs does, so this can live anywhere in the tree.
+ const require = createRequire(path.join(HERE, '..', '..', '..', 'package.json'));
+ const OUT = path.join(HERE, 'interview60.cues');
+ const DISPLAY = path.join(HERE, 'interview60.cue-display.cjs');
+ const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+ 
+ /**
+  * One page with every shot of the problem, in two 1100 px columns when it has more
+diff --git a/electron/test/golden/interview60.flight.mjs b/electron/test/golden/interview60.flight.mjs
+index 6cf533c..0d69eea 100644
+--- a/electron/test/golden/interview60.flight.mjs
++++ b/electron/test/golden/interview60.flight.mjs
+@@ -30,20 +30,21 @@
+  *
+  * --dry-run logs every command it would run and executes none of them: the
+  * way to prove a scheduled task reaches this script with the right cwd, node
+  * and log file before trusting it with the hour. Scheduling: README,
+  * "Unattended flight".
+  */
+ import fs from 'node:fs';
+ import path from 'node:path';
+ import { spawn } from 'node:child_process';
+ import { fileURLToPath } from 'node:url';
++import { rosterLabel, ROSTER_NAME } from './roster.mjs';
+ 
+ export const LIVE_DEFAULT = 'gemini-3.1-flash-live-preview';
+ export const LIVE_FALLBACK = 'gemini-2.5-flash-native-audio-latest';
+ // The first is the app's answer model; the rest are comparison arms. Ids with a "/" run
+ // on Groq (answers.mjs; with a placeholder GROQ_API_KEY the pass exits 3 in seconds and
+ // the flight goes on without that file). Both Gemma arms are deliberately absent.
+ // gemma-4-26b-a4b-it: the 2026-09-08 probe leaked its planning text into the spoken
+ // answer and one answer ran 11 min to MAX_TOKENS. gemma-4-31b-it: 49, then 37, then 35
+ // acceptable of 52 across after7/8/9 under the frozen grader, with 4 answers degenerating
+ // into repeated tokens and 16 truncating mid-word, at 19.4s to first token. Re-measuring
+@@ -118,20 +119,23 @@ function moveAside(file, stamp) {
+     log(`ASIDE ${path.basename(file)} → ${path.basename(aside)}`);
+ }
+ 
+ async function main() {
+     const args = process.argv.slice(2);
+     const dry = args.includes('--dry-run');
+     const label = args.find((a) => !a.startsWith('--')) ?? 'after';
+     const startedAt = new Date().toISOString();
+     const stamp = startedAt.replace(/[:.]/g, '-').slice(0, 19);
+     log(`FLIGHT ${label} start${dry ? ' — DRY RUN, nothing is executed' : ''}   node ${process.version}   cwd ${PROJ}`);
++    // Which stimulus produced this folder. Without it a run folder is uninterpretable
++    // the moment a second roster exists.
++    log(`ROSTER ${rosterLabel()}`);
+     if (!fs.existsSync(path.join(PROJ, '.env'))) { log('ABORT no .env beside package.json — the probe and the passes read the Gemini key from it'); return 2; }
+ 
+     // 1. Which Live ear.
+     const probeExit = await run(['--env-file=.env', path.join(HERE, 'interview60.live-probe.cjs')], { dry });
+     const liveModel = dry ? LIVE_DEFAULT : chooseLiveModel(probeExit);
+     if (!liveModel) { log(`ABORT live probe exit ${probeExit}: no Gemini key reached the probe; nothing spent`); return 2; }
+     log(`LIVE  ${liveModel}${liveModel === LIVE_FALLBACK ? `   (probe exit ${probeExit}: 3.x never called the tool — its daily allowance is spent, or the session died)` : ''}`);
+     log(`STT   ${process.env.NATIVELY_STT_PROVIDER ?? "the app's saved provider"}${process.env.NATIVELY_STT_PROVIDER ? "   (NATIVELY_STT_PROVIDER; preflight checks the app's STT start line)" : ''}`);
+     const liveEnv = liveModel === LIVE_DEFAULT ? {} : { NATIVELY_LIVE_MODEL: liveModel };
+ 
+@@ -161,21 +165,21 @@ async function main() {
+     await run([path.join(HERE, 'interview60.chains.mjs')], { dry });
+     const chains = path.join(HERE, 'interview60.chains.json');
+     if (!dry && fs.existsSync(chains)) fs.copyFileSync(chains, path.join(runDir, 'interview60.chains.json'));
+ 
+     // 4. Judge exports: the hour's own answers, then each arm.
+     const judge = path.join(HERE, 'interview60.judge.mjs');
+     await run([judge, runDir, '--export'], { dry });
+     for (const f of answersFiles) await run([judge, runDir, '--answers', f, '--export'], { dry });
+ 
+     const done = {
+-        label, startedAt, finishedAt: new Date().toISOString(), liveModel, autoExit, runDir, answersFiles,
++        label, roster: ROSTER_NAME, rosterLabel: rosterLabel(), startedAt, finishedAt: new Date().toISOString(), liveModel, autoExit, runDir, answersFiles,
+         toGrade: ['interview60.judge.pairs.json', ...ANSWER_MODELS.map((m) => `interview60.judge.pairs.${m}.json`)],
+         next: 'grade each pairs file with its rubric into interview60.judge.verdicts[.<model>].json, then interview60.judge.mjs <run> [--answers <file>] --verdicts <that file>',
+     };
+     if (!dry) fs.writeFileSync(path.join(runDir, 'interview60.flight.done.json'), JSON.stringify(done, null, 1));
+     log(`DONE  ${label}   ${dry ? 'dry run complete' : 'wrote ' + path.join(runDir, 'interview60.flight.done.json')}`);
+     return 0;
+ }
+ 
+ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+     main().then((code) => process.exit(code)).catch((e) => { log(`FATAL ${e?.stack ?? e}`); process.exit(1); });
+diff --git a/electron/test/golden/interview60.metrics.mjs b/electron/test/golden/interview60.metrics.mjs
+index 7f4e8be..c64e67a 100644
+--- a/electron/test/golden/interview60.metrics.mjs
++++ b/electron/test/golden/interview60.metrics.mjs
+@@ -309,31 +309,31 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
+     const answered = items.filter((i) => i.answered).length;
+     // Ruling R31: a dispatched "answer" is not necessarily a delivered one —
+     // WhatToAnswerLLM can fail after the dispatch line was already logged
+     // (primary AND fallback both failing). delivered floors at 0 so a
+     // pathological run (more failures logged than answers this window
+     // attributes — a boundary/windowing artifact, not a real negative) never
+     // shows a negative number.
+     const answerFailures = count(/\[WhatToAnswerLLM\] Stream failed/g);
+     const delivered = Math.max(0, answered - answerFailures);
+     const raceLosses = items.filter((i) => i.raceLoss).length;
+-    const codingForSpoken = items.filter((i) => i.answered && i.routeCoding).length;
++    const codingForSpoken = spokenCodingRoutes(items);
+     // both detectors independently surfacing a chip for the same question —
+     // dispatches already folds in the dedupe (a suppressed/dropped source
+     // doesn't add to the count), so >1 here is exactly "two chips on screen".
+     const surfacedMulti = items.filter((i) => i.dispatches > 1).length;
+     const surfacedMax = items.length ? Math.max(...items.map((i) => i.dispatches)) : 0;
+     const extendsTotal = items.reduce((s, i) => s + (i.extended ?? 0), 0);
+     // Long design questions (level 'long'): answered whole when the dispatched text
+     // covers at least 80% of the scripted content words. The bar is 0.8 rather than
+     // 1.0 because the STT drops or respells a word or two even on a clean hearing.
+-    const longItems = items.filter((i) => i.level === 'long');
++    const longItems = items.filter((i) => i.level === 'long' || i.long);
+     const longs = longItems.length;
+     const longWhole = longItems.filter((i) => (i.coverage ?? 0) >= LONG_WHOLE_COVERAGE).length;
+ 
+     const complete = !!timeline.endedAt;
+     const durationMin = complete ? ((ts(timeline.endedAt) - timeline.startedMs) / 60000).toFixed(1) : null;
+ 
+     const detMs = items.map((i) => i.detectMs).filter((x) => x != null && x > -5000).sort((a, b) => a - b);
+     const detectP50 = pct(detMs, .5);
+     const detectP90 = pct(detMs, .9);
+ 
+@@ -370,29 +370,57 @@ export function computeRunFromFiles({ debugLog, diagLog, timelinePath, answersPa
+         heard, answered, delivered, answerFailures, answersToNobody, surfacedMax, surfacedMulti, extendsTotal, longs, longWhole,
+         caught, unverifiableWithSttUp, liveFragmentsDropped, cueAnswers, screenCaptures, heuristicChips, raceLosses,
+         sttCloses: stt.closes, lostUtterances: stt.lostUtterances.length, resolvedEmptyFinals: stt.resolvedEmptyFinals, fragmentChips: stt.finalsAfterReconnect.length,
+         coachingAnswers: stats.coachingBlobs, codingForSpoken, expiryLoops: stats.expired, liveReconnects: stats.reconnects,
+         detectP50, ttftP90, ttftSource, judge, pinned, budget,
+         // extra — feed the report's findings prose and tables; not part of the gate
+         detectP90, stats, stt, routes, redirects, hardFails, liveQ, orphanLive, cues, answersPass,
+     };
+ }
+ 
++/**
++ * The counting rows were absolute: delivered >= 50, heard >= 51, acceptable >= 47, all
++ * tuned to interview60's 52 items. Any other roster fails them on arithmetic — a FLAWLESS
++ * 40-item scenario50 hour failed all three — which would report "gate failed" for a
++ * perfect run and bury a real failure beside it.
++ *
++ * They are now the same PROPORTIONS of whatever roster ran, calibrated so interview60 is
++ * unchanged to the unit: 52 items still needs exactly 50, 51 and 47, so after7/8/9 stay
++ * comparable. `floor` rather than `ceil`, so the allowance ("at most one unheard") scales
++ * as an allowance rather than rounding up into a demand for perfection.
++ */
++const ROSTER = 52;
++const scaled = (n, of) => Math.floor((of * n) / ROSTER);
++
++/**
++ * Roster levels whose questions ARE coding questions, so a CODING route on them is correct.
++ * interview60 has none of these on a spoken item (its coding lives on screenshot cues);
++ * scenario50 asks 15 of its 50 mains as spoken coding or SQL.
++ */
++export const CODING_LEVELS = new Set(['coding', 'codingHeavy', 'sql']);
++
++/**
++ * Answered spoken questions routed CODING that are NOT coding questions — the misroutes.
++ * The earlier count took every coding route as a misroute, which would have failed a
++ * perfect scenario50 hour on its six S1+S2 coding/SQL questions.
++ */
++export const spokenCodingRoutes = (items) => items.filter((i) => i.answered && i.routeCoding && !CODING_LEVELS.has(i.level)).length;
++
+ export const GATE = [
+-    { key: 'answered', label: 'Answered hands-free', before: '26/52', pass: (m) => m.delivered >= 50 && m.answersToNobody === 0, show: (m) => `${m.delivered}/${m.answered} dispatched, ${m.answersToNobody} to nobody` },
+-    { key: 'heard', label: 'Heard by either detector', before: '51/52', pass: (m) => m.heard >= 51, show: (m) => `${m.heard}/${m.items.length}` },
++    { key: 'answered', label: 'Answered hands-free', before: '26/52', pass: (m) => m.delivered >= scaled(50, m.items.length) && m.answersToNobody === 0, show: (m) => `${m.delivered}/${m.answered} dispatched, ${m.answersToNobody} to nobody` },
++    { key: 'heard', label: 'Heard by either detector', before: '51/52', pass: (m) => m.heard >= scaled(51, m.items.length), show: (m) => `${m.heard}/${m.items.length}` },
+     { key: 'surfaced', label: 'Surfaced detections per question', before: '12 doubles, 1 invented', pass: (m) => m.surfacedMulti === 0 && m.answersToNobody === 0, show: (m) => `${m.surfacedMulti} doubles, ${m.extendsTotal} extended, ${m.caught} caught, ${m.answersToNobody} unclaimed` },
+     { key: 'stt', label: 'STT socket closes / lost utterances / fragment chips', before: '299 / 2 / 5', pass: (m) => m.sttCloses <= 5 && m.lostUtterances === 0 && m.fragmentChips === 0, show: (m) => `${m.sttCloses} / ${m.lostUtterances} (${m.resolvedEmptyFinals} resolved within 5 s) / ${m.fragmentChips}` },
+     { key: 'coaching', label: 'Technical questions answered via the coaching path', before: '25', pass: (m) => m.coachingAnswers === 0, show: (m) => String(m.coachingAnswers) },
+     { key: 'coding', label: 'Spoken questions routed CODING', before: '4 routes (2 of them screenshot cues)', pass: (m) => m.codingForSpoken === 0, show: (m) => `${m.codingForSpoken}, ${m.cueAnswers} cue answers, ${m.screenCaptures} captures` },
+     { key: 'expiry', label: 'Live expiry loops', before: '0', pass: (m) => m.expiryLoops === 0, show: (m) => String(m.expiryLoops) },
+-    { key: 'quality', label: 'Interview-acceptable answers (Opus 5 judge)', before: 'not graded', pass: (m) => !!m.judge && m.judge.wrong === 0 && m.judge.acceptable >= 47, show: (m) => m.judge ? `${m.judge.acceptable} acceptable, ${m.judge.weak} weak, ${m.judge.wrong} wrong of ${m.judge.n}${m.judge.errors ? `, ${m.judge.errors} errors` : ''}${m.judge.long?.n ? `; long ${m.judge.long.acceptable} of ${m.judge.long.n}` : ''}${m.judge.followup?.n ? `, follow-ups ${m.judge.followup.acceptable} of ${m.judge.followup.n}` : ''}` : 'not run' },
++    { key: 'quality', label: 'Interview-acceptable answers (Opus 5 judge)', before: 'not graded', pass: (m) => !!m.judge && m.judge.wrong === 0 && m.judge.acceptable >= scaled(47, m.judge.n), show: (m) => m.judge ? `${m.judge.acceptable} acceptable, ${m.judge.weak} weak, ${m.judge.wrong} wrong of ${m.judge.n}${m.judge.errors ? `, ${m.judge.errors} errors` : ''}${m.judge.long?.n ? `; long ${m.judge.long.acceptable} of ${m.judge.long.n}` : ''}${m.judge.followup?.n ? `, follow-ups ${m.judge.followup.acceptable} of ${m.judge.followup.n}` : ''}` : 'not run' },
+     // 2026-09-08 roster: a long design question counts as answered whole when the
+     // dispatched text (answer or extend) covers ≥ 80% of its scripted content words.
+     { key: 'long', label: 'Long questions answered whole', before: 'not in the roster', pass: (m) => m.longWhole === m.longs, show: (m) => m.longs ? `${m.longWhole} of ${m.longs} (dispatched text covers ≥ 80% of the question)` : 'none in the roster' },
+     { key: 'latency', label: 'Answer TTFT p90 · detect p50', before: '3.7 s (answer-only pass) · 4.1 s', pass: (m) => (m.ttftP90 ?? Infinity) <= 5000 && (m.detectP50 ?? Infinity) <= 5000, show: (m) => `${m.ttftP90 == null ? '—' : (m.ttftP90 / 1000).toFixed(1) + ' s'}${m.ttftSource === 'answer-only' ? ' (answer-only pass)' : ''} · ${m.detectP50 == null ? '—' : (m.detectP50 / 1000).toFixed(1) + ' s'}` },
+     { key: 'pinned', label: 'Answer prompt pinned to the dispatched question', before: 'not logged', pass: (m) => m.pinned.answers > 0 && m.pinned.legacy === 0 && m.pinned.missing === 0 && m.pinned.mismatched === 0, show: (m) => m.pinned.answers === 0 ? 'no answers' : m.pinned.legacy === m.pinned.answers ? 'not logged' : `${m.pinned.answers - m.pinned.legacy - m.pinned.missing - m.pinned.mismatched}/${m.pinned.answers} pinned, ${m.pinned.missing} missing, ${m.pinned.mismatched} mismatched${m.pinned.legacy ? `, ${m.pinned.legacy} legacy` : ''}` },
+     // Spec 2026-09-05 §3: the floor equals the limit, so a cut answer always has
+     // at least 80 words — `cutShort` is 0 by construction and non-zero only if
+     // the old 40-word floor is somehow back. `n` must cover the delivered answers
+     // (cue answers and coding routes emit no budget line, hence 0.9). p50 ≤ 100:
+     // the pre-budget raw median was 97, so the cut must still exist. max ≤ 130:
+diff --git a/electron/test/golden/interview60.metrics.test.ts b/electron/test/golden/interview60.metrics.test.ts
+index 1cf57fd..a465d10 100644
+--- a/electron/test/golden/interview60.metrics.test.ts
++++ b/electron/test/golden/interview60.metrics.test.ts
+@@ -1,17 +1,17 @@
+ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+ import fs from 'node:fs';
+ import os from 'node:os';
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+ // @ts-ignore — untyped ESM harness module
+-import { computeRun, computeRunFromFiles, evaluateGate, GATE } from './interview60.metrics.mjs';
++import { computeRun, computeRunFromFiles, evaluateGate, GATE, spokenCodingRoutes } from './interview60.metrics.mjs';
+ 
+ // @ts-ignore — import.meta is ESM-only; this file runs under vitest's ESM
+ // transform regardless of electron/tsconfig.json's CommonJS module target
+ const HERE = path.dirname(fileURLToPath(import.meta.url));
+ const BEFORE = path.join(HERE, 'interview60.runs', '2026-09-02-before');
+ const have = fs.existsSync(path.join(BEFORE, 'natively_debug.log'));
+ 
+ // computeRun(BEFORE) must NOT run at describe-body/collection time: skipIf only
+ // skips the it()s, and a describe body runs unconditionally during collection
+ // (proved in the isolation worktree, where interview60.runs/ is gitignored and
+@@ -512,44 +512,49 @@ describe('computeRun on a synthetic run (exercises the dispatch: branch and in-a
+         expect(m.budget).toEqual({ n: 3, over: 2, allowance: 2, cut: 1, cutShort: 1, p50: 90, max: 140 });
+         const row = evaluateGate(m).rows.find((r) => r.label === 'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)');
+         // n 3 >= floor(delivered 1 * 0.9) = 0, but cutShort 1 !== 0 and max 140 > 130.
+         expect(row.pass).toBe(false);
+         expect(row.value).toBe('3 answers, 2 over 80, 1 cut under 80, words p50 90 max 140');
+     });
+     it('the two new rows are the last two, so index-based rendering stays aligned', () => {
+         expect(GATE.slice(-2).map((g) => g.key)).toEqual(['pinned', 'budget']);
+     });
+ 
+-    it('evaluates the gate: everything fails except the (generously-thresholded) latency row', () => {
++    it('evaluates the gate: everything fails except the latency row and the roster-proportional heard row', () => {
+         const g = evaluateGate(m);
+         expect(g.pass).toBe(false);
+         const rows = Object.fromEntries(g.rows.map((r) => [r.label, r.pass]));
+         // delivered=1 is nowhere near >=50; answersToNobody=7 also fails it alone.
+         expect(rows['Answered hands-free']).toBe(false);
+-        // heard=5 is nowhere near >=51.
+-        expect(rows['Heard by either detector']).toBe(false);
++        // heard PASSES here, and that is correct: the row is now a proportion of the roster
++        // rather than a flat >=51, and this synthetic fixture heard everything it had. The
++        // old assertion was pinning the constant, not the behaviour. A truncated real flight
++        // still fails it — computeOffsets builds a timeline item per ROSTER entry, so items
++        // stays the full roster however early the hour died.
++        expect(rows['Heard by either detector']).toBe(true);
+         // surfacedMulti=1 and answersToNobody=7 are both nonzero (caught is
+         // informational now — Ruling R34 — and no longer part of this row).
+         expect(rows['Surfaced detections per question']).toBe(false);
+         // lostUtterances=1 and fragmentChips=1 are both nonzero (sttCloses=2 alone would pass).
+         expect(rows['STT socket closes / lost utterances / fragment chips']).toBe(false);
+         expect(rows['Technical questions answered via the coaching path']).toBe(false);
+         expect(rows['Spoken questions routed CODING']).toBe(false);
+         expect(rows['Live expiry loops']).toBe(false);
+         // ttftP90=3000ms and detectP50=1500ms are both <= the 5000ms gate.
+         expect(rows['Answer TTFT p90 · detect p50']).toBe(true);
+         const failed = g.rows.filter((r) => !r.pass).map((r) => r.label);
+         // pinned (8 legacy dispatches) and budget (cutShort 1, max 140 > 130)
+         // both fail here too — appended last, same as GATE itself.
+         expect(failed).toEqual([
+             'Answered hands-free',
+-            'Heard by either detector',
++            // 'Heard by either detector' is absent: see above — the row is proportional now
++            // and this fixture heard everything it had.
+             'Surfaced detections per question',
+             'STT socket closes / lost utterances / fragment chips',
+             'Technical questions answered via the coaching path',
+             'Spoken questions routed CODING',
+             'Live expiry loops',
+             'Interview-acceptable answers (Opus 5 judge)',
+             'Long questions answered whole',
+             'Answer prompt pinned to the dispatched question',
+             'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)',
+         ]);
+@@ -615,10 +620,82 @@ describe('GATE', () => {
+             'Live expiry loops',
+             'Interview-acceptable answers (Opus 5 judge)',
+             'Long questions answered whole',
+             'Answer TTFT p90 · detect p50',
+             // Spec 2026-09-04 §2/§4 (answer-what-was-asked) — appended last.
+             'Answer prompt pinned to the dispatched question',
+             'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)',
+         ]);
+     });
+ });
++
++
++/**
++ * The three counting rows carried absolute thresholds tuned to interview60's 52 items
++ * (delivered >= 50, heard >= 51, acceptable >= 47). A roster of any other size cannot
++ * reach them: a FLAWLESS scenario50 S1+S2 hour — 40 items, all heard, all answered, all
++ * graded acceptable — failed those three rows on arithmetic alone, which would have
++ * reported "gate failed" for a perfect run and buried any real failure beside it.
++ */
++describe('gate thresholds scale with the roster', () => {
++    /** A run with nothing wrong in it, at whatever roster size is asked for. */
++    const flawless = (items: number, gradeable: number) => ({
++        items: new Array(items).fill({}), delivered: items, answered: items, answersToNobody: 0, heard: items,
++        surfacedMulti: 0, extendsTotal: 0, caught: 0, sttCloses: 0, lostUtterances: 0, resolvedEmptyFinals: 0,
++        fragmentChips: 0, coachingAnswers: 0, codingForSpoken: 0, cueAnswers: 0, screenCaptures: 0, expiryLoops: 0,
++        judge: { n: gradeable, acceptable: gradeable, weak: 0, wrong: 0, errors: 0, long: { n: 0 }, followup: { n: 0 } },
++        longs: 0, longWhole: 0, ttftP90: 3000, detectP50: 4000,
++        pinned: { answers: items, legacy: 0, missing: 0, mismatched: 0 },
++        budget: { n: items, over: 0, cutShort: 0, p50: 90, max: 120 },
++    }) as any;
++
++    it('passes a flawless hour whatever the roster size', () => {
++        for (const [items, gradeable] of [[52, 52], [40, 20], [100, 50], [20, 10]]) {
++            const g = evaluateGate(flawless(items, gradeable));
++            expect(g.rows.filter((r) => !r.pass).map((r) => r.label), `roster of ${items}`).toEqual([]);
++        }
++    });
++
++    // interview60's own numbers must not move, or after7/8/9 stop being comparable.
++    it('keeps interview60 at exactly 50 delivered, 51 heard, 47 acceptable', () => {
++        const near = flawless(52, 52);
++        expect(evaluateGate({ ...near, delivered: 50 }).rows.find((r) => r.label === 'Answered hands-free')!.pass).toBe(true);
++        expect(evaluateGate({ ...near, delivered: 49 }).rows.find((r) => r.label === 'Answered hands-free')!.pass).toBe(false);
++        expect(evaluateGate({ ...near, heard: 51 }).rows.find((r) => r.label === 'Heard by either detector')!.pass).toBe(true);
++        expect(evaluateGate({ ...near, heard: 50 }).rows.find((r) => r.label === 'Heard by either detector')!.pass).toBe(false);
++        const q = (acceptable: number) => evaluateGate({ ...near, judge: { ...near.judge, acceptable, weak: 52 - acceptable } })
++            .rows.find((r) => r.label === 'Interview-acceptable answers (Opus 5 judge)')!.pass;
++        expect(q(47)).toBe(true);
++        expect(q(46)).toBe(false);
++    });
++
++    // Scaling must not become "anything passes": the same proportions still bite.
++    it('still fails a 40-item roster that misses too much', () => {
++        const g = evaluateGate({ ...flawless(40, 20), delivered: 30, heard: 30 });
++        const failed = g.rows.filter((r) => !r.pass).map((r) => r.label);
++        expect(failed).toContain('Answered hands-free');
++        expect(failed).toContain('Heard by either detector');
++    });
++});
++
++/**
++ * The 'Spoken questions routed CODING' row counted EVERY coding route on a spoken item as a
++ * misroute. That was right for interview60, where all coding lived on screenshot cues, but
++ * scenario50 asks 15 of its 50 mains as spoken coding/SQL — routing those CODING is correct
++ * and the row would have failed a perfect hour on them.
++ */
++describe('spokenCodingRoutes counts coding routes only on questions that are NOT coding questions', () => {
++    const item = (level: string, routeCoding = true) => ({ level, answered: true, routeCoding } as any);
++    it('excludes coding, codingHeavy and sql questions — routing those CODING is correct', () => {
++        expect(spokenCodingRoutes([item('coding'), item('codingHeavy'), item('sql')])).toBe(0);
++    });
++    it('still counts a verbal question routed CODING as the misroute it is', () => {
++        expect(spokenCodingRoutes([item('medium'), item('verbal'), item('design')])).toBe(3);
++    });
++    it('ignores unanswered items and non-coding routes, as before', () => {
++        expect(spokenCodingRoutes([{ level: 'medium', answered: false, routeCoding: true } as any, item('medium', false)])).toBe(0);
++    });
++    // interview60 has no spoken item with a coding level, so its count is unchanged.
++    it('leaves an interview60-shaped item set untouched', () => {
++        expect(spokenCodingRoutes([item('easy'), item('hard'), item('long'), item('followup')])).toBe(4);
++    });
++});
+diff --git a/electron/test/golden/interview60.run.mjs b/electron/test/golden/interview60.run.mjs
+index 9e8e351..f8160da 100644
+--- a/electron/test/golden/interview60.run.mjs
++++ b/electron/test/golden/interview60.run.mjs
+@@ -19,27 +19,27 @@
+  * can stop, rebuild and relaunch the app itself. Preflight still runs right
+  * before the hour because the audio chain is what fails silently.
+  * NATIVELY_STT_PROVIDER=<name> makes the app run its STT on that provider for
+  * the launch (dev builds only) and makes preflight verify it.
+  */
+ import fs from 'fs';
+ import path from 'path';
+ import { execFileSync } from 'child_process';
+ import { spawn } from 'child_process';
+ import { fileURLToPath } from 'url';
+-import { INTERVIEW } from './interview60.questions.mjs';
++import { INTERVIEW, TTS_LOCAL_DIR, WAV_NAME, rosterLabel } from './roster.mjs';
+ import { logSize as libLogSize, logSince as libLogSince, waitForLogLines, snapshotRun, sleep as libSleep } from './interview60.lib.mjs';
+ import { computeRun, computeRunFromFiles, evaluateGate } from './interview60.metrics.mjs';
+ 
+ const HERE = path.dirname(fileURLToPath(import.meta.url));
+ const PROJ = path.resolve(HERE, '../../..');
+-const TTS_DIR = path.join(HERE, 'interview60-tts-local');
++const TTS_DIR = path.join(HERE, TTS_LOCAL_DIR);
+ const DEBUG_LOG = path.join(PROJ, 'natively_debug.log');
+ const DIAG_LOG = path.join(PROJ, 'verbal-diag.log');
+ const TIMELINE = path.join(HERE, 'interview60.timeline.json');
+ const REPORT = path.join(HERE, 'interview60.report.md');
+ const RUNS_DIR = path.join(HERE, 'interview60.runs');
+ const PID_FILE = path.join(RUNS_DIR, 'app.pid');
+ const ANSWERS = path.join(HERE, 'interview60.answers.json');
+ const CHAINS = path.join(HERE, 'interview60.chains.json');
+ // Written by interview60.cues.mjs next to the timeline: the pages shown and whether each image loaded.
+ const CUES_LOG = path.join(HERE, 'interview60.cues.log');
+@@ -66,31 +66,31 @@ const now = () => new Date().toISOString();
+  * capture hot. Verified: discrete clips -> 0 detections; same clips inside one
+  * continuous file -> 3/3 detected.
+  */
+ function playWav(wav) {
+     if (!fs.existsSync(wav)) throw new Error(`missing wav ${wav}`);
+     execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+         `(New-Object Media.SoundPlayer ${JSON.stringify(wav)}).PlaySync()`],
+         { stdio: 'pipe', timeout: 120 * 60 * 1000 }); // the roster runs ~90 min since the long questions
+ }
+ 
+-/** Byte offset of each item inside interview60.wav, so log events can be attributed. */
++/** Byte offset of each item inside the roster WAV, so log events can be attributed. */
+ function computeOffsets() {
+     const BYTES_PER_SEC = 24000 * 2;
+     let t = 0;
+     return INTERVIEW.map((item) => {
+         const b = fs.readFileSync(path.join(TTS_DIR, `${item.id}.wav`));
+         const i = b.indexOf(Buffer.from('data', 'ascii'), 12);
+         const clipSecs = b.readUInt32LE(i + 4) / BYTES_PER_SEC;
+         const startSec = t;
+         t += clipSecs + item.gapMs / 1000;
+-        return { id: item.id, level: item.level, topic: item.topic, kind: item.kind ?? 'spoken', q: item.q, startSec, clipSecs, ...(item.problem ? { problem: item.problem } : {}), ...(item.chain ? { chain: item.chain } : {}) };
++        return { id: item.id, level: item.level, topic: item.topic, kind: item.kind ?? 'spoken', q: item.q, startSec, clipSecs, ...(item.problem ? { problem: item.problem } : {}), ...(item.chain ? { chain: item.chain } : {}), ...(item.long ? { long: true } : {}) };
+     });
+ }
+ 
+ async function modelAlive(model) {
+     try {
+         const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+             method: 'POST',
+             headers: { 'content-type': 'application/json', 'x-goog-api-key': KEY },
+             body: JSON.stringify({ contents: [{ parts: [{ text: 'hi' }] }], generationConfig: { maxOutputTokens: 1 } }),
+         });
+@@ -233,30 +233,30 @@ async function probe() {
+ // ── PREFLIGHT ──────────────────────────────────────────────────────────────
+ async function preflight() {
+     const fail = [];
+     const ok = (label, good, detail = '') => {
+         console.log(`  ${good ? 'PASS' : 'FAIL'}  ${label}${detail ? '   ' + detail : ''}`);
+         if (!good) fail.push(label);
+     };
+     console.log(`PREFLIGHT  ${now()}\n`);
+ 
+     const clips = INTERVIEW.filter((i) => fs.existsSync(path.join(TTS_DIR, `${i.id}.wav`))).length;
+-    ok('all 55 clips present', clips === INTERVIEW.length, `${clips}/${INTERVIEW.length}`);
++    ok('all clips present', clips === INTERVIEW.length, `${clips}/${INTERVIEW.length}`);
+ 
+     const s1 = await modelAlive('gemini-3.1-flash-lite');
+     ok('gemini-3.1-flash-lite answering', s1 === 200, `HTTP ${s1}`);
+     const s2 = await modelAlive('gemini-3.5-flash-lite');
+     ok('gemini-3.5-flash-lite fallback', s2 === 200, `HTTP ${s2}`);
+ 
+     ok('Electron app running', electronRunning());
+ 
+-    ok('interview60.wav built', fs.existsSync(path.join(HERE, 'interview60.wav')));
++    ok(`${WAV_NAME} built`, fs.existsSync(path.join(HERE, WAV_NAME)));
+ 
+     // The real check: play a CONTINUOUS probe aloud and require the app's OWN
+     // log to show it heard a question. A single clip is not enough — it proves
+     // nothing about turn closure, and discrete clips are exactly the case that
+     // silently detects nothing (see playWav).
+     const probe = path.join(HERE, 'probe-continuous.wav');
+     const before = logSize(DEBUG_LOG);
+     console.log('\n  playing a 34s continuous probe to prove the audio chain...');
+     let playErr = null;
+     try { playWav(probe); } catch (e) { playErr = e.message; }
+@@ -296,23 +296,23 @@ async function appPass() {
+     const t0 = Date.now();
+     const items = computeOffsets().map((o) => ({ ...o, playedAt: t0 + Math.round(o.startSec * 1000) }));
+     const timeline = { startedAt: now(), startedMs: t0, startDebug, startDiag, items };
+     fs.writeFileSync(TIMELINE, JSON.stringify(timeline, null, 1));
+     // Screenshot cues: a detached scheduler shows each cue's problem page on the
+     // primary display while the cue plays (interview60.cues.mjs).
+     const cues = spawn(process.execPath, [path.join(HERE, 'interview60.cues.mjs'), 'schedule', TIMELINE], { detached: true, stdio: 'ignore' });
+     cues.on('error', (e) => console.warn(`  cue scheduler failed to spawn: ${e.message} — the screenshot cues will have nothing on screen`));
+     cues.unref();
+ 
+-    console.log(`APP PASS  ${now()}   ${INTERVIEW.length} items as ONE continuous file, ~60 min`);
++    console.log(`APP PASS  ${now()}   ${rosterLabel()} as ONE continuous file`);
+     console.log('  (single PlaySync — do not interrupt; the machine must stay audible)\n');
+-    playWav(path.join(HERE, 'interview60.wav'));
++    playWav(path.join(HERE, WAV_NAME));
+ 
+     timeline.endedAt = now();
+     timeline.endDebug = logSize(DEBUG_LOG);
+     timeline.endDiag = logSize(DIAG_LOG);
+     fs.writeFileSync(TIMELINE, JSON.stringify(timeline, null, 1));
+     console.log(`\n  done ${timeline.endedAt}`);
+     console.log(`  debug log grew ${timeline.endDebug - startDebug} bytes, diag ${timeline.endDiag - startDiag}`);
+ }
+ 
+ // ── REPORT ─────────────────────────────────────────────────────────────────
+diff --git a/electron/test/golden/roster.mjs b/electron/test/golden/roster.mjs
+new file mode 100644
+index 0000000..a18e9df
+--- /dev/null
++++ b/electron/test/golden/roster.mjs
+@@ -0,0 +1,109 @@
++/**
++ * Which question bank the harness runs, and where that bank's audio lives.
++ *
++ * Every consumer (build-audio, calibrate-audio, run, answers, cues) imports the
++ * roster from HERE rather than from a question file directly, so one env var
++ * moves the whole hour to a different set:
++ *
++ *   NATIVELY_ROSTER=scenario50            the 5-scenario AI/ML platform screen
++ *   NATIVELY_ROSTER=scenario50 NATIVELY_SCENARIOS=S1,S2   just those scenarios
++ *   (unset)                               interview60, exactly as before
++ *
++ * interview60 stays the DEFAULT on purpose: after7/after8/after9 are only
++ * comparable to each other because the stimulus never moved, and an env var that
++ * silently changed it would end that comparability without anyone noticing.
++ *
++ * THE AUDIO PATHS MOVE WITH THE ROSTER, and that is not cosmetic. The local TTS
++ * builder caches clips by item id and returns early when the file already exists;
++ * two rosters sharing a directory would mean a stale clip is spoken instead of
++ * the question you think you are asking, for a whole hour, silently. Separate
++ * directories make that impossible even if ids ever did collide.
++ */
++import { INTERVIEW as INTERVIEW60 } from './interview60.questions.mjs';
++import { SCENARIO50 } from './scenario50.questions.mjs';
++
++const ROSTERS = {
++    interview60: { items: INTERVIEW60, ttsLocal: 'interview60-tts-local', ttsGemini: 'interview60-tts', wav: 'interview60.wav' },
++    scenario50: { items: SCENARIO50, ttsLocal: 'scenario50-tts-local', ttsGemini: 'scenario50-tts', wav: 'scenario50.wav' },
++};
++
++// Blank counts as unset. `NATIVELY_ROSTER=` is how a shell or a scheduled task
++// clears the variable, and `??` alone would take the empty string as a name and
++// abort the hour on it.
++export const ROSTER_NAME = process.env.NATIVELY_ROSTER?.trim() || 'interview60';
++
++const chosen = ROSTERS[ROSTER_NAME];
++if (!chosen) {
++    throw new Error(`NATIVELY_ROSTER=${ROSTER_NAME} is not a roster. Known: ${Object.keys(ROSTERS).join(', ')}`);
++}
++
++/**
++ * An optional scenario subset, for rosters that have scenarios. The full
++ * scenario50 set is 2.8 hours of wall clock; two scenarios is a normal hour.
++ * A name that matches nothing is a typo that would otherwise run a SHORTER
++ * hour and look like a successful flight, so it throws.
++ */
++const WANTED_SCENARIOS = (process.env.NATIVELY_SCENARIOS ?? '').split(',').map((s) => s.trim()).filter(Boolean);
++
++function subset(items) {
++    const want = WANTED_SCENARIOS;
++    if (!want.length) return items;
++    const have = new Set(items.map((i) => i.scenario).filter(Boolean));
++    const missing = want.filter((w) => !have.has(w));
++    if (missing.length) {
++        throw new Error(`NATIVELY_SCENARIOS names ${missing.join(', ')}, which ${ROSTER_NAME} does not have. Known: ${[...have].join(', ') || '(this roster has no scenarios)'}`);
++    }
++    return items.filter((i) => want.includes(i.scenario));
++}
++
++/**
++ * The clips the audio calibration gate proves before an hour is committed. Chosen for
++ * RISK, not coverage: the renderings most likely to be misheard, plus the extremes of
++ * clip length. A sample of easy clips would pass and prove nothing.
++ */
++const SAMPLES = {
++    // a short definition, a design answer, a debugging one, the screenshot cue, and the
++    // two longest — the clips most likely to be split into several finals.
++    interview60: ['W02', 'M02', 'H03', 'C01', 'L01', 'L04'],
++    // S1Q04 and S2Q05 speak a code identifier aloud ("evaluate top k", "select context")
++    // — the transform this roster invented, and the one most likely to be misheard.
++    // S1Q06 and S5Q04 are SQL, full of table and column names. S2Q01 is the slowest clip
++    // rendered anywhere (1.55 w/s). S2Q02 reads CV metrics as numerals ("72.4 percent").
++    scenario50: ['S1Q04', 'S1Q06', 'S2Q01', 'S2Q02', 'S2Q05', 'S5Q04'],
++};
++
++/**
++ * The sampled items, resolved against the roster. A named id that is not in the roster
++ * throws: silently sampling five clips instead of six would let the gate pass on a set
++ * it never heard.
++ */
++export function calibrationSample() {
++    const ids = SAMPLES[ROSTER_NAME] ?? [];
++    if (!ids.length) throw new Error(`no calibration sample defined for roster ${ROSTER_NAME}`);
++    return ids.map((id) => {
++        const item = chosen.items.find((x) => x.id === id);
++        if (!item) throw new Error(`calibration sample names ${id}, which is not in roster ${ROSTER_NAME}`);
++        return item;
++    });
++}
++
++/** Every item in the selected roster, before any scenario subset. */
++export const ROSTER_ITEMS = chosen.items;
++
++/** The ordered question bank, exactly the shape interview60.questions.mjs exports. */
++export const INTERVIEW = subset(chosen.items);
++
++/** Spoken items only — what the harness scores. Screenshot cues are operator-only. */
++export const SPOKEN = INTERVIEW.filter((x) => x.kind !== 'screenshot');
++
++export const TTS_LOCAL_DIR = chosen.ttsLocal;
++export const TTS_GEMINI_DIR = chosen.ttsGemini;
++export const WAV_NAME = chosen.wav;
++
++/**
++ * One line naming the stimulus, for the top of a run log — so a flight says what
++ * it ran. Built from the selection made at load, never re-read from the
++ * environment: the label has to describe the roster that is actually playing.
++ */
++export const rosterLabel = () =>
++    `${ROSTER_NAME}${WANTED_SCENARIOS.length ? ` [${WANTED_SCENARIOS.join(', ')}]` : ''}  ${INTERVIEW.length} items`;
+diff --git a/electron/test/golden/roster.test.ts b/electron/test/golden/roster.test.ts
+new file mode 100644
+index 0000000..ed1252e
+--- /dev/null
++++ b/electron/test/golden/roster.test.ts
+@@ -0,0 +1,97 @@
++import { describe, it, expect, afterEach, vi } from 'vitest';
++
++/**
++ * roster.mjs reads the environment once, at module load, so every case has to
++ * reset the module registry and re-import. That is also how the harness sees it:
++ * one process, one roster, decided before anything is spent.
++ */
++const VARS = ['NATIVELY_ROSTER', 'NATIVELY_SCENARIOS'] as const;
++
++async function load(env: Partial<Record<(typeof VARS)[number], string>>) {
++    vi.resetModules();
++    // DELETE rather than assign undefined: process.env coerces, so assigning
++    // undefined stores the literal string "undefined" and every case would test
++    // the unknown-roster path instead of the one it names.
++    const saved = Object.fromEntries(VARS.map((v) => [v, process.env[v]]));
++    for (const v of VARS) delete process.env[v];
++    Object.assign(process.env, env);
++    try {
++        return await import('./roster.mjs');
++    } finally {
++        for (const v of VARS) {
++            if (saved[v] === undefined) delete process.env[v];
++            else process.env[v] = saved[v];
++        }
++    }
++}
++
++afterEach(() => vi.resetModules());
++
++describe('roster selection', () => {
++    it('defaults to interview60 with its own audio paths, so after7/8/9 stay comparable', async () => {
++        const r = await load({});
++        expect(r.ROSTER_NAME).toBe('interview60');
++        expect(r.INTERVIEW).toHaveLength(79);
++        expect(r.INTERVIEW[0].id).toBe('W01');
++        expect(r.WAV_NAME).toBe('interview60.wav');
++        expect(r.TTS_LOCAL_DIR).toBe('interview60-tts-local');
++    });
++
++    it('treats a blank NATIVELY_ROSTER as unset — clearing the variable must not abort the hour', async () => {
++        const r = await load({ NATIVELY_ROSTER: '  ' });
++        expect(r.ROSTER_NAME).toBe('interview60');
++    });
++
++    it('switches the questions AND the audio directory together', async () => {
++        const i60 = await load({});
++        const s50 = await load({ NATIVELY_ROSTER: 'scenario50' });
++        expect(s50.INTERVIEW).toHaveLength(100);
++        expect(s50.INTERVIEW[0].id).toBe('S1Q01');
++        // The local TTS builder caches clips by id and returns early when the file
++        // exists. Sharing a directory would mean a stale clip is spoken instead of
++        // the question you think you are asking — for an hour, with no error.
++        expect(s50.TTS_LOCAL_DIR).not.toBe(i60.TTS_LOCAL_DIR);
++        expect(s50.TTS_GEMINI_DIR).not.toBe(i60.TTS_GEMINI_DIR);
++        expect(s50.WAV_NAME).not.toBe(i60.WAV_NAME);
++    });
++
++    it('restricts to the named scenarios, in roster order', async () => {
++        const r = await load({ NATIVELY_ROSTER: 'scenario50', NATIVELY_SCENARIOS: 'S1, S2' });
++        expect(r.INTERVIEW).toHaveLength(40);
++        expect(r.INTERVIEW[0].id).toBe('S1Q01');
++        expect(r.INTERVIEW.at(-1)!.id).toBe('S2Q10F');
++        expect(r.rosterLabel()).toContain('S1, S2');
++    });
++
++    it('refuses an unknown roster rather than running something else', async () => {
++        await expect(load({ NATIVELY_ROSTER: 'scenario_50' })).rejects.toThrow(/is not a roster/);
++    });
++
++    // The dangerous shape: a typo'd scenario would otherwise run a SHORTER hour and
++    // look like a flight that simply had fewer questions.
++    it('refuses a scenario the roster does not have', async () => {
++        await expect(load({ NATIVELY_ROSTER: 'scenario50', NATIVELY_SCENARIOS: 'S1,S9' })).rejects.toThrow(/S9/);
++        await expect(load({ NATIVELY_SCENARIOS: 'S1' })).rejects.toThrow(/no scenarios/);
++    });
++});
++
++describe('scenario50 as a stimulus', () => {
++    it('is the long-question set: every main has one follow-up, and 26 mains split across finals', async () => {
++        const { INTERVIEW } = await load({ NATIVELY_ROSTER: 'scenario50' });
++        const mains = INTERVIEW.filter((x: any) => x.level !== 'followup');
++        const follow = INTERVIEW.filter((x: any) => x.level === 'followup');
++        expect(mains).toHaveLength(50);
++        expect(follow).toHaveLength(50);
++        expect(new Set(follow.map((f: any) => f.chain)).size).toBe(50);
++        // 26 is measured, not chosen: it is how many mains reach LONG_WORDS. interview60
++        // reaches that bar 6 times in 76, which is why it could never settle the question.
++        expect(INTERVIEW.filter((x: any) => x.long)).toHaveLength(26);
++    });
++
++    it('cannot collide with interview60 ids — a shared id would speak the wrong question', async () => {
++        const i60 = await load({});
++        const s50 = await load({ NATIVELY_ROSTER: 'scenario50' });
++        const old = new Set(i60.INTERVIEW.map((x: any) => x.id));
++        expect(s50.INTERVIEW.filter((x: any) => old.has(x.id))).toEqual([]);
++    });
++});
+diff --git a/electron/test/golden/scenario50.questions.mjs b/electron/test/golden/scenario50.questions.mjs
+new file mode 100644
+index 0000000..80da6eb
+--- /dev/null
++++ b/electron/test/golden/scenario50.questions.mjs
+@@ -0,0 +1,503 @@
++/**
++ * Scenario 50 — a five-scenario screen for an AI/ML platform role, as one ordered
++ * question bank. Verbatim source: `scenario50.source.md`.
++ *
++ * Same shape as `interview60.questions.mjs`, so the harness reads it unchanged
++ * (`roster.mjs` picks which one). Two things are deliberately different:
++ *
++ *   1. The questions are far longer. Measured: this set's main questions run a
++ *      median of 40 words and 26 of 50 reach 40 or more; interview60's spoken
++ *      items run a median of 14 and only 6 of 76 reach 40. Past ~40 words
++ *      Deepgram closes the question as several finals and the reconciler has to
++ *      corroborate against the joined window — the case interview60 could only
++ *      exercise 6 times, and this set exercises 26.
++ *   2. Every question has exactly one follow-up (`chain`), so the extend path
++ *      is exercised 50 times rather than 18.
++ *
++ * WHAT THE RENDERING CHANGES, and why. `q` is what the voice SAYS; the written
++ * form is in scenario50.source.md. Three transforms:
++ *
++ *   - Bracketed class labels ([Coding · Medium]) move to `level` — an
++ *     interviewer does not read them aloud.
++ *   - Code identifiers are spoken, not spelled: `evaluate_top_k(y_true, scores, k)`
++ *     becomes "evaluate top k, taking true labels, scores and k". SAPI reads an
++ *     underscore aloud, and an hour of "evaluate underscore top underscore k"
++ *     would measure the TTS, not the pipeline.
++ *   - Numerals stay numerals (SAPI speaks them correctly) except where a
++ *     hyphenated construct would be mangled: "top-5%" -> "the top 5 percent".
++ *
++ * `long` is DERIVED, never hand-written: a question is long when it reaches
++ * LONG_WORDS words. It was hand-written first, and the check found 54 of the 100
++ * flags wrong — a flag maintained by hand beside 100 questions will be wrong again.
++ * `interview60` encodes the same fact as `level: 'long'`; this set cannot, because
++ * `level` carries the question's class.
++ *
++ * IDS NEVER COLLIDE WITH interview60. The local TTS builder caches clips by id
++ * and returns early when the file exists, so a shared id would silently speak
++ * the OTHER roster's question for a whole hour. S1Q01-style ids cannot collide
++ * with W/M/C/H/L, and this roster renders into its own TTS directory besides.
++ */
++
++export const SCENARIOS = {
++    S1: 'Churn prediction',
++    S2: 'Document intelligence / RAG',
++    S3: 'Python AI gateway',
++    S4: 'Inference on Kubernetes',
++    S5: 'Retail AI product',
++};
++
++export const TOPICS = Object.values(SCENARIOS);
++
++/**
++ * Silence AFTER each question, by class. Derived from interview60's measured
++ * gaps: its `easy` items got 45-50s, `long` design 95s, screenshot coding 150s.
++ * Every question here is at least as demanding as an interview60 `medium`, so
++ * nothing is below 60s.
++ */
++export const GAP = {
++    verbal: 60_000,      // a short definition, but still two sentences
++    reasoning: 75_000,   // requires an argument, not a recall
++    coding: 150_000,     // spoken coding: state the signature, then the body
++    codingHeavy: 180_000,
++    sql: 150_000,
++    design: 150_000,
++    cloud: 90_000,
++    cloudHeavy: 120_000,
++    followup: 60_000,
++};
++
++/** Words in a question, counted the way the pipeline counts them. */
++export const wordsOf = (q) => (q.match(/[A-Za-z0-9']+/g) ?? []).length;
++
++/** At or above this many words, Deepgram closes the question as several finals. */
++export const LONG_WORDS = 40;
++
++/** @type {{id:string,level:string,topic:string,q:string,gapMs:number,chain?:string,scenario:string}[]} */
++const RAW = [
++    // ── Scenario 1 — Defend and extend your churn prediction system ───────────
++    {
++        id: 'S1Q01', level: 'verbal', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.verbal,
++        q: "Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the production constraints, and what baseline you would compare it against.",
++    },
++    {
++        id: 'S1Q01F', level: 'followup', chain: 'S1Q01', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.followup,
++        q: "Under what conditions would you prefer logistic regression, a neural network, or a rules-based approach?",
++    },
++    {
++        id: 'S1Q02', level: 'reasoning', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.reasoning,
++        q: "Can you reconcile the metrics on your CV? Your CV reports a 9.5 percent churn rate, a top 5 percent risk band capturing 30 percent of churners, and 60 percent precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
++    },
++    {
++        id: 'S1Q02F', level: 'followup', chain: 'S1Q02', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.followup,
++        q: "What can you conclude from a PR AUC of 0.38 and an ROC AUC of 0.88, and what else would you need before deciding the model is useful?",
++    },
++    {
++        id: 'S1Q03', level: 'reasoning', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.reasoning,
++        q: "Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?",
++    },
++    {
++        id: 'S1Q03F', level: 'followup', chain: 'S1Q03', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.followup,
++        q: "Why might targeting the highest-risk customers be less profitable than targeting the customers with the largest estimated treatment effect?",
++    },
++    {
++        id: 'S1Q04', level: 'coding', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.coding,
++        q: "Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.",
++    },
++    {
++        id: 'S1Q04F', level: 'followup', chain: 'S1Q04', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.followup,
++        q: "How would you reduce the sorting cost for millions of customers while preserving the tie rule?",
++    },
++    {
++        id: 'S1Q05', level: 'codingHeavy', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.codingHeavy,
++        q: "Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.",
++    },
++    {
++        id: 'S1Q05F', level: 'followup', chain: 'S1Q05', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.followup,
++        q: "Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout?",
++    },
++    {
++        id: 'S1Q06', level: 'sql', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.sql,
++        q: "Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.",
++    },
++    {
++        id: 'S1Q06F', level: 'followup', chain: 'S1Q06', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.followup,
++        q: "How would you index those tables, and what changes if historical records can be corrected after ingestion?",
++    },
++    {
++        id: 'S1Q07', level: 'design', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.design,
++        q: "Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.",
++    },
++    {
++        id: 'S1Q07F', level: 'followup', chain: 'S1Q07', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.followup,
++        q: "A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions?",
++    },
++    {
++        id: 'S1Q08', level: 'design', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.design,
++        q: "Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.",
++    },
++    {
++        id: 'S1Q08F', level: 'followup', chain: 'S1Q08', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.followup,
++        q: "How could repeatedly training on customers affected by previous campaigns introduce bias?",
++    },
++    {
++        id: 'S1Q09', level: 'cloud', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.cloud,
++        q: "Translate your AWS experience into an Azure deployment: describe an Azure implementation of that churn platform, covering object storage, training, model artifacts, container images, online inference, scheduling, identity, and monitoring, and explain the operational reasons for your choices.",
++    },
++    {
++        id: 'S1Q09F', level: 'followup', chain: 'S1Q09', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.followup,
++        q: "Which workload would you put on Azure Machine Learning managed endpoints, which on Azure App Service, and which on AKS, and why?",
++    },
++    {
++        id: 'S1Q10', level: 'cloud', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.cloud,
++        q: "Secure the churn platform without embedded credentials: how would your inference service access the model artifacts and PostgreSQL using Azure identity and networking controls? Explain the authentication, the authorization, how you handle secrets where that is unavoidable, and how you separate environments.",
++    },
++    {
++        id: 'S1Q10F', level: 'followup', chain: 'S1Q10', scenario: 'S1', topic: SCENARIOS.S1, gapMs: GAP.followup,
++        q: "The application receives an authorization error after deployment. How would you distinguish an identity problem from a permissions problem or a network problem?",
++    },
++
++    // ── Scenario 2 — Defend and scale your document intelligence platform ─────
++    {
++        id: 'S2Q01', level: 'verbal', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.verbal,
++        q: "Explain your RAG pipeline precisely: walk through ingestion, parsing, chunking, embedding, retrieval, reranking, context assembly, and generation, and map those stages to your document intelligence experience.",
++    },
++    {
++        id: 'S2Q01F', level: 'followup', chain: 'S2Q01', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.followup,
++        q: "Which of those stages can cause a correct source document to produce an incorrect answer?",
++    },
++    {
++        id: 'S2Q02', level: 'reasoning', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.reasoning,
++        q: "Defend the improvements reported on your CV: you report extraction F1 increasing from 72.4 percent to 95.4 percent, hallucinations decreasing by 84 percent, and multi-hop accuracy reaching 92 percent. For each of those metrics, define the unit of evaluation, the denominator, how the dataset was constructed, and the uncertainty.",
++    },
++    {
++        id: 'S2Q02F', level: 'followup', chain: 'S2Q02', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.followup,
++        q: "What ablations would separate the contributions of OCR, classification, retrieval, prompting, and agent orchestration, and how would you check for LLM judge bias?",
++    },
++    {
++        id: 'S2Q03', level: 'reasoning', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.reasoning,
++        q: "When does an agent justify its complexity? Consider a question that requires evidence from three documents, and compare a fixed retrieval workflow, query decomposition, and an agent that chooses tools dynamically.",
++    },
++    {
++        id: 'S2Q03F', level: 'followup', chain: 'S2Q03', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.followup,
++        q: "What stopping conditions, budgets, and failure policies would prevent loops and unnecessary tool calls?",
++    },
++    {
++        id: 'S2Q04', level: 'coding', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.coding,
++        q: "Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.",
++    },
++    {
++        id: 'S2Q04F', level: 'followup', chain: 'S2Q04', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.followup,
++        q: "Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source?",
++    },
++    {
++        id: 'S2Q05', level: 'coding', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.coding,
++        q: "Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.",
++    },
++    {
++        id: 'S2Q05F', level: 'followup', chain: 'S2Q05', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.followup,
++        q: "Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies.",
++    },
++    {
++        id: 'S2Q06', level: 'codingHeavy', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.codingHeavy,
++        q: "Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.",
++    },
++    {
++        id: 'S2Q06F', level: 'followup', chain: 'S2Q06', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.followup,
++        q: "Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically?",
++    },
++    {
++        id: 'S2Q07', level: 'design', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.design,
++        q: "Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.",
++    },
++    {
++        id: 'S2Q07F', level: 'followup', chain: 'S2Q07', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.followup,
++        q: "A user loses access to a document while a query is running. Where and when must authorization be checked?",
++    },
++    {
++        id: 'S2Q08', level: 'design', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.design,
++        q: "Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
++    },
++    {
++        id: 'S2Q08F', level: 'followup', chain: 'S2Q08', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.followup,
++        q: "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
++    },
++    {
++        id: 'S2Q09', level: 'cloud', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.cloud,
++        q: "Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.",
++    },
++    {
++        id: 'S2Q09F', level: 'followup', chain: 'S2Q09', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.followup,
++        q: "How would your design change if the documents and their processing had to remain within an approved region?",
++    },
++    {
++        id: 'S2Q10', level: 'cloud', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.cloud,
++        q: "Make ingestion recoverable under duplicate delivery: suppose queue messages may arrive more than once, and workers may crash after writing embeddings but before acknowledging a message. How would you use Azure messaging and durable state to make the processing safe to repeat?",
++    },
++    {
++        id: 'S2Q10F', level: 'followup', chain: 'S2Q10', scenario: 'S2', topic: SCENARIOS.S2, gapMs: GAP.followup,
++        q: "How would you handle poison documents, dead-letter replay, and a delete event racing with an older update?",
++    },
++
++    // ── Scenario 3 — Build a production Python AI gateway ─────────────────────
++    {
++        id: 'S3Q01', level: 'verbal', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.verbal,
++        q: "What does async actually buy you? Explain what happens when an async FastAPI endpoint calls a blocking HTTP client, or performs expensive CPU work.",
++    },
++    {
++        id: 'S3Q01F', level: 'followup', chain: 'S3Q01', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.followup,
++        q: "When would you use asynchronous I/O, a thread pool, separate processes, or an external worker?",
++    },
++    {
++        id: 'S3Q02', level: 'reasoning', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.reasoning,
++        q: "Define a useful latency contract: an AI endpoint has a p50 latency of 400 milliseconds and a p99 latency of 8 seconds. Explain why that matters, and how you would separate gateway time, queueing, retrieval, and generation.",
++    },
++    {
++        id: 'S3Q02F', level: 'followup', chain: 'S3Q02', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.followup,
++        q: "For streaming responses, how do time to first token, inter-token delay, and total completion time change that contract?",
++    },
++    {
++        id: 'S3Q03', level: 'reasoning', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.reasoning,
++        q: "Which failures should be retried? An upstream LLM returns rate-limit errors, timeouts, and occasional server errors. Explain retryability, exponential backoff, jitter, deadlines, circuit breakers, and idempotency.",
++    },
++    {
++        id: 'S3Q03F', level: 'followup', chain: 'S3Q03', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.followup,
++        q: "A timeout occurs after the provider may already have processed the request. What duplicate work or billing risks remain?",
++    },
++    {
++        id: 'S3Q04', level: 'coding', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.coding,
++        q: "Implement a token-bucket rate limiter: write a per-tenant in-memory limiter using an injected monotonic clock, a capacity B, and a refill rate r. Each accepted request consumes one token. Return an admission decision, and an estimated wait time when it rejects.",
++    },
++    {
++        id: 'S3Q04F', level: 'followup', chain: 'S3Q04', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.followup,
++        q: "What breaks with multiple API workers? Describe how you would make the admission decision atomic using shared storage.",
++    },
++    {
++        id: 'S3Q05', level: 'coding', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.coding,
++        q: "Implement a bounded TTL cache: build get and put operations with expiry, a maximum entry count, and LRU eviction, using an injected clock. Then explain what a safe cache key must include for an authenticated AI request.",
++    },
++    {
++        id: 'S3Q05F', level: 'followup', chain: 'S3Q05', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.followup,
++        q: "How would you prevent concurrent misses from triggering many identical upstream requests, and when should an answer never be cached?",
++    },
++    {
++        id: 'S3Q06', level: 'codingHeavy', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.codingHeavy,
++        q: "Build a streaming AI endpoint: implement a FastAPI endpoint around an asynchronous token iterator you are given. Validate the request, obtain the tenant from an authentication dependency, impose a deadline, and stop the upstream work when the client disconnects.",
++    },
++    {
++        id: 'S3Q06F', level: 'followup', chain: 'S3Q06', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.followup,
++        q: "How do you report a provider failure after the response headers have been sent, and what information belongs in the logs rather than in the client response?",
++    },
++    {
++        id: 'S3Q07', level: 'design', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.design,
++        q: "Design a shared AI gateway: several product teams need access to multiple LLM deployments. Design the authentication, the tenant quotas, the routing, request validation, usage accounting, observability, and provider isolation.",
++    },
++    {
++        id: 'S3Q07F', level: 'followup', chain: 'S3Q07', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.followup,
++        q: "One tenant generates a traffic spike. How do you preserve capacity for the others while still using spare capacity efficiently?",
++    },
++    {
++        id: 'S3Q08', level: 'design', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.design,
++        q: "Add provider failover and caching: extend that gateway to survive a provider outage while respecting data residency, output-format requirements, latency, and spending limits, and define which requests can fail over automatically.",
++    },
++    {
++        id: 'S3Q08F', level: 'followup', chain: 'S3Q08', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.followup,
++        q: "A streamed response has already delivered 200 tokens. Would you fail over mid-response? Explain the client-visible behaviour and the alternatives.",
++    },
++    {
++        id: 'S3Q09', level: 'cloud', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.cloud,
++        q: "Divide responsibility between the gateway and the application: for Azure API Management, or Kong, in front of Python services, decide where authentication, quotas, schema validation, retries, caching, and telemetry belong.",
++    },
++    {
++        id: 'S3Q09F', level: 'followup', chain: 'S3Q09', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.followup,
++        q: "How could retries or rate limits configured at multiple layers interact badly, and how would you verify the effective behaviour?",
++    },
++    {
++        id: 'S3Q10', level: 'cloud', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.cloud,
++        q: "Debug an Azure private-connectivity failure: after public access to an upstream service is disabled, your deployed application times out, while local development still works through another route. Describe your investigation of name resolution, routing, private endpoints, network rules, TLS, and identity.",
++    },
++    {
++        id: 'S3Q10F', level: 'followup', chain: 'S3Q10', scenario: 'S3', topic: SCENARIOS.S3, gapMs: GAP.followup,
++        q: "What tests would you run from inside the application's actual runtime, to avoid misleading results from your laptop?",
++    },
++
++    // ── Scenario 4 — Operate and optimize ML inference on Kubernetes ──────────
++    {
++        id: 'S4Q01', level: 'verbal', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.verbal,
++        q: "Distinguish the three probe types: explain startup, readiness, and liveness probes for a model server that needs 90 seconds to load its model.",
++    },
++    {
++        id: 'S4Q01F', level: 'followup', chain: 'S4Q01', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.followup,
++        q: "Should temporary unavailability of an upstream database fail the liveness probe? Defend your decision.",
++    },
++    {
++        id: 'S4Q02', level: 'reasoning', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.reasoning,
++        q: "Optimize inference systematically: a service spends its time on preprocessing, model execution, and network calls. How would you profile it before changing worker counts, batch size, model precision, or the implementation language?",
++    },
++    {
++        id: 'S4Q02F', level: 'followup', chain: 'S4Q02', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.followup,
++        q: "Explain the trade-offs between throughput and latency when you introduce dynamic batching.",
++    },
++    {
++        id: 'S4Q03', level: 'reasoning', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.reasoning,
++        q: "Recognize training-serving skew: offline performance is strong, but production predictions degrade immediately after release. What would you inspect before concluding that the population has drifted?",
++    },
++    {
++        id: 'S4Q03F', level: 'followup', chain: 'S4Q03', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.followup,
++        q: "How would you distinguish preprocessing differences, stale features, a model-version mismatch, and genuine concept drift?",
++    },
++    {
++        id: 'S4Q04', level: 'coding', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.coding,
++        q: "Implement a batched inference adapter: given a synchronous model that exposes predict, taking a batch, write an adapter that accepts records, validates the feature shape, processes configurable batches, and returns predictions in the input order. Define whether invalid records fail the whole request, or produce per-record errors.",
++    },
++    {
++        id: 'S4Q04F', level: 'followup', chain: 'S4Q04', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.followup,
++        q: "How would you handle a batch that fails because of one record, without repeatedly executing the batches that already succeeded?",
++    },
++    {
++        id: 'S4Q05', level: 'codingHeavy', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.codingHeavy,
++        q: "Build an asynchronous micro-batcher: implement a component that collects requests until either 32 items are ready, or the oldest item has waited 10 milliseconds, and then calls a provided async predict batch function. Return each result to its original caller, and bound the pending queue.",
++    },
++    {
++        id: 'S4Q05F', level: 'followup', chain: 'S4Q05', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.followup,
++        q: "Handle caller cancellation, batch failure, overload, and shutdown. Which invariants must hold so that no caller waits forever?",
++    },
++    {
++        id: 'S4Q06', level: 'coding', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.coding,
++        q: "Calculate serving metrics from logs: given records containing a timestamp, a model version, a status code, and a latency, write Python to report the request count, the 5xx rate, and the nearest-rank p95 latency for each minute and model version. Assume the input fits in memory, and define how you handle invalid records.",
++    },
++    {
++        id: 'S4Q06F', level: 'followup', chain: 'S4Q06', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.followup,
++        q: "Why is averaging per-instance p95 values not a correct fleet-wide p95, and how would you aggregate at larger scale?",
++    },
++    {
++        id: 'S4Q07', level: 'design', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.design,
++        q: "Size and autoscale an inference service: normal load is 100 requests per second, peaks reach 500, and a measured replica handles 40 requests per second while meeting the latency target. Estimate the baseline capacity, then incorporate headroom, replica failure, startup time, and burst handling.",
++    },
++    {
++        id: 'S4Q07F', level: 'followup', chain: 'S4Q07', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.followup,
++        q: "Which signals would drive the scaling: CPU, GPU utilization, queue depth, concurrency, or latency? When might each of them mislead you?",
++    },
++    {
++        id: 'S4Q08', level: 'design', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.design,
++        q: "Roll out a new model safely: extend that service to release a model with different feature requirements and a larger memory footprint. Compare shadowing, canary, and blue-green deployment, and define the technical and the model-quality gates.",
++    },
++    {
++        id: 'S4Q08F', level: 'followup', chain: 'S4Q08', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.followup,
++        q: "How would you roll back if an associated database migration or feature change is incompatible with the old model?",
++    },
++    {
++        id: 'S4Q09', level: 'cloudHeavy', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.cloudHeavy,
++        q: "Write and review an AKS workload configuration: draft the Kubernetes manifests for a model-serving Deployment and Service. Include resource requests and limits, probes, graceful termination, a non-root security context, and configuration handling, and explain your assumptions.",
++    },
++    {
++        id: 'S4Q09F', level: 'followup', chain: 'S4Q09', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.followup,
++        q: "What would you add for autoscaling, disruption tolerance, workload identity, and network isolation?",
++    },
++    {
++        id: 'S4Q10', level: 'cloud', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.cloud,
++        q: "Diagnose a broken rollout: a new AKS rollout produces intermittent 502s. Some pods restart, while others remain Pending. Walk through the evidence you would gather, and the order of your checks.",
++    },
++    {
++        id: 'S4Q10F', level: 'followup', chain: 'S4Q10', scenario: 'S4', topic: SCENARIOS.S4, gapMs: GAP.followup,
++        q: "How would your response differ for a pod that was OOM killed, a failed readiness probe, an image-pull failure, and insufficient node capacity?",
++    },
++
++    // ── Scenario 5 — Test, secure, and recover a retail AI product ────────────
++    {
++        id: 'S5Q01', level: 'verbal', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.verbal,
++        q: "Explain consistency in an AI workflow: a document upload is stored successfully, but its searchable representation is not ready. What should the API return, and how should a client discover progress?",
++    },
++    {
++        id: 'S5Q01F', level: 'followup', chain: 'S5Q01', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.followup,
++        q: "What does read your own writes mean here, and what would providing it cost?",
++    },
++    {
++        id: 'S5Q02', level: 'reasoning', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.reasoning,
++        q: "Define testing for nondeterministic outputs: distinguish unit tests, API contract tests, integration tests, end-to-end tests, load tests, and model-quality evaluations for an LLM product, and give a concrete example of each.",
++    },
++    {
++        id: 'S5Q02F', level: 'followup', chain: 'S5Q02', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.followup,
++        q: "Which tests should block a release, and how would you avoid fragile assertions based on exact generated wording?",
++    },
++    {
++        id: 'S5Q03', level: 'reasoning', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.reasoning,
++        q: "Define the trust boundary for an agent: a retail assistant retrieves a document containing instructions to reveal customer information, and it has tools for looking up orders. How should the system treat retrieved content, and how should it authorize tool calls?",
++    },
++    {
++        id: 'S5Q03F', level: 'followup', chain: 'S5Q03', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.followup,
++        q: "What controls must live outside the model, and how would you test for unauthorized tool arguments and data leakage?",
++    },
++    {
++        id: 'S5Q04', level: 'sql', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.sql,
++        q: "Measure reliability without mixing tenants: given a requests table with a request id, a tenant id, a model version, a started at time, a latency in milliseconds, and a status code, write PostgreSQL returning the hourly request count, the 5xx rate, and p95 latency by tenant and model version. Show only groups with at least 100 requests.",
++    },
++    {
++        id: 'S5Q04F', level: 'followup', chain: 'S5Q04', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.followup,
++        q: "What index or partitioning strategy would you consider at high volume, and how would you use a query plan to validate your choice?",
++    },
++    {
++        id: 'S5Q05', level: 'codingHeavy', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.codingHeavy,
++        q: "Make job creation idempotent: design the PostgreSQL schema and the Python transaction flow for a POST to document jobs, with a tenant-scoped idempotency key. Concurrent identical requests must return the same job, and reuse of the key with a different payload must return a conflict.",
++    },
++    {
++        id: 'S5Q05F', level: 'followup', chain: 'S5Q05', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.followup,
++        q: "How do you reliably publish work after committing the job? Explain your recovery if the process crashes between the database commit and the message publication.",
++    },
++    {
++        id: 'S5Q06', level: 'coding', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.coding,
++        q: "Write a representative load test: using Locust or k6, implement a test for short requests, long streaming requests, and invalid requests. Include multiple tenants, a ramp-up, steady load, and a spike, and define measurable pass and fail criteria.",
++    },
++    {
++        id: 'S5Q06F', level: 'followup', chain: 'S5Q06', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.followup,
++        q: "How will you avoid a test dominated by cache hits, account for slow responses reducing generated traffic, and separate backend capacity from provider quotas?",
++    },
++    {
++        id: 'S5Q07', level: 'design', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.design,
++        q: "Design a retail shopping assistant end to end: the assistant answers product questions, checks inventory, and retrieves authenticated order status. Design the API, the retrieval, tool execution, authorization, the streaming interface, state storage, and monitoring, and explain where freshness is critical.",
++    },
++    {
++        id: 'S5Q07F', level: 'followup', chain: 'S5Q07', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.followup,
++        q: "The model recommends an out-of-stock product, or requests another customer's order. Where should each of those errors be prevented or detected?",
++    },
++    {
++        id: 'S5Q08', level: 'incident', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.design,
++        q: "Lead a production incident: after a release, p95 latency doubles, LLM spending triples, and answer-quality complaints rise, while the HTTP error rate remains normal. Explain your first 15 minutes, your mitigation options, and your investigation.",
++    },
++    {
++        id: 'S5Q08F', level: 'followup', chain: 'S5Q08', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.followup,
++        q: "What evidence would distinguish an agent loop, a cache failure, a retrieval regression, and a provider slowdown, and what if a rollback only partly resolves the problem?",
++    },
++    {
++        id: 'S5Q09', level: 'cloudHeavy', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.cloudHeavy,
++        q: "Design the Azure delivery pipeline: describe CI/CD for the application, the infrastructure, and the model and prompt artifacts. Include dependency and image checks, tests, the identity used for deployment, artifact promotion, evaluation gates, staged release, and rollback.",
++    },
++    {
++        id: 'S5Q09F', level: 'followup', chain: 'S5Q09', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.followup,
++        q: "How do you ensure the artifact tested in staging is the one released to production, and how would you handle a prompt-only release?",
++    },
++    {
++        id: 'S5Q10', level: 'cloudHeavy', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.cloudHeavy,
++        q: "Plan recovery from a regional outage: the retail assistant must recover within one hour, and lose no more than 15 minutes of committed application data. Design an Azure recovery strategy covering PostgreSQL, object storage, search indexes, queues, configuration, and model access, and state where rebuilds are acceptable.",
++    },
++    {
++        id: 'S5Q10F', level: 'followup', chain: 'S5Q10', scenario: 'S5', topic: SCENARIOS.S5, gapMs: GAP.followup,
++        q: "How would you test those recovery targets? What happens to in-flight jobs, and how do you prevent duplicate processing or conflicting writes during failover?",
++    },
++];
++
++/** The roster the harness reads. `long` is derived here so it can never disagree with the text. */
++export const SCENARIO50 = RAW.map((x) => ({ ...x, long: wordsOf(x.q) >= LONG_WORDS }));
++
++/** Spoken items only, matching interview60's export. Nothing here is a screenshot cue. */
++export const SPOKEN = SCENARIO50.filter((x) => x.kind !== 'screenshot');
++
++/** One scenario, main questions and their follow-ups, in order. */
++export const scenario = (key) => SCENARIO50.filter((x) => x.scenario === key);
++
++export const PLAN = {
++    total: SCENARIO50.length,
++    spoken: SPOKEN.length,
++    screenshots: 0,
++    byLevel: SCENARIO50.reduce((a, x) => ({ ...a, [x.level]: (a[x.level] || 0) + 1 }), {}),
++    byScenario: SCENARIO50.reduce((a, x) => ({ ...a, [x.scenario]: (a[x.scenario] || 0) + 1 }), {}),
++};
+diff --git a/electron/test/golden/scenario50.source.md b/electron/test/golden/scenario50.source.md
+new file mode 100644
+index 0000000..2d8a8f9
+--- /dev/null
++++ b/electron/test/golden/scenario50.source.md
+@@ -0,0 +1,233 @@
++# Scenario 50 — source question set
++
++The set exactly as written, before it was rendered for speech. This file is the
++source of truth for wording; `scenario50.questions.mjs` is the harness rendering
++of the same questions (see the header of that file for what changes and why).
++
++Five scenarios of ten questions, each with one follow-up: 100 spoken items.
++Unlike `interview60`, every question here is deliberately multi-sentence — the
++regime where the STT closes the question as several finals.
++
++> **Note on CV figures.** Q2 and Q12 quote metrics from a real CV (churn rate,
++> risk-band capture, precision, extraction F1, hallucination reduction, multi-hop
++> accuracy). No name, employer or account identifier appears anywhere in the set.
++
++---
++
++## Scenario 1 — Defend and extend your churn prediction system
++
++**1. [Verbal · Short] Why did you choose XGBoost?**
++Using your churn project, explain why XGBoost was suitable for the data and production constraints. What baseline would you compare it against?
++*Follow-up:* Under what conditions would you prefer logistic regression, a neural network, or a rules-based approach?
++
++**2. [Verbal · Reasoning] Can you reconcile the metrics on your CV?**
++Your CV reports a 9.5% churn rate, a top-5% risk band capturing 30% of churners, and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are the figures consistent within rounding?
++*Follow-up:* What can you conclude from PR-AUC 0.38 and ROC-AUC 0.88? What additional information do you need before deciding the model is useful?
++
++**3. [Verbal · Reasoning] Did the model actually reduce churn?**
++Your CV reports churn decreasing from 9.5% to 8.1%. How would you distinguish the effect of the model and retention campaign from seasonality, customer mix, and other business changes?
++*Follow-up:* Why might targeting the highest-risk customers be less profitable than targeting customers with the largest estimated treatment effect?
++
++**4. [Coding · Medium] Implement evaluation for a fixed campaign budget.**
++Write `evaluate_top_k(y_true, scores, k)` returning precision@k, recall@k, and lift over the population prevalence. Assume binary labels and finite scores; break score ties by original row order. Define behavior for invalid `k`, empty inputs, and no positive labels.
++*Follow-up:* How would you reduce the sorting cost for millions of customers while preserving the tie rule?
++
++**5. [Coding · Heavy] Build a leakage-safe churn training pipeline.**
++Given customer snapshots containing `customer_id`, `snapshot_date`, numeric features, categorical features, and `churn_next_30d`, write a scikit-learn training and evaluation pipeline. Fit preprocessing only on training data and account for the label observation window when splitting chronologically.
++*Follow-up:* Customers appear in multiple snapshots. When is this legitimate, and when would you also require a customer-level holdout?
++
++**6. [Coding · SQL] Construct a point-in-time feature.**
++Given `snapshots(customer_id, snapshot_time)` and `events(customer_id, event_time, ingested_at, event_type)`, write PostgreSQL SQL counting support calls in the 30 days before each snapshot. Include only events ingested by the snapshot time and preserve customers with zero calls.
++*Follow-up:* How would you index these tables? What changes if historical records can be corrected after ingestion?
++
++**7. [System design · Heavy] Design the next version of the churn platform.**
++Support nightly scoring for 400,000 customers and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring. Identify what should be shared between batch and online paths.
++*Follow-up:* A nightly job fails halfway through. How do you resume without duplicate campaign actions or mixed model versions?
++
++**8. [System design · Heavy] Add delayed outcomes and experimentation.**
++Extend Q7 so churn outcomes arrive 30 days later and retention offers affect the observed labels. Design prediction logging, experiment assignment, outcome joins, and retraining data selection.
++*Follow-up:* How could repeatedly training on customers affected by previous campaigns introduce bias?
++
++**9. [Cloud · Medium] Translate your AWS experience into an Azure deployment.**
++Describe an Azure implementation of Q7, covering object storage, training, model artifacts, container images, online inference, scheduling, identity, and monitoring. Explain the operational reasons for your choices.
++*Follow-up:* Which workload would you put on Azure Machine Learning managed endpoints, Azure App Service, or AKS, and why?
++
++**10. [Cloud · Reasoning] Secure the churn platform without embedded credentials.**
++How would your inference service access model artifacts and PostgreSQL using Azure identity and networking controls? Explain authentication, authorization, secret handling where unavoidable, and environment separation.
++*Follow-up:* The application receives an authorization error after deployment. How would you distinguish an identity problem from a permissions or network problem?
++
++---
++
++## Scenario 2 — Defend and scale your document intelligence platform
++
++**11. [Verbal · Short] Explain your RAG pipeline precisely.**
++Walk through ingestion, parsing, chunking, embedding, retrieval, reranking, context assembly, and generation. Map these stages to your document intelligence experience.
++*Follow-up:* Which stages can cause a correct source document to produce an incorrect answer?
++
++**12. [Verbal · Reasoning] Defend the improvements reported on your CV.**
++You report extraction F1 increasing from 72.4% to 95.4%, hallucinations decreasing by 84%, and multi-hop accuracy reaching 92%. Define the unit of evaluation, denominator, dataset construction, and uncertainty for each metric.
++*Follow-up:* What ablations would separate the contributions of OCR, classification, retrieval, prompting, and agent orchestration? How would you check LLM-judge bias?
++
++**13. [Verbal · Reasoning] When does an agent justify its complexity?**
++Consider a question requiring evidence from three documents. Compare a fixed retrieval workflow, query decomposition, and an agent that chooses tools dynamically.
++*Follow-up:* What stopping conditions, budgets, and failure policies would prevent loops and unnecessary tool calls?
++
++**14. [Coding · Medium] Merge two retrieval result lists.**
++Implement reciprocal rank fusion for keyword and vector results. Each list contains unique document IDs ordered from best to worst; use one-based ranks and a configurable positive constant `c`, with contribution `1 / (c + rank)`. Return the top `k` unique IDs with deterministic tie-breaking.
++*Follow-up:* Why might you use rank fusion instead of adding raw scores? How would you add configurable weights for each retrieval source?
++
++**15. [Coding · Medium] Pack retrieved evidence into a context budget.**
++Implement `select_context(chunks, budget)`. Each chunk has an ID, document ID, relevance score, and positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk IDs, and allow at most two chunks per document.
++*Follow-up:* Construct an example where the greedy policy gives poor coverage. How would you incorporate redundancy or multi-hop dependencies?
++
++**16. [Coding · Heavy] Implement an asynchronous evaluation runner.**
++Given test cases and `async evaluate(case)`, process them with at most eight active evaluations, apply per-case timeouts, preserve input order, and record failures without cancelling unrelated cases.
++*Follow-up:* Extend it to retry explicitly transient errors within an overall case deadline. How would you test concurrency and cancellation deterministically?
++
++**17. [System design · Heavy] Design a multi-tenant RAG service over 10M documents.**
++Support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain index organization, metadata storage, permission enforcement, and evaluation.
++*Follow-up:* A user loses access to a document while a query is running. Where and when must authorization be checked?
++
++**18. [System design · Heavy] Migrate the embedding model without an outage.**
++Extend Q17 to introduce embeddings with a different dimensionality. Documents continue changing throughout the migration. Describe versioning, backfill, update synchronization, quality comparison, cutover, and rollback.
++*Follow-up:* How do you prove the replacement index is sufficiently complete and current before sending production traffic to it?
++
++**19. [Cloud · Medium] Place the RAG components on Azure.**
++Choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry. Explain where managed services help and where custom components may be justified.
++*Follow-up:* How would your design change if documents and their processing must remain within an approved region?
++
++**20. [Cloud · Reasoning] Make ingestion recoverable under duplicate delivery.**
++Suppose queue messages may arrive more than once and workers may crash after writing embeddings but before acknowledging a message. How would you use Azure messaging and durable state to make processing safe to repeat?
++*Follow-up:* How would you handle poison documents, dead-letter replay, and a delete event racing with an older update?
++
++---
++
++## Scenario 3 — Build a production Python AI gateway
++
++**21. [Verbal · Short] What does `async` actually buy you?**
++Explain what happens when an `async` FastAPI endpoint calls a blocking HTTP client or performs expensive CPU work.
++*Follow-up:* When would you use asynchronous I/O, a thread pool, separate processes, or an external worker?
++
++**22. [Verbal · Reasoning] Define a useful latency contract.**
++An AI endpoint has p50 latency of 400 ms and p99 latency of 8 seconds. Explain why this matters and how you would separate gateway time, queueing, retrieval, and generation.
++*Follow-up:* For streaming responses, how do time to first token, inter-token delay, and total completion time change the contract?
++
++**23. [Verbal · Reasoning] Which failures should be retried?**
++An upstream LLM returns rate-limit errors, timeouts, and occasional server errors. Explain retryability, exponential backoff, jitter, deadlines, circuit breakers, and idempotency.
++*Follow-up:* A timeout occurs after the provider may have processed the request. What duplicate work or billing risks remain?
++
++**24. [Coding · Medium] Implement a token-bucket rate limiter.**
++Write a per-tenant in-memory limiter using an injected monotonic clock, capacity `B`, and refill rate `r`. Each accepted request consumes one token. Return an admission decision and an estimated wait time when rejected.
++*Follow-up:* What breaks with multiple API workers? Describe how you would make the admission decision atomic using shared storage.
++
++**25. [Coding · Medium] Implement a bounded TTL cache.**
++Build `get` and `put` operations with expiry, a maximum entry count, and LRU eviction. Use an injected clock. Explain what a safe cache key must include for an authenticated AI request.
++*Follow-up:* How would you prevent concurrent misses from triggering many identical upstream requests? When should an answer never be cached?
++
++**26. [Coding · Heavy] Build a streaming AI endpoint.**
++Implement a FastAPI endpoint around a provided asynchronous token iterator. Validate the request, obtain the tenant from an authentication dependency, impose a deadline, and stop upstream work when the client disconnects.
++*Follow-up:* How do you report a provider failure after response headers have been sent? What information belongs in logs versus the client response?
++
++**27. [System design · Heavy] Design a shared AI gateway.**
++Several product teams need access to multiple LLM deployments. Design authentication, tenant quotas, routing, request validation, usage accounting, observability, and provider isolation.
++*Follow-up:* One tenant generates a traffic spike. How do you preserve capacity for others while still using spare capacity efficiently?
++
++**28. [System design · Heavy] Add provider failover and caching.**
++Extend Q27 to survive a provider outage while respecting data residency, output-format requirements, latency, and spending limits. Define which requests can fail over automatically.
++*Follow-up:* A streamed response has already delivered 200 tokens. Would you fail over mid-response? Explain the client-visible behavior and alternatives.
++
++**29. [Cloud · Medium] Divide responsibility between the gateway and application.**
++For Azure API Management or Kong in front of Python services, decide where authentication, quotas, schema validation, retries, caching, and telemetry belong.
++*Follow-up:* How could retries or rate limits configured at multiple layers interact badly? How would you verify the effective behavior?
++
++**30. [Cloud · Reasoning] Debug an Azure private-connectivity failure.**
++After public access to an upstream service is disabled, your deployed application times out while local development still works through another route. Describe your investigation of name resolution, routing, private endpoints, network rules, TLS, and identity.
++*Follow-up:* What tests would you run from inside the application's actual runtime to avoid misleading results from your laptop?
++
++---
++
++## Scenario 4 — Operate and optimize ML inference on Kubernetes
++
++**31. [Verbal · Short] Distinguish the three probe types.**
++Explain startup, readiness, and liveness probes for a model server that needs 90 seconds to load its model.
++*Follow-up:* Should temporary unavailability of an upstream database fail the liveness probe? Defend your decision.
++
++**32. [Verbal · Reasoning] Optimize inference systematically.**
++A service spends time on preprocessing, model execution, and network calls. How would you profile it before changing worker counts, batch size, model precision, or implementation language?
++*Follow-up:* Explain the trade-offs between throughput and latency when introducing dynamic batching.
++
++**33. [Verbal · Reasoning] Recognize training-serving skew.**
++Offline performance is strong, but production predictions degrade immediately after release. What would you inspect before concluding that the population has drifted?
++*Follow-up:* How would you distinguish preprocessing differences, stale features, model-version mismatch, and genuine concept drift?
++
++**34. [Coding · Medium] Implement a batched inference adapter.**
++Given a synchronous model exposing `predict(batch)`, write an adapter that accepts records, validates feature shape, processes configurable batches, and returns predictions in input order. Define whether invalid records fail the request or produce per-record errors.
++*Follow-up:* How would you handle a batch that fails because of one record without repeatedly executing successful batches?
++
++**35. [Coding · Heavy] Build an asynchronous micro-batcher.**
++Implement a component that collects requests until either 32 items are ready or the oldest item has waited 10 ms, then calls a provided `async predict_batch(items)`. Return each result to its original caller and bound the pending queue.
++*Follow-up:* Handle caller cancellation, batch failure, overload, and shutdown. Which invariants must hold so no caller waits forever?
++
++**36. [Coding · Medium] Calculate serving metrics from logs.**
++Given records containing timestamp, model version, status code, and latency, write Python to report request count, 5xx rate, and nearest-rank p95 latency for each minute and model version. Assume the input fits in memory; define handling for invalid records.
++*Follow-up:* Why is averaging per-instance p95 values not a correct fleet-wide p95? How would you aggregate at larger scale?
++
++**37. [System design · Heavy] Size and autoscale an inference service.**
++Normal load is 100 requests/second, peaks reach 500, and a measured replica handles 40 requests/second while meeting the latency target. Estimate baseline capacity, then incorporate headroom, replica failure, startup time, and burst handling.
++*Follow-up:* Which signals would drive scaling: CPU, GPU utilization, queue depth, concurrency, or latency? When might each mislead you?
++
++**38. [System design · Heavy] Roll out a new model safely.**
++Extend Q37 to release a model with different feature requirements and a larger memory footprint. Compare shadowing, canary, and blue-green deployment. Define technical and model-quality gates.
++*Follow-up:* How would you roll back if an associated database migration or feature change is incompatible with the old model?
++
++**39. [Cloud · Practical] Write and review an AKS workload configuration.**
++Draft Kubernetes manifests for a model-serving Deployment and Service. Include resource requests and limits, probes, graceful termination, a non-root security context, and configuration handling. Explain your assumptions.
++*Follow-up:* What would you add for autoscaling, disruption tolerance, workload identity, and network isolation?
++
++**40. [Cloud · Reasoning] Diagnose a broken rollout.**
++A new AKS rollout produces intermittent 502s; some pods restart, while others remain Pending. Walk through the evidence you would gather and the order of your checks.
++*Follow-up:* How would your response differ for `OOMKilled`, failed readiness probes, an image-pull failure, and insufficient node capacity?
++
++---
++
++## Scenario 5 — Test, secure, and recover a retail AI product
++
++**41. [Verbal · Short] Explain consistency in an AI workflow.**
++A document upload is stored successfully, but its searchable representation is not ready. What should the API return, and how should a client discover progress?
++*Follow-up:* What does "read your own writes" mean here, and what would providing it cost?
++
++**42. [Verbal · Reasoning] Define testing for nondeterministic outputs.**
++Distinguish unit tests, API contract tests, integration tests, end-to-end tests, load tests, and model-quality evaluations for an LLM product. Give a concrete example of each.
++*Follow-up:* Which tests should block a release? How would you avoid fragile assertions based on exact generated wording?
++
++**43. [Verbal · Reasoning] Define the trust boundary for an agent.**
++A retail assistant retrieves a document containing instructions to reveal customer information and has tools for looking up orders. How should the system treat retrieved content and authorize tool calls?
++*Follow-up:* What controls must live outside the model? How would you test unauthorized tool arguments and data leakage?
++
++**44. [Coding · SQL] Measure reliability without mixing tenants.**
++Given `requests(request_id, tenant_id, model_version, started_at, latency_ms, status_code)`, write PostgreSQL SQL returning hourly request count, 5xx rate, and p95 latency by tenant and model version. Show only groups with at least 100 requests.
++*Follow-up:* What index or partitioning strategy would you consider at high volume? How would you use a query plan to validate your choice?
++
++**45. [Coding · Heavy] Make job creation idempotent.**
++Design the PostgreSQL schema and Python transaction flow for `POST /document-jobs` with a tenant-scoped idempotency key. Concurrent identical requests must return the same job; reuse of the key with a different payload must return a conflict.
++*Follow-up:* How do you reliably publish work after committing the job? Explain recovery if the process crashes between database commit and message publication.
++
++**46. [Coding · Practical] Write a representative load test.**
++Using Locust or k6, implement a test for short requests, long streaming requests, and invalid requests. Include multiple tenants, ramp-up, steady load, and a spike. Define measurable pass/fail criteria.
++*Follow-up:* How will you avoid a test dominated by cache hits, account for slow responses reducing generated traffic, and separate backend capacity from provider quotas?
++
++**47. [System design · Heavy] Design a retail shopping assistant end to end.**
++The assistant answers product questions, checks inventory, and retrieves authenticated order status. Design the API, retrieval, tool execution, authorization, streaming interface, state storage, and monitoring. Explain where freshness is critical.
++*Follow-up:* The model recommends an out-of-stock product or requests another customer's order. Where should each error be prevented or detected?
++
++**48. [System design · Incident] Lead a production incident.**
++After a release, p95 latency doubles, LLM spending triples, and answer-quality complaints rise, while the HTTP error rate remains normal. Explain your first 15 minutes, mitigation options, and investigation.
++*Follow-up:* What evidence would distinguish an agent loop, cache failure, retrieval regression, and provider slowdown? What if rollback only partly resolves the problem?
++
++**49. [Cloud · Heavy] Design the Azure delivery pipeline.**
++Describe CI/CD for the application, infrastructure, and model/prompt artifacts. Include dependency and image checks, tests, identity for deployment, artifact promotion, evaluation gates, staged release, and rollback.
++*Follow-up:* How do you ensure the artifact tested in staging is the one released to production? How would you handle a prompt-only release?
++
++**50. [Cloud · Heavy] Plan recovery from a regional outage.**
++The retail assistant must recover within one hour and lose no more than 15 minutes of committed application data. Design an Azure recovery strategy covering PostgreSQL, object storage, search indexes, queues, configuration, and model access. State where rebuilds are acceptable.
++*Follow-up:* How would you test those recovery targets? What happens to in-flight jobs, and how do you prevent duplicate processing or conflicting writes during failover?

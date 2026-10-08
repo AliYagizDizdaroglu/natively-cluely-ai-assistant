@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "All four quantities correct (9,500 churners, 2,850 TP, 30% recall, 57% precision) with a defensible consistency verdict."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct point-in-time logic: predicates in the join clause preserve zero-call customers; count on event type yields zero; at 93 words it runs long."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested layer plus the shared feature definitions and model artifact, but roughly 125 words is well over spoken length."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, deterministic-hash assignment, delayed outcome join and control-only or IPW retraining all sound; long and reads a snake_case identifier aloud."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Omits the extraction F1 metric entirely and gives no denominators or uncertainty for any of the three, though well-spoken."
+  }
+}

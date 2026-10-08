@@ -1,0 +1,13 @@
+docs(passes): router40 result: 2 NOT SAFE as registered, resting only on two garbled "hard" routing tokens
+
+3.8 Live as ear + router on live40 (routing block B: easy answered by Live, medium/hard to 3.1-lite LOW), run
+2026-10-05 22:31-23:02, graded 2026-10-06 06:22-06:31 by 10 pinned Opus sessions (all audit-clean, memory
+ABSENT; launcher adds --setting-sources project,local after a live probe read claude-mem LOADED).
+Registered READING 2 NOT SAFE: AF answered 1 of 7 (RH10), wrong R 2 vs L 0 (RH08, RH10). Both are Live's
+"hard" routing token garbled by output transcription (hard.hard), which the frozen reader's letter reads as
+an answer; under the intended treatment wrong R 0, AF 0, acc R 43 = L 43 (not a registered reading; the
+addendum says so). Acceptable A 37 / L 43 / R 41 / oracle 42 of 47; EASY caught 19 of 20; Live first text
+p50 0.72 s. Includes the registration, A1-A8, re-checks, harness reviews, user rulings, the result, its Opus
+review and the sealed addendum.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

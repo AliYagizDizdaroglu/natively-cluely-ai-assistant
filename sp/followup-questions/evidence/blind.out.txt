@@ -1,0 +1,5 @@
+pairs.blind-1.json  24 answers  S1Q04F,S1Q06F,S1Q08,S2Q05F
+pairs.blind-2.json  24 answers  S2Q08,S2Q08F,S2Q09F,C1
+pairs.blind-3.json  23 answers  C2,C3,C4,C5
+pairs.blind-4.json  24 answers  C6,D1,D2,D3
+4 files; not graded, pair incomplete (transient after retries): Br1:C5; not graded, scored wrong (empty after the filters): none; instrument 8564ba96369a (pre-registered 8564ba96369a)

@@ -1,0 +1,249 @@
+=== [1] KEY=S1Q01  level=verbal  words=118 ===
+Q: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the production constraints, and what baseline you would compare it against.
+HEARD: Why did you choose XGBoost? Using your churn project, explain why XG XGBoost was
+A: I chose XGBoost for the churn project because it handles tabular data with mixed feature types exceptionally well and is highly robust against the class imbalance typical in churn datasets. Its gradient boosting framework allowed me to capture non-linear relationships between customer behaviors and churn risk that simpler models missed, while the built-in regularization parameters prevented overfitting on our specific user segments. For production, the model's inference speed was critical, and XGBoost’s efficiency allowed for low-latency scoring even with a large feature set. I compared this performance against a standard Logistic Regression baseline, which provided a clear benchmark for interpretability and helped us quantify the lift in predictive accuracy we gained by moving to a boosted tree approach.
+
+=== [2] KEY=S1Q01F  level=followup  words=83 ===
+Q: Under what conditions would you prefer logistic regression, a neural network, or a rules-based approach? [Follow-up to: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the production constraints, and what baseline you would compare it against.]
+HEARD: Under what conditions would you prefer logistic regression, a neural network, or
+A: I use logistic regression when I need a transparent, interpretable baseline or when the problem is largely linearly separable, as it’s computationally cheap and easy to debug. I turn to neural networks for unstructured data like text or images, or when the feature interactions are too complex for traditional models to capture effectively. Finally, I use a rules-based approach when I need absolute, deterministic control—like handling regulatory compliance or safety constraints—where you simply cannot afford the probabilistic error of a machine learning model.
+
+=== [3] KEY=S1Q02  level=reasoning  words=66 ===
+Q: Can you reconcile the metrics on your CV? Your CV reports a 9.5 percent churn rate, a top 5 percent risk band capturing 30 percent of churners, and 60 percent precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?
+HEARD: Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a t
+A: With 100,000 subscribers and a 9.5% churn rate, we have 9,500 actual churners. Targeting the top 5% means we're flagging 5,000 subscribers. If we capture 30% of those churners, that's 2,850 true positives. At a 60% precision rate on those 5,000 flagged subscribers, we'd expect 3,000 true positives. The figures are consistent, as 2,850 and 3,000 are well within the margin of rounding for those metrics.
+
+=== [4] KEY=S1Q02F  level=followup  words=91 ===
+Q: What can you conclude from a PR AUC of 0.38 and an ROC AUC of 0.88, and what else would you need before deciding the model is useful? [Follow-up to: Can you reconcile the metrics on your CV? Your CV reports a 9.5 percent churn rate, a top 5 percent risk band capturing 30 percent of churners, and 60 percent precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?]
+HEARD: What can you conclude from a PRAUC of 0.38 and an ROC AUC of 0.88? And what else
+A: A PR-AUC of 0.38 is actually quite strong given our base churn rate of roughly 9.5%, meaning the model is about four times better than random guessing at identifying churners. While the 0.88 ROC-AUC shows good overall separation, in a churn context, I prioritize the PR-AUC because it focuses on the minority class. To decide if it's truly useful, I’d look at the business cost of false positives versus false negatives—specifically, the cost of a retention offer versus the lost lifetime value of a churned subscriber—to set the optimal decision threshold.
+
+=== [5] KEY=S1Q03  level=reasoning  words=106 ===
+Q: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?
+HEARD: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5% 
+A: To isolate the model's impact, I ran a randomized control trial where we held out a small percentage of the at-risk population from the retention campaign. By comparing the churn rate of that control group against the treated group, we can directly measure the uplift attributable to the intervention. To account for seasonality and external shifts, I also used a difference-in-differences approach, comparing our churn trends against a baseline cohort that wasn't eligible for the model-driven offers. This allows me to strip away the noise from organic business changes and confirm that the 1.4 percentage point drop was a direct result of the model's targeting precision.
+
+=== [6] KEY=S1Q03F  level=followup  words=63 ===
+Q: Why might targeting the highest-risk customers be less profitable than targeting the customers with the largest estimated treatment effect? [Follow-up to: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?]
+HEARD: Why might targeting the highest risk customers be less profitable than targeting
+A: Targeting the highest risk customers often wastes budget on "lost causes"—people who will churn regardless of the intervention. By focusing on the largest estimated treatment effect, I’m targeting the "persuadables"—those who are on the fence and will only stay if they receive the offer. It’s the difference between subsidizing someone who was leaving anyway versus actually changing their decision, which maximizes our ROI.
+
+=== [7] KEY=S1Q04  level=coding  words=125 ===
+Q: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.
+HEARD: Let's do some code. Implement evaluation for a fixed campaign budget. Write a fu
+A: I’d start by zipping the scores and labels into a list of tuples, keeping the original index to ensure stable sorting. I’d sort that descending by score, then slice the top k elements. Precision at k is just the mean of those top k labels, while recall at k is the sum of those top labels divided by the total number of positives in the full dataset. Lift is that precision divided by the global positive rate.
+
+For edge cases, if k is invalid—like negative or larger than the dataset—I’d raise a value error. If the input is empty, I’d return zeros or raise an exception, and if there are no positive labels, I’d return zero for recall and lift to avoid division by zero.
+
+=== [8] KEY=S1Q04F  level=followup  words=61 ===
+Q: How would you reduce the sorting cost for millions of customers while preserving the tie rule? [Follow-up to: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.]
+HEARD: How would you reduce the sorting cost for millions of customers while preserving
+A: For millions of records, a full sort is usually overkill if I only need the top-K. I’d use numpy.argpartition to isolate the top-K elements in linear time, which is significantly faster than an O(N log N) sort. To handle ties, I’d include a secondary key—like a customer ID—in my initial array, ensuring the output remains deterministic even when scores are identical.
+
+=== [9] KEY=S1Q05  level=codingHeavy  words=127 ===
+Q: Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.
+HEARD: Build a leakage safe churn training pipeline, You are given customer snapshots c
+A: To build a leakage-safe pipeline, I’d start by splitting the data chronologically—using a strict cutoff date to ensure the validation set only contains events occurring after the training period. This prevents future information from leaking into the training set.
+
+For the preprocessing, I’d use a scikit-learn Pipeline combined with a ColumnTransformer. I’d fit the StandardScaler and OneHotEncoder only on the training slice, then transform both the training and validation sets. Crucially, I’d define my label as a binary flag based on the customer’s status exactly thirty days after each snapshot date, ensuring the feature set only includes data available *before* that snapshot date. Finally, I’d wrap the entire process in a TimeSeriesSplit or a simple time-based train_test_split to validate that the model generalizes across different time periods.
+
+=== [10] KEY=S1Q05F  level=followup  words=70 ===
+Q: Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout? [Follow-up to: Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.]
+HEARD: Customers appear in multiple snapshots. When is that legitimate, and when would 
+A: It’s legitimate to have customers in multiple snapshots when you’re modeling time-dependent behavior, like churn probability, where the customer's state evolves over time. However, you absolutely require a customer-level holdout to prevent data leakage. If you split randomly by row, the model memorizes customer-specific patterns across the train and test sets, leading to inflated performance metrics. You must split by customer ID to ensure the model generalizes to unseen users.
+
+=== [11] KEY=S1Q06  level=sql  words=107 ===
+Q: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.
+HEARD: Now is SQL one, construct a point in time feature. You have a snapshots table wi
+A: I would start with a left join between the snapshots table and the events table to ensure we preserve records for customers with zero calls. I'd select the customer ID and snapshot time, then perform a count on the event ID. In the join condition, I’d filter for the support call event type, and define the time window as between thirty days before the snapshot and the snapshot time itself. To prevent leakage, I’d add an explicit clause that the ingested at time must be less than or equal to the snapshot time. Finally, I’d group by the customer ID and snapshot time to aggregate the results.
+
+=== [12] KEY=S1Q06F  level=followup  words=89 ===
+Q: How would you index those tables, and what changes if historical records can be corrected after ingestion? [Follow-up to: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.]
+HEARD: How would you index those tables, and what changes if historical records can be 
+A: For the snapshots and events tables, I’d place a composite index on (customer_id, timestamp) to optimize the joins and time-range queries. If the scale is massive, I’d also partition the events table by time to keep the index depth manageable and improve performance.
+
+When handling corrections, I’d switch to an upsert pattern using ON CONFLICT in PostgreSQL to ensure idempotency. If we need to preserve history, I’d add a versioning column or a valid_from and valid_to timestamp range, ensuring the application layer always fetches the most recent, valid record.
+
+=== [13] KEY=S1Q07  level=design  words=120 ===
+Q: Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.
+HEARD: Design the next version of the churn platform, it has to support nightly scoring
+A: For the next version, I’d unify feature engineering using a feature store like Feast. This is the critical shared component: it ensures training-serving consistency by providing point-in-time correct features for batch training and low-latency lookups for online inference.
+
+Ingestion flows through Kafka for real-time updates and Airflow for batch snapshots. Training pipelines in Kubeflow push versioned models to an MLflow registry. For serving, the batch path runs nightly Kubernetes jobs, while the online path uses a FastAPI service that pulls live features from the store. Both paths write predictions to PostgreSQL for agent access. Finally, I’d monitor both with Prometheus and Grafana to track feature drift and prediction distribution, with automated alerts if online scores diverge from the batch baseline.
+
+=== [14] KEY=S1Q07F  level=followup  words=96 ===
+Q: A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions? [Follow-up to: Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.]
+HEARD: A nightly job fails halfway through. How do you resume it without duplicate camp
+A: I handle this by enforcing idempotency and stateful checkpointing. For the campaign actions, I ensure every request is idempotent by using a unique transaction ID in our database, so if a job retries, the system ignores duplicates. For the job itself, I use a state store to track progress; the job reads this to resume exactly where it left off. Finally, to prevent model version drift, I pin the model artifact ID at the start of the batch. This ensures that even if a job restarts, it’s locked to that specific version, avoiding any mixed-model inference.
+
+=== [15] KEY=S1Q08  level=design  words=160 ===
+Q: Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.
+HEARD: Now add delayed outcomes and experimentation. Extend that design so churn outcom
+A: I’d handle the delayed outcomes by decoupling the inference log from the label join. I store every prediction with a unique request ID, the model version, and the treatment group assignment in a feature store or data warehouse. When the thirty-day window closes, I run a separate job that joins these logs with the actual churn events using that request ID.
+
+To handle the retention bias, I treat the offer as a feature during training but strictly exclude it from the inference features when generating the churn score for the next cycle. This prevents the model from learning that "the offer prevented churn" when it should be learning "the user is at risk." For retraining, I use a sliding window approach, filtering out any users who received a retention offer during the label collection period to ensure the model trains on organic churn behavior, or I explicitly include the treatment indicator as a covariate if I'm doing causal uplift modeling.
+
+=== [16] KEY=S1Q08F  level=followup  words=106 ===
+Q: How could repeatedly training on customers affected by previous campaigns introduce bias? [Follow-up to: Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.]
+HEARD: How could repeatedly training on customers affected by previous campaigns introd
+A: That creates a classic selection bias where the model conflates the intervention with the customer's underlying propensity to churn. If I train on data where a retention campaign was active, the model learns that the discount caused the retention, rather than identifying the customers who were actually at risk. 
+
+This creates a feedback loop where the model starts targeting the wrong segments—either over-targeting people who don't need the incentive or missing those who would have churned anyway. To fix this, I treat the campaign as a separate feature or use propensity score matching to isolate the counterfactual—essentially asking what would have happened if we hadn't intervened.
+
+=== [17] KEY=S1Q09  level=cloud  words=156 ===
+Q: Translate your AWS experience into an Azure deployment: describe an Azure implementation of that churn platform, covering object storage, training, model artifacts, container images, online inference, scheduling, identity, and monitoring, and explain the operational reasons for your choices.
+HEARD: Translate your AWS experience into an Azure deployment. Describe an Azure implem
+A: I’d shift the architecture to Azure by using Blob Storage as the data lake, keeping raw features and processed sets organized in hierarchical containers. For training, I’d use Azure Machine Learning compute clusters because they handle the heavy lifting of scaling and environment management efficiently. I’d store the resulting model artifacts in the Azure Machine Learning model registry, which provides built-in versioning and lineage tracking.
+
+For the production environment, I’d push container images to Azure Container Registry and deploy them to Azure Kubernetes Service. AKS is my go-to for online inference because it gives me the granular control over auto-scaling and networking that a high-traffic churn model requires. I’d use Azure Data Factory for orchestrating the training pipelines and scheduled retraining jobs.
+
+Finally, for security and observability, I’d rely on Microsoft Entra ID for managed identities—so no hardcoded keys—and wire everything into Azure Monitor and Application Insights to track latency, drift, and system health in real-time.
+
+=== [18] KEY=S1Q09F  level=followup  words=93 ===
+Q: Which workload would you put on Azure Machine Learning managed endpoints, which on Azure App Service, and which on AKS, and why? [Follow-up to: Translate your AWS experience into an Azure deployment: describe an Azure implementation of that churn platform, covering object storage, training, model artifacts, container images, online inference, scheduling, identity, and monitoring, and explain the operational reasons for your choices.]
+HEARD: Which workload would you put on Azure machine learning managed endpoints, which 
+A: I’d reserve Azure Machine Learning Managed Endpoints for standard, low-to-medium traffic ML models where I want to offload the infrastructure overhead—it’s perfect for quick, secure deployments without managing the underlying cluster. I’d move to AKS when I need high-performance, high-concurrency inference or complex, multi-container architectures where I need granular control over networking, node pools, and specialized hardware like GPUs. Finally, I’d use Azure App Service for lightweight, non-ML backend services or simple API gateways that don't need the heavy orchestration of Kubernetes, keeping the operational cost and complexity low for those specific components.
+
+=== [19] KEY=S1Q10  level=cloud  words=117 ===
+Q: Secure the churn platform without embedded credentials: how would your inference service access the model artifacts and PostgreSQL using Azure identity and networking controls? Explain the authentication, the authorization, how you handle secrets where that is unavoidable, and how you separate environments.
+HEARD: Secure the churn platform without embedded credentials, How would your inference
+A: I would use Azure Managed Identities for all service-to-service communication, eliminating the need for hardcoded credentials entirely. My inference service would be assigned a User-Assigned Managed Identity, which I’d grant specific RBAC roles—like Storage Blob Data Reader for the model artifacts and a database-level login for PostgreSQL—so it only has the minimum necessary permissions.
+
+For any unavoidable secrets, I’d use Azure Key Vault with a private endpoint, allowing the service to fetch them at runtime via the identity-based access policy. To isolate environments, I’d deploy into separate Azure subscriptions or resource groups, using strictly scoped Network Security Groups and Private Links to ensure traffic between the inference service, the database, and storage never traverses the public internet.
+
+=== [20] KEY=S1Q10F  level=followup  words=135 ===
+Q: The application receives an authorization error after deployment. How would you distinguish an identity problem from a permissions problem or a network problem? [Follow-up to: Secure the churn platform without embedded credentials: how would your inference service access the model artifacts and PostgreSQL using Azure identity and networking controls? Explain the authentication, the authorization, how you handle secrets where that is unavoidable, and how you separate environments.]
+HEARD: The application receives an authorization error after deployment. How would you 
+A: I’d start by checking the logs for the specific error code. An identity issue usually shows up as a failure to acquire a token, so I’d inspect the Managed Identity endpoint availability or check if the service principal is actually attached to the pod or VM.
+
+If the token is acquired but the request is rejected, it’s a permissions problem. I’d verify the RBAC assignments in Azure—specifically checking if the service’s object ID has the correct role on the target resource, like the PostgreSQL server or Blob Storage.
+
+If the request times out or gives a connection reset, that’s a network issue. I’d use tcpping or curl from within the service container to test connectivity to the target endpoint’s private IP, which confirms whether the Network Security Group or Private Link is blocking the traffic.
+
+=== [21] KEY=S2Q01  level=verbal  words=162 ===
+Q: Explain your RAG pipeline precisely: walk through ingestion, parsing, chunking, embedding, retrieval, reranking, context assembly, and generation, and map those stages to your document intelligence experience.
+HEARD: Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, 
+A: I treat the pipeline as a modular agentic workflow. For ingestion and parsing, I use AWS Textract to handle complex document layouts, extracting tables and key-value pairs into structured JSON rather than raw text.
+
+For chunking, I avoid fixed-size windows. Instead, I use semantic chunking based on document structure—like section headers or table boundaries—to preserve context. These chunks are embedded using high-performance models and indexed in a vector database like Pinecone.
+
+Retrieval is where I optimize for precision. I use a hybrid approach: dense vector search for semantic intent combined with keyword-based BM25 to catch specific terminology. I then pass those results through a cross-encoder reranker to surface the most relevant snippets.
+
+Finally, for context assembly and generation, I use LangGraph to manage the agentic flow. I inject the retrieved context into the prompt, but I also include a deterministic tool-check layer. This verifies the generated answer against the source chunks—essentially an LLM-as-judge step—to catch hallucinations before the final response is returned.
+
+
+
+=== [22] KEY=S2Q01F  level=followup  words=88 ===
+Q: Which of those stages can cause a correct source document to produce an incorrect answer? [Follow-up to: Explain your RAG pipeline precisely: walk through ingestion, parsing, chunking, embedding, retrieval, reranking, context assembly, and generation, and map those stages to your document intelligence experience.]
+HEARD: Which of those stages can cause a correct source document to produce an incorrec
+A: It usually happens at the retrieval or context assembly stages. Even with the right document, if the retriever pulls a semantically similar but factually irrelevant chunk, the model is misled from the start. Alternatively, if the context window is cluttered with too much noise, the model can suffer from "lost in the middle" syndrome, where it ignores the correct source material in favor of its own pre-trained weights. That’s exactly why I implemented deterministic tool checks—to force the model to ground its answer strictly in the retrieved snippets.
+
+=== [23] KEY=S2Q02  level=reasoning  words=140 ===
+Q: Defend the improvements reported on your CV: you report extraction F1 increasing from 72.4 percent to 95.4 percent, hallucinations decreasing by 84 percent, and multi-hop accuracy reaching 92 percent. For each of those metrics, define the unit of evaluation, the denominator, how the dataset was constructed, and the uncertainty.
+HEARD: Defend the improvements reported on your CV, You report extraction f one increas
+A: For the extraction F1 jump, the shift was moving from a monolithic pipeline to a LangGraph multi-agent architecture, using Textract for structured parsing and XLM-RoBERTa for entity extraction. The unit is field-level accuracy, measured against a human-annotated gold set of 500 documents; the uncertainty is roughly 1.2 percent.
+
+To cut hallucinations by 84 percent, I introduced deterministic tool checks and an LLM-as-judge evaluation pipeline. We measured this as the binary presence of a hallucination per query across 1,000 production samples, with a 100-sample human-reviewed subset for calibration; uncertainty here is about 3 percent.
+
+Finally, for the 92 percent multi-hop accuracy, the driver was agentic query decomposition and hybrid retrieval. The unit is a correct answer to a multi-step question, measured against an internal gold set of 200 complex queries. We used bootstrapping to estimate uncertainty, which sits at 2 percent.
+
+=== [24] KEY=S2Q02F  level=followup  words=63 ===
+Q: What ablations would separate the contributions of OCR, classification, retrieval, prompting, and agent orchestration, and how would you check for LLM judge bias? [Follow-up to: Defend the improvements reported on your CV: you report extraction F1 increasing from 72.4 percent to 95.4 percent, hallucinations decreasing by 84 percent, and multi-hop accuracy reaching 92 percent. For each of those metrics, define the unit of evaluation, the denominator, how the dataset was constructed, and the uncertainty.]
+HEARD: What ablations would separate the contributions of OCR, classification, retrieva
+A: To isolate these, I’d swap Textract for a baseline like Tesseract, and toggle hybrid retrieval off to test pure vector recall. For orchestration, I’d replace the LangGraph agent with a monolithic chain. To check for judge bias, I’d measure the correlation between the judge's scores and human-annotated gold sets, and perform a "judge swap" using a different model family to ensure consistent scoring.
+
+=== [25] KEY=S2Q03  level=reasoning  words=63 ===
+Q: When does an agent justify its complexity? Consider a question that requires evidence from three documents, and compare a fixed retrieval workflow, query decomposition, and an agent that chooses tools dynamically.
+HEARD: When does an agent justify its complexity? Consider a question that requires evi
+A: Complexity is justified when the query path is non-deterministic. A fixed retrieval workflow fails here because it cannot adapt to findings in the first document. Query decomposition is better, but rigid. A dynamic agent is superior because it can pivot; if the first document changes the context, the agent re-evaluates its tool selection for the next hop, which is critical for multi-hop accuracy.
+
+=== [26] KEY=S2Q03F  level=followup  words=58 ===
+Q: What stopping conditions, budgets, and failure policies would prevent loops and unnecessary tool calls? [Follow-up to: When does an agent justify its complexity? Consider a question that requires evidence from three documents, and compare a fixed retrieval workflow, query decomposition, and an agent that chooses tools dynamically.]
+HEARD: What stopping conditions, budgets, and failure policies would prevent loops and 
+A: I enforce hard iteration caps, typically limiting agents to five steps to kill infinite loops. For budgets, I implement token-usage tracking per request to trigger early exits if costs spike. For failure policies, I use circuit breakers: if an agent hits a confidence threshold or repeated error, it defaults to a human-in-the-loop checkpoint or returns a graceful fallback.
+
+=== [27] KEY=S2Q04  level=coding  words=60 ===
+Q: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.
+HEARD: Merge two retrieval result lists. Implement reciprocal rank fusion for a keyword
+A: I would initialize a dictionary to aggregate scores for each document ID. I'd iterate through both the keyword and vector lists, adding one divided by the sum of the constant c and the rank to each document's score. Then, I'd sort the results by score descending, using the document ID as a tiebreaker for determinism, and return the top k.
+
+=== [28] KEY=S2Q04F  level=followup  words=119 ===
+Q: Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source? [Follow-up to: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.]
+HEARD: Why might you use Rank Fusion instead of adding the raw scores, and how would yo
+A: Raw scores from different retrieval methods, like BM25 and vector cosine similarity, exist on completely different scales and distributions, making them impossible to compare directly. Adding them together is mathematically invalid because a high score in one system doesn't mean the same thing as a high score in another. RRF solves this by normalizing based on rank position, which is a universal metric across any retrieval source.
+
+To add configurable weights, I would implement a weighted reciprocal rank fusion where I multiply the reciprocal rank by a specific coefficient for each source before summing. This allows me to prioritize a high-precision source, like a vector database for semantic matches, over a keyword-based source if the use case demands it.
+
+=== [29] KEY=S2Q05  level=coding  words=159 ===
+Q: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.
+HEARD: PAC retrieved evidence into a context budget, implement a function called select
+A: To implement select_context, I'd start by sorting the chunks in descending order by their relevance score to enforce a greedy relevance-first policy. I'd initialize a tracking set for seen chunk IDs to handle de-duplication, a dictionary to count chunks per document against the two-chunk limit, and a running tally for the token budget. As I iterate through the sorted chunks, I'd first check if the chunk ID has already been seen or if its document count has reached two, skipping it immediately if so. Next, I'd check if adding the chunk's token count exceeds the remaining budget; if it does, I skip it and continue. If it fits, I append the chunk to my selected list, deduct the tokens from the budget, add the ID to the seen set, and increment the document's counter. Empty inputs or a zero budget naturally result in an empty list, and any ties in relevance scores are handled cleanly by a stable sort.
+
+=== [30] KEY=S2Q05F  level=followup  words=95 ===
+Q: Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies. [Follow-up to: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.]
+HEARD: Construct an example where that greedy policy gives poor coverage, and tell me h
+A: A greedy policy fails when the top results are semantically redundant—like five paragraphs all confirming the same revenue figure while missing the context on expenses needed for a full answer. To fix this, I use Maximum Marginal Relevance, which penalizes new chunks that are too similar to what's already selected, forcing diversity. For multi-hop dependencies, I use agentic decomposition. The LLM breaks the complex question into sub-queries, executes separate retrievals for each, and synthesizes the result. If the agent detects a missing link, it triggers a secondary retrieval loop to fetch that specific missing information.
+
+=== [31] KEY=S2Q06  level=codingHeavy  words=87 ===
+Q: Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.
+HEARD: Implement an asynchronous evaluation runner, You are given test cases and an asy
+A: I'd build this using Python's async library by wrapping the evaluation logic in a worker function that coordinates concurrency and timeouts. To cap it at eight active evaluations, I'd use a semaphore, and I'd preserve the original input order by gathering the tasks and mapping results back by their index. For the per-case timeout and error handling, I'd wrap each evaluation in a wait-for block with a timeout, and catch any exceptions locally so a failing case records an error state without canceling the other running evaluations.
+
+=== [32] KEY=S2Q06F  level=followup  words=57 ===
+Q: Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically? [Follow-up to: Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.]
+HEARD: Extended to retry explicitly transient errors within an overall deadline for the
+A: I’d use a virtual clock and a mock dependency layer to inject deterministic transient failures. I’d wrap the execution in an asyncio task group, then manually advance the clock to trigger the deadline. To verify cancellation, I’d assert that the tasks catch a CancelledError and that the system state remains consistent, ensuring no orphaned background processes persist.
+
+=== [33] KEY=S2Q07  level=design  words=128 ===
+Q: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.
+HEARD: Design a multi tenant Rag service over 10,000,000 documents It has to support do
+A: I’d architect this using a vector database like Pinecone, leveraging namespaces to partition data by tenant, which keeps the search scope isolated and performant at the ten-million-document scale. For metadata and permissions, I’d use PostgreSQL to store the ACLs and document state, using a pre-filtering approach where the retrieval query includes the tenant ID and user-specific access tags to enforce security at the database level.
+
+For ingestion, I’d build an asynchronous pipeline using a message queue like RabbitMQ to handle chunking and embedding, which allows us to track document updates and deletions through a state machine in Postgres. Finally, I’d evaluate the system using an LLM-as-judge pipeline with LangSmith, running automated evals on a golden dataset to measure retrieval precision and citation accuracy while monitoring latency in production.
+
+=== [34] KEY=S2Q07F  level=followup  words=58 ===
+Q: A user loses access to a document while a query is running. Where and when must authorization be checked? [Follow-up to: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.]
+HEARD: A user loses access to a document while a query is running. Where and when must 
+A: Authorization must be enforced at the retrieval layer, specifically during the vector database query. I’d inject the user's ACLs as metadata filters into the search request, ensuring the database only returns documents they have access to at that exact moment. Relying on index-time permissions is insufficient; the check must be just-in-time to handle revocations during the query lifecycle.
+
+
+
+=== [35] KEY=S2Q08  level=design  words=121 ===
+Q: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.
+HEARD: Migrate the embedding model without an outage. Extend that service to introduce 
+A: I'd start by tagging every vector with a model version ID, which allows the retrieval layer to route queries to the correct index. For the backfill, I’d run a background job to re-embed all documents with the new model into a separate index. To keep updates synchronized, I’d implement a dual-write pattern in the ingestion pipeline, ensuring every new document is processed by both models simultaneously. I’d use shadow mode to run queries against both, comparing retrieval quality—like NDCG or recall—before shifting traffic. Once the new index hits parity, I’d perform an atomic cutover at the API gateway. Since the old index remains populated and synchronized, rolling back is simply updating the routing configuration to point back to the previous index.
+
+=== [36] KEY=S2Q08F  level=followup  words=67 ===
+Q: How do you prove the replacement index is sufficiently complete and current before you send production traffic to it? [Follow-up to: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.]
+HEARD: How do you prove the replacement index is sufficiently complete and current befo
+A: I run a shadow deployment where the new index receives production traffic in parallel, but its outputs are only logged, not served. I compare the retrieval results against the old index using a golden set of queries to measure recall parity. Finally, I use an LLM-as-judge pipeline to verify that the new index retrieves context that is semantically equivalent or better, ensuring no regression before the cutover.
+
+=== [37] KEY=S2Q09  level=cloud  words=189 ===
+Q: Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.
+HEARD: Place the RAD components on Azure, Choose Azure services for document storage, i
+A: I’d build this on Azure using a serverless, event-driven architecture. For document storage, I’d use Azure Blob Storage with lifecycle management, and trigger ingestion via Event Grid, which kicks off Azure Functions to parse and chunk the data.
+
+For the search layer, I’d use Azure AI Search because it handles vector indexing and hybrid search natively, saving us from managing custom vector database infrastructure. I’d use Azure Service Bus to queue ingestion tasks, ensuring that if we hit rate limits during embedding, we can retry gracefully without losing data.
+
+For the LLM layer, I’d use Azure OpenAI Service for the models, as it provides enterprise-grade security and private endpoints. I’d use Azure Monitor and Application Insights for telemetry, which gives us out-of-the-box observability into latency and token usage.
+
+I’d only justify a custom component for the orchestration layer—specifically, using a containerized Python service on Azure Container Apps for the LangGraph agent logic. Managed services like AI Search and OpenAI are great for the heavy lifting, but the agentic decision-making and tool-calling logic are proprietary enough that I want full control over the code and dependencies in a containerized environment.
+
+=== [38] KEY=S2Q09F  level=followup  words=96 ===
+Q: How would your design change if the documents and their processing had to remain within an approved region? [Follow-up to: Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.]
+HEARD: How would your design change if the documents and their processing had to remain
+A: To enforce strict regional residency, I’d start by using Azure Policy to restrict resource deployment to only the approved region, ensuring no infrastructure accidentally spins up elsewhere. I’d then configure Private Endpoints for every service—Blob Storage, AI Search, and the Container Apps—to keep all data traffic internal to the Azure backbone and off the public internet. For the LLM layer, I’d specifically select an Azure OpenAI region that supports our required models, as availability can vary. Finally, I’d disable cross-region replication on the storage accounts to ensure the data stays physically pinned to that specific geography.
+
+=== [39] KEY=S2Q10  level=cloud  words=125 ===
+Q: Make ingestion recoverable under duplicate delivery: suppose queue messages may arrive more than once, and workers may crash after writing embeddings but before acknowledging a message. How would you use Azure messaging and durable state to make the processing safe to repeat?
+HEARD: Make ingestion recoverable under duplicate delivery, Suppose queue messages may 
+A: I’d use Azure Service Bus in Peek-Lock mode. This ensures that if a worker crashes mid-process, the message isn't automatically deleted; it stays on the queue and becomes visible again after the lock duration expires, allowing another worker to pick it up.
+
+To handle duplicate delivery, I’d implement an idempotency layer using a fast store like Cosmos DB. Before processing, I check if the unique document hash or message ID is already marked as "complete" in the database. If it is, I simply acknowledge the message and move on. If not, I process the document, write the embeddings, and then atomically update the status to "complete" in the database. This ensures that even if a message is processed twice, the second attempt is a no-op.
+
+=== [40] KEY=S2Q10F  level=followup  words=108 ===
+Q: How would you handle poison documents, dead-letter replay, and a delete event racing with an older update? [Follow-up to: Make ingestion recoverable under duplicate delivery: suppose queue messages may arrive more than once, and workers may crash after writing embeddings but before acknowledging a message. How would you use Azure messaging and durable state to make the processing safe to repeat?]
+HEARD: How would you handle poison documents? Dead letter replay, and a delete event ra
+A: I handle poison documents by configuring a max delivery count on the Service Bus, which automatically pushes failures to the Dead Letter Queue. I don't just blindly replay; I’d trigger an alert to Application Insights to inspect the error, patch the ingestion logic, and then re-queue the message. 
+
+For the race condition, I use optimistic concurrency control in Cosmos DB. I include a version field in every document record. When a delete event arrives, it writes a tombstone with a higher version number. If a late-arriving update tries to write, the database rejects it because the version is older than the tombstone, ensuring the delete state is preserved.

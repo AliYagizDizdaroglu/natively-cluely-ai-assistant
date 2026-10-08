@@ -1,0 +1,11 @@
+Follow-up replay graders, dispatched 2026-10-01 ~14:29 local, model alias opus, h40c's frozen-instrument dispatch text
+verbatim (the runbook's step 9). The four key files were moved OUT of blind\ before dispatch (move-keys.mjs out).
+
+blind-1 g1  a5413ac009fc5bd7a
+blind-1 g2  a094c084cd34a3317
+blind-2 g1  acc1be82feb2f0ca8
+blind-2 g2  a25378e03b513e26f
+blind-3 g1  a143672af5b84801e
+blind-3 g2  a212dde33c5093f63
+blind-4 g1  a142f78a1e07498ed
+blind-4 g2  aa807280156c2e7a0

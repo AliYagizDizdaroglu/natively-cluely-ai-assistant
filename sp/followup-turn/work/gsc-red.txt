@@ -1,0 +1,117 @@
+=== A. h40d-grader-models.mjs: top-level sessions ===
+OK   top-level session on claude-opus-5-5 reads PINNED, exit 0
+OK   top-level session on another model reads NOT PINNED, exit 1
+OK   top-level session with two models reads NOT PINNED, exit 1
+OK   a <synthetic> API-error record is counted apart and does not make it mixed, exit 0
+OK   a top-level session with no transcript reads NOT VERIFIED, exit 1
+OK   a subagent (named session) and a top-level session in one call, both PINNED
+OK   a malformed id is a usage error, exit 2
+OK   the real alias probe a9d35e8deacac3eff reads PINNED (claude-opus-5-5)
+OK   a real top-level session of this project is found by its session file and read
+OK   a session id is found across a hashed-suffix slug folder
+BAD  file:<C:/ path> is accepted and read: PINNED, exit 0
+BAD  ... a file on another model reads NOT PINNED, exit 1
+BAD  a Git-Bash /c/... path is refused (C:/ paths only), exit 2
+BAD  a file: that does not exist reads NOT VERIFIED, exit 1
+OK   the real 22:19 outside-cwd probe 011ca16e (hashed-suffix slug) reads PINNED claude-opus-5-5
+
+=== B. check-grader-memory.mjs ===
+OK   POSITIVE CONTROL a9d35e8deacac3eff (the s50l alias probe) reads LOADED, exit 1
+BAD  every <tag>: line carries "projectMemory=<n> claudeMem=<n>" (graders.json is derived from it, A2 point 5), and the counts equal the markers printed beside them
+BAD  the generic auto-memory instruction naming MEMORY.md is NOT a marker: ABSENT, exit 0, projectMemory=0 claudeMem=0
+BAD  ... while the "Memory Index" header alone still reads LOADED (projectMemory=1)
+OK   session:<uuid> is found by id across a hashed-suffix slug folder (LOADED on its Memory Index header)
+BAD  file:/c/... (Git-Bash form) is refused, C:/ paths only: exit 2
+     a9d: LOADED  (project-memory markers: 34 hits in 17 distinct [Memory Indexx2 MEMORY.mdx2 project_ipc_routingx2 project_overlay_sizingx2 project_context_togglex2 project_product_invariantsx2 project_answer_failure_diagnosisx2 project_whole_turn_designx2 project_followup_earlier_questionsx2 project_h40d_flightx2 project_quality_benchx2 project_gemma_coding_qualityx2 feedback_pass_recordsx2 feedback_grade_bare_armsx2 tooling_bash_escapesx2 tooling_commit_shared_indexx2 project_cue_mode_nextx2]; claude-mem context markers: 0; scanned 13 records, 322825 bytes)
+     probe2: LOADED  (project-memory markers: 4 hits in 1 distinct [MEMORY.mdx4]; claude-mem context markers: 0; scanned 34 records, 286340 bytes)
+BAD  a9d35e8deacac3eff (positive control) still reads LOADED
+BAD  the 22:19 outside-cwd probe 011ca16e-5258-4124-92fb-3ea525dc85a7 reads ABSENT, projectMemory=0 claudeMem=0 (it read LOADED on the generic "MEMORY.md" hits before A2 point 8)
+OK   a real top-level session reads LOADED by BOTH marker groups (project memory and claude-mem context)
+OK   the positive control with its `instructions` attachment removed reads ABSENT, exit 0 (the check answers differently when the effect is absent)  [t: ABSENT  (project-memory markers: 0 hits in 0 distinct; claude-mem context markers: 0; s]
+OK   ... and one memory file NAME put back flips it to LOADED
+OK   ... and the "Memory Index" header put back flips it to LOADED
+OK   ... and a claude-mem SessionStart header (any project name) put back flips it to LOADED, naming the project
+OK   claude-mem TOOL/SKILL NAMES alone (present in every session under any cwd) do NOT read LOADED
+     leftovers in the top-level session: without instructions pm=9 cm=5; without hook records pm=34 cm=0; without both pm=6 cm=0
+OK   top-level session minus its `instructions` attachment: the claude-mem group still reads LOADED
+OK   top-level session minus its hook records: the project-memory group still reads LOADED
+OK   top-level session minus the claude-mem hook records loses the claude-mem group (0 hits)
+OK   top-level session minus the `instructions` attachment loses most of the project-memory hits
+     population: 745 subagent transcripts; with an AutoMem entry: 604 LOADED / 0 ABSENT; without: 2 LOADED / 139 ABSENT
+OK   the check never misses an AutoMem-loaded transcript (0 false ABSENT in the population)
+OK   the check reads ABSENT on every transcript without an AutoMem entry except those that READ memory files through a tool  [2 such exceptions (a transcript with a Read/Bash of a memory file is exposed too)]
+OK   exception agent-a3b4fa17ff351376: a tool call names a memory file (a real exposure, LOADED is right)
+OK   exception agent-a922267a530cd715: a tool call names a memory file (a real exposure, LOADED is right)
+
+=== C. audit-graders.mjs: ALLOWLIST audit; negative controls ===
+BAD  the real shape (Read rubric + own pairs, Write own verdicts, nothing else) is clean, exit 0
+BAD  ... plus one validation Bash of the exact shape cd "<own blind folder>" && node -e "<code>" (own verdicts + own pairs only) is clean under the flag
+BAD  ... the same without the cd, the own verdicts file as a trailing argument (4 of the 8 real graders did this) is clean
+BAD  ... require(process.argv[1]) of the own verdicts file (a real grader did this) is clean
+BAD  ... but the SAME command with the OTHER grader's verdicts as the argument is FLAGGED
+BAD  without the flag: Read/Write of the own files only is still clean (section 1's text: Read and Write)
+BAD  without the flag a Bash call is FLAGGED (section 1's text: any tool other than Read/Write)
+BAD  NEGATIVE CONTROL bypass 1 reading MAIN/.env: FLAGGED
+BAD  NEGATIVE CONTROL bypass 2 R-key*/k*-1.json (a glob around keyhold): FLAGGED
+BAD  NEGATIVE CONTROL bypass 3 ../interview60.ans* (a glob): FLAGGED
+BAD  NEGATIVE CONTROL bypass 4 readdirSync('..') with 'interview60.'+'ans': FLAGGED
+BAD  NEGATIVE CONTROL bypass 5 ../../PREREGISTER-turn-followup.md: FLAGGED
+BAD  NEGATIVE CONTROL bypass 6 ../run.log: FLAGGED
+BAD  NEGATIVE CONTROL bypass 7 verdicts.blind-1.g?.json (the other grader's verdicts, by glob): FLAGGED
+BAD  NEGATIVE CONTROL bypass 8 fetch('ht'+'tps://...'): FLAGGED
+BAD  also FLAGGED: template literal
+BAD  also FLAGGED: $ expansion
+BAD  also FLAGGED: a backtick
+BAD  also FLAGGED: an absolute path literal
+BAD  also FLAGGED: a ~ path
+BAD  also FLAGGED: require of child_process
+BAD  also FLAGGED: process.env
+BAD  also FLAGGED: http
+BAD  also FLAGGED: a path.join with a non-literal argument
+BAD  also FLAGGED: readdirSync of the blind folder itself
+BAD  also FLAGGED: string building with replace
+BAD  also FLAGGED: import()
+BAD  also FLAGGED: a cd target that is not the own blind folder
+BAD  also FLAGGED: a second command after the node -e (; cat ../run.log)
+BAD  also FLAGGED: && cat ../run.log after the node -e
+BAD  NEGATIVE CONTROL `cat verdicts.blind-1.g1.json pairs.blind-2.json` (another file's pairs): FLAGGED
+BAD  NEGATIVE CONTROL node -e naming pairs.blind-2.json: FLAGGED
+BAD  NEGATIVE CONTROL Read MAIN/.env: FLAGGED
+BAD  NEGATIVE CONTROL Read the registration: FLAGGED
+BAD  NEGATIVE CONTROL Read R/run.log: FLAGGED
+BAD  NEGATIVE CONTROL Read R/s50m-gated-turn.json: FLAGGED
+BAD  NEGATIVE CONTROL Write blind/graders.json: FLAGGED
+BAD  NEGATIVE CONTROL Read another file's pairs (pairs.blind-2.json): FLAGGED
+BAD  NEGATIVE CONTROL Read the other grader's verdicts: FLAGGED
+BAD  NEGATIVE CONTROL Write the other grader's verdicts: FLAGGED
+BAD  NEGATIVE CONTROL Edit another file's verdicts: FLAGGED
+BAD  NEGATIVE CONTROL Read a key file: FLAGGED
+BAD  NEGATIVE CONTROL Read an answer file: FLAGGED
+BAD  NEGATIVE CONTROL Read ../pairs.blind-1.json (resolves outside the blind folder): FLAGGED
+BAD  Grep is FLAGGED (under the flag too)
+BAD  Glob is FLAGGED (under the flag too)
+BAD  Agent is FLAGGED (under the flag too)
+BAD  WebFetch is FLAGGED (under the flag too)
+BAD  an mcp__ call is FLAGGED (under the flag too)
+BAD  Edit of the OWN verdicts file is clean under the flag
+BAD  ... and FLAGGED without the flag (section 1: Read and Write only)
+BAD  a backslash spelling of the own pairs path (C:\x\blind\pairs.blind-1.json) is the same file: clean
+BAD  a relative ./pairs.blind-1.json resolves against the blind folder: clean
+BAD  the same calls under another tag (blind-2.g1) are FLAGGED: own is derived per tag
+OK   a transcript that cannot be found cannot be audited: exit 1
+OK   file:/c/... (Git-Bash form) is refused, C:/ paths only: exit 2
+BAD  the real alias probe a9d35e8deacac3eff (no tool use at all) is clean
+BAD  a first user message equal to the dispatch text with its paths and tag substituted: clean, dispatch=match
+BAD  NEGATIVE CONTROL: ONE changed word in the dispatch text ("Do not paraphrase" -> "Do paraphrase"): FLAGGED, dispatch=DIFFERS
+BAD  NEGATIVE CONTROL: a changed punctuation mark: FLAGGED
+BAD  NEGATIVE CONTROL: extra text appended to the dispatch text: FLAGGED
+BAD  NEGATIVE CONTROL: the right text with ANOTHER tag and verdicts path in it: FLAGGED
+BAD  NEGATIVE CONTROL: no user message at all: FLAGGED (cannot match the dispatch)
+BAD  REGISTRATION CONFLICT, shown on the 8 real s50l graders: under the rule as written (no flag) every grader is FLAGGED (each ran one Bash)
+
+BAD  the 8 real s50l graders read CLEAN under the allowlist (Read rubric + own pairs, Write own verdicts, one validation Bash each)
+BAD  ... and their first user messages match the dispatch text 8/8
+BAD  ... each with its allowed Bash recorded as <length>:<sha12>
+BAD  the real blind-1.g1 transcript audited AS blind-1.g2 is FLAGGED (it wrote the other grader's files)
+
+GRADER-SESSION CALIBRATION FAILED

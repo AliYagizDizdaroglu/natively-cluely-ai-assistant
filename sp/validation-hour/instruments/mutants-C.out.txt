@@ -1,0 +1,61 @@
+Mutation test of the brief-C calibration (rule 8: break the code, watch the calibration fail)
+written by instruments\run-mutants-C.mjs on 2026-10-01T11:59:31.260Z
+
+m01 rule3      noise-threshold-2            KILLED by R4b
+    bug: the noise condition allows 2 below instead of 1
+m02 rule3      noise-gap-sign               KILLED by R1, R2, R3, R4, R4b, R22 + noise-gap cross-check
+    bug: the gap is taken the wrong way round
+m03 rule3      noise-lowest-is-max          KILLED by R1, R2, R3, R4, R4b, R5, R22 + noise-gap cross-check
+    bug: compares with the best cue rep, not the lowest
+m04 rule3      noise-shared-some            KILLED by R22
+    bug: shared ids = in ANY rep instead of ALL three
+m05 rule3      excluded-without-R09F        KILLED by R1, R2, R6, R7, R8, R16, R19, R20, R21, R22, R23
+    bug: R09F is no longer excluded from 3b
+m06 rule3      floor-34                     KILLED by R1, R3, R4, R4b, R16, R19, R23
+    bug: the default floor drifts to 34
+m07 rule3      best-is-first                KILLED by R23
+    bug: 3a takes an item's FIRST answer, not its best
+m08 rule3      3b-best-only                 KILLED by R16, R23
+    bug: 3b counts only an item's best answer, not every delivered answer
+m09 rule3      star-some                    KILLED by R1
+    bug: the table flags in-app below ANY twin, not all three
+m10 rule3      nocue-always-absent          KILLED by R6, R7
+    bug: the no-cue column never shows data
+m11 rule3      notmerged-as-absent          KILLED by R7, R8
+    bug: NOT MERGED and absent are not told apart
+m12 rule3      exit-always-0                KILLED by R3, R4, R4b, R5, R16, R23
+    bug: a failing reading exits 0
+m13 rule3      pin-always-match             KILLED by R20
+    bug: the grader-model pin line cannot say DIFFERS
+m14 rule3      roster-check-off             KILLED by R11
+    bug: a non-holdout40 run folder is read as if it were
+m15 rule3      leak-gated-reasons           KILLED by R3, R16, R23
+    bug: the grader reason text leaks into the 3b line
+m16 rule3      leak-notacceptable-reasons   KILLED by R1, R2, R3, R4, R4b, R5, R6, R7, R8
+    bug: the reason text leaks into the not-acceptable list
+m17 hascuerule count-blind                  KILLED by H7
+    bug: the independent count is blinded (it just echoes hasCueRule)
+m18 hascuerule mutate-noop                  KILLED by H3
+    bug: --mutate-one strips nothing
+m19 hascuerule mark-literal                 KILLED by H2, H3, H4, H5, H7, H8, H11
+    bug: the check's own mark literal is wrong
+m20 hascuerule exit-swapped                 KILLED by H2, H3, H4, H5, H11
+    bug: true and false exit codes swapped
+m21 hascuerule no-export-check              KILLED by H1
+    bug: a flight module without hasCueRule is not refused
+m22 hascuerule leak-prompt                  KILLED by H2, H3, H4, H5, H7, H8, H11
+    bug: a slice of a captured prompt is printed
+m23 grader     pin-includes                 KILLED by G22
+    bug: a transcript that holds the pinned model AND another reads PINNED
+m24 grader     synthetic-as-model           KILLED by G10, G11, G18
+    bug: rate-limit placeholders count as a second model (h40c-grader-models.mjs behaviour)
+m25 grader     no-search                    KILLED by G4, G6, G8, G9, G10, G11, G12, G13, G14, G15, G16, G17, G22
+    bug: the search over every session is disabled
+m26 grader     empty-not-ignored            KILLED by G15
+    bug: empty .output placeholders are not ignored
+m27 grader     exit-always-0                KILLED by G4, G5, G6, G7, G11, G12, G13, G15, G16, G17, G22
+    bug: a failed pin exits 0
+m28 grader     missing-ignored              KILLED by G7, G15, G17
+    bug: an agent with no transcript does not stop the pin
+
+SUMMARY: 28 of 28 mutants KILLED

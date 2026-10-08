@@ -1,0 +1,26 @@
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+stdout | electron/llm/verbalFallback.test.ts > verbal fallback redirect > falls back when the primary fails before any content
+[Answer] budget: words=2 cut=no allowance=no
+
+stdout | electron/llm/verbalFallback.test.ts > verbal fallback redirect > announces the redirect instead of swapping models silently
+[Answer] budget: words=2 cut=no allowance=no
+
+stdout | electron/llm/verbalFallback.test.ts > verbal fallback redirect > emits onSuggestions exactly once even though two streams ran
+[Answer] budget: words=2 cut=no allowance=no
+
+stdout | electron/llm/verbalFallback.test.ts > verbal fallback redirect > leaves the healthy path untouched — no fallback redirect
+[Answer] budget: words=9 cut=no allowance=no
+
+stdout | electron/llm/verbalFallback.test.ts > verbal fallback redirect > cue mode: when the primary dies before its first token, the fallback stream supplies the cues, once
+[Answer] budget: words=2 cut=no allowance=no
+
+ ✓ electron/llm/verbalFallback.test.ts (7 tests) 66ms
+ ✓ electron/IntelligenceEngine.cues.test.ts (8 tests) 36ms
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  21:36:14
+   Duration  7.76s (transform 1.23s, setup 0ms, collect 5.24s, tests 102ms, environment 5.87s, prepare 955ms)
+

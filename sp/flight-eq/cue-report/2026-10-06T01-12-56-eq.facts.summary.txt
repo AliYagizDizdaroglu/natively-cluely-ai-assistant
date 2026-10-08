@@ -1,0 +1,25 @@
+run 2026-10-06T01-12-56-eq
+log window 2026-10-06T00:01:59.499Z .. 2026-10-06T01:12:54.680Z; timeline items 40
+cue blocks: 42
+shape: empty 0, one line 0, two lines 14, three lines 28, more than three 0
+words per cue line: n 112, median 4, max 5, lines over 5 words 0; words per block: median 11
+items with more than one block: S1Q01 x2; items with no block: none
+cues trimmed lines: 8
+answers: full lines 42 (failed 0), superseded streams 0
+hedge: gemini-3.5-flash-lite won 39 (at median 4246 ms, max 12441 ms); gemini-3.1-flash-lite won 3 (at median 13547 ms, max 16910 ms)
+lines with "Knowledge mode (stream): returning generated intro response": 0
+lines with "__negotiationCoaching": 0
+lines with "turn: close reason=not-a-question": 0
+lines with "boundary repair: restored": 1
+first token (diag, this run): n 42, median 4899 ms, p90 11250 ms, max 17467 ms
+- PASS  Answered hands-free: 40/40 dispatched, 0 to nobody   (before: 26/52)
+- PASS  Heard by either detector: 40/40   (before: 51/52)
+- PASS  Surfaced detections per question: 0 doubles, 0 extended, 0 superseded, 0 caught, 0 unclaimed   (before: 12 doubles, 1 invented)
+- PASS  Long questions answered whole: 15 of 15 (dispatched text covers ≥ 80% of the question)   (before: not in the roster)
+- FAIL  Answer TTFT p90 · detect p50: 10.3 s · -0.2 s   (before: 3.7 s (answer-only pass) · 4.1 s)
+- PASS  Cue block above every spoken answer: 41/41 present, 41 well-formed, 8 trimmed   (before: not logged (before cue mode))
+dist now: main.js written 2026-09-30T21:03:29.295Z; limits 3 x 5; CUE_RULE sha256/12 8e15e4e7dd41
+block ids (id:lines:words): ?:2:2/2 S1Q01:2:3/3 S1Q01:3:3/3/3 S1Q01F:3:5/5/4 S1Q02:3:3/3/3 S1Q02F:2:3/4 S1Q03:3:3/4/4 S1Q03F:2:5/5 S1Q04:3:5/5/5 S1Q04F:3:4/4/4 S1Q05:3:5/3/5 S1Q05F:2:4/4 S1Q06:3:5/4/5 S1Q06F:2:5/5 S1Q07:3:5/5/5 S1Q07F:3:3/3/3 S1Q08:3:5/5/5 S1Q08F:2:4/3 S1Q09:3:5/5/4 S1Q09F:3:5/5/5 S1Q10:3:5/5/5 S1Q10F:3:4/5/5 S2Q01:3:2/3/2 S2Q01F:2:3/3 S2Q02:3:4/4/5 S2Q02F:3:5/5/5 S2Q03:2:3/5 S2Q03F:3:5/5/5 S2Q04:3:4/5/5 S2Q04F:2:4/5 S2Q05:3:4/4/4 S2Q05F:2:5/5 S2Q06:3:3/2/5 S2Q06F:2:4/3 S2Q07:3:4/4/5 S2Q07F:2:5/4 S2Q08:3:4/5/5 S2Q08F:3:3/4/3 S2Q09:3:5/5/5 S2Q09F:3:3/4/4 S2Q10:2:4/4 S2Q10F:3:4/4/5
+UNPARSABLE blocks: 0
+trimmed ids (id [kinds]): S1Q04 [cut 1]; S1Q08 [dropped 1, cut 2]; S1Q09 [cut 1]; S2Q02F [cut 1]; S2Q03 [cut 1]; S2Q04 [cut 1]; S2Q05F [cut 1]; S2Q09 [cut 1]
+failed answer ids: none; superseded stream ids: none

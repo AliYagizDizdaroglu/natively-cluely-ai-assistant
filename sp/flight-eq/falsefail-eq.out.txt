@@ -1,0 +1,4 @@
+calib n=1 p=.5 0.2500 p=0 0 replay n70 p=.01 30.9% (expect 30.9%)
+p=0.005: front20 8.7%  back12 5.5%  either(20,12) 13.7%  pooled32 12.8%
+p=0.0075: front20 12.2%  back12 7.9%  either(20,12) 19.1%  pooled32 17.3%
+p=0.01: front20 15.2%  back12 10.1%  either(20,12) 23.8%  pooled32 20.9%

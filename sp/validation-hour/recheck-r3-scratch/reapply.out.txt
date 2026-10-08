@@ -1,0 +1,75 @@
+﻿r2 sha ab7c52385f9aec9e lines 831; r3 sha a9033d6c8815d0a5 lines 1018
+r2 has CR: false; r3 has CR: false
+edits parsed: 71; header time in r3: 09:27
+E01 title                                               r2 line 1      NEW in r3: line 1
+E02 header paragraph (N8-e)                             r2 line 3      NEW in r3: line 3
+E03 sources paragraph                                   r2 line 11     NEW in r3: line 14
+E04 §2 the guard row + knowledge-mode row (N1)          r2 line 101    NEW in r3: line 107
+E05 §3 residual (N8-a)                                  r2 line 159    NEW in r3: line 166
+E06 §3 the combined build's first run                   r2 line 179    NEW in r3: line 186
+E07 rule 1(b) (N7-c)                                    r2 line 193    NEW in r3: line 211
+E08 rule 1(g) (N1-a)                                    r2 line 203    NEW in r3: line 221
+E09 2a calibration: the re-smoke                        r2 line 214    NEW in r3: line 246
+E10 2b sources: the re-smoke                            r2 line 224    NEW in r3: line 257
+E11 2c INCOMPLETE (N6)                                  r2 line 246    NEW in r3: line 280
+E12 2c first known case (N8-b)                          r2 line 247    NEW in r3: line 284
+E13 2e branch decided                                   r2 line 276    NEW in r3: line 313
+E14 provider reading: 2b or 2c INCOMPLETE (I5-d)        r2 line 293    NEW in r3: line 332
+E15 percentile paragraph (N8-d)                         r2 line 298    NEW in r3: line 338
+E16 one definition (N2-a)                               r2 line 306    NEW in r3: line 346
+E17 3a noise condition (M13-a)                          r2 line 313    NEW in r3: line 354
+E18 3a noise condition (M13-b)                          r2 line 314    NEW in r3: line 355
+E19 3c wrong clause (N2, ruling 2)                      r2 line 328    NEW in r3: line 369
+E20 3c counting: block-only twin (N2-d)                 r2 line 347    NEW in r3: line 404
+E21 3c same-day re-run (N4-a)                           r2 line 351    NEW in r3: line 408
+E22a 3c known case h40c (sums)                          r2 line 357    NEW in r3: line 420
+E22b 3c known case h40b (sums)                          r2 line 359    NEW in r3: line 422
+E23 rule 4 short-circuit count (N7-a)                   r2 line 416    NEW in r3: line 479
+E24 rule 4 cross-check row (N7-b)                       r2 line 420    NEW in r3: line 483
+E25 5a (N3-a, ruling 3)                                 r2 line 435    NEW in r3: line 498
+E26 5a reading (N3-b)                                   r2 line 447    NEW in r3: line 512
+E27 counting rulings: empty prose                       r2 line 464    NEW in r3: line 529
+E28 counting rulings: re-run (N4-b)                     r2 line 465    NEW in r3: line 530
+E29 §5 item 1 (I5-a, ruling 6)                          r2 line 475    NEW in r3: line 540
+E30 §5 item 2 (I5-b)                                    r2 line 479    NEW in r3: line 547
+E31 §5 item 3 (I5-c)                                    r2 line 482    NEW in r3: line 550
+E32 §5 item 4 (I5-d)                                    r2 line 484    NEW in r3: line 553
+E33 §5 item 5 (I5-e, ruling 6)                          r2 line 485    NEW in r3: line 556
+E34 §5 other-FAIL bullet (I5-f)                         r2 line 503    NEW in r3: line 574
+E35 §5 3a-miss bullet (M13-c)                           r2 line 507    NEW in r3: line 578
+E36 §5 INCOMPLETE bullet                                r2 line 510    NEW in r3: line 581
+E37 §5 NO LATENCY VERDICT bullet (ruling 6)             r2 line 512    NEW in r3: line 583
+E38 §6 start bullet (I5-g, ruling 6)                    r2 line 520    NEW in r3: line 592
+E39 §6 grader bullet (GD-a/b/c, ruling 5)               r2 line 522    NEW in r3: line 595
+E40 §6 preconditions (N1-b, facts of ruling 9)          r2 line 532    NEW in r3: line 610
+E41 §6 where the bench runs (N9-a, the facts)           r2 line 538    NEW in r3: line 621
+E42 §6 during the hour                                  r2 line 551    NEW in r3: line 643
+E43 §7.1 live look                                      r2 line 558    NEW in r3: line 650
+E44 §7.2 the re-smoke named                             r2 line 565    NEW in r3: line 657
+E45 §7.3 the prestart's day (N9-b)                      r2 line 571    NEW in r3: line 664
+E46 §7.3 the 60 s wait (N5-a)                           r2 line 573    NEW in r3: line 666
+E47a §7.3 probe wording (N5-b)                          r2 line 575    NEW in r3: line 668
+E47b §7.3 probe wording (N5-b)                          r2 line 576    NEW in r3: line 669
+E48 §7.3 required lines (N1-c)                          r2 line 580    NEW in r3: line 673
+E49 §7.3a knowledge mode read (ruling 1)                r2 line 581    NEW in r3: line 674
+E50 §7.4 guard check 13 (ruling 1)                      r2 line 605    NEW in r3: line 715
+E51 §7.4 clocks entry: the re-smoke                     r2 line 619    NEW in r3: line 733
+E52 §7.4 thoughts entry (N6-c) + the two new instruments r2 line 622    NEW in r3: line 738
+E53a §7.4 twins entry: the clause                       r2 line 630    NEW in r3: line 759
+E53b §7.4 twins entry: empty prose (N2-e)               r2 line 631    NEW in r3: line 762
+E54 §7.4 twins entry: --pre-cue (N8-c)                  r2 line 634    NEW in r3: line 765
+E55 §7.4 twins entry: cases 7 and 8 (N2-f, ruling 2)    r2 line 641    NEW in r3: line 772
+E56 §7.5 chains day (N9-c)                              r2 line 658    NEW in r3: line 793
+E57 §7.6 the run folder named (ruling 9)                r2 line 667    NEW in r3: line 802
+E58 §7.8 arming steps                                   r2 line 675    NEW in r3: line 810
+E59 §8 (N9-d)                                           r2 line 701    NEW in r3: line 838
+E60 §9.2 (N1-d)                                         r2 line 712    NEW in r3: line 849
+E61 §9.5 (GD-d, ruling 5)                               r2 line 721    NEW in r3: line 858
+E62 §9.6 (I5-h)                                         r2 line 726    NEW in r3: line 863
+E63a §11 live look + knowledge mode                     r2 line 758    NEW in r3: line 895
+E63b §11 the re-smoke (ruling 9)                        r2 line 766    NEW in r3: line 904
+E63c §11 the bench's quota day (ruling 9)               r2 line 771    NEW in r3: line 912
+E63d §11 grader alias (GD-e) + the two choices + rule 1(g) r2 line 778    NEW in r3: line 920
+E64 §12 the veto list and "Only the user"               r2 line 806    NEW in r3: line 954
+E65 §13 appended conflicts                              r2 line 830    NEW in r3: line 1003
+re-applied text sha a9033d6c8815d0a5; equal to r3: true

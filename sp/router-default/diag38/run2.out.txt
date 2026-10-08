@@ -1,0 +1,3 @@
+﻿runner gemma-answers.mjs
+QUOTA READING reset 2026-10-07T07:00:00.000Z; now 2026-10-07T15:23:09.416Z; app logs read 63; app starts since reset 0; log lines naming gemini-3.8-flash since reset 0; coverage back before the reset yes
+RUN 8 items, 15 requests planned; already used today 8 of 20; an item starts only with its pending requests + 1 left; gap 25106 ms

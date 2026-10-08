@@ -1,0 +1,5 @@
+OLD PRE-M6 TEST 
+fatal: not a git repository (or any of the parent directories): .git
+dirty-lines=0
+dist-electron main.js mtime=09/26/2026 10:14 PM
+DONE

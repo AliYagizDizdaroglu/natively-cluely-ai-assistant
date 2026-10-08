@@ -1,0 +1,7 @@
+== h40a ==
+identical (byte-for-byte JSON.stringify equal)
+
+== h40b ==
+answersToNobody: 1 -> 0
+pair changed: dispatchedAt=2026-09-26T10:47:31.603Z id ? -> R07F
+item R07F: answered false -> true, answeredAt null -> 1790419651603, dispatches 0 -> 1, coverage 0 -> 1

@@ -1,0 +1,51 @@
+OK  parseDebug: kinds in order (the `cues trimmed` line is not a cues line): "front wonBy cues budget wonBy cues budget wonBy cues wonBy cues budget wonBy cues budget"
+OK  parseDebug: window is the first and last timestamped line: [1790769600000,1790769620000]
+OK  parseDebug: won-by model and its own ms: ["gemini-3.5-flash-lite@2000","gemini-3.1-flash-lite@6100","gemini-3.5-flash-lite@1500","gemini-3.5-flash-lite@1800","gemini-3.5-flash-lite@900"]
+OK  parseDebug: only `[]` is an empty block: [false,false,false,true,false]
+OK  parseDebug: the budget line carries its word count: [40,60,12,0]
+OK  parseDiag: lines outside the window are ignored: "invoked firstToken wordBudget invoked firstToken wordBudget invoked invoked firstToken wordBudget"
+OK  parseDiag: the ttft number: [2230,2101,2210]
+OK  R2 cues -> budget: gaps in log order, the superseded block unpaired: [[5,400,15,2],1]
+OK  R2 under 15 ms is strict: 5 and 2 count, 15 does not: 2
+OK  R2: the words=0 pair is named and left out of the pairs with prose: [1,[5,400,15]]
+OK  R1 won by -> cues: every block pairs, the superseded one too: [[400,100,100,200,50],0]
+OK  T won by -> budget: the whole stream; the superseded won-by is unpaired: [[405,500,215,52],1]
+OK  rows: one per finished answer, with the LAST won-by and cues line before its budget line: [[400,5,405,40],[100,400,500,60],[200,15,215,12],[50,2,52,0]]
+OK  rows: B (first token -> word budget), C (won-by -> first token), the cues line -> first token: [[176,230,-170],[400,101,1],[6,210,10],[null,null,null]]
+OK  rows: only `[]` is an empty block: [false,false,true,false]
+OK  rows: a cues line before the last won-by (a redirect after a dead stream's report) gives a negative R1: [[-2000,2400,400]]
+OK  C won by -> first token: a won-by with no first token is unpaired: [[230,101,210],2]
+OK  B first token -> word budget: [[176,400,6],0]
+OK  counts: {"cues":5,"emptyCues":1,"budget":4,"wonBy":5,"invoked":4,"firstToken":3,"wordBudget":3}
+OK  pairs: a `b` with no open `a` is ignored: [7]
+OK  stats 1..10 with the limit at 10: 9 under (strict), median 5.5, p90 9, min 1, max 10: {"n":10,"under":9,"median":5.5,"p90":9,"min":1,"max":10}
+OK  stats, odd n: the middle value: 20
+OK  stats of nothing: {"n":0,"under":0,"median":null,"p90":null,"min":null,"max":null}
+OK  read refuses a debug log with no timestamped line: true
+OK  holdVerdict: 11 counted answers -> no verdict, however clean: [11,0,0,"NO VERDICT"]
+OK  holdVerdict: 12 counted, none together -> GONE: [12,0,0,"GONE"]
+OK  holdVerdict: 3 of 12 on both reads (exactly a quarter) -> GONE: [12,3,3,"GONE"]
+OK  holdVerdict: 4 of 12 on R2 (over a quarter, under a half) -> no verdict: [12,4,0,"NO VERDICT"]
+OK  holdVerdict: 6 of 12 on R2 (exactly half) -> NOT GONE: [12,6,0,"NOT GONE"]
+OK  holdVerdict: R2 clean but 6 of 12 on B (reports early, releases late) -> NOT GONE, and it names B: [12,0,6,"NOT GONE","B at least half"]
+OK  holdVerdict: R2 clean and 4 of 12 on B -> no verdict (GONE needs both): [12,0,4,"NO VERDICT"]
+OK  holdVerdict: the limits are strict: R2 and B of exactly 15 ms are not "together": [12,0,0,"GONE"]
+OK  holdVerdict: a stream of exactly 50 ms counts, 49 ms does not: [12,0,0,"GONE"]
+OK  holdVerdict: left out: an empty block, no words, no won-by line, no cues line, a redirect (negative R1): [12,0,0,"GONE"]
+OK  holdVerdict: ...and it says how many of each: {"noWonBy":1,"emptyOrNoBlockOrRedirect":1,"noWords":1,"shortStream":1}
+OK  holdVerdict: a counted answer with no first-token line -> no verdict, never GONE: [12,0,0,"NO VERDICT"]
+OK  holdVerdict: no rows -> no verdict: [0,0,0,"NO VERDICT"]
+OK  05:00 cue smoke, R2 in log order (the review's Appendix B): [13,5,7,6,369,5,46,3,283,4,5,4,3,157,1231,129,12,3,5,92,3,127]
+OK  05:00 cue smoke, R2: 22 pairs, 14 under 15 ms, median 6.5, p90 283, none unpaired, none without prose: [22,14,6.5,283,0,0]
+OK  05:00 cue smoke: no hedge lines, so no R1 and no C: [0,0]
+OK  05:00 cue smoke: no won-by lines (the hedge was off), so no counted answer and no verdict: [0,"NO VERDICT"]
+OK  16:12 re-smoke (v2, the hold): 21 counted answers, 15 with R2 under 15 ms, 16 with B under 15 ms -> NOT GONE: [21,15,16,"NOT GONE"]
+OK  16:12 re-smoke: left out: the block-only answer (no words) and the one 17 ms stream: [1,1]
+    05:00 cue smoke, B (reported): n 22, under 15 ms 14  (the reviewer: first token within 11 ms of word budget in the same 14)
+OK  h40a (no cue block), B: 47 answers, 1 under 15 ms, median 227, p90 491, max 856: [47,1,227,491,856]
+OK  h40a: no cue lines, so no R2 and no verdict on the hold: [0,0,"NO VERDICT"]
+    h40a C pairs 0
+OK  h40c (no cue block), B: 47 answers, 3 under 15 ms, median 156, p90 313, max 690: [47,3,156,313,690]
+OK  h40c: no cue lines, so no R2 and no verdict on the hold: [0,0,"NO VERDICT"]
+    h40c C pairs 47, C median 2 ms, max 26 ms
+HOLD-READ CALIBRATION OK

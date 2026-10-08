@@ -1,0 +1,70 @@
+{
+ "rows": [
+  {
+   "arm": "3.1-lite LOW",
+   "acc": [
+    22,
+    0,
+    0
+   ],
+   "mean": 7.333333333333333,
+   "mainsMean": 5.666666666666667,
+   "fuMean": 1.6666666666666667,
+   "weak": 110,
+   "wrong": 0,
+   "none": 0,
+   "ungraded": 0,
+   "d0": 0,
+   "t50": 5605,
+   "t90": 8185,
+   "words": 65,
+   "cuts": 0,
+   "holes": 0,
+   "calls": 132
+  },
+  {
+   "arm": "3.5-lite HIGH",
+   "acc": [
+    44,
+    44,
+    0
+   ],
+   "mean": 29.333333333333332,
+   "mainsMean": 21.333333333333332,
+   "fuMean": 8,
+   "weak": 0,
+   "wrong": 44,
+   "none": 0,
+   "ungraded": 0,
+   "d0": 0,
+   "t50": 3531,
+   "t90": 24913,
+   "words": 56,
+   "cuts": 0,
+   "holes": 0,
+   "calls": 132
+  },
+  {
+   "arm": "Gemma 26B MINIMAL",
+   "acc": [
+    44,
+    44,
+    44
+   ],
+   "mean": 44,
+   "mainsMean": 32,
+   "fuMean": 12,
+   "weak": 0,
+   "wrong": 0,
+   "none": 0,
+   "ungraded": 0,
+   "d0": 0,
+   "t50": 1497,
+   "t90": 1742,
+   "words": 71,
+   "cuts": 0,
+   "holes": 0,
+   "calls": 132
+  }
+ ]
+}

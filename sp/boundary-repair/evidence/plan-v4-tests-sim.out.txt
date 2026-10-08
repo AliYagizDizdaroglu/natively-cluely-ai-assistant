@@ -1,0 +1,17 @@
+existing edges (+ symptom, seam):
+v3: 13 passed, 0 failed of 13
+v4: 13 passed, 0 failed of 13
+new v4 tests:
+  v3: FAIL #28 running on — #28: got "two percent For each of those metrics, define the unit of evaluation,"
+  v3: FAIL twenty five — 25: got "five last quarter. What changed?"
+  v3: FAIL alright — alright: got "right So tell me about your last project."
+  v3: FAIL breaks — breaks: got "even before the rollout finishes."
+  v3: FAIL put — put: got "hallucinations in a rag answer without just making it refuse?"
+  v3: FAIL version two -> v2 — v2: got "two release shipped last week."
+  v3: FAIL İzmir — izmir: got "zmir projesinde projesinde hangi veritabanını seçtiniz?"
+  v3: FAIL résumé — resume: got "r sum and your last role."
+  v3: FAIL clear() cut — r.clear is not a function
+  v3: FAIL clear() interim — r.clear is not a function
+  v3: FAIL speechFinal — sf1: got {"text":"hallucinations in a rag answer without just making it refuse?","restored
+v3: 0 passed, 11 failed of 11
+v4: 11 passed, 0 failed of 11

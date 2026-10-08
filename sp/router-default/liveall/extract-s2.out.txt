@@ -1,0 +1,21 @@
+RH12    ttft   1.3s  last   9.3s  words  79  thoughts   199  no hold
+RH13    ttft   2.3s  last   4.6s  words  30  thoughts    76  no hold
+RH14    ttft    -    last   -    words   0  thoughts     0  EMPTY  no hold
+RE12    ttft   1.7s  last   6.6s  words  59  thoughts   383  no hold
+RE13    ttft   0.5s  last   3.5s  words  47  thoughts    78  no hold
+RH17    ttft   1.9s  last   6.4s  words  74  thoughts   127  no hold
+RE14    ttft   0.9s  last   4.3s  words  45  thoughts    88  no hold
+RH02    ttft   0.5s  last   3.2s  words  31  thoughts    87  no hold
+RE15    ttft   2.0s  last   4.4s  words  40  thoughts    80  no hold
+RH15    ttft   1.4s  last   5.0s  words  45  thoughts   244  no hold
+RH16    ttft   0.9s  last   4.1s  words  39  thoughts    76  no hold
+RE16    ttft   0.7s  last   3.2s  words  35  thoughts    70  no hold
+EF06    ttft   0.7s  last   2.8s  words  26  thoughts    99  no hold
+RE17    ttft   3.2s  last   5.8s  words  38  thoughts   136  no hold
+EF07    ttft   1.0s  last   3.1s  words  33  thoughts   182  no hold
+RH18    ttft   1.4s  last   4.3s  words  40  thoughts    81  no hold
+RE18    ttft   0.6s  last   2.6s  words  31  thoughts    70  no hold
+RH20    ttft   1.8s  last   3.9s  words  31  thoughts   221  no hold
+RE19    ttft   2.0s  last   5.4s  words  43  thoughts   143  no hold
+RE20    ttft   0.6s  last   3.0s  words  31  thoughts    81  no hold
+wrote runs/liveall-r1-s2.answers.json

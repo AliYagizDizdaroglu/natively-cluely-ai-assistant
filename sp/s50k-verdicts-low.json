@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers data fit, inference speed, native missing-value handling and a logistic-regression baseline correctly; about 97 words, slightly long."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic right (2,850 TP, 57 percent precision) but never states recall, an explicitly asked sub-part, and calls a 3-point gap rounding."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Holdout RCT plus cohort analysis cleanly separates model effect from seasonality and mix; natural length and register."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Stable index sort, correct precision, recall and lift formulas, and all three edge cases answered; about 124 words."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Thirty-day embargo before the validation split plus ColumnTransformer fit only on train is exactly right; about 95 words."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Puts the window, event type and ingested-at filters in the LEFT JOIN condition, which is what preserves zero-call customers."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All seven stages covered with a feature store, registry and monitoring named as the shared layer; about 125 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logs offer variant, deterministic hash buckets, delayed outcome join and propensity weighting for retraining; about 98 words."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure mapping across all eight components with operational reasons; about 129 words, well over spoken length."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, Entra ID for PostgreSQL, Key Vault RBAC and VNet separation all correct; about 133 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks all eight stages including layout-aware parsing and cross-encoder reranking; about 105 words, past the spoken ceiling."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Fills every cell, but the F1 denominator is not the token union and Cohen's Kappa measures annotator agreement, not uncertainty."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names the real dividing line: an agent earns its cost only when the next retrieval depends on prior findings."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct one-over-c-plus-rank accumulation with document id as deterministic secondary key; about 98 words."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Greedy relevance sort with dedupe, per-document cap and skip-if-over-budget, stated compactly at a natural spoken length."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore, per-case race timeout, local try/catch and order-preserving gather are all right, though framed in JavaScript."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant partitioning, Postgres metadata, pre-filtered queries, async index updates, citations and RAGAS evaluation; about 152 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Textbook dual-write, backfill, shadow-read, flag cutover and rollback, but roughly 198 words, far past a spoken answer."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure service per component plus a real managed-versus-custom argument; about 158 words, much too long."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-Lock with an idempotent upsert keyed on message id and completing only after the write is the right pattern."
+  }
+}

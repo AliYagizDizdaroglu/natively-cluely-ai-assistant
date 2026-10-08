@@ -1,0 +1,33 @@
+docs(passes): s50k — the fallback thinks, the keyterms land, and 3.5-lite HIGH edges the 3.1 band
+
+The hour that proves two fixes live and puts the model question on a band-vs-band
+footing for the first time.
+
+Fallback level (78b0671): both stall redirects this hour went to 3.5-flash-lite at
+thinking=HIGH with 967 and 1262 thought tokens. s50j's single redirect logged LOW and
+thoughts=0. The trigger was not a timeout but two 503s on the primary, so the leg was
+exercised by a real outage rather than a slow response. Defect closed.
+
+Keyterms (3624367): S1Q04F was heard as "the tie rule", not s50j's "the Thai rule" —
+that garble produced s50j's only wrong answer. S2Q01 was heard as "reranking", not
+"re ranking". Across all 39 shared questions the words lost to the ear fell from 9 to 6;
+three words went the other way, which at one run per side is inside ordinary variation.
+The two known-unfixable synthetic-audio artifacts are unchanged: S1Q09F still carries
+"axe" beside "AKS", S2Q04 still says "documenteds".
+
+Bands on the 39 shared ids, three reps each, same window, same bytes:
+  3.1-lite LOW   26 / 28 / 31   mean 28.3, spread 5
+  3.5-lite HIGH  34 / 29 / 34   mean 32.3, spread 5
+  live hour      33             ABOVE the 3.1 band, as in s50j
+3.5 HIGH meets the pre-registered rule at exactly both thresholds: mean +4.0 and per-id
+up:down 12:6. The bands still overlap, so this is the weakest possible pass and is
+recorded as a candidate for a proof flight, not as a shipped decision.
+
+In-app 34 acceptable, 6 weak, 0 wrong of 40 — mains 18/2/0, follow-ups 16/4/0. The
+quality gate bar of 18 mains with zero wrong PASSES for the second flight running.
+
+The new length row FAILS as predicted and is not a regression: words p90 159, 28 of 40
+over 85 words, 5 over 150. The word guard held — 42 answers, none cut, none at the
+200-word ceiling, every one ending on a sentence terminator.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

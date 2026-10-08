@@ -1,0 +1,39 @@
++- Head/tail splits whose head ends on a content word (after5 W11: "…Dockerfile for a Python"
++  was answered whole, the tail "model server and why" held then answered at expiry). A
++  REST-chunking class; the head rule cannot see it without punctuation evidence.
+-        const sttProv = CredentialsManager.getInstance().getSttProvider();
++        const sttProv = resolveSttProvider(CredentialsManager.getInstance().getSttProvider(), process.env.NATIVELY_STT_PROVIDER, app.isPackaged).provider;
++    it('H03 in Auto (after5 head): the unpunctuated head is held, Live’s whole sentence is answered on arrival, the head resolves as a duplicate', () => {
++        vi.useFakeTimers();
++        const { dispatch, log } = makeDispatcher('auto');
++        const HEAD = 'How would you design a pipeline that';
++        const WHOLE = 'How would you design a pipeline that retrains, validates, and deploys with no human in the loop, and what guardrails would you put in?';
++        dispatch({ question: HEAD, source: 'whisper', anchor: HEAD, verdict: 'match', chip: { id: 'c1' } });
++        expect(log).toEqual([`hold:whisper:${HEAD}`]);
++        vi.advanceTimersByTime(1300);
++        dispatch({ question: WHOLE, source: 'live', anchor: HEAD, verdict: 'paraphrase' });
++        expect(log).toEqual([`hold:whisper:${HEAD}`, `answer:live:${WHOLE}`]);
++        vi.advanceTimersByTime(1200);
++        expect(log).toEqual([`hold:whisper:${HEAD}`, `answer:live:${WHOLE}`, `drop:whisper:${HEAD}`]);
++        expect(log.filter((l) => l.startsWith('answer:'))).toHaveLength(1);
++    });
+- * services."). Measured: 317 chip and Live texts from four Deepgram hours → 2
+- * flagged, both real fragments (parent spec §3.1); the after5 Groq REST hour's
+- * 58 full chip texts → 6 more flagged, all six real heads, 0 of the 55 scripted
+- * questions (spec 2026-09-05 §1). A whole question that lost its punctuation
+- * and ends on one of those words waits at most 2.5 s for the other ear.
++ * services."). Measured: the older rules over 317 chip and Live texts from four
++ * mixed flight hours (two Groq REST, one Deepgram, one Live-only) → 2 flagged,
++ * both real fragments (parent spec §3.1); the head rule over the after5 Groq
++ * REST hour's 58 full chip texts → 6 more flagged, all six real heads, and over
++ * 155 Deepgram finals from two hours → 4 flagged, all four mid-sentence cuts;
++ * 0 of the 55 scripted questions in either (spec 2026-09-05 §1, final review).
++ * A whole question that lost its punctuation and ends on one of those words
++ * waits at most 2.5 s for the other ear.
+-    log(`STT   ${process.env.NATIVELY_STT_PROVIDER ?? "the app's saved provider"}${process.env.NATIVELY_STT_PROVIDER ? '   (NATIVELY_STT_PROVIDER, verified by preflight)' : ''}`);
++    log(`STT   ${process.env.NATIVELY_STT_PROVIDER ?? "the app's saved provider"}${process.env.NATIVELY_STT_PROVIDER ? "   (NATIVELY_STT_PROVIDER; preflight checks the app's STT start line)" : ''}`);
+-    // run the hour on the wrong ear. Proved for deepgram (DeepgramStreamingSTT).
++    // run the hour on the wrong ear. Proved for deepgram (DeepgramStreamingSTT); groq logs
++    // "RestSTT (groq)" and matches too; natively logs no Using line and cannot pass this row.
+-        const using = [...logSince(DEBUG_LOG, 0).matchAll(/\[Main\] Using (\w+) for interviewer/g)].pop();
++        const using = [...logSince(DEBUG_LOG, 0).matchAll(/\[Main\] Using ([^\n]+?) for interviewer/g)].pop();

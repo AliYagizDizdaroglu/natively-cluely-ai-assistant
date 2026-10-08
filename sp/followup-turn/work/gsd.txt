@@ -1,0 +1,64 @@
+=== A. h40d-grader-models.mjs: top-level sessions ===
+
+=== B. check-grader-memory.mjs ===
+
+=== D. launch-grader.mjs: fresh cwd per attempt, memory pre-check, permissions, at most 2 at once (a stand-in for the claude binary; NO model call) ===
+OK   projectSlug reproduces the REAL project folder name of F\grading (200 characters + "-" + the base-36 hash: ...-followup-7potx7)
+OK   ... a short cwd keeps its full slug (non-alphanumerics -> "-")
+OK   absRule: C:\Users\x\y.json -> Read(//c/Users/x/y.json) (Windows paths are normalized to /c/... in permission rules)
+OK   memoryEntries: an EMPTY memory\ folder (as the real 22:19 probe left) reads [] ...
+OK   ... and a memory\ folder holding one file reads one entry (the pre-launch refusal)
+OK   buildPrompt: the registered dispatch text with ONLY the pairs path, the verdicts path and the tag substituted passes the audit's own dispatch check
+OK   ... and the same prompt audited as another slot does not
+OK   claude argv: -p <prompt> --model opus --output-format json, dontAsk, tools Read/Write/Edit/Bash, strict MCP, no --dangerously-skip-permissions
+OK   permission rules: Read own pairs + the grader-instruction file, Edit own verdicts, Bash(node -e *) and Bash(cd *); nothing for another file
+OK   probeArgs: the same flags as a grader (dontAsk, tools Read/Write/Edit/Bash, strict MCP), rules = Read the input, Edit the out file, Bash x2
+OK   slugFacts: the attempt's own slug folder holding exactly its one .jsonl and no memory\ -> slugJsonl 1, memoryDir absent
+OK   ... a second .jsonl -> slugJsonl 2; an empty memory\ -> empty
+OK   ... a non-empty memory\ -> non-empty; a transcript in ANOTHER cwd's slug folder -> slugJsonl 0; no transcript -> 0 / unknown
+OK   slugJsonls: lists the top-level .jsonl of the EXACT folder only (a sibling cwd sharing the 200-char prefix is not matched)
+OK   at most 2 graders at once: slots 1 and 2 are granted, the third launcher is refused
+OK   ... a released slot is granted again; a dead launcher's slot (stale pid) is reclaimed
+OK   --make-pilot writes a synthetic pairs.blind-1.json (4 items) and nothing else
+OK   ... and refuses to overwrite it
+OK   --dry-run: prints cwd pilot-a1, the argv (prompt as length + sha12) and the rules; creates no cwd, calls nothing
+OK   the slot `pilot` goes with --pilot: blind-1.g1 --pilot and pilot without --pilot are usage errors (exit 2), nothing created
+OK   a pilot launch: exit 0, ids printed (session, model, cwd pilot-a1, slugJsonl 1, memoryDir absent, memory ABSENT, tools, verdicts valid on the pairs)  [8f9f-83fcfe5129e7 model claude-opus-5-5 exit 0 cwd pilot-a1 slugJsonl 1 memoryDir absent memory ABSENT projectMemory=0 claudeMem=0 tools {"Read":1,"Write":1} verdicts file valid on its pairs (4 keys)
+]
+OK   ... ONE line in <pilot dir>/launches.jsonl with exactly the ten fields of point 11(d), slot pilot, attempt 1, exit 0, slugJsonl 1
+OK   ... the cwd is a fresh, EMPTY folder grading\pilot-a1 and claude ran INSIDE it; the line carries that cwd
+OK   ... the prompt it was given passes the audit's dispatch check as blind-1.g1 (dispatch text, only paths and tag substituted)
+OK   ... argv: -p <prompt> --model opus --output-format json --permission-mode dontAsk --tools Read,Write,Edit,Bash --strict-mcp-config --add-dir <pilot dir> --allowed-tools <5 rules>; no --dangerously-skip-permissions
+OK   a second launch is refused while the slot's verdicts exist (move the earlier attempt away before a re-grade): exit 2, no call
+OK   ... with the verdicts moved away the SAME attempt number still cannot reuse its cwd: REFUSED, exit 2, no call
+OK   --attempt 2 gets its own fresh cwd pilot-a2 and a second line; the first attempt's slug folder (a .jsonl) does NOT block it
+OK   point 9: a non-empty memory\ in the attempt's EXACT projects folder -> REFUSED before the launch (exit 2, claude not called, no cwd created)
+OK   point 9: a .jsonl already in the attempt's EXACT projects folder -> REFUSED (exit 2, claude not called)
+OK   ... an EMPTY memory\ folder (as the real 22:19 probe left) does not block the launch; the line reads memoryDir empty  [ exit 0 cwd pilot-a5 slugJsonl 1 memoryDir empty memory ABSENT projectMemory=0 claudeMem=0 tools {"Read":1,"Write":1} verdicts file valid on its pairs (4 keys)
+]
+OK   a slot whose pairs file does not exist is a usage error (exit 2), nothing created
+OK   a grader that exits 0 but wrote no verdicts file: the line says MISSING/INVALID and the exit code is 1
+OK   a grader that wrote 1 of the 4 keys: MISSING/INVALID naming the missing verdict, exit 1 (the registered replace-ONCE case)
+OK   a second .jsonl in the attempt's slug folder: the line reads slugJsonl 2 and the exit code is 1
+OK   a non-empty memory\ left behind by the attempt: memoryDir non-empty, exit 1
+OK   claude exiting 1: the line records exit 1
+OK   claude exiting 0 with is_error true is never recorded as exit 0
+OK   a real slot: the cwd is grading\blind-1.g1-a1, the line goes to <R>/blind/launches.jsonl (slot blind-1.g1)  [0 cwd blind-1.g1-a1 slugJsonl 1 memoryDir absent memory ABSENT projectMemory=0 claudeMem=0 tools {"Read":1,"Write":1} verdicts file valid on its pairs (4 keys)
+]
+OK   ... --rerun uses <R>/blind-rerun (its own launches.jsonl, the same cwd name is a NEW attempt only with --attempt 2: here a1 exists -> REFUSED)
+OK   ... --rerun --attempt 2 writes <R>/blind-rerun/launches.jsonl
+OK   probe 2 BEFORE probe 1: REFUSED (exit 2), nothing launched, no cwd
+OK   cwdprobe-1 without --probe (and --probe without a probe slot) are usage errors
+OK   probe --dry-run: prints the argv with the probe prompt and the rules, creates nothing, appends nothing
+OK   cwdprobe-1: one Read + one Write, memory ABSENT projectMemory=0 claudeMem=0, slugJsonl 1, out.txt written -> ok; the line is in grader-cwd.launches.jsonl  [audeMem=0 tools {"Read":1,"Write":1} out.txt written -> ok
+cwdprobe-1 OK (the controller still runs check-grader-memory.mjs and h40d-grader-models.mjs on session:cf181d9c-b816-4ed9-b159-eb6a86c93618)
+]
+OK   ... the probe's prompt is one Read of grading\probe-input.txt and one Write of <own cwd>\out.txt, with the grader's flags and the same rule kinds (Read, Edit, Bash x2)
+OK   cwdprobe-1 again: REFUSED (its cwd exists), exit 2
+OK   cwdprobe-2 after a clean probe 1: runs from its own fresh cwd cwdprobe-2-a1, ok, second line
+OK   ... every probe invocation (not the dry run) is appended with its command to grader-cwd.probes.out.txt
+OK   a probe 1 whose transcript carries a memory marker -> FAILED (exit 1, memory LOADED printed, the transcript is kept)
+OK   probe 2 where no probe 1 line exists in that output folder: REFUSED
+OK   the real folder F\grading was not touched by any of this
+
+GRADER-SESSION CALIBRATION OK

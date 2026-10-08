@@ -1,0 +1,19 @@
+fix(verbal): a bad NATIVELY_FOLLOWUP_PARENT refuses to start, and the hedge's empty legs are pinned
+
+A final review of 07a0e5e..e94305a found three gaps:
+
+- NATIVELY_FOLLOWUP_PARENT was validated only inside each hands-free
+  answer, so a junk value turned every answer mid-interview into "Could
+  you repeat that?". describeFollowUpParentAtStartup now runs in main.ts's
+  early startup block beside the hedge's, logs `[Main] follow-up parent:
+  on|off`, and a junk value takes the same refusal path (app.exit(1)).
+  Unset behaves as before plus that one log line.
+- The hedge's empty-leg branches had no test: an empty front starting the
+  back with reason=front-empty, and both legs empty ending without a throw
+  (no redirect). Two tests pin them; each fails under the mutation the
+  reviewer showed surviving.
+- LLMHelper.geminiThinking and LLMHelper.verbalPrimary tests failed (5) in
+  a shell with NATIVELY_VERBAL_HEDGE=1; they now clear the hedge variables
+  per test like the other verbal-path files.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

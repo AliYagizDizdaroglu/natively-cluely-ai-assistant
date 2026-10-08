@@ -1,0 +1,110 @@
+pairs.blind-1.json  front  20 answers  s50m:S1Q04F,s50m:S1Q06F
+pairs.blind-2.json  front  20 answers  s50m:S2Q05F,s50m:S2Q08F
+pairs.blind-3.json  front  20 answers  s50m:D1,s50m:D2
+pairs.blind-4.json  front  20 answers  s50m:D3,s50l:S1Q04F
+pairs.blind-5.json  front  20 answers  s50l:S1Q06F,s50l:S2Q05F
+pairs.blind-6.json  front  19 answers  s50l:S2Q08F,s50l:D1
+pairs.blind-7.json  front  20 answers  s50l:D2,s50l:D3
+pairs.blind-8.json  back  23 answers  s50m:S1Q04F,s50m:S1Q06F,s50m:S2Q05F,s50m:S2Q08F
+pairs.blind-9.json  back  24 answers  s50l:S1Q04F,s50l:S1Q06F,s50l:S2Q05F,s50l:S2Q08F
+9 files (7 front + 2 back); not graded, pair incomplete (transient after retries): front:Ar3:s50l:S2Q08F; not graded, scored wrong (empty after the filters): back:Br1:s50m:S1Q04F; instrument 8564ba96369a (pre-registered 8564ba96369a)
+OK  9 blind files (7 front + 2 back), none over 24 answers
+OK  front files hold 20 answers, back files 24 (minus the transient/empty)
+OK  188 answers minus the transient and the empty = 186 sent to graders
+instrument 8564ba96369a; graders claude-opus-5-5 x 18
+incomplete pairs (excluded): front:s50l:S2Q08F#3 (A missing)
+answers empty after the filters (scored 0/0/0): back:Br1:s50m:S1Q04F
+n_front = 69 complete front pairs (roster + D); R = 39 complete roster pairs (the bars below are formulas on R); n_back = 24 complete back pairs
+1. no new wrong, per leg       front: consensus-wrong B 0 <= A 0: holds; back: B 1 <= A 0: FAIL  =>  FAIL
+2. no rise in off-topic        front consensus-off-topic B 0 <= A 0: holds   (back, reported: B 1, A 0)
+3a. not later (median)         median paired TTFT B-A on R 0 ms (holds <= +500, FAIL > +1000): holds   (all 69 front pairs, reported: 0 ms)
+3b. not later (p90)            p90 B 3050 ms vs p90 A 3050 ms + 2000: holds   (all front pairs, reported: B 3050 vs A 3050)
+3c. stalls                     TTFT > 10 s on R: B 0 <= A 0 + 2: holds   (all front pairs, reported: B 0 <= A 0 + 4)
+4. not longer                  median paired words B-A on R 0 (holds <= +5, FAIL > +10): holds   (all front pairs, reported: 0)
+5. not more thinking           median paired thoughts B-A on R 0 tokens (holds <= +150): holds   (all front pairs, reported: 0; back leg at LOW, reported: 0)
+6. parity                      checked before any verdict was opened: holds
+7. gain, on R                  consensus-acceptable B 39 - A 30 = +9 (PASS >= +8, FAIL <= +2): PASS   (back leg, descriptive: -1 on 24 pairs)
+DECISION: FAIL
+
+either grader (front): wrong A 0 B 0; off-topic A 0 B 0
+front leg, per item (reps in order; Y both graders acceptable, X both correctness 0, o both on_topic <= 1, w otherwise):
+  s50m:S1Q04F roster   A wwwww  B YYYYY   acceptable A 0 B 5 of 5
+  s50m:S1Q06F roster   A wwwwY  B YYYYY   acceptable A 1 B 5 of 5
+  s50m:S2Q05F roster   A YYYYY  B YYYYY   acceptable A 5 B 5 of 5
+  s50m:S2Q08F roster   A YYYYY  B YYYYY   acceptable A 5 B 5 of 5
+  s50m:D1     dropped  A YYYYY  B YYYYY   acceptable A 5 B 5 of 5
+  s50m:D2     dropped  A YYYYY  B YYYYY   acceptable A 5 B 5 of 5
+  s50m:D3     dropped  A YYYYY  B YYYYY   acceptable A 5 B 5 of 5
+  s50l:S1Q04F roster   A YYYYY  B YYYYY   acceptable A 5 B 5 of 5
+  s50l:S1Q06F roster   A YYYYY  B YYYYY   acceptable A 5 B 5 of 5
+  s50l:S2Q05F roster   A YYYYY  B YYYYY   acceptable A 5 B 5 of 5
+  s50l:S2Q08F roster   A YYYY  B YYYY   acceptable A 4 B 4 of 4
+  s50l:D1     dropped  A YYYYY  B YYYYY   acceptable A 5 B 5 of 5
+  s50l:D2     dropped  A YYYYY  B YYYYY   acceptable A 5 B 5 of 5
+  s50l:D3     dropped  A YYYYY  B YYYYY   acceptable A 5 B 5 of 5
+  hour s50m: roster pairs 20, consensus-acceptable A 11 B 20, delta +9
+  hour s50l: roster pairs 19, consensus-acceptable A 19 B 19, delta +0
+back leg, per item (reps in order; Y both graders acceptable, X both correctness 0, o both on_topic <= 1, w otherwise):
+  s50m:S1Q04F roster   A YYY  B XYY   acceptable A 3 B 2 of 3
+  s50m:S1Q06F roster   A YYY  B YYY   acceptable A 3 B 3 of 3
+  s50m:S2Q05F roster   A YYY  B YYY   acceptable A 3 B 3 of 3
+  s50m:S2Q08F roster   A YYY  B YYY   acceptable A 3 B 3 of 3
+  s50l:S1Q04F roster   A YYY  B YYY   acceptable A 3 B 3 of 3
+  s50l:S1Q06F roster   A YYY  B YYY   acceptable A 3 B 3 of 3
+  s50l:S2Q05F roster   A YYY  B YYY   acceptable A 3 B 3 of 3
+  s50l:S2Q08F roster   A YYY  B YYY   acceptable A 3 B 3 of 3
+  hour s50m: roster pairs 12, consensus-acceptable A 12 B 11, delta -1
+  hour s50l: roster pairs 12, consensus-acceptable A 12 B 12, delta +0
+OK  incomplete front pair named
+OK  empty back answer named and scored
+OK  R = 39 roster pairs
+OK  clause 1: the back leg fails alone (front holds)
+OK  clause 7 gain +9 of R = 39 reads PASS (bar +8) but the decision is FAIL
+OK  per-item rows and per-hour deltas printed
+OK  run 2 (no empty answer): every clause holds, gain +9 -> DECISION: PASS
+OK  move-keys out: 9 key files leave the blind folder (byte-verified), none remain
+OK  move-keys out again is REFUSED (nothing to move)
+OK  while the keys are out the decision is not made (exit 3)
+OK  move-keys back restores the 9 keys and the decision is PASS again
+OK  run 5: a grader file missing one key stops the merge (exit 2)
+OK  run 4: a grader whose memory check read LOADED -> REPORTED, NOT DECIDED (exit 3)
+OK  run 4b: a FLAGGED audit -> REPORTED, NOT DECIDED
+OK  run 4c: a slot replaced twice -> REPORTED, NOT DECIDED (one re-grade only)
+OK  run 4d: a grader that is not claude-opus-5-5 -> REPORTED, NOT DECIDED
+5 files (4 front + 1 back); not graded, pair incomplete (transient after retries): none; not graded, scored wrong (empty
+OK  re-run blind builder: s50k only, into blind-rerun/ (4 front files + 1 back file)
+additivity OK: every pooled count equals the first run plus the re-run
+instrument 8564ba96369a; graders claude-opus-5-5 x 18 + 10
+n_front = 104 complete front pairs (roster + D); R = 59 complete roster pairs (the bars below are formulas on R); n_back = 36 complete back pairs
+7. gain, on R                  consensus-acceptable B 59 - A 45 = +14 (PASS >= +12, FAIL <= +3): PASS   (back leg, descriptive: +0 on 36 pairs)
+DECISION: PASS
+OK  the first run alone reads PASS (gain +9 of R = 39)
+OK  the pooled re-run: additivity OK, R = 59 (39 + 20), n_front 104, gain +9 + 5 = +14 >= ceil(4*59/21) = 12 -> PASS
+OK  a re-run without its graders.json is REPORTED, NOT DECIDED
+OK  run 6: a null thoughts in a front record is REFUSED, no decision line (exit 1)
+OK  run 6b: a front record carrying thinking LOW is REFUSED
+OK  run 3: a flipped hash in section 2 -> stdout is exactly "VOID", exit 4
+OK  run 3b: an EMPTY section 2 table (the unfilled registration) -> VOID
+OK  run 3c: a script under R/scripts that the table does not list (a temp copy of the table with one entry renamed) -> VOID
+OK  run 8: departure accepted (label + note): the LOADED slots decide, exit 0
+OK  run 8: the FIRST line of the result is "GRADERS LOADED PROJECT MEMORY (departure from spec §6, §3 note 2026-10-03 22:40)"
+OK  run 8b: departure: true without the note in the registered file -> REPORTED, NOT DECIDED (exit 3), no DECISION
+OK  run 8c: a MENTION of the marker (section 3 prose, or a line-start outside section 3) is not the note -> REPORTED, NOT DECIDED
+OK  run 8d: LOADED with a claude-mem marker under the accepted departure -> REPORTED, NOT DECIDED naming claude-mem
+OK  run 8e: departure accepted, every slot ABSENT -> decides, and does NOT print the exposure line
+OK  run 9a: graders.json hand-typed a model the tool did not print -> REPORTED, NOT DECIDED
+OK  run 9b: graders.json says FLAGGED where the audit output says clean -> REPORTED, NOT DECIDED
+OK  run 9c: a stray slot beside the 18 -> REPORTED, NOT DECIDED naming it
+OK  run 9d: graders.audit.out.txt missing -> REPORTED, NOT DECIDED (the labels must be derived)
+OK  run 9e: with the three files restored the very same folder decides PASS (the refusals above were the labels, nothing else)
+OK  run 10a: R/STOPPED-back.txt present -> REPORTED, NOT DECIDED (exit 3): no VOID, no clause line, no DECISION
+OK  run 10a: ... and with the marker moved away the same folder decides PASS
+OK  run 10b: one record whose end is exactly the cutoff -> REPORTED, NOT DECIDED (exit 3), no VOID
+OK  run 10b: ... one millisecond earlier it decides
+OK  run 10c: the blind builder REFUSES while R/STOPPED-front.txt exists (exit 2) and builds no file
+OK  run 10d: the blind builder REFUSES a record that ended after the cutoff (exit 2)
+OK  run 11a: BEFORE any result is on file a flipped hash still prints exactly VOID
+OK  run 11b: with "DECISION:" on file the same flipped hash prints INCIDENT, never VOID (exit 4)
+OK  run 11c: ... and the decision file is untouched, a re-run with the true registration still reads PASS
+OK  nothing was written into the real R folder (no answer file, no blind folder, no stray script, no STOPPED marker)
+E2E OK

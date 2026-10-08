@@ -1,0 +1,176 @@
+﻿OK   def-1 acceptable needs BOTH graders at correctness 2 AND on_topic 2
+OK   def-2 wrong = EITHER grader correctness 0 (correctness only: on_topic 0 is not wrong)
+OK   def-3 verdictProblem: complete verdict file ok; missing key, extra key, out-of-range, non-object are problems
+OK   reader-1 a complete clean reader output parses with no problems and the bars as printed  [[]]
+OK   reader-2 a VOID reader output parses as void (router-down and session-failed forms)
+OK   reader-3 every required line missing is a problem (each of 11 lines removed once)
+OK   reader-4 a flag that disagrees with its own numbers is a problem (Speed PASS at p50 2600; Routing PASS at 12; Safety PASS with a hard-first; Fallback PASS with a missing append)
+OK   reader-5 empty text is a problem; the control (the clean text) is not
+OK   parity-0 the real reader and the roster it needs are present (else the parity checks below cannot run)
+OK   parity-1 the REAL reader's stdout on a minimal folder parses with no problems (every line this scorer needs exists in the printed form, flags agree with numbers)  [exit 0 ]
+OK   parity-2 ... and reads as the reader printed it: Speed n=0 (FAIL), EASY caught 0/20, HARD 0/27
+OK   parity-3 the REAL reader's VOID output (router never up, 10 minutes) parses as void with a reason, exit 3  [exit 3 ]
+OK   parity-4 the real builder runs on a synthetic folder (exit 0) and writes key + build record  [0 built 2 files (1/1 items, 2 items); Live turns 2; pipeline entries S 2 (of them appended, one answer]
+OK   parity-5 the scorer loads the real builder's key, pairs files and build record, and reads 2 Live turns with 2 pairs (L vs S; the appended S,A counted as S) -> VERDICT PASS  [BAR Quality: PASS acceptable(L)=2 acceptable(S)=2 over 2 eligible pairs (needs L >= S - 1); ungraded pairs 0 | VERDICT PASS]
+OK   parity-6 the build record carries exactly the fields the scorer checks (runFolder, runLabel, liveSha256, shadowSha256, rosterSha256, judgeSha256, sizes)
+OK   parity-7 pairs made by the REAL judge (pairAnswers) join to their turns through the scorer's join (2 pairs -> turns 1 and 2, no defect)  [2 1,2]
+OK   log-1 parseLog finds every answer dispatch, router dispatch, decision, supersede line and full line  [8/8/8/1/9]
+OK   join-1 every in-app pair joins to its own turn (the dispatch line right after its [Main] dispatch line) and its decision  [1,2,3,4,5,6,7,8]
+OK   join-2 a pair whose dispatchedAt matches no [Main] dispatch line is a defect; so are two lines at the same ms
+OK   join-3 no router dispatch line after the main line is a defect
+OK   join-4 a router dispatch line of the NEXT answer dispatch is never taken (bounded by the next [Main] dispatch line)
+OK   log-2 only the session covering the hour counts (an earlier and a later process reusing turn 1 are ignored)
+OK   log-4 a decision before the first play window (the probe's turns) is not in the hour; with no items in the timeline every decision is
+OK   log-5 the probe's shown=pipeline turn with no in-app pair is not a coverage warning; the same turn inside the hour is
+OK   log-3 no session header at or before the hour start refuses; a header inside the hour refuses
+OK   clean-1 the clean world reads PASS on every bar and the verdict PASS  [PASS safety:PASS fallback:PASS quality:PASS speed:PASS routing:PASS noreg:PASS integrity:0]
+OK   clean-2 the printed lines carry each bar by the registered name and the verdict
+OK   clean-3 the output never carries an answer string (no synthetic answer text, no key letter map)
+OK   clean-4 the Quality numbers on the clean world: 5 pairs, L 5, S 5; ids with >1 Live turn printed (0)
+OK   clean-5 no-regression reads 4 HARD pipeline-side answers on the clean world (2 in-app pipeline, 1 appended, 1 superseded replacing), all graded, none wrong  [{"c":4,"w":0,"u":0}]
+OK   clean-6 the poisoned in-app grades of shown=live turns (WRONG) are ignored: they never reach any bar  [ignored 6]
+OK   verdict-1 VOID (router down over the limit) is the verdict, whatever the grades say
+OK   verdict-2 VOID wins over a Safety breach (SPEC 11 order); the breach is still reported in the lines
+OK   verdict-3 a VOID reader output needs no grades (data absent)
+OK   verdict-4 a Safety FAIL (a wrong Live answer) reads SAFETY FAIL
+OK   verdict-5 an INCONCLUSIVE case (Speed fails alone) reads INCONCLUSIVE, not FAIL and not PASS
+OK   verdict-6 a grading problem (a dropped or unclean verdict file) alone keeps every bar PASS yet the verdict INCONCLUSIVE, and is printed
+OK   verdict-7 a Safety FAIL stands even with a grading problem elsewhere
+OK   safety-1 each text-half count alone fails Safety (live hard-first, live marker, pipeline unknown marker, pipeline bare token)
+OK   safety-2 a Live answer where one grader (g1) says correctness 0 is a wrong Live answer shown: SAFETY FAIL
+OK   safety-2 a Live answer where one grader (g2) says correctness 0 is a wrong Live answer shown: SAFETY FAIL
+OK   safety-2 a Live answer where both graders say correctness 0 is a wrong Live answer shown: SAFETY FAIL
+OK   safety-3 a wrong L on an sEmpty turn (out of Quality) still fails Safety (any class)
+OK   safety-4 a wrong L on a SUPERSEDED turn still fails Safety
+OK   safety-5 a wrong L with no pipeline answer at all still fails Safety
+OK   safety-6 a wrong L on an appended turn fails Safety
+OK   safety-7 a weak (correctness 1) Live answer is not wrong: Safety stays PASS
+OK   safety-8 on_topic 0 with correctness 2 is not wrong (the registered definition: correctness only)
+OK   safety-9 a wrong SHADOW answer is not a Safety matter (it was never shown)
+OK   safety-10 a Live answer with one grader missing and no readable wrong: UNREADABLE, verdict INCONCLUSIVE
+OK   safety-11 a wrong L that CAN be read fails Safety even while another L is ungraded
+OK   safety-12 Safety FAIL beats every integrity defect and every other bar (registration 5 Integrity)
+OK   safety-13 an L with NO grade at all is unreadable, not wrong
+OK   fallback-1 PASS on the clean reader output; each of the five counts alone FAILs it (INCONCLUSIVE)
+OK   speed-1 p50 2500 passes (the limit is inclusive); 2501 fails; n=0 (no shown=live turn) fails
+OK   speed-2 a half-millisecond median (2500.5) fails
+OK   routing-1 EASY caught 13 passes, 12 fails; HARD misrouted 1 passes, 2 fails
+OK   routing-2 either routing failure alone makes the verdict INCONCLUSIVE
+OK   integrity-1 each reader integrity count alone (9 of them) makes the verdict INCONCLUSIVE; the clean text has none
+OK   integrity-2 all nine at once are still INCONCLUSIVE (not PASS)
+OK   quality-1 L = S passes; L = S - 1 passes (boundary); L = S - 2 fails
+OK   quality-2 L better than S passes (acc L 2, acc S 0)
+OK   quality-3 a Quality failure alone makes the verdict INCONCLUSIVE
+OK   quality-4 sEmpty Live turns are left out of BOTH sides: two acceptable sEmpty L would flip the bar if counted, and do not
+OK   quality-5 superseded Live turns are left out of both sides
+OK   quality-6 a Live turn with no pipeline answer at all is left out (no S exists), counted apart
+OK   quality-7 a multi-turn id pairs each Live turn with its OWN turn's S, never across turns (a borrowed S would read -1 and PASS; by turn it is -2 and FAILs)  [n 3 L 0 S 2]
+OK   quality-8 the number of ids with more than one Live turn is printed (2: E1 and E2)
+OK   quality-9 an appended turn's shared S,A answer counts as the shadow in Quality (acc L 2 vs acc S 1 here: PASS) and, being weak not wrong, passes No-regression  [n 3 L 2 S 1]
+OK   quality-10 zero eligible pairs: the bar is not met (unreadable), never a vacuous PASS
+OK   quality-11 acceptable needs BOTH graders: a shadow where g2 says on_topic 1 is not acceptable (acc L 7 vs acc S 5 -> still PASS) and the counts show it
+OK   quality-12 a pair with an ungraded S makes Quality UNREADABLE (INCONCLUSIVE), not PASS
+OK   quality-13 a key whose S entry sits at a turn with no L entry is a loud error (the S is never joined across turns)
+OK   quality-14 two S entries for one turn in the key is a loud error (a corrupt key is refused, not averaged)
+OK   noreg-1 a wrong in-app answer on a HARD shown=pipeline turn: No-regression FAIL, verdict INCONCLUSIVE
+OK   noreg-2 one grader (g1) saying correctness 0 is enough
+OK   noreg-2 one grader (g2) saying correctness 0 is enough
+OK   noreg-3 a wrong in-app answer on an EASY shown=pipeline turn is reported, not gated (PASS)
+OK   noreg-4 on_topic 0 with correctness 2 is not wrong
+OK   noreg-5 a weak (correctness 1) HARD pipeline answer is not wrong
+OK   noreg-6 a wrong APPENDED pipeline answer on a HARD item counts: No-regression FAIL
+OK   noreg-7 a wrong appended answer on an EASY item is reported, not gated
+OK   noreg-8 an A-only appended answer (arms [A]) wrong on a HARD item counts
+OK   noreg-9 a wrong superseded REPLACING answer on a HARD item counts (the replacing pipeline stream was shown)
+OK   noreg-10 a wrong replacing answer on an EASY item is reported, not gated
+OK   noreg-11 a HARD superseded turn whose replacing text is not in the in-app export is UNREADABLE (INCONCLUSIVE), never a silent pass
+OK   noreg-12 a HARD superseded turn with no replacing [Answer] full line at all is UNREADABLE
+OK   noreg-13 the same gap on an EASY item does not make No-regression unreadable
+OK   noreg-14 a HARD shown=pipeline answer with no grade is UNREADABLE (INCONCLUSIVE)
+OK   noreg-15 a wrong answer that can be read (one grader) fails even though the other grader is missing
+OK   noreg-16 an in-app pair that cannot be joined to a turn (a HARD item) is a join defect: UNREADABLE
+OK   noreg-17 a HARD item shown live whose in-app pair is wrong (it carries the Live text) is IGNORED (I-2); the same grade on shown=pipeline would fail
+OK   noreg-18 the checked count rises by one with one more HARD pipeline answer (counts are real)
+OK   noreg-19 two in-app pairs of one item (H1, H1#2): the wrong one counts
+OK   noreg-20 a HARD item's shown=pipeline turn with NO in-app pair caps the verdict at INCONCLUSIVE (No-regression UNREADABLE, "UNCLAIMED" printed)
+OK   noreg-21 an EASY item's unclaimed turn is a WARNING only: verdict stays PASS
+OK   noreg-22 an unclaimed turn whose item cannot be mapped (no timeline items) is treated as HARD: INCONCLUSIVE
+OK   noreg-23 a wrong readable answer still FAILs No-regression while an unclaimed turn is also present
+OK   noreg-24 (I-3) a wrong in-app answer claimed by overlap for an EASY item but played in a HARD item's window is GATED: No-regression FAIL, the disagreement counted (old code: reported only, PASS)  [FAIL 1]
+OK   noreg-25 (I-3) the other way round (judge says HARD, the window says EASY) is gated too
+OK   noreg-26 (I-3) both mappings EASY: reported, not gated (PASS), no disagreement
+OK   noreg-27 (I-3) an in-app turn whose play-window item cannot be mapped counts as HARD (as the unclaimed rule does): FAIL
+OK   noreg-28 (I-3) the printed lines carry the count of pairs whose two mappings disagree
+OK   sup-1 (m-1) a supersede before the first play window (a probe turn) is not read: no spurious UNREADABLE (the same supersede inside the hour is UNREADABLE)
+OK   sup-2 (m-1) a replacing window that catches ANOTHER turn's [Answer] full line (its pair is joined to a different, non-superseded turn) is UNREADABLE, never graded as the replacing text  [UNREADABLE 1]
+OK   sup-3 (m-2) a phase=streaming supersede on a HARD turn: the first [Answer] full line after it IS the replacing text, the judge's pair carries it, it is GRADED (wrong -> No-regression FAIL)
+OK   sup-4 (m-2) ... and a good one is readable (PASS), not unreadable
+OK   sup-5 (m-2) a phase=done supersede whose replacing text is not in the export is UNREADABLE on a HARD item
+OK   sup-6 (m-2) the printed lines state the phases and the rule (streaming graded via the judge's claim; done only when exported)
+OK   reader-6 (I-2) a router-down limit other than the registered 2 is a problem: limit 5 with 3.5 minutes printed "clear" (old code: 0 problems, a candidate PASS)
+OK   reader-7 (I-2) the down time is recomputed: 3.5 minutes against limit 2 printed "clear" is a problem; 1.5 printed VOID is a problem; the controls (1.5 clear, 3.5 VOID) are not
+OK   reader-8 (I-2) a dispatch floor other than the registered 10 is a problem
+OK   reader-9 (m-4) the Routing denominators must be 20 EASY / 27 HARD (19 EASY, 28 HARD are problems; 20/27 is not)
+OK   prov-0 a clean record binds: no problem
+OK   prov-1 (I-1) the CLI model must be EXACTLY claude-opus-5-5: claude-sonnet-5, claude-opus-5, a suffixed pin and an alias are refused even with pinned:true (old code trusted the flag)
+OK   prov-2 (I-1) every transcript model must be exactly the pin: one other model, a suffixed one, an empty list and a missing list are refused
+OK   prov-3 (m-3) the recorded launcher version must be the registered file's sha12
+OK   prov-4 (m-3) the recorded tools must be within Read/Write/Edit: Bash, an Agent call and a missing tools field are refused
+OK   prov-5 (I-4) the pairs file must hash to the launch's pairsSha12: a re-exported pairs file and a record without the hash are refused
+OK   prov-6 (I-4) the verdicts file must hash to the launch's verdictsSha12: a swapped verdicts file and a record without the hash are refused
+OK   prov-7 (I-4) editing the verdicts file after the launch is caught (hash computed from the file the scorer reads)
+OK   agree-1 graders that disagree (g1 acceptable, g2 weak): the answer is NOT acceptable (counts against L in Quality) and NOT wrong
+OK   agree-2 graders that disagree (g1 acceptable, g2 correctness 0): WRONG (either grader), so Safety fails
+OK   report-1 the bare arms and captured-high are printed as REPORTED and never change the verdict (even with wrong answers in them)
+OK   report-2 absent report-only arms are named as not graded, not an error
+OK   cli-1 the clean tree scores PASS end to end through the files (exit 0, "VERDICT PASS", reader output sha printed)  [GRADER ALIAS PROBE cwdprobe-3: `opus` resolved to claude-opus-5-5 (reported only) | VERDICT PASS | NOTE registration 6.1: PASS: the flag defaults ON in its own reviewed commit; NATIVELY_LIVE_ROUTER=0 then turns it off | ]
+OK   cli-2 the CLI output carries no synthetic answer text and no key map
+OK   cli-3 a wrong Live answer through the files: "VERDICT SAFETY FAIL"
+OK   cli-5 the reported-only arms are read from their files: high 2 acceptable 1 wrong of 3, low 1 acceptable 0 wrong, captured-high 3 acceptable; the verdict stays PASS  [REPORTED high (one grader, 31 mains for high/low): acceptable 2 wrong 1 of 3 | REPORTED low (one grader, 31 mains for high/low): acceptable 1 wrong 0 of 3 | REPORTED captured-high (one grader, 31 mains for high/low): acceptable 3 wrong 0 of 3 | VERDICT PASS]
+OK   cli-6 an unclean reported-only arm (memory LOADED on `low`) is printed as a REPORTED PROBLEM and does NOT block PASS (it gates nothing)  [REPORTED PROBLEM low: memory LOADED (not ABSENT) (a reported-only arm: printed, gates nothing) | REPORTED high (one grader, 31 mains for high/low): acceptable 2 wrong 1 of 3 | REPORTED low: not graded | REPORTED captured-high (one grader, 31 mains for high/low): acceptable 3 wrong 0 of 3 | VERDICT P]
+OK   cli-4 a VOID reader output: "VERDICT VOID" and no grades are required (the key is absent here; the run is still read as VOID and says the grades were not read)  [INFO Safety as read in a VOID run (reported; it does not change the verdict, registration 6.3): text half PASS; wrong Live answers shown 0 of 0 graded | VERDICT VOID (the re-fly is not spent): router ]
+OK   cli-4b a VOID run whose grades CAN be read reports the Safety breach it holds (text half FAIL, 1 wrong Live answer) and still reads VOID  [INFO Safety as read in a VOID run (reported; it does not change the verdict, registration 6.3): text half FAIL; wrong Live answers shown 1 of 7 graded | VERDICT VOID (the re-fly is not spent): router session failed before the 10th dispatch]
+OK   refuse-1 a run folder that is not <stamp>-router-default-r1 (a smoke folder)  [exit 2 REFUSED: only a run folder named <stamp>-router-default-r1 is scored (got "2026-10-07T20-00-05-router-smoke"); a smoke, ]
+OK   refuse-2 a suffixed (retried) folder  [exit 2 REFUSED: only a run folder named <stamp>-router-default-r1 is scored (got "2026-10-07T20-00-05-router-default-r1-1002");]
+OK   refuse-3 a roster that differs from the build record (sha256)  [exit 2 REFUSED: the roster differs from the build record (sha256) ]
+OK   refuse-4 a judge file that differs from the build record (sha256)  [exit 2 REFUSED: the judge file differs from the build record (sha256) ]
+OK   refuse-5 a capture file changed after the export (sha256)  [exit 2 REFUSED: the live capture file differs from the build record (changed after the export) ]
+OK   refuse-6 a build record for another folder  [exit 2 REFUSED: the build record is for another run (record 2026-10-07T21-00-00-router-default-r1, scoring 2026-10-07T20-00-05-]
+OK   refuse-7 a missing build record  [exit 2 REFUSED: the build record is missing: C:\Users\sotka\AppData\Local\Temp\cal-score-rd-kZL7Te\t13\keyhold\build-record-rd.]
+OK   refuse-8 a missing key  [exit 2 REFUSED: the key is missing: C:\Users\sotka\AppData\Local\Temp\cal-score-rd-kZL7Te\t14\keyhold\key-rd.json ]
+OK   refuse-9 the reader exits 2 (unreadable input)  [exit 2 REFUSED: the reader exited 2 (2 = unreadable input):  ]
+OK   refuse-10 a reader output with a missing bar line  [exit 2 REFUSED: the reader output is unusable: missing line: BAR Routing ]
+OK   refuse-11 a log that does not cover the hour  [exit 2 REFUSED: the log does not cover the hour: no "=== Natively session started <ISO> ===" line at or before the hour start ]
+OK   grading-problem missing verdict file: the file is dropped and listed, the verdict is not PASS  [exit 0 VERDICT INCONCLUSIVE ]
+OK   grading-problem verdict file with an out-of-range score: the file is dropped and listed, the verdict is not PASS  [exit 0 VERDICT INCONCLUSIVE ]
+OK   grading-problem no launch record for a slot: the file is dropped and listed, the verdict is not PASS  [exit 0 VERDICT INCONCLUSIVE ]
+OK   grading-problem a launch whose transcript model is not the pin: the file is dropped and listed, the verdict is not PASS  [exit 0 VERDICT INCONCLUSIVE ]
+OK   grading-problem a launch whose memory was LOADED: the file is dropped and listed, the verdict is not PASS  [exit 0 VERDICT INCONCLUSIVE ]
+OK   grading-problem a launch with a non-zero exit: the file is dropped and listed, the verdict is not PASS  [exit 0 VERDICT INCONCLUSIVE ]
+OK   grading-problem one session graded both graders of a file (same session id): the file is dropped and listed, the verdict is not PASS  [exit 0 VERDICT INCONCLUSIVE ]
+OK   grading-problem the LAST launch record of a slot decides (an earlier clean record does not rescue a later LOADED one)
+OK   grading-problem a wrong Live answer readable in a blind file still gives SAFETY FAIL while an in-app verdict file is missing
+OK   I-2 cli: the scorer RAN the reader itself, with the registered limit, on this run folder and root (the reader's argv is recorded by the stand-in)  [imit-min 2 --root C:\Users\sotka\AppData\Local\Temp\cal-score-rd-kZL7Te\t27\root]
+OK   I-2 cli: the output records the reader script sha256, the reader output sha256 and the run folder it ran on
+OK   I-1 cli: the output names the grader model (registration 7.1): GRADER MODEL claude-opus-5-5 with the pin and the slot count, and the alias probe read
+OK   I-2 cli: a reader-output FILE is no longer accepted (--reader-out refused, exit 2)
+OK   I-2 cli: --reader-script is a calibration seam: without SCORE_RD_CAL=1 it is refused (exit 2), the real reader is always used
+OK   I-2 refuse: a reader output that says "clear (3.50 vs limit 5)" (a 5-minute limit; old code scored it as a candidate PASS)  [exit 2 REFUSED: the reader output is unusable: VOID_INPUT: the down-time limit 5 is not the registered 2 minutes; VOID CHECK router-down-minutes: t]
+OK   I-2 refuse: a reader output where 3.5 down minutes are printed "clear" against limit 2  [exit 2 REFUSED: the reader output is unusable: VOID CHECK router-down-minutes: clear disagrees with 3.50 minutes against 2 ]
+OK   I-2 refuse: Routing denominators 19 EASY (m-4)  [exit 2 REFUSED: the reader output is unusable: BAR Routing: the denominators 19 EASY / 27 HARD are not the registered 20 / 27 ]
+OK   I-2 refuse: the reader exits 2 (unreadable input)  [exit 2 REFUSED: the reader exited 2 (2 = unreadable input):  ]
+OK   I-2 refuse: the reader exits 3 but its text is not VOID  [exit 2 REFUSED: the reader exit code 3 and its VOID lines disagree ]
+OK   I-2 refuse: the reader exits 0 but its text says VOID  [exit 2 REFUSED: the reader exit code 0 and its VOID lines disagree ]
+OK   grading-problem (I-1) a launch on claude-sonnet-5 whose record says pinned:true: dropped and listed, never PASS  [exit 0 GRADING PROBLEM blind-1.g1: the CLI model claude-sonnet-5 is not exactly claude-opus-5-5]
+OK   grading-problem (I-1) a launch whose transcript carries a second model: dropped and listed, never PASS  [exit 0 GRADING PROBLEM inapp.g1: the transcript models ["claude-opus-5-5","claude-sonnet-5"] are not exactly claude-opus-5-5]
+OK   grading-problem (I-1) a launch on the suffixed pin claude-opus-5-5[1m]: dropped and listed, never PASS  [exit 0 GRADING PROBLEM blind-2.g1: the CLI model claude-opus-5-5[1m] is not exactly claude-opus-5-5]
+OK   grading-problem (I-1) an old-shape record with no models list: dropped and listed, never PASS  [exit 0 GRADING PROBLEM blind-2.g2: the transcript models undefined are not exactly claude-opus-5-5]
+OK   grading-problem (m-3) a launch by another launcher version: dropped and listed, never PASS  [exit 0 GRADING PROBLEM blind-1.g2: launched by another launcher version (deadbeefdead, the registered file is edfef2aa8a98)]
+OK   grading-problem (m-3) a launch whose transcript used Bash: dropped and listed, never PASS  [exit 0 GRADING PROBLEM inapp.g2: tools {"Read":2,"Bash":1} are not within Read/Write/Edit]
+OK   grading-problem (I-4) a verdicts file edited after its launch: dropped and listed, never PASS  [exit 0 GRADING PROBLEM blind-2.g1: the verdicts file differs from the one this launch wrote (verdictsSha12)]
+OK   grading-problem (I-4) one slot's verdicts file moved over another's (both valid on the same keys): dropped and listed, never PASS  [exit 0 GRADING PROBLEM inapp.g2: the verdicts file differs from the one this launch wrote (verdictsSha12)]
+OK   grading-problem (I-4) a blind pairs file re-exported after grading: dropped and listed, never PASS  [exit 0 GRADING PROBLEM blind-1.g1: the pairs file differs from the one this launch graded (pairsSha12)]
+OK   grading-problem (I-4) the in-app pairs file re-exported after grading: dropped and listed, never PASS  [exit 0 GRADING PROBLEM inapp.g1: the pairs file differs from the one this launch graded (pairsSha12)]
+OK   grading-problem (I-4) a record without the hashes: dropped and listed, never PASS  [exit 0 GRADING PROBLEM blind-2.g1: the pairs file differs from the one this launch graded (pairsSha12)]
+OK   I-1 cli: without an alias-probe record the output still names the grader model and simply omits the alias line
+CAL SCORE-RD: 175/175 PASS

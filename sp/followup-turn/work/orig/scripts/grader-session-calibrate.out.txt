@@ -1,0 +1,52 @@
+=== A. h40d-grader-models.mjs: top-level sessions ===
+OK   top-level session on claude-opus-5-5 reads PINNED, exit 0
+OK   top-level session on another model reads NOT PINNED, exit 1
+OK   top-level session with two models reads NOT PINNED, exit 1
+OK   a <synthetic> API-error record is counted apart and does not make it mixed, exit 0
+OK   a top-level session with no transcript reads NOT VERIFIED, exit 1
+OK   a subagent (named session) and a top-level session in one call, both PINNED
+OK   a malformed id is a usage error, exit 2
+OK   the real alias probe a9d35e8deacac3eff reads PINNED (claude-opus-5-5)
+OK   a real top-level session of this project is found by its session file and read
+
+=== B. check-grader-memory.mjs ===
+OK   POSITIVE CONTROL a9d35e8deacac3eff (the s50l alias probe) reads LOADED, exit 1
+OK   a real top-level session reads LOADED by BOTH marker groups (project memory and claude-mem context)
+OK   the positive control with its `instructions` attachment removed reads ABSENT, exit 0 (the check answers differently when the effect is absent)  [t: ABSENT  (project-memory markers: 0 hits in 0 distinct; claude-mem context markers: 0; s]
+OK   ... and one memory file NAME put back flips it to LOADED
+OK   ... and the "Memory Index" header put back flips it to LOADED
+OK   ... and a claude-mem SessionStart header (any project name) put back flips it to LOADED, naming the project
+OK   claude-mem TOOL/SKILL NAMES alone (present in every session under any cwd) do NOT read LOADED
+     leftovers in the top-level session: without instructions pm=9 cm=5; without hook records pm=34 cm=0; without both pm=6 cm=0
+OK   top-level session minus its `instructions` attachment: the claude-mem group still reads LOADED
+OK   top-level session minus its hook records: the project-memory group still reads LOADED
+OK   top-level session minus the claude-mem hook records loses the claude-mem group (0 hits)
+OK   top-level session minus the `instructions` attachment loses most of the project-memory hits
+     population: 732 subagent transcripts; with an AutoMem entry: 591 LOADED / 0 ABSENT; without: 2 LOADED / 139 ABSENT
+OK   the check never misses an AutoMem-loaded transcript (0 false ABSENT in the population)
+OK   the check reads ABSENT on every transcript without an AutoMem entry except those that READ memory files through a tool  [2 such exceptions (a transcript with a Read/Bash of a memory file is exposed too)]
+OK   exception agent-a3b4fa17ff351376: a tool call names a memory file (a real exposure, LOADED is right)
+OK   exception agent-a922267a530cd715: a tool call names a memory file (a real exposure, LOADED is right)
+
+=== C. audit-graders.mjs ===
+OK   a grader that only Reads the rubric + pairs and Writes its own verdicts is clean, exit 0
+OK   an mcp__* call (claude-mem search) is FLAGGED, exit 1
+OK   ... and stays FLAGGED under --allow-validation-bash
+OK   a tool other than Read/Write (WebFetch) is FLAGGED
+OK   Grep is FLAGGED
+OK   a Bash call is FLAGGED by default (the registered rule: any tool other than Read/Write)
+OK   --allow-validation-bash passes a Bash that only validates its OWN verdicts file against its pairs file
+OK   ... but not a Bash that touches a key file
+OK   ... nor one that reads the other grader's verdicts
+OK   ... nor one that reads a memory file
+OK   ... nor a Bash that does not name the grader's own verdicts file
+OK   a Read of a key file is FLAGGED
+OK   a Read of an answer file is FLAGGED
+OK   a Read of the other grader's verdicts is FLAGGED
+OK   a Write to another file's verdicts is FLAGGED
+OK   a transcript that cannot be found cannot be audited: exit 1
+OK   the real alias probe a9d35e8deacac3eff (no tool use at all) is clean
+OK   REGISTRATION CONFLICT, shown on the 8 real s50l graders: under the rule as written every grader is FLAGGED (each ran one Bash to validate its own verdicts file)
+OK   ... and under --allow-validation-bash the same 8 real graders read clean
+
+GRADER-SESSION CALIBRATION OK

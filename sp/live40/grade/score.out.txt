@@ -1,0 +1,30 @@
+| group | items | answered | acceptable | wrong (any grader c=0) | not acceptable (incl. unanswered) |
+|---|---|---|---|---|---|
+| EASY | 20 | 20 | 18 | 0 | 2 |
+| HARD standalone | 11 | 11 | 5 | 1 | 6 |
+| HARD follow-up | 16 | 15 | 13 | 0 | 3 |
+| ALL | 47 | 46 | 36 | 1 | 11 |
+| HARD (both) | 27 | 26 | 18 | 1 | 9 |
+
+EASY: wrong = []; not acceptable = [RE01, RE08]; no answer = []
+HARD follow-up: wrong = []; not acceptable = [RH10, RH14, RH16]; no answer = [RH14]
+HARD standalone: wrong = [RH18]; not acceptable = [RH05, RH09, RH19, RH17, RH15, RH18]; no answer = []
+
+Scores of the answered non-acceptable items (g1 c/o/d | g2 c/o/d):
+  RE01 (EASY): 1/2/2 | 1/2/2
+  RE08 (EASY): 1/2/2 | 2/2/2
+  RH05 (HARD standalone): 1/2/2 | 2/2/2
+  RH09 (HARD standalone): 1/2/2 | 1/2/2
+  RH10 (HARD follow-up): 1/2/2 | 2/2/2
+  RH19 (HARD standalone): 1/2/2 | 2/2/2
+  RH17 (HARD standalone): 1/2/2 | 2/2/2
+  RH15 (HARD standalone): 1/1/2 | 1/2/2
+  RH16 (HARD follow-up): 1/2/2 | 1/2/2
+  RH18 (HARD standalone): 0/0/2 | 0/0/2  WRONG
+
+Grader agreement over 46 answered items:
+  correctness exact 41/46; on_topic exact 45/46; delivery exact 40/46
+  class (wrong / weak / full c2+o2) same 41/46; per-grader acceptable (c2+o2): g1 36, g2 41; both 36
+  wrong per grader: g1 1, g2 1; both 1
+  disagreements on acceptable: [RH05, RH17, RH19, RE08, RH10]
+  score distributions 0/1/2 - g1 correctness 1/9/36 on_topic 1/1/44; g2 correctness 1/4/41 on_topic 1/0/45

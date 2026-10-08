@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Covers native missing-value handling, latency constraint and a logistic-regression baseline; all three sub-parts, 61 natural spoken words."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Assumes the 60 percent precision instead of estimating it, never compares the implied 4,750 flagged against the 5,000 the 5 percent band gives."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout plus difference-in-differences is exactly the right isolation for seasonality and customer mix; clean 73-word spoken answer."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Code is correct including the stable-sort tie-break and all three edge cases, but it is a raw Python block with a stray fence marker."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names the chronological split plus the thirty-day label embargo and fits the ColumnTransformer on train only; 80 words of prose."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "SQL is right, with the event-type and ingested-at filters in the ON clause so zero-call customers survive, but it is a raw code block."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All eight asked components plus the shared feature store, registry and monitoring, but 120 words is well over the spoken budget."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, stable-hash assignment, delayed joins and retraining selection all present, but 164 words laid out under four bare section headings."
+  },
+  "S1Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Service mapping is accurate but the explicitly asked operational reasons collapse into one boilerplate clause about integration, security and cost."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, Entra auth to Postgres, Key Vault fallback and per-environment separation all correct; 86 words runs slightly long."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every stage from ingestion to cited generation with a cross-encoder rerank, but 113 words and the experience tie-in is one thin line."
+  },
+  "S2Q02": {
+    "correctness": 0,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Fabricates a 5,000-document benchmark, three annotators and exact 95 percent intervals the candidate cannot defend under follow-up."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correctly pins the agent's justification on an unpredetermined path and contrasts all three approaches; 102 words is too long."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Reciprocal rank fusion stated precisely with one-based ranks, configurable c, summed scores and a deterministic alphabetical tie-break, in 61 spoken words."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Honors every constraint including skipping rather than stopping and the two-per-document cap, but 94 words overruns the spoken budget."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore, wait_for timeout and gather with return_exceptions is the right shape and preserves order; 74 words of normal technical speech."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-partitioned hybrid index, relational source of truth, query-time permission filters and golden-set evaluation all covered, but 155 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write shadow index, checkpointed backfill, offline comparison, flagged cutover and warm rollback is the textbook migration; 119 words too long."
+  },
+  "S2Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Offers Azure AI Search or Cognitive Search as alternatives when they are the same renamed service; also 100 words and imperative register."
+  },
+  "S2Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dedup-key idempotency is right but it is labelled transactional outbox, a producer-side pattern, and claims atomic writes across two separate stores."
+  }
+}

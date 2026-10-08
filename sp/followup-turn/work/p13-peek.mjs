@@ -1,0 +1,3 @@
+import fs from 'node:fs';
+const f = 'C:/Users/sotka/.claude/projects/C--Users-sotka-AppData-Local-Temp-claude-C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a-9c5886c7-cdbd-48af-b8bc-e9275012ec64-scratchpad-followup-epcae2/6441d4bf-d00c-4007-871e-b7dc480b2cab.jsonl';
+for (const l of fs.readFileSync(f, 'utf8').split('\n').filter(Boolean)) { const j = JSON.parse(l); if (j.type !== 'assistant') continue; for (const c of j.message?.content ?? []) if (c.type === 'tool_use') console.log(c.name, JSON.stringify(c.input.command ?? c.input.file_path)); }

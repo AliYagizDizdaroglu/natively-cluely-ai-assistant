@@ -1,0 +1,11 @@
+fix(flight): the no-cue twins pair with the hedge's front leg
+
+Under MAIN's hedge default 3.5-lite HIGH writes almost every answer (h40c:
+44 of 45); 3.1-lite LOW is only the back leg. The three captured-no-cues
+twins still ran 3.1-lite LOW, so a cue hour's cue-vs-no-cue band could only
+be read on the model that wrote 1 answer in 45 (merge review finding 1).
+Re-point them rather than add arms: captured-no-cues-high, -r2 and -r3 run
+3.5-lite HIGH, captured-high's same-bytes partner. No data exists under the
+old tags.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

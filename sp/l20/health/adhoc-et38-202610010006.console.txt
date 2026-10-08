@@ -1,0 +1,29 @@
++0.88s [S1Q02 comp=on] setupComplete 879 ms
++28.23s [S1Q02 comp=on] clip end (26.2 s)
++30.19s [S1Q02 comp=on] first word 1962 ms after clip end
++61.53s [S1Q02 comp=on] close {"code":1000,"reason":""}
++63.82s [S2Q08 comp=on] setupComplete 848 ms
++83.88s [S2Q08 comp=on] clip end (19.3 s)
++85.39s [S2Q08 comp=on] first word 1508 ms after clip end
++137.26s [S2Q08 comp=on] close {"code":1000,"reason":""}
++139.44s [S2Q01 comp=on] setupComplete 729 ms
++156.45s [S2Q01 comp=on] clip end (16.3 s)
++157.79s [S2Q01 comp=on] first word 1338 ms after clip end
++205.81s [S2Q01 comp=on] close {"code":1000,"reason":""}
++207.96s [S1Q06 comp=on] setupComplete 710 ms
++236.77s [S1Q06 comp=on] clip end (27.7 s)
++239.71s [S1Q06 comp=on] first word 2944 ms after clip end
++245.81s [S1Q06 comp=on] close {"code":1000,"reason":""}
++247.97s [S1Q04 comp=on] setupComplete 726 ms
++279.58s [S1Q04 comp=on] clip end (30.4 s)
++286.18s [S1Q04 comp=on] first word 6596 ms after clip end
++329.25s [S1Q04 comp=on] close {"code":1000,"reason":""}
+
+id      comp  setup   first word  last word  words  premature  close
+S1Q02   on      879      2.0 s     9.0 s     62  false      1000 
+S2Q08   on      848      1.5 s    12.6 s    149  false      1000 
+S2Q01   on      729      1.3 s    11.1 s    105  false      1000 
+S1Q06   on      710      2.9 s     2.9 s     43  false      1000 
+S1Q04   on      726      6.6 s    10.5 s    119  false      1000 
+compression on: answered 5/5; abnormal closes 0
+answered 5/5; abnormal closes 0; wrote C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/l20/health/2026-09-30T21-06-20-932Z.json

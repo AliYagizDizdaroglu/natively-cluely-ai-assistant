@@ -1,0 +1,10 @@
+docs(passes): three 3.8 Live router probes (L38R, L38F) and the pipeline twin (L38P)
+
+L38R: bare 3.8 Live routes one-part questions to a one-line answer and the rest to
+"hard": all five bars met (23/24 routed, 23/23 right, first word ~0.85 s).
+L38F: same-session follow-ups: earlier-question follow-ups 12/12 right at 1.0 s, but
+answer-based follow-ups answered 1/6 and 3/6 (bar <= 1): follow-ups stay on the pipeline.
+L38P: the pipeline on those follow-ups stays consistent with its own earlier answer
+15/17 within the window, 12/18 at roster timing. Spikes; none is a ship decision.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

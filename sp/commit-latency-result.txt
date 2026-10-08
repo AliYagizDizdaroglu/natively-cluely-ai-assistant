@@ -1,0 +1,21 @@
+docs(passes): the latency test's result — FAIL, 3.1-lite LOW stays
+
+All three windows ran on 2026-09-23 as registered, with the app closed.
+None was void.
+
+3.5-lite HIGH passed on typical wait: 6417 ms against 5863, margin 750.
+It failed the slow tail (p90 45000 ms against 19180, margin 1000) and
+forced fallbacks (41 against 32, margin 6).
+
+Google was overloaded in W2 and W3, and the two models failed in
+different ways:
+- 3.1-lite was refused fast with 503s, and 3.5-lite answered in its place.
+- 3.5-lite stalled while its backup was being refused.
+So with 3.5 in front, 16 of 117 prompts would have gone unanswered; with
+3.1 in front, 4 would have.
+
+By the rule, the model question is now closed. The Result section also
+carries the declared diagnostics and an erratum on the stated reason for
+"app closed". The rule text above it is unchanged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

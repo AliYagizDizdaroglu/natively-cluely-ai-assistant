@@ -1,0 +1,30 @@
+docs(passes): s50j — the three-rep offline twin settles the pipeline gap as sampling
+
+The hour s50i left one question open: the live hour scored 28 of 39 against its offline
+twin's 33 on identical bytes, and at one sample a side that gap could not be told apart from
+chance. s50j ran the twin three times to measure what identical configurations actually
+produce.
+
+The twin's own spread is the whole answer. Three reps of gemini-3.1-flash-lite at LOW on the
+same captured prompts scored 29, 31 and 33 of 39 — a band of 4, which is exactly the bench
+noise floor on 38 pairs. The live hour landed at 34, one point ABOVE the top of that band.
+So the s50i gap was smaller than the variation the twin produces against itself, and this
+hour the live pipeline came out on top. Across the two flights the live hour has now fallen
+once below and once above its twin, which is what sampling looks like and not what a defect
+looks like. The pipeline gap is closed; no hunt is warranted.
+
+Three further reads from the same window. The thinking level is worth +8 of 39 on app bytes
+(captured-minimal 26, in-app 34, 8 up and 0 down), the clearest level result yet and
+consistent with the 09-17 bench. gemini-3.5-flash-lite at HIGH scored 35 of 39, inside one
+point of the live hour and above the 3.1 LOW band, with a materially better latency tail
+(ttft p90 4.6 s against 7.1 s) — it stays a live candidate rather than a decided winner,
+because a single arm against a band of 4 cannot clear the ship rule honestly. And the word
+guard from 01d3810 held: 42 answers, every one ending on a sentence terminator, none at the
+200-word ceiling, max 178 — though nothing this hour reached 200, so the fix was never
+actually exercised live.
+
+One defect confirmed rather than inferred: the single stall at 07:50 fell back to
+gemini-3.5-flash-lite carrying thinking=LOW, and that request logged zero thought tokens,
+because 3.5-lite does not honour LOW. The fallback leg needs its own level.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

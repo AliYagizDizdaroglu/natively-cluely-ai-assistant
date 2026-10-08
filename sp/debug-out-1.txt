@@ -1,0 +1,36 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn[39m
+
+[90mstdout[2m | electron/services/_debug-replay.test.ts[2m > [22m[2mdebug[2m > [22m[2mdumps window around S1Q01/S1Q02
+[22m[39m=== window [33m1788961932234[39m [33m1788962071678[39m ===
+S1Q01 playedAt [33m1788961934234[39m voice [[1788961934354,1788961936194],[1788961937114,1788961938474],[1788961938914,1788961943154],[1788961943574,1788961945874]]
+voiceOff [33m1788961945874[39m
+--- finals in window ---
+[33m1788961936929[39m [33m2695[39m "Why did you choose XGBoost?"
+[33m1788961943912[39m [33m9678[39m "Using your churn project, explain why XGBoost was suitable for the data and the production constraints,"
+[33m1788961946616[39m [33m12382[39m "and what baseline you would compare it against."
+[33m1788962011266[39m [33m77032[39m "Under what conditions would you prefer logistic regression?"
+[33m1788962013627[39m [33m79393[39m "A neural network, or a rules based approach?"
+--- detections in window ---
+[33m1788961937454[39m [33m3220[39m whisper "Why did you choose XGBoost?"
+[33m1788961946025[39m [33m11791[39m whisper "Using your churn project, explain why XGBoost was suitable for the data and the "
+[33m1788961951705[39m [33m17471[39m live "Using your churn project, explain why XGBoost was suitable for the data and the "
+[33m1788962011831[39m [33m77597[39m whisper "Under what conditions would you prefer logistic regression?"
+[33m1788962023563[39m [33m89329[39m live "Under what conditions would you prefer logistic regression,"
+--- decisions in window ---
+[33m1788961943454[39m [33m9220[39m {"kind":"dispatch","text":"Why did you choose XGBoost?","live":[],"finished":true,"gateMs":1200,"finals":1,"fromLive":false}
+[33m1788961947074[39m [33m12840[39m {"kind":"supersede","text":"Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the production constraints, and what baseline you would compare it against.","live":[],"replaces":"Why did you choose XGBoost?","finals":3}
+[33m1788961955074[39m [33m20840[39m {"kind":"close","reason":"continuation-expired"}
+[33m1788962014099[39m [33m79865[39m {"kind":"dispatch","text":"Under what conditions would you prefer logistic regression? A neural network, or a rules based approach?","live":[],"finished":true,"gateMs":1200,"finals":2,"fromLive":false}
+[33m1788962022099[39m [33m87865[39m {"kind":"close","reason":"continuation-expired"}
+[33m1788962027263[39m [33m93029[39m {"kind":"dispatch","text":"Under what conditions would you prefer logistic regression,","live":["Under what conditions would you prefer logistic regression,"],"finished":false,"gateMs":1200,"finals":0,"fromLive":true}
+[33m1788962035263[39m [33m101029[39m {"kind":"close","reason":"continuation-expired"}
+
+ [32m✓[39m electron/services/_debug-replay.test.ts [2m([22m[2m1 test[22m[2m)[22m[90m 22[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m   Start at [22m 11:35:18
+[2m   Duration [22m 4.80s[2m (transform 136ms, setup 0ms, collect 147ms, tests 22ms, environment 2.68s, prepare 247ms)[22m
+

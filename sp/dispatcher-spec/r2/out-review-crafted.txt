@@ -1,0 +1,26 @@
+A (stale-finals "no", no other ear, no re-arm for an undeclined turn):
+  4.7s classify finals=1 "We have a batch job that writes daily partitions."
+  5.1s verdict no on finals=1 -> {"kind":"ignored","why":"stale-finals"}; snapshot {"open":true,"id":1,"finals":2,"live":0,"detected":false,"dispatched":false,"declined":null,"classifyAsked":true}
+  19.0s snapshot {"open":true,"id":1,"finals":2,"live":0,"detected":false,"dispatched":false,"declined":null,"classifyAsked":true}
+  25.7s dispatch finals=3 "We have a batch job that writes daily partitions. It sometimes fails h"
+  33.7s close continuation-expired
+A2 (same, with a re-arm on any undetected turn):
+  4.7s classify finals=1 "We have a batch job that writes daily partitions."
+  5.1s verdict -> {"kind":"ignored","why":"stale-finals"}
+  5.2s classify finals=2 "We have a batch job that writes daily partitions. It sometimes fails h"
+B (S-3 with the chip after the gate):
+  23.7s classify finals=1 "Great, thanks for walking me through that."
+  24.1s {"kind":"declined","verdict":"not-a-question","again":false}
+  33.2s chip {"kind":"revived","score":1,"finals":2,"by":"whisper"}
+  33.2s dispatch finals=2 "Great, thanks for walking me through that. What is the difference betw"
+  41.2s close continuation-expired
+C (a short real question after a declined statement; chip under the content-word floor):
+  23.7s classify finals=1 "Okay, that makes sense, thanks for that."
+  24.1s {"kind":"declined","verdict":"not-a-question","again":false}
+  29.6s chip {"kind":"replaced-declined","closed":"not-a-question","score":0}
+  snapshot {"open":true,"id":2,"finals":0,"live":0,"detected":true,"dispatched":false,"declined":null,"classifyAsked":false}
+  37.6s close nothing-heard
+D (s50g S2Q01F shape):
+  17.5s dispatch finals=1 "Explain your rag pipeline precisely walk through ingestion, parsing, c"
+  25.5s close continuation-expired
+  83.0s liveClaim -> {"kind":"absorbed","of":"Explain your rag pipeline precisely walk through ingestion, parsing, chunking, embedding, retrieval, re ranking, context assembly, and generation, and map those stages to your; snapshot {"open":true,"id":2,"finals":2,"live":0,"detected":false,"dispatched":false,"declined":null,"classifyAsked":false}

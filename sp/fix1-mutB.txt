@@ -1,0 +1,38 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+ ❯ electron/ipcHandlers.typedPrompt.test.ts (2 tests | 1 failed) 30ms
+   × gemini-chat-stream sends the typed verbal prompt > sends that variable: every line that names it is its declaration, the knowledge branch and the one call 21ms
+     → expected [ …(3) ] to deeply equal [ …(3) ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/ipcHandlers.typedPrompt.test.ts > gemini-chat-stream sends the typed verbal prompt > sends that variable: every line that names it is its declaration, the knowledge branch and the one call
+AssertionError: expected [ …(3) ] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+  Array [
+    "let verbalSystemPrompt = VERBAL_TYPED_PROMPT;",
+    "verbalSystemPrompt = `${kr.systemPromptInjection}\\n\\n${VERBAL_TYPED_PROMPT}`;",
+-   "stream = llmHelper.streamVerbalWithGeminiFlash(userContent, verbalSystemPrompt, undefined, selectedModel);",
++   "stream = llmHelper.streamVerbalWithGeminiFlash(userContent, wrap(verbalSystemPrompt), undefined, selectedModel);",
+  ]
+
+ ❯ electron/ipcHandlers.typedPrompt.test.ts:30:84
+     28|     it('sends that variable: every line that names it is its declarati…
+     29|         // a line that re-assigns or wraps the prompt between the pin …
+     30|         expect(mentioning(/\bverbalSystemPrompt\b|streamVerbalWithGemi…
+       |                                                                                    ^
+     31|             'let verbalSystemPrompt = VERBAL_TYPED_PROMPT;',
+     32|             'verbalSystemPrompt = `${kr.systemPromptInjection}\\n\\n${…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  21:21:19
+   Duration  4.54s (transform 90ms, setup 0ms, collect 75ms, tests 30ms, environment 2.55s, prepare 247ms)
+

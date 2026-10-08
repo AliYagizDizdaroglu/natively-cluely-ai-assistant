@@ -1,0 +1,27 @@
+﻿[identical] 2026-09-02-before: 71 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-03T05-10-58-after: 0 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) n/a
+[identical] 2026-09-03T08-37-00-after2: 0 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) n/a
+[identical] 2026-09-03T10-08-22-after3: 0 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) n/a
+[identical] 2026-09-03T13-54-10-liveonly: 0 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) n/a
+[identical] 2026-09-03T15-05-21-liveonly2: 0 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) n/a
+[identical] 2026-09-04T08-09-38-after4: 84 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-04T22-43-34-after5: 0 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) n/a
+[identical] 2026-09-05T13-50-01-after6: 74 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-06T08-14-21-after7: 101 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-07T08-14-12-after8: 102 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-08T08-44-56-after9: 184 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-09T15-00-55-s50a: 135 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-11T08-22-32-s50b: 164 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-12T08-22-49-s50c: 159 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-13T08-22-36-s50d: 160 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-14T08-22-28-s50e: 160 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-15T08-22-29-s50f: 162 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-16T08-42-43-s50g: 158 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-16T11-41-44-s50h: 160 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-18T08-22-57-s50i: 162 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-19T08-22-41-s50j: 161 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-20T11-22-43-s50k: 157 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-21T08-22-34-s50l: 161 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+[identical] 2026-09-22T08-22-50-s50m: 160 finals (since 0: true, since startedMs-2000: true), repair lines in log 0, calibration (synthetic repair inserted) detected
+25 non-holdout logs, 2675 non-empty finals, 194760 log lines; calibration detected on 19 of 25
+RESULT: the new parse equals the old inline parse on every non-holdout log

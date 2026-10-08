@@ -1,0 +1,18 @@
+test(cues): pin the hedge x cue seam in committed tests
+
+The merge of MAIN's hedge default into cue mode (279103b) was checked by a
+throwaway test only (merge review finding 2). Commit it:
+
+- WhatToAnswerLLM.hedgeCues.test.ts: the real WhatToAnswerLLM over the real
+  LLMHelper with the hedge on, only the SDK stubbed. A hedge-won answer loses
+  its cue block from the spoken text, reports its cues to onCues exactly once
+  (also across the fallback redirect), and names the hedge winner.
+- IntelligenceEngine.cues.test.ts: the sentinel-only (hedge) chunk that
+  arrives between onCues and the first prose token names the model and does
+  not swallow the pending cues.
+
+Calibrated by mutation: the engine case fails when the pendingCues read moves
+above the sentinel skip; case D fails (onCues called twice) when the
+once-guard is removed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

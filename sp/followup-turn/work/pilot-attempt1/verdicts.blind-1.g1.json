@@ -1,0 +1,6 @@
+{
+ "pilot:P1#1": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct core distinction (address space vs shared memory, cheaper switching) but terse, about 20 words, well under spoken length."},
+ "pilot:P2#2": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct tradeoff: average O(1) and no ordering vs ordered keys and worst-case log n; too clipped for a spoken answer."},
+ "pilot:P3#3": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Accurate purpose and write-cost tradeoff of an index; very short, one sentence, under the 40-word range."},
+ "pilot:P4#4": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct definition with right PUT/DELETE vs POST examples; brief single sentence, short of a natural spoken answer."}
+}

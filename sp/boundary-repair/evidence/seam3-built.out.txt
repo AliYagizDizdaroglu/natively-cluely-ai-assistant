@@ -1,0 +1,5 @@
+REPAIR L04#1 restored "upstream" -> TRUE (the script holds it before F2)
+   interim before the cut: "from about a dozen upstream tables, and the upstream data regularly arrive"
+   cut final (speech_final false): "from about a dozen upstream tables, and the"
+   next final +2959 ms: "data regularly arrives late or gets corrected a few days after the fact."
+repairs 1, true against the script 1

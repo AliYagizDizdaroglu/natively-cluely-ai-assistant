@@ -1,0 +1,57 @@
+PASS  S-def-1 | acceptable needs BOTH graders at correctness 2 AND on_topic 2 | expected: g1 (2,2) + g2 (2,1) -> false; both (2,2) -> true | actual: false / true
+PASS  S-def-2 | wrong = ANY grader correctness 0 | expected: g1 ok + g2 c0 -> true; both c1 -> false; no answer -> false | actual: true / false / false
+PASS  S-def-3 | live40's quantile on [1..5]: p50 and p90 | expected: 3 and 5 | actual: 3 and 5
+PASS  S-0 | base scenario (12 EASY answered, 3 HARD weak in L, lead 3500 ms) | expected: CANDIDATE; acc A 46, L 44, R 44, ORACLE 44; EASY caught 12; lead 3500 | actual: CANDIDATE; acc A 46, L 44, R 44, ORACLE 44; EASY caught 12; lead 3500
+PASS  S-0b | the confusion tables have nine class columns; live40-class rows sum 20/11/9/7 | expected: 9 columns; E20 H11 QF9 AF7; E: 12 answer + 8 hard | actual: 9 columns; E20 H11 QF9 AF7; E 12 answer + 8 hard; row keys 9
+PASS  S-0c | the printed report carries every class column name and the reading line | expected: all 9 class names in the header; "READING 5: CANDIDATE" | actual: true; true
+PASS  S-1 | row 1 INCOMPLETE: L not complete | expected: INCOMPLETE | actual: INCOMPLETE (complete: L false, R true, grading true)
+PASS  S-1b | row 1: grading incomplete | expected: INCOMPLETE | actual: INCOMPLETE (complete: L true, R true, grading false)
+PASS  S-1c | row 1: R not complete | expected: INCOMPLETE | actual: INCOMPLETE (complete: L true, R false, grading true)
+PASS  S-2 | row 2 NOT SAFE by AF: R answers the follow-up EF02 (an AF), graded perfectly | expected: NOT SAFE (why ~ AF answered 1) | actual: NOT SAFE (AF answered 1; wrong R 0 vs L 0)
+PASS  S-2b | the misroute list names the AF item first | expected: EF02 first, dAcc 0 | actual: EF02[AF] dAcc 0
+PASS  S-3 | row 2 NOT SAFE by wrong: an answered EASY item graded correctness 0 in RL (L right), no AF answered | expected: NOT SAFE (why ~ wrong R 1 vs L 0) | actual: NOT SAFE (AF answered 0; wrong R 1 vs L 0)
+PASS  S-3b | row 2: ONE grader's correctness 0 is enough | expected: NOT SAFE (why ~ wrong R 1 vs L 0) | actual: NOT SAFE (AF answered 0; wrong R 1 vs L 0)
+PASS  S-3c | negative control: the same item wrong in BOTH L and RL (wrong R = wrong L = 1) | expected: CANDIDATE | actual: CANDIDATE (acc R 43 >= acc L 43 - 2; no AF answered; wrong R 1 <= L 1; )
+PASS  S-4 | row 3 COSTS QUALITY: 3 answered items weak (c1, not wrong) in RL where L is acceptable: acc R = acc L - 3 | expected: COSTS QUALITY (why ~ acc R 41 <= acc L 44) | actual: COSTS QUALITY (acc R 41 <= acc L 44 - 3)
+PASS  S-4b | boundary: 2 such items (acc R = acc L - 2) is "no detectable difference" | expected: CANDIDATE | actual: CANDIDATE (acc R 42 >= acc L 44 - 2; no AF answered; wrong R 0 <= L 0; )
+PASS  S-5 | row 4 BUYS NOTHING by coverage: 9 of 20 EASY caught | expected: BUYS NOTHING (why ~ EASY caught 9) | actual: BUYS NOTHING (EASY caught 9 (need >= 10); lead 3500 ms (need >= 1000); M 0)
+PASS  S-5b | boundary: 10 of 20 caught | expected: CANDIDATE | actual: CANDIDATE (acc R 44 >= acc L 44 - 2; no AF answered; wrong R 0 <= L 0; )
+PASS  S-6 | row 4 BUYS NOTHING by lead: lead 900 ms | expected: BUYS NOTHING (why ~ lead 900 ms) | actual: BUYS NOTHING (EASY caught 12 (need >= 10); lead 900 ms (need >= 1000); M 0)
+PASS  S-6b | boundary: lead exactly 1000 ms | expected: CANDIDATE | actual: CANDIDATE (acc R 44 >= acc L 44 - 2; no AF answered; wrong R 0 <= L 0; )
+PASS  S-7 | row 4 BUYS NOTHING by M: 3 items missing | expected: BUYS NOTHING (why ~ M 3) | actual: BUYS NOTHING (EASY caught 12 (need >= 10); lead 3500 ms (need >= 1000); M )
+PASS  S-7c | missing items are excluded from the routing denominators and listed (3 HARD missing: HARD denominator 24, "not answered" 24, list RH07,RH08,RH09) | expected: den.HARD 24; hardNotAnswered 24; M list RH07,RH08,RH09 | actual: den.HARD 24; hardNotAnswered 24; M list RH07,RH08,RH09
+PASS  S-7b | boundary: M = 2 | expected: CANDIDATE | actual: CANDIDATE (acc R 44 >= acc L 44 - 2; no AF answered; wrong R 0 <= L 0; )
+PASS  S-8 | row 5 CANDIDATE: the base | expected: CANDIDATE (why ~ EASY caught 12) | actual: CANDIDATE (acc R 44 >= acc L 44 - 2; no AF answered; wrong R 0 <= L 0; )
+PASS  S-9 | precedence: AF answered AND coverage 9 (rows 2 and 4) | expected: NOT SAFE | actual: NOT SAFE (AF answered 1; wrong R 0 vs L 0)
+PASS  S-9b | precedence: INCOMPLETE AND AF answered (rows 1 and 2) | expected: INCOMPLETE | actual: INCOMPLETE (complete: L false, R true, grading true)
+PASS  S-9c | precedence: COSTS QUALITY AND lead 900 (rows 3 and 4) | expected: COSTS QUALITY | actual: COSTS QUALITY (acc R 41 <= acc L 44 - 3)
+PASS  S-10 | decideReading edge numbers: lead null (no answered item) | expected: BUYS NOTHING | actual: BUYS NOTHING
+PASS  S-10b | decideReading: accR = accL - 3 -> COSTS QUALITY; accR = accL - 2 -> CANDIDATE | expected: COSTS QUALITY / CANDIDATE | actual: COSTS QUALITY / CANDIDATE
+PASS  S-11 | latency: Live first text p50 on answered items 1500, L TTFT p50 5000; "hard" decision p50 2000; composed parallel p50 = 5000? (35 of 47 items wait for L) | expected: live 1500; L 5000; hard 2000; parallel p50 5000 | actual: live 1500; L 5000; hard 2000; parallel 5000
+PASS  S-11b | serial composed first text = Live "hard" time + L TTFT for non-answered items (2000 + 5000) | expected: p90 7000 | actual: 7000
+PASS  S-12 | false HARD list: an EASY item not answered carries its latency cost (L TTFT - A first text = 5000 - 1400) | expected: 8 false HARD items, cost 3600 ms | actual: 8 items, cost 3600 ms
+PASS  S-13 | paired lists: R vs L differ only on the one item where RL was weaker | expected: [RE02] | actual: [RE02]
+PASS  S-14 | test-retest of A: original grading had 2 items weak that the new grading finds acceptable | expected: 44/46 same; different [RE01,RE02] | actual: 44/46 same; different [RE01,RE02]
+PASS  S-E2E-1 | real loader + CLI on a synthetic tree: dry R (12 EASY answered), L complete, 8 verdict files all perfect, 8 clean audits + launch records | expected: READING 5: CANDIDATE; EASY caught 12/20; AF answered 0/7 | actual: READING 5: CANDIDATE  ; EASY caught 12/20; AF answered 0/7; setup exits dry 0 build 0
+PASS  S-A1 | A8 case: 8 valid verdict files and 1 NOT CLEAN audit (blind-2.g1, recorded after its clean one) | expected: READING 1: INCOMPLETE | actual: READING 1: INCOMPLETE  
+PASS  S-A2 | one audit with memory LOADED | expected: READING 1: INCOMPLETE | actual: READING 1: INCOMPLETE  
+PASS  S-A3 | one audit with the model not PINNED | expected: READING 1: INCOMPLETE | actual: READING 1: INCOMPLETE  
+PASS  S-A4 | the audited session is not the slot's last launch | expected: READING 1: INCOMPLETE | actual: READING 1: INCOMPLETE  
+PASS  S-A5 | no audit record at all for one slot | expected: READING 1: INCOMPLETE | actual: READING 1: INCOMPLETE  
+PASS  S-A6 | no audits.jsonl at all | expected: READING 1: INCOMPLETE | actual: READING 1: INCOMPLETE  
+PASS  S-A7 | audits clean but no blind/launches.jsonl | expected: READING 1: INCOMPLETE | actual: READING 1: INCOMPLETE  
+PASS  S-A8 | a REAL re-grade: attempt 1 (a different session) NOT CLEAN, then a new session for the slot, clean | expected: READING 5: CANDIDATE | actual: READING 5: CANDIDATE  
+PASS  S-A8b | a re-AUDIT is not a re-grade (re-review I-A): the SAME session NOT CLEAN, then a later clean line | expected: READING 1: INCOMPLETE | actual: READING 1: INCOMPLETE  
+PASS  S-A9 | the reverse: a clean audit, then a later NOT CLEAN one for the same slot | expected: READING 1: INCOMPLETE | actual: READING 1: INCOMPLETE  
+PASS  S-A10 | launch records: an older attempt first, the audited session is the slot's LAST launch | expected: READING 5: CANDIDATE | actual: READING 5: CANDIDATE  
+PASS  S-A11 | auditProblems on the same tree | expected: 0 problems | actual: 0
+PASS  S-F1 | the build record from P5 holds the real read-r.mjs sha256, and the CLI scores with it | expected: record = 297f87656b0d; READING 5 | actual: record equal; READING 5: CANDIDATE  
+PASS  S-F5 | the build record holds a sha256 of the reader per-item output (64 hex) | expected: 64 hex | actual: 64 hex
+PASS  S-F6 | a reader whose per-item output differs from the build record (same file sha) | expected: REFUSED, exit 2, both shas named | actual: exit 2; named true
+PASS  S-F7 | a build record with no readerOutputSha256 | expected: REFUSED, exit 2 | actual: exit 2
+PASS  S-F2 | a read-r.mjs sha different from the build record | expected: REFUSED, exit 2, both shas named | actual: exit 2; both shas named true
+PASS  S-F3 | no build record at all | expected: REFUSED, exit 2 | actual: exit 2
+PASS  S-F4 | readerFreeze(): the real reader against the record, and an altered copy of the reader | expected: ok true / ok false | actual: ok true / ok false
+PASS  S-E2E-2 | the same tree with ONE RL verdict (g2 correctness 0) | expected: READING 2: NOT SAFE | actual: READING 2: NOT SAFE  
+PASS  S-E2E-3 | one of the 8 verdict files missing | expected: READING 1: INCOMPLETE | actual: READING 1: INCOMPLETE  
+score-r40: 56/56 cases PASS

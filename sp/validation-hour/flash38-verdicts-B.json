@@ -1,0 +1,22 @@
+{
+ "k01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers ingestion, storage, serving and shared definitions plus point-in-time joins; over 85 words."},
+ "k02": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Hybrid push/pull with write amplification and push gateway costs; concise and spoken."},
+ "k03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correctly rejects the false premise, then read_committed plus idempotent downstream writes."},
+ "k04": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Scopes EOS to Kafka-to-Kafka but never corrects that it is not the default out of the box."},
+ "k05": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Generic stateless scaling and observability; misses that per-instance rate limits need shared state."},
+ "k06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Explains relative vs absolute/volume and segment effects; checks denominator and ticket content."},
+ "k07": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Names the required transactional producer and read_committed config and the external-write gap."},
+ "k08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sound batched fan-out with write amplification and APNs/FCM limits; over 85 words."},
+ "k09": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Rate vs absolute idea valid but the aggressive-filter-lower-rate logic is muddled; over 85 words."},
+ "k10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Thorough design with single versioned transforms and time-travel joins; too long to speak."},
+ "k11": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "All four parts covered with shared definition registry and point-in-time joins; slightly long."},
+ "k12": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Generic load balancing and failover; ignores rate limiter coordination across instances."},
+ "k13": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Relative benchmark rate vs absolute volume; checks quarantine volume against complaints first."},
+ "k14": {"correctness": 0, "on_topic": 2, "delivery": 2, "reason": "Says check false negative rate and recall for legitimate mail blocked; confuses FN with FP."},
+ "k15": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Idempotent upserts right, but premise unchallenged and outbox misapplied to consumer side effects."},
+ "k16": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Async worker fan-out; cost at per-user writes and push gateway; concise."},
+ "k17": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Serving layer barely addressed and consistency only via point-in-time joins, not shared transforms."},
+ "k18": {"correctness": 1, "on_topic": 1, "delivery": 2, "reason": "Talks connection pooling and job brokers; misses the rate limiter's shared-counter problem."},
+ "k19": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Kafka fan-out to per-user queues; cost at push gateway limits and egress."},
+ "k20": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Local counters break; centralized Redis Lua or gateway enforcement keeps global quota consistent."}
+}

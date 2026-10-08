@@ -1,0 +1,37 @@
+PASS  P6-1 | --dry-run blind-1.g1: the argv | expected: exit 0; model claude-opus-5-5; tools Read,Write,Edit; zero --add-dir; no Bash; cwd outside MAIN and the worktree, fresh | actual: exit 0; model claude-opus-5-5; tools Read,Write,Edit; add-dir 0; Bash false; outside true; fresh true
+PASS  P6-1d | live defect: the grader argv carries exactly one --setting-sources project,local (user settings load claude-mem) | expected: one flag, value project,local | actual: setting-sources "project,local"; flag count 1
+PASS  P6-1b | the model flag: exactly one --model, no `opus` alias left in the argv line | expected: 1 occurrence, 0 aliases | actual: 1 occurrence(s); alias present false
+PASS  P6-1c | permission rules: Read of the own pairs file, Read of the rubric, Edit of the own verdicts file, nothing else | expected: 3 rules: Read(pairs.blind-1), Read(rubric), Edit(verdicts.blind-1.g1) | actual: 3 rules; Read:pairs.blind-1.json Read:interview60.grader-prompt.md Edit:verdicts.blind-1.g1.json
+PASS  P6-2 | the cwd already exists | expected: REFUSED (exit 2) | actual: exit 2; true
+PASS  P6-3 | a stub FR grader slot holding a live pid (this process) | expected: REFUSED (exit 2) | actual: exit 2; true
+PASS  P6-3b | negative control: the same slot with a dead pid | expected: not refused: exit 0 | actual: exit 0
+PASS  P6-4 | --classify c3 --dry-run: rules, model, flags | expected: exit 0; 3 rules = Read TURNS, Edit OUT, Read CAL; claude-opus-5-5; no Bash; zero --add-dir | actual: exit 0; 3 rules Read:turns-for-classifiers.json Edit:verdicts.c3.json Read:cal-blind.json; model claude-opus-5-5; Bash false; add-dir 0
+PASS  P6-4c | the same for a classifier argv (--classify c3) | expected: one flag, value project,local | actual: setting-sources "project,local"; flag count 1
+PASS  P6-4b | the classifier prompt = the P1 dispatch text with only <TURNS>, <CAL>, <OUT> substituted (independent recomputation of its sha12) | expected: c7be5c83bb7f | actual: c7be5c83bb7f
+PASS  P6-5 | A8 M-3: a stub clock 2026-10-06T09:59 (past the 04:15 gate; was REFUSED under the 10:00 gate) | expected: dry run ALLOWED (exit 0), est line 1 launch(es) | actual: exit 0; est line true; date gate refusal false
+PASS  P6-5b | a stub clock 2026-10-05T21:44 (before the window) | expected: REFUSED (exit 3), date gate named | actual: exit 3; date gate true
+PASS  P6-20 | A8: --classify c3 --dry-run at a stub clock 2026-10-06T04:14 | expected: REFUSED (exit 3), date gate named | actual: exit 3; date gate true
+PASS  P6-20b | A8: --classify c3 --dry-run at a stub clock 2026-10-06T04:16 | expected: dry run ALLOWED (exit 0) | actual: exit 0; refused false
+PASS  P6-20c | A8: a grader slot (blind-1.g1) --dry-run at 2026-10-06T04:14 | expected: REFUSED (exit 3), date gate named | actual: exit 3; date gate true
+PASS  P6-20d | A8: a grader slot --dry-run at the boundary 2026-10-06T04:15:00 (>=) | expected: dry run ALLOWED (exit 0) | actual: exit 0; refused false
+PASS  P6-20e | A8: a grader slot --dry-run at 2026-10-06T04:16 | expected: dry run ALLOWED (exit 0) | actual: exit 0; refused false
+PASS  P6-15 | A7 m5: 2026-10-05T22:30, both arms complete (stub), tonight line: the FIRST launch needs 10 x 25 min | expected: REFUSED (exit 3) at "now + est < deadline", est line says 10 launch(es) | actual: exit 3; est line 10 launches true; deadline row true
+PASS  P6-15b | A7 m5 negative control: the same clock with 9 launches already made (the last launch: 25 min, 22:55 < 23:15) | expected: dry-run allowed (exit 0), est line 1 launch(es) | actual: exit 0; est line true
+PASS  P6-16 | A5.5: tonight with router40-R incomplete (a stub) | expected: REFUSED (exit 3) at "both arms complete" | actual: exit 3; row true
+PASS  P6-16b | A5.5: tonight with router40-L incomplete (a stub) | expected: REFUSED (exit 3) at "both arms complete" | actual: exit 3; row true
+PASS  P6-17 | A7 m4: a lite-l.mjs process running while a grader launches (any other harness process refuses) | expected: REFUSED (exit 3) at "no other router40 harness process" | actual: exit 3; row true
+PASS  P6-18 | tomorrow 10:01 with the tonight line but NO F line (the F line is what tomorrow requires) | expected: REFUSED (exit 3) at "exactly one valid F line" | actual: exit 3; row true
+PASS  P6-19 | tomorrow 10:01 with a valid F line: the dry run is allowed, est line 1 launch (25 min, tomorrow rules unchanged) | expected: exit 0, est line 1 launch(es) | actual: exit 0; est line true
+PASS  P6-6 | a stub open gsitting STEP | expected: REFUSED (exit 3), STEP named | actual: exit 3; STEP true
+PASS  P6-7 | real mode with --now 2026-10-06T10:01 | expected: exit 2, REFUSED | actual: exit 2; true
+PASS  P6-7b | real mode with --now 2026-10-05T22:30 / --stub-arms | expected: exit 2, REFUSED | actual: exit 2; true
+PASS  P6-8 | --calibration without TURN_FAKE_CLAUDE (it must never start the real claude binary) | expected: exit 2, REFUSED | actual: exit 2; true
+PASS  P6-9 | a genuine real invocation (default folders: no blind files exist yet) | expected: exit 2, nothing launched | actual: exit 2; launches.jsonl exists false
+SKIP  P6-10 | a real-clock dry run on a temp blind folder | not run: the real clock is at or after 2026-10-06 04:15: the date gate no longer refuses, so there is nothing to assert
+PASS  P6-11 | full launch against the stand-in (blind-1.g1) | expected: exit 0; the stand-in received model claude-opus-5-5, tools Read,Write,Edit, 0 --add-dir, dontAsk, strict MCP, 3 allow rules; cwd created; 1 launches.jsonl line; verdicts valid on its pairs (3 keys); slot lock released | actual: exit 0; model claude-opus-5-5; tools Read,Write,Edit; add-dir 0; dontAsk true; strict true; rules 3; cwd made true; launches 1; true; slot lock left false
+PASS  P6-11b | the argv the stand-in RECEIVED from the real spawn path (grader blind-1.g1): --setting-sources project,local, and the 3 allow rules still 3 | expected: settingSources [project,local]; 3 rules | actual: settingSources [project,local]; rules 3
+PASS  P6-12 | the same slot again (its verdicts file now exists) | expected: REFUSED (exit 2): move the earlier verdicts away first | actual: exit 2; true
+PASS  P6-13 | a stand-in that writes no verdicts file (a died/incomplete grader) | expected: exit 1, "verdicts file MISSING/INVALID" | actual: exit 1; true
+PASS  P6-14b | the argv the stand-in received for the classifier c4 launch | expected: settingSources [project,local] | actual: settingSources [project,local]
+PASS  P6-14 | full classifier launch against the stand-in (c4) | expected: exit 0; "output valid on 69 keys" | actual: exit 0; output valid on 69 keys
+launch-grader-r40: 35/35 cases PASS (1 SKIPPED: real-clock cases not run inside the window)

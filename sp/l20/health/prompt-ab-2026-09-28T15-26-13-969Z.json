@@ -1,0 +1,207 @@
+{
+ "model": "gemini-3.8-live",
+ "t0Iso": "2026-09-28T15:26:13.969Z",
+ "minimal": "You are the candidate in a live job interview for a machine learning engineer role. When the interviewer finishes a question, answer it out loud in the first person.",
+ "results": [
+  {
+   "id": "S2Q08",
+   "arm": "full",
+   "openedAt": 3,
+   "setupMs": 800,
+   "clipSeconds": 19.3,
+   "clipEndMs": 22102,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the roll back.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "usage": []
+  },
+  {
+   "id": "S2Q08",
+   "arm": "minimal",
+   "openedAt": 33545,
+   "setupMs": 579,
+   "clipSeconds": 19.3,
+   "clipEndMs": 55452,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the roll back.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "usage": []
+  },
+  {
+   "id": "S1Q04",
+   "arm": "minimal",
+   "openedAt": 65856,
+   "setupMs": 586,
+   "clipSeconds": 30.4,
+   "clipEndMs": 99808,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return precision at K, recall at K, and lift over the population prevalence. Assume binary labels and finite scores. And break score ties by original row order. Tell me what it does. Invalid K for empty inputs. And when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "usage": []
+  },
+  {
+   "id": "S1Q04",
+   "arm": "full",
+   "openedAt": 117195,
+   "setupMs": 617,
+   "clipSeconds": 30.4,
+   "clipEndMs": 151504,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return precision at K, recall at K, and lift over the population prevalence. Assume binary labels and finite scores. And break score ties by original row order. Tell me what it does. Invalid K for empty inputs. And when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "usage": []
+  },
+  {
+   "id": "S2Q01",
+   "arm": "full",
+   "openedAt": 189030,
+   "setupMs": 615,
+   "clipSeconds": 16.3,
+   "clipEndMs": 207549,
+   "heard": "Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those stages. To your document intelligence experience.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "usage": []
+  },
+  {
+   "id": "S2Q01",
+   "arm": "minimal",
+   "openedAt": 211408,
+   "setupMs": 438,
+   "clipSeconds": 16.3,
+   "clipEndMs": 229629,
+   "heard": "Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those stages. To your document intelligence experience.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "usage": []
+  },
+  {
+   "id": "S1Q02",
+   "arm": "minimal",
+   "openedAt": 240085,
+   "setupMs": 456,
+   "clipSeconds": 26.2,
+   "clipEndMs": 268980,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": 2485,
+   "lastWordMs": 7711,
+   "text": "With one hundred thousand subscribers, the nine point five percent churn rate means there are nine thousand five hundred churners. The top five percent risk band targets five thousand subscribers. Capturing thirty percent of churners implies two thousand eight hundred fifty true positives. With fifty five hundred predicted positives, the precision is fifty seven percent, which is close to the reported sixty percent allowing for rounding differences.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "usage": [
+    {
+     "t": 27174,
+     "promptTokenCount": 1319,
+     "responseTokenCount": 626,
+     "totalTokenCount": 1945,
+     "promptTokensDetails": [
+      {
+       "modality": "TEXT",
+       "tokenCount": 411
+      },
+      {
+       "modality": "AUDIO",
+       "tokenCount": 879
+      }
+     ],
+     "responseTokensDetails": [
+      {
+       "modality": "AUDIO",
+       "tokenCount": 626
+      }
+     ],
+     "thoughtsTokenCount": 310
+    }
+   ]
+  },
+  {
+   "id": "S1Q02",
+   "arm": "full",
+   "openedAt": 303690,
+   "setupMs": 696,
+   "clipSeconds": 26.2,
+   "clipEndMs": 332974,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": 3346,
+   "lastWordMs": 9629,
+   "text": "With one hundred thousand subscribers, the nine point five percent churn rate means there are nine thousand five hundred churner candidates. The top five percent risk band reaches five thousand subscribers. With sixty percent precision, we identify three thousand true positives, capturing thirty-one point six percent of churners, which aligns well with the reported thirty percent within rounding.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "usage": [
+    {
+     "t": 24695,
+     "promptTokenCount": 6043,
+     "responseTokenCount": 535,
+     "totalTokenCount": 6578,
+     "promptTokensDetails": [
+      {
+       "modality": "TEXT",
+       "tokenCount": 5135
+      },
+      {
+       "modality": "AUDIO",
+       "tokenCount": 879
+      }
+     ],
+     "responseTokensDetails": [
+      {
+       "modality": "AUDIO",
+       "tokenCount": 535
+      }
+     ],
+     "thoughtsTokenCount": 942
+    }
+   ]
+  }
+ ]
+}

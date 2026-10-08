@@ -1,0 +1,13 @@
+docs(passes): router-default-r1 graded: INCONCLUSIVE (quality and routing FAIL, safety PASS)
+
+Result note, pass record (ids, counts and grades only) and the graded INDEX row
+for the router-default-r1 flight (live40, 47 items, sealed at fade67f).
+
+- Safety PASS: 0 wrong of 21 Live-shown; fallback, speed (p50 1572 ms) and
+  no-regression (0 wrong of 23 pipeline-shown) PASS.
+- Quality FAIL: L 19 vs S 21 of 21. Routing FAIL: HARD misrouted 4/27.
+- captured-high arm UNUSABLE: interview60.prompts.json is mis-keyed for 17 of
+  42 ids (capture pairing shift); not model quality.
+- Graders claude-opus-5-5, pinned, memory ABSENT on every launch.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

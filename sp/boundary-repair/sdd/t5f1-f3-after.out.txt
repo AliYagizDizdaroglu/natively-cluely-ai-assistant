@@ -1,0 +1,4 @@
+﻿[as expected] v3 (F3) + control: 0 failed | 5 passed (5); failing: none
+[as expected] v3 (F3) + no empty-text filter: 4 failed | 1 passed (5); failing: P1, P2, T1, T2
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true
+scenarios that differed from the prediction: 0

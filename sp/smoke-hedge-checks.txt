@@ -1,0 +1,93 @@
+smoke-hedge-checks  repo=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant  run-at=2026-09-26T20:27:04.482Z
+--- segment forced ---
+command: node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\check-smoke-hedge.mjs forced 2026-09-26T20:20:01.022Z --debug-log C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-forced.natively_debug.log --diag-log C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\verbal-diag.log --clips 3 --extra-log C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-forced.app-start.log --until 2026-09-26T20:23:06.927Z
+check-smoke-hedge  mode=forced  since=2026-09-26T20:20:01.022Z  until=2026-09-26T20:23:06.927Z
+debug-log=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-forced.natively_debug.log (655 lines in window)  diag-log=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\verbal-diag.log (30 lines in window)
+extra-log=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-forced.app-start.log
+clips=3
+
+windows found: 3 (clips played: 3)
+
+per-window:
+  2026-09-26T20:21:39.500Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  winner=gemini-3.5-flash-lite  answer-source lines=2  first-token=4541ms  ok
+  2026-09-26T20:22:11.110Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  winner=gemini-3.1-flash-lite  answer-source lines=2  first-token=2647ms  ok
+  2026-09-26T20:22:48.553Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  winner=gemini-3.5-flash-lite  answer-source lines=2  first-token=4932ms  ok
+
+request counts (warm-up/front/back-started/stall-race/stalled - NOT usage lines, which overcount ~5x):
+  gemma-4-31b-it: warmup=1 front=0 backStarted=0 stallRace=0 stalled=0
+  gemini-3.1-flash-lite: warmup=1 front=0 backStarted=3 stallRace=0 stalled=0
+  gemini-3.5-flash-lite: warmup=1 front=3 backStarted=0 stallRace=0 stalled=0
+
+[PASS] startup line
+[PASS] no unhandled rejection / uncaught exception
+[PASS] forced-mode per-answer rules
+  (info) accounted for: 3 (scored=3 coding=0) of 3 clips played
+
+PASS overall (mode=forced)
+SEGMENT forced: PASS (exit 0)
+--- segment default ---
+command: node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\check-smoke-hedge.mjs default 2026-09-26T20:23:06.927Z --debug-log C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-default.natively_debug.log --diag-log C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\verbal-diag.log --clips 3 --extra-log C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-default.app-start.log --until 2026-09-26T20:25:15.362Z
+check-smoke-hedge  mode=default  since=2026-09-26T20:23:06.927Z  until=2026-09-26T20:25:15.362Z
+debug-log=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-default.natively_debug.log (649 lines in window)  diag-log=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\verbal-diag.log (30 lines in window)
+extra-log=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-default.app-start.log
+clips=3
+
+windows found: 3 (clips played: 3)
+
+per-window:
+  2026-09-26T20:23:47.232Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  winner=gemini-3.5-flash-lite  answer-source lines=2  back-fired=true (trigger)  first-token=6476ms  ok
+  2026-09-26T20:24:19.267Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  winner=gemini-3.5-flash-lite  answer-source lines=2  back-fired=false  first-token=4473ms  ok
+  2026-09-26T20:24:57.175Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  winner=gemini-3.5-flash-lite  answer-source lines=2  back-fired=false  first-token=4981ms  ok
+
+request counts (warm-up/front/back-started/stall-race/stalled - NOT usage lines, which overcount ~5x):
+  gemma-4-31b-it: warmup=1 front=0 backStarted=0 stallRace=0 stalled=0
+  gemini-3.1-flash-lite: warmup=1 front=0 backStarted=1 stallRace=0 stalled=0
+  gemini-3.5-flash-lite: warmup=1 front=3 backStarted=0 stallRace=0 stalled=0
+
+[PASS] startup line
+[PASS] no unhandled rejection / uncaught exception
+[PASS] default-mode per-answer rules
+  (info) back leg fired on 1/3 scored answers (0 expected on a healthy evening; a real stall is reported here, not a failure)
+  (info) accounted for: 3 (scored=3 coding=0) of 3 clips played
+
+PASS overall (mode=default)
+SEGMENT default: PASS (exit 0)
+--- segment off ---
+command: node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\check-smoke-hedge.mjs off 2026-09-26T20:25:15.362Z --debug-log C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-off.natively_debug.log --diag-log C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\verbal-diag.log --clips 1 --extra-log C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-off.app-start.log --until 2026-09-26T20:26:15.114Z
+check-smoke-hedge  mode=off  since=2026-09-26T20:25:15.362Z  until=2026-09-26T20:26:15.114Z
+debug-log=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-off.natively_debug.log (359 lines in window)  diag-log=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\verbal-diag.log (9 lines in window)
+extra-log=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-off.app-start.log
+clips=1
+
+windows found: 1 (clips played: 1)
+
+per-window:
+  2026-09-26T20:25:56.671Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+
+request counts (warm-up/front/back-started/stall-race/stalled - NOT usage lines, which overcount ~5x):
+  gemma-4-31b-it: warmup=1 front=0 backStarted=0 stallRace=0 stalled=0
+  gemini-3.1-flash-lite: warmup=1 front=0 backStarted=0 stallRace=1 stalled=0
+  gemini-3.5-flash-lite: warmup=1 front=0 backStarted=0 stallRace=0 stalled=0
+
+[PASS] startup line
+[PASS] no unhandled rejection / uncaught exception
+[PASS] off-mode per-answer rules
+  (info) accounted for: 1 (scored=1 coding=0) of 1 clips played
+
+PASS overall (mode=off)
+SEGMENT off: PASS (exit 0)
+--- segment refuse ---
+command: node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\check-smoke-hedge.mjs refuse 2026-09-26T20:26:15.114Z --debug-log C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-refuse.natively_debug.log --extra-log C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-refuse.child.log --segment-log C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-refuse.log
+check-smoke-hedge  mode=refuse  since=2026-09-26T20:26:15.114Z
+debug-log=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-refuse.natively_debug.log (1 lines in window)  diag-log=undefined (0 lines in window)
+extra-log=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-refuse.child.log
+segment-log=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\smoke-hedge-refuse.log
+
+[PASS] startup line
+[PASS] no unhandled rejection / uncaught exception
+[PASS] startup refusal
+
+PASS overall (mode=refuse)
+SEGMENT refuse: PASS (exit 0)
+---
+OVERALL: PASS  (forced=PASS, default=PASS, off=PASS, refuse=PASS)

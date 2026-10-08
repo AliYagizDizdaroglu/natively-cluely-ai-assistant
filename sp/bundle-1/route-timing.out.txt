@@ -1,0 +1,4 @@
+turns 49 dispatch_ms p50 1306 min 1203 max 3713
+live_first_ms p50 1542 min 1137 max 3704
+router first word BEFORE the dispatch: 16 of 49
+routes {"easy-answer/-":22,"hard/-":16,"invalid/late":9,"invalid/no-router-turn":2}

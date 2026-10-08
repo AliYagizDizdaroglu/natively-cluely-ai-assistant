@@ -1,0 +1,8 @@
+7.2s dispatch finals=1 "How would you shard a Postgres table by tenant?"
+15.2s close continuation-expired
+23.7s classify finals=1 "Okay, so you would shard the Postgres table by tenant, got it."
+24.1s verdict no -> {"kind":"declined","verdict":"not-a-question","again":false}
+25.5s stale whisper re-fire of Q0 -> {"kind":"revived","score":1,"finals":1,"by":"whisper"}
+25.5s dispatch finals=1 "Okay, so you would shard the Postgres table by tenant, got it."
+33.5s close continuation-expired
+(same, but the re-fire is a Live claim: {"kind":"joined"})

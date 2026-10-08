@@ -1,0 +1,6 @@
+test(probe): the hedge policy tests run on fake timers
+
+The real-timer assertions passed alone and failed under the full suite's parallel load; on
+vitest's fake clock every wait is exact and the file is green inside the suite (792/792).
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

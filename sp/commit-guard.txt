@@ -1,0 +1,30 @@
+fix(verbal): stream whole answers under a 200-word guard instead of the question-scaled cut
+
+Flight s50c (2026-09-12) scored 12/20 in-app against 18/20 for the same
+model, same prompt, called bare. The remaining gap is the app's own cut:
+spokenWordBudget clamped the stream at clamp(80, 2.5 x question words, 150),
+fired on 13 of 42 in-app answers, and removed the LAST asked part from 4 of
+the 8 in-app failures (S2Q01 stops after reranking, S2Q07 loses evaluation,
+S2Q08 loses cutover/rollback, S2Q02 loses the dataset). Applied offline to
+the bare arm's own 20 answers the cut truncates 7 (224 words), including
+exactly the S2Q08 paragraph the grader marked missing; across all four
+same-hour arms it would cut 15 of 80, and the arms' longest answer is 198
+words.
+
+The prompt keeps asking for 80-150 words; the model's own stop is what
+earns 18/20. The stream is now only clamped at the 200 the gate row already
+bounds: SPOKEN_WORD_GUARD = { limit: 200, floor: 200, ceiling: 200 }, a hard
+stop that never fires on a real answer (0 of 80 offline). The gate row
+"Spoken answers: streamed whole under the 200-word guard" now fails on ANY
+cut, so a runaway is reported instead of hidden.
+
+Also: the notation filter strips a LaTeX percentage ("$9.5\%$" -> "9.5%",
+3.5 Flash on s50c) while keeping "$9.5 per user" as money; the held tail
+now covers a backslash after "$<number>" so the result is chunk-invariant.
+
+Tests: guard clamp/whole-stream cases, wiring (170 words whole for a 5- or
+60-word question, 230 clamped at 200, coding exempt), gate row (any cut
+fails, p50 unbounded), notation percentage + chunk invariance. Full suite
+646 passed.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -1,0 +1,1 @@
+﻿- 2026-10-06 21:45 checkpoint 1 (Task 3 live probe of 3.8 on built e5e747f): PROBE PASS. 4/4 routes as expected (RE05/RE13 easy-answer 29/33 words, RH02/RH16 hard); firstText 610-1277 ms from clip end; forced reconnect: same context_sha12 dd1e8cca2021, 2x session up (742/624 ms setup). Output LAB\live-probe.out.txt.

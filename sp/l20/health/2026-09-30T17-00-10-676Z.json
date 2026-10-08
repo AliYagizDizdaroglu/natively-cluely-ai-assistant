@@ -1,0 +1,102 @@
+{
+ "model": "gemini-3.8-live",
+ "compression": "on",
+ "t0Iso": "2026-09-30T17:00:10.676Z",
+ "results": [
+  {
+   "id": "S1Q02",
+   "comp": "on",
+   "openedAt": 7,
+   "setupMs": 1031,
+   "clipSeconds": 26.2,
+   "clipEndMs": 31631,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": 2041,
+   "lastWordMs": 7015,
+   "text": "With one hundred thousand subscribers and a nine point five percent churn rate, we have nine thousand five hundred churners. Targeting the top five percent, or five thousand subscribers, at sixty percent precision yields three thousand true positives. This means we capture twenty-eight hundred fifty churners, which is thirty percent of the total churners, confirming the metrics are highly consistent within rounding.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q08",
+   "comp": "on",
+   "openedAt": 62954,
+   "setupMs": 930,
+   "clipSeconds": 19.3,
+   "clipEndMs": 85081,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the roll back.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1829,
+   "lastWordMs": 12312,
+   "text": "I’d version the embedding models and store both old and new embeddings in the vector database using specific namespace or field names. I’d run a background batch job to process all existing documents with the new model, writing these to the new field without affecting live traffic. During backfill and cutover, I’d implement a dual-write strategy where any new or updated document is pushed to both the old and new embedding pipelines in real time. I would shadow-test the new embeddings, running them alongside the old in production to evaluate retrieval quality and latency before relying on them for user traffic. Once quality is validated, I’d update the search service to read primarily from the new embedding field, completing the switch transparently to the user. If I notice any degradation, I would simply revert the read routing back to the old embedding field since both pipelines are kept synchronized.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q01",
+   "comp": "on",
+   "openedAt": 138525,
+   "setupMs": 1474,
+   "clipSeconds": 16.3,
+   "clipEndMs": 158332,
+   "heard": "Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those stages. To your document intelligence experience.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1290,
+   "lastWordMs": 9052,
+   "text": "For ingestion and parsing, I use AWS Textract to accurately extract text from complex documents, maintaining structural context. I then apply semantic chunking before converting those snippets into dense vectors using XLM-RoBERTa. For retrieval, I use a hybrid system combining dense and sparse search to capture both semantic meaning and exact keywords. Before passing context to the generation stage, I re-rank the retrieved documents to ensure the most relevant information is prioritized. Finally, I feed this context into GPT five within a LangGraph multi-agent setup to generate precise, hallucination-free answers.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q06",
+   "comp": "on",
+   "openedAt": 202327,
+   "setupMs": 723,
+   "clipSeconds": 27.7,
+   "clipEndMs": 233442,
+   "heard": "Now is sequel one. Construct a point in time feature. You have a snapshots table with a customer ID and a snapshot time and an events table with a customer ID, an event time, an ingested at time. And an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot. Includes only events ingested by the snapshot time and preserves customers with zero calls.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 2629,
+   "lastWordMs": 8298,
+   "text": "I would join the snapshots table with the events table on customer ID, filtering for support calls that occurred between thirty days before the snapshot and the ingested time is by the snapshot time. Then, I'd group by customer ID and snapshot time, counting the event records, which preserves customers with zero calls.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q04",
+   "comp": "on",
+   "openedAt": 261543,
+   "setupMs": 1201,
+   "clipSeconds": 30.4,
+   "clipEndMs": 296639,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return precision at K, recall at K, and lift over the population prevalence. Assume binary labels and finite scores. And break score ties by original row order. Tell me what it does. Invalid K for empty inputs. And when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1147,
+   "lastWordMs": 5605,
+   "text": "To handle edge cases, my function first performs input validation to check if the inputs are empty, if K is invalid or out of bounds, and if there are any positive labels present in the ground truth. If any of these conditions fail, I return a clean set of neutral values, which are zero for precision, recall, and a lift of one, preventing division errors and incorrect performance flags.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  }
+ ]
+}

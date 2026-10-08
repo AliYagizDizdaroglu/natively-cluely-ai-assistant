@@ -1,0 +1,119 @@
+=== A. h40d-grader-models.mjs: top-level sessions ===
+
+=== B. check-grader-memory.mjs ===
+
+=== C. audit-graders.mjs: ALLOWLIST audit; negative controls ===
+OK   the real shape (Read rubric + own pairs, Write own verdicts, nothing else) is clean, exit 0  [blind-1.g1 (C:\Users\sotka\App): 3 tool inputs [Readx2 Writex1]; clean; bash=[]; dispatch=off]
+OK   ... plus one validation Bash of the exact shape cd "<own blind folder>" && node -e "<code>" (own verdicts + own pairs only) is clean under the flag  [blind-1.g1 (C:\Users\sotka\App): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[236:398a0a8eb9fb]; dispatch=off]
+OK   point 10 positive: the trailing-argument shape, own verdicts read as fs.readFileSync(process.argv[1]) (2 of the 8 real graders), is clean  [blind-1.g1 (C:\Users\sotka\App): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[153:26d62bcb2561]; dispatch=off]
+OK   point 10 positive: require(process.argv[1]) of the own verdicts (1 of the 8 real graders) is clean  [blind-1.g1 (C:\Users\sotka\App): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[105:a3d4dd6d3915]; dispatch=off]
+OK   ... but the SAME command with the OTHER grader's verdicts as the trailing argument is FLAGGED  [Bash[len=105,sha12=cf86148476b9] argument "C:/x/blind/verdicts.blind-1.g2.json" is not the]
+OK   ... and fs.readFileSync(process.argv[1]) with a trailing argument that is NOT the own file (another pairs file) is FLAGGED  [Bash[len=101,sha12=c257e3cad8ec] argument "C:/x/blind/pairs.blind-2.json" is not the own v]
+OK   ... process.argv[2] with only ONE trailing argument (no such slot) is FLAGGED; so is process.argv[0]  [Bash[len=107,sha12=0b87b810e243] point 10 (ii): fs.readFileSync's first argument is not a ]
+OK   ... process.argv[1] with NO trailing argument is FLAGGED  [Bash[len=232,sha12=50df4388308c] point 10 (ii): fs.readFileSync's first argument is not a ]
+OK   point 1 positive: the literal-name form (the 5 other real graders) stays clean
+OK   bare fs.existsSync / require('fs').existsSync with the own literal, and process.stdout, are clean  [blind-1.g1 (C:\Users\sotka\App): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[314:0]
+OK   NEGATIVE CONTROL point 10 (S3): process.chdir(path.dirname(process.cwd())) + the dot-free literal 'keyhold' + a read by variable: FLAGGED  [Bash[len=296,sha12=bd4f0ab4bb0e] point 10 (i): the token chdir is not allowed: cd "C:/x/bl]
+OK   NEGATIVE CONTROL point 10: path.dirname(process.cwd()) alone: FLAGGED  [Bash[len=227,sha12=3f0dc0cbcbdc] point 10 (i): the token dirname is not allowed: cd "C:/x/]
+OK   NEGATIVE CONTROL point 10: fs.opendirSync('.'): FLAGGED  [Bash[len=241,sha12=21cc5cb4494b] string literal '.' is a path / glob outside the own pair:]
+OK   NEGATIVE CONTROL point 10: fs.readFileSync(n) with n a variable holding the own name: FLAGGED (first argument must be a literal or process.argv[d])  [Bash[len=109,sha12=769d99851846] point 10 (ii): fs.readFileSync's first argument is not a ]
+OK   NEGATIVE CONTROL point 10: require('fs/promises'): FLAGGED  [Bash[len=232,sha12=6a3863b52c78] string literal 'fs/promises' is a path / glob outside the]
+OK   point 10 also FLAGGED: chdir alone  [Bash[len=48,sha12=e790a868b9a5] string literal '..' is a path / glob outside the own pair:]
+OK   point 10 also FLAGGED: __dirname  [Bash[len=51,sha12=8878023a7a9d] point 10 (i): the token dirname is not allowed: cd "C:/x/b]
+OK   point 10 also FLAGGED: process.cwd()  [Bash[len=55,sha12=e12d6b689c3a] point 10 (i): the token process.cwd is not allowed: cd "C:]
+OK   point 10 also FLAGGED: a token inside a string literal (point 10 (i): literals included)  [Bash[len=49,sha12=8ee72da7d963] point 10 (i): the token chdir is not allowed: cd "C:/x/bli]
+OK   point 10 also FLAGGED: fs.writeFileSync of the own verdicts file  [Bash[len=78,sha12=2a31f512798f] point 10 (ii): fs.writeFileSync (only readFileSync / exist]
+OK   point 10 also FLAGGED: fs.readdirSync  [Bash[len=48,sha12=ba5f37cf3223] string literal '.' is a path / glob outside the own pair: ]
+OK   point 10 also FLAGGED: fs.statSync  [Bash[len=68,sha12=851780d489ab] point 10 (ii): fs.statSync (only readFileSync / existsSync]
+OK   point 10 also FLAGGED: fs['readFileSync'] (bracket access)  [Bash[len=75,sha12=50b9ab5d1505] point 10 (ii): `fs` used other than as fs.readFileSync(...]
+OK   point 10 also FLAGGED: an alias of fs  [Bash[len=93,sha12=b1a49afe7096] point 10 (ii): require('fs') other than directly dereferen]
+OK   point 10 also FLAGGED: a destructured readFileSync  [Bash[len=104,sha12=c5a8d5adbf6e] point 10 (ii): require('fs') other than directly derefere]
+OK   point 10 also FLAGGED: process.env  [Bash[len=55,sha12=0dba9e4d48a1] point 10 (iii): process. may appear only as process.exit /]
+OK   point 10 also FLAGGED: process.argv.slice  [Bash[len=63,sha12=d4f808b8ecea] point 10 (iii): process. may appear only as process.exit /]
+OK   point 10 also FLAGGED: import()  [Bash[len=46,sha12=a8feb51cd9c2] point 10 (i): the token import( is not allowed: cd "C:/x/b]
+OK   point 10 also FLAGGED: Buffer  [Bash[len=58,sha12=47f1f7599118] point 10 (i): the token Buffer is not allowed: cd "C:/x/bl]
+OK   point 10 also FLAGGED: a glob word  [Bash[len=50,sha12=16660f04e674] point 10 (i): the token glob is not allowed: cd "C:/x/blin]
+OK   point 10 also FLAGGED: eval  [Bash[len=38,sha12=f2d65f153bd9] point 10 (i): the token eval is not allowed: cd "C:/x/blin]
+OK   point 10 also FLAGGED: new Function(  [Bash[len=55,sha12=56cdf31afe9f] point 10 (i): the token Function( is not allowed: cd "C:/x]
+OK   point 10 also FLAGGED: a bare child_process  [Bash[len=58,sha12=20b6ea3fd719] forbidden: http / https / net / child_process / fetch / cu]
+OK   point 10 also FLAGGED: another grader's verdicts by literal  [Bash[len=72,sha12=f1e087e62ee3] string literal 'verdicts.blind-1.g2.json' is a path / glob]
+OK   without the flag: Read/Write of the own files only is still clean (section 1's text: Read and Write)
+OK   without the flag a Bash call is FLAGGED (section 1's text: any tool other than Read/Write)  [TOOL OTHER THAN Read/Write: Bash; bash=[]; dispatch=off]
+OK   NEGATIVE CONTROL bypass 1 reading MAIN/.env: FLAGGED  [Bash[len=310,sha12=6e080e28dab4] string literal 'C:/Users/sotka/OneDrive/Masaüstü/nativel']
+OK   NEGATIVE CONTROL bypass 2 R-key*/k*-1.json (a glob around keyhold): FLAGGED  [Bash[len=256,sha12=9b22cd5a47fd] string literal '../R-key*/k*-1.json' is a path / glob out]
+OK   NEGATIVE CONTROL bypass 3 ../interview60.ans* (a glob): FLAGGED  [Bash[len=256,sha12=d732566e1e08] string literal '../interview60.ans*' is a path / glob out]
+OK   NEGATIVE CONTROL bypass 4 readdirSync('..') with 'interview60.'+'ans': FLAGGED  [Bash[len=327,sha12=94bfd74f35f3] string literal '..' is a path / glob outside the own pair]
+OK   NEGATIVE CONTROL bypass 5 ../../PREREGISTER-turn-followup.md: FLAGGED  [Bash[len=278,sha12=c4b9c51ddf82] string literal '../../PREREGISTER-turn-followup.md' is a ]
+OK   NEGATIVE CONTROL bypass 6 ../run.log: FLAGGED  [Bash[len=254,sha12=dca3b0333e15] string literal '../run.log' is a path / glob outside the ]
+OK   NEGATIVE CONTROL bypass 7 verdicts.blind-1.g?.json (the other grader's verdicts, by glob): FLAGGED  [Bash[len=261,sha12=0b9df095a63a] string literal 'verdicts.blind-1.g?.json' is a path / glo]
+OK   NEGATIVE CONTROL bypass 8 fetch('ht'+'tps://...'): FLAGGED  [Bash[len=245,sha12=2fab7991696e] string literal 'tps://example.invalid/' is a path / glob ]
+OK   also FLAGGED: template literal  [Bash[len=203,sha12=a6f4e03623f1] not of the shape cd "<own blind folder>" && node -e "<cod]
+OK   also FLAGGED: $ expansion  [Bash[len=205,sha12=b84b4ae82ca6] not of the shape cd "<own blind folder>" && node -e "<cod]
+OK   also FLAGGED: a backtick  [Bash[len=205,sha12=d7296c01b3f5] not of the shape cd "<own blind folder>" && node -e "<cod]
+OK   also FLAGGED: an absolute path literal  [Bash[len=258,sha12=e86b3a2acfa4] string literal 'C:/x/key.blind-1.json' is a path / glob o]
+OK   also FLAGGED: a ~ path  [Bash[len=248,sha12=b13d5533da85] string literal '~/.claude/x' is a path / glob outside the]
+OK   also FLAGGED: require of child_process  [Bash[len=227,sha12=bb0b3423c89b] forbidden: http / https / net / child_process / fetch / c]
+OK   also FLAGGED: process.env  [Bash[len=226,sha12=87a84ee502e8] point 10 (iii): process. may appear only as process.exit ]
+OK   also FLAGGED: http  [Bash[len=232,sha12=dbe4f30fd8d9] string literal 'http://example.invalid' is a path / glob ]
+OK   also FLAGGED: a path.join with a non-literal argument  [Bash[len=241,sha12=4a82426cf2a5] point 10 (i): the token join is not allowed: cd "C:/x/bli]
+OK   also FLAGGED: readdirSync of the blind folder itself  [Bash[len=230,sha12=eb9124d8f7de] string literal '.' is a path / glob outside the own pair:]
+OK   also FLAGGED: string building with replace  [Bash[len=271,sha12=6cc0b4d35964] forbidden: string building (.replace/.concat): cd "C:/x/b]
+OK   also FLAGGED: import()  [Bash[len=215,sha12=e23c73458c89] point 10 (i): the token import( is not allowed: cd "C:/x/]
+OK   also FLAGGED: a cd target that is not the own blind folder  [Bash[len=204,sha12=119f1ac7a4b6] cd target is not the own blind folder: cd "C:/x/blind/.."]
+OK   also FLAGGED: a second command after the node -e (; cat ../run.log)  [Bash[len=218,sha12=fa53d1ab3672] not of the shape cd "<own blind folder>" && node -e "<cod]
+OK   also FLAGGED: && cat ../run.log after the node -e  [Bash[len=219,sha12=6d134e60e980] not of the shape cd "<own blind folder>" && node -e "<cod]
+OK   NEGATIVE CONTROL `cat verdicts.blind-1.g1.json pairs.blind-2.json` (another file's pairs): FLAGGED  [Bash[len=47,sha12=7571846d6762] not of the shape cd "<own blind folder>" && node -e "<code]
+OK   NEGATIVE CONTROL node -e naming pairs.blind-2.json: FLAGGED  [Bash[len=201,sha12=f97e02ae3ad2] string literal 'pairs.blind-2.json' is a path / glob outs]
+OK   NEGATIVE CONTROL Read MAIN/.env: FLAGGED  [Read outside the allowlist: C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/]
+OK   NEGATIVE CONTROL Read the registration: FLAGGED  [Read outside the allowlist: C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDri]
+OK   NEGATIVE CONTROL Read R/run.log: FLAGGED  [Read outside the allowlist: C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDri]
+OK   NEGATIVE CONTROL Read R/s50m-gated-turn.json: FLAGGED  [Read outside the allowlist: C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDri]
+OK   NEGATIVE CONTROL Write blind/graders.json: FLAGGED  [Write outside the own verdicts file: C:/x/blind/graders.json; bash=[]; dispatch=off]
+OK   NEGATIVE CONTROL Read another file's pairs (pairs.blind-2.json): FLAGGED  [Read outside the allowlist: C:/x/blind/pairs.blind-2.json; bash=[]; dispatch=off]
+OK   NEGATIVE CONTROL Read the other grader's verdicts: FLAGGED  [Read outside the allowlist: C:/x/blind/verdicts.blind-1.g2.json; bash=[]; dispatch=off]
+OK   NEGATIVE CONTROL Write the other grader's verdicts: FLAGGED  [Write outside the own verdicts file: C:/x/blind/verdicts.blind-1.g2.json; bash=[]; dispatc]
+OK   NEGATIVE CONTROL Edit another file's verdicts: FLAGGED  [Edit outside the own verdicts file: C:/x/blind/verdicts.blind-2.g1.json; bash=[]; dispatch]
+OK   NEGATIVE CONTROL Read a key file: FLAGGED  [Read outside the allowlist: C:/x/blind/key.blind-1.json; bash=[]; dispatch=off]
+OK   NEGATIVE CONTROL Read an answer file: FLAGGED  [Read outside the allowlist: C:/x/interview60.answers.gemini-3.5-flash-lite_fturn-s50m-A-r1]
+OK   NEGATIVE CONTROL Read ../pairs.blind-1.json (resolves outside the blind folder): FLAGGED  [Read outside the allowlist: ../pairs.blind-1.json; bash=[]; dispatch=off]
+OK   Grep is FLAGGED (under the flag too)  [TOOL OTHER THAN Read/Write/Edit/validation Bash: Grep; bash=[]; dispatch=off]
+OK   Glob is FLAGGED (under the flag too)  [TOOL OTHER THAN Read/Write/Edit/validation Bash: Glob; bash=[]; dispatch=off]
+OK   Agent is FLAGGED (under the flag too)  [TOOL OTHER THAN Read/Write/Edit/validation Bash: Agent; bash=[]; dispatch=off]
+OK   WebFetch is FLAGGED (under the flag too)  [TOOL OTHER THAN Read/Write/Edit/validation Bash: WebFetch; bash=[]; dispatch=off]
+OK   an mcp__ call is FLAGGED (under the flag too)  [MCP CALL mcp__plugin_claude-mem_mcp-search__search; bash=[]; dispatch=off]
+OK   Edit of the OWN verdicts file is clean under the flag
+OK   ... and FLAGGED without the flag (section 1: Read and Write only)
+OK   a backslash spelling of the own pairs path (C:\x\blind\pairs.blind-1.json) is the same file: clean
+OK   a relative ./pairs.blind-1.json resolves against the blind folder: clean
+OK   the same calls under another tag (blind-2.g1) are FLAGGED: own is derived per tag  [Read outside the allowlist: C:/x/blind/pairs.blind-1.json | Write outside the own verdicts]
+OK   a transcript that cannot be found cannot be audited: exit 1
+OK   file:/c/... (Git-Bash form) is refused, C:/ paths only: exit 2
+OK   the real alias probe a9d35e8deacac3eff (no tool use at all) is clean
+OK   a first user message equal to the dispatch text with its paths and tag substituted: clean, dispatch=match  [tool inputs [Readx2 Writex1]; clean; bash=[]; dispatch=match]
+OK   NEGATIVE CONTROL: ONE changed word in the dispatch text ("Do not paraphrase" -> "Do paraphrase"): FLAGGED, dispatch=DIFFERS  [DISPATCH TEXT DIFFERS from h40d-grader-dispatch.txt (the text differs from the dispatch te]
+OK   NEGATIVE CONTROL: a changed punctuation mark: FLAGGED
+OK   NEGATIVE CONTROL: extra text appended to the dispatch text: FLAGGED
+OK   NEGATIVE CONTROL: the right text with ANOTHER tag and verdicts path in it: FLAGGED
+OK   NEGATIVE CONTROL: no user message at all: FLAGGED (cannot match the dispatch)
+OK   REGISTRATION CONFLICT, shown on the 8 real s50l graders: under the rule as written (no flag) every grader is FLAGGED (each ran one Bash)
+     blind-1.g1 (addb84e6bd55778d5): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[641:233bded98703]; dispatch=match
+     blind-1.g2 (a681f259dff0dae30): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[785:f5bc2ca9d993]; dispatch=match
+     blind-2.g1 (a5eb230f8d7cb101a): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[462:877c7165fece]; dispatch=match
+     blind-2.g2 (ab34ebe95114932db): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[625:ef42ad47bf3c]; dispatch=match
+     blind-3.g1 (a83e3007ff2d0bc45): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[480:00fbde002009]; dispatch=match
+     blind-3.g2 (ab605c210a849d667): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[625:87bc67565259]; dispatch=match
+     blind-4.g1 (aa08ae8c058eb8aa9): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[474:0a7037b47da9]; dispatch=match
+     blind-4.g2 (aa85ea6faa528f27c): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[482:803c67d3644b]; dispatch=match
+OK   REAL blind-1.g1 (addb84e6bd55778d5) reads CLEAN under the tightened rule (Read rubric + own pairs, Write own verdicts, one validation Bash)
+OK   REAL blind-1.g2 (a681f259dff0dae30) reads CLEAN under the tightened rule (Read rubric + own pairs, Write own verdicts, one validation Bash)
+OK   REAL blind-2.g1 (a5eb230f8d7cb101a) reads CLEAN under the tightened rule (Read rubric + own pairs, Write own verdicts, one validation Bash)
+OK   REAL blind-2.g2 (ab34ebe95114932db) reads CLEAN under the tightened rule (Read rubric + own pairs, Write own verdicts, one validation Bash)
+OK   REAL blind-3.g1 (a83e3007ff2d0bc45) reads CLEAN under the tightened rule (Read rubric + own pairs, Write own verdicts, one validation Bash)
+OK   REAL blind-3.g2 (ab605c210a849d667) reads CLEAN under the tightened rule (Read rubric + own pairs, Write own verdicts, one validation Bash)
+OK   REAL blind-4.g1 (aa08ae8c058eb8aa9) reads CLEAN under the tightened rule (Read rubric + own pairs, Write own verdicts, one validation Bash)
+OK   REAL blind-4.g2 (aa85ea6faa528f27c) reads CLEAN under the tightened rule (Read rubric + own pairs, Write own verdicts, one validation Bash)
+OK   ... the 8 real first user messages match the dispatch text (8/8)
+OK   ... each real Bash is recorded as <length>:<sha12> (allowed ones in bash=[...], tripped ones in the flag text)
+OK   the real blind-1.g1 transcript audited AS blind-1.g2 is FLAGGED (it wrote the other grader's files)
+
+GRADER-SESSION CALIBRATION OK

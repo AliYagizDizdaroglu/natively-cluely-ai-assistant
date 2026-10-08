@@ -1,0 +1,13 @@
+{
+  "negatives": {
+    "N1 code: the flag test inverted": ["t.verbalHedge?.startsWith('on')", "t.verbalHedge?.startsWith('off')"],
+    "N2 string: the hedge label": ["'hedge (gemini-3.5-flash-lite front, gemini-3.1-flash-lite back)'", "'hedge (gemini-3.5-flash-lite front, gemini-3.1-flash-lite BACK)'"],
+    "N3 code: the model test": ["t.answerModel === 'gemini-3.1-flash-lite' ||", "t.answerModel === 'gemini-3.1-flash-lites' ||"],
+    "N4 code: the log regex": ["/\\[Main\\] verbal hedge: (on trigger=\\d+ms|off)/g", "/\\[Main\\] verbal hedge: (on trigger=\\d+ms|off|x)/g"]
+  },
+  "positives": {
+    "P1 another docblock edited": ["The model that graded a judge file, where the file recorded it: a --verdicts merge names it", "The model that graded a judge file (calibration), where the file recorded it: a --verdicts merge names it"],
+    "P2 the comment this round edits": ["(LLMHelper.ts:3395) — a", "(LLMHelper.ts:3396) — a"],
+    "P3 whitespace inside a code line": ["const answerLabel = hedgeEngaged ?", "const answerLabel   =   hedgeEngaged ?"]
+  }
+}

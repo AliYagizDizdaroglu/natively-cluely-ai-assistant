@@ -1,0 +1,43 @@
+ok   term E01 matches "PR-AUC."
+ok   term E02 matches "Each tree's contribution."
+ok   term E03 matches "Number of chunks retrieved."
+ok   term E03F matches "Recall increases."
+ok   term E04 matches "504 Gateway Timeout."
+ok   term E04F matches "400 Bad Request."
+ok   term E05 matches "Traffic to the pod."
+ok   term E06 matches "No, use a Secret."
+ok   term E06F matches "Base64."
+ok   term E07 matches "Glacier Deep Archive."
+ok   term E08 matches "Skips missed past runs."
+ok   term E09 matches "Yes."
+ok   term E10 matches "CMD."
+ok   term E11 matches "Multi-model endpoints."
+ok   term E12 matches "Kolmogorov-Smirnov test."
+ok   term E12F matches "Chi-square test."
+ok   term E13 matches "They are deleted."
+ok   term E14 matches "Unit tests."
+ok   term E15 matches "The sustained request rate."
+ok   term E16 matches "O(1)."
+ok   term E16F matches "O(n)."
+ok   term E17 matches "Batch."
+ok   term E18 matches "StatefulSet."
+ok   term E19 matches "Zero."
+ok   term E20 matches "pgvector."
+ok   term E04 rejects wrong "502."
+ok   term E07 rejects wrong "Standard."
+ok   term E17 rejects wrong "Online."
+ok   term E18 rejects wrong "Deployment."
+ok   term E16 rejects wrong "O(n)."
+ok   term E19 rejects wrong "One."
+ok   term E20 rejects wrong "Pinecone."
+ok   perfect run: all readings met
+ok   5 E said hard -> E right 15, bar fails (15)
+ok   3 AF answered -> unsafe bar fails (3)
+ok   3 H answered long -> unsafe bar fails (3)
+ok   4 tool calls missing -> ear 59, bar fails (59)
+ok   markup hard -> hardMalformed
+ok   empty -> nothing
+ok   attribute a paraphrased call to E16
+ok   attribute to H08
+ok   first word 3.0 s -> time bar fails
+CALIBRATION OK

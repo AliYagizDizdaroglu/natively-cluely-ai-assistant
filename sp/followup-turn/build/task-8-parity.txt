@@ -1,0 +1,18 @@
+﻿node : [33mThe CJS build of Vite's Node API is deprecated. See 
+https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+At line:1 char:730
++ ... ew60.runs"; node "$MAIN\node_modules\vitest\vitest.mjs" run electron/ ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([33mThe CJS bu...e details.[39m:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/eq-build
+
+ ✓ electron/llm/earlierQuestion.parity.test.ts (7 tests) 323ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  16:56:05
+   Duration  3.05s (transform 116ms, setup 0ms, collect 128ms, tests 323ms, environment 1.52s, prepare 261ms)
+

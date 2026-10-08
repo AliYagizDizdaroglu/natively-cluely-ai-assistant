@@ -1,0 +1,10 @@
+﻿
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ✓ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts (10 tests) 26ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  23:09:09
+   Duration  3.35s (transform 145ms, setup 0ms, collect 181ms, tests 26ms, environment 1.75s, prepare 288ms)
+

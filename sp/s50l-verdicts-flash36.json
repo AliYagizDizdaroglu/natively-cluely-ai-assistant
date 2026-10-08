@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "All arithmetic correct: 9,500 churners, 2,850 true positives, 30% recall, 57% precision, and a defensible rounding verdict."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct LEFT JOIN with all filters in the ON clause, ingestion cutoff, and COUNT of a column so zero-call customers survive."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers all seven stages and names the shared feature store, but runs about 100 words, too long to speak."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, deterministic variant hash, delayed join and inverse propensity weighting all sound, but roughly 96 words is too long."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Omits the extraction F1 metric entirely and gives no uncertainty for any metric, so half the asked sub-parts are missing."
+  }
+}

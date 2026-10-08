@@ -1,0 +1,14 @@
+{
+  "negatives": {
+    "N1 code: the empty-value guard inverted": ["if (!raw) return selected;", "if (raw) return selected;"],
+    "N2 code: returns the wrong variable": ["    return raw;", "    return selected;"],
+    "N3 string inside the refusal message": ["is not a model this build will answer with. ", "is not a model this build WILL answer with. "],
+    "N4 code: the trim dropped": ["const raw = (process.env[VERBAL_PRIMARY_MODEL_ENV] ?? '').trim();", "const raw = (process.env[VERBAL_PRIMARY_MODEL_ENV] ?? '');"]
+  },
+  "positives": {
+    "P1 the header docblock edited": ["* Which model answers the spoken question, and how a flight may override it.", "* Which model answers the spoken question, and how a flight may override it. (calibration)"],
+    "P2 a // comment inside the function edited": ["// A .cmd launcher clears a variable with `set NAME=`, which leaves it defined and empty", "// A .cmd launcher clears a variable with `set NAME=` (calibration), which leaves it defined and empty"],
+    "P3 whitespace inside a code line": ["if (!raw) return selected;", "if (!raw)   return   selected;"],
+    "P4 the docblock sentence this round rewrites": ["* changes nothing (an invalid value still refuses).", "* changes nothing about which model answers (an invalid value still refuses)."]
+  }
+}

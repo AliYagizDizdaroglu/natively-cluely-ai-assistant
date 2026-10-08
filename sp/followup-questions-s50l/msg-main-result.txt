@@ -1,0 +1,10 @@
+docs(passes): the earlier-questions block, pooled re-run: FAIL on clause 1, with its evidence
+
+The ONE pooled s50l re-run of PREREGISTER-followup-questions.md §7 (read with AMENDMENT-s50l.fable.md, approved by
+the user before any call). The gain clause passes at its bar (pooled +8: s50m +3, s50l +5), but one new
+consensus-wrong answer in arm B (S2Q09F r2, the item whose block carries the wrong earlier question) fails clause 1,
+so the reference design is never built; the turn-based design follows with its own registration. 84 of 84 calls,
+eight claude-opus-5-5 graders (pinned, audit clean). s50l-gated.json holds the captured prompts and is recorded in
+MANIFEST.txt by hash only.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

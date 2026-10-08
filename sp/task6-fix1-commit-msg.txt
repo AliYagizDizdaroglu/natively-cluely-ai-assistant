@@ -1,0 +1,13 @@
+test(golden): a drift test for the cue row's hardcoded limits
+
+interview60.metrics.mjs deliberately imports no build, so wellformedCues
+hardcodes CUE_MAX_LINES/CUE_MAX_WORDS as the literals 5 and 8 — nothing
+would notice if they drifted from electron/llm/prompts.ts, and the
+cueBlocks gate row would silently keep gating on stale numbers. The new
+test builds its fixture from the real constants (a block at exactly the
+line/word limits, one line over, one word over) so it exercises whatever
+the limits actually are, not today's numbers restated. Calibrated: with
+the literal 5 mutated to 4 the new test fails (wellformed 1 -> 0); restored,
+it passes.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -1,0 +1,3 @@
+simple called EASY 12/12 (need >= 10); hard called HARD 10/10 (need 10)
+no misses
+CALIBRATION OK

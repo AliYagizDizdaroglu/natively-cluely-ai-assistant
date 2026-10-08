@@ -1,0 +1,531 @@
+{
+ "rule": "failed = s50m twins acceptable <= 3/6, lowest first, max 10; control = first 2 with 6/6",
+ "source": "C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-09-22T08-22-50-s50m",
+ "priorGraders": [
+  "claude-opus-5"
+ ],
+ "items": [
+  {
+   "id": "S2Q02",
+   "group": "failed",
+   "prior": {
+    "high": [
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4551,
+      "thoughts": 1180,
+      "words": 89
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 5033,
+      "thoughts": 1341,
+      "words": 82
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4374,
+      "thoughts": 1095,
+      "words": 94
+     }
+    ],
+    "low": [
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4203,
+      "thoughts": 572,
+      "words": 167
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 2809,
+      "thoughts": 117,
+      "words": 124
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4619,
+      "thoughts": 106,
+      "words": 134
+     }
+    ]
+   }
+  },
+  {
+   "id": "S2Q06F",
+   "group": "failed",
+   "prior": {
+    "high": [
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3505,
+      "thoughts": 803,
+      "words": 65
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3391,
+      "thoughts": 721,
+      "words": 58
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3677,
+      "thoughts": 808,
+      "words": 52
+     }
+    ],
+    "low": [
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 1385,
+      "thoughts": 109,
+      "words": 121
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4253,
+      "thoughts": 744,
+      "words": 57
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 6231,
+      "thoughts": 757,
+      "words": 116
+     }
+    ]
+   }
+  },
+  {
+   "id": "S2Q07F",
+   "group": "failed",
+   "prior": {
+    "high": [
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3858,
+      "thoughts": 882,
+      "words": 95
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4524,
+      "thoughts": 1062,
+      "words": 103
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4028,
+      "thoughts": 1058,
+      "words": 72
+     }
+    ],
+    "low": [
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4133,
+      "thoughts": 581,
+      "words": 108
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4263,
+      "thoughts": 835,
+      "words": 100
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3722,
+      "thoughts": 137,
+      "words": 123
+     }
+    ]
+   }
+  },
+  {
+   "id": "S1Q02",
+   "group": "failed",
+   "prior": {
+    "high": [
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4172,
+      "thoughts": 1137,
+      "words": 59
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3801,
+      "thoughts": 1157,
+      "words": 52
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4064,
+      "thoughts": 1175,
+      "words": 62
+     }
+    ],
+    "low": [
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 6016,
+      "thoughts": 1086,
+      "words": 62
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 1304,
+      "thoughts": 117,
+      "words": 60
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 2630,
+      "thoughts": 563,
+      "words": 60
+     }
+    ]
+   }
+  },
+  {
+   "id": "S1Q04F",
+   "group": "failed",
+   "prior": {
+    "high": [
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3222,
+      "thoughts": 710,
+      "words": 69
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3029,
+      "thoughts": 650,
+      "words": 57
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3504,
+      "thoughts": 763,
+      "words": 67
+     }
+    ],
+    "low": [
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4212,
+      "thoughts": 677,
+      "words": 59
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4019,
+      "thoughts": 896,
+      "words": 71
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 5448,
+      "thoughts": 793,
+      "words": 89
+     }
+    ]
+   }
+  },
+  {
+   "id": "S2Q02F",
+   "group": "failed",
+   "prior": {
+    "high": [
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4278,
+      "thoughts": 943,
+      "words": 105
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3607,
+      "thoughts": 724,
+      "words": 78
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3666,
+      "thoughts": 803,
+      "words": 98
+     }
+    ],
+    "low": [
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 1658,
+      "thoughts": 102,
+      "words": 164
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 6557,
+      "thoughts": 1349,
+      "words": 58
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3718,
+      "thoughts": 117,
+      "words": 156
+     }
+    ]
+   }
+  },
+  {
+   "id": "S2Q10F",
+   "group": "failed",
+   "prior": {
+    "high": [
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3809,
+      "thoughts": 840,
+      "words": 74
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3103,
+      "thoughts": 731,
+      "words": 53
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3433,
+      "thoughts": 856,
+      "words": 58
+     }
+    ],
+    "low": [
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3901,
+      "thoughts": 745,
+      "words": 99
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 5763,
+      "thoughts": 777,
+      "words": 67
+     },
+     {
+      "ok": false,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3451,
+      "thoughts": 736,
+      "words": 67
+     }
+    ]
+   }
+  },
+  {
+   "id": "S1Q01F",
+   "group": "control",
+   "prior": {
+    "high": [
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3785,
+      "thoughts": 786,
+      "words": 58
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3503,
+      "thoughts": 710,
+      "words": 67
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4270,
+      "thoughts": 973,
+      "words": 72
+     }
+    ],
+    "low": [
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3841,
+      "thoughts": 662,
+      "words": 64
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3419,
+      "thoughts": 626,
+      "words": 56
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 4275,
+      "thoughts": 818,
+      "words": 63
+     }
+    ]
+   }
+  },
+  {
+   "id": "S1Q02F",
+   "group": "control",
+   "prior": {
+    "high": [
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3679,
+      "thoughts": 988,
+      "words": 64
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3718,
+      "thoughts": 935,
+      "words": 60
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3755,
+      "thoughts": 907,
+      "words": 52
+     }
+    ],
+    "low": [
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 2965,
+      "thoughts": 122,
+      "words": 131
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 3684,
+      "thoughts": 731,
+      "words": 66
+     },
+     {
+      "ok": true,
+      "wrong": false,
+      "graded": true,
+      "ttft": 8082,
+      "thoughts": 132,
+      "words": 128
+     }
+    ]
+   }
+  }
+ ]
+}

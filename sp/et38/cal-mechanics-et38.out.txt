@@ -1,0 +1,22 @@
+OK  L20c r1: answered, holes, first word p50 (s) over the answered: [17,["S1Q09F"],1.3]
+     slow feed: none; abnormal sessions 0 of 9
+OK  L20c r2: answered, holes, first word p50 (s) over the answered: [18,[],1.3]
+     slow feed: none; abnormal sessions 0 of 9
+OK  L20c r3: answered, holes, first word p50 (s) over the answered: [18,[],1.9]
+     slow feed: none; abnormal sessions 0 of 9
+OK  ET10 low: answered 10, no apology, first word p50 6.2 s and p90 9.4 s, a holding line on 5: [10,[],6.2,9.4,5]
+     ET10 low last word p50 29.8 s, p90 56.4 s (RESULT.md: 29.8 and 56.4, by its own percentile rule); slow feed: none
+OK  ET10 medium: the five system-error apologies are holes: "S1Q02F S1Q04 S1Q05 S1Q07F S2Q02F"
+OK  ET10 medium: answered = 10 minus the five apologies: [5,5]
+OK  isAnswered: not played: false
+OK  isAnswered: an empty answer: false
+OK  isAnswered: a spoken system-error apology: false
+OK  isAnswered: a real answer: true
+OK  armState: medium, 4 holes after rep 1 can still reach 110 of 114: "CONTINUE"
+OK  armState: medium, 5 holes after rep 1 cannot: "STOP"
+OK  armState: medium, 5 holes after rep 2 cannot: "STOP"
+OK  armState: medium, 9 holes after rep 3 is done (the rule reads it then): "DONE"
+OK  armState: low never stops early: 5 holes after rep 1: "CONTINUE"
+OK  armState: low, 20 holes after rep 2: "CONTINUE"
+OK  armState: low, 0 holes after rep 3: "DONE"
+ET38 MECHANICS CALIBRATION OK

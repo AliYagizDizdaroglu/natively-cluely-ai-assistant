@@ -1,0 +1,1 @@
+For nightly churn scoring of ten million customers, batch or online inference?

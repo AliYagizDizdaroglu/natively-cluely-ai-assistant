@@ -1,0 +1,21 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Sound tabular/non-linear rationale, serving efficiency, logistic-regression baseline with lift framing; 72 words, natural first-person speech."},
+  "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Arithmetic right (9500, 5000, 3000 TP, 31.6% recall) but calling 31.6 versus 30 'perfect rounding' glosses the reconciliation."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Holdout control group plus difference-in-differences correctly separates model effect from seasonality and mix; 99 words, slightly over spoken length."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Stable index tie-break, correct precision/recall/lift-over-prevalence, sensible invalid-k, empty and no-positive handling; 131 words needs trimming."},
+  "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Chronological split, ColumnTransformer fit on train only, TimeSeriesSplit, buffer for the 30-day label window; 138 words, too long."},
+  "S1Q06": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Left join preserving zero-call customers, 30-day window, ingested_at cutoff, count gives zero; 122 words and dictates SQL verbally."},
+  "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Shared feature store and registry against skew, sensible batch/online stack; training stage thin; 148 words, long for speech."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Request-id logging, delayed outcome join, propensity weighting, uplift-aware retraining selection; assignment mechanism thin; 142 words."},
+  "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Blob, Azure ML, ACR, AKS, Data Factory, managed identity, Azure Monitor map cleanly with operational reasons; 94 words, speakable."},
+  "S1Q10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Managed identity to Postgres and Blob, Key Vault for residual secrets, separate resource groups, VNets, private endpoints; 91 words."},
+  "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Textract parsing, semantic chunking, hybrid retrieval, cross-encoder rerank, assembly, generation checks; embedding stage skipped; 132 words."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Gives unit, denominator, dataset construction and uncertainty for each of the three metrics; 150 words, well past spoken length."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Accurate contrast of fixed retrieval, decomposition and dynamic agent, with a cost-of-error justification; 145 words, too long."},
+  "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct one-over-c-plus-rank accumulation, one-based ranks, score then id tie-break, top-k slice; 83 words, natural speech."},
+  "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Relevance sort, dedup set, per-document cap of two, skip-if-not-fit implemented as asked; 'maximize' overclaims greedy; 108 words."},
+  "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Semaphore of eight, wait_for timeout, ordered awaiting of tasks, per-case try/except so failures stay isolated; 70 words."},
+  "S2Q07": {"correctness": 2, "on_topic": 1, "delivery": 0, "reason": "Sharding, ACL metadata, filtered search, RAGAS evaluation are sound, but citations missing and a whole latency-SLA drift; 179 words."},
+  "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Dual-vector versioning, batched backfill, CDC for in-flight updates, shadow quality comparison, toggle cutover and rollback; 133 words."},
+  "S2Q10": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Idempotency key and ack-after-write are right, but atomic transaction or two-phase commit across vector store and Postgres misstates outbox; 130 words."}
+}

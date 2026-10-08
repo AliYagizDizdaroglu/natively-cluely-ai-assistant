@@ -1,0 +1,20 @@
+fix(verbal): the last-resort message names a fallback only when one ran
+
+Review of the previous commit. With 3.5-lite as the primary, a failure after
+the first words printed "both the primary model and the gemini-3.5-flash-lite
+fallback failed", although 3.5-lite was the primary and no fallback ran. The
+message now names a fallback only when one actually ran. Otherwise (a failure
+after the first words, the coding path, a refused override) it says the
+answer model failed.
+
+Also adds two guards the review asked for. Each was watched failing against a
+deliberately broken build before it was trusted:
+- Under the override, the label keeps a Gemma selection's name. It fails with
+  the Gemini-prefix guard removed.
+- An early close still aborts the request through the new stall-switch
+  layer. It fails when that layer stops passing the close down.
+
+The head-label comment now describes what the code does instead of claiming
+more.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

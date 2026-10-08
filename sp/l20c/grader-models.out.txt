@@ -1,0 +1,9 @@
+a02528bae24bf0c18  verdicts-A-g1.json   claude-opus-5-5 x21  OK
+a221bf315c54b496d  verdicts-B-g2.json   claude-opus-5-5 x12  OK
+a53f6def4949b9338  verdicts-B-g1.json   claude-opus-5-5 x16  OK
+a8c57050941fd4f4c  verdicts-A-g2.json   claude-opus-5-5 x15  OK
+aee2a973128edb430  verdicts-C-g2.json,verdicts-B-g1.json,verdicts-C-g1.json claude-opus-5-5 x14  OK
+afbc14011dd534b19  verdicts-C-g1.json   claude-opus-5-5 x16  OK
+a2e4935e2c3ea0be8  verdicts-D-g2.json   claude-opus-5-5 x12  OK
+acf0bc86b1f2c7ac7  verdicts-D-g1.json   claude-opus-5-5 x15  OK
+8 distinct verdict files; 1 PROBLEM(S)

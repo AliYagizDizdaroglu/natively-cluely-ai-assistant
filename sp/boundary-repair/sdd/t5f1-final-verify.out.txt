@@ -1,0 +1,30 @@
+﻿The two files changed in fix round 1, in MAIN:
+  electron/test/golden/interview60.turns-finals.mjs
+    2119 B  sha256 365cca381954a2e072cc3415e51e60570215ec4b64e7dc13a1670da95cf87e13
+    CR=0 | BOM=false | valid UTF-8=true | stage == MAIN
+  electron/test/golden/interview60.turns-finals.test.ts
+    4115 B  sha256 d40c6c235cb69281bc92108742c6db1876a6ee824052d651c0ad192de51bf588
+    CR=0 | BOM=false | valid UTF-8=true | stage == MAIN
+  derivation from task-5-fix1.md (t5f1-verify-fix.mjs --main): all requested comparisons hold, all calibrations fail as they should
+The extractor (not changed this round): 5470 B sha256 cfd7c87666393bb8 as at the end of round 0
+Tasks 1-4 files. Five are as at the end of round 0 of Task 5 (22:55-23:01). The two adapter files were changed by someone else (mtimes 23:06:45 and
+23:08:21 local: before this round began, never by Task 5; the change adds the adjacency comment at :244 and the test at :220); their current bytes are recorded:
+  electron/audio/deepgramBoundaryRepair.ts: 10743 B sha256 d5ba4da0650e7531, mtime 2026-09-29T19:05:30.935Z  as recorded
+  electron/audio/deepgramBoundaryRepair.test.ts: 13947 B sha256 6956aea35dfef746, mtime 2026-09-29T19:02:14.662Z  as recorded
+  electron/audio/deepgramBoundaryRepair.fixtures.json: 22788 B sha256 e65c6e746f821642, mtime 2026-09-29T13:53:23.626Z  as recorded
+  electron/audio/DeepgramStreamingSTT.ts: 16236 B sha256 57292516fc495df1, mtime 2026-09-29T20:08:21.327Z (was 16,037 B 70683d81 at the end of round 0)  as recorded
+  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts: 13838 B sha256 2f3eb860c6142415, mtime 2026-09-29T20:06:45.379Z (was 11,766 B e80e5373 at the end of round 0)  as recorded
+  electron/audio/deepgramKeyterms.ts: 5801 B sha256 b4431b9138d9688f, mtime 2026-09-29T19:17:46.705Z  as recorded
+  electron/audio/deepgramKeyterms.test.ts: 3429 B sha256 bfdd8a5d91f48da7, mtime 2026-09-29T19:15:43.969Z  as recorded
+The user's uncommitted files (size + mtime, for the record):
+  electron/test/golden/interview60.chains.json: 12909 B, mtime 2026-09-29T12:32:48.238Z
+  electron/test/golden/interview60.report.md: 1939 B, mtime 2026-09-29T11:42:00.989Z
+Files in MAIN modified since 23:25 local (node_modules, .git, dist*, .claude excluded): 2
+  mine  electron/test/golden/interview60.turns-finals.mjs
+  mine  electron/test/golden/interview60.turns-finals.test.ts
+  both fix-round files are among them | no other file modified
+Leftovers (mirror trees, vite caches under sdd\; temp outputs in %TEMP%): none
+MAIN's node_modules/vitest still present: true
+Branch file: "ref: refs/heads/fix/coding-style-suffix-all-gemini\n"
+
+all checks pass

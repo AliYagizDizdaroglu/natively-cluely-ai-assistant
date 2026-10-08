@@ -1,0 +1,31 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts (58 tests | 1 failed) 24ms
+   × deepgramBoundaryRepair synthetic edges (the symptom's strings) > a final with no interim before it is not compared with an older interim 8ms
+     → expected 'cut hallucinations in a rag answer wi…' to be 'in a rag answer without just making i…' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair synthetic edges (the symptom's strings) > a final with no interim before it is not compared with an older interim
+AssertionError: expected 'cut hallucinations in a rag answer wi…' to be 'in a rag answer without just making i…' // Object.is equality
+
+Expected: "in a rag answer without just making it refuse?"
+Received: "cut hallucinations in a rag answer without just making it refuse?"
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:121:85
+    119| 
+    120|     it('a final with no interim before it is not compared with an olde…
+    121|         expect(play([I, F1, { text: 'How do you', isFinal: true, atMs:…
+       |                                                                                     ^
+    122|     });
+    123| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 57 passed (58)
+   Start at  17:47:36
+   Duration  2.45s (transform 93ms, setup 0ms, collect 100ms, tests 24ms, environment 1.34s, prepare 157ms)
+

@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Covers data fit, production constraints and a logistic-regression baseline; accurate and well sized."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic right (2,850 TP, 57 percent precision, 30 percent recall) but calls a 57-versus-60 gap mere rounding."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Holdout control plus cohort segmentation cleanly separates model effect from seasonality and mix."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Stable ties and error paths are right, but lift with zero prevalence is undefined, not one."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split with a thirty-day embargo and train-only ColumnTransformer fit; slightly long at about 95 words."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Misses that the ingest filter must sit in the ON clause and that COUNT must target an event column."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All seven components plus shared feature logic and registry; roughly 160 words, far too long to speak."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Treatment-tagged logging, watermarked 30-day join and control-only retraining are sound; about 105 words."
+  },
+  "S1Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Puts model artifacts in Container Registry rather than the Azure ML registry or Blob; also very long."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC, Entra-authenticated Postgres, Key Vault and per-environment isolation all correct; about 90 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every requested stage is covered accurately, but around 160 words is well past a spoken answer."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Unit, denominator, construction and uncertainty given for all three metrics; about 330 words, unusable at that length."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Nails that decomposition fails on dependent sub-queries where dynamic tool choice earns its cost; slightly long."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct one-over-c-plus-rank accumulation with score-then-id tie-break and top-k slice, spoken cleanly."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dedup, greedy relevance sort, budget tracking and two-per-document cap all correct; about 89 words."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore of eight, per-case race timeout and index-mapped ordering are right; about 96 words."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-partitioned hybrid index, Postgres metadata with row-level security and query-time filters; about 110 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Dual-write versioning, backfill, queue sync, shadow comparison, gradual cutover and rollback in a speakable length."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sensible Azure mapping for every component and a defensible custom-parsing carve-out, well sized."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Peek-lock redelivery plus hash-keyed idempotent blob writes and ack-after-commit; about 108 words."
+  }
+}

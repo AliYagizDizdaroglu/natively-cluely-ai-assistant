@@ -1,0 +1,108 @@
+﻿adapter (main) 16236 B 57292516fc495df1; test (main) 13838 B 2f3eb860c6142415
+
+[as expected] V0 control: the adapter as given
+   Tests  10 passed (10)
+   (no test failed)
+
+[as expected] V1 gate removed
+   Tests  1 failed | 9 passed (10)
+   failed: a non-English connection passes every transcript through untouched, with no repair line
+
+[as expected] V2 gate inverted
+   Tests  4 failed | 6 passed (10)
+   failed: emits the repaired final, logs the raw text plus one repair line, and a restarted socket starts with no remembered cut
+   failed: an empty INTERIM is not a pause: the repair still happens (the control for the three above)
+   failed: a non-English connection passes every transcript through untouched, with no repair line
+   failed: the repair line is the very next log line after its final's Transcript event line, before any listener runs
+
+[as expected] V3 clear() dropped on the empty FINAL
+   Tests  1 failed | 9 passed (10)
+   failed: an empty FINAL between F1 and F2 is a pause: F2 is emitted as received, no repair line
+
+[as expected] V4 clear() dropped on UtteranceEnd
+   Tests  1 failed | 9 passed (10)
+   failed: an UtteranceEnd between F1 and F2 is a pause too, and is still re-emitted
+
+[as expected] V5 speech_final not passed
+   Tests  1 failed | 9 passed (10)
+   failed: speech_final on F1 reaches the module: Deepgram heard the utterance end there, so nothing is restored
+
+[as expected] V6 an empty INTERIM clears too
+   Tests  1 failed | 9 passed (10)
+   failed: an empty INTERIM is not a pause: the repair still happens (the control for the three above)
+
+[as expected] V7 bare .clear() on the empty FINAL (null repair)
+   Tests  1 failed | 9 passed (10)
+   failed: an empty FINAL on a non-English or multi connection is harmless: F2 is emitted as received, no error is logged
+
+[as expected] V8 bare .clear() on UtteranceEnd (null repair)
+   Tests  1 failed | 9 passed (10)
+   failed: an UtteranceEnd on a non-English or multi connection is harmless and still re-emitted
+
+[as expected] V9 UtteranceEnd clear moved under the stale() gate (ruling: skipped, no test)
+   Tests  10 passed (10)
+   (no test failed)
+
+[as expected] V10 a log line inserted between the event line and the repair line
+   Tests  1 failed | 9 passed (10)
+   failed: the repair line is the very next log line after its final's Transcript event line, before any listener runs
+   ---- vitest failure block (excerpt) ----
+   |  FAIL  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > the repair line is the very next log line after its final's Transcript event line, before any listener runs
+   | AssertionError: expected '[DeepgramStreaming] review-probe' to be '[DeepgramStreaming] Transcript event …' // Object.is equality
+   | Expected: "[DeepgramStreaming] Transcript event — isFinal=true, text="over 10,000,000 documents, it has to support document updates""
+   | Received: "[DeepgramStreaming] review-probe"
+   |  ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:227:32
+   |     225|             const k = log.findIndex((l) => l.includes('boundary repair…
+   |     226|             expect(k).toBeGreaterThan(0);
+   |     227|             expect(log[k - 1]).toBe(`[DeepgramStreaming] Transcript ev…
+   |        |                                ^
+   |     228|         });
+   |     229| 
+
+[as expected] V11 repair line logged after the emit
+   Tests  1 failed | 9 passed (10)
+   failed: the repair line is the very next log line after its final's Transcript event line, before any listener runs
+   ---- vitest failure block (excerpt) ----
+   |  FAIL  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > the repair line is the very next log line after its final's Transcript event line, before any listener runs
+   | AssertionError: expected '[listener] service over 10,000,000 do…' to be '[DeepgramStreaming] Transcript event …' // Object.is equality
+   | Expected: "[DeepgramStreaming] Transcript event — isFinal=true, text="over 10,000,000 documents, it has to support document updates""
+   | Received: "[listener] service over 10,000,000 documents, it has to support document updates"
+   |  ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:227:32
+   |     225|             const k = log.findIndex((l) => l.includes('boundary repair…
+   |     226|             expect(k).toBeGreaterThan(0);
+   |     227|             expect(log[k - 1]).toBe(`[DeepgramStreaming] Transcript ev…
+   |        |                                ^
+   |     228|         });
+   |     229| 
+
+[as expected] V12 one repair per start(), shared by reconnect sockets
+   Tests  1 failed | 9 passed (10)
+   failed: a socket the server closed (1011) and replaced does not share its cut: F2 on the reconnected socket is emitted as received
+   ---- vitest failure block (excerpt) ----
+   |  FAIL  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > a socket the server closed (1011) and replaced does not share its cut: F2 on the reconnected socket is emitted as received
+   | AssertionError: expected [ [ …(2) ], [ …(2) ], [ …(2) ] ] to deeply equal [ [ …(2) ], [ …(2) ], [ …(2) ] ]
+   | - Expected
+   | + Received
+   |   Array [
+   |     Array [
+   |       "Design a multi tenant RAC service over",
+   |       false,
+   |     ],
+   |     Array [
+   |       "Design a multi tenant Rag",
+   |       true,
+   |     ],
+   |     Array [
+   | -     "over 10,000,000 documents, it has to support document updates",
+   | +     "service over 10,000,000 documents, it has to support document updates",
+   |       true,
+   |     ],
+   |   ]
+   |  ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:244:26
+   |     242|             lives[1].fire('Results', results(F2.text, true));
+   |     243|             stt.stop();
+
+junction to MAIN's node_modules removed: true; MAIN's vitest still present: true
+scratch tree deleted: true
+
+variants whose failing set differed from the expectation: 0

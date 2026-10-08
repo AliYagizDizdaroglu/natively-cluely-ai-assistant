@@ -1,0 +1,12 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Sound reasoning on tabular data, latency, and logistic-regression baseline; directly answers all three parts; natural spoken prose, slightly over eighty words."},
+  "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "True positives right, but 4,750 predictions contradicts the 5,000 band; precision is 57%, recall 30% never stated; consistency asserted not shown."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Randomized holdout plus difference-in-differences is the right answer for seasonality and mix; concise, well-shaped spoken response at target length."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Stable descending sort, correct precision, recall, lift, and all three edge cases covered; roughly 155 words, needs trimming for speech."},
+  "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Chronological cutoff respecting the thirty-day window, ColumnTransformer fit on train only, XGBoost in pipeline; correct but about 115 words."},
+  "S1Q06": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "LEFT JOIN, window, ingestion filter and zero preservation right, but never filters event type to support calls; good spoken length."},
+  "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "All requested stages covered with a shared feature library and registry killing training-serving skew; around 155 words, too long spoken."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Dual timestamps, treatment flag in logs, offset outcome join, closed-window retraining selection all sound; roughly 150 words, needs cutting."},
+  "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Accurate Azure mapping across storage, AML, registry, ACR, AKS, Data Factory, managed identity, monitor, with reasons; about 150 words."},
+  "S1Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Managed identity, Entra auth to Postgres, Key Vault CSI, subscription separation correct; Azure Policy framed loosely; roughly 165 words."}
+}

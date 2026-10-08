@@ -1,0 +1,26 @@
+{
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Numbers right, but 57 percent called highly consistent with 60 overstates agreement; stray dollar signs before counts need editing out."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Left join, three join-level filters, thirty-day window, count of event id not star. Correct but about 140 words, too long spoken."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Namespaces, Postgres ACLs and offsets, pre-filtered retrieval, judge evaluation against golden set. Sound; near 120 words, longer than a spoken answer."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Deterministic hash IDs with upserts, Cosmos state checked on restart before acknowledging Service Bus. Directly answers duplicate delivery, natural length."
+  }
+}

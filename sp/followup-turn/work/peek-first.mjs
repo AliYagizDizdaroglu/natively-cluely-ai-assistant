@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
+const PROJ = 'C:/Users/sotka/.claude/projects';
+const SLUG = 'C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a';
+const f = path.join(PROJ, SLUG, '9c5886c7-cdbd-48af-b8bc-e9275012ec64', 'subagents', `agent-${process.argv[2]}.jsonl`);
+const lines = fs.readFileSync(f, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
+const u = lines.find((j) => j.type === 'user');
+const c = u.message.content;
+const t = typeof c === 'string' ? c : JSON.stringify(c);
+console.log(t);

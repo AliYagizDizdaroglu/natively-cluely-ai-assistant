@@ -1,0 +1,13 @@
+===== cuesmoke S1Q08F [calib]
+2026-09-30T13-46-52-cuesmoke [calib jitter=50]: 19/20 once; doubles [S1Q08:2]; never []; drops 0; absorbed 0 (whisper 0); subs 0; unmatched 0; reorders 3; supersedes 1
+trace S1Q08F: {"n":1,"lat":1200,"budget":1700,"path":"gate","finished":true,"fromLive":false,"finals":2,"cov":"1.00","closes":["continuation-expired"],"live":[],"logFirst":"13:39:53.767","logGate":3207,"vadDev":-21,"blips":0,"voiceOff":"13:39:50.580"}
+  13:39:45.700 voice ON
+  13:39:48.802 final "How could repeatedly"
+  13:39:50.580 voice OFF
+  13:39:51.258 final "training on customers affected by previous campaigns introduce bias?"
+  13:39:51.780 dispatch finals=2 fromLive=false live=0 path=gate "How could repeatedly training on customers affected by previ"
+  13:39:59.780 close continuation-expired
+  13:39:51.055 <whisper rv=match> {"kind":"marked"} q="How could repeatedly"
+  13:39:51.707 <whisper rv=match> {"kind":"marked"} q="How could repeatedly training on customers affecte"
+  13:39:53.765 <live rv=match> {"kind":"marked"} q="Does training on data affected by previous campaig"
+

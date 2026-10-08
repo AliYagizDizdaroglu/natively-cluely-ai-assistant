@@ -1,0 +1,60 @@
+﻿--- f2-v1-gt
+[f2-v1-gt] test test.v1.ts (4003 B) + module mut.m0-gt.mjs (1591 B), WITH interview60.runs/
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+  ✓ a final directly followed by a boundary-repair line replays as the restored words + the raw text
+  ✓ keeps interims and empty finals out, and drops finals before `since`
+  ✓ a repair line that is not the very next line after a final is not applied (one synchronous handler writes both lines)
+  ✓ reproduces the committed 2026-09-09T15-00-55-s50a fixture's finals from its run log (skipped where the run folder is absent)
+  ✓ reproduces the committed 2026-09-08T08-44-56-after9 fixture's finals from its run log (skipped where the run folder is absent)
+as expected: the Tests line contains "5 passed (5)"
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true
+--- f2-v2-gt
+[f2-v2-gt] test test.v2.ts (4003 B) + module mut.m0-gt.mjs (1591 B), WITH interview60.runs/
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+  ✓ a final directly followed by a boundary-repair line replays as the restored words + the raw text
+  × keeps interims and empty finals out, and drops finals before `since`
+  ✓ a repair line that is not the very next line after a final is not applied (one synchronous handler writes both lines)
+  ✓ reproduces the committed 2026-09-09T15-00-55-s50a fixture's finals from its run log (skipped where the run folder is absent)
+  ✓ reproduces the committed 2026-09-08T08-44-56-after9 fixture's finals from its run log (skipped where the run folder is absent)
+  failure: AssertionError: expected [ 'Okay.' ] to deeply equal [ …(2) ]
+  at: electron/test/golden/interview60.turns-finals.test.ts:33:14
+as expected: the Tests line contains "1 failed | 4 passed (5)"
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true
+--- f3-v2-noempty
+[f3-v2-noempty] test test.v2.ts (4003 B) + module mut.m0-noempty.mjs (1584 B), WITH interview60.runs/
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+  × a final directly followed by a boundary-repair line replays as the restored words + the raw text
+  ✓ keeps interims and empty finals out, and drops finals before `since`
+  ✓ a repair line that is not the very next line after a final is not applied (one synchronous handler writes both lines)
+  × reproduces the committed 2026-09-09T15-00-55-s50a fixture's finals from its run log (skipped where the run folder is absent)
+  × reproduces the committed 2026-09-08T08-44-56-after9 fixture's finals from its run log (skipped where the run folder is absent)
+  failure: AssertionError: expected [ { at: 1790680767826, …(1) }, …(3) ] to deeply equal [ { at: 1790680767826, …(1) }, …(2) ]
+  failure: AssertionError: expected [ { at: 1788961936929, …(1) }, …(316) ] to deeply equal [ { at: 1788961936929, …(1) }, …(131) ]
+  failure: AssertionError: expected [ { at: 1788851569979, …(1) }, …(442) ] to deeply equal [ { at: 1788851569979, …(1) }, …(180) ]
+  at: electron/test/golden/interview60.turns-finals.test.ts:24:36
+  at: electron/test/golden/interview60.turns-finals.test.ts:53:58
+  at: electron/test/golden/interview60.turns-finals.test.ts:53:58
+as expected: the Tests line contains "3 failed | 2 passed (5)"
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true
+--- f3-v3-noempty
+[f3-v3-noempty] test test.v3.ts (4003 B) + module mut.m0-noempty.mjs (1584 B), WITH interview60.runs/
+ Test Files  1 failed (1)
+      Tests  4 failed | 1 passed (5)
+  × a final directly followed by a boundary-repair line replays as the restored words + the raw text
+  × keeps interims and empty finals out, and drops finals before `since`
+  ✓ a repair line that is not the very next line after a final is not applied (one synchronous handler writes both lines)
+  × reproduces the committed 2026-09-09T15-00-55-s50a fixture's finals from its run log (skipped where the run folder is absent)
+  × reproduces the committed 2026-09-08T08-44-56-after9 fixture's finals from its run log (skipped where the run folder is absent)
+  failure: AssertionError: expected [ { at: 1790680767826, …(1) }, …(3) ] to deeply equal [ { at: 1790680767826, …(1) }, …(2) ]
+  failure: AssertionError: expected [ …(3) ] to deeply equal [ …(2) ]
+  failure: AssertionError: expected [ { at: 1788961936929, …(1) }, …(316) ] to deeply equal [ { at: 1788961936929, …(1) }, …(131) ]
+  failure: AssertionError: expected [ { at: 1788851569979, …(1) }, …(442) ] to deeply equal [ { at: 1788851569979, …(1) }, …(180) ]
+  at: electron/test/golden/interview60.turns-finals.test.ts:24:36
+  at: electron/test/golden/interview60.turns-finals.test.ts:33:14
+  at: electron/test/golden/interview60.turns-finals.test.ts:53:58
+  at: electron/test/golden/interview60.turns-finals.test.ts:53:58
+as expected: the Tests line contains "4 failed | 1 passed (5)"
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true

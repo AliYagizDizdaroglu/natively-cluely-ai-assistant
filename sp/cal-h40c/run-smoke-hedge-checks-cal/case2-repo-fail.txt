@@ -1,0 +1,90 @@
+smoke-hedge-checks  repo=C:\Users\sotka\cal-runner\repo-fail  run-at=2026-09-26T19:32:25.240Z
+--- segment forced ---
+command: node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\check-smoke-hedge.mjs forced 2026-09-26T10:00:00.000Z --debug-log C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-forced.natively_debug.log --diag-log C:\Users\sotka\cal-runner\repo-fail\verbal-diag.log --clips 3 --extra-log C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-forced.app-start.log --until 2026-09-26T11:00:00.000Z
+check-smoke-hedge  mode=forced  since=2026-09-26T10:00:00.000Z  until=2026-09-26T11:00:00.000Z
+debug-log=C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-forced.natively_debug.log (22 lines in window)  diag-log=C:\Users\sotka\cal-runner\repo-fail\verbal-diag.log (3 lines in window)
+extra-log=C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-forced.app-start.log
+clips=3
+
+windows found: 3 (clips played: 3)
+
+per-window:
+  2026-09-26T10:00:10.000Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  winner=gemini-3.1-flash-lite  answer-source lines=2  first-token=n/a  ok
+  2026-09-26T10:02:10.000Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  winner=gemini-3.5-flash-lite  answer-source lines=2  first-token=n/a  ok
+  2026-09-26T10:04:10.000Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  winner=gemini-3.1-flash-lite  answer-source lines=2  first-token=n/a  ok
+
+request counts (warm-up/front/back-started/stall-race/stalled - NOT usage lines, which overcount ~5x):
+  gemini-3.5-flash-lite: warmup=0 front=3 backStarted=0 stallRace=0 stalled=0
+  gemini-3.1-flash-lite: warmup=0 front=0 backStarted=3 stallRace=0 stalled=0
+
+[PASS] startup line
+[PASS] no unhandled rejection / uncaught exception
+[PASS] forced-mode per-answer rules
+  (info) accounted for: 3 (scored=3 coding=0) of 3 clips played
+
+PASS overall (mode=forced)
+SEGMENT forced: PASS (exit 0)
+--- segment default ---
+note: extra log not found, running without it: C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-default.app-start.log
+command: node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\check-smoke-hedge.mjs default 2026-09-26T11:00:00.000Z --debug-log C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-default.natively_debug.log --diag-log C:\Users\sotka\cal-runner\repo-fail\verbal-diag.log --clips 3 --until 2026-09-26T12:00:00.000Z
+check-smoke-hedge  mode=default  since=2026-09-26T11:00:00.000Z  until=2026-09-26T12:00:00.000Z
+debug-log=C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-default.natively_debug.log (17 lines in window)  diag-log=C:\Users\sotka\cal-runner\repo-fail\verbal-diag.log (3 lines in window)
+clips=3
+
+windows found: 3 (clips played: 3)
+
+per-window:
+  2026-09-26T11:00:10.000Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  winner=gemini-3.5-flash-lite  answer-source lines=2  back-fired=false  first-token=n/a  ok
+  2026-09-26T11:03:00.000Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  FAIL - no "won by" line and no later window holds a surplus won-by - the race never resolved
+  2026-09-26T11:06:00.000Z [answer] route=VERBAL-TECHNICAL (selected model, filtered)  winner=gemini-3.5-flash-lite  answer-source lines=2  back-fired=false  first-token=n/a  ok
+
+request counts (warm-up/front/back-started/stall-race/stalled - NOT usage lines, which overcount ~5x):
+  gemini-3.5-flash-lite: warmup=0 front=3 backStarted=0 stallRace=0 stalled=0
+  gemini-3.1-flash-lite: warmup=0 front=0 backStarted=1 stallRace=0 stalled=0
+
+[PASS] startup line
+[PASS] no unhandled rejection / uncaught exception
+[FAIL] default-mode per-answer rules
+  - 2026-09-26T11:03:00.000Z [answer] route=VERBAL-TECHNICAL (selected model, filtered): no "won by" line and no later window holds a surplus won-by - the race never resolved
+  (info) back leg fired on 0/2 scored answers (0 expected on a healthy evening; a real stall is reported here, not a failure)
+  (info) accounted for: 2 (scored=2 coding=0) of 3 clips played
+
+FAIL overall (mode=default)
+SEGMENT default: FAIL (exit 1)
+--- segment off ---
+note: extra log not found, running without it: C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-off.app-start.log
+command: node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\check-smoke-hedge.mjs off 2026-09-26T12:00:00.000Z --debug-log C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-off.natively_debug.log --diag-log C:\Users\sotka\cal-runner\repo-fail\verbal-diag.log --clips 1 --until 2026-09-26T13:00:00.000Z
+check-smoke-hedge  mode=off  since=2026-09-26T12:00:00.000Z  until=2026-09-26T13:00:00.000Z
+debug-log=C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-off.natively_debug.log (5 lines in window)  diag-log=C:\Users\sotka\cal-runner\repo-fail\verbal-diag.log (1 lines in window)
+clips=1
+
+windows found: 1 (clips played: 1)
+
+per-window:
+  2026-09-26T12:00:10.000Z [answer] route=BEHAVIORAL (Flash Lite, filtered)  stall-race model=gemini-3.1-flash-lite  ok
+
+request counts (warm-up/front/back-started/stall-race/stalled - NOT usage lines, which overcount ~5x):
+  gemini-3.1-flash-lite: warmup=0 front=0 backStarted=0 stallRace=1 stalled=0
+
+[PASS] startup line
+[PASS] no unhandled rejection / uncaught exception
+[PASS] off-mode per-answer rules
+  (info) accounted for: 1 (scored=1 coding=0) of 1 clips played
+
+PASS overall (mode=off)
+SEGMENT off: PASS (exit 0)
+--- segment refuse ---
+command: node C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\check-smoke-hedge.mjs refuse 2026-09-26T13:00:00.000Z --debug-log C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-refuse.natively_debug.log --extra-log C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-refuse.child.log --segment-log C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-refuse.log
+check-smoke-hedge  mode=refuse  since=2026-09-26T13:00:00.000Z
+debug-log=C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-refuse.natively_debug.log (1 lines in window)  diag-log=undefined (0 lines in window)
+extra-log=C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-refuse.child.log
+segment-log=C:\Users\sotka\cal-runner\repo-fail\electron\test\golden\interview60.runs\smoke-hedge-refuse.log
+
+[PASS] startup line
+[PASS] no unhandled rejection / uncaught exception
+[PASS] startup refusal
+
+PASS overall (mode=refuse)
+SEGMENT refuse: PASS (exit 0)
+---
+OVERALL: FAIL  (forced=PASS, default=FAIL, off=PASS, refuse=PASS)

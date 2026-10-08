@@ -1,0 +1,67 @@
+
+ RUN  v2.1.9 C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/boundary-repair/sdd/t4-mirror5
+
+ ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts (8 tests | 1 failed) 29ms
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > an empty FINAL on a non-English or multi connection is harmless: F2 is emitted as received, no error is logged 9ms
+     → expected "error" to not be called at all, but actually been called 2 times
+
+Received: 
+
+  1st error call:
+
+    Array [
+      "[DeepgramStreaming] Parse error:",
+      [TypeError: Cannot read properties of null (reading 'clear')],
+    ]
+
+  2nd error call:
+
+    Array [
+      "[DeepgramStreaming] Parse error:",
+      [TypeError: Cannot read properties of null (reading 'clear')],
+    ]
+
+
+Number of calls: 2
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  22:41:54
+   Duration  2.10s (transform 131ms, setup 0ms, collect 159ms, tests 29ms, environment 1.31s, prepare 182ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > an empty FINAL on a non-English or multi connection is harmless: F2 is emitted as received, no error is logged
+AssertionError: expected "error" to not be called at all, but actually been called 2 times
+
+Received: 
+
+  1st error call:
+
+    Array [
+      "[DeepgramStreaming] Parse error:",
+      [TypeError: Cannot read properties of null (reading 'clear')],
+    ]
+
+  2nd error call:
+
+    Array [
+      "[DeepgramStreaming] Parse error:",
+      [TypeError: Cannot read properties of null (reading 'clear')],
+    ]
+
+
+Number of calls: 2
+
+ ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:198:32
+    196|                 expect(seen, language).toEqual(unchanged);
+    197|             }
+    198|             expect(errors).not.toHaveBeenCalled();
+       |                                ^
+    199|             expect(repairs()).toEqual([]);
+    200|         });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

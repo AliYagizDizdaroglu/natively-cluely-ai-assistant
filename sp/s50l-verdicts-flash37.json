@@ -1,0 +1,14 @@
+{
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic all correct (9,500 churners, 2,850 TPs, 57% precision, 30% recall) but the 57-versus-60 gap is waved away as rounding across invented monthly cohorts."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Nails the real trap: filters inside the LEFT JOIN condition, ingestion cutoff included, and counting a column so zero-call customers return zero."
+  }
+}

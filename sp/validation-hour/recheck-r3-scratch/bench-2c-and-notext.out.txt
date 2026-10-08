@@ -1,0 +1,17 @@
+bench cue     interview60.answers.gemini-3.5-flash-lite_cues-r1.json: records 39, answered 38, thoughts coverage 38/38, thoughts p50 954 p90 1277, ttft p50 4052; holes []; no-text [S2Q06F(MALFORMED_RESPONSE, thoughts 785)]; empty prose with text []
+bench cue     interview60.answers.gemini-3.5-flash-lite_cues-r2.json: records 39, answered 39, thoughts coverage 39/39, thoughts p50 983 p90 1268, ttft p50 4048; holes []; no-text []; empty prose with text []
+bench cue     interview60.answers.gemini-3.5-flash-lite_cues-r3.json: records 39, answered 39, thoughts coverage 39/39, thoughts p50 963 p90 1309, ttft p50 3852; holes []; no-text []; empty prose with text []
+s50m control  interview60.answers.gemini-3.5-flash-lite_captured-high.json: records 39, answered 39, thoughts coverage 39/39, thoughts p50 911 p90 1206, ttft p50 3858; holes []; no-text []; empty prose with text []
+s50m control  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json: records 39, answered 38, thoughts coverage 38/38, thoughts p50 892 p90 1062, ttft p50 3733; holes []; no-text []; empty prose with text [S2Q06(rawLen 649)]
+s50m control  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json: records 39, answered 39, thoughts coverage 39/39, thoughts p50 899 p90 1095, ttft p50 3860; holes []; no-text []; empty prose with text []
+2c on the bench: cue pooled median 955 (n 116) - control pooled median 900 (n 116) = 55 tokens (threshold +150); p90 1268 - 1140 = 128; coverage 100.0% / 100.0%
+   (reported) ttft pooled median cue 4006 - control 3858 = 148 ms (control ran 2026-09-22; not a known case)
+
+scan: 206 answers files, 5424 records without transientError; no-text (rawLen 0) 5; empty prose with text 4
+  by prompt kind (from the records' checks keys): cue-rule prompts 117 records, 1 no-text; no-cue prompts 5307 records, 4 no-text; no checks recorded 0
+  finish reasons of no-text records: {"null":1,"length":3,"MALFORMED_RESPONSE":1}
+  no-text: electron/test/golden/interview60.runs/2026-09-07T08-14-12-after8/interview60.answers.gemma-4-31b-it.json [no-cue, not Gemini]: M27(null)
+  no-text: electron/test/golden/interview60.runs/2026-09-08T08-44-56-after9/interview60.answers.openai_gpt-oss-120b.json [no-cue, not Gemini]: L02(length)
+  no-text: electron/test/golden/interview60.runs/2026-09-11T08-22-32-s50b/interview60.answers.openai_gpt-oss-120b.json [no-cue, not Gemini]: S1Q07(length)
+  no-text: electron/test/golden/interview60.runs/2026-09-14T08-22-28-s50e/interview60.answers.openai_gpt-oss-120b.json [no-cue, not Gemini]: S1Q07(length)
+  no-text: .claude/worktrees/whole-turn/electron/test/golden/interview60.answers.gemini-3.5-flash-lite_cues-r1.json [cue]: S2Q06F(MALFORMED_RESPONSE)

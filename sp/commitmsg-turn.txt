@@ -1,0 +1,43 @@
+fix(turn): a wordless final discounts the voice blip, so noise after an answer cannot swallow the next question
+
+Symptom (smoke 2026-09-13 21:50 UTC, four clips 14 s apart): the first
+question was answered; the next three each came out as `dispatch: supersede`
+carrying the previous question's text joined with the new one — 1 answer and
+3 supersedes for 4 distinct questions. The `finals=` count on the turn lines
+grew 8 -> 12 -> 19 -> 24: the first turn never closed.
+
+Root cause. After a dispatch, the continuation close waits for 8 s with no VAD
+off-transition. In the gap after the first answer the desktop loopback carried
+energy that was not speech (vad=true at 21:50:46 and 21:50:48 while nothing was
+playing); each blip's off-transition restarted the 8 s clock, the next question
+started before it expired, and its finals were appended to the answered turn
+as a continuation. Deepgram had finalized every blip EMPTY (is_final=true,
+text=""), but DeepgramStreamingSTT dropped empty finals before anyone saw them,
+so the machine never learned the "speech" it was waiting on had no words.
+
+Ruled out: Deepgram's speech-started events (they only log, never feed the
+turn); the microphone (all three VAD feeds are systemAudioCapture); empty
+finals reaching the turn (dropped upstream, and no supersede fired in the gap).
+Why replay never caught it: fixture voice windows come from the clip WAVs,
+whose floor is digital silence — loopback noise between clips does not exist
+there. The 60-180 s flight gaps are not the discriminator either; recurring
+noise would hold the turn open at any gap length. Meeting audio in a real
+interview (join chimes, other participants, the interviewer's keyboard) is
+exactly this shape.
+
+Fix: DeepgramStreamingSTT emits `wordless-final` for an empty is_final; main.ts
+feeds it to the turn; interviewerTurn.wordlessFinal() puts the last voice stop
+back on the dispatch when the turn is answered, nothing is pending and the
+voice is off, so the close runs from the dispatch again. A wordless final
+while the voice is on, on plain silence, or before a dispatch changes nothing.
+Trade-off named in the code: an empty final closed between a REAL resumption's
+off-transition and its worded final, more than 8 s after the dispatch, yields
+a second answer instead of a replacement — not seen in any golden run.
+
+Tests: three machine cases (noise blips -> close -> the next question's own
+dispatch; a wordless final mid-speech still supersedes; on silence it is a
+no-op) and the Deepgram emit; watched fail first, and the blip test fails
+again with the method neutered. Replay unchanged: 116/116 once, 0 supersedes.
+tsc at the 6-error baseline.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

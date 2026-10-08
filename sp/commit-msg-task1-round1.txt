@@ -1,0 +1,7 @@
+fix(stt): reset the socket summary clock in stop()
+
+A replaced socket's close is now ignored, so stop() must clear sockOpenedAt
+itself; otherwise a next socket that fails before opening prints the replaced
+socket's summary with an inflated lifetime.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

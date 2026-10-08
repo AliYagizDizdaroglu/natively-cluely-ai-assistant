@@ -1,0 +1,12 @@
+LOG natively_debug.log e30390c37f81ee3a8e1826939b254a93d61e8ee354e3d98e66fcc2e5f77aad4e
+ARMING sha256/12 d3c85a46dca4 head 56bda9e
+window 2026-10-01T02:03:07.554Z 2026-10-01T02:37:41.241Z
+in-app entries 20 ids 20
+in-app joined to pairs 0 unjoined 20 (pairs skipped by --no-pairs)
+cue lines in window 20 outside window 2
+full lines in window 20 outside window 2
+full lines exempt (probe) 0
+empties 0
+cueBlocks present 20 = non-empty entries 20 + non-empty superseded 0 + non-empty probe lines 0: OK
+twins SKIPPED (--no-twins)
+EXPORT COMPLETE

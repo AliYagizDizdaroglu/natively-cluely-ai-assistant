@@ -1,0 +1,49 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant[39m
+
+[90mstderr[2m | electron/llm/verbalStreamFilter.test.ts[2m > [22m[2mfilterCodeFences — the app suppresses fenced blocks, and so must the arms[2m > [22m[2msuppresses a fenced block and keeps the prose around it
+[22m[39m[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+[90mstderr[2m | electron/llm/verbalStreamFilter.test.ts[2m > [22m[2mfilterCodeFences — the app suppresses fenced blocks, and so must the arms[2m > [22m[2msuppresses it when the text arrives one character at a time
+[22m[39m[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+ [31m❯[39m electron/llm/verbalStreamFilter.test.ts [2m([22m[2m145 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[90m 102[2mms[22m[39m
+[31m   [31m×[31m stripSpokenNotation — formulas that start with a number are not currency[2m > [22mis identical for every chunk size on a typeset fraction, a bare \frac, money and a mix (2026-09-30)[90m 18[2mms[22m[31m[39m
+[31m     → expected [ …(8) ] to deeply equal [][39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m electron/llm/verbalStreamFilter.test.ts[2m > [22mstripSpokenNotation — formulas that start with a number are not currency[2m > [22mis identical for every chunk size on a typeset fraction, a bare \frac, money and a mix (2026-09-30)
+[31m[1mAssertionError[22m: expected [ …(8) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Array [][39m
+[31m+ Array [[39m
+[31m+   "\"About $\\\\frac{3000}{9500}$ of it.\" at 1 gave \"About $3000 over 9500 of it.\"",[39m
+[31m+   "\"About $\\\\frac{3000}{9500}$ of it.\" at 2 gave \"About $3000 over 9500 of it.\"",[39m
+[31m+   "\"\\\\frac{a}{b}\" at 1 gave \"frac{a}{b}\"",[39m
+[31m+   "\"\\\\frac{a}{b}\" at 2 gave \"frac{a}{b}\"",[39m
+[31m+   "\"\\\\frac{a}{b}\" at 3 gave \"frac{a}{b}\"",[39m
+[31m+   "\"About $\\\\frac{3000}{9500}$. That is $100,000$ a year, paid US$120k, so \\\\frac{a}{b} grows as $x^2$ at about $120k a year.\" at 1 gave \"About $3000 over 9500. That is 100,000 a year, paid US120k, so frac{a}{b} grows as x^2 at about $120k a year.\"",[39m
+[31m+   "\"About $\\\\frac{3000}{9500}$. That is $100,000$ a year, paid US$120k, so \\\\frac{a}{b} grows as $x^2$ at about $120k a year.\" at 2 gave \"About $3000 over 9500. That is 100,000 a year, paid US120k, so frac{a}{b} grows as x^2 at about $120k a year.\"",[39m
+[31m+   "\"About $\\\\frac{3000}{9500}$. That is $100,000$ a year, paid US$120k, so \\\\frac{a}{b} grows as $x^2$ at about $120k a year.\" at 3 gave \"About $3000 over 9500. That is 100,000 a year, paid US120k, so frac{a}{b} grows as x^2 at about $120k a year.\"",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m electron/llm/verbalStreamFilter.test.ts:[2m239:28[22m[39m
+    [90m237| [39m            }
+    [90m238| [39m        }
+    [90m239| [39m        [34mexpect[39m(mismatches)[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m   | [39m                           [31m^[39m
+    [90m240| [39m    })[33m;[39m
+    [90m241| [39m    [34mit[39m([32m'leaves a "$$" run after a pair split as it was: the closing-do[39m…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m144 passed[39m[22m[90m (145)[39m
+[2m   Start at [22m 18:45:40
+[2m   Duration [22m 2.85s[2m (transform 212ms, setup 0ms, collect 233ms, tests 102ms, environment 1.49s, prepare 211ms)[22m
+

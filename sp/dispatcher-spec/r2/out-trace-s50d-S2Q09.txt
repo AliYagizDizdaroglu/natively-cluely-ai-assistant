@@ -1,0 +1,30 @@
+===== s50d S2Q09 [fix]
+2026-09-13T08-22-36-s50d [fix jitter=50]: 39/40 once; doubles []; never [S2Q09]; drops 0; absorbed 1 (whisper 0); subs 0; unmatched 0; reorders 2; supersedes 0
+trace S2Q09: {"n":0,"lat":null,"budget":1700,"path":null,"finished":true,"fromLive":null,"finals":null,"cov":"0.00","closes":["no-verdict"],"live":[],"logFirst":null,"logGate":null,"vadDev":11,"blips":0,"voiceOff":"08:17:06.168"}
+  08:16:49.168 voice ON
+  08:16:50.928 voice OFF
+  08:16:51.368 voice ON
+  08:16:52.141 final "Place the RAD components on Azure,"
+  08:16:53.788 voice OFF
+  08:16:54.208 voice ON
+  08:16:55.248 voice OFF
+  08:16:55.708 voice ON
+  08:16:56.386 final "Choose Azure services for document storage, ingestion events,"
+  08:16:56.468 voice OFF
+  08:16:56.888 voice ON
+  08:16:57.428 voice OFF
+  08:16:57.848 voice ON
+  08:16:58.308 voice OFF
+  08:16:58.728 voice ON
+  08:16:59.848 voice OFF
+  08:17:00.268 voice ON
+  08:17:00.713 final "work queues, workers, search,"
+  08:17:01.148 voice OFF
+  08:17:01.588 voice ON
+  08:17:03.724 final "LLM access, and telemetry, and explain where managed"
+  08:17:06.168 voice OFF
+  08:17:06.861 final "services help and where a custom component may be justified."
+  08:17:07.368 classify finals=5
+  08:17:15.434 close no-verdict
+  08:17:07.434 <verdict unknown> {"kind":"declined","verdict":"unknown","again":false}
+

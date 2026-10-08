@@ -1,0 +1,37 @@
+OK   module: 10743 B sha256 d5ba4da0650e7531 (expected 10743 B d5ba4da0); CR false; BOM false
+OK   test: 13947 B sha256 6956aea35dfef746 (expected 13947 B 6956aea3); CR false; BOM false
+calibration: counter finds U+0301 in a built "re"+U+0301 buffer: 1 (must be 1); MARK bytes cc81
+test: literal escape sequences 2; U+0301 (CC 81) 0; any combining mark 0; NFC true
+module: literal escape sequences 0; U+0301 (CC 81) 0; any combining mark 0; NFC true
+  test.ts:187 bytes around the first escape: 72655c75303330317375 (" re\u0301sume\u0301 a")
+transpiled final: 3108 B sha256 32482b5c024dc72c; identical to my round-1 transpile (3108 B): true
+check-v4.mjs --module (final): exit 0; PASS 30; FAIL 0; probe lines 23
+  PASS  data: every run log + both seam recordings — candidate == v3 event for event: repairs non-holdout 25 / holdout 4 / seam 6 (expected 25 / 4 / 6), 0 of 13892 events differ
+  PASS  data: the same with the app's own utterance-end log lines applied as clear() (what the wiring does) — candidate with the logs' utterance-end lines as clear(): repairs non-holdout 25 / holdout 4 / seam 6 (expected 25 / 4 / 6), 0 of 13892 events differ
+  PASS  data: candidate == rule-v4 event for event under the v4 feed — candidate vs rule-v4, both under the v4 feed: repairs non-holdout 25 / holdout 4 / seam 6, 0 of 13892 events differ; with log utterance-ends: 0 differ
+  EQUIVALENT: final-deepgramBoundaryRepair.js == rule-v4.mjs on every recorded event, all 45 fixtures and all 23 probes
+  ALL CHECKS PASS
+[final (MAIN as is)] Tests 68 passed (68)
+[v3 module (t3-orig), the RED state] Tests 10 failed | 58 passed (68)
+   failed: negative #28 with the interim running on: a digit token at the cut ("ninety two percent" -> "92%.") is no cut
+   failed: "twenty five" -> "25": the same shape (v3 restored "five")
+   failed: "all right" -> "Alright": a final token longer than the interim's is a merge, not a re-spelling (v3 restored "right")
+   failed: "break" -> "breaks": a longer final token is refused even when it is only an inflection, so a word lost right after it stays lost (v3 restored "even")
+   failed: a re-spelling keeps its first letter: "put" for "cut" is no cut ("cat" for "cut" still is — the edge above)
+   failed: an interim with a non-ASCII letter that splits the tokenisers ("İ") is no cut
+   failed: an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+   failed: clear() between F1 and F2 (the adapter's empty final / UtteranceEnd) forgets the cut
+   failed: clear() also forgets the latest interim: a final after a pause is not a cut of it
+   failed: speechFinal on F1 (Deepgram heard the utterance end there) leaves no cut; on F2 it does not stop the repair
+[digit rule dropped] Tests 1 failed | 67 passed (68); check-v4: NOT EQUIVALENT probe: digit rule pinned: "version two" -> "v2" shares its first lette
+   failed: "twenty five" -> "25": the same shape (v3 restored "five")
+   Expected: "last week, then rolled it back."
+   Received: "two last week, then rolled it back."
+[\p{L} only (\p{M} dropped)] Tests 1 failed | 67 passed (68); check-v4: EQUIVALENT (survives) 
+   failed: an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+   Expected: "and your last role."
+   Received: "re sume and your last role."
+[clear() keeps the latest interim] Tests 1 failed | 67 passed (68); check-v4: NOT EQUIVALENT probe: pause: clear() after an interim, before its final, forgets the 
+   failed: clear() also forgets the latest interim: a final after a pause is not a cut of it
+junction removed: true; MAIN's vitest present: true
+mirror tree deleted: true; MAIN files unchanged: true

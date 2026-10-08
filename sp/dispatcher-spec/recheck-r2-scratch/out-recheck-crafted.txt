@@ -1,0 +1,27 @@
+== X1 late inlining rescue after the declined window: claim -> absorbed; the follow-up answered: false (dispatches 1, closes [continuation-expired,not-a-question])
+  16.5s whisper evidence -> {"kind":"marked"} q="Explain your rag pipeline precisely walk"
+  17.5s dispatch finals=1 path=gate "Explain your rag pipeline precisely walk through ingestion, "
+  25.5s close continuation-expired
+  82.2s classify finals=2 "Which of those stages can cause a correct source document to"
+  82.7s verdict not-a-question (finals=2) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  90.7s close not-a-question
+  judge with no open finals: rem 0.63 echo=true
+  92.0s live evidence -> {"kind":"absorbed","source":"live","of":"Explain your rag pipeline precisely walk through ingestion, parsing, chunking, embedding, retrieval, re ranking, context assembly q="Of the RAG pipeline stages (ingestion, p"
+
+== X2 S-6 texts, the re-armed classify first and "no": chip -> ignored unscorable; the question answered: false; closes [not-a-question]
+  23.7s classify finals=1 "Okay, that makes sense, thanks for that."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  28.7s classify finals=2 REARMED "Okay, that makes sense, thanks for that. So why would you us"
+  (re-armed classify picked: finals=2 rearmed=true)
+  29.3s verdict not-a-question (finals=2) -> {"kind":"declined","verdict":"not-a-question","again":true}
+  29.6s whisper evidence -> {"kind":"ignored","why":"unscorable","score":0.375} q="Why would you use Kafka here?"
+  37.3s close not-a-question
+
+== X3 S-6 with the timers drained between the final and the chip: re-armed classifies before the chip: 1; chip -> replaced-declined; dispatches 1 at 29.6s "So why would you use Kafka here?"
+  23.7s classify finals=1 "Okay, that makes sense, thanks for that."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  28.7s classify finals=2 REARMED "Okay, that makes sense, thanks for that. So why would you us"
+  29.6s whisper evidence -> {"kind":"replaced-declined","by":"whisper","closed":"not-a-question","score":0.375,"moved":1,"unscorable":true} q="Why would you use Kafka here?"
+  29.6s dispatch finals=1 path=gate "So why would you use Kafka here?"
+  37.6s close continuation-expired
+

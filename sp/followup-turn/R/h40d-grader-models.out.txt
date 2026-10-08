@@ -1,0 +1,4 @@
+# command: node R/h40d-grader-models.mjs --session 9c5886c7-... probe=a9d35e8deacac3eff top=session:dea53624-07b8-4126-a43f-b9c49064cfff
+probe: {"claude-opus-5-5":1} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a9d35e8deacac3eff.jsonl)
+top: {"claude-opus-5-5":22} PINNED  (found by top-level session file: vely-cluely-ai-assistant/dea53624/top-level/dea53624-07b8-4126-a43f-b9c49064cfff.jsonl)
+ALL GRADERS claude-opus-5-5 (2 of 2 agents)

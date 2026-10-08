@@ -1,0 +1,38 @@
+// Throwaway: writes R/audit-graders.point14.out.txt = the frozen identifier set, the calibration lines, the real-command result and the residual probes of the
+// point-14 work-in-progress module (work/p14wip/R/audit-graders.mjs). Counts, tokens and shell commands only; no transcript content other than the validation code.
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const FT = path.dirname(HERE);
+const wip = path.join(HERE, 'p14wip', 'R', 'audit-graders.mjs');
+const M = await import(pathToFileURL(wip).href);
+const node = (args, env = {}) => { const r = spawnSync(process.execPath, args, { encoding: 'utf8', env: { ...process.env, ...env } }); return `${r.stdout}${r.stderr}`.trimEnd(); };
+const out = [];
+out.push('# A2 point 14 (code allowlist) -- STOPPED, NOT MERGED INTO R/audit-graders.mjs');
+out.push('# Implemented to the brief + the controller rulings in work/p14wip/R/audit-graders.mjs (R/audit-graders.mjs stays at point 13). Instruction: if any of the 8 real s50l');
+out.push('# commands or the pilot command is FLAGGED by the allowlist, STOP and report the token. 5 of the 8 are FLAGGED: see "real commands" below.');
+out.push('');
+out.push(`## frozen identifier set (${M.CODE_IDENTS.size}): declared vocabulary + the identifiers of the 8 real s50l commands and the pilot's (sha12 b271cca9e127)`);
+out.push([...M.CODE_IDENTS].sort().join(' '));
+out.push('# of which only these come from the real commands (not in the brief\'s vocabulary): a b c correctness f items key ks on_topic p s');
+out.push('');
+out.push('## calibration: the brief\'s FLAGGED controls, the controller rulings and the clean positives  (node work/p14-cases.mjs <module>, REASONS=1: a FLAGGED case must be flagged for its own reason)');
+out.push('# against the CURRENT audit (point 13, R/audit-graders.mjs) -- the RED run: the bypass cases read CLEAN');
+out.push(node([path.join(HERE, 'p14-cases.mjs'), path.join(FT, 'R', 'audit-graders.mjs')], { REASONS: '' }).split('\n').filter((l) => /^BAD|^P14/.test(l)).join('\n'));
+out.push('# against the point-14 module (work/p14wip) -- the GREEN run');
+out.push(node([path.join(HERE, 'p14-cases.mjs'), wip], { REASONS: '1' }));
+out.push('');
+out.push('## real commands under the point-14 module (8 real design-2 s50l graders, then the pilot): FLAGGED lines name the clause');
+out.push(node([path.join(HERE, 'p14-real.mjs'), wip]));
+out.push('');
+out.push('## which token: the 5 flagged commands each index with a MEMBER EXPRESSION or a SUM, not with the brief\'s "numeric literal / single allowlisted identifier":');
+out.push('##   v[i.key]   in  p.items.every(i=>v[i.key])      blind-1.g1, blind-1.g2, blind-2.g2, blind-3.g2, blind-4.g1');
+out.push('##   c[f+x[f]]  in  c[f+x[f]]=(c[f+x[f]]||0)+1      blind-1.g2');
+out.push('## clean under the brief\'s rule: blind-2.g1, blind-3.g1, blind-4.g2 (Object.values / process.argv[1] / require(process.argv[1])) and the pilot.');
+out.push('');
+out.push('## residual in the brief\'s own computed-access rule (probed, NOT executed): an index identifier holding a string built at run time reaches Function');
+out.push(node([path.join(HERE, 'p14-residual.mjs')]));
+fs.writeFileSync(path.join(FT, 'R', 'audit-graders.point14.out.txt'), `${out.join('\n')}\n`);
+console.log('wrote R/audit-graders.point14.out.txt');

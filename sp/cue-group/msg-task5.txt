@@ -1,0 +1,9 @@
+fix(golden): chains strips the cue block like the app
+
+interview60.chains.mjs sends the hands-free prompt but filtered without
+stripCueBlock, so on a cue build the raw block would enter each stored answer,
+the anchor-hit proxy and the ASSISTANT (PREVIOUS SUGGESTION) history the app
+never builds. One import, one wrap, innermost as WhatToAnswerLLM places it;
+pinned by a source-text test because the module runs its chains at load.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

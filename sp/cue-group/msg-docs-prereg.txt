@@ -1,0 +1,14 @@
+docs(passes): the cue re-smoke's pre-registration, the 05:00 run's record, the bench and probe rules
+
+PREREGISTER-cuesmoke.md is committed before the task is registered: the PASS
+rule written 11:19, amended 15:26 before the v2 build existed (a block-only
+answer is a cue failure; two knowledge short-circuits and a non-cue health
+failure are named; the first-token sentence is corrected), and what flies
+(e3fae5f, built 15:44:09). The 05:00 v1 run gets its tool-generated record:
+NOT CLEAN, the "before" of this delta. Under today's 3x5 literal its cue row
+reads 8 of 20 well-formed, and "0 trimmed" only because that build had no cap.
+PREREGISTER-cuebench.md and PREREGISTER-cueprobe.md are committed before any
+bench or probe call. Spike 6: the rule file with its times-only notes as
+corrected, and a result addendum (0 block-only answers of 216).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

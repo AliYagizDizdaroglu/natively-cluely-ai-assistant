@@ -1,0 +1,6 @@
+item  | 3.5-lite HIGH (gA, gB c/o/d) acc ttft words | 3.8 Flash (gA, gB) acc ttft words
+E06   | 0/2/2 0/2/2 acc 0/2 wrong 2 2855 ms 56w | 2/2/2 2/2/2 acc 2/2 5520 ms 55w
+H09F  | 2/2/2 2/2/2 acc 2/2 2558 ms 58w | 1/2/2 1/2/2 acc 0/2 3965 ms 53w
+H12   | 2/2/2 2/2/2 acc 2/2 3012 ms 65w | 2/2/1 2/2/1 acc 2/2 5365 ms 121w
+H19   | 1/2/1 1/2/1 acc 0/2 3331 ms 105w | 2/2/2 2/2/2 acc 2/2 7171 ms 59w
+H20F  | 1/2/2 1/2/2 acc 0/2 2808 ms 47w | 2/2/2 2/2/2 acc 2/2 3705 ms 52w

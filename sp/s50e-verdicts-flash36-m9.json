@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic all correct, but calling 57 percent consistent with 60 within rounding overstates it; the gap is a real discrepancy."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Left join with filters in the join, thirty-day window, ingested-at cutoff, count of event id preserving zeros. Spoken prose, no code."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Hybrid index, Postgres offsets, upserts and soft deletes, payload pre-filtering, judge plus citation checks. Around 115 words with em-dashes; trim."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure mapping for every component and a sensible custom-worker justification. Roughly 120 words over two paragraphs, longer than a spoken answer."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Deterministic chunk IDs from document hash, upserts, conditional Cosmos status, then lock completion. Directly answers repeatability, natural length."
+  }
+}

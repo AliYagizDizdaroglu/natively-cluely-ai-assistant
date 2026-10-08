@@ -1,0 +1,2 @@
+probe: {"claude-opus-5-5":1} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a9d35e8deacac3eff.jsonl)
+ALL GRADERS claude-opus-5-5 (1 of 1 agents)

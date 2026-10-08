@@ -1,0 +1,23 @@
+ANSWER-ONLY PASS  model=gemini-3.1-flash-lite  variant=captured-g-low (prompt suffix 0 chars)  thinking=LOW  prompts=captured (the app's own system + user turn, replayed)  4 spoken questions
+
+  S1Q04F  52w  ttft 13960ms  total 14183ms  thoughts 1072  ok
+  S1Q06F  60w  ttft  8160ms  total  8432ms  thoughts  959  ok
+  S2Q05F  81w  ttft  3929ms  total  4261ms  thoughts  846  FAIL budget
+  S2Q08F  84w  ttft  3576ms  total  3822ms  thoughts  784  FAIL budget
+
+  answered 4/4   transient 0
+  TTFT   p50 8160ms  p90 13960ms  max 13960ms
+  TOTAL  p50 8432ms  p90 14183ms  max 14183ms
+  words  median 81  max 84  over 70w: 2/4
+  nonempty           4/4
+  sentinel_clean     4/4
+  budget             2/4
+  offers_wellformed  4/4
+  no_notation        4/4
+  ends_cleanly       4/4
+  cues_present       4/4
+  cues_wellformed    4/4
+  cues_grounded      4/4
+  cues_clean         4/4
+
+  wrote C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.answers.gemini-3.1-flash-lite_captured-g-low.json

@@ -1,0 +1,15 @@
+run-review            17 lines  34.5 s
+build-fx               5 lines  1.2 s
+peritem-s50c          42 lines  0.1 s
+timer-lateness        13 lines  0.1 s
+pairing                5 lines  0.1 s
+crafted-r2           184 lines  0.2 s
+calib-r2-j50          85 lines  2.9 s
+calib-r2-j0           85 lines  2.9 s
+rows-r2              145 lines  12.3 s
+legacy-r2              5 lines  0.2 s
+quote-metrics         20 lines  0.4 s
+echo-pairs            41 lines  0.3 s
+mark-vs-finals        23 lines  0.1 s
+absorbed-table        24 lines  2.7 s
+traces                18 lines  5.7 s

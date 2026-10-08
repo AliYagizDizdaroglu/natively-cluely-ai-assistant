@@ -1,0 +1,96 @@
+CAUGHT  P9a | pre-run-r40.mjs: "add('gsitting.log: no STEP without its end', o.l..." -> "add('gsitting.log: no STEP wit..." | expected to fail: G1 | actually failing: G1,G10,G1-R
+CAUGHT  P9b | pre-run-r40.mjs: "local)`, inTonight," -> "local)`, true," | expected to fail: D1,D4,D6,D7 | actually failing: D1,D4,D6,D7,D8,D11,X2-L,X2-R
+CAUGHT  P9b2 | pre-run-r40.mjs: "inTonight || now >= GATE_START" -> "true" | expected to fail: GR10,GR10b | actually failing: GR10,GR10b
+CAUGHT  P9d | pre-run-r40.mjs: "rl.tonightCount === 1" -> "rl.tonightCount >= 0" | expected to fail: T1,T4 | actually failing: T1,T1b,T4,T5,T6,T10,T12
+CAUGHT  P9d2 | pre-run-r40.mjs: "rl.tonightNear === 0" -> "true" | expected to fail: T7 | actually failing: T7
+CAUGHT  P9d3 | pre-run-r40.mjs: "l.trim().startsWith('TONIGHT ') && l.trim() !== ..." -> "l.includes('TONIGHT') && l.tri..." | expected to fail: T9,T11 | actually failing: B-L,B-R,B-G,D2,D3,D10,T2,T3,T8,T9,T11,T13,T14,K1,K2,K3,K4,K5,FT2,FT6,FT7,G1b,S9,S10,H0,X5,X8
+CAUGHT  P9e | pre-run-r40.mjs: "ac.R && ac.L, " -> "true, " | expected to fail: GR2,GR3 | actually failing: GR2,GR3,GR9,GR13,GR13b
+CAUGHT  P9g | pre-run-r40.mjs: "cap ?? Infinity);" -> "Infinity);" | expected to fail: FT4,D5 | actually failing: D5,D9,GR1,GR4,FT4,FT7,X6,X7
+CAUGHT  P9h | pre-run-r40.mjs: "now.getUTCDate(), 7, 0, 0" -> "now.getUTCDate(), 8, 0, 0" | expected to fail: D2 | actually failing: B-L,D2,D10,T2,T3,T9,T11,T13,K1,K2,K3,K4,K5,FT2,FT6,FT7,G1b,S9,H0,X5
+CAUGHT  P9i | pre-run-r40.mjs: "isNode(p) && p.pid !== own &&" -> "isNode(p) &&" | expected to fail: S9 | actually failing: S9
+CAUGHT  P9i2 | pre-run-r40.mjs: "const pieces = ['run-r', 'lite-l', 'launch-grade..." -> "const pieces = ['run-r'];" | expected to fail: S1,S4,S6,S7 | actually failing: S1,S4,S6,S7,S8
+CAUGHT  P9k | pre-run-r40.mjs: "remainingL = (laterItems) => 290000" -> "remainingL = (laterItems) => 1..." | expected to fail: E1 | actually failing: E1,D9,X6
+CAUGHT  P9l | pre-run-r40.mjs: "gradeEstMs = (launchesLeft) => launchesLeft * 25" -> "gradeEstMs = (launchesLeft) =>..." | expected to fail: E2 | actually failing: E2,GR1,X7
+CAUGHT  P9m | pre-run-r40.mjs: "res.capPrime = TONIGHT_CAP;" -> "" | expected to fail: B-L,D2 | actually failing: B-L,D2,K2,K3,X5
+CAUGHT  P9n | pre-run-r40.mjs: "realMs: chainRealMs(secs)" -> "realMs: chainEstMs(secs)" | expected to fail: E3 | actually failing: E3
+CAUGHT  P9c | pre-run-r40.mjs: " || (isPs(p) && has(p, 'eq-gsitting'))" -> "" | expected to fail: G3b | actually failing: G3b
+CAUGHT  P9f | pre-run-r40.mjs: "Math.min(...all) - MIN30" -> "Math.min(...all)" | expected to fail: FT1,FT6 | actually failing: FT1,FT3,FT6
+CAUGHT  P9j | pre-run-r40.mjs: "if (stubs.length && !cal)" -> "if (false)" | expected to fail: X1 | actually failing: X1,X1b
+CAUGHT  P2a | run-r.mjs: "let g = await guardNow(`${chain.chain}#1`, est, ..." -> "let g = start;" | expected to fail: R10,R12 | actually failing: R1,R10,R12,R17,R15b,R23
+CAUGHT  P2b | run-r.mjs: "g = await guardNow(`${chain.chain}#2 (retry)`, e..." -> "g = start;" | expected to fail: R13 | actually failing: R1,R13
+CAUGHT  P2c | run-r.mjs: "health.abnormalAttempts >= 6" -> "health.abnormalAttempts >= 7" | expected to fail: R21 | actually failing: R20b,R21
+CAUGHT  P2d | run-r.mjs: "const renamed = !complete && NAME === 'router40-..." -> "const renamed = false;" | expected to fail: R23 | actually failing: R23
+CAUGHT  P2e | run-r.mjs: "if (CONNECT_MODEL !== MODEL) {" -> "if (false) {" | expected to fail: R9 | actually failing: R9
+CAUGHT  P2f | run-r.mjs: "if (set.length && !DRY)" -> "if (false)" | expected to fail: R25 | actually failing: R25
+CAUGHT  P2g | run-r.mjs: "if (!start.ok) {" -> "if (false) {" | expected to fail: R14,R15,R16 | actually failing: R14,R15,R16,R15c,R15d,R15e,R15f
+CAUGHT  P2h | run-r.mjs: "QUIET_AFTER_TURN_MS = 6000" -> "QUIET_AFTER_TURN_MS = 4000" | expected to fail: R1 | actually failing: R1
+CAUGHT  P2i | run-r.mjs: "[c.chain, remainingR(EST_ARR, i)]" -> "[c.chain, 0]" | expected to fail: R10,R15b | actually failing: R10,R15b,R15c
+CAUGHT  P3a | read-r.mjs: "else if (toks.slice(-3).includes('hard')) why = ..." -> "" | expected to fail: P3a-8 | actually failing: P3a-8,P3a-flip
+CAUGHT  P3b | read-r.mjs: "rec.turns.some((t, i) => i > 0 &&" -> "rec.turns.some((t, i) => i > 5..." | expected to fail: P3a-9 | actually failing: P3a-9,P3a-flip
+CAUGHT  P3c | read-r.mjs: "if (w > REGISTERED[variant].tooLong)" -> "if (w >= REGISTERED[variant].t..." | expected to fail: P3a-13 | actually failing: P3a-13,P3a-flip,P3a-A
+CAUGHT  P3d | read-r.mjs: "if (rec.earlyWords >= 1)" -> "if (rec.earlyWords >= 99)" | expected to fail: P3a-20 | actually failing: P3a-20,P3a-flip
+CAUGHT  P3e | read-r.mjs: "else if (toks.slice(0, 12).includes('hard'))" -> "else if (toks.slice(0, 2).incl..." | expected to fail: P3a-5 | actually failing: P3a-5
+CAUGHT  P3f | read-r.mjs: "if (!rec.lastTurnTerminated) return" -> "if (false) return" | expected to fail: P3a-18,P3a-19 | actually failing: P3a-18,P3a-19,P3a-22,P3a-flip,P3c-L3
+CAUGHT  P4a | lite-l.mjs: "if (counterLines() >= cap)" -> "if (counterLines() > cap)" | expected to fail: P4b | actually failing: P4b,P4h,P4h2,P4r,P4k-2,P4m-3,P4t-1
+CAUGHT  P4b | lite-l.mjs: "Math.min(S.cap ?? Infinity, capArg, capPrime)" -> "Math.min(capArg, capPrime)" | expected to fail: P4h | actually failing: P4h
+CAUGHT  P4c | lite-l.mjs: "r.modelVersion == null || !r.modelVersion.starts..." -> "false" | expected to fail: P4i,P4i-2 | actually failing: P4i,P4i-2
+CAUGHT  P4d | lite-l.mjs: "MAX_ATTEMPTS = 3" -> "MAX_ATTEMPTS = 2" | expected to fail: P4c | actually failing: P4c,P4c-2,P4x-1
+CAUGHT  P4e | lite-l.mjs: "if (!g.ok) finish(3," -> "if (false) finish(3," | expected to fail: P4m-1,P4m-2 | actually failing: P4m-1,P4m-2,P4m-8
+CAUGHT  P4f | lite-l.mjs: "HOLE_STOP = 3" -> "HOLE_STOP = 99" | expected to fail: P4x-1 | actually failing: P4x-1
+CAUGHT  P4g | lite-l.mjs: "if (seg !== MODEL) refuse(2," -> "if (false) refuse(2," | expected to fail: P4f-2 | actually failing: P4f-2
+CAUGHT  P4h | lite-l.mjs: "if (flag('--model')) refuse(2," -> "if (false) refuse(2," | expected to fail: P4e | actually failing: P4e
+CAUGHT  P4i | lite-l.mjs: "if (S.records[id]) continue;" -> "" | expected to fail: P4r | actually failing: P4r
+CAUGHT  P4j | lite-l.mjs: "if (!takeLock()) refuse(" -> "if (false) refuse(" | expected to fail: P4k | actually failing: P4k,P4k-2
+CAUGHT  P4k | lite-l.mjs: "if (!DRY && !CAL && stubs.length) refuse(" -> "if (false) refuse(" | expected to fail: P4j,P4n | actually failing: P4j,P4n
+CAUGHT  P4l | lite-l.mjs: "const attemptTimeout = CAL && argOf(argv, '--att..." -> "const attemptTimeout = false &..." | expected to fail: P4m-4 | actually failing: P4m-4,P4m-5
+CAUGHT  P4m | r40-common.mjs: "THINKING_LEVEL = 'LOW'" -> "THINKING_LEVEL = 'HIGH'" | expected to fail: P4t-1,P4t-2,P4m-13 | actually failing: P4m-13,P4t-1,P4t-2
+CAUGHT  P4n | lite-l.mjs: "thinkingConfig: { thinkingLevel: THINKING_LEVEL ..." -> "thinkingConfig: { thinkingLeve..." | expected to fail: P4t-1 | actually failing: P4t-1
+CAUGHT  P4n2 | lite-l.mjs: "thinkingConfig: { thinkingLevel: THINKING_LEVEL ..." -> "};" | expected to fail: P4t-1 | actually failing: P4t-1
+CAUGHT  P4o | lite-l.mjs: "estMs: remainingL(later)," -> "estMs: 120000," | expected to fail: P4m-1 | actually failing: P4m-1,P4m-8
+CAUGHT  P4p | lite-l.mjs: "+ clockSteps * clockStepMs" -> "" | expected to fail: P4m-8 | actually failing: P4m-8
+CAUGHT  P4q | lite-l.mjs: "outcome = { ok: { thinking: THINKING_LEVEL, " -> "outcome = { ok: { " | expected to fail: P4m-13 | actually failing: P4m-13
+CAUGHT  P5a | grade/build-blind-r40.mjs: "if (R_NAME !== 'router40-R') refuse(" -> "if (false) refuse(" | expected to fail: P5-11,P5-12 | actually failing: P5-11,P5-12
+CAUGHT  P5b | grade/build-blind-r40.mjs: "shuffle(flat, rng(SEED));" -> "" | expected to fail: P5-9 | actually failing: P5-9
+CAUGHT  P5c | grade/build-blind-r40.mjs: "const sizes = [12, 12, 12, 11];" -> "const sizes = [12, 12, 11, 12]..." | expected to fail: P5-3,P5-5 | actually failing: P5-3,P5-5
+CAUGHT  P5d | grade/build-blind-r40.mjs: "if (rRun.complete !== true) refuse(" -> "if (false) refuse(" | expected to fail: P5-14 | actually failing: P5-14
+CAUGHT  P6a | grade/launch-grader-r40.mjs: "out[idx[0] + 1] = PIN;" -> "out[idx[0] + 1] = 'opus';" | expected to fail: P6-1,P6-4 | actually failing: P6-1,P6-1b,P6-3b,P6-4,P6-5,P6-20b,P6-20d,P6-20e,P6-19,P6-11,P6-11b,P6-12,P6-13,P6-14b,P6-14
+CAUGHT  P6b | grade/launch-grader-r40.mjs: "if (!g.ok) refuse(3," -> "if (false) refuse(3," | expected to fail: P6-5b,P6-6,P6-15,P6-20,P6-20c | actually failing: P6-5b,P6-20,P6-20c,P6-15,P6-16,P6-16b,P6-17,P6-18,P6-6
+CAUGHT  P6c | grade/launch-grader-r40.mjs: "if (liveSlots) refuse(" -> "if (false) refuse(" | expected to fail: P6-3 | actually failing: P6-1,P6-3,P6-3b,P6-4,P6-5,P6-20b,P6-20d,P6-20e,P6-19,P6-11,P6-11b,P6-12,P6-13,P6-14b,P6-14
+CAUGHT  P6d | grade/launch-grader-r40.mjs: "if (fs.existsSync(cwd)) refuse(2," -> "if (false) refuse(2," | expected to fail: P6-2 | actually failing: P6-1,P6-2,P6-3b,P6-4,P6-5,P6-20b,P6-20d,P6-20e,P6-19,P6-11,P6-11b,P6-12,P6-13,P6-14b,P6-14
+CAUGHT  P6e | grade/launch-grader-r40.mjs: "if (!DRY && !CAL && stubs.length) refuse(" -> "if (false) refuse(" | expected to fail: P6-7 | actually failing: P6-1,P6-3b,P6-4,P6-5,P6-20b,P6-20d,P6-20e,P6-19,P6-7,P6-7b,P6-11,P6-11b,P6-12,P6-13,P6-14b,P6-14
+CAUGHT  P6f | grade/launch-grader-r40.mjs: "if (CAL && !process.env.TURN_FAKE_CLAUDE) refuse..." -> "if (false) refuse(" | expected to fail: P6-8 | actually failing: P6-1,P6-3b,P6-4,P6-5,P6-20b,P6-20d,P6-20e,P6-19,P6-8,P6-11,P6-11b,P6-12,P6-13,P6-14b,P6-14
+CAUGHT  P6g | grade/launch-grader-r40.mjs: "const launchesLeft = tonight ? Math.max(1, 10 - ..." -> "const launchesLeft = 1;" | expected to fail: P6-15 | actually failing: P6-1,P6-3b,P6-4,P6-5,P6-20b,P6-20d,P6-20e,P6-15,P6-19,P6-11,P6-11b,P6-12,P6-13,P6-14b,P6-14
+CAUGHT  P7a | grade/audit-r40.mjs: "if (/keyhold|key\.json/i.test(text))" -> "if (false)" | expected to fail: P7-8 | actually failing: P7-4,P7-8,P7-14
+CAUGHT  P7b | grade/audit-r40.mjs: "if (!ALLOWED_TOOLS.has(c.name)) flags.push(" -> "if (false) flags.push(" | expected to fail: P7-1,P7-5 | actually failing: P7-1,P7-1b,P7-5,P7-6,P7-17,P7-18
+CAUGHT  P7c | grade/audit-r40.mjs: "return { pinned: r.status === 0," -> "return { pinned: true," | expected to fail: P7-11 | actually failing: P7-11
+CAUGHT  P8a | grade/score-r40.mjs: "afAnswered >= 1 || wrongR > wrongL)" -> "afAnswered >= 1 || wrongR > wr..." | expected to fail: S-3 | actually failing: S-3,S-3b,S-E2E-2
+CAUGHT  P8b | grade/score-r40.mjs: "lead < 1000" -> "lead <= 1000" | expected to fail: S-6b | actually failing: S-6b
+CAUGHT  P8c | grade/score-r40.mjs: "accR <= accL - 3" -> "accR < accL - 3" | expected to fail: S-4 | actually failing: S-4,S-9c,S-10b
+CAUGHT  P8d | grade/score-r40.mjs: "easyCaught < 10" -> "easyCaught < 9" | expected to fail: S-5 | actually failing: S-5
+CAUGHT  P8e | grade/score-r40.mjs: "M >= 3" -> "M >= 4" | expected to fail: S-7 | actually failing: S-7
+CAUGHT  P8f | grade/score-r40.mjs: "g1.correctness === 2 && g.g1.on_topic === 2 && g..." -> "g1.correctness === 2 && g.g1.o..." | expected to fail: S-def-1 | actually failing: S-def-1
+CAUGHT  P8g | grade/score-r40.mjs: "(g.g1.correctness === 0 || g.g2.correctness === ..." -> "(g.g1.correctness === 0 && g.g..." | expected to fail: S-def-2,S-3b | actually failing: S-def-2,S-3b,S-E2E-2
+CAUGHT  P9o | pre-run-r40.mjs: "inTonight || now >= GATE_START" -> "inTonight || now > GATE_START" | expected to fail: GR11 | actually failing: GR11
+CAUGHT  P9p | r40-common.mjs: "new Date(2026, 9, 6, 4, 15, 0)" -> "new Date(2026, 9, 6, 10, 0, 0)" | expected to fail: GR5,GR11,GR12 | actually failing: GR5,GR11,GR12,G10b
+CAUGHT  P6h | r40-common.mjs: "new Date(2026, 9, 6, 4, 15, 0)" -> "new Date(2026, 9, 6, 10, 0, 0)" | expected to fail: P6-5,P6-20b,P6-20d,P6-20e | actually failing: P6-1,P6-3b,P6-4,P6-5,P6-20b,P6-20d,P6-20e,P6-19,P6-11,P6-11b,P6-12,P6-13,P6-14b,P6-14
+CAUGHT  P6i | r40-common.mjs: "new Date(2026, 9, 6, 4, 15, 0)" -> "new Date(2026, 9, 6, 3, 0, 0)" | expected to fail: P6-20,P6-20c | actually failing: P6-1,P6-3b,P6-4,P6-5,P6-20,P6-20b,P6-20c,P6-20d,P6-20e,P6-19,P6-11,P6-11b,P6-12,P6-13,P6-14b,P6-14
+CAUGHT  P9q | pre-run-r40.mjs: "if (arm === 'grade') { const ac" -> "if (arm === 'grade' && tonight..." | expected to fail: GR9,GR13,GR13b | actually failing: GR9,GR13,GR13b
+CAUGHT  P3g | read-r.mjs: "mine.slice(ci + 1, di < 0 ? undefined : di)" -> "mine.slice(ci + 1)" | expected to fail: P3c-L1,P3c-L2,P3c-L3,P3c-L4 | actually failing: P3c-L1,P3c-L2,P3c-L3,P3c-L4
+CAUGHT  P3h | read-r.mjs: "ans.turns.length >= segs.length" -> "ans.turns.length === segs.leng..." | expected to fail: P3c-L4 | actually failing: P3c-L4
+CAUGHT  P5e | grade/build-blind-r40.mjs: "readRSha256: crypto.createHash('sha256')" -> "readRSha256: crypto.createHash..." | expected to fail: P5-17 | actually failing: P5-17
+CAUGHT  P7d | grade/audit-r40.mjs: "if (recordFile) {" -> "if (false) {" | expected to fail: P7-18 | actually failing: P7-18,P7-19
+CAUGHT  P7e | grade/audit-r40.mjs: "clean: v.found && v.clean === true" -> "clean: true" | expected to fail: P7-18,P7-19 | actually failing: P7-18,P7-19
+CAUGHT  P8h | grade/score-r40.mjs: "if (gradingProblems.length) gradingOk = false;" -> "" | expected to fail: S-A1,S-A2,S-A3,S-A4,S-A5,S-A6,S-A7,S-A9 | actually failing: S-A1,S-A2,S-A3,S-A4,S-A5,S-A6,S-A7,S-A8b,S-A9
+CAUGHT  P8i | grade/score-r40.mjs: "const mine = l ? audits.filter((r) => r && r.tag..." -> "const mine = audits.filter((r)..." | expected to fail: S-A4,S-A8 | actually failing: S-A4,S-A8
+CAUGHT  P8j | grade/score-r40.mjs: "else if (!mine.length) out.push(" -> "else if (false) out.push(" | expected to fail: S-A5,S-A6 | actually failing: S-A4,S-A5,S-A6
+CAUGHT  P8k | grade/score-r40.mjs: "return { ok: rec.readRSha256 === now," -> "return { ok: true," | expected to fail: S-F2,S-F4 | actually failing: S-F2,S-F4
+CAUGHT  P8m | grade/score-r40.mjs: "a.memory === 'ABSENT'" -> "true" | expected to fail: S-A2 | actually failing: S-A2
+CAUGHT  P8n | grade/score-r40.mjs: "a.pinned === true" -> "true" | expected to fail: S-A3 | actually failing: S-A3
+CAUGHT  P8o | grade/score-r40.mjs: "!mine.every((a) =>" -> "!mine.slice(-1).every((a) =>" | expected to fail: S-A8b | actually failing: S-A8b
+CAUGHT  P8p | grade/score-r40.mjs: "return { ok: rec.readerOutputSha256 === now," -> "return { ok: true," | expected to fail: S-F6 | actually failing: S-F6
+CAUGHT  P8q | grade/score-r40.mjs: "if (!rec?.readerOutputSha256) return { ok: false..." -> "if (!rec?.readerOutputSha256) ..." | expected to fail: S-F7 | actually failing: S-F7
+CAUGHT  P5f | grade/build-blind-r40.mjs: "readerOutputSha256: readerOutputSha(rows)," -> "" | expected to fail: P5-18 | actually failing: P5-18
+CAUGHT  P6j | grade/launch-grader-r40.mjs: "const out = [...args, '--setting-sources', 'proj..." -> "const out = [...args];" | expected to fail: P6-1d,P6-4c,P6-11b,P6-14b | actually failing: P6-1,P6-1d,P6-3b,P6-4,P6-4c,P6-5,P6-20b,P6-20d,P6-20e,P6-19,P6-11,P6-11b,P6-12,P6-13,P6-14b,P6-14
+CAUGHT  P6k | grade/launch-grader-r40.mjs: "'--setting-sources', 'project,local']" -> "'--setting-sources', 'user,pro..." | expected to fail: P6-1d,P6-4c,P6-11b,P6-14b | actually failing: P6-1,P6-1d,P6-3b,P6-4,P6-4c,P6-5,P6-20b,P6-20d,P6-20e,P6-19,P6-11,P6-11b,P6-12,P6-13,P6-14b,P6-14
+CAUGHT  P1a | grade/check-classify-r40.mjs: "m.cls === 'simple' ? 'EASY' : 'HARD'" -> "m.cls === 'simple' ? 'HARD' : ..." | expected to fail: P1-3 | actually failing: P1-3,P1-4,P1-4b,P1-6
+MUTATION CHECK: 95/95 mutations caught

@@ -1,0 +1,4 @@
+claim  : Which of those stages (ingestion, parsing, chunking, embedding, retrieval, reranking, context assembly, or generation) can cause a correct source document to produce an incorrect answer?
+S2Q01F : Which of those stages can cause a correct source document to produce an incorrect answer?
+S2Q01  : Explain your rag pipeline precisely walk through ingestion, parsing, chunking, embedding, retrieval, re ranking, context assembly, and generation, and map those stages to your document intelligence ex
+quote(claim, S2Q01F own text) = 0.53; quote(claim, S2Q01 parent) = 0.58; claim content words 19

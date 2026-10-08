@@ -1,0 +1,3811 @@
+{
+ "schema": "cues-export-eq/1",
+ "runDir": "C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-10-06T01-12-56-eq",
+ "registeredHead": "56bda9eb64b65a190c73788b5f86a550f6809f6a",
+ "window": {
+  "startedAt": "2026-10-06T00:04:13.437Z",
+  "endedAt": "2026-10-06T01:12:55.930Z"
+ },
+ "entries": [
+  {
+   "id": "S1Q01",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:04:26.995Z",
+   "cues": [
+    "Tabular data handling",
+    "Fast FastAPI deployment",
+    "Logistic regression baseline"
+   ],
+   "empty": null,
+   "logLine": 476
+  },
+  {
+   "id": "S1Q01F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:05:34.013Z",
+   "cues": [
+    "Logistic regression for linear interpretability",
+    "Neural networks for unstructured data",
+    "Rules for deterministic guardrails"
+   ],
+   "empty": null,
+   "logLine": 591
+  },
+  {
+   "id": "S1Q02",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:07:00.254Z",
+   "cues": [
+    "9,500 total churners",
+    "2,850 true positives",
+    "57% precision alignment"
+   ],
+   "empty": null,
+   "logLine": 834
+  },
+  {
+   "id": "S1Q02F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:08:26.977Z",
+   "cues": [
+    "PR-AUC vs ROC-AUC",
+    "Business utility and validation"
+   ],
+   "empty": null,
+   "logLine": 977
+  },
+  {
+   "id": "S1Q03",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:09:42.409Z",
+   "cues": [
+    "Targeted retention campaigns",
+    "Randomized holdout control groups",
+    "Regression adjustments for seasonality"
+   ],
+   "empty": null,
+   "logLine": 1125
+  },
+  {
+   "id": "S1Q03F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:11:05.429Z",
+   "cues": [
+    "Wasted budget on lost causes",
+    "Isolating persuadables via treatment effect"
+   ],
+   "empty": null,
+   "logLine": 1270
+  },
+  {
+   "id": "S1Q04",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:12:35.793Z",
+   "cues": [
+    "Precision, recall, and lift calculation",
+    "Stable tie breaking by index",
+    "Edge cases for k and"
+   ],
+   "empty": null,
+   "logLine": 1549
+  },
+  {
+   "id": "S1Q04F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:15:11.359Z",
+   "cues": [
+    "np.argpartition for linear time",
+    "Sort only top k",
+    "Preserve original index tie-breaker"
+   ],
+   "empty": null,
+   "logLine": 1737
+  },
+  {
+   "id": "S1Q05",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:16:36.545Z",
+   "cues": [
+    "Chronological split with buffer gap",
+    "ColumnTransformer inside pipeline",
+    "Fit preprocessing strictly on train"
+   ],
+   "empty": null,
+   "logLine": 1980
+  },
+  {
+   "id": "S1Q05F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:19:45.261Z",
+   "cues": [
+    "Legitimate rolling feature pipelines",
+    "Customer-level holdout for churn"
+   ],
+   "empty": null,
+   "logLine": 2214
+  },
+  {
+   "id": "S1Q06",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:21:13.012Z",
+   "cues": [
+    "Left join snapshots to events",
+    "Thirty day window filter",
+    "Ingestion cutoff and zero preservation"
+   ],
+   "empty": null,
+   "logLine": 2450
+  },
+  {
+   "id": "S1Q06F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:23:50.003Z",
+   "cues": [
+    "Composite indexes on customer time",
+    "Track updates with version columns"
+   ],
+   "empty": null,
+   "logLine": 2638
+  },
+  {
+   "id": "S1Q07",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:25:16.925Z",
+   "cues": [
+    "Airflow ingestion and feature store",
+    "MLflow registry and FastAPI serving",
+    "Prometheus monitoring and shared logic"
+   ],
+   "empty": null,
+   "logLine": 2852
+  },
+  {
+   "id": "S1Q07F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:27:52.616Z",
+   "cues": [
+    "Idempotent task design",
+    "PostgreSQL state tracking",
+    "Model artifact pinning"
+   ],
+   "empty": null,
+   "logLine": 3069
+  },
+  {
+   "id": "S1Q08",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:29:10.882Z",
+   "cues": [
+    "Log predictions with immutable IDs",
+    "Deterministic experiment assignment by subscriber",
+    "Join delayed outcomes using PostgreSQL"
+   ],
+   "empty": null,
+   "logLine": 3262
+  },
+  {
+   "id": "S1Q08F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:31:46.682Z",
+   "cues": [
+    "Feedback loop label distortion",
+    "Policy-dependent customer behavior"
+   ],
+   "empty": null,
+   "logLine": 3452
+  },
+  {
+   "id": "S1Q09",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:33:08.528Z",
+   "cues": [
+    "Blob storage, ML compute, registry",
+    "ACR images, app service inference,",
+    "Managed identity, monitoring telemetry"
+   ],
+   "empty": null,
+   "logLine": 3661
+  },
+  {
+   "id": "S1Q09F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:34:47.238Z",
+   "cues": [
+    "AML endpoints for ML inference",
+    "App Service for lightweight APIs",
+    "AKS for complex container workloads"
+   ],
+   "empty": null,
+   "logLine": 3801
+  },
+  {
+   "id": "S1Q10",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:36:07.603Z",
+   "cues": [
+    "Managed identity for Azure access",
+    "RBAC roles and Key Vault",
+    "Isolated resource groups and networking"
+   ],
+   "empty": null,
+   "logLine": 3975
+  },
+  {
+   "id": "S1Q10F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:37:48.253Z",
+   "cues": [
+    "Identity token acquisition check",
+    "RBAC and database role verification",
+    "VNet connectivity and firewall trace"
+   ],
+   "empty": null,
+   "logLine": 4135
+  },
+  {
+   "id": "S2Q01",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:39:03.943Z",
+   "cues": [
+    "Textract parsing",
+    "Hybrid retrieval reranking",
+    "LangGraph generation"
+   ],
+   "empty": null,
+   "logLine": 4303
+  },
+  {
+   "id": "S2Q01F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:40:11.259Z",
+   "cues": [
+    "Chunking semantic splits",
+    "Generation hallucination risks"
+   ],
+   "empty": null,
+   "logLine": 4441
+  },
+  {
+   "id": "S2Q02",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:41:35.062Z",
+   "cues": [
+    "Extraction F1: field-level accuracy",
+    "Hallucinations: claim-level judge evals",
+    "Multi-hop: gold set query accuracy"
+   ],
+   "empty": null,
+   "logLine": 4629
+  },
+  {
+   "id": "S2Q02F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:43:02.282Z",
+   "cues": [
+    "OCR and classification component swaps",
+    "Retrieval and prompt ablation matrix",
+    "Agent orchestration and judge bias"
+   ],
+   "empty": null,
+   "logLine": 4808
+  },
+  {
+   "id": "S2Q03",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:44:16.458Z",
+   "cues": [
+    "Intermediate-result dependency justification",
+    "Fixed versus decomposition versus dynamic"
+   ],
+   "empty": null,
+   "logLine": 4982
+  },
+  {
+   "id": "S2Q03F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:45:38.430Z",
+   "cues": [
+    "Confidence thresholds and step limits",
+    "Token and recursion cost caps",
+    "Deterministic fallback and human review"
+   ],
+   "empty": null,
+   "logLine": 5123
+  },
+  {
+   "id": "S2Q04",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:47:01.451Z",
+   "cues": [
+    "Reciprocal rank fusion calculation",
+    "One based rank with constant",
+    "Top k with deterministic tiebreaking"
+   ],
+   "empty": null,
+   "logLine": 5295
+  },
+  {
+   "id": "S2Q04F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:49:39.461Z",
+   "cues": [
+    "Avoids score scale mismatch",
+    "Multiply rank terms by weights"
+   ],
+   "empty": null,
+   "logLine": 5518
+  },
+  {
+   "id": "S2Q05",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:51:04.982Z",
+   "cues": [
+    "Sort by relevance score",
+    "Track per-document chunk counts",
+    "Enforce token budget limits"
+   ],
+   "empty": null,
+   "logLine": 5746
+  },
+  {
+   "id": "S2Q05F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:53:43.283Z",
+   "cues": [
+    "Greedy blind spot in multi-hop",
+    "Maximal Marginal Relevance and iterative"
+   ],
+   "empty": null,
+   "logLine": 5956
+  },
+  {
+   "id": "S2Q06",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:55:02.953Z",
+   "cues": [
+    "Semaphore concurrency limit",
+    "Per-case timeouts",
+    "Preserve order and isolate failures"
+   ],
+   "empty": null,
+   "logLine": 6173
+  },
+  {
+   "id": "S2Q06F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:58:13.255Z",
+   "cues": [
+    "Virtual time event loops",
+    "Context cancellation verification"
+   ],
+   "empty": null,
+   "logLine": 6424
+  },
+  {
+   "id": "S2Q07",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T00:59:35.403Z",
+   "cues": [
+    "Sharded vector index updates",
+    "PostgreSQL metadata with JSONB",
+    "Pre-filtered ACLs and LLM evaluation"
+   ],
+   "empty": null,
+   "logLine": 6660
+  },
+  {
+   "id": "S2Q07F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T01:02:13.572Z",
+   "cues": [
+    "Retrieval layer and generation boundary",
+    "Pre-flight and post-retrieval validation"
+   ],
+   "empty": null,
+   "logLine": 6864
+  },
+  {
+   "id": "S2Q08",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T01:03:32.162Z",
+   "cues": [
+    "Versioning and backfill strategy",
+    "Dual-write sync and quality validation",
+    "Zero-downtime cutover and rollback plan"
+   ],
+   "empty": null,
+   "logLine": 7064
+  },
+  {
+   "id": "S2Q08F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T01:06:08.938Z",
+   "cues": [
+    "Count parity check",
+    "Shadow retrieval recall eval",
+    "Replication lag verification"
+   ],
+   "empty": null,
+   "logLine": 7258
+  },
+  {
+   "id": "S2Q09",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T01:07:27.015Z",
+   "cues": [
+    "Azure Blob, Event Grid, Service",
+    "AKS, AI Search, Azure OpenAI",
+    "Managed scale, custom agent logic"
+   ],
+   "empty": null,
+   "logLine": 7448
+  },
+  {
+   "id": "S2Q09F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T01:09:02.980Z",
+   "cues": [
+    "Region-pinned Azure resources",
+    "Private endpoints and VNets",
+    "Regional Azure OpenAI endpoints"
+   ],
+   "empty": null,
+   "logLine": 7578
+  },
+  {
+   "id": "S2Q10",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T01:10:19.641Z",
+   "cues": [
+    "Service Bus duplicate detection",
+    "PostgreSQL idempotent state tracking"
+   ],
+   "empty": null,
+   "logLine": 7742
+  },
+  {
+   "id": "S2Q10F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-06T01:11:56.254Z",
+   "cues": [
+    "Max delivery count dead-lettering",
+    "Isolated worker DLQ replay",
+    "Monotonic versioning for update races"
+   ],
+   "empty": null,
+   "logLine": 7897
+  },
+  {
+   "id": "S1Q01",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Tabular data and non-linear interactions",
+    "Fast FastAPI inference constraints",
+    "Logistic regression baseline comparison"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q01F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Logistic regression for linear interpretability",
+    "Neural network for unstructured data",
+    "Rules-based for absolute compliance"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q02",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "True positives calculation",
+    "Reconciling precision and recall"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q02F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "PR-AUC 0.38 and ROC-AUC 0.88",
+    "Business utility requirements"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q03",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Model-driven retention campaigns",
+    "Randomized holdout control groups"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q03F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Lost causes vs persuadables",
+    "Incremental treatment effect",
+    "Efficient budget allocation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q04",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Top-k metrics evaluation function",
+    "Handling ties and edge cases"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q04F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Partial sort via argpartition",
+    "Stable sort on top-K",
+    "Complexity drop to O(N)"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q05",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Chronological split with observation buffer",
+    "Pipeline and ColumnTransformer isolation",
+    "Time-based cross-validation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q05F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Time-series recurring snapshots",
+    "Customer-level holdout for generalization"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q06",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Thirty-day prior window",
+    "Snapshot ingestion cutoff",
+    "Left join zero preservation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q06F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Composite indexes on customer ID and time columns",
+    "Temporal versioning for retroactive corrections"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q07",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Shared feature store pipelines",
+    "Training, registry, and serving",
+    "Prediction storage and monitoring"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q07F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Idempotent upserts prevent duplicates",
+    "Airflow checkpointing resumes state",
+    "Model registry locks versions"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q08",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Immutable prediction logging",
+    "Hashed experiment assignment",
+    "Delayed outcome joins and retraining"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q08F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Retention intervention bias",
+    "Feedback loop distortion"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q09",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Azure Blob and ML compute",
+    "ACR, AKS inference, and Airflow",
+    "Managed identity and App Insights"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q09F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Azure ML managed endpoints",
+    "Azure App Service",
+    "Azure Kubernetes Service"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q10",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Managed identities for authentication",
+    "RBAC and Key Vault secrets",
+    "Isolated network environments"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q10F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Identity: Token acquisition and principal",
+    "Permissions: RBAC and database grants",
+    "Network: Private endpoints and NSGs"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q01",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Textract document parsing",
+    "Hybrid retrieval and reranking",
+    "LangGraph generation with GPT-5"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q01F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Chunking context loss",
+    "Reranking failures",
+    "Generation hallucination"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q02",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Extraction F1: field-level token F1",
+    "Hallucinations: claim-level judge checks",
+    "Multi-hop accuracy: gold-set correctness"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q02F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Component-wise freeze-and-swap ablations",
+    "Multi-model cross-validation and gold-set auditing"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q03",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Complexity justifies dynamic routing",
+    "Fixed and decomposition limits",
+    "Dynamic agent synthesis power"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q03F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Max iteration limits",
+    "Token and latency caps",
+    "Deterministic fallback routing"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q04",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Score aggregation map",
+    "RRF score calculation",
+    "Deterministic tiebreaking sort"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q04F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Avoid score scale mismatch",
+    "Multiply by source weights"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q05",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Sort by relevance descending",
+    "Enforce token budget limits",
+    "Max two per document"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q05F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Single-document domination",
+    "Maximal Marginal Relevance",
+    "Sub-question query decomposition"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q06",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Semaphore concurrency limit",
+    "Per-case timeout wrapper",
+    "Exception isolation and order preservation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q06F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Asyncio task groups and mock time",
+    "Timeout exceptions and cleanup verification"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q07",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Partitioned tenant vector namespaces",
+    "PostgreSQL row-level security",
+    "LLM-as-judge citation evaluation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q07F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Metadata filters at retrieval",
+    "Secondary check before generation",
+    "Mid-flight revocation handling"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q08",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Dual-index versioning and dual-write",
+    "Async backfill and shadow eval",
+    "Gateway cutover and instant rollback"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q08F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "ID reconciliation count check",
+    "CDC event log replay",
+    "Shadow retrieval overlap eval"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q09",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Azure storage and eventing",
+    "Search, LLMs, and workers",
+    "Managed vs custom justification"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q09F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Azure Policy region locks",
+    "Regional Azure OpenAI",
+    "Private Endpoints"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q10",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Azure Service Bus duplicate detection",
+    "PostgreSQL idempotent state checks",
+    "Post-commit message acknowledgment"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q10F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Max delivery count DLQ routing",
+    "Inspected replay via tooling",
+    "Monotonic version timestamp ordering"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q01",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Tabular data performance",
+    "Low-latency FastAPI deployment",
+    "Logistic regression baseline"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q01F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Logistic regression for baselines and interpretability",
+    "Neural networks for unstructured text and embeddings",
+    "Rules-based for compliance and cold starts"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q02",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Churners and risk band totals",
+    "True positives and precision",
+    "Consistency within rounding"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q02F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Strong ranking, fourfold baseline lift",
+    "Retention costs and campaign ROI"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q03",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Randomized holdout control group",
+    "Difference-in-differences for seasonality",
+    "Propensity score matching for mix"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q03F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Lost causes versus persuadables",
+    "Treatment effect over baseline risk"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q04",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Top-k metrics calculation",
+    "Stable tie-breaking logic",
+    "Edge cases and empty inputs"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q04F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Linear partial sort",
+    "Sorting only top-k subset",
+    "Deterministic tie-breaking on slice"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q05",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Chronological split with 30-day buffer",
+    "ColumnTransformer and Pipeline setup",
+    "Fit-transform on train, transform on val"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q05F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Rolling feature windows and evolution",
+    "Preventing leakage for unseen customers"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q06",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Left join snapshots",
+    "Thirty day window",
+    "Ingested at filter"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q06F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Composite indexes on customer and time",
+    "Bitemporal tracking or CDC for corrections"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q07",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Ingestion and feature computation pipelines",
+    "Training, Model Registry, and serving",
+    "Prediction storage, monitoring, and shared features"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q07F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Idempotent execution checks",
+    "Atomic state tracking",
+    "Pinned model versioning"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q08",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Log prediction hash and features",
+    "Hash-based variant assignment",
+    "Thirty-day join with treatment flag",
+    "Filter or reweight treated samples"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q08F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Target label distortion",
+    "Retention feedback loop",
+    "Control group isolation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q09",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Blob storage, ML training, registry",
+    "Container registry and App Service",
+    "Airflow, Managed Identity, Insights"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q09F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "ML endpoints for auto-scaling inference",
+    "App Service for lightweight backends",
+    "AKS for complex container workloads"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q10",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Managed identities for authentication",
+    "Role-based access control for authorization",
+    "Key Vault for unavoidable secrets",
+    "Resource groups and private endpoints for environment separation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q10F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Identity: token acquisition logs",
+    "Permissions: RBAC and database roles",
+    "Network: NSGs and private endpoints"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q01",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Textract parsing and chunking",
+    "Hybrid retrieval and reranking",
+    "Context assembly and generation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q01F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Chunking semantic boundary loss",
+    "Retrieval and reranking gaps",
+    "Generation hallucination risks"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q02",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Extraction F1 metrics",
+    "Hallucination reduction eval",
+    "Multi-hop accuracy gold set"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q02F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Layer-by-layer component ablation",
+    "Human audits and deterministic checks"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q03",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Fixed retrieval fails multi-hop",
+    "Query decomposition chains steps",
+    "Dynamic tools for branching paths"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q03F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Max steps and convergence",
+    "Token and cost budgets",
+    "Fallback and circuit breakers"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q04",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Accumulate RRF scores",
+    "Sort with deterministic tiebreaking"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q04F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Normalizes score scales",
+    "Source weight multipliers"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q05",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Sort by relevance descending",
+    "Enforce budget and doc limits",
+    "Deduplicate and track state"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q05F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Redundant top chunks starve diversity",
+    "MMR and entity-linked boosting"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q06",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Semaphore for eight workers",
+    "Per-case timeout and exception isolation",
+    "Preserve input order via gathering"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q06F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Mock async clocks",
+    "Task group cancellation",
+    "Deadline boundary assertions"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q07",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Sharded vector index",
+    "PostgreSQL metadata store",
+    "Row-level permissions and evaluation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q07F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Pre-retrieval metadata filtering",
+    "Post-retrieval validation check"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q08",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Namespace versioning, dual-dimensionality support",
+    "Async backfill, CDC-driven sync updates",
+    "Shadow eval, atomic cutover and rollback"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q08F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Count reconciliation and watermarking"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q09",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Azure storage and eventing services",
+    "Compute search LLM and telemetry",
+    "Managed versus custom components"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q09F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Region-bound Azure services",
+    "AKS regional node pools",
+    "Azure OpenAI regional endpoints"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q10",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Document content hashing",
+    "Azure Service Bus peek-lock",
+    "State tracking in database"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q10F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "DLQ isolation and automated triage",
+    "Versioned state with optimistic locking"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q01",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Tabular data and class imbalance",
+    "Fast FastAPI inference constraints",
+    "Logistic regression baseline comparison"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q01F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Logistic regression for linear baselines",
+    "Neural networks for unstructured data",
+    "Rules for deterministic safety checks"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q02",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "True positives: 2,850 churners",
+    "Precision: 57% vs 60% rounded",
+    "Recall: Exactly 30%"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q02F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "PR-AUC 0.38 and ROC-AUC 0.88",
+    "Business value and operational constraints"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q03",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Randomized holdout control group",
+    "Segment cohort mix analysis"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q03F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Lost causes and sure things",
+    "Targeting persuadables via uplift modeling"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q04",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Sorting scores with stable tie-breaking",
+    "Handling invalid k and empty inputs",
+    "Handling zero positive labels"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q04F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Use argpartition for linear time",
+    "Locally sort only top k",
+    "Append row index for stability"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q05",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Chronological split with 30-day buffer",
+    "Scikit-learn Pipeline and ColumnTransformer",
+    "Train and evaluate with PR-AUC"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q05F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Legitimate in panel time-series",
+    "Customer holdout prevents leakage"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q06",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Left join snapshots and events",
+    "Thirty day and ingestion filters",
+    "Group by and zero preservation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q06F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Composite index on events",
+    "Temporal tables for corrections"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q07",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Airflow ingestion and feature store",
+    "MLflow registry and FastAPI serving",
+    "PostgreSQL storage and shared features"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q07F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Idempotency keys for campaigns",
+    "Pinned model version hashes"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q08",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Log predictions with snapshots",
+    "Hash-salt experiment assignment",
+    "Propensity-weighted retraining data"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q08F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Target variable contamination",
+    "Policy-induced feedback loops",
+    "Propensity score weighting"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q09",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Blob Storage & ML compute",
+    "Registry, ACR, AKS inference",
+    "Pipelines, Managed Identity, Monitor"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q09F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "AML managed endpoints for ML",
+    "App Service for FastAPI backends",
+    "AKS for orchestrating heavy workloads"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q10",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Managed identities for authentication",
+    "Azure RBAC least privilege",
+    "Azure Key Vault for secrets",
+    "Isolated resource groups and VNets"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q10F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Verify token acquisition",
+    "Audit Azure RBAC roles",
+    "Check network reachability"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q01",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Ingestion and parsing",
+    "Retrieval and reranking",
+    "Context assembly and generation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q01F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Parsing and chunking loss",
+    "Retrieval and reranking noise",
+    "Generation hallucination"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q02",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Extraction F1 human test set",
+    "Hallucinations judge-verified eval set",
+    "Multi-hop accuracy gold set"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q02F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Component swap-outs for ablations",
+    "Human audit and cross-model validation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q03",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Complexity justified by conditional paths",
+    "Fixed workflow vs decomposition vs dynamic tools"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q03F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Step limits and convergence checks",
+    "Token and latency budgets",
+    "Deterministic fallback policies"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q04",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Rank accumulation formula",
+    "Deterministic tiebreaking and top k"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q04F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Normalizes disparate score scales",
+    "Multiplies weights into rankings"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q05",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Greedy relevance sort",
+    "Token budget check",
+    "Document frequency limit"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q05F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Single document monopolizing budget",
+    "Maximal Marginal Relevance and agentic planning"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q06",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Semaphore concurrency limit",
+    "Per-case timeout protection",
+    "Order preservation and error safety"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q06F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Mocked time event loops",
+    "Injecting transient errors",
+    "Validating context deadlines"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q07",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Sharded vector indices",
+    "PostgreSQL metadata storage",
+    "ACL filters and LLM eval"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q07F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Retrieval and generation stages",
+    "Pre-filter and runtime check"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q08",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Versioning and backfill pipeline",
+    "Dual-write sync and quality comparison",
+    "Gradual cutover and instant rollback"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q08F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Document count parity",
+    "CDC stream catch-up",
+    "Shadow golden set eval"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q09",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Blob Storage and AI Search",
+    "Event Grid and Service Bus",
+    "OpenAI and Container Apps"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q09F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Regional resource scoping",
+    "Local-redundant storage and endpoints",
+    "Private networking and no geo-replication"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q10",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Content-hash idempotency keys",
+    "Atomic vector upserts",
+    "Late message acknowledgment"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q10F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "DLQ routing and manual replay",
+    "Version-based optimistic concurrency control"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q01",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Non-linear interactions",
+    "Production efficiency",
+    "Logistic regression baseline"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q01F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Logistic: interpretability and baselines",
+    "Neural Networks: unstructured data",
+    "Rules: deterministic safety"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q02",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "9,500 churners",
+    "2,850 true positives",
+    "57% precision vs 60%"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q02F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "PR-AUC vs ROC-AUC",
+    "Cost-benefit and calibration"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q03",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Randomized control trials",
+    "Causal inference methods",
+    "Comparing delta in churn"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q03F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Wasted spend on sure things",
+    "Focusing on persuadables",
+    "Optimizing ROI"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q04",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Sorting and metric calculation",
+    "Handling invalid k and empty inputs",
+    "Handling no positive labels"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q04F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Partial sorting",
+    "Stable indexing",
+    "Heap-based selection"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q05",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Chronological split with buffer",
+    "Pipeline with fit-transform isolation",
+    "Leakage-free evaluation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q05F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Longitudinal modeling legitimacy",
+    "Preventing data leakage"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q06",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Left join for preservation",
+    "Time window and ingestion logic"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q06F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Composite indexes",
+    "SCD Type 2 strategy"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q07",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Unified Feature Store",
+    "Batch and Online Serving",
+    "MLflow Registry and Monitoring"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q07F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Idempotent transaction IDs",
+    "Pinned model and data state"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q08",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Deterministic hashing for assignment",
+    "Prediction logging with IDs",
+    "Propensity weighting for bias"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q08F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [],
+   "empty": "empty",
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q09",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Blob Storage, Azure ML Registry",
+    "ACR, Managed Online Endpoints",
+    "Data Factory, Managed Identity, Monitor"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q09F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "AML Endpoints: Standard ML inference",
+    "App Service: Lightweight APIs",
+    "AKS: Complex, high-scale orchestration"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q10",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Managed Identity for auth",
+    "Granular RBAC roles",
+    "Key Vault and Private Links"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q10F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Identity: check token logs",
+    "Permissions: verify RBAC assignments",
+    "Network: test connectivity paths"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q01",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Ingestion, parsing, chunking",
+    "Embedding, retrieval, reranking",
+    "Context assembly, generation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q01F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Context assembly and generation",
+    "Hallucination and noise",
+    "Deterministic verification"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q02",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "F1: Gold set, field-level, variance",
+    "Hallucinations: LLM-as-judge, relative reduction",
+    "Multi-hop: Internal gold set, query-based"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q02F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Baseline swapping for modular isolation",
+    "LLM-as-judge bias validation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q03",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Fixed retrieval: simple, single-intent",
+    "Query decomposition: multi-hop reasoning",
+    "Dynamic agents: unpredictable, complex needs"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q03F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Step limits and token budgets",
+    "Semantic similarity and tool validation",
+    "Circuit breakers for failures"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q04",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Aggregating scores",
+    "Sorting with tiebreaking",
+    "Returning top k"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q04F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Normalizes incompatible score scales",
+    "Weighted sum of rank scores"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q05",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Sort by relevance",
+    "Enforce constraints",
+    "Accumulate within budget"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q05F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Greedy failure: redundancy",
+    "Redundancy: diversity-aware sampling",
+    "Multi-hop: agentic decomposition"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q06",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Semaphore for concurrency",
+    "Wait_for for timeouts",
+    "Gather for order"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q06F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Dependency injection for mocks",
+    "Pytest-asyncio for concurrency",
+    "Delay injection for cancellation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q07",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Namespace partitioning, hybrid search",
+    "Postgres ACL pre-filtering",
+    "Async ingestion, LLM-as-judge evals"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q07F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Query-time enforcement",
+    "Pre-filtering retrieval"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q08",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Alias-based versioning",
+    "Shadow evaluation and backfill",
+    "Atomic cutover and rollback"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q08F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Data parity counts",
+    "Real-time CDC lag",
+    "Shadow traffic evaluation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q09",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Azure stack components",
+    "Managed versus custom logic"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q09F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Azure Policy enforcement",
+    "Private Links isolation",
+    "Regional service endpoints"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q10",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Idempotent state checks",
+    "Atomic database transactions",
+    "PeekLock message completion"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q10F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Max delivery DLQ routing",
+    "Version-based optimistic concurrency",
+    "Conditional database updates"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q01",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Tabular data, non-linear relationships",
+    "Feature importance for stakeholders",
+    "Logistic regression baseline"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q01F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Logistic for interpretability",
+    "Neural nets for complexity",
+    "Rules for determinism"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q02",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "9,500 total churners",
+    "2,850 true positives",
+    "4,750 predicted churners"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q02F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "PR-AUC vs ROC-AUC",
+    "Business utility requirements"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q03",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Randomized holdout group",
+    "Isolating model lift",
+    "Controlling for external factors"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q03F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Waste on lost causes",
+    "Targeting persuadables",
+    "Maximizing incremental ROI"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q04",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Sorting and slicing logic",
+    "Metric calculations and edge cases"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q04F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Partial sort or heap",
+    "Pre-sort index array",
+    "Avoid full sort"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q05",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Chronological split, no leakage",
+    "Pipeline with fit-only-on-train",
+    "Observation window alignment"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q05F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Legitimate in time-series",
+    "Customer-level holdout for leakage"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q06",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Left join strategy",
+    "Time and ingestion filters",
+    "Aggregation logic"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q06F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Composite indexes",
+    "SCD Type 2 logic"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q07",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Unified feature store backbone",
+    "Batch and online serving",
+    "Shared components"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q07F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Idempotent transactions",
+    "Pinned model versions"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q08",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Immutable event logs",
+    "Propensity score stratification",
+    "Causal inference filtering"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q08F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Feedback loop bias",
+    "Propensity score matching",
+    "Randomized control trials"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q09",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Blob Storage, Azure ML, ACR",
+    "AKS, Managed Identity, Monitor"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q09F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Managed Endpoints: ML inference",
+    "App Service: Simple APIs",
+    "AKS: Complex orchestration"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q10",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Managed Identity and RBAC",
+    "Key Vault and Private Endpoints",
+    "Subscription-level environment isolation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q10F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Identity: Token/401 checks",
+    "Permissions: RBAC/403 validation",
+    "Network: Connectivity/NSG isolation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q01",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Textract ingestion and parsing",
+    "Hybrid retrieval and reranking",
+    "Agentic generation and validation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q01F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Chunking semantic loss",
+    "Retrieval filtering errors",
+    "Generation context ignoring"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q02",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Extraction F1: 500 docs",
+    "Hallucinations: 1,000 queries",
+    "Multi-hop: 200 queries"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q02F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Sequential component freezing",
+    "Judge bias via cross-verification"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q03",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Fixed retrieval: simple, rigid",
+    "Decomposition: multi-hop precision",
+    "Dynamic agent: complex reasoning"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q03F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Step limits and cost budgets",
+    "Circuit breakers and confidence thresholds"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q04",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Dictionary for score accumulation",
+    "RRF formula with constant c",
+    "Sorting and tiebreaking"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q04F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Incomparable score distributions",
+    "Weighted reciprocal rank summation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q05",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Sort by relevance descending",
+    "Track doc counts and budget",
+    "Greedy selection loop"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q05F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Redundancy failure case",
+    "MMR for diversity",
+    "Agentic loops for multi-hop"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q06",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Semaphore for concurrency",
+    "Wait_for and try-except",
+    "Gather for ordering"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q06F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Virtual clock for time",
+    "Event loop delay injection",
+    "Cancellation signal assertion"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q07",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Hierarchical vector index, metadata DB",
+    "ACL filtering, async pipeline",
+    "LLM-as-judge, RAGAS metrics"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q07F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Just-in-time retrieval check",
+    "Post-retrieval filtering"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q08",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Dual-write versioned embeddings",
+    "Asynchronous backfill and sync",
+    "Shadow-mode cutover and rollback"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q08F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Parity checks and sampling",
+    "Event stream replay",
+    "Shadow traffic comparison"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q09",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Storage, Ingestion, Queues",
+    "Workers, Search, LLM",
+    "Telemetry, Managed vs Custom"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q09F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Azure Policy enforcement",
+    "Private Link networking",
+    "Regional LLM endpoints"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q10",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Idempotency layer",
+    "Atomic transaction"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q10F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Poison documents and DLQ",
+    "Versioning for race conditions"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q01",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Superior structured data handling",
+    "Robust baseline comparison"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q01F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Logistic Regression (Baseline)",
+    "Neural Networks (Unstructured)",
+    "Rule-based (Deterministic)"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q02",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "2,850 true positives",
+    "57% precision",
+    "Consistent within rounding"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q02F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "4x baseline PR-AUC",
+    "Strong class separability",
+    "Cost-benefit and operational capacity"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q03",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Randomized holdout experiment",
+    "Isolating incremental lift"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q03F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Persuadables vs lost causes",
+    "Maximizing incremental ROI"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q04",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Sorting and top-k slicing",
+    "Calculating metrics and lift",
+    "Handling edge cases"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q04F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Avoid full sort",
+    "Use min-heap approach",
+    "Augment with negative index"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q05",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Chronological split and window",
+    "Pipeline with ColumnTransformer",
+    "Fit on training only"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q05F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Dynamic behavior modeling",
+    "Preventing data leakage"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q06",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Left join snapshots events",
+    "Filter by ingestion time",
+    "Group by customer snapshot"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q06F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Composite indexing strategy",
+    "Temporal versioning for corrections"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q07",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Unified feature store backbone",
+    "Batch and online serving",
+    "Registry, monitoring, and training"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q07F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Idempotent task design",
+    "Model version pinning"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q08",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Logging and assignment",
+    "Sliding window joins",
+    "Treatment as feature"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q08F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Selection bias",
+    "Uplift modeling"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q09",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Azure Blob, AML, ACR",
+    "AKS, Managed Identity, Monitor",
+    "Operational reliability and integration"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q09F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "AML Endpoints: high-throughput model inference",
+    "App Service: lightweight, low-traffic APIs",
+    "AKS: complex, multi-service orchestration"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q10",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Managed Identity and RBAC",
+    "Private Link networking",
+    "Key Vault and isolation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S1Q10F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Check identity token issuance",
+    "Verify RBAC role assignments",
+    "Test network connectivity paths"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q01",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Textract and semantic chunking",
+    "Hybrid retrieval and reranking",
+    "LangGraph orchestration and generation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q01F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Retrieval and chunking noise",
+    "Context assembly and prompt",
+    "Generation and hallucination"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q02",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "F1: Entity-level extraction accuracy",
+    "Hallucinations: LLM-as-judge consistency",
+    "Multi-hop: Question-answer pair validation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q02F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Ablation strategy",
+    "LLM judge bias checks"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q03",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Fixed retrieval: simple, static",
+    "Decomposition: multi-hop, structured",
+    "Dynamic agents: non-deterministic, conditional"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q03F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Step and token limits",
+    "Cost and confidence budgets",
+    "Circuit breakers and HITL"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q04",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "RRF score calculation",
+    "Aggregation and top-k selection",
+    "Deterministic tie-breaking"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q04F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Incompatible score distributions",
+    "Weighted RRF implementation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q05",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Sort by relevance, filter duplicates",
+    "Track doc counts, enforce budget"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q05F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Greedy tunnel vision",
+    "Maximal Marginal Relevance",
+    "Agentic retrieval loops"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q06",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Semaphore for concurrency",
+    "asyncio.gather with shield",
+    "Exception handling per task"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q06F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Mocking time and clock",
+    "Controlled concurrency primitives",
+    "Asserting cancellation propagation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q07",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Hierarchical index with tenant partitioning",
+    "Metadata in PostgreSQL with ACLs",
+    "LLM-as-judge for retrieval accuracy"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q07F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Retrieval layer filtering",
+    "Post-generation serving gate"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q08",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Versioning and backfill",
+    "Sync and quality",
+    "Cutover and rollback"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q08F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Shadow traffic comparison",
+    "LLM-as-judge evaluation",
+    "Data parity checksums"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q09",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Storage, Search, OpenAI services",
+    "Event-driven ingestion pipeline",
+    "Managed vs custom trade-offs"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q09F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Pin resources to region",
+    "Private Link for isolation",
+    "Azure Policy for enforcement"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q10",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Idempotency keys",
+    "Transactional state check",
+    "Atomic ACK"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "S2Q10F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "MaxDeliveryCount for poison docs",
+    "Quarantine for manual triage",
+    "Versioning for race conditions"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  }
+ ]
+}

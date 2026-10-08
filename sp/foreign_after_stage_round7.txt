@@ -1,0 +1,30 @@
+ M .gitignore
+ M electron/IntelligenceManager.ts
+ M electron/LLMHelper.ts
+ M electron/MeetingPersistence.ts
+ M electron/audio/ElevenLabsStreamingSTT.ts
+ M electron/audio/GeminiLiveRouter.test.ts
+ M electron/audio/GeminiLiveRouter.ts
+ M electron/llm/WhatToAnswerLLM.ts
+ M electron/llm/prompts.ts
+ M electron/llm/verbalStreamFilter.ts
+ M electron/main.ts
+ M electron/preload.ts
+ M electron/rag/EmbeddingPipeline.ts
+ M electron/test/golden/interview60.report.html
+ M electron/test/golden/interview60.report.md
+ M natively_debug.log.1
+ M src/components/DetectedQuestionsPanel.test.tsx
+ M src/components/DetectedQuestionsPanel.tsx
+ M src/components/NativelyInterface.tsx
+ M src/types/electron.d.ts
+?? electron/LLMHelper.emptyStream.test.ts
+?? electron/llm/spokenNotation.json.test.ts
+?? electron/llm/spokenNotation.test.ts
+?? electron/llm/summaryContextLimits.test.ts
+?? electron/llm/summaryContextLimits.ts
+?? electron/llm/verbalFallback.test.ts
+?? electron/rag/configRedaction.test.ts
+?? electron/rag/configRedaction.ts
+?? resume_prompt.txt
+?? retry_claude_print.bat

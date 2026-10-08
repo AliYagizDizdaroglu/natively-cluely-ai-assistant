@@ -1,0 +1,10 @@
+docs(passes): the h40d validation hour's rule, revision 4, section 11 filled and amendments A1-A14; this commit is the registered HEAD
+
+The pre-registration for Friday 2026-10-02 13:30 on holdout40 (the first hour of the cue build in MAIN), written and
+reviewed before any data: the rule (sections 1-10), the controller's defaults (12), the input conflicts (13), the dated
+amendments A1-A14 (14) and "What flies" (11) filled at arming: merge a4aea78, dist main.js 2026-10-01T13:37:38.588Z,
+filter 42d9bc42dbd17870, the qualifying-HEAD diff empty, the five prestart starts (run 5 at 21:00 PROBE READY), the
+instruments' calibrations, the grader alias claude-opus-5-5. The dry twin, the task registration and the precheck are
+recorded after this commit (A13), because this commit is the HEAD the launchers pin.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

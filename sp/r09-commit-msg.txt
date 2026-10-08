@@ -1,0 +1,21 @@
+fix(knowledge): a question with a technical marker is never a negotiation
+
+STRONG_NEGOTIATION carried the bare word "salary", so "the SQL for the second highest salary in
+each department" (h40a R09, 2026-09-24) was answered with the negotiation coaching card. Two
+changes: the bare word becomes the phrases an interviewer uses about the candidate's own pay,
+and a question that carries a technical marker (sql and the transcript's spellings sequel,
+postgresql, postgres, mysql; query/queries, tables, database/databases, schema/schemas,
+column/columns, function/functions, algorithm/algorithms, regression, pipeline/pipelines,
+dataset/datasets, implement, code) is never a negotiation whatever pay term it contains. "table"
+and "join" are not markers: "on the table" and "join us" are negotiation idioms.
+
+Trade-off, recorded: a negotiation question worded with "salary" but none of the phrases ("What's
+your current salary?", "How flexible are you on salary?"), or one that carries a marker as an
+ordinary word ("Any queries about the compensation package?", "There are other candidates in the
+pipeline", "the finance function", "your salary expectations for this senior Postgres role"), now
+gets an ordinary answer instead of the coaching card, and
+without the salary block the coaching path added. A wrong card on a technical question is
+unspeakable; a plain answer to a pay question is not. Against the previous HEAD the change only
+removes negotiation classifications (0 exceptions over the 257 roster questions).
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

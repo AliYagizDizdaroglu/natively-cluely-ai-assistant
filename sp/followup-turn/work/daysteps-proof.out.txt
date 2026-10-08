@@ -1,0 +1,10 @@
+OK  decide with a stray R/scripts/zz-stray.mjs: REFUSED, exit 3  [exit 3]
+OK  ... prints no VOID, saves no RESULT file, ran no legs-decide
+OK  ... decide-rerun too (with the stray gone it is no longer refused for that reason)  [exit 3]
+OK  stop-archive: exit 0, one R/stopped-<YYYYMMDD-HHMM>/ folder  [exit 0 stopped-20261003-2327]
+OK  ... it holds the 3 answer files (one a .tmp), STOPPED-front.txt and the pass stdout
+OK  ... R then holds no _fturn- answer file and no STOPPED marker (precondition 6.1 lists an empty R again), and the other file stays
+OK  stop-archive again with nothing to move: refused, exit 2
+OK  decide with DECISION already on file: RESULT-front-back.txt is byte-identical afterwards, the new output went to RESULT-front-back.again-*.txt  [exit 3; RESULT-front-back.again-2026-10-03232749.txt]
+OK  R is back to its starting listing
+DAY-STEPS PROOF OK

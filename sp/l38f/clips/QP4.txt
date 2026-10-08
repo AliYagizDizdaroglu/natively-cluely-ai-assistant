@@ -1,0 +1,1 @@
+Is binary search on a sorted array logarithmic?

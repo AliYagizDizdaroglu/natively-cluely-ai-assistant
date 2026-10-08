@@ -1,0 +1,4 @@
+2026-09-09T15-00-55-s50a memory={"revive":false,"echo":false}: once 40/40 [not once: ], supersedes 0, early 0, long-whole 15/15, over budget [], median 1200, drops 2, absorbed 0, throws 0
+2026-09-09T15-00-55-s50a memory={"revive":true,"echo":true}: once 40/40 [not once: ], supersedes 0, early 0, long-whole 15/15, over budget [], median 1200, drops 0, absorbed 2, throws 0
+2026-09-08T08-44-56-after9 memory={"revive":false,"echo":false}: once 76/76 [not once: ], supersedes 0, early 0, long-whole 6/6, over budget [], median 1200, drops 0, absorbed 0, throws 0
+2026-09-08T08-44-56-after9 memory={"revive":true,"echo":true}: once 76/76 [not once: ], supersedes 0, early 0, long-whole 6/6, over budget [], median 1200, drops 0, absorbed 1, throws 0

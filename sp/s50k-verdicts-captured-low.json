@@ -1,0 +1,236 @@
+{
+  "S1Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct conditions for all three model classes with concrete tradeoffs; at 89 words it runs slightly long."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "True positives and 57% precision computed correctly, but recall is never stated as a figure and the consistency verdict is soft."
+  },
+  "S1Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correctly reads PR AUC against the 9.5% base rate as roughly four times random, plus cost asymmetry; 91 words is long."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout against the treated high-risk segment is exactly the right control for seasonality and mix."
+  },
+  "S1Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names lost causes versus persuadables and ties uplift targeting to incremental gain; well-paced spoken answer."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Opens with an unasked budget profit function before answering; the evaluate_top_k half is correct but the answer is long and drifts."
+  },
+  "S1Q04F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Min-heap idea is right, but the secondary key should be the original row index, not a user ID, to preserve the stated tie rule."
+  },
+  "S1Q05": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split and ColumnTransformer fit on train are right, but the 30-day label-window embargo between train and test is omitted; long."
+  },
+  "S1Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Covers both halves: longitudinal repetition is legitimate, customer-level holdout needed to generalize to new users."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Query is correct with filters in the ON clause preserving zero-call rows, but it is delivered as a fenced SQL code block, unspeakable."
+  },
+  "S1Q06F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sensible composite indexes and an append-only SCD Type 2 answer for corrections; index omits the ingested_at column it filters on."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested layer and names the feature store as the shared piece preventing skew; roughly 150 words is far too long."
+  },
+  "S1Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Idempotent processed-ID store plus pinning the model version in the run metadata is exactly right; 96 words is long."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, delayed joins and retraining selection are sound, but experiment assignment is only logged, never designed; long, with a stray markdown emphasis."
+  },
+  "S1Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correctly names the treated-sample selection bias and feedback loop with uplift as the fix; 97 words is long."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure mapping across storage, AML pipelines and registry, ACR, AKS, ADF, Entra ID and Azure Monitor; well over 85 words."
+  },
+  "S1Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Clean, defensible split across the three hosting options with real operational reasons for each."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "User-assigned managed identity, correct RBAC roles, Entra auth to Postgres, Key Vault and private endpoints; roughly 135 words."
+  },
+  "S1Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Crisp 401 versus 403 versus timeout triage mapped to identity, RBAC and NSG checks."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every named stage and maps each to real tooling, but roughly 140 words is well past a spoken answer."
+  },
+  "S2Q01F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names generation and context assembly but skips the mechanical culprits: parsing and chunking splitting the evidence, and reranking dropping it."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives units and datasets but the hallucination denominator is undefined and uncertainty is waved away as minimal with no interval; long."
+  },
+  "S2Q02F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Strong judge-bias checks (position swap, reference-free, Cohen's Kappa) but the classification ablation that was explicitly asked is missing; very long."
+  },
+  "S2Q03": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Compares all three but declares the dynamic agent flatly superior without the latency, cost or failure-surface cost the question is probing."
+  },
+  "S2Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Depth and tool-call caps, token budget, and circuit breaker with fallback cover all three asked controls concisely."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accumulator dict, one over c plus one-based rank, descending sort with document id as deterministic tiebreak, all correct; about 120 words."
+  },
+  "S2Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Right on unbounded BM25 versus bounded cosine and the ordinal normalisation, with a clean weighting scheme; long and formula-heavy to speak."
+  },
+  "S2Q05": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Greedy sort, per-document cap and budget tracking are right, but the explicitly asked chunk-id deduplication is never mentioned."
+  },
+  "S2Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Builds a concrete revenue-versus-costs flooding example and fixes it with MMR plus sub-question decomposition."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, wait_for per case, exceptions caught in the wrapper, and gather preserving input order; all four constraints met."
+  },
+  "S2Q06F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Answers the deterministic testing half well but never designs the transient-error retry or how the overall deadline bounds it."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-sharded index, Postgres row level security for ACLs, filters pushed into the query, async queue ingestion and gold-set evals; about 175 words."
+  },
+  "S2Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly places checks at retrieval filter time and again before context injection, with short-lived tokens for mid-query revocation."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioned metadata, batched backfill into a separate collection, dual-write sync, shadow comparison, flag cutover and rollback all covered; long."
+  },
+  "S2Q08F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Proves completeness with counts and checksums and quality with a golden set, but never proves currency, the freshness lag behind live updates."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every component placed on an apt Azure service with a real managed-versus-custom rationale, but roughly 200 words is far too long to say."
+  },
+  "S2Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Regional pinning, geo-replication disabled and Private Link is the right residency answer; conflates resource group with region boundary."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-lock plus a Cosmos processed-state check before embedding, acknowledging last, is a correct at-least-once idempotency design."
+  },
+  "S2Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Max delivery count to dead letter, safe replay via the idempotency layer, and version-timestamp optimistic concurrency for the delete race."
+  }
+}

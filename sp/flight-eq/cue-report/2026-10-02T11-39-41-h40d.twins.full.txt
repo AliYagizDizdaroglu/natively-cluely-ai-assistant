@@ -1,0 +1,47 @@
+h40d-twins: run 2026-10-02T11-39-41-h40d
+chain: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn
+  verbalStreamFilter.js sha256/16 42d9bc42dbd17870 (r4 section 2's combined build: 42d9bc42dbd17870 -> MATCH); cue limits 3 x 5, CUE_RULE sha256/12 8e15e4e7dd41
+mode: h40d reading (the cue check is read)
+gated ids: every id but R02F R04F R09F R11F R13F (r4 rule 3b); wrong clause governing: DEFAULT sums with a margin of one; no-text records: out of the gated clause on either side (the default)
+cue twins (gemini-3.5-flash-lite_captured-high)
+  rep 1  interview60.answers.gemini-3.5-flash-lite_captured-high.json
+    ids 44 (gated 39): answered 43, true holes 0, empty prose 1
+      empty prose: R09  PIPELINE EVENT: emptied by filterCodeFences (a fenced answer, dropped by design, cues or not); all-ids line only, never the gated clause
+    acceptable 36 (weak 7); wrong: gated 0, all ids 1  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 1 all]
+    cue check (net of true holes, n 44): blocks present 44/44 (100.0%), shaped 44/44 (100.0%); over 3 lines 0/44 (0.0%); over 5 words: blocks 1/44 (2.3%), lines 1/106 (0.9%)
+    thoughts p50 902 p90 1139 (n 43); ttft p50 10891 p90 30446 ms (n 43)
+  rep 2  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json
+    ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+    acceptable 39 (weak 3); wrong: gated 1, all ids 2  [verdict-wrong 1 gated / 2 all, plus empty prose 0 gated / 0 all]
+    cue check (net of true holes, n 44): blocks present 44/44 (100.0%), shaped 44/44 (100.0%); over 3 lines 0/44 (0.0%); over 5 words: blocks 4/44 (9.1%), lines 4/100 (4.0%)
+    thoughts p50 891 p90 1093 (n 44); ttft p50 3863 p90 9844 ms (n 44)
+  rep 3  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json
+    ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+    acceptable 39 (weak 5); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+    cue check (net of true holes, n 44): blocks present 44/44 (100.0%), shaped 44/44 (100.0%); over 3 lines 0/44 (0.0%); over 5 words: blocks 1/44 (2.3%), lines 1/108 (0.9%)
+    thoughts p50 910 p90 1093 (n 44); ttft p50 3816 p90 4587 ms (n 44)
+no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high)
+  rep 1  interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high.json
+    ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+    acceptable 38 (weak 6); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+    thoughts p50 715 p90 973 (n 44); ttft p50 3208 p90 5974 ms (n 44)
+  rep 2  interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r2.json
+    ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+    acceptable 36 (weak 7); wrong: gated 0, all ids 1  [verdict-wrong 0 gated / 1 all, plus empty prose 0 gated / 0 all]
+    thoughts p50 736 p90 982 (n 44); ttft p50 3414 p90 4341 ms (n 44)
+  rep 3  interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r3.json
+    ids 44 (gated 39): answered 44, true holes 0, empty prose 0
+    acceptable 38 (weak 5); wrong: gated 1, all ids 1  [verdict-wrong 1 gated / 1 all, plus empty prose 0 gated / 0 all]
+    thoughts p50 792 p90 978 (n 44); ttft p50 3512 p90 4308 ms (n 44)
+graders over the judge files (model / stamp: files): claude-opus-5-5 / prompt stamp 8564ba96369a: 6
+
+band (all ids, acceptable per rep): control [36, 38] (reps 38 / 36 / 38)  cue [36, 39] (reps 36 / 39 / 39)  -> OVERLAP (cue max 39 >= control min 36)
+wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 1 (0 / 1 / 0) vs control 1 (0 / 0 / 1) + 1 -> no stop
+wrong on the gated ids, STRICT alternative (per rep): worst control rep 1; cue rep(s) above it: none -> no stop
+wrong on all ids, printed beside (never gated): control 0 / 1 / 1, cue 1 / 2 / 0
+cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%); shaped 44/44 (100.0%) / 44/44 (100.0%) / 44/44 (100.0%) -> holds in every cue rep
+rule 3c reading: PASS
+
+--- stderr ---
+
+--- exit 0

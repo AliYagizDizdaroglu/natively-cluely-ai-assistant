@@ -1,0 +1,8 @@
+docs(plans): live router default implementation plan (rev 2, 21 tasks, four lane worktrees)
+
+Opus-authored from the approved spec (17d199d), Opus-reviewed (APPROVE WITH CHANGES, all adopted in rev 2:
+one worktree per lane plus an integration worktree, flag-off renderer path unchanged, routerWiring.ts with
+unit tests, generation-safe answer-end events, blind side-by-side export). The user kept the ear failover, so
+the critical path ends ~06:35 and the validation run targets the fallback 2026-10-07 ~23:00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

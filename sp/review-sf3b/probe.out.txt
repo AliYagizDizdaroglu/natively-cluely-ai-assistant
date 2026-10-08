@@ -1,0 +1,58 @@
+﻿== (1a) spoken openers through the full chain (stripSpokenNotation first)
+"{} is the " -> chain head "{} is th" @1: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"{} is the " -> chain head "{} is th" @2: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"{} is the " -> chain head "{} is th" @3: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"{} is the " -> chain head "{} is th" @9: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"{} is the " -> chain head "{} is th" @whole: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"{x} is a s" -> chain head "{x} is a" @1: OLD {"words":188,"cut":true,"allowance":false} | NEW {"words":188,"cut":true,"allowance":false} wc(out)=188 n=1 sameAsOld=true
+"{x} is a s" -> chain head "{x} is a" @2: OLD {"words":188,"cut":true,"allowance":false} | NEW {"words":188,"cut":true,"allowance":false} wc(out)=188 n=1 sameAsOld=true
+"{x} is a s" -> chain head "{x} is a" @3: OLD {"words":188,"cut":true,"allowance":false} | NEW {"words":188,"cut":true,"allowance":false} wc(out)=188 n=1 sameAsOld=true
+"{x} is a s" -> chain head "{x} is a" @9: OLD {"words":188,"cut":true,"allowance":false} | NEW {"words":188,"cut":true,"allowance":false} wc(out)=188 n=1 sameAsOld=true
+"{x} is a s" -> chain head "{x} is a" @whole: OLD {"words":188,"cut":true,"allowance":false} | NEW {"words":188,"cut":true,"allowance":false} wc(out)=188 n=1 sameAsOld=true
+"`{}` is th" -> chain head "{} is th" @1: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"`{}` is th" -> chain head "{} is th" @2: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"`{}` is th" -> chain head "{} is th" @3: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"`{}` is th" -> chain head "{} is th" @9: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"`{}` is th" -> chain head "{} is th" @whole: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"**{a, b}**" -> chain head "{a, b} i" @1: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"**{a, b}**" -> chain head "{a, b} i" @2: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"**{a, b}**" -> chain head "{a, b} i" @3: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"**{a, b}**" -> chain head "{a, b} i" @9: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+"**{a, b}**" -> chain head "{a, b} i" @whole: OLD {"words":189,"cut":true,"allowance":false} | NEW {"words":189,"cut":true,"allowance":false} wc(out)=189 n=1 sameAsOld=true
+
+== (1b) >200-word card through the full chain
+card words 277, starts "{\"_"
+card @1: OLD parses false {"words":184,"cut":true,"allowance":false} | NEW parses true identical true {"words":0,"cut":false,"allowance":false} n=1
+card @2: OLD parses false {"words":184,"cut":true,"allowance":false} | NEW parses true identical true {"words":0,"cut":false,"allowance":false} n=1
+card @3: OLD parses false {"words":184,"cut":true,"allowance":false} | NEW parses true identical true {"words":0,"cut":false,"allowance":false} n=1
+card @9: OLD parses false {"words":184,"cut":true,"allowance":false} | NEW parses true identical true {"words":0,"cut":false,"allowance":false} n=1
+card @whole: OLD parses false {"words":184,"cut":true,"allowance":false} | NEW parses true identical true {"words":0,"cut":false,"allowance":false} n=1
+
+== (1c) stage-level edge cases (NEW; OLD for contrast)
+blank-led card: NEW out=1723ch sameAsInput=true sameAsOld=false parses=true done={"words":0,"cut":false,"allowance":false} n=1 chunks=246 first=" \n{\"__neg" | OLD done={"words":184,"cut":true,"allowance":false}
+sentinel then card: NEW out=1767ch sameAsInput=true sameAsOld=false parses=true done={"words":0,"cut":false,"allowance":false} n=1 chunks=346 first="__model_source" | OLD done={"words":184,"cut":true,"allowance":false}
+blank, sentinel, then speech: NEW out=1119ch sameAsInput=false sameAsOld=false parses=false done={"words":189,"cut":true,"allowance":false} n=1 chunks=6 first="__model_source" | OLD done={"words":189,"cut":true,"allowance":false}
+lone {: NEW out=1ch sameAsInput=true sameAsOld=true parses=false done={"words":1,"cut":false,"allowance":false} n=1 chunks=1 first="{" | OLD done={"words":1,"cut":false,"allowance":false}
+blank then lone {: NEW out=4ch sameAsInput=true sameAsOld=true parses=false done={"words":1,"cut":false,"allowance":false} n=1 chunks=1 first="  {\n" | OLD done={"words":1,"cut":false,"allowance":false}
+{ then " split: NEW out=1721ch sameAsInput=true sameAsOld=false parses=true done={"words":0,"cut":false,"allowance":false} n=1 chunks=158 first="{\"" | OLD done={"words":184,"cut":true,"allowance":false}
+{ then blank then ": NEW out=8ch sameAsInput=true sameAsOld=true parses=true done={"words":2,"cut":false,"allowance":false} n=1 chunks=2 first="{ " | OLD done={"words":2,"cut":false,"allowance":false}
+{ " (space after brace) + long speech-like: NEW out=1073ch sameAsInput=false sameAsOld=true parses=false done={"words":186,"cut":true,"allowance":false} n=1 chunks=5 first="{ \"" | OLD done={"words":186,"cut":true,"allowance":false}
+empty stream: NEW out=0ch sameAsInput=true sameAsOld=true parses=false done={"words":0,"cut":false,"allowance":false} n=1 chunks=0 first="" | OLD done={"words":0,"cut":false,"allowance":false}
+only empty strings: NEW out=0ch sameAsInput=true sameAsOld=true parses=false done={"words":0,"cut":false,"allowance":false} n=1 chunks=0 first="" | OLD done={"words":0,"cut":false,"allowance":false}
+{} then long speech @1: NEW out=1080ch sameAsInput=false sameAsOld=true parses=false done={"words":187,"cut":true,"allowance":false} n=1 chunks=813 first="{}" | OLD done={"words":187,"cut":true,"allowance":false}
+{" spoken (the residual): NEW out=1621ch sameAsInput=true sameAsOld=false parses=false done={"words":0,"cut":false,"allowance":false} n=1 chunks=406 first="{\"a\"" | OLD done={"words":189,"cut":true,"allowance":false}
+
+JSON.stringify object prefixes: "{}" "{\"" "{\""
+
+== (2) early consumer stop: onDone must NOT fire
+speech: consumed 2, onDone fired 0 (expect 0)
+card: consumed 2, onDone fired 0 (expect 0)
+heldOnly: consumed 1, onDone fired 1 (expect 0)
+
+== (2b) source throws after a held chunk
+blank OLD: out " " err boom onDone 0
+blank NEW: out "" err boom onDone 0
+brace OLD: out "{" err boom onDone 0
+brace NEW: out "" err boom onDone 0
+speech OLD: out "Hi" err boom onDone 0
+speech NEW: out "Hi" err boom onDone 0

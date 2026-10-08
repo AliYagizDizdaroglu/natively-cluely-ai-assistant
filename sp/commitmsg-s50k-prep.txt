@@ -1,0 +1,21 @@
+feat(flight): three reps of the 3.5 HIGH twin, and a length row the grader cannot see
+
+Two additions for s50k, both measurements rather than changes to what flies.
+
+The 3.5 HIGH twin now runs three times (captured-high, -r2, -r3), the way the 3.1 LOW twin
+already does. s50j's single captured-high arm scored 35 of 39 against the 3.1-LOW band of
+29-33: read against the worst rep that is +6 and clears the ship rule, read against the band
+it is +2 over the top. One arm against a band overstates by up to 4, so the model decision has
+to be band against band — same bytes, same window — and this gives it that. About 78 more
+3.5-lite calls; the day's budget holds at roughly 220 of 500.
+
+The gate gains a row: "Spoken answers under the 150-word cliff" — words p90, the share over
+85, the share over 150 — computed from the same per-answer budget lines the guard row reads.
+Sixteen independent graders on s50j named length the dominant defect in every arm, and the
+frozen rubric never demotes below delivery 1 for it, so the acceptable count is blind to the
+one lever with headroom. 150 is not a taste: s50e pinned the delivery-0 cliff at <=154 usable
+and >=158 dead, so an answer past 150 is one a candidate cannot say aloud. The row fails on
+any such answer, which means it is expected to FAIL on the current build (s50j had five at or
+past 158) — it exists so the lever has a number, not to pass.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

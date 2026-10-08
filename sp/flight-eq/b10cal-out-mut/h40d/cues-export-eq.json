@@ -1,0 +1,4099 @@
+{
+ "schema": "cues-export-eq/1",
+ "runDir": "C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-10-02T11-39-41-h40d",
+ "registeredHead": "56bda9eb64b65a190c73788b5f86a550f6809f6a",
+ "window": {
+  "startedAt": "2026-10-02T10:33:52.110Z",
+  "endedAt": "2026-10-02T11:39:41.435Z"
+ },
+ "entries": [
+  {
+   "id": "R01",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:33:59.879Z",
+   "cues": [
+    "Standard Python dictionary",
+    "Hash table index array"
+   ],
+   "empty": null,
+   "logLine": 465
+  },
+  {
+   "id": "R02",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:35:07.444Z",
+   "cues": [
+    "Hash map and linked list",
+    "O(1) lookups and updates",
+    "Evicting tail on capacity overflow"
+   ],
+   "empty": null,
+   "logLine": 622
+  },
+  {
+   "id": "R02F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:37:42.429Z",
+   "cues": [
+    "Mutex locks",
+    "Reader-writer lock optimization",
+    "Minimizing lock contention"
+   ],
+   "empty": null,
+   "logLine": 818
+  },
+  {
+   "id": "R03",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:38:49.579Z",
+   "cues": [
+    "Frequency hash map",
+    "Min-heap of size 100"
+   ],
+   "empty": null,
+   "logLine": 974
+  },
+  {
+   "id": "R04",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:40:12.805Z",
+   "cues": [
+    "Hash set duplicate tracking",
+    "Returns null on empty input"
+   ],
+   "empty": null,
+   "logLine": 1141
+  },
+  {
+   "id": "R04F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:42:47.009Z",
+   "cues": [
+    "Adjacent comparison, O(1) space"
+   ],
+   "empty": null,
+   "logLine": 1348
+  },
+  {
+   "id": "R06",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:44:54.051Z",
+   "cues": [
+    "Client idempotency key",
+    "Database unique constraint",
+    "State caching"
+   ],
+   "empty": null,
+   "logLine": 1547
+  },
+  {
+   "id": "R07",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:45:58.583Z",
+   "cues": [
+    "Atomic status updates",
+    "Message visibility timeouts"
+   ],
+   "empty": null,
+   "logLine": 1676
+  },
+  {
+   "id": "R07F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:47:22.376Z",
+   "cues": [
+    "Atomic conditional database updates",
+    "Visibility timeout lease expiration"
+   ],
+   "empty": null,
+   "logLine": 1808
+  },
+  {
+   "id": "R08",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:48:24.033Z",
+   "cues": [
+    "Kafka transactions and idempotency",
+    "External side-effect handling"
+   ],
+   "empty": null,
+   "logLine": 1934
+  },
+  {
+   "id": "R09",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:49:52.107Z",
+   "cues": [
+    "Window function Dense Rank",
+    "Filter rank two"
+   ],
+   "empty": null,
+   "logLine": 2086
+  },
+  {
+   "id": "R09F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:52:19.799Z",
+   "cues": [
+    "CTE with dense rank"
+   ],
+   "empty": null,
+   "logLine": 2292
+  },
+  {
+   "id": "R10",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:53:29.569Z",
+   "cues": [
+    "Replicas for read traffic",
+    "Sharding for write traffic"
+   ],
+   "empty": null,
+   "logLine": 2468
+  },
+  {
+   "id": "R11",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:54:59.185Z",
+   "cues": [
+    "Traffic burstiness and algorithm",
+    "Distributed state via Redis",
+    "Latency budget and failure mode"
+   ],
+   "empty": null,
+   "logLine": 2653
+  },
+  {
+   "id": "R11F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:57:28.939Z",
+   "cues": [
+    "Load distribution via balancer",
+    "Stateless state management"
+   ],
+   "empty": null,
+   "logLine": 2839
+  },
+  {
+   "id": "R12",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T10:58:38.616Z",
+   "cues": [
+    "Asynchronous queue-based fan-out",
+    "Third-party gateway API limits and"
+   ],
+   "empty": null,
+   "logLine": 2978
+  },
+  {
+   "id": "R13",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:01:41.330Z",
+   "cues": [
+    "Kafka and Airflow ingestion pipelines",
+    "Offline S3 and online Redis",
+    "Point-in-time joins prevent train-serve skew"
+   ],
+   "empty": null,
+   "logLine": 3263
+  },
+  {
+   "id": "R13F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:03:47.737Z",
+   "cues": [
+    "Airflow sensors and timeouts",
+    "Fallback or DAG halt",
+    "Automated alerting"
+   ],
+   "empty": null,
+   "logLine": 3419
+  },
+  {
+   "id": "R14",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:04:53.657Z",
+   "cues": [
+    "ONNX and TensorRT",
+    "Redis caching",
+    "Triton and FastAPI"
+   ],
+   "empty": null,
+   "logLine": 3551
+  },
+  {
+   "id": "R15",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:07:29.129Z",
+   "cues": [
+    "Bias is underfitting assumptions",
+    "Variance is overfitting fluctuations"
+   ],
+   "empty": null,
+   "logLine": 3709
+  },
+  {
+   "id": "R16",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:08:38.438Z",
+   "cues": [
+    "Evaluation metrics and class weights",
+    "Core feature pipeline and architecture"
+   ],
+   "empty": null,
+   "logLine": 3896
+  },
+  {
+   "id": "R17",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:09:58.532Z",
+   "cues": [
+    "Global aggregations before splitting",
+    "Post-event indicators included"
+   ],
+   "empty": null,
+   "logLine": 4028
+  },
+  {
+   "id": "R17F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:11:20.393Z",
+   "cues": [
+    "Global statistics pre-computation",
+    "Target encoding or scaling"
+   ],
+   "empty": null,
+   "logLine": 4170
+  },
+  {
+   "id": "R18",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:12:19.912Z",
+   "cues": [
+    "Imbalanced datasets",
+    "Rare positive classes",
+    "False positive penalty"
+   ],
+   "empty": null,
+   "logLine": 4273
+  },
+  {
+   "id": "R19",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:13:27.751Z",
+   "cues": [
+    "Calibration requirement",
+    "Post-processing and ECE validation"
+   ],
+   "empty": null,
+   "logLine": 4409
+  },
+  {
+   "id": "R20",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:14:45.552Z",
+   "cues": [
+    "Query-key dot product",
+    "Softmax normalization",
+    "Weighted value sum"
+   ],
+   "empty": null,
+   "logLine": 4553
+  },
+  {
+   "id": "R21",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:15:51.478Z",
+   "cues": [
+    "Retrieval for dynamic facts",
+    "Fine-tuning for tone and style"
+   ],
+   "empty": null,
+   "logLine": 4675
+  },
+  {
+   "id": "R22",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:17:12.706Z",
+   "cues": [
+    "Deterministic validation",
+    "Agentic retry loops"
+   ],
+   "empty": null,
+   "logLine": 4852
+  },
+  {
+   "id": "R22F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:18:31.528Z",
+   "cues": [
+    "LLM-as-judge evals",
+    "Human-annotated gold set",
+    "Tool validation rates"
+   ],
+   "empty": null,
+   "logLine": 4979
+  },
+  {
+   "id": "R22F2",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:19:36.215Z",
+   "cues": [
+    "Stale gold sets",
+    "Judge model drift",
+    "Production log mining"
+   ],
+   "empty": null,
+   "logLine": 5080
+  },
+  {
+   "id": "R23",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:20:41.359Z",
+   "cues": [
+    "~30.7 GB raw memory",
+    "Scalar or product quantization"
+   ],
+   "empty": null,
+   "logLine": 5263
+  },
+  {
+   "id": "R24",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:22:01.822Z",
+   "cues": [
+    "LLM-as-judge",
+    "Deterministic tool checks",
+    "Human-in-the-loop sampling"
+   ],
+   "empty": null,
+   "logLine": 5422
+  },
+  {
+   "id": "R25",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:23:21.405Z",
+   "cues": [
+    "SageMaker Model Monitor",
+    "Baselines and statistical tests",
+    "CloudWatch alerting"
+   ],
+   "empty": null,
+   "logLine": 5569
+  },
+  {
+   "id": "R26",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:25:03.904Z",
+   "cues": [
+    "Decouple with separate jobs",
+    "Partition-level merging",
+    "Chunking and optimization"
+   ],
+   "empty": null,
+   "logLine": 5801
+  },
+  {
+   "id": "R26F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:26:20.068Z",
+   "cues": [
+    "Row-level hashing validation",
+    "Production logic shadow run"
+   ],
+   "empty": null,
+   "logLine": 5932
+  },
+  {
+   "id": "R27",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:27:32.347Z",
+   "cues": [
+    "Shadow for risk mitigation",
+    "Canary for traffic shifting"
+   ],
+   "empty": null,
+   "logLine": 6074
+  },
+  {
+   "id": "R28",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:29:00.269Z",
+   "cues": [
+    "Lineage and reproducibility",
+    "Centralized model registry"
+   ],
+   "empty": null,
+   "logLine": 6242
+  },
+  {
+   "id": "R28F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:30:19.059Z",
+   "cues": [
+    "Hardware and CUDA stochasticity",
+    "Unversioned upstream data drift"
+   ],
+   "empty": null,
+   "logLine": 6383
+  },
+  {
+   "id": "R29",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:31:25.671Z",
+   "cues": [
+    "Centralized governance",
+    "Fine-grained security",
+    "Delta Sharing"
+   ],
+   "empty": null,
+   "logLine": 6549
+  },
+  {
+   "id": "R30",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:33:00.792Z",
+   "cues": [
+    "Bedrock batch inference",
+    "Fifty percent cost discount",
+    "Throughput over latency"
+   ],
+   "empty": null,
+   "logLine": 6725
+  },
+  {
+   "id": "R31",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:34:55.561Z",
+   "cues": [
+    "Math doesn't add up",
+    "3,600 extra orders"
+   ],
+   "empty": null,
+   "logLine": 7007
+  },
+  {
+   "id": "R31F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:35:50.972Z",
+   "cues": [
+    "Statistical significance and duration",
+    "Traffic randomization and bias",
+    "Downstream margin impact"
+   ],
+   "empty": null,
+   "logLine": 7132
+  },
+  {
+   "id": "R32",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:37:01.183Z",
+   "cues": [
+    "Baseline cache state and traffic",
+    "Load test concurrency and duration",
+    "Algorithmic gains versus hardware scaling"
+   ],
+   "empty": null,
+   "logLine": 7263
+  },
+  {
+   "id": "R33",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": "2026-10-02T11:38:32.390Z",
+   "cues": [
+    "Yes, thresholds shifted",
+    "Check false negative rate"
+   ],
+   "empty": null,
+   "logLine": 7447
+  },
+  {
+   "id": "R01",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Python dictionary"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R02",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Hash map for O(1) lookups",
+    "Doubly linked list for order"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R02F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Mutual exclusion lock",
+    "Reader-writer locks for scaling reads",
+    "Minimizing critical section scope"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R03",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Count-Min Sketch and Min-Heap"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R04",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Hash set iteration",
+    "Returns none for empty"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R04F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Adjacent element comparison",
+    "O(1) space complexity"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R06",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Idempotency key",
+    "Database unique constraint",
+    "State check and lock"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R07",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Atomic state updates",
+    "Row-level locking"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R07F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Atomic conditional update",
+    "Visibility timeout redelivery"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R08",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Read-committed isolation level",
+    "Transactional loops",
+    "External idempotency sinks"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R09",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Partition by department",
+    "Filter dense rank two"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R09F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "QUALIFY clause",
+    "DENSE_RANK equals two"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R10",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Read/write ratio",
+    "Read replicas for reads",
+    "Sharding for writes and size"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R11",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Traffic distribution and tenant skew",
+    "Redis state store with Lua scripts",
+    "Fail-open availability posture"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R11F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Stateless service scaling",
+    "Connection pooling overhead",
+    "Distributed task coordination"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R12",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Async queue fan-out",
+    "High-throughput write costs"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R13",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Ingestion via Spark and Kafka",
+    "Parquet offline and Redis online",
+    "Point-in-time joins for consistency"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R13F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Detect via Airflow sensors",
+    "Fallback to cached baseline",
+    "Alert downstream consumers"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R14",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "ONNX compilation and Redis caching"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R15",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "High bias underfits",
+    "High variance overfits"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R16",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "PR-AUC and ROC-AUC metrics",
+    "Class weights or threshold tuning",
+    "Tree architecture and feature pipeline"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R17",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Future information in features",
+    "Unintentional global aggregations",
+    "Strict time-based splitting"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R17F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Global feature transformations",
+    "Fitting scalers on full dataset"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R18",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Severe class imbalance",
+    "False positive sensitivity",
+    "Rare event prediction"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R19",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Model calibration",
+    "Empirical frequency check",
+    "Platt scaling or isotonic regression"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R20",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Query-key dot products",
+    "Weighted sum of values"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R21",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Retrieval for dynamic facts",
+    "Fine-tuning for tone and style",
+    "Start with RAG for support"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Deterministic tool checks",
+    "Structured grounding schemas",
+    "Eval-and-repair loops"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "LLM-as-judge evaluation pipelines",
+    "Human-annotated gold sets",
+    "Strict schema validation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22F2",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Stale gold sets",
+    "Judge prompt brittleness",
+    "Unhandled query schemas"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R23",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "$30.72$ gigabytes",
+    "Quantization and vector indexing"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R24",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "LLM-as-judge evaluation",
+    "Synthetic test generation",
+    "Deterministic assertion checks"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R25",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "SageMaker Model Monitor"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R26",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Partition-based historical chunks",
+    "Isolated job clusters"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R26F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Overlapping run parity",
+    "Distribution metrics check"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R27",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Canary deployment on SageMaker",
+    "Production variant weights and rollbacks"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R28",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Metadata and schema validation",
+    "Artifact lineage and stage transitions"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R28F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Runtime environment drift",
+    "Non-deterministic operations",
+    "Upstream data shifts"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R29",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Centralized cross-workspace governance",
+    "Row and column-level security",
+    "Unified lineage and sharing"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R30",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Managed versus self-hosted",
+    "Batch cost optimization",
+    "Throughput over latency"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R31",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Math check: 3,600 extra orders",
+    "Traffic discrepancy: 555k sessions needed"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R31F",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Statistical significance and p-values",
+    "Test duration for novelty effects",
+    "Downstream metrics like returns"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R32",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Baseline workload and concurrency",
+    "Hardware or algorithmic optimizations",
+    "Test methodology and caching"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R33",
+   "arm": "captured-high",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high.json",
+   "cues": [
+    "Yes, both can be true",
+    "Check denominator and support tickets"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R01",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Standard Python dictionary",
+    "Constant time hash table"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R02",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Hash map for lookups",
+    "Doubly linked list for order"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R02F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Mutex and read-write locks",
+    "Sharded cache for high throughput"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R03",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Count-Min sketch frequency estimation",
+    "Min-heap top-k maintenance"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R04",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Hash set tracking",
+    "Null return on empty"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R04F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Adjacent element comparison",
+    "$O(1)$ space complexity"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R06",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Client idempotency key",
+    "Database unique constraint",
+    "Return cached response"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R07",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Atomic row locking"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R07F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Atomic conditional updates",
+    "Visibility timeout expiration"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R08",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Isolation level read_committed",
+    "Idempotent consumer design"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R09",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Dense rank window function",
+    "Filter rank equals two"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R09F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "CTE with dense rank",
+    "Filter rank equals two"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R10",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Read replicas for scaling reads",
+    "Sharding for write throughput"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R11",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Peak traffic burst ratio",
+    "Distributed Redis state layer",
+    "Token bucket headroom sizing"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R11F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Stateless load balancing",
+    "Shared connection pooling",
+    "Distributed caching"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R12",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Async message queue fan-out",
+    "Database writes and push token volume"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R13",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Batch and streaming ingestion",
+    "Offline and online storage",
+    "Point-in-time join consistency"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R13F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Monitor SLAs and alert",
+    "Fallback or backfill safely"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R14",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Quantize the model",
+    "ONNX runtime inference",
+    "Redis prediction caching"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R15",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Bias misses patterns",
+    "Variance overfits noise"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R16",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Switch evaluation metrics to PR-AUC",
+    "Keep core feature engineering pipeline"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R17",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Future information contamination",
+    "Rolling aggregation traps",
+    "Point-in-time feature validation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R17F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Entity lifetime aggregation leak"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R18",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Severe class imbalance",
+    "Rare positive events",
+    "False positive sensitivity"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R19",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Probability calibration",
+    "Empirical frequency match",
+    "Post-processing scaling methods"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R20",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Query key dot product weights"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R21",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Retrieval for dynamic knowledge",
+    "Fine-tuning for tone and domain style"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "LLM-as-judge evals",
+    "Deterministic tool checks",
+    "Human-in-the-loop checkpoints"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "LLM-as-judge evals",
+    "Human-annotated gold set"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22F2",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Static gold set misalignment"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R23",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "~31 gigabytes raw memory",
+    "Quantize vectors or use vector index"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R24",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "LLM-as-judge rubric evaluation",
+    "Synthetic test case generation",
+    "Deterministic assertions and checks"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R25",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "SageMaker Model Monitor",
+    "Baseline capture",
+    "Scheduled drift jobs"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R26",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Partition by date ranges",
+    "Separate job clusters"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R26F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Overlapping validation slice",
+    "Statistical distribution diffs"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R27",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Shadow deployment on SageMaker",
+    "Zero user risk, exact production traffic"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R28",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Centralized model registry",
+    "Stage transitions and signatures"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R28F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Environment and hardware drift",
+    "Upstream data schema changes"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R29",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Cross-workspace unified governance",
+    "Column and row security",
+    "Centralized lineage and sharing"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R30",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Managed Bedrock batch",
+    "Zero idle GPU cost",
+    "Throughput over p95 latency"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R31",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Math doesn't add up",
+    "Actual lift is 3,600",
+    "Claim inflated by 1,400"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R31F",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Sample ratio mismatch check",
+    "Statistical significance and duration",
+    "Downstream margin impact"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R32",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Baseline workload parity",
+    "Peak vs off-peak traffic",
+    "Measurement window stability"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R33",
+   "arm": "captured-high",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json",
+   "cues": [
+    "Yes, both can be true.",
+    "Check volume and definitions."
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R01",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Python built-in dictionary"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R02",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Hash map and linked list",
+    "O(1) lookups and updates",
+    "Tail eviction on capacity"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R02F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Add synchronization primitives",
+    "Shard segments for concurrency"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R03",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Space-Saving algorithm",
+    "Min-heap of size 100"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R04",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Hash set for seen elements",
+    "Returns null on empty input"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R04F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Adjacent comparison, O(1) space"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R06",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Idempotency keys",
+    "Database unique constraints",
+    "Replaying cached responses"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R07",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Row-level locking with SKIP LOCKED"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R07F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Atomic conditional updates",
+    "Visibility timeouts and dead-letter queues"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R08",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "read_committed isolation level",
+    "Idempotent sinks and deduplication"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R09",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Window function ranking",
+    "Filter for rank two"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R09F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "DENSE_RANK() partition",
+    "CTE structure",
+    "Filter rank two"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R10",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Identify the primary bottleneck",
+    "Read replicas for read scale",
+    "Sharding for write capacity"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R11",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Traffic burst multiplier",
+    "Granularity of rate limits",
+    "State backend latency budget"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R11F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Horizontal load distribution",
+    "Shared resource bottlenecks",
+    "Kubernetes health checks"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R12",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Asynchronous queue-based fan-out",
+    "Database writes and push gateways"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R13",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Batch and stream ingestion",
+    "Online and offline storage",
+    "Point-in-time consistency"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R13F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "SLAs and automated alerts",
+    "Fallback data or paused runs",
+    "Upstream backfill coordination"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R14",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "ONNX Runtime compilation",
+    "FastAPI async workers",
+    "Redis prediction caching"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R15",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Bias: underfitting simplicity error",
+    "Variance: overfitting noise sensitivity"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R16",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Switch to PR-AUC",
+    "Configure class weights",
+    "Keep tree architecture"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R17",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Post-event data and global aggregates",
+    "Temporal splits and isolated pipelines"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R17F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Entity-level lifecycle aggregation leak"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R18",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Severe class imbalance",
+    "Rare positive events",
+    "Massive true negative pools"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R19",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Probability calibration",
+    "Platt scaling and isotonic regression",
+    "Expected calibration error"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R20",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Query-key dot products",
+    "Softmax weights on values"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R21",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Retrieval for dynamic knowledge",
+    "Fine-tuning for style and tone"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Deterministic tool checks",
+    "LLM-as-judge validation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "LLM-as-judge evals",
+    "Human-annotated test sets",
+    "Golden benchmarks"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22F2",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Outdated gold sets",
+    "Uncalibrated judge scoring",
+    "Continuous log mining"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R23",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "~31 GB raw memory",
+    "Quantization and ANN indexing"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R24",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "LLM-as-judge evals",
+    "Synthetic test generation",
+    "Deterministic assertions"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R25",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "SageMaker Model Monitor",
+    "Statistical drift metrics",
+    "CloudWatch alarms"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R26",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Parallel date-partitioned jobs",
+    "Separate compute clusters",
+    "Concurrent Delta table writes"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R26F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Data diffs",
+    "Delta time travel",
+    "Row-level checksums"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R27",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Shadow deployment",
+    "Risk-free latency and parity validation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R28",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Metadata and stage transitions",
+    "Lineage and artifact standardization"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R28F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Environment and system dependencies",
+    "Hardware and CUDA drift",
+    "Upstream data changes"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R29",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Fine-grained row/column control",
+    "Three-level namespace lineage",
+    "Cross-workspace governance"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R30",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Bedrock versus self-hosted",
+    "Cost optimization at scale",
+    "Batch latency tolerance"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R31",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Math doesn't add up",
+    "Thirty-six hundred extra orders",
+    "Requires four point four five percent"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R31F",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Statistical significance and p-values",
+    "Test duration and seasonality",
+    "Confounding variables and segments"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R32",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Hardware and load parity",
+    "Peak traffic window",
+    "Throughput and accuracy trade-offs"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R33",
+   "arm": "captured-high",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json",
+   "cues": [
+    "Yes, denominator and volume shift",
+    "Absolute counts versus percentages"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R01",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [],
+   "empty": "empty",
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R02",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Hash map and linked list",
+    "Move to front logic"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R02F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Synchronization primitives",
+    "Read-write lock strategy",
+    "Concurrent data structures"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R03",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Count-Min Sketch",
+    "Min-Heap for top 100",
+    "Periodic pruning"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R04",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Hash set tracking",
+    "Early exit",
+    "Empty input handling"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R04F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "O(1) space, linear scan"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R06",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Idempotency key",
+    "Atomic check",
+    "Cached response"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R07",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Atomic operations",
+    "SELECT FOR UPDATE SKIP LOCKED"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R07F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Visibility timeouts",
+    "Idempotency"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R08",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Kafka-to-Kafka limit",
+    "External idempotency"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R09",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Window function approach",
+    "Dense rank partitioning",
+    "CTE filtering"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R09F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [],
+   "empty": "empty",
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R10",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Replicas for read-heavy traffic",
+    "Sharding for write/storage limits",
+    "Complexity trade-off"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R11",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Request weight and cost",
+    "Granularity and identity",
+    "Distributed state requirements"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R11F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Load balancing",
+    "Stateless scaling",
+    "Centralized observability"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R12",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Async fan-out architecture",
+    "Database and API bottlenecks"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R13",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Ingestion: Batch and streaming",
+    "Storage: Offline and online",
+    "Consistency: Point-in-time joins"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R13F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Alerting and detection",
+    "Graceful degradation",
+    "Automated backfill"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R14",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Model optimization",
+    "Multi-layer caching",
+    "Asynchronous serving"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R15",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Bias vs Variance definition",
+    "The tradeoff"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R16",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Metrics",
+    "Loss and sampling",
+    "Decision threshold"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R17",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Temporal misalignment",
+    "Proxy variables",
+    "Point-in-time snapshots"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R17F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Global scaling parameters"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R18",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Severe class imbalance",
+    "Ignores true negatives"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R19",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Calibration definition",
+    "Reliability diagrams",
+    "Platt or isotonic scaling"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R20",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Similarity search",
+    "Weighted sum of values"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R21",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "RAG for knowledge grounding",
+    "Fine-tuning for behavior",
+    "Hybrid strategy"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Hybrid search and reranking",
+    "Strict citation prompting",
+    "Deterministic verification loops"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "LLM-as-judge evals",
+    "Human-annotated gold sets"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22F2",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Gold set coverage gaps",
+    "Judge model misalignment",
+    "Tool rigidity"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R23",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "~30 gigabytes raw",
+    "Quantization and vector databases"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R24",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "LLM-as-judge with rubric",
+    "Deterministic tool verification",
+    "Shadow deployment and monitoring"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R25",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Baseline creation",
+    "Monitoring schedules",
+    "CloudWatch alerts"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R26",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Separate job clusters",
+    "Idempotent merge logic",
+    "Partitioned backfill"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R26F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Shadow comparison",
+    "Data diffing",
+    "Partition isolation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R27",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Shadow for high-risk updates",
+    "Production Variants for mirroring"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R28",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Lifecycle state management",
+    "Lineage and metadata"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R28F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Environment drift",
+    "Data pipeline changes"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R29",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Unified governance vs silos",
+    "Automated end-to-end lineage",
+    "Fine-grained access control"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R30",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Throughput vs. latency",
+    "Managed vs. self-hosted",
+    "Cost efficiency at scale"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R31",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Math doesn't add up",
+    "3,600 versus 5,000"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R31F",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Experimental design",
+    "Statistical significance",
+    "Data leakage"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R32",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Traffic volume and concurrency",
+    "Measurement scope",
+    "Synthetic vs real traffic"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R33",
+   "arm": "captured-low",
+   "rep": 1,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low.json",
+   "cues": [
+    "Yes, both can be true.",
+    "Check absolute volume versus rate.",
+    "Verify the false positive definition."
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R01",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Python's OrderedDict",
+    "Hash map plus linked list"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R02",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Hash map and linked list",
+    "O(1) access and reordering"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R02F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Mutex for atomicity",
+    "Reader-writer lock optimization"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R03",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Count-Min Sketch",
+    "Min-Heap tracking"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R04",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Set for tracking",
+    "Return null for empty"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R04F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Compare adjacent elements",
+    "O(1) space complexity"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R06",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Client-side idempotency keys",
+    "Atomic Redis lookup",
+    "Handling race conditions"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R07",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Atomic dequeue operations",
+    "Distributed locking"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R07F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Atomic updates, visibility timeouts",
+    "Automatic re-queuing, dead-letter queues"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R08",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Transactional offsets",
+    "Atomic commits",
+    "Idempotent processing"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R09",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Dense Rank window function",
+    "Subquery filtering for rank two"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R09F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Common Table Expression",
+    "DENSE_RANK filtering"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R10",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Read replicas for reads",
+    "Sharding for write scale"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R11",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Traffic profile and burstiness",
+    "Resource cost per request",
+    "Business constraints and tiers"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R11F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Load balancing strategy",
+    "State consistency",
+    "Aggregated observability"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R12",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Hybrid fan-out strategy",
+    "Write amplification and external costs"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R13",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Ingestion: Batch and streaming",
+    "Storage: Offline and online",
+    "Consistency: Unified transformation logic"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R13F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Observability and alerting",
+    "Idempotent backfilling",
+    "Graceful degradation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R14",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Pre-computation and caching",
+    "Quantization and warm pools",
+    "Asynchronous I/O and serialization"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R15",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Bias: underfitting assumptions",
+    "Variance: overfitting noise",
+    "Tradeoff: minimizing total error"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R16",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Metric shift",
+    "Cost-sensitive learning",
+    "Keep architecture"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R17",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Future data inclusion",
+    "Global preprocessing errors"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R17F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Future-dependent data leakage",
+    "Post-event feature inclusion"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R18",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Class imbalance",
+    "Minority class focus"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R19",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Calibration",
+    "Reliability diagrams",
+    "Platt scaling or Isotonic regression"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R20",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Weighted sum of values",
+    "Query-key dot product"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R21",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "RAG for knowledge accuracy",
+    "Fine-tuning for tone",
+    "Hybrid for best results"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Grounding in retrieved context",
+    "LLM-as-judge verification",
+    "Deterministic tool checks"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Golden dataset metrics",
+    "LLM-as-judge evals",
+    "Refusal rate monitoring"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22F2",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Gold set obsolescence",
+    "Judge model calibration failure",
+    "Active learning refresh"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R23",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "~30 Gigabytes",
+    "Quantization and HNSW indexing"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R24",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "LLM-as-judge pipeline",
+    "Deterministic tool checks",
+    "Human-in-the-loop calibration"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R25",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Baseline creation",
+    "Periodic scheduling",
+    "CloudWatch alerting"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R26",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Separate compute clusters",
+    "Chunked backfill strategy",
+    "Idempotent write logic"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R26F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Shadow run verification",
+    "Aggregate statistical parity"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R27",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Shadow for validation",
+    "Canary for rollout"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R28",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Lineage and provenance",
+    "Lifecycle management",
+    "Metadata bundling"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R28F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Upstream data drift",
+    "Environment and hardware variance",
+    "Missing data pipeline versioning"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R29",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Centralized cross-workspace governance",
+    "Row and column-level security",
+    "Unified lineage and auditing"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R30",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Throughput over latency",
+    "Bedrock for speed",
+    "Self-hosted for scale"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R31",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Math doesn't add up",
+    "3,600 vs 5,000 orders",
+    "Discrepancy in claim"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R31F",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "A/B test vs pre-post",
+    "Confounding factors",
+    "Statistical significance and duration"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R32",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Baseline load conditions",
+    "Measurement point",
+    "Accuracy trade-offs"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R33",
+   "arm": "captured-low",
+   "rep": 2,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json",
+   "cues": [
+    "Yes, both are possible",
+    "Audit false positive definition",
+    "Compare test vs production traffic"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R01",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Python's dict or OrderedDict",
+    "Hash table and linked list"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R02",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Hash map and doubly linked list",
+    "Move node to front on access",
+    "Evict tail on capacity limit"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R02F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Mutex locking",
+    "Sharding for performance"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R03",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Count-Min Sketch",
+    "Min-Heap tracking"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R04",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Hash set approach",
+    "Empty input handling"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R04F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "O(1) space complexity",
+    "Adjacent element comparison"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R06",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Idempotency-Key header",
+    "Atomic transaction check"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R07",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Atomic state transitions",
+    "Visibility timeouts"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R07F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Atomic updates, visibility timeouts",
+    "Automatic retry via timeout"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R08",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Transactional offset commits",
+    "Idempotent sink operations"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R09",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Dense_rank window function",
+    "Subquery filtering"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R09F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Use QUALIFY clause",
+    "Filter window function directly"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R10",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Replicas for read scaling",
+    "Sharding for write limits"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R11",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Traffic patterns and burstiness",
+    "Downstream service capacity",
+    "Granularity and user tiers"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R11F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Load balancing",
+    "Shared state management"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R12",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Asynchronous event-driven architecture",
+    "Database read amplification",
+    "External API egress costs"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R13",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Two-tier storage architecture",
+    "Centralized feature registry",
+    "Point-in-time joins"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R13F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Observability and alerting",
+    "Idempotency and retries",
+    "Graceful degradation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R14",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Model optimization",
+    "Multi-layer caching",
+    "Infrastructure tuning"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R15",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Bias vs Variance"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R16",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Resampling and cost-sensitive learning",
+    "Precision-recall metrics, not accuracy"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R17",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Future information inclusion",
+    "Temporal and aggregation errors"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R17F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Future-dependent data leakage",
+    "Post-event feature inclusion"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R18",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Highly imbalanced datasets",
+    "Ignores True Negatives"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R19",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Calibration",
+    "Reliability diagrams",
+    "Post-processing techniques"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R20",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Dot product relevance",
+    "Softmax probability weights",
+    "Weighted value aggregation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R21",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "RAG for knowledge freshness",
+    "Fine-tuning for behavioral style"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Deterministic tool checks",
+    "LLM-as-judge evals",
+    "Citations and source grounding"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Automated LLM-as-judge evals",
+    "Human-annotated gold sets"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R22F2",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Semantic coverage loss",
+    "Judge model bias",
+    "Drift detection loop"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R23",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Roughly 30 gigabytes",
+    "Quantization and vector indexing"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R24",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "LLM-as-judge",
+    "Synthetic gold sets",
+    "Human-in-the-loop"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R25",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "SageMaker Model Monitor",
+    "Baseline comparison",
+    "CloudWatch alerting"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R26",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Separate job and cluster",
+    "Partitioned overwrite or append",
+    "Idempotent logic"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R26F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Shadow comparison",
+    "Statistical distribution check",
+    "Production quality gates"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R27",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Shadow for risk mitigation",
+    "Canary for traffic validation"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R28",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Lineage and provenance",
+    "Lifecycle stage management"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R28F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Upstream data changes",
+    "Environment drift",
+    "Hardware non-determinism"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R29",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Centralized cross-workspace governance",
+    "Unified data lineage",
+    "Simplified access control"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R30",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Batch prioritizes throughput",
+    "Self-hosted cost efficiency",
+    "Bedrock for operational ease"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R31",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Math check: 3,600 orders",
+    "Gap is 1,400 orders"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R31F",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "A/B test vs observational",
+    "Confounding variables",
+    "Statistical significance"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R32",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Baseline consistency",
+    "Traffic mix exclusions",
+    "Accuracy trade-offs"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  },
+  {
+   "id": "R33",
+   "arm": "captured-low",
+   "rep": 3,
+   "src": "interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json",
+   "cues": [
+    "Both can be true",
+    "Metric vs user reality",
+    "Audit evaluation dataset"
+   ],
+   "empty": null,
+   "dispatchedAt": null,
+   "logLine": null
+  }
+ ]
+}

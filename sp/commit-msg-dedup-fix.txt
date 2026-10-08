@@ -1,0 +1,31 @@
+fix(dedup): anchor rule only inside the base window; ear-agnostic containment
+
+Two after8 findings (2026-09-07), both root-caused from the run log and
+reproduced by a replay of the real ChipDeduper over the after5-after8
+dispatch sequences (scratchpad replay-dedup.mjs; unpatched code reproduces
+after8 with 0 mismatches):
+
+1. W08 never answered. findSimilar checked sameAnchor FIRST, and sameAnchor
+   counts frame words: "what is the difference between a pod and a
+   deployment" vs "...between data drift and concept drift" overlap 0.75.
+   Under the 20 s window the answered W07 had expired; the 60 s answered
+   window kept it. The offline replay behind that window modelled only
+   containment and Jaccard, never the anchor rule. Anchors identify one
+   utterance heard twice, so the rule now applies only inside windowMs.
+   Replay: after5-7 each lose 0 questions (the current code would have
+   lost W08 in all three and W05 in two), after7's M04/M27 doubles stay
+   removed.
+
+2. H02 doubled. Deepgram's scenario-merged head "has p 99 latency creeping
+   up. How do you diagnose and fix it?" was answered; Live's full sentence
+   said "P99 ... up, how" 1.1 s later, so neither containment nor the extend
+   rule saw the head inside it, and the hour got a second answer. A shared
+   normalizeForContainment (containment.ts: lower-case, "p 99" -> "p99",
+   punctuation dropped) now serves both the deduper and shouldExtend.
+   Replay: after8 H02 becomes head + extension, after7's H02 re-fire at
+   +6 s the same; extends per hour 7-9.
+
+Tests: three new cases with the field texts (ChipDeduper.answeredWindow,
+extendOnClause), watched failing first; electron suite 435 green.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

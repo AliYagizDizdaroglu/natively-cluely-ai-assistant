@@ -1,0 +1,35 @@
+feat(answers): extensions say only the added clause; screenshot cues hands-free
+
+Extend prompt. after8's six extend answers re-answered the whole question,
+four restating the head almost verbatim (104-114 words combined, delivery 1
+on all six). runWhatShouldISay now takes extendOf (the answered head) and
+hands WhatToAnswerLLM an ANSWER SHAPE that names it and asks only for the
+added part (llm/extensionShape.ts); main.ts passes it on the extend dispatch.
+Spike on those six (gemini-3.1-flash-lite, 3 reps each): default shape p50 58
+words and a restatement; this shape p50 27 words, every extension on the
+added clause ("Conversely, I avoid a service mesh when...").
+
+Screenshot cues. The three "take a look at this problem on screen" cues were
+operator-only: unattended, nothing was on screen and the app answered them
+from the transcript (after7 and after8: all three wrong, C02 with the previous
+question's answer). Now: each cue names a golden coding problem (questions.mjs
+`problem`); run.mjs spawns interview60.cues.mjs, which renders the problem's
+shots onto one page (interview60.cues/<PYn>.png, git-ignored) and shows it on
+the primary display while the cue plays (interview60.cue-display.cjs); the
+app captures the screen when the interviewer points at it (services/
+screenReference.ts, main.ts answerDetection) and answers on the coding path
+with the image; the judge export appends the on-screen problem to the cue's
+question so the grader judges the solution. NATIVELY_DETECTOR_CHAIN_TEST_
+QUESTIONS pushes any sentence through the real pipeline without audio.
+
+Spike (dev app from a scheduled task, PY4 page shown, one injected cue
+sentence): chip -> answer dispatch -> "screen reference: captured" ->
+intent override coding -> CODING route with 1 image -> answer. The captured
+image was the primary display, but an application running fullscreen on it
+covered the page, so the capture-to-answer link is proven only mechanically;
+a flight needs a free desktop (README).
+
+Tests: IntelligenceEngine.extendOf (2), screenReference (2), watched failing
+first; electron suite 439 green; tsc the six known errors.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

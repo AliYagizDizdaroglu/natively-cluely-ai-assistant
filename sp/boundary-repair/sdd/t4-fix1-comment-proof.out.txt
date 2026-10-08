@@ -1,0 +1,15 @@
+﻿before (round 0) 16020 chars 2af5409f94f0f3e5; after (STAGE) 16021 chars 70683d814ac6a27f
+ok       exactly one character longer (1)
+ok       the inserted character is ","
+ok       removing it gives back the round-0 file
+ok       the changed line is a // comment line
+ok       exactly one line differs (line 202 of 359)
+   before:             // sockets only (the test keytermsFor uses): the rule compares ASCII tokens and mangled
+   after :             // sockets only (the test keytermsFor uses): the rule compares ASCII tokens, and mangled
+   next  :             // Spanish and Turkish text in the 2026-09-29 spec review; any other language, and
+transpile before 11511 chars 17ee35c2cb6ff681; after 11511 chars 17ee35c2cb6ff681
+ok       esbuild transpile of before and after is byte-identical
+ok       calibration (a): a code change (=== -> ==) makes the transpile DIFFERENT
+ok       calibration (b): a comma added inside a string literal makes the transpile DIFFERENT
+
+comment-only change proven

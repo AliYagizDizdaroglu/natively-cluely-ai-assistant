@@ -1,0 +1,14 @@
+﻿bench: 6 run(s) x 42 calls = 252 requests to gemini-3.5-flash-lite (thinking HIGH); runner interview60.answers.mjs; key file path only (.env)
+  b1c1: arm C rep 1  existing file, missing 0
+  b1t1: arm T rep 1  new
+  b1c2: arm C rep 2  existing file, missing 0
+  b1t2: arm T rep 2  new
+  b1c3: arm C rep 3  existing file, missing 0
+  b1t3: arm T rep 3  new
+b1c1: complete, skipped
+b1t1: pass 1 exit 0; 42/42 answered
+b1c2: complete, skipped
+b1t2: pass 1 exit 0; 42/42 answered
+b1c3: complete, skipped
+b1t3: pass 1 exit 0; 42/42 answered
+bench: all requested runs complete

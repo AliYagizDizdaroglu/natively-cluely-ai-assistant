@@ -1,0 +1,4 @@
+fix(golden): final-review round — provenance, preflight regex, resolved-provider log, head-class hold test, spec §7
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+

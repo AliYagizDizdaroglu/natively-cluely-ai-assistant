@@ -1,0 +1,13 @@
+﻿== HEAD (before fix), non-JSON ref (1 s)
+   → Unexpected token 'S', "SECRET-FIX"... is not valid JSON
+   AssertionError: expected [ 'turn-parity-s50k.json' ] to deeply equal [ 'turn-parity-s50k.json', …(2) ]
+   SyntaxError: Unexpected token 'S', "SECRET-FIX"... is not valid JSON
+== fixed, non-JSON ref (1 s)
+   → reference output is not JSON (1313 bytes)
+   AssertionError: expected [ 'turn-parity-s50k.json' ] to deeply equal [ 'turn-parity-s50k.json', …(2) ]
+   Error: reference output is not JSON (1313 bytes)
+   31|         throw new Error(`reference output is not JSON (${out.length} b…
+== fixed (timeout 2 s in the scratch copy), hanging ref (3 s)
+   → spawnSync C:\Program Files\nodejs\node.exe ETIMEDOUT
+   AssertionError: expected [ 'turn-parity-s50k.json' ] to deeply equal [ 'turn-parity-s50k.json', …(2) ]
+   Error: spawnSync C:\Program Files\nodejs\node.exe ETIMEDOUT

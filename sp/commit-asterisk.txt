@@ -1,0 +1,30 @@
+fix(verbal): single-asterisk emphasis was never stripped, only bold
+
+cleanNotation removed "**" and stopped there, so italic emphasis reached the
+ear verbatim. Flight s50m, 2026-09-22: S1Q03F spoke "the *incremental* gain"
+and took the hour's only delivery 0 for it.
+
+The rule is judged the way the "$" rule is judged, by the character on the
+inside. A star touching a non-space is a delimiter and goes; a star with space
+on both sides is multiplication or a stray bullet and stays. The trailing-"*"
+hold in stripSpokenNotation already existed for exactly this decision, and its
+comment already promised it: only the rule was missing.
+
+Two things the first attempt got wrong, both caught before this commit.
+
+A closing star released at the head of the next span has nothing behind it for
+the lookbehind to see, so it survived. That is the same problem the "$" rule
+solved with lastOut, and the helper now covers both delimiters. Extending that
+helper then broke a stream ENDING in bold: it sliced one star off a held "**"
+and left an orphan no rule could match, which the full suite caught and a
+single-file run would not have. The helper now claims a lone star only.
+
+Calibrated against every answer the harness has recorded rather than against
+the test alone: 4460 answers across 19 runs, 33 containing a star, 31 of them
+fixed by this rule, and zero stars anywhere in that corpus sit between two
+digits. The leak was never a one-off — it has been in every flight on record
+and simply cost a grade for the first time.
+
+Full suite 88 files, 780 passing; electron type check at its 6-error baseline.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

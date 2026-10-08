@@ -1,0 +1,15 @@
+﻿[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ✓ electron/test/golden/interview60.turns-finals.test.ts > finalsFrom: the interviewer finals as the turn tracker saw them > a final directly followed by a boundary-repair line replays as the restored words + the raw text
+ ✓ electron/test/golden/interview60.turns-finals.test.ts > finalsFrom: the interviewer finals as the turn tracker saw them > keeps interims and empty finals out, and drops finals before `since`
+ ✓ electron/test/golden/interview60.turns-finals.test.ts > finalsFrom: the interviewer finals as the turn tracker saw them > refuses a boundary-repair line that is not right under its own final (one synchronous handler writes both lines)
+ ✓ electron/test/golden/interview60.turns-finals.test.ts > finalsFrom: the interviewer finals as the turn tracker saw them > reproduces the committed 2026-09-09T15-00-55-s50a fixture's finals from its run log (skipped where the run folder is absent)
+ ✓ electron/test/golden/interview60.turns-finals.test.ts > finalsFrom: the interviewer finals as the turn tracker saw them > reproduces the committed 2026-09-08T08-44-56-after9 fixture's finals from its run log (skipped where the run folder is absent)
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  23:42:11
+   Duration  2.38s (transform 63ms, setup 0ms, collect 56ms, tests 25ms, environment 1.31s, prepare 232ms)
+

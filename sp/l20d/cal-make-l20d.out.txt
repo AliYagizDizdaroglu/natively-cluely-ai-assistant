@@ -1,0 +1,20 @@
+OK  real inputs: exit 0 and "RUNNER AS REGISTERED (10 lines removed, 9 added"
+OK  real inputs: run.mjs written to cal-make is byte-identical to the real l20d/run.mjs
+OK  independent: the system diff shows 10 lines removed and 9 added (want 10 and 9)
+OK  items.json: byte-identical to et38/items.json, 19 pairs / 38 ids / hard 5 / normal 14 printed
+OK  damaged anchor 1 header anchor -> REFUSED naming swap 1, found 0
+OK  damaged anchor 2 createRequire import -> REFUSED naming swap 2, found 0
+OK  damaged anchor 3 folder -> REFUSED naming swap 3, found 0
+OK  damaged anchor 4 LIVE MODE block -> REFUSED naming swap 4, found 0
+OK  damaged anchor 5 return line -> REFUSED naming swap 5, found 0
+OK  damaged anchor 6 run file name -> REFUSED naming swap 6, found 0
+OK  damaged anchor 7 level none -> REFUSED naming swap 7, found 0
+OK  an anchor matching twice -> REFUSED (swap 7, found 2)
+OK  an eighth swap (CHUNK 1920 -> 1921) -> "RUNNER DIFFERS ... removed 11/10, added 10/9", exit 1
+OK  a one-byte-different instruction -> REFUSED (sha256 differs), exit 1
+OK  a pre-registration that does not name the hash -> REFUSED
+OK  items with 18 pairs -> REFUSED
+OK  items with a repeated id -> REFUSED
+OK  items with 4 hard pairs -> REFUSED
+OK  items with a pair of three -> REFUSED
+MAKE-L20D CALIBRATION OK

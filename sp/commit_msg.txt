@@ -1,0 +1,27 @@
+fix(live): Auto answers the first detection from either detector, once
+
+Both detector handlers now go through dispatchDetection: the deduper
+decides identity (text, or transcript anchor), decideDispatch decides
+the action, and Auto answers exactly once per question whichever
+detector fired first. Live questions are reconciled with the last 15 s
+of interviewer speech; one that matches nothing said is replaced by the
+transcript sentence with its intent demoted to verbal.
+
+Proof (probe-continuous.wav, Auto mode, natively_debug.log + verbal-diag.log):
+
+23:01:33.833  [Main] dispatch: answer source=whisper anchor="Why do docker layer" verdict=match
+23:01:33.839  route: VERBAL-TECHNICAL (selected model, filtered)
+23:01:35.248  [Main] Live question (verbal, mode=auto): "Why do Docker layers matter for build times?"
+23:01:35.249  [Main] dispatch: drop source=live anchor="matter for build times" verdict=match duplicateOf=whisper answered=true
+23:01:52.238  [Main] Live question (coding, mode=auto): "How would you handle autoscaling for a model inference service on Kubernetes?"
+23:01:52.239  [Main] dispatch: answer source=live anchor="How would you handle autoscaling for a model inference service on Kubernetes?" verdict=unverifiable
+23:01:52.243  route: CODING (selected model, no filter)
+
+Q1 shows the full cross-detector race: whisper answers first, Live's
+detection of the same question is deduped and dropped with answered=true.
+Q2 has no whisper-side line because the whisper pipeline never produced one
+this run — its RestSTT upload errored (AggregateError) and Groq detection
+was already 429'd (daily TPD quota) from Q1 — both logged, external to this
+change. Live alone correctly went straight to answer.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

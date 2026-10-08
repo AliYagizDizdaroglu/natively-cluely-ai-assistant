@@ -1,0 +1,16 @@
+DIST PROOF: prompts written 2026-09-30T21:03:29.052Z  dist-electron/electron/llm/prompts.js
+DIST PROOF: filter  written 2026-09-30T21:03:29.210Z  dist-electron/electron/llm/verbalStreamFilter.js
+DIST PROOF: engine  written 2026-09-30T21:03:29.050Z  dist-electron/electron/IntelligenceEngine.js
+DIST PROOF: ipc     written 2026-09-30T21:03:29.347Z  dist-electron/electron/ipcHandlers.js
+DIST PROOF: main    written 2026-09-30T21:03:29.295Z  dist-electron/electron/main.js
+DIST PROOF: ok  prompts x1  "CUE_MAX_LINES = 3"  (small cues: the 3-line limit)
+DIST PROOF: ok  filter  x1  "function trimCues"  (small cues: the display cap)
+DIST PROOF: ok  engine  x1  "[Answer] cues trimmed:"  (small cues: every display edit is logged)
+DIST PROOF: ok  prompts x1  "A one-part question gets exactly one line. Add a line only"  (the one-first wording)
+DIST PROOF: ok  ipc     x2  "VERBAL_TYPED_PROMPT"  (typed chat sends the prompt without the cue rule)
+DIST PROOF: ok  ipc     x0  "VERBAL_WHAT_TO_ANSWER_PROMPT"  (typed chat never names the hands-free prompt)
+DIST PROOF: ok  filter  x3  "CUE_LINE_PREFIX"  (the early close (the constant's name, 3 times))
+DIST PROOF: ok  filter  x1  "offers block before the spoken answer"  (the offers block before the answer is kept apart from the answer)
+DIST PROOF: ok  CUE_RULE sha256/12 8e15e4e7dd41 (the benched rule is 8e15e4e7dd41); ok  limits 3 x 5
+DIST PROOF: filter sha256/16 42d9bc42dbd17870
+DIST PROOF: THE COMBINED BUILD, every marker as expected

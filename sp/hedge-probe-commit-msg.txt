@@ -1,0 +1,6 @@
+probe(hedge): live A/B of the hedge policy against today's, pre-registered
+
+Policies as pure functions (unit-tested), the streaming call the app makes, s50m's 39 captured
+prompts, three evening windows; the rule and the independence check are fixed before H1 runs.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

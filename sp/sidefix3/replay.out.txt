@@ -1,0 +1,12 @@
+﻿row files: 9; rows: 624
+
+== OLD (HEAD 801442d) vs NEW (+ fix): 624 replies, sizes 1,2,3,7,90,whole
+replies whose raw text starts with "{": 0; replies >= 120 words after the chain (OLD): 49; replies the OLD chain cut: 0
+whole-string output differs old vs new: 0
+whole-string onDone record differs old vs new: 0
+cue or offers report differs: 0
+replies whose chunked output differs from their own whole-string output, by size:
+   OLD {"1":0,"2":0,"3":0,"7":0,"90":0,"1000000":0}
+   NEW {"1":0,"2":0,"3":0,"7":0,"90":0,"1000000":0}
+(reply, size) pairs where old != new (text or onDone): 0, over 0 replies
+

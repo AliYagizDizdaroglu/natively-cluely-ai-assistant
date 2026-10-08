@@ -1,0 +1,627 @@
+[
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 1,
+  "n": 2,
+  "total": 4,
+  "cues": [
+   "Boosting",
+   "Sequential error correction"
+  ],
+  "spec": null,
+  "proseWords": 52,
+  "raw": "__CUES__\n1| Boosting\n2| Sequential error correction\n\nXGBoost is a boosting method, meaning it builds trees sequentially rather than in parallel. Each new tree is trained specifically to correct the residual errors made by the previous ones. This iterative optimization and built-in regularization are what make it exceptionally strong for tabular prediction tasks like the churn models I've built."
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 2,
+  "n": 1,
+  "total": 2,
+  "cues": [
+   "Boosting method"
+  ],
+  "spec": null,
+  "proseWords": 49,
+  "raw": "__CUES__\n1| Boosting method\n\nXGBoost is a boosting method, and in my churn modeling work I've relied on it precisely for that sequential structure. Unlike bagging where trees train independently in parallel, boosting builds trees one after another, with each new tree explicitly learning to correct the residual errors of the previous ones."
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 3,
+  "n": 1,
+  "total": 1,
+  "cues": [
+   "Boosting"
+  ],
+  "spec": null,
+  "proseWords": 62,
+  "raw": "__CUES__\n1| Boosting\nXGBoost is a boosting method. It builds trees sequentially, where each new tree specifically focuses on correcting the residual errors left by the previous ones using gradient descent. Unlike bagging methods that train trees in parallel and average their outputs, boosting learns iteratively, which is why it delivers high performance on tabular problems.\n\n__MORE__\n1| second-order Taylor expansion\n2| regularized objective function"
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 4,
+  "n": 3,
+  "total": 7,
+  "cues": [
+   "Boosting method",
+   "Sequential tree building",
+   "Gradient optimization"
+  ],
+  "spec": null,
+  "proseWords": 62,
+  "raw": "__CUES__\n1| Boosting method\n2| Sequential tree building\n3| Gradient optimization\n\nXGBoost is a boosting method, specifically an optimized gradient boosted decision tree framework. Instead of training trees independently like bagging, it builds them sequentially where each new tree targets the residual errors of the previous ones. That sequential error correction, combined with built-in regularization and second-order optimization, is why it performs so reliably on tabular prediction tasks like our subscriber churn models."
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 1,
+  "n": 1,
+  "total": 3,
+  "cues": [
+   "Not strictly necessary"
+  ],
+  "spec": null,
+  "proseWords": 54,
+  "raw": "__CUES__\n1| Not strictly necessary\n\nNo, I wouldn't strictly need to normalize features for a random forest because tree-based models split data based on relative thresholds rather than absolute distances, making them invariant to monotonic scaling. However, if I'm combining them with distance-based models in a hybrid pipeline or using regularized variants, I'd include scaling in the preprocessing pipeline."
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 2,
+  "n": 2,
+  "total": 7,
+  "cues": [
+   "No scaling needed",
+   "Trees use split thresholds"
+  ],
+  "spec": null,
+  "proseWords": 66,
+  "raw": "__CUES__\n1| No scaling needed\n2| Trees use split thresholds\nNo, I wouldn't normalize features for a Random Forest. Tree-based models split data based on feature thresholds rather than geometric distances, so monotonic scaling doesn't affect the splits. The only exception is if I'm combining the trees with a distance-based model in an ensemble, but for the forest alone, raw features work fine.\n\n__MORE__\n1| feature importance bias with unscaled features\n2| distance-based hybrid ensemble considerations"
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 3,
+  "n": 2,
+  "total": 6,
+  "cues": [
+   "Not necessary for trees",
+   "Scale-invariant splits"
+  ],
+  "spec": null,
+  "proseWords": 54,
+  "raw": "__CUES__\n1| Not necessary for trees\n2| Scale-invariant splits\n\nNo, I wouldn't strictly need to normalize features for a random forest because tree-based models are scale-invariant. Since splits are determined by threshold values rather than geometric distances, monotonic scaling doesn't affect where the splits occur. I'd only normalize if the features also feed into distance-based models or regularized components within the same pipeline."
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 4,
+  "n": 2,
+  "total": 7,
+  "cues": [
+   "No, not necessary",
+   "Tree models are scale-invariant"
+  ],
+  "spec": null,
+  "proseWords": 66,
+  "raw": "__CUES__\n1| No, not necessary\n2| Tree models are scale-invariant\nNo, tree-based models like random forests are invariant to monotonic transformations, so feature normalization isn't strictly necessary. Since splits are based on sorting values rather than absolute magnitudes, scaling doesn't change the tree structure or predictive performance. I'd only bother scaling if it's required downstream by a mixed-model pipeline or specific regularization wrappers.\n\n__MORE__\n1| impact on feature importance metrics\n2| scaling in mixed model ensembles"
+ },
+ {
+  "id": "X3",
+  "kind": "simple",
+  "q": "What does Kubernetes HPA scale on by default?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 1,
+  "n": 3,
+  "total": 10,
+  "cues": [
+   "CPU utilization metrics",
+   "Average utilization target",
+   "Custom and external metrics"
+  ],
+  "spec": null,
+  "proseWords": 64,
+  "raw": "__CUES__\n1| CPU utilization metrics\n2| Average utilization target\n3| Custom and external metrics\n\nKubernetes HPA scales on CPU utilization by default, targeting an average percentage across all pods in the deployment. If actual usage crosses our target threshold, the controller automatically adds or removes replicas to balance the load. We can also extend this beyond CPU to track memory usage or custom application metrics using the metrics-server.\n__MORE__\n1| metrics-server resource scraping\n2| custom metric scaling behaviors"
+ },
+ {
+  "id": "X3",
+  "kind": "simple",
+  "q": "What does Kubernetes HPA scale on by default?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 2,
+  "n": 2,
+  "total": 4,
+  "cues": [
+   "CPU utilization",
+   "Metrics Server"
+  ],
+  "spec": null,
+  "proseWords": 48,
+  "raw": "__CUES__\n1| CPU utilization\n2| Metrics Server\nBy default, the Horizontal Pod Autoscaler scales on CPU utilization. It queries the metrics server at regular intervals, and when the average CPU across pods exceeds our target threshold, Kubernetes automatically scales the deployment up or down.\n__MORE__\n1| custom and external metrics\n2| scale-up and scale-down stabilization"
+ },
+ {
+  "id": "X3",
+  "kind": "simple",
+  "q": "What does Kubernetes HPA scale on by default?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 3,
+  "n": 2,
+  "total": 4,
+  "cues": [
+   "CPU utilization",
+   "Metrics server"
+  ],
+  "spec": null,
+  "proseWords": 42,
+  "raw": "__CUES__\n1| CPU utilization\n2| Metrics server\n\nBy default, the Horizontal Pod Autoscaler scales on CPU utilization. It pulls these metrics directly from the cluster's Metrics Server, and when the average CPU usage across all pods crosses our target threshold, Kubernetes automatically provisions additional replicas to handle the traffic."
+ },
+ {
+  "id": "X3",
+  "kind": "simple",
+  "q": "What does Kubernetes HPA scale on by default?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 4,
+  "n": 3,
+  "total": 6,
+  "cues": [
+   "CPU utilization",
+   "Metrics Server",
+   "Custom metrics"
+  ],
+  "spec": null,
+  "proseWords": 66,
+  "raw": "__CUES__\n1| CPU utilization\n2| Metrics Server\n3| Custom metrics\n\nBy default, the Horizontal Pod Autoscaler scales based on CPU utilization tracked by the Metrics Server. When average CPU consumption across the pods crosses the target threshold, the controller automatically scales up the replica count. While CPU is the default baseline, we can also configure it to use memory or custom metrics depending on the workload.\n\n__MORE__\n1| stabilization window tuning\n2| custom metrics API setup"
+ },
+ {
+  "id": "X4",
+  "kind": "simple",
+  "q": "Parquet or CSV for the feature snapshots?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 1,
+  "n": 3,
+  "total": 5,
+  "cues": [
+   "Parquet",
+   "Schema enforcement",
+   "Columnar performance"
+  ],
+  "spec": null,
+  "proseWords": 41,
+  "raw": "__CUES__\n1| Parquet\n2| Schema enforcement\n3| Columnar performance\n\nParquet, every time. For feature snapshots, I need strict schema enforcement and efficient columnar compression so my downstream training jobs don't break or choke on I/O. CSVs lose type information, inflate storage sizes, and make reading large historical datasets painfully slow."
+ },
+ {
+  "id": "X4",
+  "kind": "simple",
+  "q": "Parquet or CSV for the feature snapshots?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 2,
+  "n": 1,
+  "total": 4,
+  "cues": [
+   "Parquet for feature snapshots"
+  ],
+  "spec": null,
+  "proseWords": 44,
+  "raw": "__CUES__\n1| Parquet for feature snapshots\n\nI go with Parquet every time for feature snapshots because its columnar storage and built-in compression make large-scale reads lightning-fast compared to CSV. It also preserves data types natively, which prevents silent type-casting bugs during training, and integrates seamlessly with our feature store pipelines."
+ },
+ {
+  "id": "X4",
+  "kind": "simple",
+  "q": "Parquet or CSV for the feature snapshots?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 3,
+  "n": 2,
+  "total": 7,
+  "cues": [
+   "Parquet for snapshots",
+   "Columnar format and schema"
+  ],
+  "spec": null,
+  "proseWords": 52,
+  "raw": "__CUES__\n1| Parquet for snapshots\n2| Columnar format and schema\n\nI always go with Parquet for feature snapshots because its columnar storage format gives us much faster read speeds and significantly smaller file sizes through compression. Unlike CSV, Parquet preserves data types and schemas natively, which completely prevents silent type-casting bugs when we load data back into our training or inference pipelines."
+ },
+ {
+  "id": "X4",
+  "kind": "simple",
+  "q": "Parquet or CSV for the feature snapshots?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 4,
+  "n": 3,
+  "total": 5,
+  "cues": [
+   "Parquet",
+   "Columnar compression",
+   "Schema enforcement"
+  ],
+  "spec": null,
+  "proseWords": 50,
+  "raw": "__CUES__\n1| Parquet\n2| Columnar compression\n3| Schema enforcement\nI always go with Parquet for feature snapshots because its columnar storage format and built-in compression drastically reduce I/O overhead and storage costs at scale. Unlike CSV, Parquet enforces strict schema types, which prevents silent downstream data corruption during model training.\n__MORE__\n1| Predicate pushdown optimization\n2| Partitioning by date"
+ },
+ {
+  "id": "X5",
+  "kind": "simple",
+  "q": "What's the time complexity of pushing onto a binary heap?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 1,
+  "n": 2,
+  "total": 5,
+  "cues": [
+   "Logarithmic time complexity",
+   "Sift-up operation"
+  ],
+  "spec": null,
+  "proseWords": 52,
+  "raw": "__CUES__\n1| Logarithmic time complexity\n2| Sift-up operation\n\nPushing onto a binary heap takes $O(\\log n)$ time in the worst case. You add the new element to the next available position at the bottom of the tree to maintain the complete binary tree property, then sift it upward by swapping it with its parent until the heap invariant is restored."
+ },
+ {
+  "id": "X5",
+  "kind": "simple",
+  "q": "What's the time complexity of pushing onto a binary heap?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 2,
+  "n": 2,
+  "total": 6,
+  "cues": [
+   "O(log n) time complexity",
+   "Sift-up operation"
+  ],
+  "spec": null,
+  "proseWords": 56,
+  "raw": "__CUES__\n1| O(log n) time complexity\n2| Sift-up operation\n\nPushing onto a binary heap runs in $O(\\log n)$ time. When you insert a new element at the next available leaf, you have to percolate or sift it up the tree by comparing it with its parent until the heap property is satisfied, which takes at most logarithmic time proportional to the height of the tree."
+ },
+ {
+  "id": "X5",
+  "kind": "simple",
+  "q": "What's the time complexity of pushing onto a binary heap?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 3,
+  "n": 2,
+  "total": 7,
+  "cues": [
+   "O(log n) complexity",
+   "Percolate up tree height"
+  ],
+  "spec": null,
+  "proseWords": 69,
+  "raw": "__CUES__\n1| O(log n) complexity\n2| Percolate up tree height\n\nPushing onto a binary heap takes $O(\\log n)$ time. When you insert a new element, you place it at the next available leaf and bubble it upward by comparing it with its parent until the heap property is restored. Because a binary heap is a complete binary tree, its height is logarithmic relative to the number of items, so the worst-case number of operations is bounded by $\\log n$."
+ },
+ {
+  "id": "X5",
+  "kind": "simple",
+  "q": "What's the time complexity of pushing onto a binary heap?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 4,
+  "n": 2,
+  "total": 7,
+  "cues": [
+   "O(log n) time complexity",
+   "Percolate up operation"
+  ],
+  "spec": null,
+  "proseWords": 64,
+  "raw": "__CUES__\n1| O(log n) time complexity\n2| Percolate up operation\n\nPushing onto a binary heap takes $O(\\log n)$ time. You insert the new element at the bottom-most available spot—the end of the backing array—and then percolate it up by swapping it with its parent as long as it violates the heap property. Because the height of a complete binary tree with $n$ nodes is logarithmic, that upward path takes at most $\\log n$ operations."
+ },
+ {
+  "id": "X6",
+  "kind": "simple",
+  "q": "Batch or online scoring for the nightly churn list?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 1,
+  "n": 3,
+  "total": 8,
+  "cues": [
+   "Batch scoring",
+   "Nightly pipeline efficiency",
+   "Off-peak compute savings"
+  ],
+  "spec": null,
+  "proseWords": 68,
+  "raw": "__CUES__\n1| Batch scoring\n2| Nightly pipeline efficiency\n3| Off-peak compute savings\n\nWe use batch scoring for the nightly churn list because computing scores across the entire subscriber base during off-peak hours is far more efficient than on-demand API calls. For our four hundred thousand subscribers, running this through scheduled pipelines kept feature lookups fast and let us feed clean risk bands straight into morning retention campaigns.\n\n__MORE__\n1| feature store caching strategies\n2| handling feature drift during batch inference"
+ },
+ {
+  "id": "X6",
+  "kind": "simple",
+  "q": "Batch or online scoring for the nightly churn list?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 2,
+  "n": 3,
+  "total": 7,
+  "cues": [
+   "Batch scoring",
+   "Nightly pipeline",
+   "Feature store sync"
+  ],
+  "spec": null,
+  "proseWords": 49,
+  "raw": "__CUES__\n1| Batch scoring\n2| Nightly pipeline\n3| Feature store sync\n\nIt's batch scoring, run nightly through an automated pipeline. I pull features from our feature store, score the 400K subscribers using our XGBoost model, and write the risk bands straight to PostgreSQL so retention campaigns can pick them up by morning.\n\n__MORE__\n1| handling feature drift during batch inference"
+ },
+ {
+  "id": "X6",
+  "kind": "simple",
+  "q": "Batch or online scoring for the nightly churn list?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 3,
+  "n": 3,
+  "total": 8,
+  "cues": [
+   "Batch scoring",
+   "Scheduled Airflow job",
+   "Feature store pull"
+  ],
+  "spec": null,
+  "proseWords": 55,
+  "raw": "__CUES__\n1| Batch scoring\n2| Scheduled Airflow job\n3| Feature store pull\n\nWe use batch scoring for the nightly churn list. Since retention campaigns run daily across four hundred thousand subscribers, we spin up a scheduled Airflow job that pulls feature vectors from our store and runs inference in bulk through our FastAPI service.\n__MORE__\n1| Spark parallelization for large batches\n2| Cost optimization via spot instances"
+ },
+ {
+  "id": "X6",
+  "kind": "simple",
+  "q": "Batch or online scoring for the nightly churn list?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 4,
+  "n": 3,
+  "total": 6,
+  "cues": [
+   "Batch scoring",
+   "Nightly pipeline",
+   "Retention campaigns"
+  ],
+  "spec": null,
+  "proseWords": 68,
+  "raw": "__CUES__\n1| Batch scoring\n2| Nightly pipeline\n3| Retention campaigns\n\nBatch scoring. Since it's a nightly churn list designed to feed retention campaigns, we run inference in bulk via a scheduled pipeline rather than doing real-time lookups. We compute the risk scores across the subscriber base overnight and write them straight to PostgreSQL, which keeps compute costs low and guarantees the marketing team has fresh scores ready each morning.\n\n__MORE__\n1| compute resource trade-offs\n2| feature store pre-computation"
+ },
+ {
+  "id": "M1",
+  "kind": "medium",
+  "q": "Why do Docker layers matter for build times?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 1,
+  "n": 2,
+  "total": 4,
+  "cues": [
+   "Layer caching",
+   "Instruction ordering"
+  ],
+  "spec": null,
+  "proseWords": 54,
+  "raw": "__CUES__\n1| Layer caching\n2| Instruction ordering\n\nDocker layers matter because the build engine caches each step as an immutable layer, reusing the cache if nothing changes. I structure my Dockerfiles to put slow-changing dependencies like package installs near the top and source code near the bottom. This prevents minor code edits from invalidating heavy caches and keeps build times fast."
+ },
+ {
+  "id": "M1",
+  "kind": "medium",
+  "q": "Why do Docker layers matter for build times?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 2,
+  "n": 1,
+  "total": 5,
+  "cues": [
+   "Layer caching and instruction order"
+  ],
+  "spec": null,
+  "proseWords": 54,
+  "raw": "__CUES__\n1| Layer caching and instruction order\n\nDocker builds images as a stack of cached layers, reusing any step whose inputs haven't changed instead of rebuilding it from scratch. That's why instruction order is critical for fast builds. By placing items that rarely change, like system dependencies, before frequent code updates, we can skip heavy rebuild steps entirely on every push."
+ },
+ {
+  "id": "M1",
+  "kind": "medium",
+  "q": "Why do Docker layers matter for build times?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 3,
+  "n": 2,
+  "total": 4,
+  "cues": [
+   "Layer caching",
+   "Instruction ordering"
+  ],
+  "spec": null,
+  "proseWords": 56,
+  "raw": "__CUES__\n1| Layer caching\n2| Instruction ordering\n\nDocker layers matter because the build engine caches each layer independently, meaning unmodified steps are skipped entirely on subsequent builds. By ordering our Dockerfile from least frequently changing instructions—like base images and dependency installations—to frequently changing source code, we maximize cache hits. This approach drastically cuts down CI/CD build times and speeds up our deployment pipelines."
+ },
+ {
+  "id": "M1",
+  "kind": "medium",
+  "q": "Why do Docker layers matter for build times?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 4,
+  "n": 2,
+  "total": 8,
+  "cues": [
+   "Layer caching mechanism",
+   "Instruction ordering for cache hits"
+  ],
+  "spec": null,
+  "proseWords": 52,
+  "raw": "__CUES__\n1| Layer caching mechanism\n2| Instruction ordering for cache hits\n\nDocker layers matter because the engine caches each instruction as an intermediate image layer, meaning unchanged steps skip execution entirely on rebuilds. By ordering Dockerfile instructions from least frequently changed, like system dependencies, to most frequently changed, like source code, I maximize cache hits and cut build times from minutes to seconds."
+ },
+ {
+  "id": "S1Q09",
+  "kind": "complex",
+  "q": "S1Q09",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 1,
+  "n": 3,
+  "total": 17,
+  "cues": [
+   "Blob storage, AML, ACR for assets",
+   "AKS inference, Airflow, Entra ID identity",
+   "Azure Monitor for production observability"
+  ],
+  "spec": 6,
+  "proseWords": 93,
+  "raw": "__CUES__\n1| Blob storage, AML, ACR for assets\n2| AKS inference, Airflow, Entra ID identity\n3| Azure Monitor for production observability\n\nI store raw churn logs and features in Azure Blob Storage, and run distributed XGBoost training on Azure Machine Learning compute clusters, saving model artifacts directly to the workspace registry. I containerize the FastAPI service, push the image to Azure Container Registry, and deploy it to Azure Kubernetes Service for low-latency auto-scaled online inference. For scheduling, I use Managed Airflow to orchestrate daily batch runs. Identity is handled securely via Microsoft Entra ID Managed Identities eliminating hardcoded credentials, and I track platform health and data drift using Azure Monitor combined with Application Insights."
+ },
+ {
+  "id": "S1Q09",
+  "kind": "complex",
+  "q": "S1Q09",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 2,
+  "n": 3,
+  "total": 16,
+  "cues": [
+   "Blob storage and container registry",
+   "ML compute, pipelines, and Container Apps",
+   "Entra ID and Azure Monitor"
+  ],
+  "spec": 5,
+  "proseWords": 88,
+  "raw": "__CUES__\n1| Blob storage and container registry\n2| ML compute, pipelines, and Container Apps\n3| Entra ID and Azure Monitor\nI store raw subscriber data and model artifacts in Azure Blob Storage and push versioned FastAPI images to Azure Container Registry. For model training, I use managed Azure Machine Learning compute clusters scheduled through Azure ML pipelines to handle periodic retraining. The inference service runs on Azure Container Apps to support zero-downtime blue-green deployments for our high-throughput churn endpoints. I secure inter-service communication using Microsoft Entra ID managed identities for zero-trust credential management, and track endpoint performance, resource utilization, and data drift using Azure Monitor and Application Insights."
+ },
+ {
+  "id": "S1Q09",
+  "kind": "complex",
+  "q": "S1Q09",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 3,
+  "n": 4,
+  "total": 20,
+  "cues": [
+   "Azure Blob Storage for data",
+   "Azure ML compute for training",
+   "ACR and App Service serving",
+   "Entra ID and Azure Monitor"
+  ],
+  "spec": 5,
+  "proseWords": 140,
+  "raw": "__CUES__\n1| Azure Blob Storage for data\n2| Azure ML compute for training\n3| ACR and App Service serving\n4| Entra ID and Azure Monitor\n\nTo deploy that churn platform on Azure, I'd use Azure Blob Storage for raw subscriber data and feature stores, and Azure Machine Learning compute clusters to handle the heavy XGBoost training jobs. Model artifacts go straight into the Azure Machine Learning Registry, while our FastAPI container images get pushed to Azure Container Registry. For online inference, I deploy those images to Azure App Service or an AKS cluster using blue-green deployments to ensure zero downtime. Retraining pipelines are orchestrated via Azure Pipelines or Airflow on a scheduled trigger. For security, I use Microsoft Entra ID with Managed Identities to handle auth securely without hardcoded secrets. Finally, I wire up Application Insights and Azure Monitor to track inference latency, drift metrics, and system health in real time.\n\n__MORE__\n1| private endpoint network security configurations\n2| multi-region failover and traffic routing strategies"
+ },
+ {
+  "id": "S1Q09",
+  "kind": "complex",
+  "q": "S1Q09",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 4,
+  "n": 3,
+  "total": 16,
+  "cues": [
+   "Blob storage, AML compute, registry, ACR",
+   "AKS inference, Data Factory scheduling",
+   "Entra ID identity, Azure Monitor"
+  ],
+  "spec": 7,
+  "proseWords": 144,
+  "raw": "__CUES__\n1| Blob storage, AML compute, registry, ACR\n2| AKS inference, Data Factory scheduling\n3| Entra ID identity, Azure Monitor\n\nTo migrate our churn platform to Azure, I store raw subscriber features and training logs in Azure Blob Storage for scalable, tiered data access. For training, I spin up Azure Machine Learning managed compute clusters to handle heavy XGBoost training efficiently, registering the output model artifacts directly in the Azure Machine Learning Model Registry for strict version control. I package our FastAPI serving app into Docker containers pushed to Azure Container Registry, then deploy those images onto Azure Kubernetes Service to handle high-throughput, low-latency online inference with zero-downtime rolling updates. For daily retraining pipelines, I use Azure Data Factory to orchestrate scheduled jobs reliably. Security is managed through Microsoft Entra ID using managed identities to eliminate hardcoded credentials across all service interactions. Finally, I hook up Azure Monitor and Application Insights to track p95 latencies, request error rates, and system health in real time."
+ },
+ {
+  "id": "S1Q07",
+  "kind": "complex",
+  "q": "S1Q07",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 1,
+  "n": 3,
+  "total": 14,
+  "cues": [
+   "Shared feature store and ingestion",
+   "MLflow registry and FastAPI serving",
+   "Prometheus monitoring, zero-downtime Kubernetes"
+  ],
+  "spec": null,
+  "proseWords": 91,
+  "raw": "__CUES__\n1| Shared feature store and ingestion\n2| MLflow registry and FastAPI serving\n3| Prometheus monitoring, zero-downtime Kubernetes\n\nI'd use a centralized feature store so both the nightly batch job and real-time API pull identical feature definitions, preventing training-serving skew. Training runs via Airflow, registering the XGBoost model into the Model Registry upon passing validation checks. For batch scoring, a scheduled pipeline evaluates all 400,000 customers into PostgreSQL nightly. For on-demand requests, a FastAPI service hosted on Kubernetes provides real-time inferences to customer service agents. Finally, I'd track feature drift and p95 latency using Prometheus and Grafana, while handling zero-downtime redeploys with Kubernetes rolling updates behind an ingress controller."
+ },
+ {
+  "id": "S1Q07",
+  "kind": "complex",
+  "q": "S1Q07",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 2,
+  "n": 3,
+  "total": 12,
+  "cues": [
+   "Shared feature store ingestion",
+   "Automated training and registry",
+   "Dual-path serving and monitoring"
+  ],
+  "spec": null,
+  "proseWords": 111,
+  "raw": "__CUES__\n1| Shared feature store ingestion\n2| Automated training and registry\n3| Dual-path serving and monitoring\n\nI’d ingest transaction and activity logs via Airflow into PostgreSQL, feeding a shared feature store so both the batch and online paths use identical feature definitions. Training runs nightly on Kubernetes, tracking artifacts in the Model Registry via MLflow. For serving, I’d deploy a FastAPI container on Kubernetes supporting blue-green deployments for zero downtime, handling both nightly batch scoring for all four hundred thousand users and on-demand agent requests. Predictions get written back to PostgreSQL for instant agent retrieval. Finally, I’d use Prometheus and Grafana to track prediction latency and feature drift, triggering automated retraining alerts when data distributions shift.\n\n__MORE__\n1| feature store offline-online consistency\n2| blue-green traffic shifting mechanics"
+ },
+ {
+  "id": "S1Q07",
+  "kind": "complex",
+  "q": "S1Q07",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 3,
+  "n": 3,
+  "total": 15,
+  "cues": [
+   "Shared feature store and pipeline",
+   "FastAPI serving and MLflow registry",
+   "Prediction storage and zero-downtime EKS"
+  ],
+  "spec": null,
+  "proseWords": 106,
+  "raw": "__CUES__\n1| Shared feature store and pipeline\n2| FastAPI serving and MLflow registry\n3| Prediction storage and zero-downtime EKS\n\nI’d architect this platform by sharing core feature transformation logic between both paths to eliminate training-serving skew. Ingestion runs via Airflow pulling from PostgreSQL into a unified feature store used by both batch and online services. Training executes nightly, saving the optimized XGBoost artifact to the MLflow Model Registry. For serving, nightly batch scoring handles the 400,000 customers into PostgreSQL, while a containerized FastAPI service on EKS handles on-demand agent requests with sub-100ms latency. Predictions are stored back in PostgreSQL for quick UI retrieval. Finally, we monitor feature drift and latency using Prometheus and Grafana, executing zero-downtime model updates via Kubernetes rolling deployments with readiness probes."
+ },
+ {
+  "id": "S1Q07",
+  "kind": "complex",
+  "q": "S1Q07",
+  "model": "3.5-lite HIGH",
+  "arm": "cap-strict-ex",
+  "rep": 4,
+  "n": 3,
+  "total": 14,
+  "cues": [
+   "Airflow ingestion, feature store features",
+   "MLflow registry, FastAPI serving",
+   "Prometheus monitoring, zero downtime deploys"
+  ],
+  "spec": null,
+  "proseWords": 81,
+  "raw": "__CUES__\n1| Airflow ingestion, feature store features\n2| MLflow registry, FastAPI serving\n3| Prometheus monitoring, zero downtime deploys\n\nAirflow orchestrates daily data ingestion into PostgreSQL, and a shared feature store computes features consistently for both batch and online paths. Scheduled pipelines retrain the XGBoost model weekly, logging artifacts and metrics in MLflow. Batch inference runs nightly for all four hundred thousand subscribers, writing predictions to PostgreSQL, while a FastAPI service on Kubernetes handles low-latency on-demand scoring for agents. Prometheus monitors feature drift and API latency, and we use blue-green Kubernetes deployments to roll out model updates with zero downtime."
+ }
+]

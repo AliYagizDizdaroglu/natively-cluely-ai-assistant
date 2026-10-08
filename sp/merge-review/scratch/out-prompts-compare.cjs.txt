@@ -1,0 +1,11 @@
+typed (new) === verbal (old):  true
+verbal (new) === typed + CUE_RULE: true
+CUE_RULE sha256/12 8e15e4e7dd41  length 972
+CUE limits 3 x 5, sentinel __CUES__
+verbal (new) contains SPOKEN_LENGTH_AND_DEPTH: true
+UNIVERSAL_WHAT_TO_ANSWER_PROMPT contains __CUES__: false
+exports added:   CUES_SENTINEL, CUE_MAX_LINES, CUE_MAX_WORDS, CUE_RULE, CUE_SHAPE_RULE, VERBAL_TYPED_PROMPT
+exports removed: none
+exports changed: VERBAL_WHAT_TO_ANSWER_PROMPT len 12784 -> 13756
+string exports containing __CUES__: CUES_SENTINEL, CUE_RULE, VERBAL_WHAT_TO_ANSWER_PROMPT
+string exports containing the whole verbal prompt: none

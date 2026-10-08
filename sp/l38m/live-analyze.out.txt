@@ -1,0 +1,25 @@
+graded 52; grader agreement on acceptable 50/52
+
+V1 one continuous session
+  E  replies 20  acceptable (both) 20  wrong (both) 0  | first word p50 1.3 s p90 2.9 s  | pipeline on the same ids: acceptable 19/20, first token p50 2.5 s
+  QF replies  4  acceptable (both) 4  wrong (both) 0  | first word p50 1.1 s p90 1.3 s  | pipeline on the same ids: acceptable 3/4, first token p50 2.5 s
+  AF replies  1  acceptable (both) 0  wrong (both) 0  | first word p50 0.8 s p90 0.8 s  | pipeline on the same ids: acceptable 1/1, first token p50 3.0 s
+  H  replies  3  acceptable (both) 0  wrong (both) 3  | first word p50 2.4 s p90 3.9 s  | pipeline on the same ids: acceptable 3/3, first token p50 3.3 s
+
+V2 one session per chain
+  E  replies 14  acceptable (both) 13  wrong (both) 0  | first word p50 1.5 s p90 1.8 s  | pipeline on the same ids: acceptable 13/14, first token p50 2.5 s
+  QF replies  5  acceptable (both) 5  wrong (both) 0  | first word p50 0.8 s p90 2.0 s  | pipeline on the same ids: acceptable 4/5, first token p50 2.5 s
+  AF replies  3  acceptable (both) 1  wrong (both) 1  | first word p50 1.4 s p90 2.5 s  | pipeline on the same ids: acceptable 3/3, first token p50 2.8 s
+  H  replies  1  acceptable (both) 0  wrong (both) 1  | first word p50 1.7 s p90 1.7 s  | pipeline on the same ids: acceptable 1/1, first token p50 3.7 s
+  HF replies  1  acceptable (both) 0  wrong (both) 1  | first word p50 1.4 s p90 1.4 s  | pipeline on the same ids: acceptable 0/1, first token p50 3.0 s
+
+not acceptable by both graders (variant id class label: g1 reason | g2 reason):
+  v1 E17F  AF UNSAFE Batch remains right at 10x; no reasoning given, terse. | Batch remains right but gives no reasoning about scaling at tenfold volume.
+  v1 H06   H  UNSAFE WRONG Single nonsense word 'hadronic'; no latency diagnosis given. | Nonsense single word, no diagnostic order for p99 latency.
+  v1 H08   H  UNSAFE WRONG No answer, only a placeholder marker for requests vs limits. | No answer, only a markup placeholder that cannot be spoken.
+  v1 H16   H  UNSAFE WRONG Single meaningless word 'maintaining'; no answer to the image-size question at all. | Single meaningless word, no answer to the image size and build time question.
+  v2 E07   E  RIGHT  Glacier class is a correct answer for yearly reads; terse, unspecific tier. | Glacier family is vague; does not name the specific class such as Deep Archive.
+  v2 H05   H  UNSAFE WRONG No answer, only a placeholder marker for the gateway design question. | No answer, only a placeholder that cannot be spoken.
+  v2 H12F  AF UNSAFE WRONG Ignores the alert-fatigue question and asks the interviewer a question back. | Does not address alert fatigue at all and asks the interviewer a question back.
+  v2 H14F  HF UNSAFE WRONG No answer, only a placeholder marker for the prevention follow-up. | No answer, only a markup placeholder that cannot be spoken.
+  v2 H18F  AF UNSAFE Bare yes without noting the deque approach already is one pass; vague. | Bare yes misses that the described deque approach already is a single pass.

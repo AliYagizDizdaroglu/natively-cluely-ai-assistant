@@ -1,0 +1,28 @@
+OK   --dry-run --leg front: 140 calls listed, each naming gemini-3.5-flash-lite and thinkingLevel HIGH; no fetch, no file
+OK   ... the header names leg, model, thinkingLevel, temperature, the filter pin
+OK   --dry-run --leg back: 48 calls, gemini-3.1-flash-lite, thinkingLevel LOW
+OK   --dry-run: the plan is 2 hours x (4 roster + 3 D) x 5 reps x 2 arms for the front and roster-only x 3 reps for the back
+OK   interleaving: A first exactly when (itemIndex + rep) is even, and every (item, rep) holds one A and one B
+OK   front pass: 140 calls to the mock, none refused  [140 calls]
+OK   request shape: model in the URL, SSE, temperature 0.4, maxOutputTokens 65536, thinkingLevel HIGH, key header
+OK   each call carries the plan's arm bytes: arm A = userA, arm B = userB = insertBlock(userA, block); system unchanged
+OK   record fields: key, hour, id, kind, leg, model, thinking, label, arm, rep, spoken, words, ttft, total, finish, raw, rawLen, thoughts  [{"words":14}]
+OK   thoughts: a reported count is kept (321), no usageMetadata -> null, usageMetadata without the field -> null (never 0), an honest 0 stays 0
+OK   32 answer files after both legs? front first: 20 files (2 hours x 2 arms x 5 reps), named interview60.answers.<model>_fturn-<hour>-<arm>-r<rep>.json
+OK   records are keyed <hour>:<id> and each file holds only its hour
+OK   the pass log ends with the arm summaries and "incomplete ... none"
+OK   a second invocation without --crash-resume is REFUSED and makes no call
+OK   --crash-resume with every record present: logged, 0 calls  [[2026-10-03 19:03:56] CRASH-RESUME leg=front hours=s50m,s50l: 140 records kept, 0 calls with no record at all will be ma]
+OK   --crash-resume after one record was lost: exactly that one call is made (the right item, arm and rep); a TRANSIENT record is never re-called  [calls 1, transient s50m:D1#1 B]
+OK   the lost record is back, with its hour/leg/model/thinking
+OK   back pass: 48 planned calls + 2 retries (call 1) + 4 more attempts (call 2) + 1 cut-stream retry = 55 requests  [55 requests]
+OK   a call that fails with 503, 429 and then succeeds is a normal record
+OK   a call whose 5 attempts all fail is a transientError record (no spoken), named as incomplete, and the pass goes on
+OK   a stream cut with no finishReason is tried once more
+OK   back requests use gemini-3.1-flash-lite and thinkingLevel LOW
+OK   back files: 12 (2 hours x 2 arms x 3 reps)
+OK   the CLI REFUSES (exit 2) when a hash of section 2 differs
+OK   the CLI REFUSES (exit 2) against the registered file while its section 2 is still empty (not ready = nothing runs)
+OK   the CLI REFUSES a run without --leg
+
+RUNNER SELF-TEST OK (mock fetch: no key, no network, no model call)

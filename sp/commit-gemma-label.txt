@@ -1,0 +1,18 @@
+fix(verbal): a Gemma handover to Flash reaches the answer bar
+
+With Gemma 4 selected, streamWithGemmaGuarded hands a failed or stalled
+Gemma answer to Flash and announces it with its own head sentinel,
+__model_source:Gemini Flash__. stripModelSentinel removed it inside the
+filter chain, so the bar kept naming Gemma while Flash wrote the answer.
+
+nameStallSwitch now reads that handover off the raw stream, beside the
+stall race's switch, and names it again just ahead of Flash's first
+words: the bar reads "Gemini Flash (fallback)".
+
+Written by the side session "Surface the Gemma-to-Flash switch in the
+answer label", which left it uncommitted; committed at the user's
+request on 2026-09-23. Without the change its handover test fails (1 of
+12); with it all 12 pass, and the Gemma-answers-itself control passes
+both ways.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

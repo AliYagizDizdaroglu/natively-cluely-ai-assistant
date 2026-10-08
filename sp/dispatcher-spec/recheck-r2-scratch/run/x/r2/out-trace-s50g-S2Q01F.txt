@@ -1,0 +1,13 @@
+===== s50g S2Q01F [fix]
+2026-09-16T08-42-43-s50g [fix jitter=50]: 40/40 once; doubles []; never []; drops 0; absorbed 0 (whisper 0); subs 0; unmatched 0; reorders 6; supersedes 0
+trace S2Q01F: {"n":1,"lat":1200,"budget":1700,"path":"gate","finished":true,"fromLive":false,"finals":2,"cov":"1.00","closes":["continuation-expired"],"live":[],"logFirst":"08:09:57.013","logGate":1206,"vadDev":1,"blips":0,"voiceOff":"08:09:55.805"}
+  08:09:51.365 voice ON
+  08:09:54.005 final "Which of those stages can cause a correct"
+  08:09:55.805 voice OFF
+  08:09:56.449 final "source document to produce an incorrect answer?"
+  08:09:57.005 dispatch finals=2 fromLive=false live=0 path=gate "Which of those stages can cause a correct source document to"
+  08:10:05.005 close continuation-expired
+  08:09:56.285 <whisper rv=match> {"kind":"marked"} q="Which of those stages can cause a correct"
+  08:09:57.118 <whisper rv=match> {"kind":"marked"} q="Which of those stages can cause a correct source d"
+  08:09:57.548 <live rv=paraphrase> {"kind":"marked"} q="Of the RAG pipeline stages (ingestion, parsing, ch"
+

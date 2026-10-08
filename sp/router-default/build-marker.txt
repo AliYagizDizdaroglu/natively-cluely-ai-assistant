@@ -1,0 +1,12 @@
+﻿MAIN HEAD 19937ab
+build exit 0
+built at 2026-10-07 01:37:27
+dist-electron\electron\audio\LiveRouterSession.js be893d46c030 01:37:26
+dist-electron\electron\services\routerArbiter.js adf35be82079 01:37:27
+dist-electron\electron\main.js 8c50f0ce61d6 01:37:26
+grep 'ROUTER_SHAS_OK' files=2
+grep 'gemini-3.8-live' files=4
+grep '[Router] flag NATIVELY_LIVE_ROUTER=' files=1
+grep 'stripUnknownMarkers' files=3
+grep 'generation !== this.generation' files=2
+grep 'routerArbiter.forward' files=1

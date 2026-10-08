@@ -1,0 +1,100 @@
+FOLLOW-UP QUESTIONS REPLAY  model=gemini-3.5-flash-lite thinking=HIGH  16 items x 3 reps x 2 arms = 96 calls
+material s50m-gated.json + earlierQuestions.ref.mjs: pre-registered hashes OK; filter dist-electron\electron\llm\verbalStreamFilter.js sha256 d8fee6ca0170
+A first in 24 pairs, B first in 24
+DRY # 1 S1Q04F roster   r1 B (first)  system 16223  user 4808
+DRY # 2 S1Q04F roster   r1 A (second)  system 16223  user 4230
+DRY # 3 S1Q04F roster   r2 A (first)  system 16223  user 4230
+DRY # 4 S1Q04F roster   r2 B (second)  system 16223  user 4808
+DRY # 5 S1Q04F roster   r3 B (first)  system 16223  user 4808
+DRY # 6 S1Q04F roster   r3 A (second)  system 16223  user 4230
+DRY # 7 S1Q06F roster   r1 A (first)  system 16223  user 4205
+DRY # 8 S1Q06F roster   r1 B (second)  system 16223  user 4763
+DRY # 9 S1Q06F roster   r2 B (first)  system 16223  user 4763
+DRY #10 S1Q06F roster   r2 A (second)  system 16223  user 4205
+DRY #11 S1Q06F roster   r3 A (first)  system 16223  user 4205
+DRY #12 S1Q06F roster   r3 B (second)  system 16223  user 4763
+DRY #13 S1Q08  roster   r1 B (first)  system 16223  user 5285
+DRY #14 S1Q08  roster   r1 A (second)  system 16223  user 4923
+DRY #15 S1Q08  roster   r2 A (first)  system 16223  user 4923
+DRY #16 S1Q08  roster   r2 B (second)  system 16223  user 5285
+DRY #17 S1Q08  roster   r3 B (first)  system 16223  user 5285
+DRY #18 S1Q08  roster   r3 A (second)  system 16223  user 4923
+DRY #19 S2Q05F roster   r1 A (first)  system 16223  user 4532
+DRY #20 S2Q05F roster   r1 B (second)  system 16223  user 5034
+DRY #21 S2Q05F roster   r2 B (first)  system 16223  user 5034
+DRY #22 S2Q05F roster   r2 A (second)  system 16223  user 4532
+DRY #23 S2Q05F roster   r3 A (first)  system 16223  user 4532
+DRY #24 S2Q05F roster   r3 B (second)  system 16223  user 5034
+DRY #25 S2Q08  roster   r1 B (first)  system 16223  user 5462
+DRY #26 S2Q08  roster   r1 A (second)  system 16223  user 5102
+DRY #27 S2Q08  roster   r2 A (first)  system 16223  user 5102
+DRY #28 S2Q08  roster   r2 B (second)  system 16223  user 5462
+DRY #29 S2Q08  roster   r3 B (first)  system 16223  user 5462
+DRY #30 S2Q08  roster   r3 A (second)  system 16223  user 5102
+DRY #31 S2Q08F roster   r1 A (first)  system 16223  user 4146
+DRY #32 S2Q08F roster   r1 B (second)  system 16223  user 4619
+DRY #33 S2Q08F roster   r2 B (first)  system 16223  user 4619
+DRY #34 S2Q08F roster   r2 A (second)  system 16223  user 4146
+DRY #35 S2Q08F roster   r3 A (first)  system 16223  user 4146
+DRY #36 S2Q08F roster   r3 B (second)  system 16223  user 4619
+DRY #37 S2Q09F roster   r1 B (first)  system 16223  user 6132
+DRY #38 S2Q09F roster   r1 A (second)  system 16223  user 5846
+DRY #39 S2Q09F roster   r2 A (first)  system 16223  user 5846
+DRY #40 S2Q09F roster   r2 B (second)  system 16223  user 6132
+DRY #41 S2Q09F roster   r3 B (first)  system 16223  user 6132
+DRY #42 S2Q09F roster   r3 A (second)  system 16223  user 5846
+DRY #43 C1     callback r1 A (first)  system 16223  user 5568
+DRY #44 C1     callback r1 B (second)  system 16223  user 6132
+DRY #45 C1     callback r2 B (first)  system 16223  user 6132
+DRY #46 C1     callback r2 A (second)  system 16223  user 5568
+DRY #47 C1     callback r3 A (first)  system 16223  user 5568
+DRY #48 C1     callback r3 B (second)  system 16223  user 6132
+DRY #49 C2     callback r1 B (first)  system 16223  user 6053
+DRY #50 C2     callback r1 A (second)  system 16223  user 5490
+DRY #51 C2     callback r2 A (first)  system 16223  user 5490
+DRY #52 C2     callback r2 B (second)  system 16223  user 6053
+DRY #53 C2     callback r3 B (first)  system 16223  user 6053
+DRY #54 C2     callback r3 A (second)  system 16223  user 5490
+DRY #55 C3     callback r1 A (first)  system 16223  user 4110
+DRY #56 C3     callback r1 B (second)  system 16223  user 5020
+DRY #57 C3     callback r2 B (first)  system 16223  user 5020
+DRY #58 C3     callback r2 A (second)  system 16223  user 4110
+DRY #59 C3     callback r3 A (first)  system 16223  user 4110
+DRY #60 C3     callback r3 B (second)  system 16223  user 5020
+DRY #61 C4     callback r1 B (first)  system 16223  user 5750
+DRY #62 C4     callback r1 A (second)  system 16223  user 5385
+DRY #63 C4     callback r2 A (first)  system 16223  user 5385
+DRY #64 C4     callback r2 B (second)  system 16223  user 5750
+DRY #65 C4     callback r3 B (first)  system 16223  user 5750
+DRY #66 C4     callback r3 A (second)  system 16223  user 5385
+DRY #67 C5     callback r1 A (first)  system 16223  user 4101
+DRY #68 C5     callback r1 B (second)  system 16223  user 4911
+DRY #69 C5     callback r2 B (first)  system 16223  user 4911
+DRY #70 C5     callback r2 A (second)  system 16223  user 4101
+DRY #71 C5     callback r3 A (first)  system 16223  user 4101
+DRY #72 C5     callback r3 B (second)  system 16223  user 4911
+DRY #73 C6     callback r1 B (first)  system 16223  user 4516
+DRY #74 C6     callback r1 A (second)  system 16223  user 3901
+DRY #75 C6     callback r2 A (first)  system 16223  user 3901
+DRY #76 C6     callback r2 B (second)  system 16223  user 4516
+DRY #77 C6     callback r3 B (first)  system 16223  user 4516
+DRY #78 C6     callback r3 A (second)  system 16223  user 3901
+DRY #79 D1     dropped  r1 A (first)  system 16223  user 3956
+DRY #80 D1     dropped  r1 B (second)  system 16223  user 4247
+DRY #81 D1     dropped  r2 B (first)  system 16223  user 4247
+DRY #82 D1     dropped  r2 A (second)  system 16223  user 3956
+DRY #83 D1     dropped  r3 A (first)  system 16223  user 3956
+DRY #84 D1     dropped  r3 B (second)  system 16223  user 4247
+DRY #85 D2     dropped  r1 B (first)  system 16223  user 4586
+DRY #86 D2     dropped  r1 A (second)  system 16223  user 4283
+DRY #87 D2     dropped  r2 A (first)  system 16223  user 4283
+DRY #88 D2     dropped  r2 B (second)  system 16223  user 4586
+DRY #89 D2     dropped  r3 B (first)  system 16223  user 4586
+DRY #90 D2     dropped  r3 A (second)  system 16223  user 4283
+DRY #91 D3     dropped  r1 A (first)  system 16223  user 3897
+DRY #92 D3     dropped  r1 B (second)  system 16223  user 4171
+DRY #93 D3     dropped  r2 B (first)  system 16223  user 4171
+DRY #94 D3     dropped  r2 A (second)  system 16223  user 3897
+DRY #95 D3     dropped  r3 A (first)  system 16223  user 3897
+DRY #96 D3     dropped  r3 B (second)  system 16223  user 4171
+DRY RUN: no key read, no call made

@@ -1,0 +1,62 @@
+﻿final adapter 16036 B 2af5409f94f0f3e5; brief test 9520 B a2f0015faa7a30bf; keyterms 5801 B b4431b9138d9688f
+
+[as expected] control: the final adapter
+   Tests 8 passed (8)
+   (no test failed)
+
+[as expected] gate removed (brief Step 6, in the mirror)
+   Tests 1 failed | 7 passed (8)
+   brief-test failed: a non-English connection passes every transcript through untouched, with no repair line
+
+[as expected] empty-final clear dropped
+   Tests 1 failed | 7 passed (8)
+   brief-test failed: an empty FINAL between F1 and F2 is a pause: F2 is emitted as received, no repair line
+
+[as expected] clear on ANY empty transcript (interims too)
+   Tests 1 failed | 7 passed (8)
+   brief-test failed: an empty INTERIM is not a pause: the repair still happens (the control for the three above)
+
+[as expected] clear condition inverted (if (!isFinal))
+   Tests 2 failed | 6 passed (8)
+   brief-test failed: an empty FINAL between F1 and F2 is a pause: F2 is emitted as received, no repair line
+   brief-test failed: an empty INTERIM is not a pause: the repair still happens (the control for the three above)
+
+[as expected] UtteranceEnd clear dropped
+   Tests 1 failed | 7 passed (8)
+   brief-test failed: an UtteranceEnd between F1 and F2 is a pause too, and is still re-emitted
+
+[as expected] speech_final not passed
+   Tests 1 failed | 7 passed (8)
+   brief-test failed: speech_final on F1 reaches the module: Deepgram heard the utterance end there, so nothing is restored
+
+[as expected] speech_final always true
+   Tests 2 failed | 6 passed (8)
+   brief-test failed: emits the repaired final, logs the raw text plus one repair line, and a restarted socket starts with no remembered cut
+   brief-test failed: an empty INTERIM is not a pause: the repair still happens (the control for the three above)
+
+[as expected] non-English text fallback -> empty string
+   Tests 3 failed | 5 passed (8)
+   brief-test failed: a non-English connection passes every transcript through untouched, with no repair line
+   extra-test failed: indonesian: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final neither throw nor lose an event
+   extra-test failed: auto: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final neither throw nor lose an event
+
+[as expected] ?. dropped on the UtteranceEnd clear (null socket)
+   Tests 2 failed | 6 passed (8)
+   extra-test failed: indonesian: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final neither throw nor lose an event
+   extra-test failed: auto: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final neither throw nor lose an event
+
+[as expected] ?. dropped on the empty-final clear (null socket)
+   Tests 2 failed | 6 passed (8)
+   extra-test failed: indonesian: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final neither throw nor lose an event
+   extra-test failed: auto: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final neither throw nor lose an event
+
+[as expected] ?. dropped on onTranscript (null socket)
+   Tests 3 failed | 5 passed (8)
+   brief-test failed: a non-English connection passes every transcript through untouched, with no repair line
+   extra-test failed: indonesian: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final neither throw nor lose an event
+   extra-test failed: auto: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final neither throw nor lose an event
+
+junction to MAIN's node_modules removed: true; MAIN's vitest still present: true
+scratch tree deleted: true
+
+variants whose failing set differed from the expectation: 0

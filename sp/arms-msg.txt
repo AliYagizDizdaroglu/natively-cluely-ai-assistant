@@ -1,0 +1,16 @@
+fix(flight): the flight answers on the two Flash Lites only, no Groq arms
+
+At the user's request (2026-09-26) the unattended flight stops scheduling
+its two Groq comparison answer arms, qwen/qwen3.8-27b and
+openai/gpt-oss-120b: ANSWER_MODELS is gemini-3.1-flash-lite and
+gemini-3.5-flash-lite. A dry run schedules 11 answers passes instead of
+13, none on Groq. interview60.answers.mjs still runs a Groq id by hand,
+and the app's own question detector (Groq openai/gpt-oss-20b) is part of
+the app under test and unchanged.
+
+Two tests pin it: ANSWER_MODELS is exactly the two lites, and no id the
+flight can schedule (answer, focused and paired arms) contains "/".
+The header, the arm comment and README.md stop counting arms and name
+what done.json's toGrade lists instead.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

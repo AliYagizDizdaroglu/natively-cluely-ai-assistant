@@ -1,0 +1,1 @@
+Candidate profile: senior machine learning engineer, 7 years. Python, PyTorch, scikit-learn, FastAPI, Docker, Kubernetes, AWS (SageMaker, Lambda), Airflow, Spark, Redis, PostgreSQL. Built recommendation and fraud models, MLOps pipelines and an LLM gateway. Target role: ML platform engineer.

@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct tabular/missing-value/regularization rationale plus nightly-batch constraint and a logistic-regression baseline; natural spoken length."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic all correct and the 57-versus-60 inconsistency is named, though the closing rounding remark slightly contradicts it; over 85 words."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "RCT first, difference-in-differences with parallel pre-trends as fallback; directly separates intervention from seasonality and mix."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Core metrics right, but the empty-input reasoning is incoherent: treating prevalence as zero causes the division it claims to avoid; long."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Chronological split with a thirty-day buffer and a ColumnTransformer fit only on train; leakage and label window both handled."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Left join with the 30-day range, ingested_at filter and COUNT preserving zero-call customers; the opening windowed-join label is loose. Over 85 words."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every named stage and correctly identifies shared feature definitions, registry and prediction schema; well over 85 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Strong content but unspeakable: labelled sections, markdown asterisks, and literal code such as the hash modulo and observed_churn IS NOT NULL."
+  },
+  "S1Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Azure service mapping is accurate but omits the explicitly asked scheduling component, and vendor lock-in is an odd rationale for an all-Azure stack."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, scoped RBAC, Key Vault for residual secrets, and subscription plus private-endpoint separation all covered; over 85 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All eight stages walked through correctly with cross-encoder reranking and a mapping to prior work; over 85 words."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Gives no uncertainty for the F1 metric despite it being asked, and a 99 percent interval of 2.5 points on 150 questions is implausibly tight."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sound contrast: agents earn their cost only when the retrieval path is unknown upfront rather than merely parallel; over 85 words."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct reciprocal rank fusion with score accumulation, one-based ranks and document id as deterministic tie-break; well over 85 words."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy relevance-first with id dedup, two-per-document cap and skip-if-it-does-not-fit all handled correctly; over 85 words."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, wait_for per case, results indexed by input position, failures caught without cancelling siblings; natural length."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-partitioned index, relational metadata with ACLs, pre-filtered retrieval, async ingestion and golden-set evaluation; well over 85 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-field versioning, watermarked backfill, dual writes for sync, sampled quality comparison, config-flip cutover and rollback all covered; over 85 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure service choices for every named component plus a defensible custom-parser exception; over 85 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Durable dedup key checked before work and acknowledge-after-write correctly makes the crash-before-ack replay safe; over 85 words."
+  }
+}

@@ -1,0 +1,14 @@
+mode=DRY dist=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\live-router-a\dist-electron
+model=gemini-3.8-live shas_ok=true instruction_sha12=e29bf3810128 block_sha12=e11c240063ea
+forced reconnect after RH02: up again
+clip RE05 EASY firstTextMs=-179 firstWordMs=-179 endKind=generationComplete route=easy-answer firstWordRoute=live/- check=- words=21
+clip RH02 HARD firstTextMs=-150 firstWordMs=-112 endKind=generationComplete route=hard firstWordRoute=hard/- check=too-short words=1
+clip RE13 EASY firstTextMs=-138 firstWordMs=-138 endKind=generationComplete route=easy-answer firstWordRoute=live/- check=- words=21
+clip RH16 HARD firstTextMs=-167 firstWordMs=-121 endKind=generationComplete route=hard firstWordRoute=hard/- check=too-short words=1
+[Router] session connect model=gemini-3.8-live block_sha12=e11c240063ea instruction_sha12=e29bf3810128 context_sha12=dd1e8cca2021 context_chars=127
+[Router] session up setup_ms=21
+[Router] session close gen=1 code=1000 reason=dry close stale=no quota=no
+[Router] session reconnect attempt=1 reason=dry close
+[Router] session connect model=gemini-3.8-live block_sha12=e11c240063ea instruction_sha12=e29bf3810128 context_sha12=dd1e8cca2021 context_chars=127
+[Router] session up setup_ms=29
+PROBE PASS

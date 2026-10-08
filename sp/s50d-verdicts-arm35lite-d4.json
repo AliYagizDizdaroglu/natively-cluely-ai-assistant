@@ -1,0 +1,22 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Accurate XGBoost rationale for tabular data, production constraints, and logistic-regression baseline; natural speech, slightly over length."},
+  "S1Q02": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Arithmetic correct: 9,500 churners, 5,000 flagged, 2,850 TP, 57 percent precision, 30 percent recall; 120 words, trailing filler."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Randomized holdout plus difference-in-differences is the right answer; propensity-matching wording slightly muddled but sound and speakable."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Stable sort for ties, precision, recall, lift over prevalence, and all three edge cases stated with a defensible convention."},
+  "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "ColumnTransformer fit inside folds, chronological split with a 30-day buffer gap; leakage and window both addressed concisely."},
+  "S1Q06": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Never filters event type to support calls, and predicate placement in ON versus WHERE left ambiguous, which breaks zero-call preservation."},
+  "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers every requested stage plus shared transformation logic against training-serving skew; sound stack, but 126 words is long."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Prediction key logging, deterministic hash assignment, windowed outcome join, treated-user exclusion for retraining; correct but 120 words."},
+  "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct AWS-to-Azure mapping across all eight areas with operational rationale; dated AAD naming, 110 words."},
+  "S1Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Managed identity, RBAC roles, Key Vault, private endpoints, environment isolation all right; minor tension over env-var references, 120 words."},
+  "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Walks every stage with real choices: layout-preserving parse, semantic chunks, hybrid retrieval, cross-encoder rerank; hallucination-free overclaims slightly."},
+  "S2Q02": {"correctness": 1, "on_topic": 2, "delivery": 0, "reason": "Right structure, but invents precise confidence intervals and sample sizes the candidate never measured; 148 words is far too long."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Nails the criterion, dependence on intermediate results, and contrasts all three approaches correctly; 118 words."},
+  "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "One-based ranks, one over c plus rank accumulation, score-descending then id-ascending tie-break, top k slice; fully correct."},
+  "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Dedup, relevance sort, budget skip, two-per-document cap all present with edge cases; 120 words is long."},
+  "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Concurrency cap of eight, per-case timeout race, local rejection capture, index-mapped ordering; all four constraints met."},
+  "S2Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Per-tenant collections, metadata store with row-level security, query-time filters, async ingestion, RAG triad evaluation; 129 words."},
+  "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Dual-write versioning, async backfill, stream sync, NDCG shadow test, flag cutover and rollback all correct; 150 words unusable spoken."},
+  "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sensible Azure service per component and a fair managed-versus-custom boundary; 96 words, just past comfortable spoken length."},
+  "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Peek-lock, duplicate detection, content-hash keyed idempotent writes, ack after commit; exactly the at-least-once safety argument."}
+}

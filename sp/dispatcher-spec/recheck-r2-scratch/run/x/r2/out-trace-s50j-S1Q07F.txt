@@ -1,0 +1,35 @@
+===== s50j S1Q07F [fix]
+2026-09-19T08-22-41-s50j [fix jitter=50]: 40/40 once; doubles []; never []; drops 0; absorbed 4 (whisper 0); subs 3; unmatched 0; reorders 0; supersedes 2
+trace S1Q07F: {"n":1,"lat":1829,"budget":1929,"path":"gate","finished":true,"fromLive":false,"finals":2,"cov":"1.00","closes":["continuation-expired"],"live":["A nightly job fails halfway through. How do you re"],"logFirst":"07:37:42.351","logGate":5553,"vadDev":-14,"blips":0,"voiceOff":"07:37:36.814"}
+  07:37:29.614 voice ON
+  07:37:31.634 voice OFF
+  07:37:32.534 voice ON
+  07:37:32.981 final "A nightly job fails halfway through."
+  07:37:36.814 voice OFF
+  07:37:38.016 final "How do you resume it without duplicate campaign actions or mixed model"
+  07:37:38.014 classify finals=1
+  07:37:38.416 classify finals=2
+  07:37:38.643 dispatch finals=2 fromLive=false live=1 path=gate "A nightly job fails halfway through. How do you resume it wi"
+  07:37:46.643 close continuation-expired
+  07:37:38.374 <verdict not-a-question> {"kind":"ignored","why":"stale-finals"}
+  07:37:38.643 <live rv=match> {"kind":"marked"} q="A nightly job fails halfway through. How do you re"
+  07:37:38.816 <verdict unknown SUBSTITUTED> {"kind":"ignored","why":"dispatched"}
+  07:37:38.911 <whisper rv=match> {"kind":"marked"} q="A nightly job fails halfway through. How do you re"
+
+===== s50j S1Q07F [calib]
+2026-09-19T08-22-41-s50j [calib jitter=50]: 40/40 once; doubles []; never []; drops 4; absorbed 0 (whisper 0); subs 0; unmatched 0; reorders 1; supersedes 1
+trace S1Q07F: {"n":1,"lat":5529,"budget":1929,"path":"unfinished","finished":true,"fromLive":true,"finals":0,"cov":"1.00","closes":["not-a-question","continuation-expired"],"live":["A nightly job fails halfway through. How do you re"],"logFirst":"07:37:42.351","logGate":5553,"vadDev":-14,"blips":0,"voiceOff":"07:37:36.814"}
+  07:37:29.614 voice ON
+  07:37:31.634 voice OFF
+  07:37:32.534 voice ON
+  07:37:32.981 final "A nightly job fails halfway through."
+  07:37:36.814 voice OFF
+  07:37:38.016 final "How do you resume it without duplicate campaign actions or mixed model"
+  07:37:38.014 classify finals=1
+  07:37:38.374 close not-a-question
+  07:37:42.343 dispatch finals=0 fromLive=true live=1 path=unfinished "A nightly job fails halfway through. How do you resume it wi"
+  07:37:50.343 close continuation-expired
+  07:37:38.374 <verdict not-a-question> {"kind":"marked"}
+  07:37:38.643 <live rv=match> {"kind":"marked"} q="A nightly job fails halfway through. How do you re"
+  07:37:38.911 <whisper rv=match> {"kind":"marked"} q="A nightly job fails halfway through. How do you re"
+

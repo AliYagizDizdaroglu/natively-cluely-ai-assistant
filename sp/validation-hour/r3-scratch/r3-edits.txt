@@ -1,0 +1,642 @@
+=== OLD E01 title
+# Pre-registration: flight h40d (holdout40, fourth flight) — cue mode's validation hour — REVISION 2
+=== NEW
+# Pre-registration: flight h40d (holdout40, fourth flight) — cue mode's validation hour — REVISION 3
+=== END
+=== OLD E02 header paragraph (N8-e)
+**Revision 2, written 2026-10-01 about 02:30 local (Thursday, before the 05:00 cue re-smoke, before the bench,
+before the merge).** It replaces `PREREGISTER-h40d-DRAFT.md` after the Opus review `REVIEW.md` (NOT READY: 2
+Critical, 6 Important, 13 Minor). Every finding and the controller's rulings on the review's open questions are
+applied; `CHANGES-r2.md` lists each one with what changed. A scoped Opus re-check follows; the user may amend
+before the hour is armed. The controller fills "What flies" (§11) at arming and commits this file to MAIN's
+`passes/` as `PREREGISTER-h40d.md` before the task is registered. Not edited after the hour; the result goes in
+`passes/<flight-date>-h40d-result.md`, applying this text verbatim.
+=== NEW
+**Revision 3, written 2026-10-01 about {{TIME}} local (Thursday, after the 05:00 cue re-smoke PASSED, while the bench
+runs, before the merge).** It replaces revision 2 (written about 01:50, not the 02:30 its header said; re-check N8)
+after the scoped Opus re-check `RECHECK-r2.md` (READY WITH FIXES: 19 of the review's 21 findings addressed, I5 and
+M13 partial, four new Important findings N1–N4, five new Minor N5–N9). Every re-check edit is applied as written
+except where the controller's rulings on its open choices say otherwise; `CHANGES-r3.md` lists each item with the
+edit applied or the reason for a different one, and ends with the short list of what only the user decides (also
+§12, "Only the user"). Revision 2 (`PREREGISTER-h40d.md` in VH) and `CHANGES-r2.md` are unchanged. The controller
+fills "What flies" (§11) at arming and commits this file to MAIN's `passes/` as `PREREGISTER-h40d.md` before the
+task is registered. Not edited after the hour; the result goes in `passes/<flight-date>-h40d-result.md`, applying
+this text verbatim.
+=== END
+=== OLD E03 sources paragraph
+Every number below names its source. The numbers marked "h40c's own", "br1's" and "the hold's" were computed
+before any h40d data existed by `SP\validation-hour\h40d-clocks.mjs` (revision 2) and
+`SP\validation-hour\h40d-thoughts-noise.mjs`; their full outputs are in `SP\validation-hour\CALIBRATION-NOTES.md`,
+`clocks.cal-r2.out.txt` and `thoughts-noise.out.txt`. The reviewer's read-only scripts in
+`SP\validation-hour\review-scratch\` are cited where their numbers are used; each was re-run by the controller.
+=== NEW
+Every number below names its source. The numbers marked "h40c's own", "br1's", "the hold's" and "the re-smoke's"
+were computed before any h40d data existed by `SP\validation-hour\h40d-clocks.mjs` (revision 2),
+`SP\validation-hour\h40d-thoughts-noise.mjs` (revision 3: its 2c INCOMPLETE line, re-check N6),
+`SP\validation-hour\knowledge-mode-read.mjs` and `SP\validation-hour\h40d-knowledge-lines.mjs` (both new in this
+revision, rule 1(g)); their full outputs are in `SP\validation-hour\CALIBRATION-NOTES.md`, `clocks.cal-r2.out.txt`,
+`thoughts-noise.out.txt` and `knowledge-mode.out.txt`, re-written by `run-calibrations.mjs` after the N6 edit. The
+reviewer's read-only scripts in `SP\validation-hour\review-scratch\` and the re-checker's in `recheck-scratch\` are
+cited where their numbers are used; each was re-run by the controller.
+=== END
+=== OLD E04 §2 the guard row + knowledge-mode row (N1)
+| The guard | `guard-h40d.mjs` (§7.4): h40c's `guard-h40c.mjs` re-pinned, plus the cue build's markers in MAIN's dist (the merge review's item 6). `GUARD OK` from the dry twin `launch-h40d-dry.cmd`, registered as its own scheduled task, is required before the real task is registered. |
+=== NEW
+| The guard | `guard-h40d.mjs` (§7.4): h40c's `guard-h40c.mjs` re-pinned, plus the cue build's markers in MAIN's dist (the merge review's item 6) and knowledge mode ON in the persisted settings (check 13; rule 1(g), re-check N1). `GUARD OK` from the dry twin `launch-h40d-dry.cmd`, registered as its own scheduled task, is required before the real task is registered. |
+| Knowledge mode | **ON (the Context toggle), as on h40c and br1** — not an environment variable: persisted as `knowledgeMode: true` in `%APPDATA%\natively\settings.json` (`SettingsManager.ts:28`; written by the toggle, `ipcHandlers.ts:3030`; restored at start by `main.ts:687`). Read without starting the app by `VH\knowledge-mode-read.mjs` after the user's live look (§7.3a), required by the guard's check 13 at launch, proven by the prestart's `Knowledge mode ENABLED` line (§7.3), and VOID under rule 1(g) if the hour's own log says otherwise. |
+=== END
+=== OLD E05 §3 residual (N8-a)
+construction (the clocks script prints the identity's residual, 0 ms):
+=== NEW
+construction (G is computed as the remainder, so the script's printed 0 ms residual checks its arithmetic only; what G contains rests on the code trace above):
+=== END
+=== OLD E06 §3 the combined build's first run
+cue-smoke pre-registration reads them; hold-read reads the WHOLE debug log, readiness probe included.
+=== NEW
+cue-smoke pre-registration reads them; hold-read reads the WHOLE debug log, readiness probe included.
+
+**The combined build's first run — the re-smoke's (the re-check's residual risk on G).** The 05:00 re-smoke
+(`WT\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke`: the dist that flies, scenario50 S1, hedge
+on; `h40d-clocks.mjs`, n 20 in the run window, `clocks.cal-r2.out.txt`): screen clock 4.742 / 5.770 / 5.999 s; model
+clock 4.232 / 5.162 / 5.379 s; **G 0.594 / 1.112 / 1.147 s** — its median 0.093 s above br1's 0.501 s, under the 0.1 s
+line the re-check set for saying the provider reading could book a cue cost as load (its p90, 1.112 s against br1's
+0.555 s, is reported beside it; G is the embedding call, which cue mode does not touch); **C 0.052 / 0.192 / 0.193 s**
+(the hold's 0.217 / 0.717 s gone: the early close); cues line → first token 0.002 / 0.007 / 0.091 s; 2d 0 charged in
+the run window and in the whole log (22 windows). One window — the first of the run proper, dispatched
+02:03:21.006Z — reads G = 2 ms with no `Intent classified` line: the knowledge step did not run on it (rule 1(g)'s
+known case; the 16:12 run shows the same on its first run window, G 8 ms; h40c and br1 never).
+=== END
+=== OLD E07 rule 1(b) (N7-c)
+- (b) fewer than 95% of dispatch windows contain a `verbal hedge: front=` line;
+=== NEW
+- (b) fewer than 95% of dispatch windows, net of knowledge short-circuit windows (rule 4), contain a `verbal hedge: front=` line;
+=== END
+=== OLD E08 rule 1(g) (N1-a)
+- (f) the reliability void of rule 5 (more than 2 losses before dispatch).
+=== NEW
+- (f) the reliability void of rule 5 (more than 2 losses before dispatch);
+- (g) knowledge mode not on, as it was on h40c (re-check N1): the last `[KnowledgeOrchestrator] Knowledge mode ENABLED` /
+  `DISABLED` line before the run window is not `ENABLED`, or a `DISABLED` line falls inside it, or fewer than 95% of
+  dispatch windows carry an `[KnowledgeOrchestrator] Intent classified` line (h40c and br1: one `ENABLED` after
+  `[AppState] Knowledge mode restored from settings`, no `DISABLED`, `Intent classified` 47 for 47 and 42 for 42
+  windows in the whole log; the two cue smokes, 16:12 and 05:00: 23 of 24 and 21 of 22, the one window without the
+  line being the first of the run proper in both, where G reads 8 ms and 2 ms — the knowledge step did not run on that
+  window, cause unproven — which the 95% line tolerates twice in 45; read after the hour by
+  `VH\h40d-knowledge-lines.mjs <run-dir>`, which names every window without the line, and the clocks `--list` gives
+  each such window's G, a G under 20 ms being the step's absence). The Context toggle persists (`ipcHandlers.ts:3030`
+  writes `knowledgeMode` to `%APPDATA%\natively\settings.json`, `SettingsManager.ts:28`; `main.ts:687` restores it
+  at start — `ENABLED` is logged only when the key is true) and the live look of §6 turns it on and off; with it off
+  the knowledge step (G) and the knowledge prompt are gone, and 2a and rule 3 would compare another configuration
+  with h40c's. Pinned BEFORE the hour as well: the persisted key read without starting the app (§7.3a,
+  `VH\knowledge-mode-read.mjs`), the guard's check 13 (§7.4) and the prestart's `ENABLED` line (§7.3).
+=== END
+=== OLD E09 2a calibration: the re-smoke
+h40c 4.100 PASS; br1 4.621 PASS (another roster on a loaded day); the 16:12 run under the hold 5.313 = a 2a breach,
+=== NEW
+h40c 4.100 PASS; br1 4.621 PASS (another roster on a loaded day); the 05:00 re-smoke 4.742 PASS (the combined build
+  on S1, §3); the 16:12 run under the hold 5.313 = a 2a breach,
+=== END
+=== OLD E10 2b sources: the re-smoke
+and br1 at 2 ms; the 16:12 run's C row.
+=== NEW
+and br1 at 2 ms; the 16:12 run's C row; the 05:00 re-smoke's C row (0.052 / 0.192 s, the combined build) sits far
+  inside them.
+=== END
+=== OLD E11 2c INCOMPLETE (N6)
+  INCOMPLETE when either side has a rep with more than 3 true holes (`transientError`: an HTTP 503 after four tries).
+=== NEW
+  INCOMPLETE when either side has a rep with more than 3 true holes (`transientError`: an HTTP 503 after four tries);
+  the script then prints `INCOMPLETE (more than 3 true holes: <side> <rep> (<n>), …)` whatever the medians say
+  (re-check N6; known case: s50e's single-rep `gemini-3.7-flash` arm as both sides, 4 holes of 5 → INCOMPLETE, where
+  the revision-2 script read `PASS (fallback)`).
+=== END
+=== OLD E12 2c first known case (N8-b)
+**The first known case is Thursday's bench's thinking-token difference**
+=== NEW
+**The first real reading (a preview, not a calibration: its answer is not known beforehand) is Thursday's bench's thinking-token difference**
+=== END
+=== OLD E13 2e branch decided
+Which branch applies is
+  written into "What flies" before arming.
+=== NEW
+**The branch, decided in
+  this revision: Thursday's 05:00 re-smoke read GONE** (`hold-read.resmoke2.out.txt`, the whole log: 21 counted
+  answers, R2 under 15 ms in 0, B under 15 ms in 0; T median 370 ms; the dist proven, `CHECK EXIT 0`, filter sha
+  `42d9bc42dbd17870` in both proofs) **→ 2e is GATED this hour**; §11 records it.
+=== END
+=== OLD E14 provider reading: 2b or 2c INCOMPLETE (I5-d)
+A 2a breach with 2b PASS and **2c INCOMPLETE** is
+  **INCOMPLETE** until 2c is decided (review I5d).
+=== NEW
+A 2a breach with **2b or 2c INCOMPLETE** (2b INCOMPLETE =
+  first-token lines covering under 90% of the windows with a won-by line) is **INCOMPLETE** until both are decided
+  (review I5d, re-check I5(e)).
+=== END
+=== OLD E15 percentile paragraph (N8-d)
+decides rule 2 outright.
+=== NEW
+decides that clause outright (a 2a breach then goes through the provider reading).
+=== END
+=== OLD E16 one definition (N2-a)
+correctness-0 counts 1 / 0 / 1 (`review-scratch/twin-wrongs.mjs`).
+=== NEW
+correctness-0 counts 1 / 0 / 1 (`review-scratch/twin-wrongs.mjs`). For twin records only, empty prose (3c's counting,
+below) also counts wrong; which empty-prose records enter 3c's gated clause is said there.
+=== END
+=== OLD E17 3a noise condition (M13-a)
+**not below the smallest of its own three cue twins' counts on the ids
+=== NEW
+**at most 1 below the smallest of its own three cue twins' counts on the ids
+=== END
+=== OLD E18 3a noise condition (M13-b)
+they share** reads as noise:
+=== NEW
+they share** (the baseline's own gap: h40c in-app 35 against its twins' lowest 36, h40b 35 against 36, h40a 39 against 37; under "not below", a 3a miss on an h40c-shaped hour could never read as noise) reads as noise:
+=== END
+=== OLD E19 3c wrong clause (N2, ruling 2)
+  - **wrong, on the 40 gated ids (review C2):** no cue rep with more wrong answers (the one definition above) on the
+    40 than the worst no-cue rep on the 40; **the all-ids counts are printed beside it, never gated.** Why: every wrong
+    answer on the 3.5-lite HIGH twins of h40b and h40c (9 of 9) is on R02F, R09F or R11F, and on the 40 gated ids those
+    twins have 0 wrong in all nine reps of h40a–h40c (`twin-wrongs.mjs`); on all ids the null probability of a STOP
+    with no cue effect is about 30% (verdict-wrong) or 21% (correctness-0), on the 40 about 0
+    (`review-scratch/wrong-clause-null.mjs`). A 3c STOP is a cue-attributable FAIL that leads to a revert; it must not
+    be drawn from how R09F and R02F happen to fall.
+=== NEW
+  - **wrong, on the 40 gated ids (review C2; re-check N2) — the controller's default, the sums with a margin of one:**
+    the cue reps' TOTAL gated wrong (the one definition above, summed over the three reps) ≤ the no-cue reps' total
+    gated wrong + 1; **the all-ids counts are printed beside it, never gated.** Its null STOP with no cue effect is
+    0.9% at a 5% per-rep chance of a gated wrong and 3.1% at 10% (`recheck-scratch/gated-null.mjs`, re-run for this
+    revision); it still stops two or more extra gated wrong answers, and a single one — a block-only twin included —
+    is named and read item by item (§5), never a STOP by itself. This replaces `benchDecide`'s per-rep wrong clause for
+    this hour: the adapter feeds `benchDecide` the band and the cue check only and decides this clause itself, printing
+    both readings. **The alternative the user may choose before arming (§12, "Only the user"): the strict per-rep
+    clause** — no cue rep with more gated wrong than the worst no-cue rep — whose null STOP is 12% at 5% and 20% at
+    10%: its control, 3.5-lite HIGH, read 0 gated wrong in all nine reps of h40a–h40c, so its worst rep will very
+    likely be 0 and any single gated wrong or block-only twin in any cue rep STOPs. Why the 40: every wrong answer on
+    the 3.5-lite HIGH twins of h40b and h40c (9 of 9) is on R02F, R09F or R11F, and on the 40 gated ids those twins
+    have 0 wrong in all nine reps of h40a–h40c (`twin-wrongs.mjs`); on all ids the null probability of a per-rep STOP
+    with no cue effect is about 30% (verdict-wrong) or 21% (correctness-0), on the 40 about 0 by the plug-in (nine
+    reps all 0, an input that cannot produce a STOP — not a proof: nine zero reps allow a per-rep chance up to 28%,
+    and at 5% the strict clause stops 12% of hours with no cue effect, `recheck-scratch/gated-null.mjs`;
+    `review-scratch/wrong-clause-null.mjs`). A 3c STOP is a cue-attributable FAIL that leads to a revert; it must not
+    be drawn from how R09F and R02F happen to fall. **Empty prose in this clause (re-check N2):** a block-only twin —
+    cues present, prose emptied by any stage other than `filterCodeFences` — counts, since it cannot exist without cue
+    mode; a record whose prose `filterCodeFences` removed (a fenced answer, which the verbal path drops by design, cues or
+    not) is a pipeline event on either side: counted wrong in the all-ids line and named, never in this clause. Both
+    empty-prose records on file (s50l `captured-high-r3` S1Q06, s50m `captured-high-r2` S2Q06; 2 of 825 3.5-lite HIGH twin
+    answers) are fenced answers, and the combined build's chain still empties them (`recheck-scratch/replay-stages.mjs`).
+=== END
+=== OLD E20 3c counting: block-only twin (N2-d)
+and on the cue side it is named as a block-only twin.
+=== NEW
+and on the cue side, with its cues present, it is named as a block-only twin (which empty-prose records enter the gated clause: "wrong" above).
+=== END
+=== OLD E21 3c same-day re-run (N4-a)
+(`answers.mjs` resumes from the file and fills only its holes)
+=== NEW
+(with `--only <that rep's transientError ids>`, never a bare resume: `answers.mjs:314` skips only records whose
+  `spoken` is non-empty, so a bare resume also re-draws every empty-prose record and could resample a block-only twin
+  away; from MAIN, as the flight invokes the arm (`flight.mjs:350–353`): `node electron\test\golden\interview60.answers.mjs
+  --model <the arm's model> --tag <the arm's tag> --thinking HIGH [--no-cues for a control rep] --captured
+  <run-dir>\interview60.prompts.json --only <ids>`, which resumes from `electron\test\golden\interview60.answers.<model>_<tag>.json`
+  (the flight copies, never moves, that file into the run folder); then the file is copied over the run folder's copy
+  and re-exported with `interview60.judge.mjs <run-dir> --answers <that file> --export` before grading)
+=== END
+=== OLD E22a 3c known case h40c (sums)
+control 1 / 0 / 0 (R08 in r1), cue 0 / 0 / 0 → no
+=== NEW
+control 1 / 0 / 0 (R08 in r1; total 1), cue 0 / 0 / 0 (total 0 ≤ 1 + 1) → no
+=== END
+=== OLD E22b 3c known case h40b (sums)
+gated wrong control 0 / 0 / 1 (R08 in r3), cue 0 / 0 / 0 → PASS.
+=== NEW
+gated wrong control 0 / 0 / 1 (R08 in r3; total 1), cue 0 / 0 / 0 (total 0) → PASS, under the default and the strict alternative alike.
+=== END
+=== OLD E23 rule 4 short-circuit count (N7-a)
+(h40c 0, h40a 2 — the salary
+=== NEW
+(h40c 0, h40a 1 — the salary
+=== END
+=== OLD E24 rule 4 cross-check row (N7-b)
+never makes the hour VOID. The gate row `Coaching-path answers` is the cross-check.
+=== NEW
+never makes the hour VOID (rule 1(b) is read net of its windows, re-check N7). The report's row `Technical questions answered via the coaching path` is the cross-check; it counts `__negotiationCoaching` occurrences, two log lines per card (h40a's one card reads 2).
+=== END
+=== OLD E25 5a (N3-a, ruling 3)
+**5a. Answered: at least 44 of the 45 roster items have an attributed in-app answer**
+=== NEW
+**5a. Answered: every roster item has an attributed in-app answer, except items lost before dispatch, which the
+  reading below decides (the baseline's one expected, a second counted not acceptable, a third VOID); 5a FAILS only on
+  an item lost after dispatch that 2d does not charge (re-check N3, ruling D)**
+=== END
+=== OLD E26 5a reading (N3-b)
+pre-dispatch losses" only if 3a still holds that way.
+=== NEW
+pre-dispatch losses" only if 3a still holds that way, and it validates as a PASS does; a pre-dispatch loss within this bound never fails rule 5.
+=== END
+=== OLD E27 counting rulings: empty prose
+empty prose and counts wrong (3c); neither is re-graded by hand.
+=== NEW
+empty prose and counts wrong in 3c's all-ids line, and in its gated clause only as rule 3c's "wrong" says (a block-only twin yes, a `filterCodeFences` emptying no); neither is re-graded by hand.
+=== END
+=== OLD E28 counting rulings: re-run (N4-b)
+- A same-day re-run of a twin arm fills only its holes;
+=== NEW
+- A same-day re-run of a twin arm passes `--only` with that rep's `transientError` ids (never a bare resume, which re-draws empty prose too);
+=== END
+=== OLD E29 §5 item 1 (I5-a, ruling 6)
+1. **cue-attributable FAIL** — 2b, 2c, 2e (when gated), 3c, rule 4, or a 2a breach with 2b or 2c failing. **It is read in
+   ANY hour whose dist proofs and captured-rule proof pass (rule 1(d) and 1(e)), even an hour that is VOID on 1(a)–(c)
+   or 1(f) or NO LATENCY VERDICT or INCOMPLETE** (review I5f, C): a cue failure seen in a VOID hour stops cue mode
+   exactly as a rule-4 FAIL would, and there is no re-fly until it is fixed. Sampling until it passes is not allowed.
+=== NEW
+1. **cue-attributable FAIL** — 2b, 2c, 2e (when gated), 3c, rule 4, or a 2a breach with 2b or 2c failing. **It is read in
+   ANY hour whose dist proofs and captured-rule proof pass (rule 1(d) and 1(e)), even an hour that is VOID on 1(a)–(c)
+   or 1(f) or 1(g) or NO LATENCY VERDICT or INCOMPLETE** (review I5f, C): a cue failure seen in a VOID hour stops cue mode
+   exactly as a rule-4 FAIL would, and there is no re-fly until it is fixed. Sampling until it passes is not allowed.
+   **In an out-of-window hour every clause of rule 2 is reported and none is a FAIL (§6; ruling 6 on re-check I5(d)):
+   there only 3c and rule 4 reach this item; a reported 2b, 2c or 2e reading beyond its bound is named in the result
+   note, and the re-fly inside the window decides it.**
+=== END
+=== OLD E30 §5 item 2 (I5-b)
+2. **VOID** (rule 1(a)–(c), 1(f)):
+=== NEW
+2. **VOID** (rule 1(a)–(g); under 1(d) or 1(e) item 1 does not apply — the build or the captured rule is unproven — and cue failures are reported only):
+=== END
+=== OLD E31 §5 item 3 (I5-c)
+3. **other FAIL** — 2a (with 2b and 2c PASS the reading is NO LATENCY VERDICT, not FAIL), 2d, 3a (not read as noise),
+   3b, rule 5.
+=== NEW
+3. **other FAIL** — 2d, 3a (not read as noise, with 3c decided),
+   3b, rule 5 (a 2a breach is never here: item 1 with 2b or 2c failing, item 4 with either INCOMPLETE, item 5 otherwise;
+   in an out-of-window hour 2d is reported only, §6).
+=== END
+=== OLD E32 §5 item 4 (I5-d)
+4. **INCOMPLETE** — 2c, 2d, 2e or 3c undecided with nothing already failed; a 2a breach with 2c INCOMPLETE.
+=== NEW
+4. **INCOMPLETE** — 2a or 2b on first-token lines covering under 90% of the won-by windows, 2c, 2d, 2e or 3c
+   undecided, or a verdicts file missing for 3a or 3b, with nothing already failed; a 2a breach with 2b or 2c
+   INCOMPLETE; a 3a miss while 3c is INCOMPLETE.
+=== END
+=== OLD E33 §5 item 5 (I5-e, ruling 6)
+5. **NO LATENCY VERDICT** — 2a's provider reading, or an out-of-window start.
+=== NEW
+5. **NO LATENCY VERDICT** — 2a's provider reading, or an out-of-window start (there every clause of rule 2 is reported and none is a FAIL, §6); and, with the same consequence (cannot PASS; re-fly inside the window), **3a NOISE** — a 3a miss read as noise (rule 3a).
+=== END
+=== OLD E34 §5 other-FAIL bullet (I5-f)
+**Other FAIL on 2a (2b or 2c failing: see above; otherwise NO LATENCY VERDICT), 2d, 3b, or rule 5**
+=== NEW
+**Other FAIL on 2d, 3b, or rule 5**
+=== END
+=== OLD E35 §5 3a-miss bullet (M13-c)
+the in-app count is not below the smallest of its own
+=== NEW
+the in-app count is at most 1 below the smallest of its own
+=== END
+=== OLD E36 §5 INCOMPLETE bullet
+- **INCOMPLETE** (2c/2d/2e/3c undecided with nothing already failed): the hour cannot PASS; a missing offline piece
+=== NEW
+- **INCOMPLETE** (§5 item 4: 2a/2b on thin first-token coverage, 2c/2d/2e/3c undecided, a verdicts file missing, a 3a miss while 3c is undecided, with nothing already failed): the hour cannot PASS; a missing offline piece
+=== END
+=== OLD E37 §5 NO LATENCY VERDICT bullet (ruling 6)
+- **NO LATENCY VERDICT** (2a's provider reading, or an out-of-window start): quality and cue rules are read normally;
+  the hour cannot PASS; re-fly inside the window.
+=== NEW
+- **NO LATENCY VERDICT** (2a's provider reading, or an out-of-window start): rules 3, 4 and 5 are read normally; in an
+  out-of-window hour every clause of rule 2 is reported and none is a FAIL (§6; ruling 6 on re-check I5(d)); the hour
+  cannot PASS; re-fly inside the window. **3a NOISE** (rule 3a) has the same consequence.
+=== END
+=== OLD E38 §6 start bullet (I5-g, ruling 6)
+Outside the window, rule 2 is reported, not gated,
+  and the hour cannot PASS.
+=== NEW
+Outside the window, every clause of rule 2 (2a–2e) is reported, not gated — none
+  reads as a FAIL, cue-attributable or other (§5 items 1 and 3; ruling 6 on re-check I5(d)); rules 3, 4 and 5 are read
+  normally, and the hour cannot PASS (NO LATENCY VERDICT: re-fly inside the window).
+=== END
+=== OLD E39 §6 grader bullet (GD-a/b/c, ruling 5)
+- **Grader.** Pinned to `claude-opus-5-5` from every grading transcript (`h40d-grader-models.mjs`). **GRADER DRIFT
+  (review B, I5c), decided now:** if, when grading starts, the `opus` alias no longer resolves to `claude-opus-5-5`
+  (verified from the transcripts of the first agents dispatched), the hour is graded by the new model, every merge
+  names it, and the transcripts and the result note name it. Rules computed within this hour and graded by that one
+  grader together — **3b and 3c — still gate**. Rules compared against h40c's grader — **3a's floor of 35 — are
+  reported, not gated**, and the verdict word carries the modifier: e.g. "PASS EXCEPT 3a (GRADER DRIFT)", which is not
+  a validation. The user then chooses between (i) a dated re-pin amendment: h40c's own in-app pairs file
+  (`interview60.judge.pairs.json` of h40c's run folder) is re-graded by the new model with the same dispatch text,
+  BEFORE h40d's in-app pairs are graded in the same session, and that count becomes 3a's floor under the new grader,
+  or (ii) "not validated" and a re-fly once a pinned grader exists. Neither is chosen after h40d's 3a number is known.
+=== NEW
+- **Grader.** Pinned to `claude-opus-5-5` from every grading transcript (`h40d-grader-models.mjs`). **GRADER DRIFT
+  (review B, I5c; re-check I5(g)), decided now:** the `opus` alias is read from ONE throwaway probe agent — model
+  "opus", a one-line task — dispatched BEFORE any h40d grader, its model read from its own transcript with
+  `h40d-grader-models.mjs` (§9.5; and once more at arming, §11; ruling 5). If it no longer resolves to
+  `claude-opus-5-5`, the hour is graded by the new model, every merge names it, and the transcripts and the result
+  note name it. Rules computed within this hour and graded by that one grader together — **3b and 3c — still gate**.
+  Rules compared against h40c's grader — **3a's floor of 35 — are reported, not gated**, and the verdict word carries
+  the modifier: e.g. "PASS EXCEPT 3a (GRADER DRIFT)", which is not a validation. **The controller's default is exactly
+  that: (ii) grade anyway with the new model, 3a reported, the result saying GRADER DRIFT, the hour not validated, a
+  re-fly once a pinned grader exists.** The user's alternative, (i) a dated re-pin amendment written BEFORE grading:
+  h40c's own in-app pairs file (`interview60.judge.pairs.json` of h40c's run folder) is re-graded by the new model
+  with the same dispatch text, BEFORE h40d's in-app pairs are graded in the same session, and that count becomes 3a's
+  floor under the new grader; under (i), 3a gates against the re-graded floor and a PASS validates, reported as "PASS
+  (grader re-pinned to <id>)". **The choice is made now, in the veto window before arming, and written into §11 — not
+  at grading time, and never after h40d's 3a number is known** (§12, "Only the user").
+=== END
+=== OLD E40 §6 preconditions (N1-b, facts of ruling 9)
+- **The day.** "Day" means the quota day (10:00 → 10:00 local). **The hour flies only after all of these hold:** the
+  05:00 re-smoke PASSED (all three of its conditions); the bench PASSED (`PREREGISTER-cuebench.md` §3 with its
+  amendments); the user's one live look at the overlay and typed chat on the worktree build (merge review I1); the
+  Opus merge review done and the prep merge refreshed and re-checked (§1); MAIN fast-forwarded and rebuilt, the dist
+  proven; the pre-hour MAIN start done (§7.3); the `hasCueRule` check done (§7.6); the instruments calibrated (§7.4);
+  the ledger (§8); this file committed. **The follow-up replay is not a precondition** (review I6).
+=== NEW
+- **The day.** "Day" means the quota day (10:00 → 10:00 local). **The hour flies only after all of these hold:** the
+  05:00 re-smoke PASSED (DONE, written into this revision: run `2026-10-01T02-37-41-cuesmoke`, `CHECK EXIT 0`, 20/20
+  answered hands-free, 8/8 long questions whole, the cue row 20/20 present and well-formed, 7 trimmed, filter sha
+  `42d9bc42dbd17870` in both proofs, `hold-read` GONE); the bench PASSED (`PREREGISTER-cuebench.md` §3 with its
+  amendments; running since 09:04 as this revision is written); the user's one live look at the overlay and typed
+  chat on the worktree build (merge review I1), ending with Context ON (the toggle persists into the hour; rule 1(g));
+  knowledge mode read ON from the persisted settings after that look (§7.3a); the Opus merge review done and the prep
+  merge refreshed and re-checked (§1); MAIN fast-forwarded and rebuilt, the dist proven; the pre-hour MAIN start done
+  (§7.3); the `hasCueRule` check done (§7.6); the instruments calibrated (§7.4); the ledger (§8); the GRADER DRIFT
+  choice and the 3c wrong-clause choice written into §11 (§12, "Only the user"); this file committed. **The follow-up
+  replay is not a precondition** (review I6).
+=== END
+=== OLD E41 §6 where the bench runs (N9-a, the facts)
+  - **Where the bench runs** (`RUNBOOK-resmoke2.md` §10, the 01:18 ruling and its 01:28 refinement): preferably on the
+    **2026-09-30 quota day**, which ends Thursday 10:00, right after the re-smoke, if a precise ledger (per-request
+    `usage:` and `trying` lines as `quota-ledger.mjs` counts them, plus the script calls since the reset) shows at least
+    150 requests of headroom on gemini-3.5-flash-lite and the bench's first call is before 09:00; the follow-up replay
+    then runs after 10:00 on the 2026-10-01 quota day, before the merge. **Otherwise** the bench runs after 10:00
+    Thursday on the 2026-10-01 quota day and the replay moves to Saturday (the 2026-10-03 quota day). Either way the
+    bench precedes the merge, and the merge precedes this hour.
+=== NEW
+  - **Where the bench runs** (`RUNBOOK-resmoke2.md` §10, the 01:18 ruling and its 01:28 refinement): preferably on the
+    **2026-09-30 quota day**, which ends Thursday 10:00, right after the re-smoke, if a precise ledger (per-request
+    `usage:` and `trying` lines as `quota-ledger.mjs` counts them, plus the script calls since the reset) shows at least
+    150 requests of headroom on gemini-3.5-flash-lite and the bench's first call is before 09:00; the follow-up replay
+    then runs after 10:00 on the 2026-10-01 quota day, before the merge. **What happened (written into this
+    revision):** the bench started at **09:04** on the 2026-09-30 quota day, the ledger counting 202 used and 298 of
+    headroom on 3.5-lite — the headroom condition holds; the 09:00 line (there so the bench's calls end before the
+    10:00 reset) was missed by four minutes. Any bench call after 10:00 lands on the 2026-10-01 quota day, the
+    replay's: that is the replay's own day rule to read (it is not a precondition here), and the bench's last call time
+    goes into "What flies". **Otherwise** (not this run's branch) the bench runs after 10:00
+    Thursday on the 2026-10-01 quota day and the replay moves to Saturday (the 2026-10-03 quota day). In this branch the bench's second amendment (3a) says "cue
+    mode does not merge on Thursday"; that sentence rests on its next one ("That day is not Thursday: the follow-up
+    replay's day rule excludes a cue bench"), whose premise the 01:18 ruling removed, so a Thursday merge after an
+    afternoon bench follows 3a's operative rule (the next quota day with neither a flight nor a pre-registered replay
+    on 3.5-lite); the user is told before the merge. Either way the
+    bench precedes the merge, and the merge precedes this hour.
+=== END
+=== OLD E42 §6 during the hour
+the user logged on; AC power,
+=== NEW
+the user logged on; the Context toggle left ON (rule 1(g)); AC power,
+=== END
+=== OLD E43 §7.1 live look
+the user's live look done;
+=== NEW
+the user's live look done, ending with Context ON, and knowledge mode re-read ON (§7.3a);
+=== END
+=== OLD E44 §7.2 the re-smoke named
+   must be EMPTY — then the Thursday 05:00 re-smoke (worktree build of the same code, the same app-start chain,
+   scenario50 S1, hedge default) is this hour's smoke of the program.
+=== NEW
+   must be EMPTY — then the Thursday 05:00 re-smoke (run `2026-10-01T02-37-41-cuesmoke`: the worktree build of the same
+   code, the same app-start chain, scenario50 S1, hedge default; PASSED, `CHECK EXIT 0`) is this hour's smoke of the
+   program.
+=== END
+=== OLD E45 §7.3 the prestart's day (N9-b)
+Thursday after the rebuild, on the 2026-10-01 quota day,
+=== NEW
+after the rebuild, on the quota day before the flight's (the 2026-10-01 quota day for a Friday hour),
+=== END
+=== OLD E46 §7.3 the 60 s wait (N5-a)
+node … interview60.run.mjs probe` → `node …
+=== NEW
+node … interview60.run.mjs probe` → a 60 s wait (`timeout /t 60 /nobreak`) → `node …
+=== END
+=== OLD E47a §7.3 probe wording (N5-b)
+and plays the 34 s continuous probe until the app's own log shows it heard
+=== NEW
+and plays the 34 s continuous probe, requiring the app's own log to show it heard
+=== END
+=== OLD E47b §7.3 probe wording (N5-b)
+and answered a question (
+=== NEW
+a question (it does not wait for the answers; the 60 s wait lets the last one finish, or a cues line with no full line reads NOT CLEAN in check-smoke-cues) (
+=== END
+=== OLD E48 §7.3 required lines (N1-c)
+[Main] follow-up parent: off`, at least one
+=== NEW
+[Main] follow-up parent: off`, `[KnowledgeOrchestrator] Knowledge mode ENABLED` after `[AppState] Knowledge mode restored from settings` and no `DISABLED` (rule 1(g)), at least one
+=== END
+=== OLD E49 §7.3a knowledge mode read (ruling 1)
+   `check-smoke-cues.mjs prestart-h40d --runs VH` clean, `h40d-clocks.mjs <that folder> --whole-log` reading 0 charged
+   (no block-only answer), and `dist-proof` passing after it. Its lines are quoted in "What flies".
+=== NEW
+   `check-smoke-cues.mjs prestart-h40d --runs VH` clean, `h40d-clocks.mjs <that folder> --whole-log` reading 0 charged
+   (no block-only answer), and `dist-proof` passing after it. Its lines are quoted in "What flies".
+
+   **3a. Knowledge mode ON, read without starting the app (re-check N1, rule 1(g); ruling 1).** After the user's live
+   look (which toggles Context ON and OFF and must end ON; the user starts that app with `npm start`, never from a
+   Claude session, so it writes the REAL settings file) and before the prestart, the controller runs
+   `node VH\knowledge-mode-read.mjs` from the session. It reads `knowledgeMode` from `%APPDATA%\natively\settings.json`
+   — the key `ipcHandlers.ts:3030` writes and `main.ts:687` restores (`SettingsManager.ts:28`; the file holds
+   non-secret boot toggles only, `SettingsManager.ts:6`) — through the admin share
+   `\\localhost\C$\Users\sotka\AppData\Roaming\natively\settings.json`, because a Claude session's direct `%APPDATA%`
+   path is an MSIX shadow (memory `claude-sandbox-appdata`; on 2026-10-01 the two differed: the shadow 323 bytes of
+   2026-07-02, the real file 151 bytes of 2026-09-12, both `knowledgeMode = ON`), and prints the path, size, mtime and
+   that one key; exit 0 = ON. The scheduled tasks (the dry twin, the prestart, the flight) run outside the sandbox and
+   read the real file directly. Required: `knowledge mode (rule 1(g)): ON` on the ADMIN SHARE line, quoted in "What
+   flies" with the file's mtime; repeated at arming (§7.8) if any app was started by hand in between. If the live look
+   ended OFF, the user turns Context ON in their own app (never from a Claude session: that writes the shadow) and the
+   read is repeated. Calibrated (`knowledge-mode.out.txt`, stubs in `VH\kmode-stubs\`): `knowledgeMode` true → ON
+   (exit 0), false → NOT ON (1), the key absent → NOT ON (1: `main.ts:687` restores nothing), unparsable → UNREADABLE
+   (2), a missing file → UNREADABLE (2).
+=== END
+=== OLD E50 §7.4 guard check 13 (ruling 1)
+(so the dist matches the tree the pass record names). Calibrated by breaking each premise once (h40c's
+=== NEW
+(so the dist matches the tree the pass record names); **(13, new) knowledge mode ON in the persisted settings** (rule
+     1(g), re-check N1): `knowledgeMode === true` in `%APPDATA%\natively\settings.json` — the launcher runs as a
+     scheduled task, outside the sandbox, so that path is the real file there — the guard printing the file's mtime and
+     that key only; `--settings <file>` points it at a stub for calibration (`VH\kmode-stubs\settings-off.json` and
+     `-absent.json` → `GUARD FAILED`, `-on.json` → the check passes). Calibrated by breaking each premise once (h40c's
+=== END
+=== OLD E51 §7.4 clocks entry: the re-smoke
+     UNRESOLVED 0 / 0 / 1; whole-log 16:12 = 1 (the probe's block-only answer), h40c = 0 (`clocks.cal-r2.out.txt`).
+=== NEW
+     UNRESOLVED 0 / 0 / 1; whole-log 16:12 = 1 (the probe's block-only answer), h40c = 0; the 05:00 re-smoke (the combined
+     build, added in revision 3): screen 4.742 / 5.770 s, G 0.594 s, C 0.052 s, 2d 0 in the run window and the whole log
+     (`clocks.cal-r2.out.txt`).
+=== END
+=== OLD E52 §7.4 thoughts entry (N6-c) + the two new instruments
+     ids on both sides; an absent control prints no reading; `--control-dir` reads the control from another folder
+     (`thoughts-noise.out.txt`). A bug the calibration caught: the first version reused the cue object as the control,
+     so +200 read 0; fixed before any reading.
+=== NEW
+     ids on both sides; an absent control prints no reading; `--control-dir` reads the control from another folder;
+     s50e's single-rep `gemini-3.7-flash` arm as both sides (4 holes of 5) → `INCOMPLETE (more than 3 true holes: cue
+     -r1 (4), control -r1 (4))`, h40c still PASS (re-check N6: the revision-2 script read `PASS (fallback)` there and
+     never printed 2c's INCOMPLETE; edited and re-run in revision 3) (`thoughts-noise.out.txt`). A bug the calibration
+     caught: the first version reused the cue object as the control, so +200 read 0; fixed before any reading.
+   - **`knowledge-mode-read.mjs`** (done, revision 3): rule 1(g) before the hour (§7.3a). Calibrated on stub files
+     (`VH\kmode-stubs\`): `knowledgeMode` true → ON (exit 0); false → NOT ON (1); the key absent → NOT ON (1); unparsable
+     → UNREADABLE (2); a missing file → UNREADABLE (2); the real file through the admin share → ON, the shadow's and the
+     real file's size and mtime differing (`knowledge-mode.out.txt`).
+   - **`h40d-knowledge-lines.mjs`** (done, revision 3): rule 1(g) after the hour: the `ENABLED` / `DISABLED` lines before
+     and inside the run window (the timeline's byte slice, as the clocks script reads it) and every dispatch window's
+     `Intent classified` count on the whole log, the windows without the line named; the G cross-check is the clocks
+     script's `--list`. Calibrated: h40c 47 of 47 and br1 42 of 42 → OK; the 16:12 and 05:00 cue smokes 23 of 24 and
+     21 of 22 (the first run window) → OK at 95%; fixtures (`VH\kmode-fixtures\`, synthetic logs in the app's line
+     shape): every window classified → OK; 1 of 20 missing (95%) → OK at the boundary; 3 of 20 missing (85%) → VOID; a
+     `DISABLED` line inside the window → VOID; no `ENABLED` line → VOID (`knowledge-mode.out.txt`).
+=== END
+=== OLD E53a §7.4 twins entry: the clause
+wrong on the 40 gated ids for the
+     clause and on all ids beside it,
+=== NEW
+wrong on the 40 gated ids for the
+     clause (decided by the adapter itself as the three reps' sums with a margin of one — the controller's default — and
+     printed beside the strict per-rep reading, the user's alternative; `benchDecide` gets the band and the cue check
+     only) and on all ids beside it,
+=== END
+=== OLD E53b §7.4 twins entry: empty prose (N2-e)
+empty prose counted wrong
+=== NEW
+empty prose counted wrong with the stage that emptied it (filterCodeFences = a pipeline event, all-ids line only; any other stage with cues present = a block-only twin, gated clause)
+=== END
+=== OLD E54 §7.4 twins entry: --pre-cue (N8-c)
+not applicable and says so (never a silent pass).
+=== NEW
+not applicable and says so (never a silent pass); it is for known cases (1) and (2) only — the h40d reading runs without it, and a 3c line carrying the not-applicable mark is not a verdict.
+=== END
+=== OLD E55 §7.4 twins entry: cases 7 and 8 (N2-f, ruling 2)
+→ each counted wrong and named.
+=== NEW
+→ each counted wrong in the all-ids line, named as emptied by `filterCodeFences`, and kept out of the gated clause;
+     (8) synthetic, in memory: two gated ids in one cue rep (or one in each of two reps) given a raw that holds a cue
+     block alone (`stripCueBlock` empties it) against a 0 / 0 / 0 control → two block-only twins in the gated clause →
+     STOP under the default (2 > 0 + 1); with ONE such id → named, no STOP under the default (1 ≤ 1) and STOP under the
+     strict alternative (both readings printed). Case (5)'s empty-prose record is built the same way.
+=== END
+=== OLD E56 §7.5 chains day (N9-c)
+the 2026-10-01 quota day, only if the ledger
+=== NEW
+the quota day before the flight's, only if the ledger
+=== END
+=== OLD E57 §7.6 the run folder named (ruling 9)
+`WT\electron\test\golden\interview60.runs\<2026-10-01T02-…-cuesmoke>\` (built by `interview60.prompts.mjs <run-dir>`,
+=== NEW
+`WT\electron\test\golden\interview60.runs\2026-10-01T02-37-41-cuesmoke\` (the 05:00 re-smoke, PASSED; built there by `interview60.prompts.mjs <run-dir>`,
+=== END
+=== OLD E58 §7.8 arming steps
+with "What flies" filled; then the build command once more (`Up to
+=== NEW
+with "What flies" filled (the grader probe agent of §6 dispatched and its model written in; the knowledge-mode read
+   repeated if any app was started by hand after §7.3a; the user's two choices of §12 written in); then the build
+   command once more (`Up to
+=== END
+=== OLD E59 §8 (N9-d)
+happen on the 2026-10-01 quota day, before Friday's 10:00, never on the flight's.
+=== NEW
+happen on the quota day before the flight's (the 2026-10-01 quota day for a Friday hour), never on the flight's.
+=== END
+=== OLD E60 §9.2 (N1-d)
+first, then rule 1 (a)–(c),
+=== NEW
+first, then rule 1 (a)–(c) and (g) (`node VH\h40d-knowledge-lines.mjs <run-dir>`),
+=== END
+=== OLD E61 §9.5 (GD-d, ruling 5)
+dispatch the ten grading agents
+=== NEW
+dispatch the probe agent of §6 and read its model with `h40d-grader-models.mjs` (GRADER DRIFT is decided here, by the choice §11 carries); then the ten grading agents
+=== END
+=== OLD E62 §9.6 (I5-h)
+LATENCY VERDICT → PASS, with GRADER DRIFT as a modifier.
+=== NEW
+LATENCY VERDICT or 3a NOISE → PASS, with GRADER DRIFT as a modifier.
+=== END
+=== OLD E63a §11 live look + knowledge mode
+the user's live look (overlay, typed ON/OFF): `________`.
+=== NEW
+the user's live look (overlay, typed ON/OFF, ended with Context ON): `________`; knowledge mode read after it (§7.3a,
+  the admin-share line): `________`, file mtime `________`.
+=== END
+=== OLD E63b §11 the re-smoke (ruling 9)
+- Thursday's re-smoke: run `________`, `CHECK EXIT ___`, the three conditions `________`; `hold-read` verdict `________`
+  → **2e is gated / reported** (strike one); the clocks script's lines on it: `________`.
+=== NEW
+- Thursday's re-smoke (filled in revision 3): run `2026-10-01T02-37-41-cuesmoke`, `CHECK EXIT 0`, the three conditions
+  PASSED (20/20 answered hands-free; 8/8 long questions whole; the cue row 20/20 present and well-formed, 7 trimmed;
+  filter sha `42d9bc42dbd17870` in both proofs); `hold-read` verdict GONE (n 21, R2 and B under 15 ms in 0 each)
+  → **2e is GATED**; the clocks script's lines on it: screen 4.742 / 5.770 / 5.999 s, model 4.232 / 5.162 / 5.379 s,
+  G 0.594 / 1.112 / 1.147 s, C 0.052 / 0.192 / 0.193 s, 2d 0 charged (§3).
+=== END
+=== OLD E63c §11 the bench's quota day (ruling 9)
+- The bench's quota day: `________` (the 2026-09-30 quota day before 09:00 / the 2026-10-01 quota day after 10:00);
+=== NEW
+- The bench's quota day: the 2026-09-30 quota day, first call 09:04 (the 09:00 line missed by four minutes; ledger 202
+  used, 298 headroom on 3.5-lite), last call `________` (before / after the 10:00 reset);
+=== END
+=== OLD E63d §11 grader alias (GD-e) + the two choices + rule 1(g)
+- The grader alias at dispatch time: `________` (claude-opus-5-5 / GRADER DRIFT → the user's choice `________`).
+=== NEW
+- The grader alias at arming (one probe agent, `h40d-grader-models.mjs`): `________`; the user's GRADER DRIFT choice,
+  made now: (i) re-pin / (ii) not validated — the controller's default — `________` (read again from a probe agent
+  before grading, §9.5).
+- 3c's gated wrong clause: the controller's default (the three reps' sums, margin 1) / the strict per-rep clause —
+  the user's choice, made now: `________`.
+- Rule 1(g) at arming: `knowledge-mode-read.mjs` `________` (ON required); the prestart's `Knowledge mode ENABLED`
+  line `________`; the guard's check 13 in the dry twin's log `________`.
+=== END
+=== OLD E64 §12 the veto list and "Only the user"
+grader, named (§4).
+=== NEW
+grader, named (§4). **C and D were the review's questions to the user; the controller took them** (re-check, the user
+list, item 1): they stand unless vetoed before arming.
+
+And from the scoped Opus re-check (`RECHECK-r2.md`), each for the user's veto: rule 1(g) (knowledge mode on, as on
+h40c); fenced-answer empty prose kept out of 3c's gated clause, and that clause as the three reps' sums with a margin
+of one (N2); 5a restated against the pre-dispatch reading (N3); the same-day re-run with `--only` (N4); M13's gap of
+1; the precedence edits (I5); the GRADER DRIFT choice made now.
+
+### Only the user (decided before arming; each with the controller's default, which stands if the user says nothing)
+
+1. **The veto on §12** — the ten answers, A–E (C and D named above) and the re-check's rule changes. Default: as applied.
+2. **GRADER DRIFT, if the `opus` alias no longer resolves to `claude-opus-5-5` when the probe agent reads it (§6):**
+   (ii) grade anyway with the new model, 3b and 3c gating, 3a reported, the result saying GRADER DRIFT, not validated
+   — the controller's default; or (i) a dated re-pin amendment written before grading (h40c's in-app pairs re-graded
+   by the new model first, that count the floor; a PASS then validates). Written into §11 now.
+3. **3c's gated wrong clause (N2):** the three reps' sums with a margin of one — the controller's default; or the
+   strict per-rep clause (null STOP 12% at a 5% per-rep chance, against 0.9%). Written into §11 now.
+4. **The live look ends with Context ON** (N1): the user operates the toggle in their own app; the controller re-reads
+   the persisted key afterwards (§7.3a). No default: only the user can do it.
+5. **The bench's thinking-token difference, if above 150 tokens** (rule 2c): raised with the user before arming;
+   never loosened quietly. Default: the threshold stays at 150.
+
+To know before the merge, not to decide (N9): the bench started at 09:04, four minutes after the 09:00 line, with 298
+of headroom; a last call after 10:00 puts part of a bench on the replay's quota day (the replay's own rule); in the
+"Otherwise" branch a Thursday merge after an afternoon bench goes against the letter of the bench's 3a sentence, and
+the replay moves to Saturday by the 01:18 ruling.
+=== END
+=== OLD E65 §13 appended conflicts
+§3 and 2a's provider reading are corrected.
+=== NEW
+§3 and 2a's provider reading are corrected.
+- **Out-of-window hours: the re-check's edit against the controller's ruling.** Re-check edit I5-g kept "a
+  cue-attributable FAIL of §5 item 1" readable outside the window; ruling 6 reads every clause of rule 2 as reported
+  there, none as a FAIL. The ruling is applied (§5 item 1, §6); 3c and rule 4 are still read in such an hour.
+- **3c's gated wrong clause: the re-check's minimal fix against its robust one.** Edits N2-b to N2-f are the minimal
+  fix (fenced-answer empties out of the clause, the null stated honestly); its optional N2-g (the sums with a margin of
+  one) is the controller's default by ruling 2, the strict clause the user's alternative. Case (8) of the adapter's
+  calibration is restated for both readings; under the default one block-only twin is named, not a STOP.
+- **The bench's 09:00 line.** §6's preferred branch asked for the bench's first call before 09:00; it came at 09:04
+  with 298 of headroom. The branch is read as taken — the headroom condition is the one with a consequence for this
+  hour, the 09:00 line protects the replay's quota day — and the fact is stated rather than the text re-written.
+- **Rule 1(g)'s `Intent classified` line on the first run window.** Both cue smokes lack it there (G 2 ms and 8 ms:
+  the knowledge step did not run on that one window; h40c and br1 never skip it). The cause is unproven and no trace
+  ties it to cue mode; the 95% line tolerates two such windows in 45, and the windows are named with their G so a
+  wider skip would be seen, not averaged away.
+=== END

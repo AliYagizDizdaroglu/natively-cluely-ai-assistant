@@ -1,0 +1,24 @@
+ * is not held (spec 2026-09-05 §3).
+ */
+const TRAILING_FUNCTION_WORDS = new Set([
+    'that', 'the', 'a', 'an', 'and', 'or', 'of', 'for', 'to', 'in', 'into', 'on', 'at', 'with', 'without',
+    'from', 'by', 'as', 'like', 'than', 'because', 'if', 'while', 'your', 'our', 'their', 'its', 'my', 'his', 'her',
+]);
+
+/**
+ * Is this detection text not a whole question — an STT tail or head the other
+ * ear may still complete? True when it has fewer than 4 words, opens with a
+ * coordinating conjunction ("And when would you not?", 2026-09-04 M27), has no
+ * terminal punctuation and is either at most 6 words ("What problem does
+ * infrastructure", after5 W09) or ends on a word no sentence ends on ("How
+ * would you design a pipeline that", after5 H03), or is at most 6 words with
+ * no terminal '?' and no question/imperative opener ("Cross many model
+ * services."). Measured: 317 chip and Live texts from four Deepgram hours → 2
+ * flagged, both real fragments (parent spec §3.1); the after5 Groq REST hour's
+ * 58 full chip texts → 6 more flagged, all six real heads, 0 of the 55 scripted
+ * questions (spec 2026-09-05 §1). A whole question that lost its punctuation
+ * and ends on one of those words waits at most 2.5 s for the other ear.
+ */
+export function looksFragmentary(text: string): boolean {
+    const trimmed = text.trim();
+    const words = trimmed.split(/\s+/).filter(Boolean);

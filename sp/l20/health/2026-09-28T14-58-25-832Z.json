@@ -1,0 +1,96 @@
+{
+ "model": "gemini-3.8-live",
+ "t0Iso": "2026-09-28T14:58:25.832Z",
+ "results": [
+  {
+   "id": "S1Q02",
+   "openedAt": 3,
+   "setupMs": 865,
+   "clipSeconds": 26.2,
+   "clipEndMs": 29714,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "generationComplete": false
+  },
+  {
+   "id": "S2Q08",
+   "openedAt": 34644,
+   "setupMs": 631,
+   "clipSeconds": 19.3,
+   "clipEndMs": 56096,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the roll back.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "generationComplete": false
+  },
+  {
+   "id": "S2Q01",
+   "openedAt": 59523,
+   "setupMs": 634,
+   "clipSeconds": 16.3,
+   "clipEndMs": 78047,
+   "heard": "Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those stages. To your document intelligence experience.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "generationComplete": false
+  },
+  {
+   "id": "S1Q06",
+   "openedAt": 119902,
+   "setupMs": 688,
+   "clipSeconds": 27.7,
+   "clipEndMs": 150544,
+   "heard": "Now is sequel one. Construct a point in time feature. You have a snapshots table with a customer ID and a snapshot time and an events table with a customer ID, an event time, an ingested at time. And an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot. Includes only events ingested by the snapshot time and preserves customers with zero calls.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 15324,
+   "lastWordMs": 21527,
+   "text": "To build this point-in-time feature, I'd use a left join from the snapshots table to the events table to ensure customers with zero calls are preserved. In the join condition, I’d filter for support calls where the event time is within thirty days before the snapshot time and the ingested at timestamp is on or before the snapshot time. Finally, I’d group by the customer ID and snapshot time, using a count on the event ID to get the total support calls for that specific period.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q04",
+   "openedAt": 198995,
+   "setupMs": 682,
+   "clipSeconds": 30.4,
+   "clipEndMs": 232469,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return precision at K, recall at K, and lift over the population prevalence. Assume binary labels and finite scores. And break score ties by original row order. Tell me what it does. Invalid K for empty inputs. And when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": false
+  }
+ ]
+}

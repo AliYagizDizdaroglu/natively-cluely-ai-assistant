@@ -1,0 +1,27 @@
+FAIL rows (2):
+  [fixdet] R6 s50d S2Q05F: n=1 fromLive=false finals=2 (classify 2) lat=3700 budget=2372 closes=[continuation-expired]
+  [fixunk] R6 s50d S2Q05F: n=1 fromLive=false finals=2 (classify 2) lat=3700 budget=2372 closes=[continuation-expired]
+INCONCLUSIVE (0):
+  
+notes:
+  [fixdet] br1 R12 S2Q01: live=[] finals=4
+  [fixdet] br1 subs 0; absorbed 6; drops 0
+  [fixdet] cuesmoke subs 1 [13:23:16.994 f=2 question (detector detected=true conf=0.99 q.len=)]; absorbed 1; drops 0
+  [fixdet] s50b subs 0; absorbed 0; drops 0
+  [fixdet] s50c subs 0; absorbed 0; drops 0
+  [fixdet] s50d subs 0; absorbed 1; drops 0
+  [fixdet] s50f subs 0; absorbed 4; drops 0
+  [fixdet] s50i R12 S2Q07F: live=[] finals=3
+  [fixdet] s50i subs 3 [08:01:06.727 f=6 not-a-question (detector detected=false conf=0.95 q.len); 08:12:14.666 f=3 unknown (unknown); 08:17:30.639 f=4 question (detector detected=true conf=0.99 q.len=)]; absorbed 1; drops 0
+  [fixdet] s50j subs 3 [07:37:38.416 f=2 unknown (unknown); 07:41:33.620 f=2 unknown (unknown); 07:47:37.177 f=2 unknown (unknown)]; absorbed 4; drops 0
+  [fixunk] br1 R12 S2Q01: live=[] finals=4
+  [fixunk] br1 subs 0; absorbed 6; drops 0
+  [fixunk] cuesmoke subs 1 [13:23:16.994 f=2 unknown (unknown)]; absorbed 1; drops 0
+  [fixunk] s50b subs 0; absorbed 0; drops 0
+  [fixunk] s50c subs 0; absorbed 0; drops 0
+  [fixunk] s50d subs 0; absorbed 1; drops 0
+  [fixunk] s50f subs 0; absorbed 4; drops 0
+  [fixunk] s50i R12 S2Q07F: live=[] finals=3
+  [fixunk] s50i unspecified path taken: {"negative verdict on an already-marked, undispatched turn":1}
+  [fixunk] s50i subs 3 [08:01:06.727 f=6 unknown (unknown); 08:12:14.666 f=3 unknown (unknown); 08:17:30.639 f=4 unknown (unknown)]; absorbed 1; drops 0
+  [fixunk] s50j subs 3 [07:37:38.416 f=2 unknown (unknown); 07:41:33.620 f=2 unknown (unknown); 07:47:37.177 f=2 unknown (unknown)]; absorbed 4; drops 0

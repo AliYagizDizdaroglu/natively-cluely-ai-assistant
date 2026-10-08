@@ -1,0 +1,32 @@
+fix(verbal): resolve the thinking level per model, so the stall fallback stops answering unthought
+
+Flight s50j caught live what the 2026-09-17 probes had only suggested: the hour's one stall
+(07:50) handed the answer to gemini-3.5-flash-lite carrying the shipped LOW, and the request
+logged `thinking=LOW thoughts=0`. That model does not reliably honour LOW, so every stall
+since LOW shipped has been answered by a model doing no thinking at all — the precise
+opposite of what shipping a level was for, and invisible because the usage line said LOW.
+
+Two reps per level on the same prompt (2026-09-20) size it:
+
+    LOW      thoughts    0,  146     <- erratic, and near-zero even when it fires
+    MEDIUM   thoughts  823,  760
+    HIGH     thoughts 1142, 1430
+    MINIMAL  thoughts    0,    0
+
+So the level is now resolved per MODEL at the one place the request config is built, which
+covers the fallback and any other path that reaches 3.5-lite. LOW maps to HIGH there rather
+than MEDIUM on the evidence we have: on s50j's own captured bytes 3.5-lite at HIGH scored 35
+of 39 against the 3.1-LOW twin band of 29-33, with a shorter first-token tail than the primary
+(p90 4.6 s against 7.1 s), so the substitution costs no latency on a path that has already
+spent its budget stalling. MEDIUM is honoured too but has never been graded, and choosing it
+would trade a measured level for an unmeasured one.
+
+MINIMAL is left alone on every model: it is the explicit opt-out a flight sets to reproduce
+the pre-bench behaviour on every leg, and 3.5-lite at no config already reports zero thoughts,
+so request and intent already agree. Models we have not probed pass through untouched rather
+than inheriting a guess.
+
+The stall-fallback test now asserts both legs of the same request pair — primary LOW, fallback
+HIGH — so a future change cannot silently send a level one of them ignores.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

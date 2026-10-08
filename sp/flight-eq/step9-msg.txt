@@ -1,0 +1,15 @@
+docs(passes): flight-eq pre-registration, amendments A1-A6 and the pre-data notes (registered HEAD for tonight's flight)
+
+The scenario50 S1+S2 hands-free validation hour of the turn-based earlier-question block
+(NATIVELY_EARLIER_QUESTION=1, cues ON as shipped, focused Flash arms OFF), registered before any
+flight data: PREREGISTER-flight-eq.md (sha 9ca3149b...) and amendments A1-A6, each written by an Opus
+author and re-checked by a separate fresh Opus (REVIEW-1, A2..A6-RECHECK kept outside the repo,
+committed with the result note). Notes: the user's rule-4c ruling (+1 off-topic margin, 16:58),
+the controller's tool-contract note (exit codes, REPLAY_BREAK refusal, night-gates power rule) and
+the b10 known-answer correction from cue-grading rev7-A1. This commit is the registered HEAD the
+flight's guard pins; the arming record lives outside MAIN (E\ARMING-flight-eq.md).
+
+Smoke (17:37-17:49) PASSED: S1Q04F block constraint 418 chars, S1Q06F block pronoun 516, WHY
+parent-in-prompt, flag-off clean; the pre-arming b4 gate read TRANSCRIPT OK 5/5, BLOCK OK 2/2.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

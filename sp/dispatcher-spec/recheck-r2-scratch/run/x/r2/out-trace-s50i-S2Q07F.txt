@@ -1,0 +1,17 @@
+===== s50i S2Q07F [fix]
+2026-09-18T08-22-57-s50i [fix jitter=50]: 40/40 once; doubles []; never []; drops 0; absorbed 1 (whisper 0); subs 3; unmatched 0; reorders 1; supersedes 7
+trace S2Q07F: {"n":1,"lat":1653,"budget":1700,"path":"gate","finished":true,"fromLive":false,"finals":3,"cov":"1.00","closes":["continuation-expired"],"live":[],"logFirst":"08:12:14.681","logGate":1207,"vadDev":5,"blips":0,"voiceOff":"08:12:13.466"}
+  08:12:06.986 voice ON
+  08:12:10.346 voice OFF
+  08:12:11.200 final "A user loses access to a document while a"
+  08:12:11.266 voice ON
+  08:12:12.021 final "query is running."
+  08:12:13.466 voice OFF
+  08:12:14.207 final "Where and when must authorization be checked?"
+  08:12:14.666 classify finals=3
+  08:12:15.119 dispatch finals=3 fromLive=false live=0 path=gate "A user loses access to a document while a query is running. "
+  08:12:23.119 close continuation-expired
+  08:12:11.786 <live rv=unverifiable> {"kind":"absorbed","source":"live","of":"Design a multi tenant rag service over 10,000,000 documents, it has to document updates and deletions, access controlled retrieval, citations, asynchronous ing q="Design a multi-tenant RAG service over ten million"
+  08:12:15.066 <verdict unknown SUBSTITUTED> {"kind":"declined","verdict":"unknown","again":false}
+  08:12:15.119 <whisper rv=match> {"kind":"revived","by":"whisper","rule":"forward","how":"residual","score":1,"remScore":0,"residual":5,"hits":5,"finals":3} q="Where and when must authorization be checked?"
+

@@ -1,0 +1,4 @@
+interview60.runs (all run logs): 13017 non-empty texts; any non-ASCII char 0; non-ASCII letter or mark 0; combining mark 0; not NFC 0
+MAIN/natively_debug.log (0.7 MB): 338 non-empty texts; any non-ASCII char 0; non-ASCII letter or mark 0; combining mark 0; not NFC 0
+MAIN/natively_debug.log.1 (0.0 MB): 0 non-empty texts; any non-ASCII char 0; non-ASCII letter or mark 0; combining mark 0; not NFC 0
+seam recordings: 875 non-empty texts; any non-ASCII char 0; non-ASCII letter or mark 0; combining mark 0; not NFC 0

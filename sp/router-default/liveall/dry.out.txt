@@ -1,0 +1,13 @@
+items 47; mains 31; follow-ups 16; problems 0
+chains: RH01<-RE01 EF01<-RE02 EF02<-RE03 EF03<-RE04 RH08<-RH07 EF04<-RE07 RH06<-RH05 RH10<-RH09 RH11<-RH09 EF05<-RE11 RH13<-RH12 RH14<-RH12 RH02<-RE14 RH16<-RH15 EF06<-RE16 EF07<-RE17
+total clip audio 218.0 s
+system: {"instruction":"e29bf3810128","context":"dd74bbdeaec1","system":"cb64434c6c44","chars":4757}
+filter sha16 28d6c47b9da4fba6 DIFFERS from registered 42d9bc42dbd17870
+CAL swap two items: caught (2)
+CAL wrong parent: caught (1)
+CAL parent after child: caught (2)
+CAL dropped item: caught (2)
+CAL one tampered sample: caught (1)
+CAL truncated clip: caught (1)
+CAL wrong startSec: caught (1)
+CAL clean case: clean (0 problems)

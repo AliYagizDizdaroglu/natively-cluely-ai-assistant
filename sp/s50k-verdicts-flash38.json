@@ -1,0 +1,20 @@
+{
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic all correct (2,850 true positives, 57 percent precision, 30 percent recall) but calls 57 versus 60 consistent within rounding, which it is not."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested layer with sound choices and names the shared transform code, schema and artifact; at about 145 words far too long to speak."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Units, denominators and dataset construction are solid, but no uncertainty is given for the hallucination metric though explicitly asked; about 150 words."
+  }
+}

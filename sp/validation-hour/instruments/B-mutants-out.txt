@@ -1,0 +1,122 @@
+mutation harness, 2026-10-01T12:35:20.368Z: the adapter VH\h40d-twins.mjs, 40 variants (each a copy with ONE exact-match patch), the case runner B-twins-cases.mjs run against each
+AS DECIDED  M0  identity (no patch): the harness must see no failure
+    SUMMARY: 182 assertions, 182 OK, 0 FAIL
+AS DECIDED  M1  a block-only twin is left out of the gated clause
+    SUMMARY: 182 assertions, 162 OK, 20 FAIL  -> 5 gated wrong = baseline + 1 (a block-only twin on a gated id) | 6c the STOP is named beside the INCOMPLETE | 8a gated wrong per cue rep | 8a default STOP (2 > 0 + 1) | 8a strict also stops | 8b gated wrong per cue rep | 8b default STOP (2 > 0 + 1) | 8c gated wrong per cue rep | 8c strict alternative: STOP in rep 1 | 8c both readings are printed | 8c with --strict governing: STOP, exit 1 | 9 contrast: with text it WOULD enter the gated clause | 9b gated 1 / all 1 on both sides | 9c-ii gated wrong per cue rep (flag on) | 9c-ii strict alternative stops in rep 1 | 9c-ii with --strict governing: STOP, exit 1 | 9c-iii gated wrong per cue rep | 9c-iii default STOP (2 > 0 + 1) | 9c-v flag off: control gated 0/0/0, cue 2/0/0 -> STOP (2 > 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1)
+    required kills "5 gated wrong", "8a default STOP", "8a gated wrong", "8c strict alternative", "9 contrast": all killed; failing assertions (20): 5 gated wrong = baseline + 1 (a block-only twin on a gated id) | 6c the STOP is named beside the INCOMPLETE | 8a gated wrong per cue rep | 8a default STOP (2 > 0 + 1) | 8a strict also stops | 8b gated wrong per cue rep | 8b default STOP (2 > 0 + 1) | 8c gated wrong per cue rep | ...
+AS DECIDED  M2  a filterCodeFences pipeline event enters the gated clause
+    SUMMARY: 182 assertions, 169 OK, 13 FAIL  -> 7 S1Q06 all-ids contribution | 7 S1Q06 rep 3: counted wrong in the all-ids line | 7 S1Q06 rep 3: kept out of the gated clause | 7 S2Q06 all-ids contribution | 7 S2Q06 rep 2: counted wrong in the all-ids line | 7 S2Q06 rep 2: kept out of the gated clause | 9b gated 1 / all 1 on both sides | 9c-ii gated wrong per cue rep (flag on) | 9c-ii strict alternative stops in rep 1 | 9c-ii with --strict governing: STOP, exit 1 | 9c-iii gated wrong per cue rep | 9c-iii default STOP (2 > 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1)
+    required kills "7 S1Q06 rep 3", "7 S2Q06 rep 2": all killed; failing assertions (13): 7 S1Q06 all-ids contribution | 7 S1Q06 rep 3: counted wrong in the all-ids line | 7 S1Q06 rep 3: kept out of the gated clause | 7 S2Q06 all-ids contribution | 7 S2Q06 rep 2: counted wrong in the all-ids line | 7 S2Q06 rep 2: kept out of the gated clause | 9b gated 1 / all 1 on both sides | 9c-ii gated wrong per cue rep (flag on) | ...
+AS DECIDED  M3  true holes are not taken out of the cue check's n
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> 5 cue-check n = 44 - 3
+    required kills "5 cue-check n": all killed; failing assertions (1): 5 cue-check n = 44 - 3
+AS DECIDED  M4  the default margin of one becomes zero
+    SUMMARY: 182 assertions, 174 OK, 8 FAIL  -> 1 gated default | 2 gated default | 2b default: gated cue 1/0/0 vs control 0/0/0, no stop | 2b default reading | 2b default exit | 8c default: no STOP (1 <= 0 + 1) | 9c-ii default: no STOP (1 <= 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1)
+    required kills "8c default": all killed; failing assertions (8): 1 gated default | 2 gated default | 2b default: gated cue 1/0/0 vs control 0/0/0, no stop | 2b default reading | 2b default exit | 8c default: no STOP (1 <= 0 + 1) | 9c-ii default: no STOP (1 <= 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1)
+AS DECIDED  M5  a no-text record is treated as a gated block-only twin
+    SUMMARY: 182 assertions, 176 OK, 6 FAIL  -> 9 named as no-text with its finish reason | 9 cue side: wrong gated 0 / all 1 | 9b the record is labelled as inside the gated clause | 9c-i gated wrong per cue rep (flag off) | 9c-v flag off: control gated 0/0/0, cue 2/0/0 -> STOP (2 > 0 + 1) | X4 g  rawLen 0 -> no-text, finish named, not gated
+    required kills "9 named as no-text", "9 cue side", "X4 g": all killed; failing assertions (6): 9 named as no-text with its finish reason | 9 cue side: wrong gated 0 / all 1 | 9b the record is labelled as inside the gated clause | 9c-i gated wrong per cue rep (flag off) | 9c-v flag off: control gated 0/0/0, cue 2/0/0 -> STOP (2 > 0 + 1) | X4 g  rawLen 0 -> no-text, finish named, not gated
+AS DECIDED  M6  the stage logic is blind to filterCodeFences
+    SUMMARY: 182 assertions, 178 OK, 4 FAIL  -> 7 S1Q06 named | 7 S2Q06 named | X4 c kind / stage / gated | X4 d kind / stage / gated
+    required kills "7 S1Q06 named", "7 S2Q06 named", "X4 c", "X4 d": all killed; failing assertions (4): 7 S1Q06 named | 7 S2Q06 named | X4 c kind / stage / gated | X4 d kind / stage / gated
+AS DECIDED  M7  the cue check can never fail (benchDecide fed present = shaped = n)
+    SUMMARY: 182 assertions, 180 OK, 2 FAIL  -> 4 (5 blocks) reading | 4 (5 blocks) exit
+    required kills "4 (5 blocks) reading", "4 (5 blocks) exit": all killed; failing assertions (2): 4 (5 blocks) reading | 4 (5 blocks) exit
+AS DECIDED  M8  the holes limit is off by one (3 holes read INCOMPLETE)
+    SUMMARY: 182 assertions, 180 OK, 2 FAIL  -> 5 not INCOMPLETE | 5 reading (cue total 1 <= control total 1 + 1)
+    required kills "5 not INCOMPLETE", "5 reading": all killed; failing assertions (2): 5 not INCOMPLETE | 5 reading (cue total 1 <= control total 1 + 1)
+AS DECIDED  M9  true holes are counted as wrong in the all-ids line
+    SUMMARY: 182 assertions, 180 OK, 2 FAIL  -> 1 all-ids | 5 all-ids wrong = baseline + 1
+    required kills "5 all-ids wrong", "1 all-ids": all killed; failing assertions (2): 1 all-ids | 5 all-ids wrong = baseline + 1
+AS DECIDED  M12  the strict per-rep clause stops on ties (>= instead of >)
+    SUMMARY: 182 assertions, 176 OK, 6 FAIL  -> 2b default: the strict reading is printed beside as STOP | 2b strict reading | 8a strict also stops | 8c strict alternative: STOP in rep 1 | 8c both readings are printed | 9c-ii strict alternative stops in rep 1
+    required kills "8c strict alternative": all killed; failing assertions (6): 2b default: the strict reading is printed beside as STOP | 2b strict reading | 8a strict also stops | 8c strict alternative: STOP in rep 1 | 8c both readings are printed | 9c-ii strict alternative stops in rep 1
+AS DECIDED  M21  the default clause stops on ties (>= instead of >)
+    SUMMARY: 182 assertions, 176 OK, 6 FAIL  -> 2b default: gated cue 1/0/0 vs control 0/0/0, no stop | 2b default reading | 2b default exit | 8c default: no STOP (1 <= 0 + 1) | 9c-ii default: no STOP (1 <= 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1)
+    required kills "8c default": all killed; failing assertions (6): 2b default: gated cue 1/0/0 vs control 0/0/0, no stop | 2b default reading | 2b default exit | 8c default: no STOP (1 <= 0 + 1) | 9c-ii default: no STOP (1 <= 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1)
+AS DECIDED  M23  empty prose is not counted wrong in the all-ids line
+    SUMMARY: 182 assertions, 169 OK, 13 FAIL  -> 5 all-ids wrong = baseline + 1 | 7 S1Q06 all-ids contribution | 7 S1Q06 rep 3: counted wrong in the all-ids line | 7 S1Q06 rep 3: kept out of the gated clause | 7 S2Q06 all-ids contribution | 7 S2Q06 rep 2: counted wrong in the all-ids line | 7 S2Q06 rep 2: kept out of the gated clause | 8d all-ids wrong = baseline + 2 | 8e all-ids wrong = baseline + 1, gated wrong unchanged | 9 cue side: wrong gated 0 / all 1 | 9b gated 1 / all 1 on both sides | 9c-i all-ids wrong +1 | 9c-iv all-ids wrong +1
+    required kills "5 all-ids wrong", "7 S1Q06 rep 3", "9 cue side": all killed; failing assertions (13): 5 all-ids wrong = baseline + 1 | 7 S1Q06 all-ids contribution | 7 S1Q06 rep 3: counted wrong in the all-ids line | 7 S1Q06 rep 3: kept out of the gated clause | 7 S2Q06 all-ids contribution | 7 S2Q06 rep 2: counted wrong in the all-ids line | 7 S2Q06 rep 2: kept out of the gated clause | 8d all-ids wrong = baseline + 2 | ...
+AS DECIDED  M24  the --strict flag is ignored (the default governs)
+    SUMMARY: 182 assertions, 178 OK, 4 FAIL  -> 2b strict reading | 2b strict exit (a real STOP through the CLI process) | 8c with --strict governing: STOP, exit 1 | 9c-ii with --strict governing: STOP, exit 1
+    required kills "8c with --strict governing": all killed; failing assertions (4): 2b strict reading | 2b strict exit (a real STOP through the CLI process) | 8c with --strict governing: STOP, exit 1 | 9c-ii with --strict governing: STOP, exit 1
+AS DECIDED  M26  a STOP on the ids answered wins over INCOMPLETE
+    SUMMARY: 182 assertions, 180 OK, 2 FAIL  -> 6c reading and exit | 6c the STOP is named beside the INCOMPLETE
+    required kills "6c reading and exit": all killed; failing assertions (2): 6c reading and exit | 6c the STOP is named beside the INCOMPLETE
+AS DECIDED  M27  the pre-cue mark is not printed on the reading line
+    SUMMARY: 182 assertions, 180 OK, 2 FAIL  -> 1 the reading LINE carries the not-applicable mark | X6g --dist the worktree: the same reading as the default
+    required kills "1 the reading LINE": all killed; failing assertions (2): 1 the reading LINE carries the not-applicable mark | X6g --dist the worktree: the same reading as the default
+AS DECIDED  M28  in --pre-cue mode the cue check is read anyway
+    SUMMARY: 182 assertions, 168 OK, 14 FAIL  -> 1 reading | 1 exit | 2 reading | 2 exit | 2 strict governing reading | 2 strict exit | 2b default reading | 2b default exit | 2b strict reading | 10b reading and exit | 7 S1Q06 full exit | 7 S2Q06 full exit | X6g --dist the worktree: the same reading as the default | X6g --dist the worktree exit
+    required kills "1 reading", "1 exit": all killed; failing assertions (14): 1 reading | 1 exit | 2 reading | 2 exit | 2 strict governing reading | 2 strict exit | 2b default reading | 2b default exit | ...
+AS DECIDED  M29  the verdict-wrong gated count ignores the excluded follow-ups
+    SUMMARY: 182 assertions, 152 OK, 30 FAIL  -> 1 gated default | 1 gated strict | 2 gated default | 2 gated strict | 2 reading | 2 exit | 2b default: gated cue 1/0/0 vs control 0/0/0, no stop | 2b default: the strict reading is printed beside as STOP | 2b default reading | 2b default exit | 2b strict reading | 2b strict exit (a real STOP through the CLI process) | 8 the control is 0 / 0 / 0 on the gated ids | 8a gated wrong per cue rep | 8b gated wrong per cue rep | 8c gated wrong per cue rep | 8c strict alternative: STOP in rep 1 | 8c both readings are printed | 8c with --strict governing: STOP, exit 1 | 8d gated wrong unchanged | 9c-i gated wrong per cue rep (flag off) | 9c-ii gated wrong per cue rep (flag on) | 9c-ii strict alternative stops in rep 1 | 9c-ii with --strict governing: STOP, exit 1 | 9c-iii gated wrong per cue rep | 9c-iv gated wrong unchanged | 9c-v flag off: control gated 0/0/0, cue 2/0/0 -> STOP (2 > 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1) | X2 h40c twelve counts equal | X2 h40b twelve counts equal
+    required kills "1 gated default": all killed; failing assertions (30): 1 gated default | 1 gated strict | 2 gated default | 2 gated strict | 2 reading | 2 exit | 2b default: gated cue 1/0/0 vs control 0/0/0, no stop | 2b default: the strict reading is printed beside as STOP | ...
+AS DECIDED  M30  a block-only twin on an excluded follow-up enters the gated clause
+    SUMMARY: 182 assertions, 179 OK, 3 FAIL  -> 8d gated wrong unchanged | 8d reading | 8d the label says why it is not gated
+    required kills "8d gated wrong unchanged": all killed; failing assertions (3): 8d gated wrong unchanged | 8d reading | 8d the label says why it is not gated
+AS DECIDED  M31  the GRADER MIXED flag is removed
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> X5 j GRADER MIXED is flagged
+    required kills "X5 j GRADER MIXED": all killed; failing assertions (1): X5 j GRADER MIXED is flagged
+AS DECIDED  M32  empty prose with no cue block (other) is counted in the gated clause
+    SUMMARY: 182 assertions, 174 OK, 8 FAIL  -> 8e all-ids wrong = baseline + 1, gated wrong unchanged | 9b gated 1 / all 1 on both sides | 9c-ii gated wrong per cue rep (flag on) | 9c-ii strict alternative stops in rep 1 | 9c-ii with --strict governing: STOP, exit 1 | 9c-iii gated wrong per cue rep | 9c-iii default STOP (2 > 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1)
+    required kills "8e all-ids wrong": all killed; failing assertions (8): 8e all-ids wrong = baseline + 1, gated wrong unchanged | 9b gated 1 / all 1 on both sides | 9c-ii gated wrong per cue rep (flag on) | 9c-ii strict alternative stops in rep 1 | 9c-ii with --strict governing: STOP, exit 1 | 9c-iii gated wrong per cue rep | 9c-iii default STOP (2 > 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1)
+AS DECIDED  M33  the dist cue-limits refusal is removed
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> X7a a dist with other cue limits is refused, by its limits
+    required kills "X7a": all killed; failing assertions (1): X7a a dist with other cue limits is refused, by its limits
+AS DECIDED  M34  the dist CUE_RULE refusal is removed
+    SUMMARY: 182 assertions, 180 OK, 2 FAIL  -> X7b a dist with the right limits but another CUE_RULE is refused, by its rule | X7b exit
+    required kills "X7b": all killed; failing assertions (2): X7b a dist with the right limits but another CUE_RULE is refused, by its rule | X7b exit
+AS DECIDED  M35  the invalid-JSON refusal is removed (reads as an empty object)
+    SUMMARY: 182 assertions, 180 OK, 2 FAIL  -> X7c invalid JSON is refused | X7c exit
+    required kills "X7c": all killed; failing assertions (2): X7c invalid JSON is refused | X7c exit
+AS DECIDED  M36  the entry-keyed-by-its-id check is removed
+    SUMMARY: 182 assertions, 180 OK, 2 FAIL  -> X7d an entry whose id is not its key is refused | X7d exit
+    required kills "X7d": all killed; failing assertions (2): X7d an entry whose id is not its key is refused | X7d exit
+AS DECIDED  M37  the default control family name has a typo (nocues for no-cues)
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> X8 no-cue twins: captured-no-cues-high, -r2, -r3 (answers and judge file names)
+    required kills "X8 no-cue twins": all killed; failing assertions (1): X8 no-cue twins: captured-no-cues-high, -r2, -r3 (answers and judge file names)
+AS DECIDED  M38  the same-family-as-cue-and-control refusal is removed
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> X5 k  the cue and the control family are th
+    required kills "X5 k": all killed; failing assertions (1): X5 k  the cue and the control family are th
+AS DECIDED  M39  the --notext-gated flag is ignored (a no-text record is never gated)
+    SUMMARY: 182 assertions, 174 OK, 8 FAIL  -> 9b the record is labelled as inside the gated clause | 9b gated 1 / all 1 on both sides | 9c-ii gated wrong per cue rep (flag on) | 9c-ii strict alternative stops in rep 1 | 9c-ii with --strict governing: STOP, exit 1 | 9c-iii gated wrong per cue rep | 9c-iii default STOP (2 > 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1)
+    required kills "9b gated 1 / all 1", "9c-ii": all killed; failing assertions (8): 9b the record is labelled as inside the gated clause | 9b gated 1 / all 1 on both sides | 9c-ii gated wrong per cue rep (flag on) | 9c-ii strict alternative stops in rep 1 | 9c-ii with --strict governing: STOP, exit 1 | 9c-iii gated wrong per cue rep | 9c-iii default STOP (2 > 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1)
+AS DECIDED  M40  a no-text record on an EXCLUDED follow-up is gated under --notext-gated
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> 9c-iv gated wrong unchanged
+    required kills "9c-iv gated wrong unchanged": all killed; failing assertions (1): 9c-iv gated wrong unchanged
+AS DECIDED  M41  the gated clause counts block-only twins only (a no-text record never enters it, flag or not)
+    SUMMARY: 182 assertions, 175 OK, 7 FAIL  -> 9b gated 1 / all 1 on both sides | 9c-ii gated wrong per cue rep (flag on) | 9c-ii strict alternative stops in rep 1 | 9c-ii with --strict governing: STOP, exit 1 | 9c-iii gated wrong per cue rep | 9c-iii default STOP (2 > 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1)
+    required kills "9b gated 1 / all 1", "9c-ii", "9c-v flag on": all killed; failing assertions (7): 9b gated 1 / all 1 on both sides | 9c-ii gated wrong per cue rep (flag on) | 9c-ii strict alternative stops in rep 1 | 9c-ii with --strict governing: STOP, exit 1 | 9c-iii gated wrong per cue rep | 9c-iii default STOP (2 > 0 + 1) | 9c-v flag on: control gated 1/0/0, cue 2/0/0 -> no STOP (2 <= 1 + 1)
+AS DECIDED  M13  the same-id-set check is removed
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> X5 d  an id missing from one rep (and its g
+    required kills "X5 d": all killed; failing assertions (1): X5 d  an id missing from one rep (and its g
+AS DECIDED  M14  the verdictOf cross-check is removed
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> X5 c  a verdict that is not verdictOf of it
+    required kills "X5 c": all killed; failing assertions (1): X5 c  a verdict that is not verdictOf of it
+AS DECIDED  M15  the graded-answer-equals-answers-file check is removed
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> X5 b  judge file of rep 2 handed to rep 1 (
+    required kills "X5 b": all killed; failing assertions (1): X5 b  judge file of rep 2 handed to rep 1 (
+AS DECIDED  M16  the graded-id-not-answered check is removed
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> X5 e  a graded id the answers file holds on
+    required kills "X5 e": all killed; failing assertions (1): X5 e  a graded id the answers file holds on
+AS DECIDED  M17  the --pre-cue-on-a-cue-family guard is removed
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> X5 a  --pre-cue on a family that carries cu
+    required kills "X5 a ": all killed; failing assertions (1): X5 a  --pre-cue on a family that carries cu
+AS DECIDED  M18  the cue-hour-without-cues-array guard is removed
+    SUMMARY: 182 assertions, 180 OK, 2 FAIL  -> X6a a cue-hour reading on a pre-cue family is refused | X6a exit
+    required kills "X6a": all killed; failing assertions (2): X6a a cue-hour reading on a pre-cue family is refused | X6a exit
+AS DECIDED  M19  the chain-does-not-reproduce-the-emptiness refusal is removed
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> X4 h refused
+    required kills "X4 h": all killed; failing assertions (1): X4 h refused
+AS DECIDED  M20  the replayed-cues-differ refusal is removed
+    SUMMARY: 182 assertions, 181 OK, 1 FAIL  -> X4 i refused
+    required kills "X4 i": all killed; failing assertions (1): X4 i refused
+AS DECIDED  M42  the refusal of a dist without stripCueBlock is removed (the stand-in root then fails on its CUE_RULE instead, so only the message check can tell)
+    SUMMARY: 182 assertions, 180 OK, 2 FAIL  -> X6b a dist without stripCueBlock is refused | X6b2 MAIN's own pre-merge dist (no stripCueBlock) is refused
+    required kills "X6b a dist": all killed; failing assertions (2): X6b a dist without stripCueBlock is refused | X6b2 MAIN's own pre-merge dist (no stripCueBlock) is refused
+AS DECIDED  M43  the --dist option is ignored (the worktree is always the chain)
+    SUMMARY: 182 assertions, 174 OK, 8 FAIL  -> X6b a dist without stripCueBlock is refused | X6b exit | X6b2 MAIN's own pre-merge dist (no stripCueBlock) is refused | X6b2 exit | X7a a dist with other cue limits is refused, by its limits | X7a exit | X7b a dist with the right limits but another CUE_RULE is refused, by its rule | X7b exit
+    required kills "X6b a dist", "X7a", "X7b": all killed; failing assertions (8): X6b a dist without stripCueBlock is refused | X6b exit | X6b2 MAIN's own pre-merge dist (no stripCueBlock) is refused | X6b2 exit | X7a a dist with other cue limits is refused, by its limits | X7a exit | X7b a dist with the right limits but another CUE_RULE is refused, by its rule | X7b exit
+
+MUTATION HARNESS: 40 variants, every one as decided (the identity read clean, every broken copy was caught by the assertions named for it)

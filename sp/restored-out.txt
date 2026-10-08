@@ -1,0 +1,10 @@
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+ ✓ electron/llm/verbalStreamFilter.test.ts (143 tests) 147ms
+
+ Test Files  1 passed (1)
+      Tests  143 passed (143)
+   Start at  21:37:46
+   Duration  5.02s (transform 321ms, setup 0ms, collect 383ms, tests 147ms, environment 2.39s, prepare 188ms)
+

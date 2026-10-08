@@ -1,0 +1,7 @@
+docs(cues): three comments say what the code does
+
+From the final review: onCues fires at most once (not at all when every
+stream failed before its block was decided); the parser's doc no longer
+says one line per part; cues_present's doc says what it tests.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

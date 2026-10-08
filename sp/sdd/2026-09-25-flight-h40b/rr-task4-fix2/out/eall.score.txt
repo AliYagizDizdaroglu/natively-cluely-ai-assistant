@@ -1,0 +1,29 @@
+EXIT 0
+--stdout--
+blind files graded: 0
+
+tier 1  gemini-3.8-flash  (0 questions, 3 reps)
+  Q     Flash ✓/3  Flash runs (s to first word)   3.1 LOW   3.5 HIGH  thinking tokens   total s
+  gemini-3.8-flash on tier 1: answered 0 of 0 (ids × reps)
+  gemini-3.8-flash on tier 1: 0/0 acceptable; first word p50 ? s, p90 ? s, max 0.0 s; thinking tokens p50 ?; total p50 ? s
+
+tier 2  gemini-3.7-flash  (0 questions, 3 reps)
+  Q     Flash ✓/3  Flash runs (s to first word)   3.1 LOW   3.5 HIGH  thinking tokens   total s
+  gemini-3.7-flash on tier 2: answered 0 of 0 (ids × reps)
+  gemini-3.7-flash on tier 2: 0/0 acceptable; first word p50 ? s, p90 ? s, max 0.0 s; thinking tokens p50 ?; total p50 ? s
+
+tier 3  gemini-3.6-flash  (0 questions, 1 rep)
+  Q     Flash ✓/1  Flash runs (s to first word)   3.1 LOW   3.5 HIGH  thinking tokens   total s
+  gemini-3.6-flash on tier 3: answered 0 of 0 (ids × reps)
+  gemini-3.6-flash on tier 3: 0/0 acceptable; first word p50 ? s, p90 ? s, max 0.0 s; thinking tokens p50 ?; total p50 ? s
+
+tier 3b  gemini-3.5-flash  (0 questions, 1 rep)
+  Q     Flash ✓/1  Flash runs (s to first word)   3.1 LOW   3.5 HIGH  thinking tokens   total s
+  gemini-3.5-flash on tier 3b: answered 0 of 0 (ids × reps)
+  gemini-3.5-flash on tier 3b: 0/0 acceptable; first word p50 ? s, p90 ? s, max 0.0 s; thinking tokens p50 ?; total p50 ? s
+
+lite answered: 3.1 LOW 0 of 0 (ids × reps), 3.5 HIGH 0 of 0 (ids × reps)
+on the same questions, re-graded in the same files: 3.1 LOW 0/0, 3.5 HIGH 0/0
+
+reasons for every non-acceptable Flash answer:
+--stderr--

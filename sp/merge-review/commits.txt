@@ -1,0 +1,43 @@
+﻿8a13abb docs(passes): the second cue re-smoke's amendment: why, how it is read, what flies
+d83fdfe fix(cues): an offers block before the spoken answer no longer swallows the answer
+18da7fa test(cues): the typed-prompt pin compares three lines and ties the prompt to its call
+64d74a1 fix(cues): close the cue block on the first prose character, not the first prose line
+e49886c docs(passes): the v2 cue re-smoke is NOT CLEAN on a block-only answer: its record, its result, a spike-6 correction
+416d4de docs(passes): the cue re-smoke's pre-registration, the 05:00 run's record, the bench and probe rules
+e3fae5f docs(cues): three comments say what the code does
+4b051a9 fix(golden): chains strips the cue block like the app
+efda6cf fix(chat): a typed answer carries no cue block
+a7e9a79 test(cues): the fixture pairs are ones the engine can log; the empty cue and the no-block case are pinned
+87877ee feat(cues): enforce 3×5 at the display boundary, log every display edit, count trims
+578190f test(cues): trimCues — dropped lines stay raw, and the trim is pinned on both sides
+b649011 docs(passes): spike 6 — the cue wording, pre-registered rule and result
+38da4ac feat(cues): trimCues — the cue block as displayed, notation cleaned then capped
+949ebc2 test(cues): the seam tests say only what they pin
+4c07ae9 feat(cues): 3 lines of 5 words, and the shape bullet as one benched constant (one-first)
+721c6fa fix(flight): the no-cue twins pair with the hedge's front leg
+1901ab6 test(cues): pin the hedge x cue seam in committed tests
+279103b merge: bring MAIN's line (hedge default, first-token aborts, boundary repair) into cue mode
+fd57512 fix(harness): the flight runner reads its Gemini key from the environment first
+76f90f7 fix(judge): a merged pass records the model that graded it
+97fc38d fix(flight): a run stops the app when it ends, not only when the next one starts
+09d0c0e fix(verbal): a Gemma handover to Flash reaches the answer bar
+33eae76 fix(build): resolve esbuild entry points against the repo root, not the cwd
+f06fdc8 fix(llm): a first-token stall aborts the stalled request at its deadline
+1f23a5e fix(gemma): a close on the sentinel, the first chunk or a stall aborts the request too
+d267870 fix(verbal): a close on the first token aborts the request too
+896f726 fix(verbal): the last-resort message names a fallback only when one ran
+5d5ab34 fix(verbal): name the model that answered, and fall back from the one that failed
+b80a677 fix(verbal): single-asterisk emphasis was never stripped, only bold
+1ddb738 fix(cues): a reused bubble drops its cues on a coaching card
+49183fc fix(flight): hasCueRule fails closed — every replayable id, not any
+3fd5ba4 test(golden): a drift test for the cue row's hardcoded limits
+feaf897 feat(flight): a same-bytes no-cue twin, three reps, only on a cue hour
+f299fae feat(golden): cue checks, --cues/--no-cues captured arms, and the cue row
+51424e4 feat(cues): render the cue block above the answer
+d648ff3 feat(cues): log the cues once and send them on the first prose token
+6b7817f feat(cues): strip the block innermost and report the cues once per stream
+577d13a feat(cues): strip the cue block from the stream, hand the cues out once
+8682b32 feat(cues): the cue rule at the tail of the verbal prompt
+a4a26af feat(golden): holdout40 area 7 on invented figures, and the slot guard goes with the CV ones
+f21436e fix(golden): ignore holdout40's audio, and refuse a half-deleted CV marker
+6e8bdb4 feat(golden): holdout40 — the technical-breadth roster the app is never tuned on

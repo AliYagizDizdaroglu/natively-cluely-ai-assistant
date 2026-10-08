@@ -1,0 +1,25 @@
+earlierQuestions.ref.mjs	0459f578e47706424df0c41684a46c041fa52109923c1eb25df1c484d0dda256	15566 bytes
+gate-report.mjs	b23b9219826b98d92a79465455b95e69d9c8d7ce35207ae67319f53dd463bf79	19891 bytes
+s50m-gated.json	1aa4b3a57eea2062357b4e80b57a914ffb2303772ec2a3273390f2b2382b70b5	440661 bytes
+parity-fixture.json	f61c4607697743a1058d9fc8be38fbec0783c459a1968a8972f343b6de505302	312424 bytes
+label chars: 164
+S1Q04F	roster	constraint	block 576	added 578	userA 4230	userB 4808	sha12 8a58894a5e5f	OK
+S1Q06F	roster	pronoun	block 556	added 558	userA 4205	userB 4763	sha12 03260be280dc	OK
+S1Q08	roster	reference	block 360	added 362	userA 4923	userB 5285	sha12 c4cd0f676d8b	OK
+S2Q05F	roster	pronoun	block 500	added 502	userA 4532	userB 5034	sha12 b2e08983d0f0	OK
+S2Q08	roster	reference	block 358	added 360	userA 5102	userB 5462	sha12 9d8317a2e9dc	OK
+S2Q08F	roster	pronoun	block 471	added 473	userA 4146	userB 4619	sha12 c30c95b3155a	OK
+S2Q09F	roster	reference	block 284	added 286	userA 5846	userB 6132	sha12 5df9928795ce	OK
+C1	callback	callback	block 562	added 564	userA 5568	userB 6132	sha12 2326893467f7	OK
+C2	callback	callback	block 561	added 563	userA 5490	userB 6053	sha12 9252786884b9	OK
+C3	callback	callback	block 908	added 910	userA 4110	userB 5020	sha12 022421810e54	OK
+C4	callback	callback	block 363	added 365	userA 5385	userB 5750	sha12 4d19e1abc3f4	OK
+C5	callback	callback	block 808	added 810	userA 4101	userB 4911	sha12 8b88b0c346ea	OK
+C6	callback	callback	block 613	added 615	userA 3901	userB 4516	sha12 e6d53217d410	OK
+D1	dropped	pronoun	block 289	added 291	userA 3956	userB 4247	sha12 cef7cd851c2d	OK
+D2	dropped	pronoun	block 301	added 303	userA 4283	userB 4586	sha12 ae548433d83d	OK
+D3	dropped	pronoun	block 272	added 274	userA 3897	userB 4171	sha12 617edb222ab3	OK
+ARMS OK: every userB = userA + block + "\n\n" at the marker, nothing else
+items: 16; mean added chars: 488; max block: 908
+PARITY FIXTURE OK: 48 entries re-derived (16 with a block, 32 empty)
+fixture check fails on a corrupted input: OK

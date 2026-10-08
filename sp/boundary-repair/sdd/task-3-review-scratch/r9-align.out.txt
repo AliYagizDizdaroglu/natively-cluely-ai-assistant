@@ -1,0 +1,3 @@
+real [\p{L}\p{M}]: 968587 code points admitted (surrogates skipped); misaligned: 0
+\p{L} only: 971088 code points admitted (surrogates skipped); misaligned: 0
+no guard: 1112064 code points admitted (surrogates skipped); misaligned: 2 (U+0130, U+212A)

@@ -1,0 +1,58 @@
+{
+ "1": {
+  "model": "gemini-3.8-flash",
+  "ids": [
+   "R02F",
+   "R08"
+  ],
+  "skipped": [],
+  "requests": 6
+ },
+ "2": {
+  "model": "gemini-3.7-flash",
+  "ids": [
+   "R03",
+   "R16"
+  ],
+  "skipped": [
+   "R09F"
+  ],
+  "requests": 6
+ },
+ "3": {
+  "model": "gemini-3.6-flash",
+  "ids": [
+   "R01",
+   "R11F",
+   "R12",
+   "R17F",
+   "R23",
+   "R26F",
+   "R27",
+   "R28",
+   "R30",
+   "R31F",
+   "R32"
+  ],
+  "skipped": [],
+  "requests": 11
+ },
+ "3b": {
+  "model": "gemini-3.5-flash",
+  "ids": [
+   "R01",
+   "R11F",
+   "R12",
+   "R17F",
+   "R23",
+   "R26F",
+   "R27",
+   "R28",
+   "R30",
+   "R31F",
+   "R32"
+  ],
+  "skipped": [],
+  "requests": 11
+ }
+}

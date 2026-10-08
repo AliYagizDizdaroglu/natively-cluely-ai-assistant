@@ -1,0 +1,20 @@
+feat(verbal): restore a follow-up's parent exchange, behind NATIVELY_FOLLOWUP_PARENT (off)
+
+SessionTracker evicts context older than 120 s on every add, while
+holdout40 and scenario50 ask a follow-up 150-160 s after its parent, so
+the follow-up's prompt carried only the follow-up sentence (h40a and h40b:
+R02F R04F R09F R11F R13F; on h40b R09F and R11F were answered wrongly).
+
+withParentExchange puts the previous answered exchange back ahead of the
+window when the window lost it and it is under 5 minutes old. The
+exchange's question is now the pinned question the answer was generated
+for: addAssistantMessage takes it as an optional second argument at the
+what-to-answer call site (the task review found that the last STT fragment
+alone would have restored "say it out loud." as R09F's parent).
+
+Off unless NATIVELY_FOLLOWUP_PARENT=1 (a junk value throws): with the flag
+unset the same array comes back and the prompt is unchanged. Its offline
+replay on scenario50 runs under its own pre-registered rule (result
+recorded separately); it has not flown.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

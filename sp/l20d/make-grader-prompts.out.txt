@@ -1,0 +1,1 @@
+8 grader prompts written to C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\l20d\grader-prompts: L20c's text, two paths changed in each (checked by putting them back)

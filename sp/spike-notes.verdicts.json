@@ -1,0 +1,242 @@
+{
+  "M14|r1": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct Pipe and Fast File mode fix, well explained, natural first-person answer at a good spoken length."
+  },
+  "M14|r2": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accurate File versus Pipe mode contrast with a RecordIO example; concise and directly answers the loading question."
+  },
+  "M14|r3": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct streaming fix and the TFRecord example fits Pipe mode; clean spoken length and phrasing."
+  },
+  "M14|r4": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Technically sound Pipe and Fast File answer with clear disk-bottleneck reasoning and natural spoken delivery."
+  },
+  "M14|r5": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Same correct streaming fix stated crisply, with sound reasoning and a comfortable spoken length."
+  },
+  "M21|r1": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Describes layer splitting, nested stacks and StackSets but never says how dev, staging and prod are separated."
+  },
+  "M21|r2": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Generic stack-layering checklist with no per-environment separation or promotion path, so it only partly answers."
+  },
+  "M21|r3": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Directly addresses environments: same template per environment, production a versioned reflection of validated staging; correct and well spoken."
+  },
+  "M21|r4": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Correct CloudFormation practices, but answers how to split stacks rather than how the three environments differ."
+  },
+  "M21|r5": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Mostly layering and change sets; environments get a single clause, so the asked comparison is barely covered."
+  },
+  "H09|r1": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct sequence of drift detection then revert, update template, or re-import, ending with a permission lockdown."
+  },
+  "H09|r2": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Right drift-detection flow, but saying a DeletionPolicy recreates the resource misstates what DeletionPolicy actually does."
+  },
+  "H09|r3": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sound reconcile-or-revert plan weakened by the inaccurate claim that a DeletionPolicy recreates a resource."
+  },
+  "H09|r4": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Good drift workflow, but the DeletionPolicy recreation claim is loose and would invite an awkward follow-up."
+  },
+  "H09|r5": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct drift handling overall, but again misuses DeletionPolicy as a mechanism for recreating a resource."
+  },
+  "M08|r1": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Multi-stage build, runtime base image, external weights and pinned versions are all correct and well paced."
+  },
+  "M08|r2": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accurate size levers named in a sensible order; natural spoken answer of appropriate length."
+  },
+  "M08|r3": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Content is correct, but the phrase unnecessary bloat from bloated dependencies is clumsy to say aloud."
+  },
+  "M08|r4": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct shrink strategy plus loading weights from S3 at runtime; concise and easy to speak."
+  },
+  "M08|r5": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Short, accurate answer covering multi-stage build, a runtime base image and externalised model weights."
+  },
+  "M25|r1": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Per-user partitioning for targeted deletion plus scrubbing metadata and logs; correct approach at a clean spoken length."
+  },
+  "M25|r2": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Tagging and targeted purge are right, but S3 lifecycle policies are age-based expiry, not on-request deletion."
+  },
+  "M25|r3": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Adds the key point of mapping copies across the data lake and feature stores so removal is complete."
+  },
+  "M25|r4": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct granular-deletion design, but nearly a hundred words with a third sentence that repeats the second."
+  },
+  "M25|r5": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Targeted purge plus crypto-shredding by deleting the user key is a strong correct fallback; slightly long."
+  },
+  "H06|r1": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Misdiagnoses request-rate throttling as File-mode download latency; no prefix sharding, retries or backoff mentioned."
+  },
+  "H06|r2": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Blames File mode for throttling and misses S3 per-prefix request limits and 503 SlowDown handling."
+  },
+  "H06|r3": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Same misdiagnosis: switching streaming modes does not fix S3 request-rate throttling at scale."
+  },
+  "H06|r4": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Fast File description is accurate, but the answer treats throttling as startup download time instead."
+  },
+  "H06|r5": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Mode-switch advice recycled from a data-loading question; the actual cause of throttling is never named."
+  },
+  "H07|r1": {
+    "correctness": 0,
+    "on_topic": 0,
+    "delivery": 2,
+    "reason": "Answers CloudFormation resource drift rather than feature or data drift; entirely the wrong domain."
+  },
+  "H07|r2": {
+    "correctness": 0,
+    "on_topic": 0,
+    "delivery": 2,
+    "reason": "Discusses template drift and stack integrity, with nothing about feature distributions or data freshness."
+  },
+  "H07|r3": {
+    "correctness": 0,
+    "on_topic": 0,
+    "delivery": 2,
+    "reason": "Infrastructure drift-detection answer, irrelevant to separating real data drift from a broken feature pipeline."
+  },
+  "H07|r4": {
+    "correctness": 0,
+    "on_topic": 0,
+    "delivery": 2,
+    "reason": "Right shape of reasoning but applied to stack drift, so it answers a different question."
+  },
+  "H07|r5": {
+    "correctness": 0,
+    "on_topic": 0,
+    "delivery": 2,
+    "reason": "Recites resource-drift reconciliation; no mention of nulls, staleness, schema change or distribution checks."
+  },
+  "H02|r1": {
+    "correctness": 0,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Recommends File to Pipe mode, a training-data concept irrelevant to an inference endpoint, and runs long."
+  },
+  "H02|r2": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sensible triage from utilisation to batching and serving stack; correct and well sized for speaking."
+  },
+  "H02|r3": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Mostly sound, but multi-model endpoints consolidate models rather than spread load, and it nears a hundred words."
+  },
+  "H02|r4": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "ModelLatency versus OverheadLatency then dynamic batching is exactly the right path; slightly long but natural."
+  },
+  "H02|r5": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Good queue-depth start, but a CUDA mismatch silently falling back to CPU is shaky, and it is long."
+  }
+}

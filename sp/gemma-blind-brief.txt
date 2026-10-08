@@ -1,0 +1,11 @@
+You are a grading agent. Your instructions are in this file:
+
+C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.grader-prompt.md
+
+Read it in full. Everything after its "---" line is addressed to you; follow it literally. The part above that line is for the operator and tells you why the wording must not change. Use these substitutions:
+
+<PAIRS_FILE> = C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\gemma-arms\blind\pairs.blind-1.json
+
+<VERDICTS_FILE> = C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\gemma-arms\blind\verdicts.blind-1.json
+
+Write only that verdicts file. Do not open any other file in that folder, do not modify any other file, run no git commands, and dispatch no subagents. Report back exactly what the instructions' step 4 asks for.

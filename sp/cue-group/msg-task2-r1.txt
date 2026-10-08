@@ -1,0 +1,11 @@
+test(cues): trimCues — dropped lines stay raw, and the trim is pinned on both sides
+
+Review round on 38da4ac (2 Minor findings fixed):
+- A dropped line is reported verbatim and is neither cleaned nor cut: a
+  notation-bearing, over-long fourth line pins it. A version that cleaned and
+  capped every line before slicing passed the earlier 79 tests.
+- The display trims surrounding whitespace on both sides (the parser can hand
+  over `" padded "`); each side has its own assertion, and the doc comment
+  says a whitespace-only difference is listed in `cleaned`.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

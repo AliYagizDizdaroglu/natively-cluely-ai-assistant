@@ -1,0 +1,8 @@
+    // Spec 2026-09-05 §3: the floor equals the limit, so a cut answer always has
+    // at least 80 words — `cutShort` is 0 by construction and non-zero only if
+    // the old 40-word floor is somehow back. `n` must cover the delivered answers
+    // (cue answers and coding routes emit no budget line, hence 0.9). p50 ≤ 100:
+    // the pre-budget raw median was 97, so the cut must still exist. max ≤ 130:
+    // a 50-word sentence in progress at 80 — pathological, and the 160 ceiling
+    // only bounds a terminator-free answer.
+    { key: 'budget', label: 'Spoken answers: the sentence in progress at 80 words finishes (ceiling 160)', before: '40 of 57 cut at 40–79 words (after6)', pass: (m) => m.budget.n > 0 && m.budget.n >= Math.floor(m.delivered * 0.9) && m.budget.cutShort === 0 && m.budget.p50 <= 100 && m.budget.max <= 130, show: (m) => m.budget.n === 0 ? 'not logged' : `${m.budget.n} answers, ${m.budget.over} over 80, ${m.budget.cutShort} cut under 80, words p50 ${m.budget.p50} max ${m.budget.max}` },

@@ -1,0 +1,77 @@
+﻿<SP>/flash-h40b exists before: false
+real runner: "GEMMA_MAX_TRIES" x4, "process.env.GEMMA_MAX_TRIES" x1
+m4a (old 4-try loop + one comment naming the var): "GEMMA_MAX_TRIES" x1, "process.env.GEMMA_MAX_TRIES" x0
+m4b (current runner, the env READ removed, header/comments kept): "GEMMA_MAX_TRIES" x3, "process.env.GEMMA_MAX_TRIES" x0
+
+--- sidecar --dry, real runner (no override)  (cwd sdd\2026-09-25-flight-h40b\rr-task4-fix2; env {})  EXIT 2
+    NOT READY: no *-h40b run folder yet
+
+--- sidecar --dry, GEMMA_RUNNER_PATH=m4a (absolute)  (cwd sdd\2026-09-25-flight-h40b\rr-task4-fix2; env {"GEMMA_RUNNER_PATH":"C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/sdd/2026-09-25-flight-h40b/rr-task4-fix2/m4a.mjs"})  EXIT 3
+    RUNNER LACKS GEMMA_MAX_TRIES: <SP>\sdd\2026-09-25-flight-h40b\rr-task4-fix2\m4a.mjs — regenerate or re-apply the one-try limit
+
+--- sidecar --dry, GEMMA_RUNNER_PATH=m4b.mjs (RELATIVE, cwd rr-task4-fix2)  (cwd sdd\2026-09-25-flight-h40b\rr-task4-fix2; env {"GEMMA_RUNNER_PATH":"m4b.mjs"})  EXIT 3
+    RUNNER LACKS GEMMA_MAX_TRIES: <SP>\sdd\2026-09-25-flight-h40b\rr-task4-fix2\m4b.mjs — regenerate or re-apply the one-try limit
+
+--- sidecar --dry, GEMMA_RUNNER_PATH=..\..\..\gemma-answers.mjs (RELATIVE to the real runner)  (cwd sdd\2026-09-25-flight-h40b\rr-task4-fix2; env {"GEMMA_RUNNER_PATH":"..\\..\\..\\gemma-answers.mjs"})  EXIT 2
+    NOT READY: no *-h40b run folder yet
+
+--- sidecar --dry, same RELATIVE value from a different cwd (<SP>) -> resolves elsewhere  (cwd .; env {"GEMMA_RUNNER_PATH":"..\\..\\..\\gemma-answers.mjs"})  EXIT 1
+    Error: ENOENT: no such file or directory, open 'C:\Users\sotka\AppData\Local\Temp\claude\gemma-answers.mjs'
+
+--- sidecar --plan, GEMMA_RUNNER_PATH=m4a  (cwd sdd\2026-09-25-flight-h40b\rr-task4-fix2; env {"GEMMA_RUNNER_PATH":"C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/sdd/2026-09-25-flight-h40b/rr-task4-fix2/m4a.mjs"})  EXIT 0
+
+--- sidecar COPY --dry (fake h40b folder), no override  (cwd sdd\2026-09-25-flight-h40b\rr-task4-fix2; env {})  EXIT 0
+    [dry] run folder 2026-09-26T17-00-00-h40b; 15 captured prompts; call gap 24990 ms
+    [dry] tier 1 def: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.8-flash --tag def --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only R02F
+    [dry] tier 1 def-r2: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.8-flash --tag def-r2 --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only R02F
+    [dry] tier 1 def-r3: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.8-flash --tag def-r3 --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only R02F
+    [dry] tier 1: skipped (not captured this run): R08
+    [dry] tier 2 def: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.7-flash --tag def --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only "R03,R16"
+    [dry] tier 2 def-r2: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.7-flash --tag def-r2 --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only "R03,R16"
+    [dry] tier 2 def-r3: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.7-flash --tag def-r3 --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only "R03,R16"
+    [dry] tier 2: skipped (not captured this run): R09F
+    [dry] tier 3 def: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.6-flash --tag def --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only "R01,R11F,R17F,R23,R26F,R27,R28,R30,R31F,R32"
+    [dry] tier 3: skipped (not captured this run): R12
+    [dry] tier 3b def: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.5-flash --tag def --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only "R01,R11F,R17F,R23,R26F,R27,R28,R30,R31F,R32"
+    [dry] tier 3b: skipped (not captured this run): R12
+    [dry] env: GEMMA_ARMS_DIR=<SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/sidecar-out NATIVELY_ROSTER=holdout40 GEMMA_CALL_TIMEOUT_MS=180000 GEMMA_MIN_GAP_MS=24990 GEMMA_MAX_TRIES=1
+
+--- sidecar COPY --dry, GEMMA_RUNNER_PATH=..\..\..\gemma-answers.mjs (RELATIVE)  (cwd sdd\2026-09-25-flight-h40b\rr-task4-fix2; env {"GEMMA_RUNNER_PATH":"..\\..\\..\\gemma-answers.mjs"})  EXIT 0
+    [dry] run folder 2026-09-26T17-00-00-h40b; 15 captured prompts; call gap 24990 ms
+    [dry] tier 1 def: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.8-flash --tag def --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only R02F
+    [dry] tier 1 def-r2: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.8-flash --tag def-r2 --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only R02F
+    [dry] tier 1 def-r3: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.8-flash --tag def-r3 --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only R02F
+    [dry] tier 1: skipped (not captured this run): R08
+    [dry] tier 2 def: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.7-flash --tag def --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only "R03,R16"
+    [dry] tier 2 def-r2: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.7-flash --tag def-r2 --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only "R03,R16"
+    [dry] tier 2 def-r3: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.7-flash --tag def-r3 --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only "R03,R16"
+    [dry] tier 2: skipped (not captured this run): R09F
+    [dry] tier 3 def: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.6-flash --tag def --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only "R01,R11F,R17F,R23,R26F,R27,R28,R30,R31F,R32"
+    [dry] tier 3: skipped (not captured this run): R12
+    [dry] tier 3b def: spawn C:\Program Files\nodejs\node.exe <SP>\gemma-answers.mjs --model gemini-3.5-flash --tag def --captured <SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/runs/2026-09-26T17-00-00-h40b/interview60.prompts.json --only "R01,R11F,R17F,R23,R26F,R27,R28,R30,R31F,R32"
+    [dry] tier 3b: skipped (not captured this run): R12
+    [dry] env: GEMMA_ARMS_DIR=<SP>/sdd/2026-09-25-flight-h40b/rr-task4-fix2/sidecar-out NATIVELY_ROSTER=holdout40 GEMMA_CALL_TIMEOUT_MS=180000 GEMMA_MIN_GAP_MS=24990 GEMMA_MAX_TRIES=1
+
+<SP>/flash-h40b exists after: false; copy's OUT created by --dry: true (contents: [])
+
+--- runner --limit 0, GEMMA_MAX_TRIES=abc  (cwd sdd\2026-09-25-flight-h40b\rr-task4-fix2; env {"GEMMA_ARMS_DIR":"C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/sdd/2026-09-25-flight-h40b/rr-task4-fix2/arms","NATIVELY_ROSTER":"holdout40","GEMMA_MAX_TRIES":"abc"})  EXIT 2
+    ANSWER-ONLY PASS  model=gemini-3.1-flash-lite  0 spoken questions
+    GEMMA_MAX_TRIES is not a finite number: "abc"
+    arms dir now: []
+
+--- runner --limit 0, GEMMA_MAX_TRIES=Infinity  (cwd sdd\2026-09-25-flight-h40b\rr-task4-fix2; env {"GEMMA_ARMS_DIR":"C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/sdd/2026-09-25-flight-h40b/rr-task4-fix2/arms","NATIVELY_ROSTER":"holdout40","GEMMA_MAX_TRIES":"Infinity"})  EXIT 2
+    ANSWER-ONLY PASS  model=gemini-3.1-flash-lite  0 spoken questions
+    GEMMA_MAX_TRIES is not a finite number: "Infinity"
+    arms dir now: []
+
+--- runner --limit 0, GEMMA_MAX_TRIES=(unset)  (cwd sdd\2026-09-25-flight-h40b\rr-task4-fix2; env {"GEMMA_ARMS_DIR":"C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/sdd/2026-09-25-flight-h40b/rr-task4-fix2/arms","NATIVELY_ROSTER":"holdout40"})  EXIT 0
+    ANSWER-ONLY PASS  model=gemini-3.1-flash-lite  0 spoken questions
+      answered 0/0   transient 0
+      wrote <SP>\sdd\2026-09-25-flight-h40b\rr-task4-fix2\arms\interview60.answers.json
+    arms dir now: []
+
+--- runner --limit 0, GEMMA_MAX_TRIES=1  (cwd sdd\2026-09-25-flight-h40b\rr-task4-fix2; env {"GEMMA_ARMS_DIR":"C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/sdd/2026-09-25-flight-h40b/rr-task4-fix2/arms","NATIVELY_ROSTER":"holdout40","GEMMA_MAX_TRIES":"1"})  EXIT 0
+    ANSWER-ONLY PASS  model=gemini-3.1-flash-lite  0 spoken questions
+      answered 0/0   transient 0
+      wrote <SP>\sdd\2026-09-25-flight-h40b\rr-task4-fix2\arms\interview60.answers.json
+    arms dir now: []

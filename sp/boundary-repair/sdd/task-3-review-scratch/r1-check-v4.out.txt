@@ -1,0 +1,53 @@
+candidate: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\boundary-repair\sdd\task-3-review-scratch\deepgramBoundaryRepair.js (factory createBoundaryRepair; clear() present)
+== check-v4: deepgramBoundaryRepair.js on the recorded data ==
+PASS  data: every run log + both seam recordings — candidate == v3 event for event: repairs non-holdout 25 / holdout 4 / seam 6 (expected 25 / 4 / 6), 0 of 13892 events differ
+PASS  data: the same with the app's own utterance-end log lines applied as clear() (what the wiring does) — candidate with the logs' utterance-end lines as clear(): repairs non-holdout 25 / holdout 4 / seam 6 (expected 25 / 4 / 6), 0 of 13892 events differ
+PASS  data: candidate == rule-v4 event for event under the v4 feed — candidate vs rule-v4, both under the v4 feed: repairs non-holdout 25 / holdout 4 / seam 6, 0 of 13892 events differ; with log utterance-ends: 0 differ
+PASS  fixtures-v3.json: the candidate reproduces all 45 expected outputs — 45 of 45
+
+== the spec reviews' probe inputs and v4's edges, on deepgramBoundaryRepair.js ==
+PASS  probe: neg#28 as logged (gap 5164, outside the window) — unchanged: "For each of those metrics, define the unit of evaluation,"
+PASS  probe: neg#28 inside the window — unchanged: "For each of those metrics, define the unit of evaluation,"
+PASS  probe: R22 symptom still restores "hallucinations" — restored ["hallucinations"]: "hallucinations in a rag answer without just making it refuse"
+PASS  probe: 92% + interim ran 2 words on (v3: "two percent" inserted) — unchanged: "For each of those metrics, define the unit of evaluation,"
+PASS  probe: 25 + interim ran 2 words on (v3: "five" inserted) — unchanged: "last quarter. What changed?"
+PASS  probe: 15% + interim ran on (v3: "percent" inserted) — unchanged: "overnight, but the input schema is unchanged."
+PASS  probe: compound merge "all right" -> "Alright" (v3: "right" inserted; a longer final token) — unchanged: "So tell me about your last project."
+PASS  probe: RECALL COST (review M1): an inflection is longer too — "scale" -> "scales" then "horizontally" lost stays lost (v3 restored it) — unchanged: "under heavy load?"
+PASS  probe: RECALL COST: "break" -> "breaks" then "even" lost stays lost (the 7 log "breaks" cuts are aligned and lost nothing) — unchanged: "before the rollout finishes."
+PASS  probe: control: interim already in digits — unchanged: "For each of those metrics, define the unit of evaluation,"
+PASS  probe: re-spelling kept: "cat" for "cut" is still a tolerant cut — restored ["hallucinations"]: "hallucinations in a rag answer without just making it refuse"
+PASS  probe: first letter differs: "put" for "cut" is no cut (the only case for this rule: synthetic) — unchanged: "in a rag answer without just making it refuse?"
+PASS  probe: seam S2Q07 tolerant re-spelling "RAC" -> "Rag" still restores "service" — restored ["service"]: "service over 10,000,000 documents, it has to support documen"
+PASS  probe: alignment guard: "İzmir" lowercases to "i" + "zmir" (v3: "zmir projesinde" inserted) — unchanged: "projesinde hangi veritabanını seçtiniz?"
+PASS  probe: non-ASCII guard (review M2): a lost "résumé" is not restored as "r sum" (v3 did) — unchanged: "and your last role."
+PASS  probe: pause: clear() between F1 and F2 (empty final / UtteranceEnd) — unchanged: "in a rag answer without just making it refuse?"
+PASS  probe: pause: speech_final on F1 leaves no cut — unchanged: "in a rag answer without just making it refuse?"
+PASS  probe: speech_final on F2 does not stop the repair — restored ["hallucinations"]: "hallucinations in a rag answer without just making it refuse"
+INFO residual: shorter symbol merge "Q and A" -> "Q&A" (0 "&"-joined words in the data; no guard): restored ["A"]: "A session on Friday."
+INFO stutter "the the": restored ["the"]: "the latency budget for this endpoint?"
+INFO filler "um" (only if interims keep what finals drop — unmeasured): restored ["um"]: "um scale the service?"
+INFO module alone on Spanish (also gated off in the adapter): unchanged: "de datos que hiciste?"
+INFO module alone on Russian with Latin names (gated off in the adapter): unchanged: "Редис и S3 для файлов."
+
+INFO tolerant cuts, NON-HOLDOUT logs + seam (the evidence): v3 42, v4 keeps 34; refused by digit 1, longer 7, first letter 0, alignment 0, non-ASCII 0 (first refusing rule named; none of the refused cuts was followed by a repair — the data check above)
+  digit: "ninety" -> "92" (2026-09-11T08-22-32-s5)
+  longer: "break" -> "breaks" (2026-09-11T08-22-32-s5); "break" -> "breaks" (2026-09-12T08-22-49-s5); "break" -> "breaks" (2026-09-14T08-22-28-s5); "break" -> "breaks" (2026-09-16T08-42-43-s5); "break" -> "breaks" (2026-09-20T11-22-43-s5); "break" -> "breaks" (2026-09-21T08-22-34-s5); "break" -> "breaks" (2026-09-22T08-22-50-s5)
+  kept (interim token -> F1's last token, x count): "drift" -> "drip" x2; "airflow" -> "air" x3; "registry" -> "register" x1; "xgboost" -> "xg" x12; "introduced" -> "introduce" x3; "affected" -> "affect" x1; "instead" -> "in" x1; "rac" -> "rag" x6; "documents" -> "document" x1; "artifacts" -> "artifact" x2; "dashboard" -> "dash" x1; "tripled" -> "trip" x1
+
+INFO tolerant cuts, holdout (reported, not used for any choice): v3 3, v4 keeps 1; refused by digit 0, longer 1, first letter 1, alignment 0, non-ASCII 0 (first refusing rule named; none of the refused cuts was followed by a repair — the data check above)
+  longer: "idem" -> "idempotent" (2026-09-26T11-39-51-h4)
+  first letter: "exactly" -> "a" (2026-09-26T11-39-51-h4)
+  kept (interim token -> F1's last token, x count): "matched" -> "match" x1
+
+INFO utterance-end lines: 15 of 28 logs carry them (listener since 2026-09-09); 14 of 25 non-holdout repairs are in those logs; speech_final is never logged (unmeasured on the app's audio path; only a seam probe records it)
+INFO empty finals per run log: min 0, median 187, max 445 (28 logs; h40c 223)
+PASS  ASCII guard scope: no interim or final with a non-ASCII letter in the English logs or the seam recordings — logs 0 of 13017 texts, seam 0 of 875; "&"-joined words: logs 0, seam 0
+
+== calibration (these two must FAIL) ==
+PASS  calibration: the probe checks run against rule-v3 FAIL 11 of 18 (as they must; v3 inserts "two percent", "five", "percent", "right", "horizontally", "even", "zmir projesinde", "r sum" and ignores pauses)
+PASS  calibration: the data check run against a pass-through FAILs (as it must) — pass-through: repairs non-holdout 0 / holdout 0 / seam 0 (expected 25 / 4 / 6), 35 of 13892 events differ
+
+EQUIVALENT: deepgramBoundaryRepair.js == rule-v4.mjs on every recorded event, all 45 fixtures and all 18 probes
+
+ALL CHECKS PASS

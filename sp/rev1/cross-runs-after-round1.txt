@@ -1,0 +1,24 @@
+2026-09-04T22-43-34-after5: identical  (after: judge '?'=3, metrics toNobody=3, judge/metrics disagreements before=0 after=0)
+2026-09-05T13-50-01-after6: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-06T08-14-21-after7: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-07T08-14-12-after8: identical  (after: judge '?'=1, metrics toNobody=1, judge/metrics disagreements before=0 after=0)
+2026-09-08T08-44-56-after9: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-09T15-00-55-s50a: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-11T08-22-32-s50b: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-12T08-22-49-s50c: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-13T08-22-36-s50d: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-14T08-22-28-s50e: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-15T08-22-29-s50f: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-16T08-42-43-s50g: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-16T11-41-44-s50h: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-18T08-22-57-s50i: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-19T08-22-41-s50j: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-20T11-22-43-s50k: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-21T08-22-34-s50l: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-22T08-22-50-s50m: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-24T08-20-12-h40a: identical  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+2026-09-26T11-39-51-h40b: CHANGED  (after: judge '?'=0, metrics toNobody=0, judge/metrics disagreements before=0 after=0)
+  judge pair 2026-09-26T10:47:31.603Z ? -> R07F  heard="In the scenario where two workers are picking up jobs from a queue, what happens"
+  answersToNobody 1 -> 0
+  item R07F: answered false->true, answeredAt null->1790419651603, dispatches 0->1, coverage 0->1
+total changed lines: 3

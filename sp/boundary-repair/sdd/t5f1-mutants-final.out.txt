@@ -1,0 +1,13 @@
+﻿[as expected] control: v4 + the final module (m1): 0 failed | 5 passed (5); failing: none
+[as expected] the round-0 module (m0, no refusals): 1 failed | 4 passed (5); failing: T3r
+[as expected] the old inline parse: 3 failed | 2 passed (5); failing: T1, T2, T3r
+[as expected] repair line looked up BEFORE the final: 3 failed | 2 passed (5); failing: T1, T2, T3r
+[as expected] raw text first, restored words after: 2 failed | 3 passed (5); failing: T1, T2
+[as expected] no empty-text filter: 4 failed | 1 passed (5); failing: P1, P2, T1, T2
+[as expected] no since filter: 3 failed | 2 passed (5); failing: P1, P2, T2
+[as expected] since exclusive (`>` for `>=`): 1 failed | 4 passed (5); failing: T2
+[as expected] no .trim() (ruling: stays unpinned): 0 failed | 5 passed (5); failing: none
+[as expected] throw 1 removed (repair line with no final directly above it): 1 failed | 4 passed (5); failing: T3r
+[as expected] throw 2 removed (repair under another final): 1 failed | 4 passed (5); failing: T3r
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true
+scenarios that differed from the prediction: 0

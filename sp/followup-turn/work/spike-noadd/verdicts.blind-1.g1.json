@@ -1,0 +1,6 @@
+{
+ "pilot:P1#1": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct core distinction (own address space vs shared memory, cheaper switching) but at about 20 words it is well short of a full spoken answer."},
+ "pilot:P2#2": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct trade-off (average O(1) vs ordered keys and worst-case log n), but too terse for a natural spoken answer."},
+ "pilot:P3#3": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Accurate purpose and write-cost trade-off; about 25 words, so shorter than a full spoken reply."},
+ "pilot:P4#4": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct definition with right method examples; correct but too brief at about 25 words."}
+}

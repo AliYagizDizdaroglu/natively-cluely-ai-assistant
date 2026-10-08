@@ -1,0 +1,53 @@
+===== cuesmoke2 S1Q07F [calib]
+2026-10-01T02-37-41-cuesmoke [calib jitter=50]: 20/20 once; doubles []; never []; drops 1; absorbed 0 (whisper 0); subs 0; unmatched 0; reorders 1; supersedes 0
+trace S1Q07F: {"n":1,"lat":7243,"budget":2948,"path":"unfinished","finished":true,"fromLive":true,"finals":0,"cov":"1.00","closes":["not-a-question","continuation-expired"],"live":["A nightly job fails halfway through. How do you re"],"logFirst":"02:26:52.579","logGate":7279,"vadDev":-21,"blips":0,"voiceOff":"02:26:45.320"}
+  02:26:38.120 voice ON
+  02:26:40.140 voice OFF
+  02:26:41.040 voice ON
+  02:26:45.270 final "A nightly job fails halfway through."
+  02:26:45.320 voice OFF
+  02:26:47.013 final "How do you resume it without duplicate campaign actions or mixed model"
+  02:26:46.520 classify finals=1
+  02:26:47.769 close not-a-question
+  02:26:52.563 dispatch finals=0 fromLive=true live=1 path=unfinished "A nightly job fails halfway through. How do you resume it wi"
+  02:27:00.563 close continuation-expired
+  02:26:47.769 <verdict not-a-question> {"kind":"marked"}
+  02:26:48.168 <whisper rv=match> {"kind":"marked"} q="How do you resume it without duplicate campaign ac"
+  02:26:48.863 <live rv=match> {"kind":"marked"} q="A nightly job fails halfway through. How do you re"
+
+===== cuesmoke2 S1Q07F [fix]
+2026-10-01T02-37-41-cuesmoke [fix jitter=50]: 20/20 once; doubles []; never []; drops 0; absorbed 1 (whisper 0); subs 1; unmatched 0; reorders 1; supersedes 0
+trace S1Q07F: {"n":1,"lat":2845,"budget":2945,"path":"gate","finished":true,"fromLive":false,"finals":2,"cov":"1.00","closes":["continuation-expired"],"live":[],"logFirst":"02:26:52.579","logGate":7279,"vadDev":-21,"blips":0,"voiceOff":"02:26:45.320"}
+  02:26:38.120 voice ON
+  02:26:40.140 voice OFF
+  02:26:41.040 voice ON
+  02:26:45.270 final "A nightly job fails halfway through."
+  02:26:45.320 voice OFF
+  02:26:47.013 final "How do you resume it without duplicate campaign actions or mixed model"
+  02:26:46.520 classify finals=1
+  02:26:47.413 classify finals=2
+  02:26:48.165 dispatch finals=2 fromLive=false live=0 path=gate "A nightly job fails halfway through. How do you resume it wi"
+  02:26:56.165 close continuation-expired
+  02:26:47.769 <verdict not-a-question> {"kind":"ignored","why":"stale-finals"}
+  02:26:48.165 <verdict question SUBSTITUTED> {"kind":"marked"}
+  02:26:48.168 <whisper rv=match> {"kind":"marked"} q="How do you resume it without duplicate campaign ac"
+  02:26:48.863 <live rv=match> {"kind":"marked"} q="A nightly job fails halfway through. How do you re"
+
+===== cuesmoke2 S1Q07F [fixunk]
+2026-10-01T02-37-41-cuesmoke [fixunk jitter=50]: 20/20 once; doubles []; never []; drops 0; absorbed 1 (whisper 0); subs 1; unmatched 0; reorders 1; supersedes 0
+trace S1Q07F: {"n":1,"lat":2848,"budget":2948,"path":"gate","finished":true,"fromLive":false,"finals":2,"cov":"1.00","closes":["continuation-expired"],"live":[],"logFirst":"02:26:52.579","logGate":7279,"vadDev":-21,"blips":0,"voiceOff":"02:26:45.320"}
+  02:26:38.120 voice ON
+  02:26:40.140 voice OFF
+  02:26:41.040 voice ON
+  02:26:45.270 final "A nightly job fails halfway through."
+  02:26:45.320 voice OFF
+  02:26:47.013 final "How do you resume it without duplicate campaign actions or mixed model"
+  02:26:46.520 classify finals=1
+  02:26:47.413 classify finals=2
+  02:26:48.168 dispatch finals=2 fromLive=false live=0 path=gate "A nightly job fails halfway through. How do you resume it wi"
+  02:26:56.168 close continuation-expired
+  02:26:47.769 <verdict not-a-question> {"kind":"ignored","why":"stale-finals"}
+  02:26:47.813 <verdict unknown SUBSTITUTED> {"kind":"declined","verdict":"unknown","again":false}
+  02:26:48.168 <whisper rv=match> {"kind":"revived","by":"whisper","rule":"forward","how":"residual","score":1,"remScore":0.125,"residual":8,"hits":8,"finals":2} q="How do you resume it without duplicate campaign ac"
+  02:26:48.863 <live rv=match> {"kind":"marked"} q="A nightly job fails halfway through. How do you re"
+

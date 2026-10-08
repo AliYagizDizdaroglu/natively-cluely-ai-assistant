@@ -1,0 +1,1 @@
+Real-time, serverless or batch transform for a model called two thousand times a day with a two-second SLA?

@@ -1,0 +1,8 @@
+E   n 20  acceptable g1 19 g2 19 both 19  wrong(any grader) 1  not both-acceptable: E06(0/0)
+AF  n 16  acceptable g1 12 g2 14 both 12  wrong(any grader) 0  not both-acceptable: H09F(1/2) E11F(1/1) E20F(1/2) H20F(1/1)
+H   n 20  acceptable g1 16 g2 17 both 16  wrong(any grader) 0  not both-acceptable: H07(1/1) H11(1/1) H12(1/2) H19(1/1)
+HF  n  2  acceptable g1 1 g2 2 both 1  wrong(any grader) 0  not both-acceptable: H14F(1/2)
+QF  n  5  acceptable g1 4 g2 4 both 4  wrong(any grader) 0  not both-acceptable: E16F(1/1)
+first token, E+QF p50 2522 ms, p90 3152 ms; H+HF+AF p50 3331 ms, p90 3861 ms
+3.8 Flash re-ask list (H/HF/AF, correctness <= 1 in both): H07,E11F,H11,H19,H20F
+E/QF weak in both (reported, not in the rule's list): E06,E16F

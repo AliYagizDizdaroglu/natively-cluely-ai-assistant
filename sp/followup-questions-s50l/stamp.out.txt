@@ -1,0 +1,8 @@
+C6	callback	callback	block 613	added 615	userA 3901	userB 4516	sha12 e6d53217d410	OK
+D1	dropped	pronoun	block 289	added 291	userA 3956	userB 4247	sha12 cef7cd851c2d	OK
+D2	dropped	pronoun	block 301	added 303	userA 4283	userB 4586	sha12 ae548433d83d	OK
+D3	dropped	pronoun	block 272	added 274	userA 3897	userB 4171	sha12 617edb222ab3	OK
+ARMS OK: every userB = userA + block + "\n\n" at the marker, nothing else
+items: 16; mean added chars: 488; max block: 908
+PARITY FIXTURE OK: 48 entries re-derived (16 with a block, 32 empty)
+fixture check fails on a corrupted input: OK

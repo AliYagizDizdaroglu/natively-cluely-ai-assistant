@@ -1,0 +1,16 @@
+[MAIN] A. override 3.5-lite, healthy
+  requests  : gemini-3.5-flash-lite
+  stream    : [label gemini-3.5-flash-lite] [first words]
+  bar ends  : gemini-3.5-flash-lite
+[MAIN] B. override 3.5-lite, 503 on the primary before its first token
+  requests  : gemini-3.5-flash-lite [503 injected]  ->  gemini-3.1-flash-lite
+  stream    : [label gemini-3.5-flash-lite] [label gemini-3.1-flash-lite (fallback)] [first words]
+  bar ends  : gemini-3.1-flash-lite (fallback)
+[MAIN] C. override 3.5-lite, primary stalls (budget forced to 50 ms)
+  requests  : gemini-3.5-flash-lite  ->  gemini-3.1-flash-lite
+  stream    : [label gemini-3.5-flash-lite] [label gemini-3.1-flash-lite (fallback)] [first words]
+  bar ends  : gemini-3.1-flash-lite (fallback)
+[MAIN] D. shipped config, 503 on 3.1-lite (the pairing must not change)
+  requests  : gemini-3.1-flash-lite [503 injected]  ->  gemini-3.5-flash-lite
+  stream    : [label gemini-3.1-flash-lite] [label gemini-3.5-flash-lite (fallback)] [first words]
+  bar ends  : gemini-3.5-flash-lite (fallback)

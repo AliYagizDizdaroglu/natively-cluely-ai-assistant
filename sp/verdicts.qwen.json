@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names tabular mixed-type fit, latency, and a logistic-regression baseline; concise natural spoken length."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic correct but calls 57 percent consistent with the claimed 60 percent, glossing the real gap; about 90 words."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Holdout arm plus difference-in-differences correctly separates model, campaign, seasonality and mix."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Algorithm, tie-break and all three edge cases correct, but the answer contains a raw Python code block."
+  },
+  "S1Q05": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Right on the chronological gap and train-only fitting, but omits the explicitly asked evaluation half of the pipeline."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "LEFT JOIN, ingested-at guard and COUNT of the event column are correct, but a SQL block is unspeakable."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested stage and names the shared feature store and registry; about 96 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Logging, stable-hash assignment, 30-day outcome join and control-only retraining all addressed."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accurate AWS-to-Azure mapping across all eight components with operational justification, tightly spoken."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC, Key Vault fallback and environment isolation all covered; about 88 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks all eight stages accurately including cross-encoder reranking, but runs past 100 words."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Gives units and denominators but never says how the datasets were built, and pairs a per-1000-token rate with a percent interval."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correctly contrasts fixed retrieval, decomposition and dynamic agents on path unpredictability; about 87 words."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Fusion, one-based ranks and id tie-break are right, but the text carries LaTeX markup and a big-O complexity line."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy relevance-first with dedup, budget skip and two-per-document cap all honoured, but far over spoken length."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore, per-case timeout, index-preserved results and isolated failures are correct; about 90 words."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-partitioned index, metadata ACLs, pre-filtered retrieval, async ingestion and evaluation covered, but roughly 120 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write versioning, backfill, offline and A/B comparison, config cutover and rollback all sound, but very long."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sensible Azure service choices for every component plus the managed-versus-custom split, but around 100 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct idempotency-key ordering of write, mark, then acknowledge; over length and carries a stray markdown emphasis."
+  }
+}

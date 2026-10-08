@@ -1,0 +1,13 @@
+fix(golden): ignore holdout40's audio, and refuse a half-deleted CV marker
+
+Review of 6e8bdb4 against the request found the one thing the next step
+would trip on: the local audio build under NATIVELY_ROSTER=holdout40 writes
+holdout40.wav plus 45 clip and stamp pairs beside the harness, and unlike
+scenario50's they were not ignored. Same block, same rule.
+
+The slot guard matched only well-formed {{NAME}} pairs, so a marker with its
+close deleted by hand would have reached the voice as "open brace before".
+A brace pair left over after the well-formed ones are removed now counts as
+a slot, and the refusal lists slots by name after the item id.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

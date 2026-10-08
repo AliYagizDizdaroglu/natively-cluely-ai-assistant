@@ -1,0 +1,10 @@
+docs(passes): flight-eq amendment A7 moves the start to 03:00 (registered HEAD for tonight's flight)
+
+The user ruled at 23:58 TST: "run the flight at 3 am". T 00:00 was superseded after its precheck
+failed only on the arming record's stamp format (the controller wrote milliseconds and +03:00; the
+gate takes yyyy-MM-ddTHH:mm:ss+03); T 00:45 was superseded on the ruling before any arming record.
+A7 (Opus author, separate Opus re-check kept outside the repo) moves T to 2026-10-06 03:00 and the
+startedAt reading window end to 03:30 local; no bar, metric, roster, arm or grader changes. This
+commit is the registered HEAD the 03:00 guard pins.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

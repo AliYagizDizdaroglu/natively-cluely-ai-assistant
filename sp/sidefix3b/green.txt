@@ -1,0 +1,35 @@
+﻿node : [33mThe CJS build of Vite's Node API is deprecated. See 
+https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+At line:48 char:1
++ node "$m\node_modules\vitest\vitest.mjs" run electron/llm/verbalStrea ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([33mThe CJS bu...e details.[39m:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must 
+the arms > suppresses a fenced block and keeps the prose around it
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must 
+the arms > suppresses it when the text arrives one character at a time
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+ ✓ electron/llm/verbalStreamFilter.test.ts (151 tests) 167ms
+stdout | electron/llm/WhatToAnswerLLM.negotiationCard.test.ts > a negotiation coaching card crosses the verbal route as the JSON the renderer parses > keeps a salary figure that follows a quote, and an escaped newline
+[LLMHelper] KnowledgeOrchestrator attached
+[Answer] budget: words=0 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.negotiationCard.test.ts > a negotiation coaching card crosses the verbal route as the JSON the renderer parses > arrives whole when its texts run past the spoken word guard
+[LLMHelper] KnowledgeOrchestrator attached
+[Answer] budget: words=0 cut=no allowance=no
+
+ ✓ electron/llm/WhatToAnswerLLM.negotiationCard.test.ts (2 tests) 22ms
+
+ Test Files  2 passed (2)
+      Tests  153 passed (153)
+   Start at  22:05:41
+   Duration  4.91s (transform 917ms, setup 0ms, collect 2.03s, tests 188ms, environment 4.58s, prepare 425ms)
+

@@ -1,0 +1,116 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct on data fit, missing values, latency and regularization, and names the logistic regression baseline; natural spoken length."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic is right but 57 percent does not round to 60, so the consistency claim is fudged."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized control plus difference-in-differences and mix adjustment correctly separate model effect from seasonality; well-sized spoken answer."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Right formulas, tie rule and all three edge cases, but equation shorthand and the underscore name need smoothing when spoken."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Chronological split with a 30-day gap and ColumnTransformer fit inside the pipeline correctly prevents leakage."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "SQL is point-in-time correct and preserves zero-call customers, but the answer is a raw code block with a fence marker."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Overwriting the observed label when an offer was shown misstates the mechanism; IPW partly redeems it. Over 85 words."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service named correctly with operational reasons across all eight areas, but far over 85 words."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Managed identity, RBAC, private endpoints, Key Vault and per-environment isolation cover all four sub-parts concisely."
+  },
+  "S2Q01": {
+    "correctness": 0,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Reads a placeholder employer and an invented 40 percent result aloud, which would embarrass the candidate; also over 85 words."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Deriving a confidence band from inter-annotator agreement mischaracterises uncertainty; otherwise covers all sub-parts. Well over 85 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names the real criterion, an unknown retrieval path, and contrasts all three options; natural spoken length."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct RRF formula, one-based ranks, summed contributions and deterministic id tie-break, delivered as clean speech."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Greedy relevance-first packing with skip-on-overflow, id dedup and the two-per-document cap, all stated in natural speech."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, per-case wait_for timeout, index-keyed results and caught exceptions satisfy every constraint asked."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Per-tenant shards, KV metadata with ACL tags, soft-delete updates and a leakage-aware evaluation cover the four sub-parts."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write plus change-log backfill, flagged cutover and instant rollback are sound, but the answer runs well over 85 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure service per component with justification for a custom piece, but line-per-service register and over 85 words."
+  },
+  "S2Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Marking the message id before writing embeddings loses work on a crash; the dedup ordering should follow the write."
+  }
+}

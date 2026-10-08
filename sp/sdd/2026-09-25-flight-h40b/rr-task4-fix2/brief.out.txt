@@ -1,0 +1,5 @@
+﻿(a) sidecar --dry with the brief-Step-1 runner: EXIT 2; NOT READY: no *-h40b run folder yet
+(b) one try, script [CUT,CLEAN]: calls 1, sidecar charges 2, record spoken="partial" cutRetried=true  <-- charge != calls
+(b) one try, script [CUT,T429]: calls 1, sidecar charges 2, record spoken="partial" cutRetried=true  <-- charge != calls
+(b) one try, script [T429]: calls 1, sidecar charges 1, record transientError=HTTP 429
+(b) one try, script [CLEAN]: calls 1, sidecar charges 1, record spoken="full answer" cutRetried=false

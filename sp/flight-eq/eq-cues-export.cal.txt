@@ -1,0 +1,162 @@
+PASS  leak checker: clean text -> 0
+PASS  leak checker: one cue inserted -> 1
+PASS  arming: matching ARMING line -> accepted, head = the single 40-hex
+PASS  arming: two ARMING lines, only the LATER (pre-start) matches -> accepted
+PASS  arming: only the EARLIER matches -> refused
+PASS  arming: the matching line sits after the run start (a later launch) -> refused
+PASS  arming: ARMING absent -> refused
+PASS  arming: no ARMING line at all -> refused
+PASS  arming: record with two 40-hex HEAD values -> refused
+PASS  arming: record with no Registered HEAD line -> refused
+PASS  arming: missing record -> refused
+PASS  arming: record edited after the launcher printed its sha -> refused
+PASS  validator: a good object passes
+PASS  validator: an in-app entry with `answer` -> refused (forbidden field)  -- entry 0 carries forbidden field answer
+PASS  validator: a twin entry with `spoken` -> refused  -- entry 1 carries forbidden field spoken
+PASS  validator: `question` -> refused  -- entry 0 carries forbidden field question
+PASS  validator: `reason` -> refused  -- entry 0 carries forbidden field reason
+PASS  validator: a score -> refused  -- entry 0 carries forbidden field score
+PASS  validator: a sixth top-level key -> refused  -- top-level keys are not exactly schema,runDir,registeredHead,window,entries
+PASS  validator: a missing top-level key -> refused  -- top-level keys are not exactly schema,runDir,registeredHead,window,entries
+PASS  validator: wrong schema -> refused  -- schema is not cues-export-eq/1
+PASS  validator: registeredHead not 40 hex -> refused  -- registeredHead is not 40 hex
+PASS  validator: an id outside the 40 S1+S2 ids -> refused  -- entry 0 id R04 is outside the roster id set
+PASS  validator: S3Q01 -> refused  -- entry 0 id S3Q01 is outside the roster id set
+PASS  validator: an in-app entry missing `logLine` -> refused  -- entry 0 (inapp) keys are not exactly the contract's
+PASS  validator: a twin src that is not one of the six -> refused  -- entry 1 (S1Q04F) src is not one of the six answer files
+PASS  validator: an unknown arm -> refused  -- entry 0 has arm inapp2
+PASS  validator: a duplicate (id, dispatchedAt) in-app pair -> refused  -- duplicate in-app (id, dispatchedAt) S1Q04
+PASS  validator: a duplicate (id, arm, rep) twin triple -> refused  -- duplicate twin triple S1Q04F|captured-high|2
+PASS  validator: an id with two in-app entries, one dispatchedAt null (a superseded stream exported as a 2nd entry) -> refused  -- id S1Q04 has 2 in-app entries and one has dispatchedAt null
+PASS  validator: empty "missing" with a logLine -> refused  -- entry 0 (S1Q04) empty "missing" <=> logLine null violated
+PASS  validator: empty null with cues [] -> refused  -- entry 0 (S1Q04) empty/cues disagree
+PASS  validator: in-app rep not null -> refused  -- entry 0 (S1Q04) in-app rep must be null
+PASS  selfCheck: faithful export -> passes
+PASS  selfCheck: twin entry cues differ from its record -> refuses  -- self-check: twin captured-high r2 S1Q04F cues differ from its record
+PASS  selfCheck: in-app logLine off by one -> refuses  -- self-check: S1Q04 logLine 3 does not address a [Answer] cues: line
+PASS  selfCheck: logLine parses to different cues -> refuses  -- self-check: S1Q04 logLine 2 parses to different cues than the entry
+PASS  wiring: buildExport calls validateExport and selfCheck before anything is written
+PASS  synthetic clean: 3 in-app entries on 3 ids, EXPORT COMPLETE, exit 0  -- exit 0
+PASS  synthetic clean: the pre-window cue + full lines are outside (1 cue line, 1 full line)
+PASS  synthetic clean: every entry joined to its pair (dispatchedAt non-null)
+PASS  synthetic clean: stdout carries no cue text
+PASS  synthetic: an empty block `[]` beside a failed answer -> entry kept with empty "failed", NAMED, COMPLETE  -- empty S1Q02 failed kind=failed
+PASS  synthetic: knowledge short-circuit (no cues line) -> empty "missing", logLine null, kind=knowledge, COMPLETE
+PASS  synthetic: coding route (screen reference line, no cues line) -> kind=coding, COMPLETE
+PASS  synthetic: one missing cues line, no signature -> EXPORT INCOMPLETE: S1Q02, exit 1  -- EXPORT INCOMPLETE: S1Q02
+PASS  synthetic: a superseded stream -> exactly one `superseded <logLine>` line, still 3 entries (never exported as an entry), COMPLETE  -- superseded 9
+PASS  synthetic: the named line is the first stream's cues line (checked on the log)
+PASS  synthetic: the cues exported for that answer are the SECOND stream's
+PASS  synthetic: an in-window cues line with no delivered answer after it -> undelivered, EXPORT INCOMPLETE
+PASS  synthetic: a CRLF debug log -> EXPORT REFUSED, exit 2, nothing written  -- NON-REGISTERED: calibration overrides active (--arming, --launcher-log, --no-twins)
+EXPORT
+PASS  synthetic: a pairs id outside the 40 S1+S2 ids -> EXPORT REFUSED (exit 2)  -- NON-REGISTERED: calibration overrides active (--arming, --launcher-log, --no-twins)
+EXPORT
+PASS  synthetic: launcher ARMING sha unequal to the record -> EXPORT REFUSED (exit 2)
+PASS  synthetic twins: 6 files x 3 records = 18 twin entries; `[]` -> "empty"; transientError -> "absent"  -- exit 0
+PASS  synthetic twins: answered ids = the records without transientError (2 per rep) and entries match -> COMPLETE  -- twin captured-high-r2 entries 3 asked 3 (timeline items) absent S1Q03 | EXPORT COMPLETE
+PASS  synthetic twins: a missing twin file -> named MISSING FILE and EXPORT INCOMPLETE: file:captured-high-r2
+PASS  B2: a malformed `[Answer] cues:` line -> EXPORT REFUSED naming the log line, exit 2, nothing written  -- NON-REGISTERED: calibration overrides active (--arming, --launcher-log, --no-twins)
+EXPORT REFUSED: unparseabl
+PASS  B2: leak scan of that output (and of every file the run could have written): 0 hits for the cue text
+PASS  B2: safeErr prints the class and file:line only, never the message  -- SyntaxError at eq-cues-export.cal.mjs:232
+PASS  B2: a malformed twin answer file -> REFUSED naming the file and the error class (SyntaxError), no text of it  -- NON-REGISTERED: calibration overrides active (--arming, --launcher-log)
+EXPORT REFUSED: twin answer file (interview60.answers.gemi
+PASS  I1: a twin file missing a record the arm was asked (interrupted arm) -> `MISMATCH S1Q02`, EXPORT INCOMPLETE: captured-high-r3:S1Q02, exit 1  -- twin captured-high-r3 entries 2 asked 3 (timeline items) MISMATCH S1Q02 | EXPORT INCOMPLETE: captured-high-r3:S1Q02
+PASS  I1: with a prompts.json the asked ids come from its keys (a 4th captured id S1Q05 no twin file holds -> INCOMPLETE on every rep)
+PASS  I2: an earlier cues line whose play window is another item's -> `undelivered <n> S1Q01`, NO `superseded` line, EXPORT INCOMPLETE  -- EXPORT INCOMPLETE: S1Q01,cueBlocks-count
+PASS  I3: no verbal-diag.log (metrics.mjs cannot read) -> `cueBlocks check UNREAD`, EXPORT INCOMPLETE: cueBlocks-unread, exit 1
+PASS  m7: --no-twins without the calibration marker -> EXPORT REFUSED, exit 2, nothing written
+PASS  m7: with the marker the override prints a NON-REGISTERED banner
+PASS  R3 case 1 (tonight's shape: a pre-window turn delivering after startedAt): exactly one `probe <n>` line, 3 entries, EXPORT COMPLETE, exit 0  -- exit 0 probe 5 EXPORT COMPLETE
+PASS  R3 case 1: the named line is the probe's cues line (checked on the log); no entry addresses it
+PASS  R3 case 1: the equality counts it explicitly: present 4 = 3 + 0 + 1  -- cueBlocks present 4 = non-empty entries 3 + non-empty superseded 0 + non-empty probe lines 1: OK
+PASS  R3 case 1: 4 cue lines in window, no `undelivered`, no L<full> problem
+PASS  R3 case 1: leak scan: stdout, completeness file and export carry no probe cue text
+PASS  R3 case 2 (the turn starts INSIDE the window): not named probe -> EXPORT INCOMPLETE: L<full>,cueBlocks-count, exit 1  -- EXPORT INCOMPLETE: L6,cueBlocks-count
+PASS  R3 case 3 (an entry addresses a line whose turn precedes the window): it stays that entry, no `probe` line, COMPLETE  -- EXPORT COMPLETE
+PASS  R3 criterion 2 (turn number not lower than the first roster turn 3): not named probe -> INCOMPLETE  -- EXPORT INCOMPLETE: L6,cueBlocks-count
+PASS  R3 criterion 4 (a judge pair dispatched before the turn start): not named probe -> INCOMPLETE  -- EXPORT INCOMPLETE: L6,cueBlocks-count
+PASS  R3 strict: without a pairs file criterion 4 cannot be read -> never named probe -> INCOMPLETE  -- EXPORT INCOMPLETE: L6,cueBlocks-count
+PASS  A2.1 criterion 5: a judge pair dispatched after the turn start but BEFORE startedAt -> not named probe -> INCOMPLETE  -- EXPORT INCOMPLETE: L6,cueBlocks-count
+PASS  A2.1 criterion 5: a judge pair dispatched exactly AT startedAt is not before it -> probe accepted  -- EXPORT COMPLETE
+PASS  M3: the completeness file prints the exemption as a count (1) and the probe line is a cues line, not its full: line
+PASS  M3: a probe-free run prints the exemption count 0
+PASS  A3.2: a stream whose turn started BEFORE the window is never named `superseded` -> INCOMPLETE, exit 1  -- EXPORT INCOMPLETE: L9,cueBlocks-count
+PASS  A4: a log with no turn lines at all still names its superseded stream (h40d shape) -> superseded 1, COMPLETE  -- EXPORT COMPLETE
+PASS  A3.2: a stream whose turn starts inside the window stays `superseded`
+PASS  A2/A3: the new refuse cases leak nothing
+PASS  R3: the refuse cases leak nothing either
+PASS  R3: a superseded stream is still named `superseded`, never `probe`
+PASS  h40d: exit 0, last completeness line EXPORT COMPLETE  -- exit 0
+PASS  h40d (NOTE-b10-rev7-A1): 44 in-app entries on 44 ids  -- 44 entries / 44 ids
+PASS  h40d: NOT the superseded old answer (45 in-app entries)
+PASS  h40d: exactly 1 `superseded <logLine>` line  -- superseded 6541
+PASS  h40d: that line is R29's 11:31:30Z cues line (log line has timestamp 2026-10-02T11:31:30)
+PASS  h40d: by play window that superseded stream is R29  -- R29
+PASS  h40d: no export entry addresses the superseded line
+PASS  h40d: 2 cue lines outside the window  -- cue lines in window 45 outside window 2
+PASS  h40d (R3 case 4): unchanged 44 entries / 1 superseded / 2 outside / probe 0: no `probe` line in the completeness file
+PASS  h40d: 0 empties
+PASS  h40d: metrics.mjs cueBlocks.present 45 = 44 non-empty entries + 1 non-empty superseded  -- cueBlocks present 45 = non-empty entries 44 + non-empty superseded 1 + non-empty probe lines 0: OK
+--- evidence: h40d completeness file (counts, ids, line numbers only) ---
+LOG natively_debug.log feec720cca2d5a10a4295e61cd5cc466d2972861b4da069faab0f735211ba46d
+ARMING sha256/12 d3c85a46dca4 head 56bda9e
+window 2026-10-02T10:33:52.110Z 2026-10-02T11:39:41.435Z
+in-app entries 44 ids 44
+in-app joined to pairs 44 unjoined 0
+cue lines in window 45 outside window 2
+full lines in window 44 outside window 2
+superseded 6541
+full lines exempt (probe) 0
+empties 0
+cueBlocks present 45 = non-empty entries 44 + non-empty superseded 1 + non-empty probe lines 0: OK
+twin captured-high-r1 entries 44 asked 44 (prompts.json keys)
+twin captured-high-r2 entries 44 asked 44 (prompts.json keys)
+twin captured-high-r3 entries 44 asked 44 (prompts.json keys)
+twin captured-low-r1 entries 44 asked 44 (prompts.json keys)
+twin captured-low-r2 entries 44 asked 44 (prompts.json keys)
+twin captured-low-r3 entries 44 asked 44 (prompts.json keys)
+EXPORT COMPLETE
+--- end evidence ---
+PASS  h40d (i): every in-app logLine addresses a `[Answer] cues: ` line whose parsed JSON equals the entry's cues
+PASS  h40d (i): no `cues trimmed:` line is ever addressed
+PASS  h40d (ii): the LOG line carries the debug log's sha256 (recomputed here)
+PASS  h40d (iii): top-level keys are exactly schema, runDir, registeredHead, window, entries
+PASS  h40d: schema cues-export-eq/1; window = the timeline's; runDir is a C:/ path
+PASS  h40d: all 44 entries joined: dispatchedAt present in judge.pairs and the pair's id = the entry's id
+PASS  h40d: in-app entry ids = the pairs ids (as sets)
+PASS  h40d twins captured-high r1: 44 entries = 44 records, cues equal the record's (JSON.stringify)
+PASS  h40d twins captured-high r2: 44 entries = 44 records, cues equal the record's (JSON.stringify)
+PASS  h40d twins captured-high r3: 44 entries = 44 records, cues equal the record's (JSON.stringify)
+PASS  h40d twins captured-low r1: 44 entries = 44 records, cues equal the record's (JSON.stringify)
+PASS  h40d twins captured-low r2: 44 entries = 44 records, cues equal the record's (JSON.stringify)
+PASS  h40d twins captured-low r3: 44 entries = 44 records, cues equal the record's (JSON.stringify)
+PASS  h40d: total entries = 44 in-app + 6 x 44 twins = 308  -- 308
+PASS  h40d: stdout carries no cue text (all 2,000+ cue strings checked)
+PASS  h40d: the completeness file carries no cue text
+PASS  h40d: in-app registeredHead = the fixture record's HEAD; no forbidden field anywhere
+PASS  h40d mutant: the superseded R29 stream exported as a 2nd entry -> validator refuses
+--- evidence: cuesmoke completeness file ---
+LOG natively_debug.log e30390c37f81ee3a8e1826939b254a93d61e8ee354e3d98e66fcc2e5f77aad4e
+ARMING sha256/12 d3c85a46dca4 head 56bda9e
+window 2026-10-01T02:03:07.554Z 2026-10-01T02:37:41.241Z
+in-app entries 20 ids 20
+in-app joined to pairs 0 unjoined 20 (pairs skipped by --no-pairs)
+cue lines in window 20 outside window 2
+full lines in window 20 outside window 2
+full lines exempt (probe) 0
+empties 0
+cueBlocks present 20 = non-empty entries 20 + non-empty superseded 0 + non-empty probe lines 0: OK
+twins SKIPPED (--no-twins)
+EXPORT COMPLETE
+--- end evidence ---
+PASS  cuesmoke (05:00 cue re-smoke): 20 in-app entries on 20 ids, EXPORT COMPLETE  -- exit 0, 20 entries
+PASS  cuesmoke: ids = the timeline's 20 items; 0 empties; 0 superseded
+PASS  cuesmoke: metrics.mjs cueBlocks.present 20 = 20 + 0  -- cueBlocks present 20 = non-empty entries 20 + non-empty superseded 0 + non-empty probe lines 0: OK
+PASS  cuesmoke: no pairs file -> every dispatchedAt null (b10 joined none), declared
+PASS  cuesmoke: stdout carries no cue text
+PASS  a run dir with no judge.pairs.json and no --no-pairs -> EXPORT REFUSED (exit 2)  -- NON-REGISTERED: calibration overrides active (--arming, --launcher-log, --id-re)
+PASS  usage: no run dir -> exit 2
+
+B10 CALIBRATION: 122 PASS, 0 FAIL of 122

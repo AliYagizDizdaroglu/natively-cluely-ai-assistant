@@ -1,0 +1,34 @@
+===== s50j S2Q09 [calib]
+2026-09-19T08-22-41-s50j [calib jitter=50]: 40/40 once; doubles []; never []; drops 4; absorbed 0 (whisper 0); subs 0; unmatched 0; reorders 1; supersedes 1
+trace S2Q09: {"n":1,"lat":2172,"budget":2272,"path":"gate","finished":true,"fromLive":false,"finals":5,"cov":"0.96","closes":["continuation-expired"],"live":[],"logFirst":"08:17:14.498","logGate":3205,"vadDev":23,"blips":0,"voiceOff":"08:17:11.288"}
+  08:16:54.288 voice ON
+  08:16:56.048 voice OFF
+  08:16:56.488 voice ON
+  08:16:57.837 final "Place the RAD components on Azure,"
+  08:16:58.908 voice OFF
+  08:16:59.328 voice ON
+  08:17:00.368 voice OFF
+  08:17:00.828 voice ON
+  08:17:01.588 voice OFF
+  08:17:01.831 final "Choose Azure services for document storage, ingestion events,"
+  08:17:02.008 voice ON
+  08:17:02.548 voice OFF
+  08:17:02.968 voice ON
+  08:17:03.428 voice OFF
+  08:17:03.848 voice ON
+  08:17:04.968 voice OFF
+  08:17:05.388 voice ON
+  08:17:06.065 final "work queues, workers, search,"
+  08:17:06.268 voice OFF
+  08:17:06.708 voice ON
+  08:17:08.976 final "LLM access, and telemetry, and explain where managed"
+  08:17:11.288 voice OFF
+  08:17:13.060 final "services help and where a custom component may be justified."
+  08:17:12.488 classify finals=4
+  08:17:13.460 dispatch finals=5 fromLive=false live=0 path=gate "Place the RAD components on Azure, Choose Azure services for"
+  08:17:21.460 close continuation-expired
+  08:17:12.888 <verdict question> {"kind":"marked"}
+  08:17:14.496 <live rv=match> {"kind":"marked"} q="Place the RAG components on Azure. Choose Azure se"
+  08:17:19.349 <whisper rv=match> {"kind":"marked"} q="Place the RAD components on Azure, Choose Azure se"
+  08:17:20.028 <whisper rv=match> {"kind":"marked"} q="Place the RAD components on Azure, Choose Azure se"
+

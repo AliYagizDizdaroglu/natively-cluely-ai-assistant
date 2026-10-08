@@ -1,0 +1,32 @@
+fix(golden): length alone is never delivery 0, and the stamp now covers the rubric
+
+The instrument contradicted itself on the delivery axis. The grader prompt's
+calibration says "delivery 1 for register or length problems... Length alone is
+never below 1"; the RUBRIC the pairs file carries listed "or far too long" among
+the delivery-0 cases. Graders split on it, and the split decided a gate:
+
+  s50d in-app S2Q02  150 words  ->  delivery 1
+  s50e in-app S2Q08  158 words  ->  delivery 0  ("158 words is far too long")
+  spike arm A S2Q08  168 words  ->  delivery 1  ("far over length")
+
+Same stamp e53dff6256aa on all three. All four of s50e's misses were
+correctness 2, on_topic 2, marked down on length alone, which cost the run
+16/20 against an 18 bar; read the calibration as written it was 20/20. The
+four-word "cliff" reported from s50e (<=154 pass, >=158 fail) was that split,
+not a property of the answers.
+
+The rubric is the half that was wrong: its other delivery-0 cases are all
+UNSPEAKABLE text (markdown, code, "Time: O(n)", questions back), and length is
+not that. Drop it there and say so positively, so both halves agree.
+
+Second defect, found while making the first change: graderPromptVersion hashed
+only the prompt file, so a RUBRIC edit would have shipped judge files stamped
+identically to files graded under the old scoring — the silent re-baseline that
+file's own header forbids. The stamp now covers both halves, with a test that
+fails if it stops doing so.
+
+Stamp moves e53dff6256aa -> 8564ba96369a. Every judge file graded before this
+commit is incomparable with every file graded after it; runs carrying a
+delivery-0-on-length verdict need re-grading to stay in the series.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

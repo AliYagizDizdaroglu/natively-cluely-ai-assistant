@@ -1,0 +1,48 @@
+RE01    ttft   0.9s  last   4.9s  words  51  thoughts   175  no hold
+RH01    ttft   0.4s  last   2.2s  words  30  thoughts    69  no hold
+RE02    ttft   2.0s  last   4.7s  words  28  thoughts    91  no hold
+EF01    ttft    -    last   -    words   0  thoughts    89  EMPTY  premature ["A Docker image is a static blueprint for an application, containing the environment and code, while a container is a runnable instance created from that image that executes the actual processes."]  no hold
+RH03    ttft   1.1s  last   3.0s  words  30  thoughts   225  premature ["I would compare the "]  no hold
+RE03    ttft   1.3s  last   3.4s  words  27  thoughts    89  no hold
+EF02    ttft   0.5s  last   2.6s  words  29  thoughts   122  no hold
+RE08    ttft   0.8s  last   3.6s  words  41  thoughts   158  no hold
+RE04    ttft   0.4s  last   2.5s  words  30  thoughts    59  no hold
+EF03    ttft   0.4s  last   2.4s  words  32  thoughts    50  no hold
+RE05    ttft   2.4s  last   5.8s  words  42  thoughts   187  no hold
+RH04    ttft   0.7s  last   4.4s  words  47  thoughts   168  no hold
+RE06    ttft   0.5s  last   5.5s  words  40  thoughts    94  no hold
+RH07    ttft   1.2s  last   4.6s  words  43  thoughts   148  no hold
+RH08    ttft   1.7s  last   6.2s  words  56  thoughts   217  no hold
+RE07    ttft   0.4s  last   2.2s  words  29  thoughts    53  no hold
+EF04    ttft   0.4s  last   2.2s  words  29  thoughts    64  no hold
+RH05    ttft   1.1s  last   5.6s  words  63  thoughts   310  no hold
+RH06    ttft   0.8s  last   3.4s  words  31  thoughts    92  no hold
+RH09    ttft   0.7s  last   9.2s  words 118  thoughts   646  no hold
+RH10    ttft   0.5s  last   2.9s  words  34  thoughts    69  no hold
+RH11    ttft   0.9s  last   4.0s  words  39  thoughts    68  no hold
+RE09    ttft   0.8s  last   3.1s  words  29  thoughts    70  no hold
+RH19    ttft   1.1s  last   3.3s  words  29  thoughts   163  no hold
+RE10    ttft   0.5s  last   2.5s  words  26  thoughts   129  no hold
+RE11    ttft   0.4s  last   3.9s  words  42  thoughts    66  no hold
+EF05    ttft   0.5s  last   2.9s  words  38  thoughts    71  no hold
+RH12    ttft   1.5s  last   7.4s  words  74  thoughts   237  no hold
+RH13    ttft   0.7s  last   2.4s  words  23  thoughts    85  no hold
+RH14    NOT PLAYED
+RE12    NOT PLAYED
+RE13    NOT PLAYED
+RH17    NOT PLAYED
+RE14    NOT PLAYED
+RH02    NOT PLAYED
+RE15    NOT PLAYED
+RH15    NOT PLAYED
+RH16    NOT PLAYED
+RE16    NOT PLAYED
+EF06    NOT PLAYED
+RE17    NOT PLAYED
+EF07    NOT PLAYED
+RH18    NOT PLAYED
+RE18    NOT PLAYED
+RH20    NOT PLAYED
+RE19    NOT PLAYED
+RE20    NOT PLAYED
+wrote runs/liveall-r1.answers.json

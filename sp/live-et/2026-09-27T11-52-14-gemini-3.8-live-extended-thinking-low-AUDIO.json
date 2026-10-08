@@ -1,0 +1,763 @@
+{
+ "model": "gemini-3.8-live-extended-thinking",
+ "level": "low",
+ "modality": "AUDIO",
+ "gapS": 25,
+ "items": [
+  "S1Q01"
+ ],
+ "closed": {
+  "code": 1000,
+  "reason": ""
+ },
+ "events": [
+  {
+   "t": 544,
+   "item": null,
+   "sinceClipEnd": null,
+   "kind": "open"
+  },
+  {
+   "t": 561,
+   "item": "S1Q01",
+   "sinceClipEnd": null,
+   "kind": "clipStart",
+   "seconds": 12.4
+  },
+  {
+   "t": 996,
+   "item": "S1Q01",
+   "sinceClipEnd": null,
+   "kind": "setupComplete"
+  },
+  {
+   "t": 14350,
+   "item": "S1Q01",
+   "sinceClipEnd": 1,
+   "kind": "clipEnd"
+  },
+  {
+   "t": 14917,
+   "item": "S1Q01",
+   "sinceClipEnd": 568,
+   "kind": "inputTx",
+   "text": "Why did you choose XG Boost? Using your churn project. Explain why XG Boost was suitable for the data and the production constraints and what baseline you would compare it against."
+  },
+  {
+   "t": 16183,
+   "item": "S1Q01",
+   "sinceClipEnd": 1834,
+   "kind": "outputTx",
+   "text": "I chose XGBoost "
+  },
+  {
+   "t": 16183,
+   "item": "S1Q01",
+   "sinceClipEnd": 1834,
+   "kind": "audio",
+   "bytes": 7040
+  },
+  {
+   "t": 16276,
+   "item": "S1Q01",
+   "sinceClipEnd": 1927,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 16565,
+   "item": "S1Q01",
+   "sinceClipEnd": 2216,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 16916,
+   "item": "S1Q01",
+   "sinceClipEnd": 2567,
+   "kind": "outputTx",
+   "text": "because it perfectly"
+  },
+  {
+   "t": 16917,
+   "item": "S1Q01",
+   "sinceClipEnd": 2568,
+   "kind": "audio",
+   "bytes": 40960
+  },
+  {
+   "t": 17529,
+   "item": "S1Q01",
+   "sinceClipEnd": 3180,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 17886,
+   "item": "S1Q01",
+   "sinceClipEnd": 3537,
+   "kind": "outputTx",
+   "text": " captures non-linear"
+  },
+  {
+   "t": 17887,
+   "item": "S1Q01",
+   "sinceClipEnd": 3538,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 18248,
+   "item": "S1Q01",
+   "sinceClipEnd": 3899,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 18558,
+   "item": "S1Q01",
+   "sinceClipEnd": 4209,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 18897,
+   "item": "S1Q01",
+   "sinceClipEnd": 4548,
+   "kind": "outputTx",
+   "text": " relationships and"
+  },
+  {
+   "t": 18898,
+   "item": "S1Q01",
+   "sinceClipEnd": 4549,
+   "kind": "audio",
+   "bytes": 30720
+  },
+  {
+   "t": 19360,
+   "item": "S1Q01",
+   "sinceClipEnd": 5011,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 19680,
+   "item": "S1Q01",
+   "sinceClipEnd": 5331,
+   "kind": "audio",
+   "bytes": 12800
+  },
+  {
+   "t": 19905,
+   "item": "S1Q01",
+   "sinceClipEnd": 5556,
+   "kind": "outputTx",
+   "text": " complex interactions"
+  },
+  {
+   "t": 19905,
+   "item": "S1Q01",
+   "sinceClipEnd": 5556,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 20240,
+   "item": "S1Q01",
+   "sinceClipEnd": 5891,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 20598,
+   "item": "S1Q01",
+   "sinceClipEnd": 6249,
+   "kind": "audio",
+   "bytes": 17920
+  },
+  {
+   "t": 20888,
+   "item": "S1Q01",
+   "sinceClipEnd": 6539,
+   "kind": "outputTx",
+   "text": " between subscriber"
+  },
+  {
+   "t": 20889,
+   "item": "S1Q01",
+   "sinceClipEnd": 6540,
+   "kind": "audio",
+   "bytes": 28160
+  },
+  {
+   "t": 21330,
+   "item": "S1Q01",
+   "sinceClipEnd": 6981,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 21671,
+   "item": "S1Q01",
+   "sinceClipEnd": 7322,
+   "kind": "audio",
+   "bytes": 12800
+  },
+  {
+   "t": 21876,
+   "item": "S1Q01",
+   "sinceClipEnd": 7527,
+   "kind": "outputTx",
+   "text": " features, which is"
+  },
+  {
+   "t": 21876,
+   "item": "S1Q01",
+   "sinceClipEnd": 7527,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 22198,
+   "item": "S1Q01",
+   "sinceClipEnd": 7849,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 22516,
+   "item": "S1Q01",
+   "sinceClipEnd": 8167,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 22818,
+   "item": "S1Q01",
+   "sinceClipEnd": 8469,
+   "kind": "audio",
+   "bytes": 2560
+  },
+  {
+   "t": 22890,
+   "item": "S1Q01",
+   "sinceClipEnd": 8541,
+   "kind": "outputTx",
+   "text": " essential for predicting"
+  },
+  {
+   "t": 22891,
+   "item": "S1Q01",
+   "sinceClipEnd": 8542,
+   "kind": "audio",
+   "bytes": 30720
+  },
+  {
+   "t": 23371,
+   "item": "S1Q01",
+   "sinceClipEnd": 9022,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 23703,
+   "item": "S1Q01",
+   "sinceClipEnd": 9354,
+   "kind": "audio",
+   "bytes": 10240
+  },
+  {
+   "t": 23887,
+   "item": "S1Q01",
+   "sinceClipEnd": 9538,
+   "kind": "outputTx",
+   "text": " behavioral risks"
+  },
+  {
+   "t": 23887,
+   "item": "S1Q01",
+   "sinceClipEnd": 9538,
+   "kind": "audio",
+   "bytes": 33280
+  },
+  {
+   "t": 24401,
+   "item": "S1Q01",
+   "sinceClipEnd": 10052,
+   "kind": "audio",
+   "bytes": 25600
+  },
+  {
+   "t": 24785,
+   "item": "S1Q01",
+   "sinceClipEnd": 10436,
+   "kind": "audio",
+   "bytes": 5120
+  },
+  {
+   "t": 24906,
+   "item": "S1Q01",
+   "sinceClipEnd": 10557,
+   "kind": "outputTx",
+   "text": " like churn. For production,"
+  },
+  {
+   "t": 24906,
+   "item": "S1Q01",
+   "sinceClipEnd": 10557,
+   "kind": "audio",
+   "bytes": 30720
+  },
+  {
+   "t": 25360,
+   "item": "S1Q01",
+   "sinceClipEnd": 11011,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 25722,
+   "item": "S1Q01",
+   "sinceClipEnd": 11373,
+   "kind": "audio",
+   "bytes": 10240
+  },
+  {
+   "t": 25871,
+   "item": "S1Q01",
+   "sinceClipEnd": 11522,
+   "kind": "outputTx",
+   "text": " it provides"
+  },
+  {
+   "t": 25872,
+   "item": "S1Q01",
+   "sinceClipEnd": 11523,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 26196,
+   "item": "S1Q01",
+   "sinceClipEnd": 11847,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 26556,
+   "item": "S1Q01",
+   "sinceClipEnd": 12207,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 26902,
+   "item": "S1Q01",
+   "sinceClipEnd": 12553,
+   "kind": "outputTx",
+   "text": " high-speed, low-latency"
+  },
+  {
+   "t": 26903,
+   "item": "S1Q01",
+   "sinceClipEnd": 12554,
+   "kind": "audio",
+   "bytes": 51200
+  },
+  {
+   "t": 27671,
+   "item": "S1Q01",
+   "sinceClipEnd": 13322,
+   "kind": "audio",
+   "bytes": 12800
+  },
+  {
+   "t": 27881,
+   "item": "S1Q01",
+   "sinceClipEnd": 13532,
+   "kind": "outputTx",
+   "text": " inference"
+  },
+  {
+   "t": 27881,
+   "item": "S1Q01",
+   "sinceClipEnd": 13532,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 28192,
+   "item": "S1Q01",
+   "sinceClipEnd": 13843,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 28514,
+   "item": "S1Q01",
+   "sinceClipEnd": 14165,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 29010,
+   "item": "S1Q01",
+   "sinceClipEnd": 14661,
+   "kind": "outputTx",
+   "text": " via FastAPI and integrates"
+  },
+  {
+   "t": 29011,
+   "item": "S1Q01",
+   "sinceClipEnd": 14662,
+   "kind": "audio",
+   "bytes": 38400
+  },
+  {
+   "t": 29490,
+   "item": "S1Q01",
+   "sinceClipEnd": 15141,
+   "kind": "audio",
+   "bytes": 25600
+  },
+  {
+   "t": 29977,
+   "item": "S1Q01",
+   "sinceClipEnd": 15628,
+   "kind": "outputTx",
+   "text": " easily into"
+  },
+  {
+   "t": 29978,
+   "item": "S1Q01",
+   "sinceClipEnd": 15629,
+   "kind": "audio",
+   "bytes": 35840
+  },
+  {
+   "t": 30441,
+   "item": "S1Q01",
+   "sinceClipEnd": 16092,
+   "kind": "audio",
+   "bytes": 25600
+  },
+  {
+   "t": 30827,
+   "item": "S1Q01",
+   "sinceClipEnd": 16478,
+   "kind": "audio",
+   "bytes": 2560
+  },
+  {
+   "t": 30878,
+   "item": "S1Q01",
+   "sinceClipEnd": 16529,
+   "kind": "outputTx",
+   "text": " blue-green deployment"
+  },
+  {
+   "t": 30879,
+   "item": "S1Q01",
+   "sinceClipEnd": 16530,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 31247,
+   "item": "S1Q01",
+   "sinceClipEnd": 16898,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 31599,
+   "item": "S1Q01",
+   "sinceClipEnd": 17250,
+   "kind": "audio",
+   "bytes": 17920
+  },
+  {
+   "t": 31875,
+   "item": "S1Q01",
+   "sinceClipEnd": 17526,
+   "kind": "outputTx",
+   "text": " pipelines to ensure zero"
+  },
+  {
+   "t": 31876,
+   "item": "S1Q01",
+   "sinceClipEnd": 17527,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 32195,
+   "item": "S1Q01",
+   "sinceClipEnd": 17846,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 32523,
+   "item": "S1Q01",
+   "sinceClipEnd": 18174,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 32892,
+   "item": "S1Q01",
+   "sinceClipEnd": 18543,
+   "kind": "outputTx",
+   "text": " downtime. To benchmark"
+  },
+  {
+   "t": 32892,
+   "item": "S1Q01",
+   "sinceClipEnd": 18543,
+   "kind": "audio",
+   "bytes": 30720
+  },
+  {
+   "t": 33461,
+   "item": "S1Q01",
+   "sinceClipEnd": 19112,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 33884,
+   "item": "S1Q01",
+   "sinceClipEnd": 19535,
+   "kind": "audio",
+   "bytes": 10240
+  },
+  {
+   "t": 33935,
+   "item": "S1Q01",
+   "sinceClipEnd": 19586,
+   "kind": "outputTx",
+   "text": " its performance,"
+  },
+  {
+   "t": 33936,
+   "item": "S1Q01",
+   "sinceClipEnd": 19587,
+   "kind": "audio",
+   "bytes": 35840
+  },
+  {
+   "t": 34447,
+   "item": "S1Q01",
+   "sinceClipEnd": 20098,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 34746,
+   "item": "S1Q01",
+   "sinceClipEnd": 20397,
+   "kind": "audio",
+   "bytes": 7680
+  },
+  {
+   "t": 34889,
+   "item": "S1Q01",
+   "sinceClipEnd": 20540,
+   "kind": "outputTx",
+   "text": " I compared"
+  },
+  {
+   "t": 34889,
+   "item": "S1Q01",
+   "sinceClipEnd": 20540,
+   "kind": "audio",
+   "bytes": 28160
+  },
+  {
+   "t": 35317,
+   "item": "S1Q01",
+   "sinceClipEnd": 20968,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 35673,
+   "item": "S1Q01",
+   "sinceClipEnd": 21324,
+   "kind": "audio",
+   "bytes": 12800
+  },
+  {
+   "t": 35885,
+   "item": "S1Q01",
+   "sinceClipEnd": 21536,
+   "kind": "outputTx",
+   "text": " it against a simple"
+  },
+  {
+   "t": 35886,
+   "item": "S1Q01",
+   "sinceClipEnd": 21537,
+   "kind": "audio",
+   "bytes": 35840
+  },
+  {
+   "t": 36434,
+   "item": "S1Q01",
+   "sinceClipEnd": 22085,
+   "kind": "audio",
+   "bytes": 25600
+  },
+  {
+   "t": 36818,
+   "item": "S1Q01",
+   "sinceClipEnd": 22469,
+   "kind": "audio",
+   "bytes": 2560
+  },
+  {
+   "t": 36882,
+   "item": "S1Q01",
+   "sinceClipEnd": 22533,
+   "kind": "outputTx",
+   "text": " logistic regression"
+  },
+  {
+   "t": 36882,
+   "item": "S1Q01",
+   "sinceClipEnd": 22533,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 37244,
+   "item": "S1Q01",
+   "sinceClipEnd": 22895,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 37601,
+   "item": "S1Q01",
+   "sinceClipEnd": 23252,
+   "kind": "audio",
+   "bytes": 17920
+  },
+  {
+   "t": 37907,
+   "item": "S1Q01",
+   "sinceClipEnd": 23558,
+   "kind": "outputTx",
+   "text": " model, which served"
+  },
+  {
+   "t": 37907,
+   "item": "S1Q01",
+   "sinceClipEnd": 23558,
+   "kind": "audio",
+   "bytes": 38400
+  },
+  {
+   "t": 38477,
+   "item": "S1Q01",
+   "sinceClipEnd": 24128,
+   "kind": "audio",
+   "bytes": 25600
+  },
+  {
+   "t": 38880,
+   "item": "S1Q01",
+   "sinceClipEnd": 24531,
+   "kind": "outputTx",
+   "text": " as the baseline to quantify"
+  },
+  {
+   "t": 38880,
+   "item": "S1Q01",
+   "sinceClipEnd": 24531,
+   "kind": "audio",
+   "bytes": 28160
+  },
+  {
+   "t": 39365,
+   "item": "S1Q01",
+   "sinceClipEnd": 25016,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 39657,
+   "item": "S1Q01",
+   "sinceClipEnd": 25308,
+   "kind": "outputTx",
+   "text": " the performance lift."
+  },
+  {
+   "t": 39658,
+   "item": "S1Q01",
+   "sinceClipEnd": 25309,
+   "kind": "audio",
+   "bytes": 40960
+  },
+  {
+   "t": 40281,
+   "item": "S1Q01",
+   "sinceClipEnd": 25932,
+   "kind": "audio",
+   "bytes": 20480
+  },
+  {
+   "t": 40601,
+   "item": "S1Q01",
+   "sinceClipEnd": 26252,
+   "kind": "audio",
+   "bytes": 23040
+  },
+  {
+   "t": 40981,
+   "item": "S1Q01",
+   "sinceClipEnd": 26632,
+   "kind": "audio",
+   "bytes": 25600
+  },
+  {
+   "t": 41352,
+   "item": "S1Q01",
+   "sinceClipEnd": 27003,
+   "kind": "audio",
+   "bytes": 15360
+  },
+  {
+   "t": 41578,
+   "item": "S1Q01",
+   "sinceClipEnd": 27229,
+   "kind": "generationComplete"
+  },
+  {
+   "t": 41580,
+   "item": "S1Q01",
+   "sinceClipEnd": 27231,
+   "kind": "turnComplete"
+  },
+  {
+   "t": 41580,
+   "item": "S1Q01",
+   "sinceClipEnd": 27231,
+   "kind": "usage",
+   "prompt": 8052,
+   "response": 643,
+   "thoughts": 519,
+   "total": 8695
+  },
+  {
+   "t": 41771,
+   "item": "S1Q01",
+   "sinceClipEnd": 27422,
+   "kind": "close",
+   "code": 1000,
+   "reason": ""
+  }
+ ]
+}

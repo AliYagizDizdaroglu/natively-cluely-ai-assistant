@@ -1,0 +1,42 @@
+h40c grading-agent dispatch text. Written 2026-09-29 ~13:35, during the flight, BEFORE any h40c data
+existed. It is h40b's in-app dispatch text verbatim (agent-a75bedc970d3f2404, claude-opus-5-5,
+2026-09-26), with only the two paths and the tag changed per arm. Dispatch with model "opus"; read the
+model field of each transcript afterwards and require claude-opus-5-5 (PREREGISTER-h40c: grader pinned).
+
+Rulings, made before the data:
+- ONE grading agent per arm, as on h40b (18 agents, one per arm). The in-app arm's single grade is the
+  rule-3 grade. The runbook's earlier "two Opus agents" line is superseded: the pre-registration names
+  no second in-app grader and no way to combine two, and h40b's 35, the floor, came from one grader.
+- Arms graded: inapp (rule 3) + captured-low, -r2, -r3 and captured-high, -r2, -r3 (the per-item twin
+  reading the pre-registration requires reported). Bare, low, high and minimal arms are optional and
+  are not needed by any rule or required row.
+- Tags and files: inapp -> PAIRS <run>\interview60.judge.pairs.json, VERDICTS <SP>\h40c-verdicts-inapp.json;
+  captured-low -> interview60.judge.pairs.gemini-3.1-flash-lite_captured-low.json -> h40c-verdicts-captured-low.json;
+  likewise -r2, -r3, and gemini-3.5-flash-lite_captured-high{,-r2,-r3} -> h40c-verdicts-captured-high{,-r2,-r3}.json.
+- Merge: cwd MAIN, h40c-merge.cmd <model id> <run dir>, only after the flight task has ended.
+
+Counting rulings, written ~15:40 after the flight ended and the 7 graders were dispatched, BEFORE
+any verdict came back (read from the pairs keys only, never from grades):
+- The in-app pairs hold 45 answers: 44 roster items + R18#2 (R18 answered twice); R05 has no answer.
+- Rule 3's "acceptable of 45" counts roster ITEMS, as h40b's 35 did (mains: the per-question best
+  answer, the pass record's own "best of a main's answers"; follow-ups: their single answer).
+  R05 counts as not acceptable. R18 counts once.
+- Rule 3's zero-wrong clause reads "the live in-app answers on the 40 items": EVERY delivered answer,
+  so R18#2 counts on its own. If R18#2 is graded wrong while R18's first answer is acceptable, the
+  clause FAILS on it and the note says exactly that; the best-of rule does not wash it out.
+
+----- dispatch text (substitute RUN, VERDICTS and TAG) -----
+You are grading one arm of an interview-answer flight, using a frozen grading instrument.
+
+FIRST, read this file IN FULL: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.grader-prompt.md
+
+It is a frozen instrument. Follow everything after the `---` line in that file VERBATIM. Do not paraphrase it, do not add or drop strictness language, do not "improve" it for this run, and do not apply any rubric of your own. Its wording is the measurement.
+
+Substitute these two values wherever the file says `<PAIRS_FILE>` and `<VERDICTS_FILE>`:
+
+<PAIRS_FILE> = RUN\<pairs file>
+<VERDICTS_FILE> = VERDICTS
+
+Constraints: do NOT dispatch subagents of any kind. Do not read other flight files, do not read any other arm's pairs or verdicts, and do not compare against any other arm — grading must be independent. Never print, read or copy an API key or any .env file. Do not modify anything in the run folder.
+
+When finished, reply with ONLY: the tag `TAG`, the number of items graded, and the count of each verdict class you assigned.

@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+const f = 'R/audit-graders.mjs';
+const L = fs.readFileSync(f, 'utf8').split('\n');
+const a = L.findIndex((l) => l.startsWith('const FORBIDDEN_WORDS'));
+const end = L.findIndex((l, i) => i > a && l === '}' && L[i - 1] === '    return null;');
+if (a < 0 || end < 0) throw new Error('anchors');
+const block = fs.readFileSync('work/g2-block.txt', 'utf8').trimEnd().split('\n');
+L.splice(a, end - a + 1, ...block);
+let s = L.join('\n');
+s = s.replace("        const why = bashProblem", "        const why = bashProblem");
+fs.writeFileSync(f, s);
+console.log('spliced', a, end);

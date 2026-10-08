@@ -1,0 +1,7 @@
+benched rule: CUE_MAX_LINES 3, CUE_MAX_WORDS 5, CUE_RULE sha256/12 8e15e4e7dd41
+  shape bullet: - At most 3 lines, each at most 5 words. The first line is the answer itself in the fewest words that carry it: one or two words when that is enough (asked "Tabs or spaces?", the whole block is 1| Spaces). A one-part question gets exactly one line. Add a line only for another part the QUESTION names, never for a point you add on your own; when it names more than 3 parts, group related parts into themes so every part is still covered in 3 lines.
+rep 1: n=39  acceptable control 29.5 / cue 27.5  consensus-wrong control 0 / cue 1  blocks present 38/39  shaped 38/39 (over 3 lines: 0)  words over 5, reported: blocks 7/39, lines 10/102  ttft p90 control 4712 / cue 5217 ms
+rep 2: n=39  acceptable control 27.5 / cue 24.5  consensus-wrong control 1 / cue 1  blocks present 39/39  shaped 38/39 (over 3 lines: 1)  words over 5, reported: blocks 8/39, lines 11/108  ttft p90 control 4524 / cue 4571 ms
+rep 3: n=39  acceptable control 31.5 / cue 28.5  consensus-wrong control 0 / cue 0  blocks present 39/39  shaped 39/39 (over 3 lines: 0)  words over 5, reported: blocks 7/39, lines 12/105  ttft p90 control 4475 / cue 5133 ms
+band: control [27.5, 31.5]  cue [24.5, 28.5]
+DECISION: PASS

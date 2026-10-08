@@ -1,0 +1,53 @@
+run 2026-09-30T02-38-22-cuesmoke
+log window 2026-09-30T02:01:56.714Z .. 2026-09-30T02:38:22.492Z; timeline items 20
+
+cue blocks: 22
+  02:03:24Z  ?       2 line(s), words 3/3:  ["Layer caching mechanism","Instruction order optimization"]
+  02:03:38Z  ?       3 line(s), words 4/4/5:  ["HPA with custom metrics","Node-level scaling with Karpenter","Readiness probes for cold starts"]
+  02:04:04Z  S1Q01   2 line(s), words 7/4:  ["XGBoost suitability for churn data and constraints","Baseline model for comparison"]
+  02:05:14Z  S1Q01F  3 line(s), words 6/8/6:  ["Logistic regression for interpretability and baselines","Neural networks for unstructured data and complex features","Rules-based for deterministic and safety-critical logic"]
+  02:06:39Z  S1Q02   4 line(s), words 3/3/3/5:  ["9,500 total churners","3,000 true positives","5,000 predicted positives","60% precision and 31.6% recall"]
+  02:08:08Z  S1Q02F  2 line(s), words 4/3:  ["ROC-AUC vs PR-AUC interpretation","Business utility requirements"]
+  02:09:21Z  S1Q03   3 line(s), words 6/4/5:  ["A/B testing with a control group","Time-series decomposition for seasonality","Cohort analysis for customer mix"]
+  02:10:47Z  S1Q03F  2 line(s), words 8/5:  ["Wasted spend on lost causes and sure things","Maximizing ROI by targeting persuadables"]
+  02:12:17Z  S1Q04   4 line(s), words 3/3/3/4:  ["Numpy-based implementation logic","Handling invalid k","Handling empty inputs","Handling no positive labels"]
+  02:14:52Z  S1Q04F  2 line(s), words 4/5:  ["Partial sorting with min-heap","Composite keys for deterministic ties"]
+  02:16:17Z  S1Q05   3 line(s), words 3/3/3:  ["Chronological splitting strategy","Preventing data leakage","Scikit-learn Pipeline structure"]
+  02:19:26Z  S1Q05F  2 line(s), words 5/5:  ["Legitimate for temporal state tracking","Customer holdout prevents data leakage"]
+  02:20:54Z  S1Q06   3 line(s), words 5/3/3:  ["Left join for zero-call preservation","Time-windowed join conditions","Ingestion time filter"]
+  02:23:30Z  S1Q06F  3 line(s), words 6/3/7:  ["Indexing strategy: B-tree on join/filter keys","Partitioning for performance","Handling corrections: SCD Type 2 or versioning"]
+  02:24:52Z  S1Q07   4 line(s), words 7/6/5/3:  ["Batch/Online Architecture: Feature Store and Shared Logic","Ingestion, Feature Computation, and Model Training","Serving, Prediction Storage, and Monitoring","Zero-downtime Deployment Strategy"]
+  02:27:34Z  S1Q07F  3 line(s), words 5/4/3:  ["Idempotency via unique request IDs","Pipeline checkpointing for progress","Model version pinning"]
+  02:28:49Z  S1Q08   4 line(s), words 5/4/5/6:  ["Prediction logging with experiment IDs","Assignment via deterministic hashing","Outcome joining with temporal buffers","Retraining data selection and causal adjustment"]
+  02:31:25Z  S1Q08F  3 line(s), words 5/5/5:  ["Feedback loops and selection bias","Counterfactual data and control groups","Feature engineering and model retraining"]
+  02:32:50Z  S1Q09   8 line(s), words 4/4/4/3/3/4/4/4:  ["Blob Storage for data","Azure ML for training","Model Registry for versioning","ACR for images","AKS for inference","Data Factory for orchestration","Entra ID for security","Azure Monitor for observability"]
+  02:34:27Z  S1Q09F  3 line(s), words 6/5/5:  ["AML Managed Endpoints for standard inference","App Service for lightweight APIs","AKS for complex, high-scale infrastructure"]
+  02:35:47Z  S1Q10   4 line(s), words 4/5/5/3:  ["Managed Identities and RBAC","Private Endpoints for network isolation","Key Vault for unavoidable secrets","Subscription-level environment separation"]
+  02:37:28Z  S1Q10F  3 line(s), words 5/3/5:  ["401 vs 403 error codes","RBAC role assignments","Network connectivity and flow logs"]
+
+shape: empty 0, one line 0, two lines 6, three lines 10, more than three 6
+words per cue line: n 70, median 4, max 8, lines over 5 words 12; words per block: median 13
+items with more than one block: ? x2; items with no block: none
+
+cues trimmed lines: 0
+
+answers: full lines 22 (failed 0), superseded streams 0
+hedge: no won-by line
+lines with "Knowledge mode (stream): returning generated intro response": 0
+lines with "__negotiationCoaching": 0
+lines with "turn: close reason=not-a-question": 0
+lines with "boundary repair: restored": 0
+
+first token (diag, this run): n 22, median 4963.5 ms, p90 6271 ms, max 6731 ms
+
+report rows:
+  - PASS  Answered hands-free: 20/20 dispatched, 0 to nobody   (before: 26/52)
+  - PASS  Heard by either detector: 20/20   (before: 51/52)
+  - PASS  Surfaced detections per question: 0 doubles, 0 extended, 0 superseded, 0 caught, 0 unclaimed   (before: 12 doubles, 1 invented)
+  - PASS  Long questions answered whole: 8 of 8 (dispatched text covers ≥ 80% of the question)   (before: not in the roster)
+  - PASS  Answer TTFT p90 · detect p50: 6.4 s · 0.7 s   (before: 3.7 s (answer-only pass) · 4.1 s)
+  - FAIL  Cue block above every spoken answer: 20/20 present, 19 well-formed   (before: not logged (before cue mode))
+  **GATE FAILED — STT socket closes / lost utterances / fragment chips; Interview-acceptable answers (Opus 5 judge); Spoken answers under the 150-word cliff; Cue block above every spoken answer**
+
+dist now: main.js written 2026-09-30T12:44:09.493Z; limits 3 x 5; CUE_RULE sha256/12 8e15e4e7dd41
+dist CUE_SHAPE_RULE: - At most 3 lines, each at most 5 words. The first line is the answer itself in the fewest words that carry it: one or two words when that is enough (asked "Tabs or spaces?", the whole block is 1| Spaces). A one-part question gets exactly one line. Add a line only for another part the QUESTION names, never for a point you add on your own; when it names more than 3 parts, group related parts into themes so every part is still covered in 3 lines.

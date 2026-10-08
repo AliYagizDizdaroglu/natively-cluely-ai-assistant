@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers data fit, production constraints and two sensible baselines; roughly ninety words, slightly long."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct 3,000 true positives, 60 percent precision, ~31.6 percent recall and the 30 percent gap; says 31.5 then 31.6, and runs long."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomised untreated holdout is exactly the right control for seasonality and mix, stated in natural spoken length."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Stable ties, ValueError for non-positive k, zeros for empty or no positives, and lift defined correctly, but the opening sentence is missing its verb."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Pipeline plus ColumnTransformer fitted on train only, with an explicit 30-day embargo gap before the test period."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Never filters event type to support calls and ignores the count-of-nulls trap, though the join-condition placement is right; slightly long."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Hits every requested stage and names the shared feature definition layer, but is far too long to say aloud."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging with assignment IDs, delayed 30-day join and excluding treated users from training are right; the control downsampling is muddled and it runs long."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate AWS-to-Azure mapping across Blob, AML, ACR, AKS, managed identity and App Insights; roughly double the spoken length."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "User-assigned managed identity, Entra database auth, least-privilege roles, Key Vault and per-environment VNets are all correct; too long."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every named stage including hybrid retrieval and cross-encoder reranking, but the experience mapping is one vague clause and it overruns."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Unit and denominator contradict for hallucinations, and the 84 percent reduction's baseline is never defined; also far too long."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sharp contrast of fixed retrieval, decomposition and dynamic agents with the branching-dependency criterion; well over spoken length."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct one over c plus rank summation, zero for absent docs, deterministic id tie-break, top k; concise and speakable."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dedup, relevance sort, two-per-document cap and skip-if-it-does-not-fit are all right, but it opens mid-sentence with a bare identifier."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore cap, per-case timeout, locally caught failures and order-preserving result mapping are right; batches-of-eight phrasing conflates two patterns and it is long."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Per-tenant namespaces, row-level-security metadata, async ingestion with deletion events and golden-set evaluation all covered, but roughly twice the spoken budget."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write with parallel backfill, version-tagged updates, shadow comparison, pointer flip and intact legacy index for rollback; a little long."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct service choices end to end with a defensible managed-versus-custom line, but far too long and one garbled clause."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Broker duplicate detection plus message-id idempotency in a single transactional write, lock duration and dead-lettering; slightly over length."
+  }
+}

@@ -1,0 +1,106 @@
+PASS  E1 | remainingL(46) = 290 s + 46 x 40 s | expected: 2130 s | actual: 2130 s
+PASS  E2 | gradeEstMs(10) = 250 min; gradeEstMs(1) = 25 min | expected: 250 min and 25 min | actual: 250 and 25 min
+PASS  E3 | sum of the 31 realistic chain estimates is about 26.9 min (A7; A5 says live40 measured 26.6); remainingR(0) = worst-case chain 1 + the other 30 realistic | expected: realistic sum 26.0..27.5 min and remainingR = est0 + realistic rest | actual: realistic sum 26.92 min; remainingR 29.22 min
+PASS  B-L | base bundle, arm L, 2026-10-05 22:00, tonight line, est 2130 s | expected: PASS & CAP' 60 | actual: PASS & CAP' 60
+PASS  B-R | base bundle, arm R, 22:00, est 26.6 min | expected: PASS | actual: PASS
+PASS  B-G | base bundle, arm grade, 22:30, both arms complete, est 25 min (a last launch) | expected: PASS | actual: PASS
+PASS  D1 | --arm L now 2026-10-05T21:44 | expected: FAIL at "date gate" | actual: FAIL(date gate (L: tonight window 2026-10-05 )
+PASS  D2 | --arm L now 2026-10-05T22:00 with the tonight line: PASS, CAP' 60, quota window 2026-10-05T07:00Z | expected: PASS & CAP' 60, window 2026-10-05T07:00:00.000Z | actual: PASS & CAP' 60, window 2026-10-05T07:00:00.000Z
+PASS  D3 | --arm R now 22:00, est 31 min | expected: PASS | actual: PASS
+PASS  D4 | --arm R now 2026-10-05T23:15 (window end is exclusive) | expected: FAIL at "date gate (R" | actual: FAIL(date gate (R: tonight window 2026-10-05 ; now + est < deadline (min(23:15, T_any -)
+PASS  D5 | --arm L now 23:14, est 290 s | expected: FAIL at "now + est < deadline" | actual: FAIL(now + est < deadline (min(23:15, T_any -)
+PASS  D6 | --arm R now 2026-10-06T10:01 (tomorrow is not the R window) | expected: FAIL at "date gate (R" | actual: FAIL(date gate (R: tonight window 2026-10-05 ; now + est < deadline (min(23:15, T_any -)
+PASS  D7 | --arm L now 2026-10-06T00:30 | expected: FAIL at "date gate (L" | actual: FAIL(date gate (L: tonight window 2026-10-05 ; now + est < deadline (min(23:15, T_any -)
+PASS  D8 | --arm R now 21:44 | expected: FAIL at "date gate (R" | actual: FAIL(date gate (R: tonight window 2026-10-05 )
+PASS  D9 | --arm L 22:00 start check needs 290 + 46 x 40 s: now 22:40 FAIL, 22:39 est 35.5 min PASS? (22:39 + 35.5 min = 23:14.5) | expected: FAIL at "now + est < deadline" | actual: FAIL(now + est < deadline (min(23:15, T_any -)
+PASS  D10 | --arm L now 22:39 est 2130 s (negative control for D9: 23:14:30 < 23:15) | expected: PASS | actual: PASS
+PASS  D11 | quota window recorded for L: a real-shaped now of 2026-10-07T00:00 fails on the date gate and the window row | expected: FAIL at "date gate (L" | actual: FAIL(date gate (L: tonight window 2026-10-05 ; quota window is 2026-10-05T07:00Z (recor; now + est < deadline (min(23:15, T_any -)
+PASS  GR1 | --arm grade now 22:30, both arms complete, est 250 min (all 10 launches) -> FAIL (A7 m5) | expected: FAIL at "now + est < deadline" | actual: FAIL(now + est < deadline (min(23:15, T_any -)
+PASS  GR2 | --arm grade now 22:30 with L incomplete (est 25 min) | expected: FAIL at "both arms complete" | actual: FAIL(both arms complete (router40-R and route)
+PASS  GR3 | --arm grade now 22:30 with R incomplete | expected: FAIL at "both arms complete" | actual: FAIL(both arms complete (router40-R and route)
+PASS  GR4 | --arm grade now 22:55 (est 25 min -> 23:20) | expected: FAIL at "now + est < deadline" | actual: FAIL(now + est < deadline (min(23:15, T_any -)
+PASS  GR5 | A8.4 step 6: --arm grade now 2026-10-06T09:59 with a valid F line (was FAIL under the 10:00 gate; the gate is now 04:15) | expected: PASS | actual: PASS
+PASS  GR6 | --arm grade now 2026-10-06T10:01 with a valid F line (tomorrow rules) | expected: PASS | actual: PASS
+PASS  GR7 | --arm grade now 2026-10-06T10:01 with NO F line | expected: FAIL at "exactly one valid F line" | actual: FAIL(F lines: exactly one valid F line; F value in 0..500)
+PASS  GR8 | --arm grade 10-06T10:01: the tonight line alone does not stand in for the F line | expected: FAIL at "exactly one valid F line" | actual: FAIL(F lines: exactly one valid F line; F value in 0..500)
+PASS  GR9 | A8.2: --arm grade 10-06T10:01 with both arms incomplete: arms-complete IS checked outside the tonight window now (was PASS: A5.5 checked it tonight only) | expected: FAIL at "both arms complete" | actual: FAIL(both arms complete (router40-R and route)
+PASS  GR10 | A8: --arm grade now 2026-10-06T04:14 (valid F line, stub guards) -> FAIL (date gate) | expected: FAIL at "date gate" | actual: FAIL(date gate (grade: now >= 2026-10-06 04:1)
+PASS  GR10b | A8: --arm grade now 2026-10-06T04:14:59 -> FAIL (date gate) | expected: FAIL at "date gate" | actual: FAIL(date gate (grade: now >= 2026-10-06 04:1)
+PASS  GR11 | A8: --arm grade now 2026-10-06T04:15:00 (the boundary is >=) -> PASS | expected: PASS | actual: PASS
+PASS  GR12 | A8: --arm grade now 2026-10-06T04:16, valid F line, stub guards -> PASS | expected: PASS | actual: PASS
+PASS  GR13 | A8: --arm grade now 04:16 with router40-R incomplete -> FAIL (arms complete) | expected: FAIL at "both arms complete" | actual: FAIL(both arms complete (router40-R and route)
+PASS  GR13b | A8: --arm grade now 04:16 with router40-L incomplete -> FAIL (arms complete) | expected: FAIL at "both arms complete" | actual: FAIL(both arms complete (router40-R and route)
+PASS  GR14 | A8: --arm grade now 04:16 with NO F line -> FAIL | expected: FAIL at "exactly one valid F line" | actual: FAIL(F lines: exactly one valid F line; F value in 0..500)
+PASS  GR14b | A8: --arm grade now 04:16 with a malformed F line -> FAIL | expected: FAIL at "every `F ` line matches the pattern" | actual: FAIL(F lines: every `F ` line matches the pat; F lines: exactly one valid F line; F value in 0..500)
+PASS  T1 | no tonight line (R, L) | expected: FAIL at "exactly one exact TONIGHT line" | actual: FAIL(tonight line: exactly one exact TONIGHT )
+PASS  T1b | no tonight line, arm R | expected: FAIL at "exactly one exact TONIGHT line" | actual: FAIL(tonight line: exactly one exact TONIGHT )
+PASS  T2 | the exact tonight line once | expected: PASS | actual: PASS
+PASS  T3 | the exact line ending in CRLF | expected: PASS | actual: PASS
+PASS  T4 | two exact tonight lines | expected: FAIL at "exactly one exact TONIGHT line" | actual: FAIL(tonight line: exactly one exact TONIGHT )
+PASS  T5 | TONIGHT 2026-10-06: ... (wrong date, no exact line) | expected: FAIL at "exactly one exact TONIGHT line" | actual: FAIL(tonight line: exactly one exact TONIGHT ; tonight line: no near-miss TONIGHT line)
+PASS  T6 | TONIGHT 2026-10-05: flight-eq armed ... | expected: FAIL at "exactly one exact TONIGHT line" | actual: FAIL(tonight line: exactly one exact TONIGHT ; tonight line: no near-miss TONIGHT line)
+PASS  T7 | the exact line + a near-miss TONIGHT line | expected: FAIL at "no near-miss TONIGHT line" | actual: FAIL(tonight line: no near-miss TONIGHT line)
+PASS  T8 | R tonight without the 17:58 "told" line (A5.3: that row is gone for R) | expected: PASS | actual: PASS
+PASS  T9 | A7 m7: the exact line + a ruling line with TONIGHT mid-line -> PASS (one line counted) | expected: PASS & one counted | actual: PASS & one counted
+PASS  T10 | A7 m7: only a mid-line TONIGHT and no exact line -> FAIL (not counted) | expected: FAIL at "exactly one exact TONIGHT line" | actual: FAIL(tonight line: exactly one exact TONIGHT )
+PASS  T11 | A7 m7: a mid-line TONIGHT is not a near miss either | expected: PASS | actual: PASS
+PASS  T12 | the exact line with trailing text on the same line | expected: FAIL at "exactly one exact TONIGHT line" | actual: FAIL(tonight line: exactly one exact TONIGHT ; tonight line: no near-miss TONIGHT line)
+PASS  T13 | the F line is NOT required for R or L tonight (no F line anywhere) | expected: PASS | actual: PASS
+PASS  T14 | a malformed F line does not block R/L tonight | expected: PASS | actual: PASS
+PASS  K1 | stub ledger exit 1 tonight: L still PASS, the failure recorded | expected: PASS & recorded exit 1 + FAILED note | actual: PASS & exit 1; note true
+PASS  K2 | ledger with 3.1-lite 40 and 3.5-lite 7 mentions: both recorded, CAP' 60 | expected: PASS & n31 40, n35 7, CAP' 60 | actual: PASS & n31 40, n35 7, CAP' 60
+PASS  K3 | U=490 (would have refused under A2): still PASS tonight, CAP' 60 | expected: PASS & CAP' 60 | actual: PASS & CAP' 60
+PASS  K4 | a ledger text with no count line: PASS, recorded as no count line | expected: PASS & info says no count line | actual: PASS & true
+PASS  K5 | listed answers files in the ledger: counted as listed files only | expected: PASS & listed files 2 | actual: PASS & listed files 2
+PASS  FT1 | Natively-flight-eq NextRunTime 23:00, now 22:00, est 40 min (deadline 22:30) | expected: FAIL at "now + est < deadline" | actual: FAIL(now + est < deadline (min(23:15, T_any -)
+PASS  FT2 | the same task at 23:30, now 22:00, est 40 min (deadline 23:00) | expected: PASS | actual: PASS
+PASS  FT3 | 23:30, now 22:30, est 40 min (23:10 is past 23:00) | expected: FAIL at "now + est < deadline" | actual: FAIL(now + est < deadline (min(23:15, T_any -)
+PASS  FT4 | no task, now 22:40, est 40 min (the 23:15 cap alone) | expected: FAIL at "now + est < deadline" | actual: FAIL(now + est < deadline (min(23:15, T_any -)
+PASS  FT5 | a flight task Running | expected: FAIL at "no Natively-* task Running" | actual: FAIL(no Natively-* task Running)
+PASS  FT6 | tasks at 23:40 and 23:50 -> deadline 23:10 (the min, minus 30 min) | expected: PASS & deadline 23:10 local | actual: PASS & deadline 23:10 local
+PASS  FT7 | a far task (next day 12:00): the deadline is the 23:15 cap | expected: PASS & deadline 23:15 local | actual: PASS & deadline 23:15 local
+PASS  G1 | stub gsitting.log with an open STEP | expected: FAIL at "no STEP without its end" | actual: FAIL(gsitting.log: no STEP without its end)
+PASS  G1b | gsitting.log with every STEP ended (negative control) | expected: PASS | actual: PASS
+PASS  G2 | a node argv containing eq-gsitting | expected: FAIL at "G sitting not running" | actual: FAIL(G sitting not running (process argv chec)
+PASS  G3 | a node argv containing interview60.answers.mjs | expected: FAIL at "G sitting not running" | actual: FAIL(G sitting not running (process argv chec)
+PASS  G3b | a powershell.exe argv containing eq-gsitting | expected: FAIL at "G sitting not running" | actual: FAIL(G sitting not running (process argv chec)
+PASS  G4 | tomorrow grade: F says done, gsitting.log missing | expected: FAIL at "gsitting.log readable" | actual: FAIL(gsitting.log readable (F says done/pendi)
+PASS  G4b | tomorrow grade: F says pending from 14:00, gsitting.log missing | expected: FAIL at "gsitting.log readable" | actual: FAIL(gsitting.log readable (F says done/pendi)
+PASS  G5 | tomorrow grade: pending from 11:00 with now 10:40 (deadline 10:30, est 25 min) | expected: FAIL at "now + est < deadline" | actual: FAIL(now + est < deadline (min(T_any, T_G) - )
+PASS  G5b | tomorrow grade: pending from 11:00 with now 10:01 (negative control: 10:26 < 10:30) | expected: PASS | actual: PASS
+PASS  G7 | a stub task Running (non-flight name) | expected: FAIL at "no Natively-* task Running" | actual: FAIL(no Natively-* task Running)
+PASS  G8 | a stub process list with electron.exe | expected: FAIL at "no electron.exe" | actual: FAIL(no electron.exe)
+PASS  G10 | A8: grade at 04:16, F says done, an open STEP in gsitting.log -> FAIL | expected: FAIL at "no STEP without its end" | actual: FAIL(gsitting.log: no STEP without its end)
+PASS  G10b | A8: grade at 04:16, every STEP ended (negative control) -> PASS | expected: PASS | actual: PASS
+PASS  G11 | A8: grade at 04:16, an eq-gsitting node process -> FAIL | expected: FAIL at "G sitting not running" | actual: FAIL(G sitting not running (process argv chec)
+PASS  G11b | A8: grade at 04:16, an interview60.answers.mjs process -> FAIL | expected: FAIL at "G sitting not running" | actual: FAIL(G sitting not running (process argv chec)
+PASS  G12 | A8: grade at 04:16, F says done and gsitting.log missing -> FAIL | expected: FAIL at "gsitting.log readable" | actual: FAIL(gsitting.log readable (F says done/pendi)
+PASS  G1-R | the open-STEP stub for the R arm (22:00 tonight) still FAILs | expected: FAIL at "no STEP without its end" | actual: FAIL(gsitting.log: no STEP without its end)
+PASS  G2-R | the eq-gsitting process stub for the R arm still FAILs | expected: FAIL at "G sitting not running" | actual: FAIL(G sitting not running (process argv chec)
+PASS  G3-R | the interview60.answers.mjs process stub for the R arm still FAILs | expected: FAIL at "G sitting not running" | actual: FAIL(G sitting not running (process argv chec)
+PASS  G9 | a stub process list with tail.exe | expected: FAIL at "no tail.exe" | actual: FAIL(no tail.exe)
+PASS  S1 | arm R with a lite-l.mjs process | expected: FAIL at "no other router40 harness" | actual: FAIL(no other router40 harness process)
+PASS  S2 | arm R with another run-r.mjs process | expected: FAIL at "no other router40 harness" | actual: FAIL(no other router40 harness process)
+PASS  S3 | arm L with a run-r.mjs process | expected: FAIL at "no other router40 harness" | actual: FAIL(no other router40 harness process)
+PASS  S4 | arm L with another lite-l.mjs process | expected: FAIL at "no other router40 harness" | actual: FAIL(no other router40 harness process)
+PASS  S5 | arm grade with a run-r.mjs process | expected: FAIL at "no other router40 harness" | actual: FAIL(no other router40 harness process)
+PASS  S6 | arm grade with a lite-l.mjs process | expected: FAIL at "no other router40 harness" | actual: FAIL(no other router40 harness process)
+PASS  S7 | arm grade with another launch-grader-r40.mjs process | expected: FAIL at "no other router40 harness" | actual: FAIL(no other router40 harness process)
+PASS  S8 | arm R with a launch-grader-r40.mjs process | expected: FAIL at "no other router40 harness" | actual: FAIL(no other router40 harness process)
+PASS  S9 | the same argv under OWN pid (excluded) | expected: PASS | actual: PASS
+PASS  S10 | a node process that merely mentions another script (no harness piece) does not refuse | expected: PASS | actual: PASS
+PASS  H0 | a temp copy of a section-0 file, unchanged (negative control) | expected: PASS | actual: PASS
+PASS  H1 | a changed section-0 hash (temp copy of items.json + 1 space) | expected: FAIL at "hash live40/items.json" | actual: FAIL(hash live40/items.json)
+PASS  H2 | a changed filter hash (temp copy + 1 newline) | expected: FAIL at "hash MAIN dist verbalStreamFilter" | actual: FAIL(hash MAIN dist verbalStreamFilter.js)
+PASS  H3 | a changed judge instrument version | expected: FAIL at "judge instrument" | actual: FAIL(judge instrument graderPromptVersion)
+PASS  H4 | drift also checked at R start for its inputs (changed items.json copy) | expected: FAIL at "hash live40/items.json" | actual: FAIL(hash live40/items.json)
+PASS  X1 | real mode with --now 2026-10-05T22:00 | expected: exit 2 | actual: exit 2
+PASS  X1b | real mode with --stub-arms | expected: exit 2 | actual: exit 2
+PASS  X2-L | real mode, arm L, no stubs, real clock OUTSIDE the window | expected: date gate row FAIL and exit 1 | actual: gate FAIL; exit 1
+PASS  X2-R | real mode, arm R, no stubs, real clock OUTSIDE the window | expected: date gate row FAIL and exit 1 | actual: gate FAIL; exit 1
+SKIP  X3 | real mode, arm grade, no stubs | not run: the real clock is at or after 2026-10-06 04:15: A8 says its expectation must be re-stated before it is read
+PASS  X5 | CLI --calibration, arm L 22:00, full stub bundle (real hashes, real judge instrument import) | expected: exit 0, CAP' 60, ledger recorded (3 and 1 mentions) | actual: exit 0; CAP' 60  (; ledger true; judge true
+PASS  X6 | CLI arm L at 22:40 (default est 2130 s runs past 23:15) | expected: exit 1 | actual: exit 1
+PASS  X7 | CLI arm grade 22:30, both arms complete, default est (10 launches = 250 min) -> FAIL (A7 m5) | expected: exit 1 at the est row, est 15000 s | actual: exit 1; est 15000
+PASS  X8 | CLI arm R --only C02 at 22:00 (smoke) | expected: exit 0 | actual: exit 0
+pre-run-r40: 104/104 cases PASS (1 SKIPPED: real-clock cases not run inside the window)

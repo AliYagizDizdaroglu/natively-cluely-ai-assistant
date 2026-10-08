@@ -1,0 +1,137 @@
+PASS clean: exit 0
+PASS clean: counts (47 in hour, 1 outside)
+PASS clean: Safety/Fallback/Speed/Routing all PASS
+PASS clean: routing numbers
+PASS clean: integrity zeros
+PASS clean: verdict
+PASS clean: grade-dependent bars say NEEDS GRADES
+PASS clean: speed split by q_src printed
+PASS clean: live_words
+PASS clean: no answer text printed
+PASS reasons: exact counts per reason
+PASS reasons: dup and unpaired counted apart
+PASS reasons: dup is not a decision (no shown=- cell, 47 in hour)
+PASS reasons: appends by reason
+PASS reasons: HARD late reported on its own row, not misrouted (M2)
+PASS reasons: the dup of a HARD item does not misroute it
+PASS reasons: Fallback PASS (appended entries exist, row-4 has no live capture)
+PASS reasons: integrity MATCH
+PASS VOID trigger 1: failed at dispatches_before=9 -> VOID, exit 3
+PASS non-VOID: failed at dispatches_before=10 -> exit 0, reported
+PASS no VOID line without failures
+PASS VOID trigger 2: 10 min down over a 5 min limit -> VOID, exit 3
+PASS router down 10 min under a 15 min limit -> exit 0
+PASS goAway: the stale close does not add down time (2 s = 0.03 min)
+PASS down time is clipped to the run window at the start (0.50 min)
+PASS a router still down at the end counts to the end (1.00 min)
+PASS a close after the hour ended adds nothing (0.00 min)
+PASS ear failover is reported, never VOID
+PASS failed after the hour ended is ignored
+PASS a dispatched turn with no decision line reads 1
+PASS a decision with sent=0 reads "dispatched with nothing shown = 1" and fails Fallback
+PASS Safety: live capture whose first word is "hard." -> FAIL hard-first=1
+PASS Safety: "hard".hard is a hard word too
+PASS Safety: "hardware" is not a hard word
+PASS Safety: live capture holding <x> -> router-marker=1
+PASS Safety: live capture holding __foo__ -> router-marker=1
+PASS I6: List[int], a < b, __init__, __MORE__, __CUES__ and "hardware" read CLEAN
+PASS I6: __S1Q05__ in a pipeline answer -> unknown-marker=1
+PASS I6: a pipeline answer whose whole text is "Hard." -> bare-routing-token=1
+PASS I6: repeats of hard are a bare routing token
+PASS I6 control: an ordinary appended answer reads clean
+PASS Fallback: an after-V failure without its appended entry -> FAIL missing_appended=1
+PASS Fallback control: a row-4 turn with no live capture passes
+PASS Fallback: a row-4 turn that has a live capture -> FAIL row4_with_live_capture=1
+PASS Fallback: a shown live answer of 5 words flagged "-" is an unflagged failure
+PASS Fallback: 81 words flagged "-" is an unflagged failure
+PASS Speed: p50 = 2500 -> PASS (limit is <=)
+PASS Speed: p50 = 2501 -> FAIL
+PASS Speed: 8 fast of 15 -> median is fast (PASS, p50=1000); p90 sees the slow tail
+PASS Speed: split by q_src (5 final, 10 vad)
+PASS Routing: EASY caught 13/20 -> PASS
+PASS Routing: EASY caught 12/20 -> FAIL
+PASS Routing: HARD misrouted 1/27 -> PASS (misrouted = first word not hard, shown or not)
+PASS Routing: a HARD row-4 turn (first word not hard, not shown live) counts; 2/27 -> FAIL
+PASS Routing: HARD with no deciding turn (late, router-down, no-router-turn) are reported, not counted
+PASS Item mapping: a dispatch 1 s before the (offset) boundary belongs to the earlier item (OFFSET_MS 1150)
+PASS Item mapping control: just after the offset boundary it belongs to the next item
+PASS Captures: a missing shadow capture -> MISMATCH missing=1
+PASS Captures: a capture for a turn with no decision -> MISMATCH orphan=1
+PASS Captures: a capture on a shown=pipeline turn -> MISMATCH unexpected=1
+PASS Capture files: a live file one entry short -> MISMATCH
+PASS Capture files: appended flags missing -> MISMATCH
+PASS Capture files: absent -> MISMATCH, never a silent pass
+PASS B1 phase=streaming: line yes, live capture true: MATCH, counted, partial text exempt in Fallback
+PASS B1 phase=done line_written=no: line yes, live capture false is NOT a defect: MATCH, counted
+PASS B1 phase=done line_written=yes: line no, all captures false: counted (line_written=yes 1), MATCH
+PASS B1 a doubled diag line: superseded_turns=1 superseded_extra_lines=1
+PASS B1 (a): superseded=yes on the line with no diag line -> defect, MISMATCH, pre-fix warning
+PASS B1 (b): phase=streaming but the live capture reads false -> defect
+PASS B1 (b): phase=streaming but the line reads superseded=no -> defect
+PASS B1 (c): line_written=no but the line reads superseded=no -> defect
+PASS B1 (d): line_written=yes but the line reads superseded=yes -> defect
+PASS B1 orphans: a diag line for a shown=pipeline turn and one for an unknown turn -> superseded_orphan=2, MISMATCH
+PASS B1 shape: an unparsable [Router] superseded line refuses with exit 2
+PASS B1 Fallback: phase=done partial live text (3 words, reason "-") is still an unflagged failure
+PASS B1 pending-mode supersedes are stated as not logged by the producer
+PASS Lost: shown=live, superseded=no, no live capture -> MISMATCH lost_live_captures=1 (no inference of a supersede)
+PASS Lost while superseded is still lost (the diag line does not excuse a missing capture)
+PASS Pre-fix log (no superseded fields): counted and printed as a warning, reading still works
+PASS I1: a reason holding a newline (dispatches_before on the continuation line) is still VOID
+PASS I1: a trailing field after dispatches_before is still VOID
+PASS I1: the LAST dispatches_before on the line wins
+PASS I1: a session failed line with no dispatches_before refuses with exit 2 naming it
+PASS I1: an ear failover line with no dispatches_before refuses with exit 2
+PASS I1: an ear failover with a trailing field is parsed
+PASS I2: shown=pipeline with shadow=- (sent=1, a label only) reads dispatched with nothing shown 1 and FAILS Fallback and integrity
+PASS I2 control: the clean log has pipeline_no_token=0
+PASS I3: n=14, 7th=2500 passes nearest-rank but the median is 2750 -> FAIL
+PASS I3: n=14, middle values 2000 and 2900 -> median 2450 -> PASS (the upper middle would fail)
+PASS I4: a log with no session-start line refuses with exit 2
+PASS I4: a session-start line after the hour start (a restart cut the head) refuses with exit 2
+PASS I4: a second session-start line inside the hour refuses with exit 2
+PASS I4 control: an older session before the covering header is ignored
+PASS M1: a duplicate decision line counts once (47 in hour) and FAILS integrity
+PASS M1: a duplicate dispatch line FAILS integrity
+PASS M1: a decision without a dispatch line FAILS integrity
+PASS M2: a decision line missing a field is counted and FAILS integrity
+PASS M2: a decision without q_at is counted and FAILS integrity
+PASS M2 control: clean log counts 0 and 0
+PASS M3: a decision after endedMs is mapped to the last item (decisions_in_hour=47), files MATCH
+PASS M3: the harness builder and the scene agree on every live entry id
+PASS M4: the tallies header and every TALLY line say session-wide
+PASS Clean log prints no pre-fix warning
+PASS Tallies: router connects/reconnects/quota/closes (stale and quota counted apart)
+PASS Tallies: ear closes, stale, reconnecting
+PASS Usage: a missing --down-limit-min is exit 2 with a message
+PASS Usage: no run folder is exit 2
+CAL: 107/107 assertions passed
+MUTATION drop-dup-exclusion: CAUGHT (4 assertion(s) failed; first: reasons: dup and unpaired counted apart)
+MUTATION B1-drop-diag-parse: CAUGHT (8 assertion(s) failed; first: B1 phase=streaming: line yes, live capture true: MATCH,)
+MUTATION B1-drop-case-d: CAUGHT (1 assertion(s) failed; first: B1 (d): line_written=yes but the line reads superseded=)
+MUTATION B1-drop-case-c: CAUGHT (1 assertion(s) failed; first: B1 (c): line_written=no but the line reads superseded=n)
+MUTATION B1-ignore-orphans: CAUGHT (1 assertion(s) failed; first: B1 orphans: a diag line for a shown=pipeline turn and o)
+MUTATION B1-exempt-all-phases: CAUGHT (1 assertion(s) failed; first: B1 phase=streaming: line yes, live capture true: MATCH,)
+MUTATION I1-strict-failed-regex: CAUGHT (3 assertion(s) failed; first: I1: a reason holding a newline (dispatches_before on th)
+MUTATION I1-absent-skipped: CAUGHT (10 assertion(s) failed; first: VOID trigger 1: failed at dispatches_before=9 -> VOID, )
+MUTATION I2-label-counts-as-shown: CAUGHT (1 assertion(s) failed; first: I2: shown=pipeline with shadow=- (sent=1, a label only))
+MUTATION I3-lower-middle: CAUGHT (2 assertion(s) failed; first: I3: n=14, 7th=2500 passes nearest-rank but the median i)
+MUTATION I4-no-cover-check: CAUGHT (2 assertion(s) failed; first: I4: a log with no session-start line refuses with exit )
+MUTATION M1-duplicates-not-integrity: CAUGHT (5 assertion(s) failed; first: M1: a duplicate decision line counts once (47 in hour) )
+MUTATION M2-unparsed-not-integrity: CAUGHT (1 assertion(s) failed; first: M2: a decision line missing a field is counted and FAIL)
+MUTATION M3-bound-at-endedMs: CAUGHT (1 assertion(s) failed; first: M3: a decision after endedMs is mapped to the last item)
+MUTATION M4-unlabelled-tallies: CAUGHT (2 assertion(s) failed; first: M4: the tallies header and every TALLY line say session)
+MUTATION ignore-OFFSET_MS: CAUGHT (1 assertion(s) failed; first: Item mapping: a dispatch 1 s before the (offset) bounda)
+MUTATION pipeline-marker-any-case: CAUGHT (1 assertion(s) failed; first: I6: List[int], a < b, __init__, __MORE__, __CUES__ and )
+MUTATION pipeline-brackets-are-markers: CAUGHT (1 assertion(s) failed; first: I6: List[int], a < b, __init__, __MORE__, __CUES__ and )
+MUTATION void-floor-off-by-one: CAUGHT (1 assertion(s) failed; first: non-VOID: failed at dispatches_before=10 -> exit 0, rep)
+MUTATION stale-close-counts-down: CAUGHT (1 assertion(s) failed; first: goAway: the stale close does not add down time (2 s = 0)
+MUTATION speed-limit-strict: CAUGHT (1 assertion(s) failed; first: Speed: p50 = 2500 -> PASS (limit is <=))
+MUTATION easy-min-12: CAUGHT (2 assertion(s) failed; first: clean: routing numbers)
+MUTATION misrouted-counts-late: CAUGHT (3 assertion(s) failed; first: reasons: HARD late reported on its own row, not misrout)
+MUTATION sent0-ignored: CAUGHT (1 assertion(s) failed; first: a decision with sent=0 reads "dispatched with nothing s)
+MUTATION bare-token-substring: CAUGHT (1 assertion(s) failed; first: I6: List[int], a < b, __init__, __MORE__, __CUES__ and )
+MUTATION old-inference-lost-is-superseded: CAUGHT (2 assertion(s) failed; first: Lost: shown=live, superseded=no, no live capture -> MIS)
+MUTATION superseded-partial-text-flagged: CAUGHT (1 assertion(s) failed; first: B1 phase=streaming: line yes, live capture true: MATCH,)
+MUTATION prefix-warning-silent: CAUGHT (2 assertion(s) failed; first: B1 (a): superseded=yes on the line with no diag line ->)
+CALIBRATION OK

@@ -1,0 +1,124 @@
+window-eq calibration  2026-10-05T14:47:34.186Z
+tool sha256 ca664e741ad08bdf9a51b09367b3f59a8139690a899e755a2eadd77038480771
+driver sha256 33c61f9b3af5fbe972a619f29746b5ad86955c5f392b453875a87a8c2c839346
+pass 1: machine time zone (getTimezoneOffset -180 min)    pass 2: TZ=UTC (getTimezoneOffset 0 min)
+
+1. 16:29:59.999Z out (just before)
+   expected: WINDOW-EQ startedAt=2026-10-05T16:29:59.999Z local=2026-10-05 19:29:59+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   actual  : WINDOW-EQ startedAt=2026-10-05T16:29:59.999Z local=2026-10-05 19:29:59+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   TZ=UTC  : identical   => PASS
+2. 16:30:00.000Z in (exact lower bound)
+   expected: WINDOW-EQ startedAt=2026-10-05T16:30:00.000Z local=2026-10-05 19:30:00+03 IN WINDOW 2026-10-05 19:30 .. 2026-10-06 01:30  (exit 0)
+   actual  : WINDOW-EQ startedAt=2026-10-05T16:30:00.000Z local=2026-10-05 19:30:00+03 IN WINDOW 2026-10-05 19:30 .. 2026-10-06 01:30  (exit 0)
+   TZ=UTC  : identical   => PASS
+3. 20:59Z = 23:59 local in
+   expected: WINDOW-EQ startedAt=2026-10-05T20:59:00.000Z local=2026-10-05 23:59:00+03 IN WINDOW 2026-10-05 19:30 .. 2026-10-06 01:30  (exit 0)
+   actual  : WINDOW-EQ startedAt=2026-10-05T20:59:00.000Z local=2026-10-05 23:59:00+03 IN WINDOW 2026-10-05 19:30 .. 2026-10-06 01:30  (exit 0)
+   TZ=UTC  : identical   => PASS
+4. 21:00Z = 00:00 on the 6th local in (midnight crossing)
+   expected: WINDOW-EQ startedAt=2026-10-05T21:00:00.000Z local=2026-10-06 00:00:00+03 IN WINDOW 2026-10-05 19:30 .. 2026-10-06 01:30  (exit 0)
+   actual  : WINDOW-EQ startedAt=2026-10-05T21:00:00.000Z local=2026-10-06 00:00:00+03 IN WINDOW 2026-10-05 19:30 .. 2026-10-06 01:30  (exit 0)
+   TZ=UTC  : identical   => PASS
+5. 22:30:00.000Z in (A3 exact upper bound)
+   expected: WINDOW-EQ startedAt=2026-10-05T22:30:00.000Z local=2026-10-06 01:30:00+03 IN WINDOW 2026-10-05 19:30 .. 2026-10-06 01:30  (exit 0)
+   actual  : WINDOW-EQ startedAt=2026-10-05T22:30:00.000Z local=2026-10-06 01:30:00+03 IN WINDOW 2026-10-05 19:30 .. 2026-10-06 01:30  (exit 0)
+   TZ=UTC  : identical   => PASS
+6. 22:30:00.001Z out (A3 one ms past)
+   expected: WINDOW-EQ startedAt=2026-10-05T22:30:00.001Z local=2026-10-06 01:30:00+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   actual  : WINDOW-EQ startedAt=2026-10-05T22:30:00.001Z local=2026-10-06 01:30:00+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   TZ=UTC  : identical   => PASS
+7. 22:30:59.999Z out (A2 said in; A3 m14 wins)
+   expected: WINDOW-EQ startedAt=2026-10-05T22:30:59.999Z local=2026-10-06 01:30:59+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   actual  : WINDOW-EQ startedAt=2026-10-05T22:30:59.999Z local=2026-10-06 01:30:59+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   TZ=UTC  : identical   => PASS
+8. 22:31:00.000Z out
+   expected: WINDOW-EQ startedAt=2026-10-05T22:31:00.000Z local=2026-10-06 01:31:00+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   actual  : WINDOW-EQ startedAt=2026-10-05T22:31:00.000Z local=2026-10-06 01:31:00+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   TZ=UTC  : identical   => PASS
+9. 2026-10-04T21:30:00Z (00:30 on the 5th) out
+   expected: WINDOW-EQ startedAt=2026-10-04T21:30:00.000Z local=2026-10-05 00:30:00+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   actual  : WINDOW-EQ startedAt=2026-10-04T21:30:00.000Z local=2026-10-05 00:30:00+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   TZ=UTC  : identical   => PASS
+10. offset input 19:30:00.000+03:00 in (same instant as 16:30Z)
+   expected: WINDOW-EQ startedAt=2026-10-05T16:30:00.000Z local=2026-10-05 19:30:00+03 IN WINDOW 2026-10-05 19:30 .. 2026-10-06 01:30  (exit 0)
+   actual  : WINDOW-EQ startedAt=2026-10-05T16:30:00.000Z local=2026-10-05 19:30:00+03 IN WINDOW 2026-10-05 19:30 .. 2026-10-06 01:30  (exit 0)
+   TZ=UTC  : identical   => PASS
+11. offset input 19:29:59.999+03:00 out
+   expected: WINDOW-EQ startedAt=2026-10-05T16:29:59.999Z local=2026-10-05 19:29:59+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   actual  : WINDOW-EQ startedAt=2026-10-05T16:29:59.999Z local=2026-10-05 19:29:59+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   TZ=UTC  : identical   => PASS
+12. offset input 01:30:00.000+03:00 on the 6th in
+   expected: WINDOW-EQ startedAt=2026-10-05T22:30:00.000Z local=2026-10-06 01:30:00+03 IN WINDOW 2026-10-05 19:30 .. 2026-10-06 01:30  (exit 0)
+   actual  : WINDOW-EQ startedAt=2026-10-05T22:30:00.000Z local=2026-10-06 01:30:00+03 IN WINDOW 2026-10-05 19:30 .. 2026-10-06 01:30  (exit 0)
+   TZ=UTC  : identical   => PASS
+13. offset input 01:30:00.001+03:00 on the 6th out
+   expected: WINDOW-EQ startedAt=2026-10-05T22:30:00.001Z local=2026-10-06 01:30:00+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   actual  : WINDOW-EQ startedAt=2026-10-05T22:30:00.001Z local=2026-10-06 01:30:00+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   TZ=UTC  : identical   => PASS
+14. s50m run folder (2026-09-22) -> out
+   expected: WINDOW-EQ startedAt=2026-09-22T07:14:07.873Z local=2026-09-22 10:14:07+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   actual  : WINDOW-EQ startedAt=2026-09-22T07:14:07.873Z local=2026-09-22 10:14:07+03 OUT OF WINDOW (cannot PASS; NO LATENCY VERDICT)  (exit 3)
+   TZ=UTC  : identical   => PASS
+15. copy of s50m timeline WITHOUT startedAt -> unreadable
+   expected: WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   actual  : WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   TZ=UTC  : identical   => PASS
+16. run dir with no timeline file -> unreadable
+   expected: WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   actual  : WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   TZ=UTC  : identical   => PASS
+17. run dir with a corrupt timeline -> unreadable
+   expected: WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   actual  : WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   TZ=UTC  : identical   => PASS
+18. impossible date 2026-02-30 -> unreadable (Date would roll it to Mar 2)
+   expected: WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   actual  : WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   TZ=UTC  : identical   => PASS
+19. no zone (machine-TZ dependent) -> unreadable
+   expected: WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   actual  : WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   TZ=UTC  : identical   => PASS
+20. 4 fraction digits (Date would truncate 22:30:00.0009 into the window) -> unreadable
+   expected: WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   actual  : WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   TZ=UTC  : identical   => PASS
+21. 24:00 -> unreadable
+   expected: WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   actual  : WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   TZ=UTC  : identical   => PASS
+22. junk -> unreadable
+   expected: WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   actual  : WINDOW-EQ UNREADABLE (startedAt missing or unparseable) - cannot PASS  (exit 4)
+   TZ=UTC  : identical   => PASS
+23. no args -> usage exit 2
+   expected: (usage text on stderr, nothing on stdout)  (exit 2)
+   actual  : usage: node window-eq.mjs <run-dir> | --at <ISO instant>  (exit 2)
+   TZ=UTC  : identical   => PASS
+24. --at without a value -> usage exit 2
+   expected: (usage text on stderr, nothing on stdout)  (exit 2)
+   actual  : usage: node window-eq.mjs <run-dir> | --at <ISO instant>  (exit 2)
+   TZ=UTC  : identical   => PASS
+25. W-m1: a mistyped run-dir (no such directory) -> usage exit 2, NOT unreadable exit 4
+   expected: (usage text on stderr, nothing on stdout)  (exit 2)
+   actual  : usage: node window-eq.mjs <run-dir> | --at <ISO instant>  (run-dir is not an existing directory)  (exit 2)
+   TZ=UTC  : identical   => PASS
+26. W-m1: a FILE where the run-dir should be -> usage exit 2
+   expected: (usage text on stderr, nothing on stdout)  (exit 2)
+   actual  : usage: node window-eq.mjs <run-dir> | --at <ISO instant>  (run-dir is not an existing directory)  (exit 2)
+   TZ=UTC  : identical   => PASS
+
+Mutants (a copy of window-eq.mjs with ONE edit, run through the same 26 cases in both zones; the targeted case must flip):
+  W-upper: upper bound exclusive (t <= HI -> t < HI)
+    machine-zone pass flips: c5,c12   TZ=UTC pass flips: c5,c12   targets c5 => FLIPPED (calibrated)
+  W-lower: lower bound exclusive (t >= LO -> t > LO)
+    machine-zone pass flips: c2,c10   TZ=UTC pass flips: c2,c10   targets c2 => FLIPPED (calibrated)
+  W-A2: A2's old +59.999 s tolerance (t <= HI -> t <= HI + 59999)
+    machine-zone pass flips: c6,c7,c13   TZ=UTC pass flips: c6,c7,c13   targets c6,c7 => FLIPPED (calibrated)
+  W1: local-time getters in the local= display (no fixed +03:00)
+    machine-zone pass flips: none   TZ=UTC pass flips: c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14   targets c1,c5 => FLIPPED (calibrated)
+    (on this machine zone -180 min the local getters equal +03:00, so only the TZ=UTC pass can see it: that is why the second pass exists)
+  W-m1: the run-dir existence check removed (a typo reads UNREADABLE again)
+    machine-zone pass flips: c25,c26   TZ=UTC pass flips: c25,c26   targets c25,c26 => FLIPPED (calibrated)
+
+CALIBRATION PASSED (26 cases x 2 time zones, identical; 5 mutants flipped)

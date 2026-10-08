@@ -1,0 +1,236 @@
+{
+  "S1Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names a sound condition for each of the three approaches and ties logistic regression to own project."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic exactly right (9,500 churners, 5,000 flagged, 2,850 TP, 57% precision, 30% recall); dollar signs on counts read oddly aloud."
+  },
+  "S1Q02F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Gets the lift-over-base-rate framing and the cost threshold, but calling PR-AUC 0.38 proof of high precision overstates it."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized untreated holdout plus segment-mix monitoring is the right causal answer to seasonality and mix confounds."
+  },
+  "S1Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Clean uplift argument separating lost causes, sure things and persuadables to maximize incremental return."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tie rule and metric formulas correct, but claims lift evaluates to zero when prevalence is zero, which is a division by zero; also long."
+  },
+  "S1Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Quickselect for linear-time top-K with a composite key preserving the tie rule is exactly on point."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split with a thirty-day embargo gap plus ColumnTransformer fit only on train; runs past eighty-five words."
+  },
+  "S1Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly separates legitimate panel snapshots from the need for a customer-grouped holdout under autocorrelation."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Names all three requirements but leaves the key mechanism vague: predicates must sit in the ON clause or the left join drops zero-call customers."
+  },
+  "S1Q06F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Composite customer-plus-event-time index and a move to append-only versioned records for late corrections."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested stage and names the shared feature definitions as the anti-skew element; ingestion is thin and it is long."
+  },
+  "S1Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Idempotency keys plus a model version pinned by hash at job start answers both duplicate actions and mixed versions."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, deterministic hash assignment, delayed temporal join and IPW retraining all covered; slightly over length."
+  },
+  "S1Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Explains the feedback loop where saved high-risk customers relabel as non-churners and offers exposure features or propensity scoring."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service is correctly mapped and characterized, but the list runs well past a spoken length."
+  },
+  "S1Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accurate split: managed endpoints for the model, App Service for simple stateless apps, AKS for complex multi-container control."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC least privilege, Key Vault over a private endpoint and subscription-level separation; a bit long."
+  },
+  "S1Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Crisp triage by failure point: token acquisition, access-denied with a valid token, versus timeout or DNS."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every requested stage and maps them to the CV project, but is far over a spoken length."
+  },
+  "S2Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Chunk-boundary destruction and retrieval or rerank burial are well-argued, though generation itself goes unmentioned."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Defines units and datasets, but denominators stay fuzzy and the hallucination metric gets no uncertainty at all; very long."
+  },
+  "S2Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Ablation per component plus kappa against humans and position and length bias swaps; over length."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sharp criterion that an agent earns its cost when later steps depend on intermediate results; too long to speak."
+  },
+  "S2Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Step cap, token and time budgets, cycle detection on state transitions and a deterministic fallback."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct RRF accumulation with one over c plus rank and doc id as the deterministic secondary key; runs long."
+  },
+  "S2Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Right reason: incomparable score distributions, and weights applied as per-source coefficients."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy sort with seen-id set, per-document counter and skip-if-it-does-not-fit matches every constraint; over length."
+  },
+  "S2Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Concrete redundant-pricing-tier example plus MMR for diversity and decomposition for multi-hop."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore of eight, per-case timeout, index-preserved tasks and gather with exceptions returned; just over length."
+  },
+  "S2Q06F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Answers only the testing half; the asked retry of transient errors within an overall case deadline is never addressed."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-partitioned collections, JSONB metadata with version hashes, ACL filters at search time and judge-based eval; very long."
+  },
+  "S2Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly requires a re-check against the permission store after retrieval and before context assembly."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual versioned indexes, backfill worker, CDC dual writes, shadow NDCG comparison, pointer cutover and flag rollback; over length."
+  },
+  "S2Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "ID-set diff for completeness, CDC watermark lag for currency, top-k overlap shadow test before traffic."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure chain from Blob through Event Grid, Service Bus, Container Apps, AI Search and Azure OpenAI; too long."
+  },
+  "S2Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Region pinning, geo-replication disabled, in-region model deployment and private endpoints; slips to AKS after saying Container Apps earlier."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Pairs Service Bus duplicate detection with a durable keyed processing record so redelivery finds the completed state."
+  },
+  "S2Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Dead-letter triage and replay plus a monotonic version that rejects the older update racing the delete."
+  }
+}

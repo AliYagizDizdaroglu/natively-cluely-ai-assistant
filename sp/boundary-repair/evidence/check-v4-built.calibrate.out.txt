@@ -1,0 +1,6 @@
+calibration 1 (rule-v4.mjs as the candidate, must be EQUIVALENT):                       EQUIVALENT: rule-v4.mjs == rule-v4.mjs on every recorded event, all 45 fixtures and all 24 probes [rule-v4.mjs 5495 bytes, mtime 2026-09-29T17:58:37.176Z]
+calibration 2 (shim-v3.mjs, v3 behaviour, must be NOT EQUIVALENT):                     NOT EQUIVALENT: shim-v3.mjs fails 14 check(s) against rule-v4.mjs [shim-v3.mjs 620 bytes, mtime 2026-09-29T17:58:41.241Z]
+calibration 3 (mutant-clear-keeps-interim.mjs, must be NOT EQUIVALENT):                NOT EQUIVALENT: mutant-clear-keeps-interim.mjs fails 1 check(s) against rule-v4.mjs [mutant-clear-keeps-interim.mjs 2151 bytes, mtime 2026-09-29T18:58:46.190Z]
+calibration 4 (mutant-window-4000.mjs, must be NOT EQUIVALENT):                        NOT EQUIVALENT: mutant-window-4000.mjs fails 1 check(s) against rule-v4.mjs [mutant-window-4000.mjs 2167 bytes, mtime 2026-09-29T18:58:54.943Z]
+calibration 5 (mutant-pletter-only.mjs, guard without \p{M}, must be NOT EQUIVALENT): NOT EQUIVALENT: mutant-pletter-only.mjs fails 1 check(s) against rule-v4.mjs [mutant-pletter-only.mjs 2362 bytes, mtime 2026-09-29T19:14:44.756Z]
+CALIBRATION OK: the check tells the reference from a v3-behaving module, a clear() that keeps the interim, a 4000 ms window, and a guard that misses combining marks

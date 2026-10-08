@@ -1,0 +1,10 @@
+test(cues): the fixture pairs are ones the engine can log; the empty cue and the no-block case are pinned
+
+From Task 3's review. A drop leaves exactly three displayed lines, and an empty
+displayed cue arrives with its `cleaned` entry, so the metrics fixture now
+shows both pairs as the engine logs them and the row counts 2 trimmed. One
+engine case pins that a cue which was nothing but notation is displayed empty,
+not dropped; the no-block case also asserts that no trimmed line is logged.
+A stale comment now names the 3/5 literal (final review).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Data fit, production constraints and a regularized logistic baseline all covered; slightly over length at about 87 words."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic exact (9,500 churners, 2,850 TPs, 57% precision, 30% recall); stray dollar signs before counts need editing before speaking."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout plus causal-impact and covariate controls directly separate model effect from seasonality and mix; natural 75-word delivery."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct sort with index tie-break, precision, recall, lift and all three edge cases; roughly 145 words and reads the underscored function name."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Thirty-day embargo between train and validation plus ColumnTransformer fit only on train is exactly the leakage-safe answer; about 110 words."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Never filters event_type to support calls, and offers the where clause as an option that would break zero preservation; long."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All seven components covered with the feature store named as the shared batch/online bridge; about 145 words is far past spoken length."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Prediction IDs, hashed assignment, delayed daily outcome join and control-only retraining all addressed; around 115 words."
+  },
+  "S1Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Puts model artifacts in Container Registry rather than the Azure ML registry and picks Container Instances for low-latency serving; operational reasons thin."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC scoping, private endpoints, Key Vault references and per-environment identities answer every sub-part; about 100 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every named stage covered accurately though generically, with only a nominal tie to the candidate's own work; about 100 words."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Unit, denominator, dataset construction and uncertainty given for all three metrics; roughly 185 words of dense numbers is unspeakable in one breath."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sharp contrast of fixed workflow, decomposition and dynamic agent on the three-document case; about 105 words."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct one-over-c-plus-rank accumulation with a deterministic id tie-break and top-k slice, in a natural 66-word reply."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dedup, relevance-sorted greedy fill, budget check and two-per-document cap all correct, but opens mid-sentence with a bare underscored function name."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, per-case timeout race, order-preserving promise array and allSettled isolation answer every constraint in 76 words."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-sharded index, tombstoned deletes, ACL metadata filtering, citation offsets and golden-set evaluation all present; roughly 150 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Parallel collection, dual-write change stream, shadow comparison and alias cutover with instant rollback cover the migration; about 90 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sensible Azure mapping across all seven components plus a real managed-versus-custom argument; about 115 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-lock plus a message-id keyed idempotency record checked before embedding makes the crash-before-ack case safe to repeat; 76 words."
+  }
+}

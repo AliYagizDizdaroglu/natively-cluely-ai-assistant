@@ -1,0 +1,42 @@
+h40d-twins on 2026-10-06T01-12-56-eq: instrument exit 0
+h40d-twins: run 2026-10-06T01-12-56-eq
+chain: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant
+  verbalStreamFilter.js sha256/16 28d6c47b9da4fba6 (r4 section 2's combined build: 42d9bc42dbd17870 -> DIFFERENT: explain before relying on a stage name); cue limits 3 x 5, CUE_RULE sha256/12 8e15e4e7dd41
+mode: h40d reading (the cue check is read)
+gated ids: every id but R02F R04F R09F R11F R13F (r4 rule 3b); wrong clause governing: DEFAULT sums with a margin of one; no-text records: out of the gated clause on either side (the default)
+cue twins (gemini-3.5-flash-lite_captured-high)
+  rep 1  interview60.answers.gemini-3.5-flash-lite_captured-high.json
+    ids 40 (gated 40): answered 40, true holes 0, empty prose 0
+    acceptable 31 (weak 9); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+    cue check (net of true holes, n 40): blocks present 40/40 (100.0%), shaped 40/40 (100.0%); over 3 lines 0/40 (0.0%); over 5 words: blocks 2/40 (5.0%), lines 2/110 (1.8%)
+    thoughts p50 942 p90 1376 (n 40); ttft p50 4118 p90 5208 ms (n 40)
+  rep 2  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json
+    ids 40 (gated 40): answered 40, true holes 0, empty prose 0
+    acceptable 31 (weak 9); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+    cue check (net of true holes, n 40): blocks present 40/40 (100.0%), shaped 38/40 (95.0%); over 3 lines 2/40 (5.0%); over 5 words: blocks 6/40 (15.0%), lines 9/110 (8.2%)
+    thoughts p50 1009 p90 1250 (n 40); ttft p50 4166 p90 4917 ms (n 40)
+  rep 3  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json
+    ids 40 (gated 40): answered 40, true holes 0, empty prose 0
+    acceptable 31 (weak 9); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+    cue check (net of true holes, n 40): blocks present 40/40 (100.0%), shaped 39/40 (97.5%); over 3 lines 1/40 (2.5%); over 5 words: blocks 3/40 (7.5%), lines 3/108 (2.8%)
+    thoughts p50 906 p90 1272 (n 40); ttft p50 3784 p90 5495 ms (n 40)
+no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high)
+  rep 1  interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high.json
+    ids 40 (gated 40): answered 40, true holes 0, empty prose 0
+    acceptable 32 (weak 7); wrong: gated 1, all ids 1  [verdict-wrong 1 gated / 1 all, plus empty prose 0 gated / 0 all]
+    thoughts p50 884 p90 1171 (n 40); ttft p50 3876 p90 4698 ms (n 40)
+  rep 2  interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r2.json
+    ids 40 (gated 40): answered 40, true holes 0, empty prose 0
+    acceptable 31 (weak 9); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+    thoughts p50 908 p90 1214 (n 40); ttft p50 3740 p90 4685 ms (n 40)
+  rep 3  interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r3.json
+    ids 40 (gated 40): answered 40, true holes 0, empty prose 0
+    acceptable 33 (weak 7); wrong: gated 0, all ids 0  [verdict-wrong 0 gated / 0 all, plus empty prose 0 gated / 0 all]
+    thoughts p50 875 p90 1095 (n 40); ttft p50 3753 p90 4660 ms (n 40)
+graders over the judge files (model / stamp: files): claude-opus-5-5 / prompt stamp 8564ba96369a: 6
+band (all ids, acceptable per rep): control [31, 33] (reps 32 / 31 / 33)  cue [31, 31] (reps 31 / 31 / 31)  -> OVERLAP (cue max 31 >= control min 31)
+wrong on the gated ids, DEFAULT (totals over the three reps, margin 1): cue 0 (0 / 0 / 0) vs control 1 (1 / 0 / 0) + 1 -> no stop
+wrong on the gated ids, STRICT alternative (per rep): worst control rep 1; cue rep(s) above it: none -> no stop
+wrong on all ids, printed beside (never gated): control 1 / 0 / 0, cue 0 / 0 / 0
+cue check (blocks present AND shaped on >= 90% of n, every cue rep, net of true holes): present 40/40 (100.0%) / 40/40 (100.0%) / 40/40 (100.0%); shaped 40/40 (100.0%) / 38/40 (95.0%) / 39/40 (97.5%) -> holds in every cue rep
+rule 3c reading: PASS

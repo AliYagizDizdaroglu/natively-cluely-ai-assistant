@@ -1,0 +1,34 @@
+MUTANT X1 criterion 2 removed (probe turn may start inside the window): cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X2 criterion 4 removed (N not compared to N_first): cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X3 criterion 5 removed (pairs before startedAt ignored): cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X4 criterion 3 removed (a named line may also be addressed): cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X5 a line named both superseded and probe is accepted: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X6 a probe line named twice is accepted: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X7 M3: a probe naming a non-cues line is accepted: cal exit 1, 3 FAIL lines -> FLIPPED
+MUTANT X8 the exempt-full count is not checked: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X9 A3.2 turn-start-before-window check removed: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X10 A3.2 "no turn line before n" check removed: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X11 A4.1 gate removed: A3.2 applies to logs with 0 turn lines: cal exit 1, 2 FAIL lines -> FLIPPED
+MUTANT X12 A4.1 gate on N_first removed: derived even with no probe line (h40d must still pass): cal exit 1, 4 FAIL lines -> FLIPPED
+MUTANT X13 U3 removed: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X14 N_first read from the wrong place (first turn line of the log): cal exit 1, 3 FAIL lines -> FLIPPED
+MUTANT X15 REG: a BOM is accepted: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X16 REG: a non-UTF-8 file is decoded leniently: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X17 REG: the file hash is not compared: cal exit 1, 2 FAIL lines -> FLIPPED
+MUTANT X18 REG: the run pairs/timeline pins are not required: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X19 the b10 instruments sha is not compared: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X20 the ARMING sha is not compared: cal exit 1, 2 FAIL lines -> FLIPPED
+MUTANT X21 the LOG sha is not compared: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X22 the two-entry rule removed: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X23 twin cues are not compared to the record: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X24 the forbidden-field check removed: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X25 the cueBlocks equality ignores probe lines: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X26 an entry's cues are not compared to its log line: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X27 coverage: an unaddressed unnamed in-window line is accepted: cal exit 1, 3 FAIL lines -> FLIPPED
+MUTANT X28 the judge model is not checked: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X29 twin blocks skip trimCues: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X30 an existing manifest slot may be overwritten: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X31 the twin pairs question disagreement is not checked: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X32 more than 2 missing in-app ids is not FLT VOID: cal exit 1, 1 FAIL lines -> FLIPPED
+MUTANT X33 the superseded in-window cues line requirement removed: cal exit 1, 1 FAIL lines -> FLIPPED
+consumer mutants: 33 of 33 flipped the calibration

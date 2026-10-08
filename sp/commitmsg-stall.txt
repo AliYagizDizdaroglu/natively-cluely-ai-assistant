@@ -1,0 +1,29 @@
+fix(verbal): race the first token on the technical route too, with a thinking-aware budget
+
+Flight s50h (2026-09-16) waited 44 s and 60 s for a first token on two technical answers
+and the 4 s fallback never fired: zero "stalled after" lines in the hour, and the 60 s
+answer (S2Q09) landed after the harness stopped attributing it. The race lived only in
+streamVerbalWithGeminiFlash, the behavioral route, which answers one question an hour;
+the 40 technical answers go through streamChat's verbal branch, which streamed the
+primary with no clock.
+
+The race is now one private generator, streamGeminiWithStallFallback, called by both
+routes: same fallback choice (the other Flash Lite), same source sentinel, errors from
+the primary still propagate — only silence is caught. The stall warning names the
+primary that stalled instead of the Flash Lite constant.
+
+The budget comes from firstTokenTimeoutMs: 4000 ms with no thinking level or MINIMAL
+(first token p90 1.6 s on s50e, 3.4 s on s50f), 10000 ms once a level above MINIMAL is
+set — s50g at LOW had p50 5.1 s and p90 7.8 s, so a 4 s race would have replaced most of
+that hour's thinking answers with the fallback's default-level ones.
+NATIVELY_FIRST_TOKEN_TIMEOUT_MS overrides both (the live smoke forces the race with
+300 ms); anything but a positive whole number is refused.
+
+Tests: the budget function (default, MINIMAL, LOW/HIGH, override, refusal) and the
+technical route through streamChat under fake timers — a silent primary falls back at
+4 s with the sentinel and the same systemInstruction on the fallback call, an answering
+primary is not touched, LOW extends the budget to 10 s, the override to 300 ms logs the
+stall line, and the behavioral route keeps its race. Watched fail first (three cases
+hung past 5 s, the function was missing). tsc at the 6-error baseline.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

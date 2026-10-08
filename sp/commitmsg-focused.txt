@@ -1,0 +1,25 @@
+feat(flight): re-pick the focused five, which thinking LOW had quietly solved
+
+The focused Flash arms exist to separate models, and three of their five questions stopped
+separating anything. Scored across s50j's six app-bytes arms — in-app, three 3.1-LOW twins,
+3.1 at no thinking, and 3.5-lite at HIGH — S2Q07, S2Q09 and S2Q10 came back acceptable 6 of 6
+each. Every model passes them now, so the four Flash arms were spending 20 free-tier calls a
+day on questions that could not produce a finding. They were picked from s50d, before LOW
+shipped, and LOW is what solved them.
+
+Ranked on the captured prompt, because that is what a focused arm replays: a question hard
+only on the bare scripted text would be an easy one here. S1Q06 is the clearest case of the
+distinction — 6 of 6 on captured bytes, 2 of 6 bare.
+
+In: S1Q02 (2 of 6), S1Q08 (3 of 6), S2Q02 (4 of 6), S1Q07 (4 of 6).
+Out: S2Q07, S2Q09, S2Q10.
+Kept: S1Q06, as the CONTROL it was already documented to be — a control is a different job
+from a target, 9 of 10 arms pass it, and an arm that fails it is a broken arm rather than a
+hard question. That reading is what makes the four targets trustworthy, so it stays precisely
+because it is easy. Its older rationale ("the one question where model size is proven") is
+recorded as no longer holding: on captured bytes the lite arms went 6 of 6 and big Flash 3 of 4.
+
+Tests pin the four targets, the three exclusions and the control separately, so each is a
+deliberate decision rather than a list someone edited.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

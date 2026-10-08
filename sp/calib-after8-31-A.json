@@ -1,0 +1,314 @@
+{
+  "W01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct image-versus-container distinction with registry storage and running-process detail; natural spoken length."
+  },
+  "W02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accurately explains layer caching and ordering dependency installs before source copy; concise and speakable."
+  },
+  "W03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct latency-versus-archival trade-off with a concrete compliance-retention justification; clean delivery."
+  },
+  "W04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly names a managed HTTPS endpoint hosting model artifacts plus inference code; well scoped."
+  },
+  "W05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accurate DAG definition and clear rationale for acyclic dependency ordering and retries."
+  },
+  "W06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly ties artifact versioning to reproducibility, lineage, and debugging production failures."
+  },
+  "W07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accurate pod-versus-deployment distinction covering replicas, rolling updates, and self-healing."
+  },
+  "W08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Cleanly separates input distribution shift from a changed input-target relationship; textbook correct."
+  },
+  "W09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly names environment drift, manual error, reproducibility, and rollback; well structured."
+  },
+  "W10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sensible dataset and version prefix layout with immutable snapshots and lifecycle cleanup."
+  },
+  "W11": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct builder-versus-runtime split, venv copy, and size plus attack-surface rationale."
+  },
+  "W12": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly frames a sensor as a waiting operator gating the workflow on an external condition."
+  },
+  "M01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names PSI and KS tests against a training baseline with thresholded alerting; specific and correct."
+  },
+  "M02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct Pipelines structure with EventBridge scheduling and conditional Model Registry registration."
+  },
+  "M03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct HPA on custom metrics via Prometheus Adapter plus Cluster Autoscaler for node capacity."
+  },
+  "M04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly cites snowflake infrastructure, environment parity, and fast redeploy; tight and spoken."
+  },
+  "M05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct KMS customer-managed keys, least-privilege IAM, Block Public Access, and TLS in transit."
+  },
+  "M06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly extends CI past unit tests to schema checks, pipeline integration, and performance regressions."
+  },
+  "M07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct exponential-backoff retries plus a sensor confirming upstream availability before running."
+  },
+  "M08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Multi-stage, layer consolidation, and dependency audit are right, but Alpine is a poor base for Python ML images."
+  },
+  "M09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct latency-versus-throughput trade-off with apt real-time and offline examples."
+  },
+  "M10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Good mix of click-through, conversion, MRR, and coverage; omits serving health but answers directly."
+  },
+  "M11": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct namespace quotas, priority classes, bin-packing scheduler, and utilization monitoring."
+  },
+  "M12": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Textbook canary with traffic splitting, metric monitoring, and gradual promotion."
+  },
+  "M13": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct: secrets manager storage, reference by ARN, value resolved at runtime not committed."
+  },
+  "M14": {
+    "correctness": 0,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Misdescribes S3 Select as byte-range loading and leads with it; misses sharding and FastFile or Pipe modes; phrasing stutters."
+  },
+  "M15": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct pattern: stage the payload in object storage and pass only the URI through XCom."
+  },
+  "M16": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct registry role: versioning, lineage tracking, and approval gates before promotion."
+  },
+  "M17": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct proxy monitoring via prediction and feature distributions while labels are still pending."
+  },
+  "M18": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct: NVIDIA Container Toolkit bridges the host driver and the image matches the framework CUDA version."
+  },
+  "M19": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct liveness and readiness split with readiness gated on model weights being loaded."
+  },
+  "M20": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Strong contract framing: schema validation, statistical profiling, and tests on a versioned snapshot."
+  },
+  "M21": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct: one template with per-environment config, account isolation, and one promoted artifact."
+  },
+  "M22": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct Bayesian search with trial pruning and early stopping to cut wasted compute."
+  },
+  "M23": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Circular and vague; never names a concrete trigger such as sustained metric loss, drift persistence, or label volume."
+  },
+  "M24": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct chunked sequential backfill that respects concurrency limits and database load."
+  },
+  "M25": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Plausible but generic; never addresses versioned S3 objects, backups, or derived copies already trained on."
+  },
+  "M26": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct centralized hardened base image with automated rebuilds, scanning, and cascading redeploys."
+  },
+  "M27": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Balanced both sides: mTLS and traffic splitting for, sidecar overhead and latency against."
+  },
+  "M28": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct feature store answer that explicitly names training-serving skew as the failure prevented."
+  },
+  "H01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sound triage order: distribution comparison, then upstream pipeline changes, then silent serving failures."
+  },
+  "H02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Excellent SageMaker specificity: ModelLatency versus OverheadLatency, utilization, payload size, queuing."
+  },
+  "H03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct design and guardrails, but at about 101 words it is too long to deliver naturally."
+  },
+  "H04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct: kubelet and node pressure metrics, OOMKill events, and requests-versus-limits comparison."
+  },
+  "H05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sensible triage of task durations, data volume, contention, and worker concurrency limits."
+  },
+  "H06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Prefix-partition diagnosis is right, but S3 Transfer Acceleration does not relieve in-region read throttling."
+  },
+  "H07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Gives a real discriminator: localized shift means drift, systemic quality drop means broken pipeline."
+  },
+  "H08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sharp and specific: digest comparison, injected env and mounts, then CPU architecture mismatch."
+  },
+  "H09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct drift detection then reconciling the template or importing the resource back under management."
+  },
+  "H10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Covers both halves: immediate version rollback and timestamped isolation of corrupted downstream records."
+  },
+  "H11": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Reasonable before-and-after profiling comparison, though it never mentions reading the actual code diff."
+  },
+  "H12": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Active-active with a global load balancer is right, but asynchronous replication does not ensure consistency."
+  }
+}

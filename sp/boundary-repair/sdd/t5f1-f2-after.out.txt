@@ -1,0 +1,5 @@
+﻿[as expected] v2 (F2) + control: 0 failed | 5 passed (5); failing: none
+[as expected] v2 (F2) + the `>` mutant: 1 failed | 4 passed (5); failing: T2
+[as expected] v2 (F2) + no since filter: 3 failed | 2 passed (5); failing: P1, P2, T2
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true
+scenarios that differed from the prediction: 0

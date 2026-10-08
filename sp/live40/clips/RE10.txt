@@ -1,0 +1,1 @@
+What is the Azure equivalent of AWS Lambda?

@@ -1,0 +1,16 @@
+﻿  vitest: Test Files 1 passed (1)
+  vitest: Tests 1 passed (1)
+[ok] the throwaway test drove the real adapter and wrote its outputs: exit 0
+junction removed: true; MAIN's vitest still present: true
+scratch tree deleted: true
+adapter log: 201 lines, 17 'boundary repair:' lines, 90 finals emitted
+[ok] every repair line sits on the line right after a Transcript event final (the adapter's adjacency, which Task 5 relies on): 17 of 17
+[ok] finalsFrom(adapter log) deep-equals the finals the adapter emitted (same count, timestamps and texts, in order): parsed 90, emitted 90
+[ok] the number of emitted finals that differ from their raw log text equals the number of repair lines: 17 vs 17
+[ok] R22 replays as "hallucinations in a rag answer without just making it refuse?": "hallucinations in a rag answer without just making it refuse?"
+[ok] calibration: the OLD inline parse (pre-Task 5) differs from the emitted finals on exactly the repaired finals: 17 differ vs 17 repair lines
+sample from the produced log (R22, as the adapter wrote it):
+  2026-09-29T12:00:00.017Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text="How do you cut"
+  2026-09-29T12:00:01.564Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text="in a rag answer without just making it refuse?"
+  2026-09-29T12:00:01.564Z [LOG] [DeepgramStreaming] boundary repair: restored "hallucinations" before "in a rag answer without just making it r"
+RESULT: the real adapter's log replays as its emitted finals; the old parse would not

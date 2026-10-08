@@ -1,0 +1,1 @@
+USER RULING 2026-10-05 16:58 TST (in chat, before any flight data): rule 4c gets a +1 margin: FAIL only if with-block consensus off-topic exceeds no-block by >= 2 (front leg, G sitting). Price to be recomputed and written in a dated amendment by the Opus author together with the A2 re-check fixes, before arming.

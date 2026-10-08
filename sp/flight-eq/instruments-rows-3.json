@@ -1,0 +1,3 @@
+[
+  {"tool": "launch-grader-eq.mjs", "cal": "launch-grader-eq.cal.txt", "review": "b6-b8-review.md", "verdict": "Live-fix review ready", "note": "supersedes 36a2198eea69: --setting-sources project,local (live probe a88cf8cc LOADED claudeMem=5 -> fc0cd71d ABSENT) + probe gate reads the last record's transcript; cwdprobe-1-a1 folder name reused after the failed folder was renamed (both sessions kept)"}
+]

@@ -1,0 +1,24 @@
+br1       11:02:46.018 +60.8s  r2 item=S1Q08   pass | time item=S1Q08   answered=true text item=S1Q08   answered=true -> proposed pass
+br1       11:11:12.733 +50.9s  r2 item=S1Q10F  pass | time item=S1Q10F  answered=true text item=S1Q10F  answered=true -> proposed pass
+br1       11:11:50.443 +12.2s  r2 item=S2Q01   pass | time item=S2Q01   answered=true text item=S2Q01   answered=true -> proposed pass
+br1       11:13:09.678 +26.1s  r2 item=S2Q01F  pass | time item=S2Q01F  answered=true text item=S2Q01F  answered=true -> proposed pass
+br1       11:15:58.738 +22.2s  r2 item=S2Q02F  pass | time item=S2Q02F  answered=true text item=S2Q02F  answered=true -> proposed pass
+br1       11:43:24.724 +30.8s  r2 item=S2Q10   pass | time item=S2Q10   answered=true text item=S2Q10   answered=true -> proposed pass
+cuesmoke  13:38:28.725 +73.1s  r2 item=S1Q08   pass | time item=S1Q08   answered=true text item=S1Q08   answered=true -> proposed pass
+cuesmoke2 02:35:17.718 +16.5s  r2 item=S1Q10   pass | time item=S1Q10   answered=true text item=S1Q10   answered=true -> proposed pass
+s50d      07:20:55.847 +10.5s  r2 item=S1Q03F  pass | time item=S1Q03F  answered=true text item=S1Q03F  answered=true -> proposed pass
+s50e      07:45:55.336 +15.8s  r2 item=S1Q10   pass | time item=S1Q10   answered=true text item=S1Q10   answered=true -> proposed pass
+s50e      07:47:36.621 +17.1s  r2 item=S1Q10F  pass | time item=S1Q10F  answered=true text item=S1Q10F  answered=true -> proposed pass
+s50e      07:49:52.145 +11.0s  r2 item=S2Q01   pass | time item=S2Q01F  answered=true text item=S2Q01   answered=true -> proposed pass
+s50e      07:51:22.629 +15.7s  r2 item=S2Q02   pass | time item=S2Q02   answered=true text item=S2Q02   answered=true -> proposed pass
+s50f      07:15:21.933 +14.3s  r2 item=S1Q01F  pass | time item=S1Q01F  answered=true text item=S1Q01F  answered=true -> proposed pass
+s50f      07:44:34.545 +13.7s  r2 item=S1Q09F  pass | time item=S1Q09F  answered=true text item=S1Q09F  answered=true -> proposed pass
+s50f      07:46:03.902 +22.7s  r2 item=S1Q10   pass | time item=S1Q10   answered=true text item=S1Q10   answered=true -> proposed pass
+s50f      07:49:51.569 +8.7s  r2 item=S2Q01F  pass | time item=S2Q01F  answered=true text item=S2Q01F  answered=true -> proposed pass
+s50i      08:12:11.786 +154.9s  r2 item=S2Q07   pass | time item=S2Q07   answered=true text item=S2Q07   answered=true -> proposed pass
+s50j      07:34:21.385 +46.3s  r2 item=S1Q06F  pass | time item=S1Q06F  answered=true text item=S1Q06F  answered=true -> proposed pass
+s50j      08:10:05.084 +44.5s  r2 item=S2Q07   pass | time item=S2Q07   answered=true text item=S2Q07   answered=true -> proposed pass
+s50j      08:12:22.090 +24.2s  r2 item=S2Q07F  pass | time item=S2Q07F  answered=true text item=S2Q07F  answered=true -> proposed pass
+s50j      08:13:42.221 +25.0s  r2 item=S2Q08   pass | time item=S2Q08   answered=true text item=S2Q08   answered=true -> proposed pass
+
+22 absorbed claims: r2's R11 fails 0; the proposed rule fails 0

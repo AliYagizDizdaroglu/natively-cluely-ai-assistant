@@ -1,0 +1,36 @@
+﻿
+electron/audio/DeepgramStreamingSTT.ts: before 16220 chars 57292516fc495df1; after (STAGE) 16216 chars 74fff12e86d916ae
+ok       exactly one line removed and one added, both // comment lines
+   - 229: // An empty FINAL is a pause (median 187 per flight hour): a cut remembered
+   + 229: // An empty FINAL is a pause (median 187 per run log): a cut remembered
+ok       old phrase removed: (median 187 per flight hour)
+ok       new phrase present: (median 187 per run log)
+   transpile before 11511 chars 17ee35c2cb6ff681; after 11511 chars 17ee35c2cb6ff681
+ok       esbuild transpile of before and after is byte-identical
+ok       calibration: a one-character code change (=== -> ==) makes the transpile DIFFERENT
+ok       calibration: a code line added among the comments makes the line check say NOT comment-only
+
+electron/audio/deepgramBoundaryRepair.ts: before 10717 chars d5ba4da0650e7531; after (STAGE) 10929 chars 97f1ba9fee3268c4
+ok       every removed (4) and every added (6) line is a comment line
+   -  31: *          tokens after F1; Traw = the same words in I's own spelling.
+   -  34: *          no cut. None of the three occurred inside a repaired loss on the recorded data: 0 of 29 log
+   -  35: *          repairs had an empty final between F1 and F2, 0 of 6 seam repairs an UtteranceEnd, and all
+   -  36: *          63 seam cuts had speech_final=false.
+   +  31: *          tokens after F1; Traw = the same words in I's own spelling, as [A-Za-z0-9']+ runs:
+   +  32: *          punctuation inside a word is lost ("4.1" -> "4 1", "C++" -> "C"); none of the 25
+   +  33: *          non-holdout restores held such a word, so the effect is unmeasured.
+   +  36: *          no cut. None of the three occurred inside a repaired loss on the recorded data: 0 of the 25
+   +  37: *          non-holdout log repairs had an empty final between F1 and F2, 0 of 6 seam repairs an
+   +  38: *          UtteranceEnd, and all 63 seam cuts had speech_final=false.
+ok       the header block, read as words, equals the original with exactly the two intended replacements (line wrapping aside)
+ok       the header grew from 63 to 65 lines (the :31 sentence 1 -> 3 lines; the :34-36 sentence still 3 lines)
+ok       the :31 addition ends the CUT bullet and keeps its final period
+ok       the :34 wording: "0 of the 25 non-holdout log repairs had an empty final"
+ok       every added line is at most 103 columns (the header's widest existing line); widest added: 103
+ok       every added line keeps the " *          " continuation indentation
+   transpile before 2994 chars 13e7e177658aa3a9; after 2994 chars 13e7e177658aa3a9
+ok       esbuild transpile of before and after is byte-identical
+ok       calibration: a one-character code change (5000 -> 5001) makes the transpile DIFFERENT
+ok       calibration: a code line added among the header comments makes the line check say NOT comment-only
+
+comment-only changes proven for both production files

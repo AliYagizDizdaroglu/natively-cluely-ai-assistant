@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+const f = 'R/scripts/grader-session-calibrate.mjs';
+const L = fs.readFileSync(f, 'utf8').split('\n');
+if (!L[190].includes('G2: the argv form') || L[201].trim() !== '}') throw new Error('anchors moved: ' + L[190].slice(0, 40) + ' | ' + L[201]);
+L.splice(190, 12, ...fs.readFileSync('work/g2-tests2.txt', 'utf8').trimEnd().split('\n'));
+let s = L.join('\n');
+s = s.replace('// Addendum G2: the tightened rule is NOT loosened to fit these. Each real transcript is its own check, with the clause that trips named.', '// A2 point 10: the 8 real graders must stay clean under the tightened rule; each is its own check and a tripped clause is named.');
+s = s.replace('tripped.match(/G2: [^:]*', 'tripped.match(/point 10 [^:]*: [^:]*');
+fs.writeFileSync(f, s);
+console.log('ok');

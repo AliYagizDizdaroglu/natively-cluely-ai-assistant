@@ -1,0 +1,7 @@
+            const liveBlock = !isCodingForFraming && liveTexts?.length
+                ? `\n\nTHE LIVE LISTENER HEARD THE SAME QUESTION AS (use both; where they differ, the transcript's numbers and names are the ones spoken):\n${liveTexts.join('\n')}`
+                : '';
+            const fullMessage = extraContext
+                ? `${extraContext}\n\n${transcriptLabel}:\n${cleanedTranscript}${liveBlock}${trailer}`
+                : `${transcriptLabel}:\n${cleanedTranscript}${liveBlock}${trailer}`;
+```

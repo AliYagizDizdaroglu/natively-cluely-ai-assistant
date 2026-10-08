@@ -1,0 +1,34 @@
+=== OLD M2-a §5 item 1 (only if the user vetoes ruling 6)
+   **In an out-of-window hour every clause of rule 2 is reported and none is a FAIL (§6; ruling 6 on re-check I5(d)):
+   there only 3c and rule 4 reach this item; a reported 2b, 2c or 2e reading beyond its bound is named in the result
+   note, and the re-fly inside the window decides it.**
+=== NEW
+   **In an out-of-window hour 2a, 2b and 2d are reported and none of them is a FAIL (§6): provider load, which the
+   window controls, moves them. 2c (thinking tokens) and 2e (the parser's hold) do not depend on load: they reach this
+   item there as in any hour, with 3c and rule 4.**
+=== END
+=== OLD M2-b §5 item 5 (only if the user vetoes ruling 6)
+(there every clause of rule 2 is reported and none is a FAIL, §6)
+=== NEW
+(there 2a, 2b and 2d are reported, §6)
+=== END
+=== OLD M2-c §5 NO LATENCY VERDICT bullet (only if the user vetoes ruling 6)
+  out-of-window hour every clause of rule 2 is reported and none is a FAIL (§6; ruling 6 on re-check I5(d)); the hour
+=== NEW
+  out-of-window hour 2a, 2b and 2d are reported (§6) and 2c and 2e are read as in any hour; the hour
+=== END
+=== OLD M2-d §6 start bullet (only if the user vetoes ruling 6)
+Outside the window, every clause of rule 2 (2a–2e) is reported, not gated — none
+  reads as a FAIL, cue-attributable or other (§5 items 1 and 3; ruling 6 on re-check I5(d)); rules 3, 4 and 5 are read
+  normally, and the hour cannot PASS (NO LATENCY VERDICT: re-fly inside the window).
+=== NEW
+Outside the window, 2a, 2b and 2d are reported, not gated, and 2c and 2e are read as in
+  any hour (§5 items 1 and 3; the user's veto of ruling 6, `RECHECK-r3.md`); rules 3, 4 and 5 are read normally, and
+  the hour cannot PASS (NO LATENCY VERDICT: re-fly inside the window).
+=== END
+=== OLD M2-e §13 the ruling-6 bullet (only if the user vetoes ruling 6)
+there, none as a FAIL. The ruling is applied (§5 item 1, §6); 3c and rule 4 are still read in such an hour.
+=== NEW
+there, none as a FAIL. The user vetoed it for 2c and 2e, which do not depend on provider load (`RECHECK-r3.md`):
+  outside the window 2a, 2b and 2d are reported, 2c, 2e, 3c and rule 4 read as in any hour (§5 item 1, §6).
+=== END

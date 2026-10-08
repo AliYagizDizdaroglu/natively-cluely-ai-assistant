@@ -1,0 +1,5 @@
+live40 EASY/E n 20 no-cue 13 RE02,RE04,RE05,RE06,RE07,RE09,RE10,RE11,RE14,RE16,RE18,RE19,RE20
+live40 HARD/QF n 9 no-cue 5 RH01,EF03,EF04,EF05,EF06
+live40 HARD/H n 11 no-cue 1 RH18
+live40 HARD/AF n 7 no-cue 3 EF02,RH13,RH02
+scenario50 n 100 no-cue 1 S1Q08F How could repeatedly training on customers affected by previous campaigns introduce bias?

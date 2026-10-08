@@ -1,0 +1,31 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts (58 tests | 1 failed) 23ms
+   × deepgramBoundaryRepair synthetic edges (the symptom's strings) > a loss of three words is left alone: at most two skipped words are restored 7ms
+     → expected 'hallucinations in a rag answer withou…' to be 'rag answer without just making it ref…' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair synthetic edges (the symptom's strings) > a loss of three words is left alone: at most two skipped words are restored
+AssertionError: expected 'hallucinations in a rag answer withou…' to be 'rag answer without just making it ref…' // Object.is equality
+
+Expected: "rag answer without just making it refuse?"
+Received: "hallucinations in a rag answer without just making it refuse?"
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:125:93
+    123| 
+    124|     it('a loss of three words is left alone: at most two skipped words…
+    125|         expect(play([I, F1, { ...F2, text: 'rag answer without just ma…
+       |                                                                                             ^
+    126|     });
+    127| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 57 passed (58)
+   Start at  17:47:46
+   Duration  2.40s (transform 91ms, setup 0ms, collect 94ms, tests 23ms, environment 1.34s, prepare 205ms)
+

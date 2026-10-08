@@ -1,0 +1,6 @@
+run wav:check
+proof 1 -> 0
+guard
+run app:start
+run app:stop
+proof 2 -> 1

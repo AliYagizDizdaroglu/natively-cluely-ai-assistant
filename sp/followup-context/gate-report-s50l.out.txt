@@ -1,0 +1,344 @@
+=== 0. CALIBRATION (scenario50 + invented; no holdout sentence) ===
+FIRE  leading    Now without a cache, how would you meet the same latency?
+FIRE  pronoun    How would you index those tables, and what changes if historical records can be corrected 
+FIRE  pronoun    Extend it to retry explicitly transient errors within an overall deadline for the case. Ho
+FIRE  pronoun    How do you prove the replacement index is sufficiently complete and current before you sen
+FIRE  constraint How would you reduce the sorting cost for millions of customers while preserving the tie r
+FIRE  reference  How would your design change if the documents and their processing had to remain within an
+FIRE  leading    What breaks with multiple API workers? Describe how you would make the admission decision 
+FIRE  leading    What would you add for autoscaling, disruption tolerance, workload identity, and network i
+FIRE  short      Why?
+FIRE  leading    And in production?
+FIRE  pronoun    Does that scale?
+FIRE  leading    What about Redis instead?
+FIRE  leading    Okay, and if it fails?
+FIRE  callback   Going back to the micro-batcher, how would you shard it?
+FIRE  callback   You mentioned idempotency earlier. How do you enforce it?
+FIRE  pronoun    Would that still hold under a network partition?
+FIRE  leading    Same question, but for a write-heavy workload.
+FIRE  pronoun    How would you keep the same latency budget with twice the traffic?
+FIRE  leading    And what if it has to run on a single core?
+ok    none       Explain the CAP theorem.
+ok    none       What is a Kubernetes readiness probe?
+ok    none       In this scenario, what would you monitor first?
+ok    none       Design a URL shortener that handles a billion requests a day.
+ok    none       Tell me about a time you disagreed with a manager.
+ok    none       Given an array of integers, return the indices of two numbers that add up to a target.
+ok    none       How would you ensure that a nightly job never runs twice?
+ok    none       Walk me through how you would debug a memory leak in a Python service.
+ok    none       Design the next version of the churn platform, it has to support nightly scoring for 400,0
+ok    none       How would you handle a batch that fails because of one record, without repeatedly executin
+CALIBRATION OK (19 fire, 10 silent)
+
+=== 1. GATE OVER SCENARIO50 ROSTER TEXTS (100 items) ===
+follow-ups: fired & needs parent = 11 | fired & standalone = 1 | not fired & needs parent (MISS) = 1 | not fired & standalone = 37
+mains: fired & dependent = 4 | fired & standalone (FALSE FIRE) = 0 | not fired & dependent (MISS) = 0 | not fired & standalone = 46
+fired follow-ups: S1Q04F(constraint) S1Q06F(pronoun) S2Q01F(pronoun) S2Q05F(pronoun) S2Q06F(pronoun) S2Q08F(pronoun) S2Q09F(reference) S3Q02F(reference) S3Q04F(leading) S4Q09F(leading) S4Q10F(reference,standalone) S5Q10F(pronoun)
+missed follow-ups (needs parent, not fired): S5Q04F
+fired mains: S1Q08(reference) S2Q08(reference) S3Q08(reference) S4Q08(reference)
+missed dependent mains: 
+
+id | kind | words | chars | fires | cue | needs-parent
+S1Q01 | main | 29 | 179 | - | none | 
+S1Q01F | followup | 16 | 104 | - | none | 
+S1Q02 | main | 56 | 343 | - | none | 
+S1Q02F | followup | 30 | 133 | - | none | 
+S1Q03 | main | 40 | 239 | - | none | 
+S1Q03F | followup | 20 | 139 | - | none | 
+S1Q04 | main | 71 | 407 | - | none | 
+S1Q04F | followup | 16 | 94 | FIRE | constraint | yes
+S1Q05 | main | 59 | 382 | - | none | 
+S1Q05F | followup | 19 | 122 | - | none | 
+S1Q06 | main | 69 | 384 | - | none | 
+S1Q06F | followup | 17 | 106 | FIRE | pronoun | yes
+S1Q07 | main | 51 | 342 | - | none | 
+S1Q07F | followup | 19 | 117 | - | none | 
+S1Q08 | main | 41 | 273 | FIRE | reference | yes
+S1Q08F | followup | 12 | 89 | - | none | 
+S1Q09 | main | 38 | 292 | - | none | 
+S1Q09F | followup | 22 | 128 | - | none | 
+S1Q10 | main | 42 | 308 | - | none | 
+S1Q10F | followup | 23 | 160 | - | none | 
+S2Q01 | main | 26 | 209 | - | none | 
+S2Q01F | followup | 15 | 89 | FIRE | pronoun | yes
+S2Q02 | main | 52 | 329 | - | none | 
+S2Q02F | followup | 23 | 162 | - | none | 
+S2Q03 | main | 31 | 213 | - | none | 
+S2Q03F | followup | 14 | 103 | - | none | 
+S2Q04 | main | 58 | 347 | - | none | 
+S2Q04F | followup | 24 | 134 | - | none | 
+S2Q05 | main | 57 | 334 | - | none | 
+S2Q05F | followup | 22 | 142 | FIRE | pronoun | yes
+S2Q06 | main | 43 | 282 | - | none | 
+S2Q06F | followup | 24 | 162 | FIRE | pronoun | yes
+S2Q07 | main | 43 | 308 | - | none | 
+S2Q07F | followup | 19 | 105 | - | none | 
+S2Q08 | main | 41 | 304 | FIRE | reference | yes
+S2Q08F | followup | 19 | 117 | FIRE | pronoun | yes
+S2Q09 | main | 36 | 240 | - | none | 
+S2Q09F | followup | 18 | 107 | FIRE | reference | yes
+S2Q10 | main | 42 | 276 | - | none | 
+S2Q10F | followup | 18 | 106 | - | none | 
+S3Q01 | main | 24 | 147 | - | none | 
+S3Q01F | followup | 16 | 94 | - | none | 
+S3Q02 | main | 37 | 222 | - | none | 
+S3Q02F | followup | 19 | 119 | FIRE | reference | yes
+S3Q03 | main | 27 | 213 | - | none | 
+S3Q03F | followup | 19 | 120 | - | none | 
+S3Q04 | main | 44 | 261 | - | none | 
+S3Q04F | followup | 18 | 118 | FIRE | leading | yes
+S3Q05 | main | 37 | 219 | - | none | 
+S3Q05F | followup | 20 | 132 | - | none | 
+S3Q06 | main | 39 | 262 | - | none | 
+S3Q06F | followup | 27 | 156 | - | none | 
+S3Q07 | main | 30 | 226 | - | none | 
+S3Q07F | followup | 20 | 127 | - | none | 
+S3Q08 | main | 32 | 229 | FIRE | reference | yes
+S3Q08F | followup | 22 | 146 | - | none | 
+S3Q09 | main | 30 | 222 | - | none | 
+S3Q09F | followup | 20 | 128 | - | none | 
+S3Q10 | main | 42 | 306 | - | none | 
+S3Q10F | followup | 18 | 116 | - | none | 
+S4Q01 | main | 23 | 142 | - | none | 
+S4Q01F | followup | 14 | 102 | - | none | 
+S4Q02 | main | 32 | 231 | - | none | 
+S4Q02F | followup | 13 | 90 | - | none | 
+S4Q03 | main | 26 | 199 | - | none | 
+S4Q03F | followup | 16 | 121 | - | none | 
+S4Q04 | main | 48 | 331 | - | none | 
+S4Q04F | followup | 20 | 127 | - | none | 
+S4Q05 | main | 46 | 289 | - | none | 
+S4Q05F | followup | 18 | 126 | - | none | 
+S4Q06 | main | 54 | 321 | - | none | 
+S4Q06F | followup | 21 | 115 | - | none | 
+S4Q07 | main | 44 | 295 | - | none | 
+S4Q07F | followup | 21 | 135 | - | none | 
+S4Q08 | main | 38 | 242 | FIRE | reference | yes
+S4Q08F | followup | 19 | 113 | - | none | 
+S4Q09 | main | 38 | 277 | - | none | 
+S4Q09F | followup | 13 | 99 | FIRE | leading | yes
+S4Q10 | main | 31 | 194 | - | none | 
+S4Q10F | followup | 24 | 142 | FIRE | reference | 
+S5Q01 | main | 31 | 199 | - | none | 
+S5Q01F | followup | 14 | 75 | - | none | 
+S5Q02 | main | 34 | 224 | - | none | 
+S5Q02F | followup | 18 | 112 | - | none | 
+S5Q03 | main | 41 | 262 | - | none | 
+S5Q03F | followup | 19 | 115 | - | none | 
+S5Q04 | main | 57 | 337 | - | none | 
+S5Q04F | followup | 23 | 130 | - | none | yes
+S5Q05 | main | 46 | 283 | - | none | 
+S5Q05F | followup | 25 | 160 | - | none | 
+S5Q06 | main | 39 | 246 | - | none | 
+S5Q06F | followup | 24 | 157 | - | none | 
+S5Q07 | main | 41 | 306 | - | none | 
+S5Q07F | followup | 23 | 143 | - | none | 
+S5Q08 | main | 36 | 245 | - | none | 
+S5Q08F | followup | 27 | 169 | - | none | 
+S5Q09 | main | 38 | 273 | - | none | 
+S5Q09F | followup | 24 | 131 | - | none | 
+S5Q10 | main | 47 | 321 | - | none | 
+S5Q10F | followup | 25 | 157 | FIRE | pronoun | yes
+
+max roster question chars: 407  questions > 400 chars: S1Q04(407)
+
+=== 2. GATE OVER S50L CAPTURED PINNED QUESTIONS (39 ids) ===
+dispatch lines (answer|supersede) in the hour: 43
+
+id | dispatched (UTC) | gate | cue | parent-in-window | lines | block chars | skipped | pinned question (first 70)
+S1Q01F | 07:15:12 | - | none | yes | 0 | 0 | 0 | Under what conditions would you prefer logistic regression? A neural n
+S1Q02 | 07:16:40 | - | none | no | 0 | 0 | 0 | Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn
+S1Q02F | 07:18:04 | - | none | yes | 0 | 0 | 0 | What can you conclude from a PRAUC of 0.38 and an ROC AUC of 0.88? And
+S1Q03 | 07:19:21 | - | none | yes | 0 | 0 | 0 | Did the model actually reduce churn? Your CV reports churn decreasing 
+S1Q03F | 07:20:44 | - | none | yes | 0 | 0 | 0 | Why am I targeting the highest risk customers be less profitable than 
+S1Q04 | 07:22:14 | - | none | no | 0 | 0 | 0 | Let's do some code. Implement evaluation for a fixed campaign budget. 
+S1Q04F | 07:24:50 | FIRE | constraint | no | 1 | 576 | 0 | How would you reduce the sorting cost for millions of customers while 
+S1Q05 | 07:26:15 | - | none | yes | 0 | 0 | 0 | Build a leakage safe churn training pipeline, You are given customer s
+S1Q05F | 07:29:24 | - | none | no | 0 | 0 | 0 | Customers appear in multiple snapshots. When is that legitimate, and w
+S1Q06 | 07:30:52 | - | none | yes | 0 | 0 | 0 | Now is SQL one, construct a point in time feature. You have a snapshot
+S1Q06F | 07:33:28 | FIRE | pronoun | no | 1 | 556 | 0 | How would you index those tables, and what changes if historical recor
+S1Q07 | 07:34:53 | - | none | yes | 0 | 0 | 0 | Design the next version of the churn platform, it has to support night
+S1Q07F | 07:37:31 | - | none | no | 0 | 0 | 0 | A nightly job fails halfway through. How do you resume it without dupl
+S1Q08 | 07:38:50 | FIRE | reference | yes | 1 | 360 | 1 | Now add delayed outcomes and experimentation, extend that design so ch
+S1Q08F | 07:41:25 | - | none | no | 0 | 0 | 0 | How could repeatedly training on customers affected by previous campai
+S1Q09 | 07:42:48 | - | none | yes | 0 | 0 | 0 | Translate your AWS experience into an Azure deployment. Describe an Az
+S1Q09F | 07:44:28 | - | none | yes | 0 | 0 | 0 | Which workload would you put on Azure machine learning managed endpoin
+S1Q10 | 07:45:46 | - | none | yes | 0 | 0 | 0 | Secure the churn platform without embedded credentials, How would your
+S1Q10F | 07:47:27 | - | none | yes | 0 | 0 | 0 | The application receives an authorization error after deployment. How 
+S2Q01 | 07:48:42 | - | none | yes | 0 | 0 | 0 | Explain your rag pipeline precisely. Walk through ingestion, parsing, 
+S2Q01F | 07:49:48 | FIRE | pronoun | yes | 0 | 0 | 1 | Which of those stages can cause a correct source document to produce a
+S2Q02 | 07:51:14 | - | none | yes | 0 | 0 | 0 | Defend the improvements reported on your CV, You report extraction f o
+S2Q02F | 07:52:41 | - | none | yes | 0 | 0 | 0 | What ablations would separate the contributions of OCR classification,
+S2Q03 | 07:53:55 | - | none | yes | 0 | 0 | 0 | When does an agent justify its complexity? Consider a question that re
+S2Q03F | 07:55:17 | - | none | yes | 0 | 0 | 0 | What stopping conditions, budgets, and failure policies would prevent 
+S2Q04 | 07:56:40 | - | none | yes | 0 | 0 | 0 | Merge two retrieval result lists. Implement reciprocal rank fusion for
+S2Q04F | 07:59:18 | - | none | no | 0 | 0 | 0 | Why might you use Rank Fusion in of adding the raw scores, and how wou
+S2Q05 | 08:00:44 | - | none | yes | 0 | 0 | 0 | PAC retrieved evidence into a context budget, implement a function cal
+S2Q05F | 08:03:22 | FIRE | pronoun | no | 1 | 500 | 0 | An example where that greedy policy gives poor coverage, and tell me h
+S2Q06 | 08:04:41 | - | none | yes | 0 | 0 | 0 | Implement an asynchronous evaluation runner, You are given test cases 
+S2Q06F | 08:07:52 | - | none | no | 0 | 0 | 0 | Extended to retry explicitly transient errors within an overall deadli
+S2Q07 | 08:09:14 | - | none | yes | 0 | 0 | 0 | Design a multi tenant rag service over 10,000,000 documents. It has to
+S2Q07F | 08:11:52 | - | none | no | 0 | 0 | 0 | A user loses access to a document while a query is running. Where and 
+S2Q08 | 08:13:11 | FIRE | reference | yes | 1 | 358 | 1 | Migrate the embedding model without an outage, extend that service to 
+S2Q08F | 08:15:47 | FIRE | pronoun | no | 1 | 471 | 0 | How do you prove the replacement index is sufficiently complete and cu
+S2Q09 | 08:17:06 | - | none | yes | 0 | 0 | 0 | Place the RAC components on Azure, Choose Azure services for document 
+S2Q09F | 08:18:42 | FIRE | reference | yes | 1 | 284 | 1 | How would your design change if the documents and their processing had
+S2Q10 | 08:19:58 | - | none | yes | 0 | 0 | 0 | Make ingestion recoverable under duplicate delivery, Suppose queue mes
+S2Q10F | 08:21:35 | - | none | yes | 0 | 0 | 0 | How would you handle poison documents? Dead letter replay, and a delet
+
+GATED IDS WITH A NON-EMPTY BLOCK (7): S1Q04F S1Q06F S1Q08 S2Q05F S2Q08 S2Q08F S2Q09F
+gate fired but nothing to add (byte-identical, ungated for the replay): S2Q01F
+byte-identical ids (not generated, not graded): 32
+
+--- blocks ---
+
+[S1Q04F] cue=constraint chain=S1Q04 sha=8a58894a5e5f chars=576
+current: How would you reduce the sorting cost for millions of customers while preserving the tie rule?
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and breaks score ties by original row order. Tell me what it does for an invalid k, four empty inputs, and when there are no positive labels.
+
+[S1Q06F] cue=pronoun chain=S1Q06 sha=03260be280dc chars=556
+current: How would you index those tables, and what changes if historical records can be corrected after ingestion?
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- Now is SQL one, construct a point in time feature. You have a snapshots table with a customer ID and a snapshot time, and an events table with a customer ID, an event time, an ingested at time, and an event type. Write postgreSQL that counts support calls in the thirty days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.
+
+[S1Q08] cue=reference chain=null sha=c4cd0f676d8b chars=360
+current: Now add delayed outcomes and experimentation, extend that design so churn outcomes arrive thirty days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- Design the next version of the churn platform, it has to support nightly scoring for 400,000 customers, and on demand scoring for customer service agents. Cover ingestion, feature computation,…
+
+[S2Q05F] cue=pronoun chain=S2Q05 sha=b2e08983d0f0 chars=500
+current: An example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi hop dependencies.
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- PAC retrieved evidence into a context budget, implement a function called select context, taking chunks and a budget. Each chunk has an ID, a document ID, a relevance score, and a positive token count. Use a greedy relevance first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.
+
+[S2Q08] cue=reference chain=null sha=b6df1c5a0b43 chars=358
+current: Migrate the embedding model without an outage, extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- Design a multi tenant rag service over 10,000,000 documents. It has to support document updates and deletions, access controlled retrieval, citations, asynchronous ingestion, and interactive…
+
+[S2Q08F] cue=pronoun chain=S2Q08 sha=ebac9c55d83e chars=471
+current: How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- Migrate the embedding model without an outage, extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.
+
+[S2Q09F] cue=reference chain=S2Q09 sha=5df9928795ce chars=284
+current: How would your design change if the documents and their processing had to remain within an approved region?
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?
+
+=== 3. S50L PLAY TIMES (UTC) ===
+S1Q01	07:13:51	clip 12.4445s	verbal
+S1Q01F	07:15:03	clip 6.9995s	followup
+S1Q02	07:16:10	clip 26.2295s	reasoning
+S1Q02F	07:17:52	clip 10.5645s	followup
+S1Q03	07:19:02	clip 16.5945s	reasoning
+S1Q03F	07:20:34	clip 8.0045s	followup
+S1Q04	07:21:42	clip 30.3695s	coding
+S1Q04F	07:24:42	clip 5.5745s	followup
+S1Q05	07:25:48	clip 25.1895s	codingHeavy
+S1Q05F	07:29:13	clip 8.7345s	followup
+S1Q06	07:30:22	clip 27.7195s	sql
+S1Q06F	07:33:19	clip 7.0095s	followup
+S1Q07	07:34:26	clip 24.4245s	design
+S1Q07F	07:37:21	clip 8.0945s	followup
+S1Q08	07:38:29	clip 18.3845s	design
+S1Q08F	07:41:17	clip 5.7745s	followup
+S1Q09	07:42:23	clip 21.8495s	cloud
+S1Q09F	07:44:15	clip 8.6945s	followup
+S1Q10	07:45:24	clip 20.3795s	cloud
+S1Q10F	07:47:14	clip 9.9745s	followup
+S2Q01	07:48:24	clip 16.3495s	verbal
+S2Q01F	07:49:40	clip 5.3395s	followup
+S2Q02	07:50:46	clip 25.8045s	reasoning
+S2Q02F	07:52:27	clip 12.2095s	followup
+S2Q03	07:53:39	clip 14.1945s	reasoning
+S2Q03F	07:55:08	clip 6.9495s	followup
+S2Q04	07:56:15	clip 23.0395s	coding
+S2Q04F	07:59:08	clip 7.9845s	followup
+S2Q05	08:00:16	clip 24.9445s	coding
+S2Q05F	08:03:11	clip 8.8795s	followup
+S2Q06	08:04:20	clip 19.6745s	codingHeavy
+S2Q06F	08:07:39	clip 10.3095s	followup
+S2Q07	08:08:50	clip 22.1995s	design
+S2Q07F	08:11:42	clip 7.3845s	followup
+S2Q08	08:12:49	clip 19.3045s	design
+S2Q08F	08:15:39	clip 6.8545s	followup
+S2Q09	08:16:45	clip 18.0195s	cloud
+S2Q09F	08:18:33	clip 5.9095s	followup
+S2Q10	08:19:39	clip 16.7145s	cloud
+S2Q10F	08:21:26	clip 6.5945s	followup
+
+=== 4. RARE-TERM MATCHES ON THE ROSTER (reference-cue items, shown for information; the selector does not search on them) ===
+S1Q08 (reference): 3 matches S1Q03[retention] S1Q04[labels] S1Q07[design,prediction]
+S2Q08 (reference): 6 matches S1Q08[extend] S1Q08F[introduce] S2Q01[embedding] S2Q03[documents] S2Q06F[extend] S2Q07[documents,updates]
+S2Q09F (reference): 0 matches 
+S3Q02F (reference): 2 matches S2Q05[token] S2Q09F[change]
+S3Q08 (reference): 5 matches S2Q02[define] S2Q08[outage] S3Q02[gateway,latency,define] S3Q05F[requests] S3Q07[gateway]
+S4Q08 (reference): 10 matches S1Q01[compare] S1Q09[deployment] S1Q10F[deployment] S2Q03[compare] S2Q08[different,quality] S3Q04[memory] S3Q08[requirements] S4Q03[release] S4Q06[memory] S4Q06F[larger]
+S4Q10F (reference): 4 matches S3Q06F[response] S3Q08F[response] S4Q01[readiness,probe] S4Q01F[probe]
+
+=== 5. CALLBACKS ===
+
+[C1] slot=S1Q09F: EXCLUDED (amendment A1: the slot carries a Live-listener block)
+
+[C2] slot=S1Q10F (07:47:27Z) ref=S1Q06 played 17.1 min earlier kind=named gate=callback lines=2 chars=561 refSelected=yes
+Back to the point-in-time SQL feature you wrote: how would you compute it for a ninety-day window instead of thirty?
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- Now is SQL one, construct a point in time feature. You have a snapshots table with a customer ID and a snapshot time, and an events table with a customer ID, an event time, an ingested at time, and…
+- Design the next version of the churn platform, it has to support nightly scoring for 400,000 customers, and on demand scoring for customer service agents. Cover ingestion, feature computation,…
+
+[C3] slot=S1Q07F (07:37:31Z) ref=S1Q03 played 18.5 min earlier kind=vague gate=callback lines=3 chars=907 refSelected=yes
+You mentioned a retention campaign earlier. How would you measure its uplift?
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- Did the model actually reduce churn? Your CV reports churn decreasing from 9.5% to 8.1%. How would you distinguish the effect of the model and the retention campaign from seasonality customer mix,…
+- Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift…
+- Design the next version of the churn platform, it has to support nightly scoring for 400,000 customers, and on demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online path.
+
+[C4] slot=S2Q03F (07:55:17Z) ref=S1Q04 played 33.6 min earlier kind=vague gate=callback lines=1 chars=363 refSelected=yes
+Going back to what you said about the tie rule, would that still hold with float scores from two models?
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift…
+
+[C5] slot=S2Q08F (08:15:47Z) ref=S2Q04 played 19.5 min earlier kind=named gate=callback lines=3 chars=803 refSelected=yes
+Going back to reciprocal rank fusion, how would you tune the constant c?
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- Merge two retrieval result lists. Implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique documenteds ordered from best to worst. Use one based ranks and a…
+- Why might you use Rank Fusion in of adding the raw scores, and how would you add a configurable weight for each retrieval source?
+- Migrate the embedding model without an outage, extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.
+
+[C6] slot=S2Q06F: EXCLUDED (amendment A1: the slot carries a Live-listener block)
+
+=== 6. DROPPED-PARENT CASES ===
+
+[D1] = S1Q06F with S1Q06 never answered; stand-in parent = S1Q05F (dispatched 245 s earlier, > 180 s so no preview) gate=pronoun lines=1 chars=289 userA 4205 -> 3956 chars
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer level holdout?
+
+[D2] = S2Q05F with S2Q05 never answered; stand-in parent = S2Q04F (dispatched 245 s earlier, > 180 s so no preview) gate=pronoun lines=1 chars=296 userA 4508 -> 4259 chars
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- Why might you use Rank Fusion in of adding the raw scores, and how would you add a configurable weight for each retrieval source?
+
+[D3] = S2Q08F with S2Q08 never answered; stand-in parent = S2Q07F (dispatched 236 s earlier, > 180 s so no preview) gate=pronoun lines=1 chars=272 userA 4146 -> 3897 chars
+EARLIER QUESTIONS (already answered; use them only to resolve references such as "it", "that" or "those" in the current question; answer only the current question):
+- A user loses access to a document while a query is running. Where and when must authorization be checked?
+dropped-parent cases excluded: none
+callbacks excluded by amendment A1: C1 C6
+
+wrote s50l-gated.json (14 entries) and parity-fixture.json (46 entries: 14 with a block, 32 empty)
+
+=== GATED LIST (id: kind, cue, block sha, block chars, added chars incl. separator) ===
+S1Q04F	roster	constraint	8a58894a5e5f	576	578
+S1Q06F	roster	pronoun	03260be280dc	556	558
+S1Q08	roster	reference	c4cd0f676d8b	360	362
+S2Q05F	roster	pronoun	b2e08983d0f0	500	502
+S2Q08	roster	reference	b6df1c5a0b43	358	360
+S2Q08F	roster	pronoun	ebac9c55d83e	471	473
+S2Q09F	roster	reference	5df9928795ce	284	286
+C2	callback	callback	9252786884b9	561	563
+C3	callback	callback	483a202d1bd9	907	909
+C4	callback	callback	4d19e1abc3f4	363	365
+C5	callback	callback	3753626255ad	803	805
+D1	dropped	pronoun	cef7cd851c2d	289	291
+D2	dropped	pronoun	1fadda53555d	296	298
+D3	dropped	pronoun	617edb222ab3	272	274

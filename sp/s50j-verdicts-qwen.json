@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Covers data fit, production latency constraints and a logistic-regression baseline in 66 natural spoken words."
+  },
+  "S1Q02": {
+    "correctness": 0,
+    "on_topic": 0,
+    "delivery": 1,
+    "reason": "Refuses with 'I can't share that information' instead of doing the arithmetic; would embarrass the candidate."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct RCT-then-difference-in-differences causal argument, but 95 words is over the spoken length target."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct precision, recall and lift definitions plus all three edge cases, but 151 words is far too long."
+  },
+  "S1Q05": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Right pipeline hygiene but misses the key mechanism: an embargo gap so the 30-day label window cannot straddle the split."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "LEFT JOIN with ingested_at cutoff and COUNT giving zero is right; spoken SQL predicates and 87 words make it clunky."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Hits every requested layer and names the shared feature store and registry, but runs 108 words."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, joins and retraining windows are sound, but experiment assignment is only logged, never designed."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate AWS-to-Azure mapping across all eight components; 87 words slightly over the spoken target."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, Entra-ID Postgres auth, Key Vault and per-environment isolation are all correct; 90 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every named stage with a coherent concrete stack, but 90 words and a rapid-fire list-like cadence."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives one blanket denominator and a single plus-or-minus 1.5 percent for all three metrics rather than per-metric definitions."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sharp contrast of fixed workflow, decomposition and agent with the latency and cost trade-off; 87 words."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct reciprocal rank fusion with one-based ranks, configurable c and deterministic tie-break, in 64 spoken words."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy relevance-first with dedup, skip-not-break and the two-per-document cap all correct, but 110 words."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, per-case wait_for, swallowed exceptions and order-preserving gather is exactly right in 72 words."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-sharded hybrid index, pre-filtered permissions, tombstone deletes and leakage tests are solid; 120 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioning, dual-write backfill, shadow comparison, pointer cutover and rollback all covered, but 161 words is far too long."
+  },
+  "S2Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Omits the explicitly asked work queue, jumping from Event Grid straight to Functions as workers."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct dedup key, durable completion record and ack-after-commit ordering; 86 words is slightly over."
+  }
+}

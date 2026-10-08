@@ -1,0 +1,15 @@
+mode=REAL dist=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\live-router-a\dist-electron
+model=gemini-3.8-live shas_ok=true instruction_sha12=e29bf3810128 block_sha12=e11c240063ea
+key: GEMINI_API_KEY present in MAIN .env (value not printed)
+forced reconnect after RH02: up again
+clip RE05 EASY firstTextMs=849 firstWordMs=849 endKind=generationComplete route=easy-answer firstWordRoute=live/- check=- words=29
+clip RH02 HARD firstTextMs=610 firstWordMs=826 endKind=generationComplete route=hard firstWordRoute=hard/- check=too-short words=1
+clip RE13 EASY firstTextMs=1277 firstWordMs=1277 endKind=generationComplete route=easy-answer firstWordRoute=live/- check=- words=33
+clip RH16 HARD firstTextMs=733 firstWordMs=879 endKind=generationComplete route=hard firstWordRoute=hard/- check=too-short words=1
+[Router] session connect model=gemini-3.8-live block_sha12=e11c240063ea instruction_sha12=e29bf3810128 context_sha12=dd1e8cca2021 context_chars=127
+[Router] session up setup_ms=742
+[Router] session close gen=1 code=1000 reason=connection closed stale=no quota=no
+[Router] session reconnect attempt=1 reason=connection closed
+[Router] session connect model=gemini-3.8-live block_sha12=e11c240063ea instruction_sha12=e29bf3810128 context_sha12=dd1e8cca2021 context_chars=127
+[Router] session up setup_ms=624
+PROBE PASS

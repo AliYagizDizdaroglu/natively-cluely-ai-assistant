@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic right (2,850 TP, 57%) but calls a 57-vs-60 gap 'within standard rounding' and never states recall as 30%."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Nails the key mechanisms: predicates in the ON clause, ingested-at guard against leakage, and COUNT on the events column to keep zeros; 92 words."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every named stage and correctly identifies the shared feature store as the anti-skew component; ingestion is thin and it runs 112 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging with prediction id and variant, deterministic hash assignment, delayed outcome join, and two valid label-debiasing options; 95 words."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Gives uncertainty for only one of the three metrics and spends its words on methodology rather than the asked denominators; 122 words."
+  }
+}

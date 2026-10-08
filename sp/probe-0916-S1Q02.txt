@@ -1,0 +1,8 @@
+
+=== thinkingLevel-medium  ttft 1283 ms  total 1611 ms  thoughtParts 0
+usage: prompt 5157 thoughts n/a candidates 133 total 5290
+text (64 words): With 100,000 subscribers and a 9.5% churn rate, we have 9,500 total churners. If the top 5% risk band—which is 5,000 subscribers—captures 30% of those churners, that gives us 2,850 true positives. At a 60% precision, those 2,850 true positives imply 4,750 total predictions, which fits within our 5,000-subscriber band. This results in a recall of 30%, which is consistent with the figures reported.
+
+=== thinkingLevel-high  ttft 4652 ms  total 4805 ms  thoughtParts 0
+usage: prompt 5157 thoughts 1293 candidates 105 total 6555
+text (55 words): With 100,000 subscribers and a 9.5% churn rate, we have 9,500 total churners. Targeting the top 5% risk band means 5,000 subscribers. Capturing 30% of churners results in 2,850 true positives. That gives us 30% recall and 57% precision, which is consistent with the 60% figure on my CV, accounting for rounding in the reporting.

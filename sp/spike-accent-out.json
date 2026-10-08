@@ -1,0 +1,23 @@
+[
+ {
+  "id": "neutral",
+  "secs": 13.450958333333332,
+  "wer": 0.06896551724137931,
+  "lost": [],
+  "text": "Our inference service has a P99 latency of eight hundred ms. Against an SLA of 500 at about 4,000 requests per second. How would you bring it back under the SLA?"
+ },
+ {
+  "id": "turkish",
+  "secs": 15.170958333333333,
+  "wer": 0.06896551724137931,
+  "lost": [],
+  "text": "Our inference service has a P99 of eight hundred milliseconds against an SLA of 500 at about 4,000 requests per second. How would you bring it back under the SLA?"
+ },
+ {
+  "id": "nonnative",
+  "secs": 18.210958333333334,
+  "wer": 0.034482758620689655,
+  "lost": [],
+  "text": "Our inference service has a p 99 latency of eight hundred milliseconds, against an SLA of 500, at about 4,000 requests per second. How would you bring it back under the SLA?"
+ }
+]

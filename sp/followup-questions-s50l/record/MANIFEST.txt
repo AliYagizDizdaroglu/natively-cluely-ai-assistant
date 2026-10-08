@@ -1,0 +1,50 @@
+# MANIFEST — the ONE pooled s50l re-run (PREREGISTER-followup-questions.md §7 + AMENDMENT-s50l.fable.md), run 2026-10-03
+# Thursday's half (s50m) is committed in adb25a8 (passes/2026-10-01-followup-questions/); it is cited, not copied.
+
+## Files in this folder (sha256)
+29768769900ad51aef8b611960b9507aca257f8ffb4088d87800f8185ae155ec  interview60.answers.gemini-3.5-flash-lite_fquestions-A-r1.json
+140f27704c678b74bee0ae420936a9cc9e1f89493f0536c23f51d0a914eb4068  interview60.answers.gemini-3.5-flash-lite_fquestions-A-r2.json
+73d1fb227262b4d37900df1b335e8c80cc83e16c29427ac52a26855fb3e9b2d3  interview60.answers.gemini-3.5-flash-lite_fquestions-A-r3.json
+cd74226099ad9cafa1c6f105f8b91731924af9ae231aef6891613add42dac7fd  interview60.answers.gemini-3.5-flash-lite_fquestions-B-r1.json
+e4462b32bb080b47dd01290830a74bb093a62c06ac5626e0dcbddcf79a940837  interview60.answers.gemini-3.5-flash-lite_fquestions-B-r2.json
+b7a048ee749512ba2bc1e4c0026ad36668ce5dd0f5df14833a7df056612792ef  interview60.answers.gemini-3.5-flash-lite_fquestions-B-r3.json
+2ecc5cec05fc1fa70aa80998199fb6625b492857a35a88641d2d99f795b7b463  blind/graders.json
+48ffcbffad00972f3054d1f966b436aef6696d61e6cd3c81e543cbac17901052  blind/key.blind-1.json
+059d870ca2f72b374e0e9c240f67ee5c3073b05311028d47509902e6f7d5e9ff  blind/key.blind-2.json
+297f52dbb4c5659c677fe39d67ea7377570bdbaeeb6867bc64ca7b205d99af40  blind/key.blind-3.json
+13d130e8de976ecd094b46e68c780a65ad5a7f8fd9df3c4ec497be8afef5fc2a  blind/key.blind-4.json
+d5f38772e74108c164b947da1d41cf0c85978b5659d63fe7b7c72eabaef7926f  blind/pairs.blind-1.json
+188922da036d59b613483e894fe6fa25656b3a77e94dedad4cab3e06009b40d7  blind/pairs.blind-2.json
+679edc2bb7ca3172544c45218b5fb9d5f98e6f1b994bb3458b9fb9772eb13ae1  blind/pairs.blind-3.json
+542671247af27a5fe0a5e2b68c2a34e0e970962b04534f599ee7dc17a577db02  blind/pairs.blind-4.json
+5b2a53b3f842d8818c28bd00616a722e2248abcade9a33024b7f8d178f8c904b  blind/verdicts.blind-1.g1.json
+ccc53d621fb82a9c848f692ea0db5aacf29a390df96af59c94415f77162f9ff7  blind/verdicts.blind-1.g2.json
+0aefba8db66a892f7af69455f560461a734b0f64fbfa67af00ec421d40951d23  blind/verdicts.blind-2.g1.json
+45459e00fad3146fb658644293729af0b2f4198373b075ed5240d7d375608185  blind/verdicts.blind-2.g2.json
+74911b26464650a4a499487700e991c1edb77fc23cb5617e88c7143c61678e94  blind/verdicts.blind-3.g1.json
+2906c0b7ee26fc276b8503dc246e7844d2b6b96fe23378876b35163489646ff8  blind/verdicts.blind-3.g2.json
+7fe48c080db6c569c3f80111d9b9058678c086e7d16845159e118c5390f3ca55  blind/verdicts.blind-4.g1.json
+3bfb754217d0daf9f7af85115e7a63f2cdc00e5d10415e3c343f3e61f6a574f1  blind/verdicts.blind-4.g2.json
+b0a068bd35cf8be8bf7b2303ecfbcb1b50a93fcab71772734a7e71530fadcf94  run.log
+14e6c3006afaf1ab08679a223ac5e1cb587b0a9c73755bb32b6f65b007b09816  run-pass.out.txt
+8af59425c3aae9b85e4ae091532e7e655d2f7e1a14a80b0c369650ce0b192dd1  RESULT-pooled.txt
+c8392f5d7645c608dc39af027fc9339667e3f6fed3f66a0d9dcff36782659715  RESULT-s50l-alone.txt
+d1c12335de48cdfdc1e9b450b34bb601d536cb88abd6cd3317ac6ddf9ed540bf  grader-agents.txt
+3c7d81d8e218afe1886b97eeb5bb266b48415e67d6ba42de2528f0f92992fd24  grader-models.out.txt
+6be83f0ef07e843a426c0b7347d5a9dddcf515d9c8d51a1368cdcd5ef735a94d  probe-model.out.txt
+2263bc7d329be90b656224b2858231eb8092fe0f6e298944469ebf28771907fc  audit-graders.out.txt
+7957de0ef1a24444ee666542a3b6cbbc2139e8e9f37fec04632c424bd2fb3eee  AMENDMENT-s50l.fable.md
+f325995c64515a50158ff576f959206cf11c208e4ba66b309287c13484c82b39  AMENDMENT-s50l.md
+14b40dd5ff96a3118ddb300be209e0dc222d09103dc999cbfd52ddc94a829684  AMENDMENT-REVIEW.md
+455e259585b8fadb7804c795d3f14ce04702ae9cee7adc9d4be7a75f08e8ccc6  PREP-REVIEW.md
+a218fa84e48c6294f50b4ac982e9be9eb3302b17e1a77c1d7ffaf8938429e0af  RUNBOOK.md
+fe0dc50d651156fb31a96f457c16cadb4bce1aae8ba682f6d116f8f42aa2e5aa  s50l-parity-fixture.json
+
+## Not committed, recorded by hash (s50l-gated.json holds the captured prompts = the user's profile; never committed)
+bfbf1e24ddd4a6a53173f0cc2ce119a851e6d30e41ef9cc314967b51793d889b  followup-context/s50l-gated.json
+cc127dab401a45aa9002a5423853312564e55e190c76ea8d4796e8a70ffa8ca1  followup-context/PREREGISTER-followup-questions.md (committed in adb25a8)
+0459f578e47706424df0c41684a46c041fa52109923c1eb25df1c484d0dda256  followup-context/earlierQuestions.ref.mjs
+b4472648606056e643afa34d9b30e22797295f501e2475705da2c28bed1f68f2  followup-context/gate-report-s50l.mjs
+da58128e42874f79b7f8378ebf3c6b6c3dccb358a72e947a4f6402644b1fa7a6  followup-context/stamp-s50l.mjs
+7229aa8df71fd3cb296de96a5af9593425b294cad3b43c7bc49d6cc360fac68e  pooled-decide.mjs
+ebaab94a5f26383e98e25e5d41e35092dff4798dfdf8880f6b2f0de39e747ae8  audit-graders.mjs

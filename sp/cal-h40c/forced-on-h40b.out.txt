@@ -1,0 +1,241 @@
+check-smoke-hedge  mode=forced  since=2026-09-26T10:32:00.000Z
+debug-log=C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad/cal-h40c/h40b-copy/natively_debug.log (6523 lines in window)  diag-log=C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad/cal-h40c/h40b-copy/verbal-diag.log (421 lines in window)
+
+per-answer:
+  2026-09-26T10:33:29.950Z  answer-source lines=0  first-token=3906ms  4 problem(s)
+  2026-09-26T10:33:46.994Z  answer-source lines=0  first-token=4451ms  4 problem(s)
+  2026-09-26T10:34:07.717Z  answer-source lines=0  first-token=6541ms  4 problem(s)
+  2026-09-26T10:35:15.648Z  answer-source lines=0  first-token=6890ms  4 problem(s)
+  2026-09-26T10:37:50.550Z  answer-source lines=0  first-token=4591ms  4 problem(s)
+  2026-09-26T10:38:57.812Z  answer-source lines=0  first-token=15368ms  4 problem(s)
+  2026-09-26T10:40:21.027Z  answer-source lines=0  first-token=13608ms  4 problem(s)
+  2026-09-26T10:42:54.977Z  answer-source lines=0  first-token=10076ms  4 problem(s)
+  2026-09-26T10:45:01.794Z  answer-source lines=0  first-token=14877ms  4 problem(s)
+  2026-09-26T10:46:08.077Z  answer-source lines=0  first-token=9216ms  4 problem(s)
+  2026-09-26T10:47:31.603Z  answer-source lines=0  first-token=6423ms  4 problem(s)
+  2026-09-26T10:48:32.586Z  answer-source lines=0  first-token=6072ms  4 problem(s)
+  2026-09-26T10:49:53.099Z  answer-source lines=0  first-token=3460ms  4 problem(s)
+  2026-09-26T10:52:28.030Z  answer-source lines=0  first-token=2373ms  4 problem(s)
+  2026-09-26T10:53:37.815Z  answer-source lines=0  first-token=4623ms  4 problem(s)
+  2026-09-26T10:55:02.510Z  answer-source lines=0  first-token=6338ms  4 problem(s)
+  2026-09-26T10:57:35.781Z  answer-source lines=0  first-token=7872ms  4 problem(s)
+  2026-09-26T10:58:42.488Z  answer-source lines=0  first-token=6119ms  4 problem(s)
+  2026-09-26T11:01:22.316Z  answer-source lines=0  first-token=10487ms  4 problem(s)
+  2026-09-26T11:03:56.530Z  answer-source lines=0  first-token=4158ms  4 problem(s)
+  2026-09-26T11:05:01.548Z  answer-source lines=0  first-token=1963ms  4 problem(s)
+  2026-09-26T11:07:41.017Z  answer-source lines=0  first-token=4130ms  4 problem(s)
+  2026-09-26T11:08:46.673Z  answer-source lines=0  first-token=4770ms  4 problem(s)
+  2026-09-26T11:10:05.716Z  answer-source lines=0  first-token=3095ms  4 problem(s)
+  2026-09-26T11:11:24.729Z  answer-source lines=0  first-token=4709ms  4 problem(s)
+  2026-09-26T11:12:26.931Z  answer-source lines=0  first-token=5026ms  4 problem(s)
+  2026-09-26T11:13:34.303Z  answer-source lines=0  first-token=3667ms  4 problem(s)
+  2026-09-26T11:14:53.769Z  answer-source lines=0  first-token=6498ms  4 problem(s)
+  2026-09-26T11:15:59.728Z  answer-source lines=0  first-token=4240ms  4 problem(s)
+  2026-09-26T11:17:20.338Z  answer-source lines=0  first-token=4422ms  4 problem(s)
+  2026-09-26T11:18:38.014Z  answer-source lines=0  first-token=4653ms  4 problem(s)
+  2026-09-26T11:19:41.074Z  answer-source lines=0  first-token=4604ms  4 problem(s)
+  2026-09-26T11:20:49.519Z  answer-source lines=0  first-token=4374ms  4 problem(s)
+  2026-09-26T11:22:10.115Z  answer-source lines=0  first-token=5240ms  4 problem(s)
+  2026-09-26T11:23:29.052Z  answer-source lines=0  first-token=3900ms  4 problem(s)
+  2026-09-26T11:25:07.148Z  answer-source lines=0  first-token=8120ms  4 problem(s)
+  2026-09-26T11:26:27.383Z  answer-source lines=0  first-token=3335ms  4 problem(s)
+  2026-09-26T11:27:33.294Z  answer-source lines=0  first-token=6455ms  4 problem(s)
+  2026-09-26T11:29:08.135Z  answer-source lines=0  first-token=3981ms  4 problem(s)
+  2026-09-26T11:30:26.489Z  answer-source lines=0  first-token=2445ms  4 problem(s)
+  2026-09-26T11:31:31.522Z  answer-source lines=0  first-token=3548ms  4 problem(s)
+  2026-09-26T11:33:08.978Z  answer-source lines=0  first-token=3174ms  4 problem(s)
+  2026-09-26T11:34:40.323Z  answer-source lines=0  first-token=5281ms  4 problem(s)
+  2026-09-26T11:35:58.977Z  answer-source lines=0  first-token=29890ms  4 problem(s)
+  2026-09-26T11:37:06.569Z  answer-source lines=0  first-token=14771ms  4 problem(s)
+  2026-09-26T11:38:36.815Z  answer-source lines=0  first-token=6475ms  4 problem(s)
+
+[PASS] startup line
+  (info) startup line absent (pre-dates the build)
+[PASS] no unhandled rejection
+[FAIL] forced-mode per-answer rules
+  - 2026-09-26T10:33:29.950Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:33:29.950Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:33:29.950Z: no "won by" line
+  - 2026-09-26T10:33:29.950Z: no "answer source:" line
+  - 2026-09-26T10:33:46.994Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:33:46.994Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:33:46.994Z: no "won by" line
+  - 2026-09-26T10:33:46.994Z: no "answer source:" line
+  - 2026-09-26T10:34:07.717Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:34:07.717Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:34:07.717Z: no "won by" line
+  - 2026-09-26T10:34:07.717Z: no "answer source:" line
+  - 2026-09-26T10:35:15.648Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:35:15.648Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:35:15.648Z: no "won by" line
+  - 2026-09-26T10:35:15.648Z: no "answer source:" line
+  - 2026-09-26T10:37:50.550Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:37:50.550Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:37:50.550Z: no "won by" line
+  - 2026-09-26T10:37:50.550Z: no "answer source:" line
+  - 2026-09-26T10:38:57.812Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:38:57.812Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:38:57.812Z: no "won by" line
+  - 2026-09-26T10:38:57.812Z: no "answer source:" line
+  - 2026-09-26T10:40:21.027Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:40:21.027Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:40:21.027Z: no "won by" line
+  - 2026-09-26T10:40:21.027Z: no "answer source:" line
+  - 2026-09-26T10:42:54.977Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:42:54.977Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:42:54.977Z: no "won by" line
+  - 2026-09-26T10:42:54.977Z: no "answer source:" line
+  - 2026-09-26T10:45:01.794Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:45:01.794Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:45:01.794Z: no "won by" line
+  - 2026-09-26T10:45:01.794Z: no "answer source:" line
+  - 2026-09-26T10:46:08.077Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:46:08.077Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:46:08.077Z: no "won by" line
+  - 2026-09-26T10:46:08.077Z: no "answer source:" line
+  - 2026-09-26T10:47:31.603Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:47:31.603Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:47:31.603Z: no "won by" line
+  - 2026-09-26T10:47:31.603Z: no "answer source:" line
+  - 2026-09-26T10:48:32.586Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:48:32.586Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:48:32.586Z: no "won by" line
+  - 2026-09-26T10:48:32.586Z: no "answer source:" line
+  - 2026-09-26T10:49:53.099Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:49:53.099Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:49:53.099Z: no "won by" line
+  - 2026-09-26T10:49:53.099Z: no "answer source:" line
+  - 2026-09-26T10:52:28.030Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:52:28.030Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:52:28.030Z: no "won by" line
+  - 2026-09-26T10:52:28.030Z: no "answer source:" line
+  - 2026-09-26T10:53:37.815Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:53:37.815Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:53:37.815Z: no "won by" line
+  - 2026-09-26T10:53:37.815Z: no "answer source:" line
+  - 2026-09-26T10:55:02.510Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:55:02.510Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:55:02.510Z: no "won by" line
+  - 2026-09-26T10:55:02.510Z: no "answer source:" line
+  - 2026-09-26T10:57:35.781Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:57:35.781Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:57:35.781Z: no "won by" line
+  - 2026-09-26T10:57:35.781Z: no "answer source:" line
+  - 2026-09-26T10:58:42.488Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T10:58:42.488Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T10:58:42.488Z: no "won by" line
+  - 2026-09-26T10:58:42.488Z: no "answer source:" line
+  - 2026-09-26T11:01:22.316Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:01:22.316Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:01:22.316Z: no "won by" line
+  - 2026-09-26T11:01:22.316Z: no "answer source:" line
+  - 2026-09-26T11:03:56.530Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:03:56.530Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:03:56.530Z: no "won by" line
+  - 2026-09-26T11:03:56.530Z: no "answer source:" line
+  - 2026-09-26T11:05:01.548Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:05:01.548Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:05:01.548Z: no "won by" line
+  - 2026-09-26T11:05:01.548Z: no "answer source:" line
+  - 2026-09-26T11:07:41.017Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:07:41.017Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:07:41.017Z: no "won by" line
+  - 2026-09-26T11:07:41.017Z: no "answer source:" line
+  - 2026-09-26T11:08:46.673Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:08:46.673Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:08:46.673Z: no "won by" line
+  - 2026-09-26T11:08:46.673Z: no "answer source:" line
+  - 2026-09-26T11:10:05.716Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:10:05.716Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:10:05.716Z: no "won by" line
+  - 2026-09-26T11:10:05.716Z: no "answer source:" line
+  - 2026-09-26T11:11:24.729Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:11:24.729Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:11:24.729Z: no "won by" line
+  - 2026-09-26T11:11:24.729Z: no "answer source:" line
+  - 2026-09-26T11:12:26.931Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:12:26.931Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:12:26.931Z: no "won by" line
+  - 2026-09-26T11:12:26.931Z: no "answer source:" line
+  - 2026-09-26T11:13:34.303Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:13:34.303Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:13:34.303Z: no "won by" line
+  - 2026-09-26T11:13:34.303Z: no "answer source:" line
+  - 2026-09-26T11:14:53.769Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:14:53.769Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:14:53.769Z: no "won by" line
+  - 2026-09-26T11:14:53.769Z: no "answer source:" line
+  - 2026-09-26T11:15:59.728Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:15:59.728Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:15:59.728Z: no "won by" line
+  - 2026-09-26T11:15:59.728Z: no "answer source:" line
+  - 2026-09-26T11:17:20.338Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:17:20.338Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:17:20.338Z: no "won by" line
+  - 2026-09-26T11:17:20.338Z: no "answer source:" line
+  - 2026-09-26T11:18:38.014Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:18:38.014Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:18:38.014Z: no "won by" line
+  - 2026-09-26T11:18:38.014Z: no "answer source:" line
+  - 2026-09-26T11:19:41.074Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:19:41.074Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:19:41.074Z: no "won by" line
+  - 2026-09-26T11:19:41.074Z: no "answer source:" line
+  - 2026-09-26T11:20:49.519Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:20:49.519Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:20:49.519Z: no "won by" line
+  - 2026-09-26T11:20:49.519Z: no "answer source:" line
+  - 2026-09-26T11:22:10.115Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:22:10.115Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:22:10.115Z: no "won by" line
+  - 2026-09-26T11:22:10.115Z: no "answer source:" line
+  - 2026-09-26T11:23:29.052Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:23:29.052Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:23:29.052Z: no "won by" line
+  - 2026-09-26T11:23:29.052Z: no "answer source:" line
+  - 2026-09-26T11:25:07.148Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:25:07.148Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:25:07.148Z: no "won by" line
+  - 2026-09-26T11:25:07.148Z: no "answer source:" line
+  - 2026-09-26T11:26:27.383Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:26:27.383Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:26:27.383Z: no "won by" line
+  - 2026-09-26T11:26:27.383Z: no "answer source:" line
+  - 2026-09-26T11:27:33.294Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:27:33.294Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:27:33.294Z: no "won by" line
+  - 2026-09-26T11:27:33.294Z: no "answer source:" line
+  - 2026-09-26T11:29:08.135Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:29:08.135Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:29:08.135Z: no "won by" line
+  - 2026-09-26T11:29:08.135Z: no "answer source:" line
+  - 2026-09-26T11:30:26.489Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:30:26.489Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:30:26.489Z: no "won by" line
+  - 2026-09-26T11:30:26.489Z: no "answer source:" line
+  - 2026-09-26T11:31:31.522Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:31:31.522Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:31:31.522Z: no "won by" line
+  - 2026-09-26T11:31:31.522Z: no "answer source:" line
+  - 2026-09-26T11:33:08.978Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:33:08.978Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:33:08.978Z: no "won by" line
+  - 2026-09-26T11:33:08.978Z: no "answer source:" line
+  - 2026-09-26T11:34:40.323Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:34:40.323Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:34:40.323Z: no "won by" line
+  - 2026-09-26T11:34:40.323Z: no "answer source:" line
+  - 2026-09-26T11:35:58.977Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:35:58.977Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:35:58.977Z: no "won by" line
+  - 2026-09-26T11:35:58.977Z: no "answer source:" line
+  - 2026-09-26T11:37:06.569Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:37:06.569Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:37:06.569Z: no "won by" line
+  - 2026-09-26T11:37:06.569Z: no "answer source:" line
+  - 2026-09-26T11:38:36.815Z: no "front=...back=...trigger=..." line
+  - 2026-09-26T11:38:36.815Z: no "back started" line (want reason=trigger at <=100ms)
+  - 2026-09-26T11:38:36.815Z: no "won by" line
+  - 2026-09-26T11:38:36.815Z: no "answer source:" line
+
+FAIL overall (mode=forced)

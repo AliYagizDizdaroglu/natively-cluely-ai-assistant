@@ -1,0 +1,66 @@
+run 2026-10-02T11-39-41-h40d  window 2026-10-02T10:32:01.026Z .. 2026-10-02T11:39:40.483Z
+lines: cues 47 (empty 0), budget 46, won-by 47; diag: invoked 47, first token 46, word budget 46
+R2  cues -> budget            : n 46, under 15 ms 0, median 279 ms, p90 648 ms, min 18 ms, max 853 ms, unpaired 1
+     in log order: 204, 323, 207, 150, 51, 77, 84, 166, 24, 107, 563, 107, 736, 213, 402, 663, 356, 175, 333, 380, 112, 152, 296, 648, 261, 329, 636, 327, 291, 230, 232, 186, 853, 484, 493, 284, 274, 622, 234, 179, 565, 401, 201, 713, 442, 18
+R1  won by -> cues            : n 47, under 15 ms 12, median 51 ms, p90 156 ms, min 2 ms, max 643 ms, unpaired 0
+     in log order: 34, 43, 79, 85, 6, 277, 62, 133, 474, 30, 31, 4, 85, 2, 98, 14, 51, 225, 89, 156, 48, 22, 4, 4, 52, 62, 57, 5, 7, 2, 103, 25, 43, 76, 55, 21, 97, 143, 3, 3, 107, 53, 8, 47, 36, 72, 643
+T   won by -> budget          : n 46, under 15 ms 0, median 360 ms, p90 693 ms, min 57 ms, max 896 ms, unpaired 1
+     in log order: 238, 366, 286, 235, 57, 354, 146, 299, 498, 137, 594, 111, 821, 215, 500, 677, 407, 400, 422, 536, 160, 174, 300, 652, 313, 391, 693, 332, 298, 232, 335, 211, 896, 560, 548, 305, 371, 765, 237, 182, 618, 409, 248, 749, 514, 661
+C   won by -> first token     : n 46, under 15 ms 11, median 53.5 ms, p90 158 ms, min 4 ms, max 645 ms, unpaired 1
+     in log order: 42, 97, 81, 87, 9, 279, 65, 135, 478, 31, 33, 5, 86, 5, 99, 17, 53, 227, 92, 158, 50, 23, 10, 6, 54, 64, 59, 6, 10, 4, 106, 27, 45, 79, 57, 25, 100, 144, 6, 5, 55, 10, 49, 38, 74, 645
+B   first token -> word budget: n 46, under 15 ms 0, median 271 ms, p90 647 ms, min 16 ms, max 852 ms, unpaired 0
+     in log order: 198, 270, 206, 149, 49, 76, 82, 165, 20, 107, 562, 108, 737, 210, 402, 661, 355, 174, 332, 379, 111, 152, 291, 647, 261, 328, 634, 327, 289, 230, 230, 185, 852, 482, 492, 281, 272, 622, 232, 178, 564, 400, 201, 712, 442, 16
+     per finished answer, in log order (ms): R1 / R2 / T | B / C / cues->first token   words   (the whole log: the readiness probe's answers are in it)
+       10:33:27Z     34 /   204 /   238 |   198 /    42 /     8   44  gemini-3.5-flash-lite
+       10:33:44Z     43 /   323 /   366 |   270 /    97 /    54   66  gemini-3.5-flash-lite
+       10:34:04Z     79 /   207 /   286 |   206 /    81 /     2   48  gemini-3.5-flash-lite
+       10:35:11Z     85 /   150 /   235 |   149 /    87 /     2   51  gemini-3.5-flash-lite
+       10:37:46Z      6 /    51 /    57 |    49 /     9 /     3   52  gemini-3.5-flash-lite
+       10:38:55Z    277 /    77 /   354 |    76 /   279 /     2   70  gemini-3.5-flash-lite
+       10:40:16Z     62 /    84 /   146 |    82 /    65 /     3   51  gemini-3.5-flash-lite
+       10:42:50Z    133 /   166 /   299 |   165 /   135 /     2   37  gemini-3.5-flash-lite
+       10:44:59Z    474 /    24 /   498 |    20 /   478 /     4   60  gemini-3.5-flash-lite
+       10:46:03Z     30 /   107 /   137 |   107 /    31 /     1   54  gemini-3.5-flash-lite
+       10:47:26Z     31 /   563 /   594 |   562 /    33 /     2   57  gemini-3.5-flash-lite
+       10:48:28Z      4 /   107 /   111 |   108 /     5 /     1   59  gemini-3.5-flash-lite
+       10:49:58Z     85 /   736 /   821 |   737 /    86 /     1   48  gemini-3.5-flash-lite
+       10:52:25Z      2 /   213 /   215 |   210 /     5 /     3   42  gemini-3.5-flash-lite
+       10:53:35Z     98 /   402 /   500 |   402 /    99 /     1   52  gemini-3.5-flash-lite
+       10:55:05Z     14 /   663 /   677 |   661 /    17 /     3   71  gemini-3.5-flash-lite
+       10:57:34Z     51 /   356 /   407 |   355 /    53 /     2   56  gemini-3.5-flash-lite
+       10:58:43Z    225 /   175 /   400 |   174 /   227 /     2   66  gemini-3.5-flash-lite
+       11:01:47Z     89 /   333 /   422 |   332 /    92 /     3   62  gemini-3.5-flash-lite
+       11:03:51Z    156 /   380 /   536 |   379 /   158 /     2   60  gemini-3.5-flash-lite
+       11:05:00Z     48 /   112 /   160 |   111 /    50 /     2   54  gemini-3.5-flash-lite
+       11:07:33Z     22 /   152 /   174 |   152 /    23 /     1   47  gemini-3.5-flash-lite
+       11:08:42Z      4 /   296 /   300 |   291 /    10 /     6   47  gemini-3.5-flash-lite
+       11:10:03Z      4 /   648 /   652 |   647 /     6 /     2   84  gemini-3.5-flash-lite
+       11:11:25Z     52 /   261 /   313 |   261 /    54 /     2   70  gemini-3.5-flash-lite
+       11:12:24Z     62 /   329 /   391 |   328 /    64 /     2   56  gemini-3.5-flash-lite
+       11:13:33Z     57 /   636 /   693 |   634 /    59 /     2   71  gemini-3.5-flash-lite
+       11:14:49Z      5 /   327 /   332 |   327 /     6 /     1   50  gemini-3.5-flash-lite
+       11:15:56Z      7 /   291 /   298 |   289 /    10 /     3   53  gemini-3.5-flash-lite
+       11:17:16Z      2 /   230 /   232 |   230 /     4 /     2   54  gemini-3.5-flash-lite
+       11:18:36Z    103 /   232 /   335 |   230 /   106 /     3   43  gemini-3.5-flash-lite
+       11:19:41Z     25 /   186 /   211 |   185 /    27 /     2   56  gemini-3.5-flash-lite
+       11:20:46Z     43 /   853 /   896 |   852 /    45 /     2   49  gemini-3.5-flash-lite
+       11:22:13Z     76 /   484 /   560 |   482 /    79 /     3   93  gemini-3.1-flash-lite
+       11:23:33Z     55 /   493 /   548 |   492 /    57 /     2   68  gemini-3.1-flash-lite
+       11:25:14Z     21 /   284 /   305 |   281 /    25 /     4   85  gemini-3.1-flash-lite
+       11:26:29Z     97 /   274 /   371 |   272 /   100 /     3   64  gemini-3.1-flash-lite
+       11:27:40Z    143 /   622 /   765 |   622 /   144 /     1  113  gemini-3.1-flash-lite
+       11:29:09Z      3 /   234 /   237 |   232 /     6 /     3   50  gemini-3.1-flash-lite
+       11:30:24Z      3 /   179 /   182 |   178 /     5 /     2   51  gemini-3.5-flash-lite
+       11:31:33Z     53 /   565 /   618 |   564 /    55 /     2   52  gemini-3.5-flash-lite
+       11:33:06Z      8 /   401 /   409 |   400 /    10 /     2   86  gemini-3.5-flash-lite
+       11:35:00Z     47 /   201 /   248 |   201 /    49 /     2   51  gemini-3.5-flash-lite
+       11:36:03Z     36 /   713 /   749 |   712 /    38 /     2   47  gemini-3.5-flash-lite
+       11:37:11Z     72 /   442 /   514 |   442 /    74 /     2   67  gemini-3.5-flash-lite
+       11:38:37Z    643 /    18 /   661 |    16 /   645 /     2   74  gemini-3.5-flash-lite
+     C by winner: gemini-3.5-flash-lite n 40 median 51.5 ms; gemini-3.1-flash-lite n 6 median 68 ms
+the hold, by the early-close expectation: counted answers (won-by, a non-empty block, words, stream >= 50 ms) n 46; R2 under 15 ms 0; B under 15 ms 0
+     left out: no won-by line 0; no block, an empty block or a redirect 0; no words 0; a stream under 50 ms 0
+     rule: GONE = both at most a quarter of n; NOT GONE = either at least half; else, or n under 12, NO VERDICT
+HOLD GONE (R2 and B both at most a quarter)
+
+[exit 0]

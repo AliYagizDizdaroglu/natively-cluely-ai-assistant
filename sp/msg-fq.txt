@@ -1,0 +1,9 @@
+docs(passes): the earlier-questions replay is INCONCLUSIVE (+3 of 21), with its evidence
+
+Replayed 2026-10-01 14:12-14:28 on s50m by PREREGISTER-followup-questions.md (94adb6f):
+clauses 1-4 hold, roster gain +3 (PASS >= +4, FAIL <= +1). One pooled re-run on s50l
+remains (Sat 3 Oct at the earliest). Evidence: answers, blind pairs, keys, verdicts,
+grader checks, run log, calibrations, MANIFEST. Left out because they carry the
+candidate's profile: prompts.A.json, prompts.B.json, s50m-gated.json (hashes in MANIFEST.txt).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

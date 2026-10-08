@@ -1,0 +1,37 @@
+revived (16):
+  br1 S1Q08 11:01:47 by whisper/match score 1.00 finals 5
+  s50b S2Q06 08:04:41 by live/match score 1.00 finals 5
+  s50c S2Q05 08:00:59 by whisper/match score 1.00 finals 7
+  s50d S1Q04 07:22:17 by live/match score 1.00 finals 9
+  s50d S1Q06 07:30:55 by live/match score 1.00 finals 8
+  s50d S1Q08 07:38:52 by live/match score 1.00 finals 5
+  s50d S1Q09 07:42:51 by live/match score 1.00 finals 5
+  s50d S2Q04 07:56:42 by live/match score 0.97 finals 6
+  s50d S2Q05 08:00:46 by live/match score 0.93 finals 6
+  s50d S2Q05F 08:03:24 by live/match score 1.00 finals 2
+  s50d S2Q06 08:04:44 by live/match score 1.00 finals 5
+  s50d S2Q08 08:13:13 by whisper/match score 1.00 finals 5
+  s50f S2Q05 08:00:40 by live/match score 0.93 finals 7
+  s50i S2Q07F 08:12:15 by whisper/match score 1.00 finals 3
+  s50i S2Q09 08:17:30 by live/match score 0.56 finals 4
+  s50j S1Q10F 07:47:37 by live/match score 0.92 finals 2
+replaced-declined (0):
+  
+absorbed (17):
+  br1 S1Q08 11:02:46 echo 0.92 vs open 0.00 age 58.6s q="Now, extend the platform design to handle delayed outcomes a"
+  br1 S1Q10F 11:11:12 echo 1.00 vs open 0.00 age 50.1s q="The application receives an authorization error after deploy"
+  br1 S2Q01 11:11:50 echo 0.57 vs open 0.00 age 11.8s q="Briefly identify the key stages of an LLM-based RAG architec"
+  br1 S2Q01F 11:13:09 echo 1.00 vs open 0.00 age 25.7s q="Which of those stages can cause a correct source document to"
+  br1 S2Q02F 11:15:58 echo 0.85 vs open 0.00 age 21.7s q="What ablations would separate the contributions of OCR, clas"
+  br1 S2Q10 11:43:24 echo 1.00 vs open 0.00 age 30.4s q="Suppose queue messages may arrive more than once, and worker"
+  cuesmoke S1Q08 13:38:28 echo 1.00 vs open 0.00 age 72.8s q="Extend that design so churn outcomes arrive 30 days later, a"
+  s50d S1Q03F 07:20:55 echo 0.92 vs open 0.00 age 10.1s q="Why might targeting the highest risk customers be less profi"
+  s50f S1Q01F 07:15:21 echo 1.00 vs open 0.00 age 13.9s q="Under what conditions would you prefer logistic regression, "
+  s50f S1Q09F 07:44:34 echo 1.00 vs open 0.00 age 13.3s q="Which workload would you put on Azure Machine Learning manag"
+  s50f S1Q10 07:46:03 echo 0.97 vs open 0.00 age 21.2s q="Secure the churn platform without embedded credentials. How "
+  s50f S2Q01F 07:49:51 echo 1.00 vs open 0.00 age 8.3s q="Which of those stages can cause a correct source document to"
+  s50i S2Q07F 08:12:11 echo 0.68 vs open 0.14 age 154.5s q="Design a multi-tenant RAG service over ten million documents"
+  s50j S1Q06F 07:34:21 echo 1.00 vs open 0.00 age 45.9s q="How would you index those tables, and what changes if histor"
+  s50j S2Q07 08:10:05 echo 0.93 vs open 0.00 age 44.2s q="Design a multi-tenant RAG service over ten million documents"
+  s50j S2Q07F 08:12:22 echo 0.92 vs open 0.00 age 23.6s q="A user loses access to a document while a query is running. "
+  s50j S2Q08 08:13:42 echo 1.00 vs open 0.00 age 24.6s q="the quality comparison, the cutover, and the rollback."

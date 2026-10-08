@@ -1,0 +1,75 @@
+merge: bring MAIN's line (hedge default, first-token aborts, boundary repair) into cue mode
+
+Merges fix/coding-style-suffix-all-gemini (0ef42a0) into feat/whole-turn-answers (fd57512), so
+the cue re-smoke and bench run on the program that will merge and Thursday's merge into MAIN's
+branch is a fast-forward. Merge base f3c7c8e; MAIN brought 42 commits, this branch 24.
+
+Nine fixes had landed on both branches as separate commits (name the model that answered, the
+last-resort message, three abort-on-close fixes, the Gemma handover, a run stops the app, the
+merged pass's grader model, holdout40). The merge keeps ONE copy of each: git resolved them
+without a conflict except in the files below. MAIN-only work is whole (the hedge da28f25 + its
+default f745d7e + 998b5b7, e94305a Flash-Lites-only flight, e311019, ce4e730, 0ef42a0); so is
+cue-only work (stripCueBlock innermost, the cue row and its drift test, the captured-no-cues
+twins, hasCueRule failing closed, the whole-turn answer logic, fd57512).
+
+Conflicts, 8 files / 21 hunks, and what was kept from each side:
+
+- electron/LLMHelper.abortOnClose.test.ts (4 hunks): MAIN's file whole. This branch's copy was
+  the same tests with the same bodies minus the NATIVELY_VERBAL_HEDGE='0' pin (the two
+  savedHedge consts, the Gemma beforeEach pin, its afterEach restore); MAIN's adds it. Taking
+  MAIN's also drops the duplicate afterEach the auto-merge had left in the first describe.
+- electron/llm/WhatToAnswerLLM.answeringModel.test.ts (add/add, 5 hunks): MAIN's file whole,
+  a strict superset of this branch's: same tests and bodies, plus the hedge pin, the hedge
+  winner describe (3 tests) and one retitle of an unchanged body ("override off: a 503 on 3.1-lite
+  still goes to 3.5-lite - the pairing of the opt-out stall race (NATIVELY_VERBAL_HEDGE=0) is
+  unchanged"), which is accurate now that the hedge is the default.
+- electron/llm/WhatToAnswerLLM.ts (4 hunks): MAIN's lines in all four (HEDGE_WINNER, its doc
+  sentence, `announce` in place of `switchedTo`). The cue chain composed in generateStream is
+  untouched: the merged file differs from this branch only by MAIN's hedge/announce lines and
+  the diagLog gate, and from MAIN's only by the cue additions (stripCueBlock import, the eighth
+  onCues parameter, stripCueBlock innermost, the onCuesOnce guard shared across the fallback).
+- electron/test/golden/interview60.flight.mjs (1 hunk): this branch's side. It parses the
+  captured prompts into capturedJson, which the captured-no-cues gating (wanted, hasCueRule,
+  ruleCount) reads; MAIN's one-liner has no capturedJson. MAIN's Flash-Lites-only ANSWER_MODELS
+  and its doc changes merged clean beside it.
+- electron/test/golden/interview60.flight.test.ts (1 hunk): the union of both import lists
+  (MAIN's FOCUSED_MODELS for its no-Groq tests; CUE_RULE_MARK, hasCueRule, CUE_RULE for the cue
+  tests). Every test from both sides is kept.
+- electron/test/golden/interview60.metrics.test.ts (2 hunks, interleaved add/add): both
+  describes kept whole, each byte for byte from its own side: "the cue row's limits track
+  CUE_MAX_LINES and CUE_MAX_WORDS" (this branch) and "claimOf: a paraphrase-anchored answer is
+  claimed by its dispatched question (h40b R07F)" with its three tests (MAIN).
+- electron/test/golden/interview60.pass-record.mjs (2 hunks): MAIN's lines (verbalHedgeFromLog,
+  the "Verbal hedge" summary line; the answers-row hedge label auto-merged). graderOf, the twin
+  of 76f90f7 / 5c97b11, is a single copy. This branch added nothing else to the file.
+- electron/test/golden/interview60.pass-record.test.ts (2 hunks): MAIN's lines (the
+  verbalHedgeFromLog / describeVerbalHedgeAtStartup imports and the verbalHedgeFromLog describe).
+  This branch added nothing else to the file.
+
+Checked that no file merged silently into a duplicate: for every file both sides changed, the
+merged file minus MAIN's version is only cue-branch work, and minus this branch's version is
+only MAIN's. The 17 auto-merged ones were compared that way; 6 are byte-identical on both sides.
+
+Tests, full suite (vitest from a temp cwd, same command before and after):
+- before, feat/whole-turn-answers at fd57512: 89 files (88 passed, 1 failed to run), 810 tests:
+  804 passed, 6 skipped, 0 failed.
+- after, this merge: 99 files (98 passed, 1 failed to run), 987 tests: 979 passed, 8 skipped,
+  0 failed.
+- The one suite that fails to run in both is electron/services/interviewerTurn.replay.test.ts:
+  it reads its fixtures relative to the cwd. From the worktree root it passes 12/12 before and
+  after.
+- MAIN's branch, run the same way from an exported copy: 94 files, 932 tests: 924 passed, 8
+  skipped (its two suites that fail to run there are that same one and
+  interview60.prompts.test.ts, which needs dist-electron; both pass in the worktree).
+- Every test name in the cue baseline is in the merged run and passed, except the MAIN retitle
+  above. Every test name from MAIN's run is in the merged run and passed, except the base's
+  "three newest rows" test that this branch had already rewritten as "the four newest rows"
+  (the cue row), and two skipped tests whose names embed the checkout path.
+
+Type checks, before and after:
+- root tsc --noEmit: 0 errors before and after.
+- electron tsc -p electron/tsconfig.json --noEmit: 6 errors before and after, the identical six
+  pre-existing lines (GeminiLiveRouter.ts:125, ipcHandlers.ts:3433/3433/3436,
+  KnowledgeOrchestrator.ts:349/351).
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>

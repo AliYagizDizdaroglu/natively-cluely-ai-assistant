@@ -1,0 +1,13 @@
+OK  grader-models on L20c's eight graders reproduces l20c/grader-models.out.txt exactly (7 OK, 1 PROBLEM, exit 1)
+OK  grader-models on one clean grader (A-g1): one verdict file, claude-opus-5-5 only, exit 0
+OK  grader-models on an unknown agent id: "no transcript", exit 1
+OK  grader-independence A-g1: 0 mention(s)
+OK  grader-independence C-g2 (the known case): 1 mention, a tool result of an `ls`
+OK  grader-independence with a WRONG own label (A-g1's transcript read as B-g1): it must find mentions of "another" file (A-g1's own)
+OK  validate-verdicts on ET38's eight real verdict files: all VALID, exit 0
+OK  validate-verdicts: a key deleted -> INVALID missing 1; a score of 3 -> malformed 1; an empty reason -> malformed 1; an extra key -> extra 1; a file absent -> MISSING; broken JSON -> DOES NOT PARSE; the two untouched files stay VALID; exit 1
+OK  cal setup: ET38's eight grader ids read from grader-agents.txt
+OK  writer-model on ET38's eight graders as first dispatched: seven written by claude-opus-5-5, the first C-g2 (stopped at the session limit before it wrote anything) NOT SHOWN, "NOT ALL SHOWN"
+OK  writer-model with the C-g2 re-run (a08f90b7f0db125f8, grader-agents.txt) in its place: all eight written by claude-opus-5-5, "ALL"
+OK  writer-model with another packet's grader id under the label A-g1 -> NOT SHOWN (it never wrote verdicts-A-g1.json)
+GRADER CHECKS CALIBRATION OK

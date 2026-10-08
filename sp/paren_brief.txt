@@ -1,0 +1,1 @@
+(NATIVELY_STT_PROVIDER; preflight checks the app's STT start line)

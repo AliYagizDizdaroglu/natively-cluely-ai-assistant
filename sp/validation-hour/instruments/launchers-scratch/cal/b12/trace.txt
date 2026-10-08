@@ -1,0 +1,5 @@
+run wav:check
+proof 1 -> 0
+guard
+flight h40d
+proof 2 -> 1

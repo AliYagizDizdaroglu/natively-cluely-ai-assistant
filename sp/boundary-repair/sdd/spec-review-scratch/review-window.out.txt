@@ -1,0 +1,17 @@
+rule-cuts with a next final: 606
+  NORMAL OUT emptyBetween=false            12
+  NORMAL in emptyBetween=false             515
+  OTHER OUT emptyBetween=false             2
+  OTHER in emptyBetween=false              2
+  TAIL1 OUT emptyBetween=true              1
+  TAIL1 in emptyBetween=false              49
+  V3-MATCH in emptyBetween=false           25
+NORMAL gaps: p50 2506 p90 3774 max 7835; NORMAL over 5000: 12
+
+V3-MATCH outside the window (what the window refused):
+
+OTHER (F2 neither resumes nor tail-1), any gap:
+  2026-09-05T13-50-01-af gap 5757 empty=0 I="What is a DAG, and why does" F1="What is a DAG?" F2="Structure."
+  2026-09-09T15-00-55-s5 gap 2723 empty=0 I="kip chunks that do not fit, to duplicate chunkids," F1=", skip chunks that do not fit," F2="deduplicate chunkids, and allow at most two chunks"
+  2026-09-11T08-22-32-s5 gap 5164 empty=0 I="accuracy reaching ninety two percent" F1="accuracy reaching 92%." F2="For each of those metrics, define the unit of eval"
+  2026-09-19T08-22-41-s5 gap 4441 empty=0 I="2.4% to 95.4%, hallucinations decreasing by eighty" F1="72.4% to 95.4%, hallucinations" F2="by 84%, and multi hop accuracy reaching 92%"

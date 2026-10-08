@@ -1,0 +1,52 @@
+h40c Task 2 — blind-parent-check.mjs rule-8 calibration
+=========================================================
+
+Known-BAD case: real SP\flash-h40b\blind, BEFORE the fix (fixture: the unmodified
+flash-h40b-blind-pairs.mjs output committed to that directory, which still carries the pre-fix
+`question: e.q` shape).
+
+  $ node blind-parent-check.mjs "SP\flash-h40b\blind" "MAIN\electron\test\golden\interview60.runs\2026-09-26T11-39-51-h40b\interview60.timeline.json"
+  follow-ups 6, with parent 0
+  FAIL: R02F, R09F, R11F, R17F, R26F, R31F missing the parent marker
+  exit code: 1
+
+Fixed builder, calibration output (BLIND_DIR=SP\flash-h40b-blind-cal, RUN_DIR/FLASH_DIR default
+-> same real h40b run + FLASH_DIR):
+
+  $ node flash-h40b-blind-pairs.mjs   (env: BLIND_DIR=SP\flash-h40b-blind-cal)
+  pairs.blind-1.json  32 items  R02F,R08,R03,R09F
+  pairs.blind-2.json  30 items  R16,R01,R11F,R12
+  pairs.blind-3.json  31 items  R17F,R23,R26F,R27
+  pairs.blind-4.json  29 items  R28,R30,R31F,R32
+  4 files, 16 ids; 11 arm answers missing (scored as no answer); instrument 8564ba96369a
+  (the 2 stderr "missing ... gemini-3.7-flash_def-r2/r3.json ... recorded as NO ANSWER" lines are
+  pre-existing real gaps in SP\flash-h40b, not caused by this fix -- FLASH_FILES only has a "def"
+  rep for tier 3/3b models, so a leftover naming mismatch in the fixture, unrelated to the parent
+  question fix, is expected and harmless: it only drops 2 of the 27 flash-arm answer files, and
+  the run still produced the expected 6 follow-up ids.)
+
+  $ node blind-parent-check.mjs "SP\flash-h40b-blind-cal" "MAIN\...\interview60.timeline.json"
+  follow-ups 6, with parent 6
+  PASS 6 of 6
+  exit code: 0
+
+Negative control (proves the check CAN still fail after the fix): same fixed builder, but with
+the throwaway BLIND_NO_PARENT=1 switch forcing `question: e.q` (the pre-fix shape), into
+BLIND_DIR=SP\flash-h40b-blind-cal-broken:
+
+  $ node flash-h40b-blind-pairs.mjs   (env: BLIND_DIR=SP\flash-h40b-blind-cal-broken, BLIND_NO_PARENT=1)
+  pairs.blind-1.json  32 items  R02F,R08,R03,R09F
+  pairs.blind-2.json  30 items  R16,R01,R11F,R12
+  pairs.blind-3.json  31 items  R17F,R23,R26F,R27
+  pairs.blind-4.json  29 items  R28,R30,R31F,R32
+  4 files, 16 ids; 11 arm answers missing (scored as no answer); instrument 8564ba96369a
+
+  $ node blind-parent-check.mjs "SP\flash-h40b-blind-cal-broken" "MAIN\...\interview60.timeline.json"
+  follow-ups 6, with parent 0
+  FAIL: R02F, R09F, R11F, R17F, R26F, R31F missing the parent marker
+  exit code: 1
+
+Conclusion: blind-parent-check.mjs distinguishes the fixed builder's output (PASS 6/6) from both
+the real pre-fix h40b blind directory and a fresh BLIND_NO_PARENT=1 reproduction (FAIL 0/6) --
+the check is not vacuously true. SP\flash-h40b\blind (the graded, verdict-bearing directory) was
+never rebuilt; only the two -cal / -cal-broken directories were written.

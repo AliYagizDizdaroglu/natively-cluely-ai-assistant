@@ -1,0 +1,13 @@
+feat(golden): cue checks, --cues/--no-cues captured arms, and the cue row
+
+Four mechanical checks on the block (present, well-formed, grounded, clean)
+calibrated on known cases; cueArm.mjs inserts the shipped rule exactly where
+the app puts it or strips it byte for byte, so a pre-cue hour has a treatment
+and a cue hour has a same-bytes control; the runner refuses a variant that
+would double or find no rule. Keys from the environment first, so the bench
+runs from a worktree with --env-file. Metrics parse [Answer] cues: and gate
+on every block present and well-formed, with the budget row's 0.9 tolerance.
+The older golden-set runner (run.mjs) strips the block too, so its verbal
+suite scores the spoken text the shipped prompt now produces, not the block.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

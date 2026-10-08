@@ -1,0 +1,19 @@
+fix(cues): close the cue block on the first prose character, not the first prose line
+
+stripCueBlock read complete lines only inside the block, so a one-paragraph
+spoken answer held its cues and the whole paragraph until the stream ended:
+15 of 21 answers at the 16:12 re-smoke and 14 of 22 at 05:00 appeared in one
+piece (final review I2). The block now closes as soon as the pending partial
+line can no longer become a cue line — anything but digits, digits and
+whitespace, or digits and a bar (CUE_LINE_PREFIX, with CUE_LINE's own
+whitespace after the bar so a CR there is held, tested on the trimmed partial
+so a CRLF boundary cannot release a cue line as prose). A partial cue line is
+still held to its newline. The parser's cues and its joined prose are the same
+for every input; only the report's moment and the pieces move. Pinned: the
+review's case, a chunk-size matrix on a paragraph with no newline, every
+partial state, and the two seam states a shown or held first chunk creates
+(a failure after the words were shown is an error, not a redirect — MAIN's
+contract; one before they clear the filters is a redirect under the dead
+stream's cue).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,117 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/eq-build
+
+ ❯ electron/llm/earlierQuestion.parity.test.ts (7 tests | 3 failed) 302ms
+   × interviewerLinesBefore against the replay's prompt lines (local captured prompts) > turn-parity-s50k.json: every roster entry's promptLines and question are what the seam derives from the captured user turn 21ms
+     → expected [ …(29) ] to deeply equal []
+   × interviewerLinesBefore against the replay's prompt lines (local captured prompts) > turn-parity-s50l.json: every roster entry's promptLines and question are what the seam derives from the captured user turn 9ms
+     → expected [ …(28) ] to deeply equal []
+   × interviewerLinesBefore against the replay's prompt lines (local captured prompts) > turn-parity-s50m.json: every roster entry's promptLines and question are what the seam derives from the captured user turn 9ms
+     → expected [ …(28) ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/llm/earlierQuestion.parity.test.ts > interviewerLinesBefore against the replay's prompt lines (local captured prompts) > turn-parity-s50k.json: every roster entry's promptLines and question are what the seam derives from the captured user turn
+AssertionError: expected [ …(29) ] to deeply equal []
+
+- Expected
++ Received
+
+- Array []
++ Array [
++   "s50k:S1Q01F: promptLines 6/7 sha 2c247a2956c7/aeb03e13d64d",
++   "s50k:S1Q02: promptLines 1/2 sha 66f0b5fee9a0/57ecf26b5431",
++   "s50k:S1Q02F: promptLines 7/8 sha ee0c8a4a4781/371de184f139",
++   "s50k:S1Q03: promptLines 1/2 sha 0eb78aff0c3f/3d6f49a3278a",
++   "s50k:S1Q03F: promptLines 3/4 sha dfd03e55c66e/b9ec063ca220",
++   "s50k:S1Q04: promptLines 1/2 sha 3b59058e580a/ef7ccfb21184",
++   "s50k:S1Q05: promptLines 1/2 sha a968f38cd1e5/0c4c3701a6df",
++   "s50k:S1Q06: promptLines 1/2 sha a21cc4959701/8893166fad56",
++   "s50k:S1Q07: promptLines 1/2 sha 684f1445650e/c3a58ee0aba7",
++   "s50k:S1Q08: promptLines 1/2 sha 1128ff890282/da454a57b3ac",
++   "s50k:S1Q09: promptLines 1/2 sha 2877adac5e59/d14571ba59bc",
++   "s50k:S1Q09F: promptLines 4/5 sha 439b418f7737/9556ad57ce59",
++   "s50k:S1Q10: promptLines 1/2 sha 4d481bde60d7/850b11e3f6f4",
++   "s50k:S1Q10F: promptLines 4/5 sha d69aecd3b981/e7dfc969383f",
++   "s50k:S2Q01: promptLines 2/3 sha 3d66d378dd1c/cdea50e69de6",
++   "s50k:S2Q01F: promptLines 3/4 sha f35b50ebc45c/244fc29935a3",
++   "s50k:S2Q02: promptLines 1/2 sha 12371591adaf/a40d9de3ebb9",
++   "s50k:S2Q02F: promptLines 3/4 sha 91e94ad7e1c3/3adc71357461",
++   "s50k:S2Q03: promptLines 2/3 sha 0aac2f381899/eed0b53b6671",
++   "s50k:S2Q03F: promptLines 3/4 sha 927d54d7de52/45c08375abb3",
++   "s50k:S2Q04: promptLines 1/2 sha 3e0a952b568c/e3313d0ee09e",
++   "s50k:S2Q05: promptLines 1/2 sha 080eac367ff4/ebca7269d789",
++   "s50k:S2Q06: promptLines 1/2 sha 3a3061a32baa/00e8a8f509cb",
++   "s50k:S2Q07: promptLines 2/3 sha 523cb465f66e/84de5aad5298",
++   "s50k:S2Q08: promptLines 2/3 sha c1441df01126/23b0a725671a",
++   "s50k:S2Q09: promptLines 1/2 sha d2b818a7b664/38e861f2bc97",
++   "s50k:S2Q09F: promptLines 4/5 sha 30832d3b080f/d535cf318b37",
++   "s50k:S2Q10: promptLines 1/2 sha 0681f22af688/90654b34dfd6",
++   "s50k:S2Q10F: promptLines 3/4 sha 1e08804668dd/ec2950d47f5b",
++ ]
+
+ ❯ electron/llm/earlierQuestion.parity.test.ts:101:25
+     99|                 if (current !== e.question) bad.push(`${key}: current …
+    100|             }
+    101|             expect(bad).toEqual([]);
+       |                         ^
+    102|             expect(n).toBe(39);
+    103|         });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  electron/llm/earlierQuestion.parity.test.ts > interviewerLinesBefore against the replay's prompt lines (local captured prompts) > turn-parity-s50l.json: every roster entry's promptLines and question are what the seam derives from the captured user turn
+ FAIL  electron/llm/earlierQuestion.parity.test.ts > interviewerLinesBefore against the replay's prompt lines (local captured prompts) > turn-parity-s50m.json: every roster entry's promptLines and question are what the seam derives from the captured user turn
+AssertionError: expected [ …(28) ] to deeply equal []
+
+- Expected
++ Received
+
+- Array []
++ Array [
++   "s50l:S1Q01F: promptLines 6/7 sha 2c247a2956c7/aeb03e13d64d",
++   "s50l:S1Q02: promptLines 1/2 sha 8c01151cce7d/da904542d0c7",
++   "s50l:S1Q02F: promptLines 7/8 sha ee0c8a4a4781/371de184f139",
++   "s50l:S1Q03: promptLines 1/2 sha b7ab13253ce5/35c2e99bcc2f",
++   "s50l:S1Q03F: promptLines 3/4 sha 7af54fe4ff7d/f0c95b7fcf0b",
++   "s50l:S1Q05: promptLines 1/2 sha a968f38cd1e5/0c4c3701a6df",
++   "s50l:S1Q06: promptLines 1/2 sha a21cc4959701/8893166fad56",
++   "s50l:S1Q07: promptLines 1/2 sha 684f1445650e/c3a58ee0aba7",
++   "s50l:S1Q08: promptLines 1/2 sha 1128ff890282/da454a57b3ac",
++   "s50l:S1Q09: promptLines 1/2 sha 2877adac5e59/d14571ba59bc",
++   "s50l:S1Q09F: promptLines 4/5 sha 439b418f7737/9556ad57ce59",
++   "s50l:S1Q10: promptLines 1/2 sha 59343d9cbd58/2b2f92ea1ec1",
++   "s50l:S1Q10F: promptLines 4/5 sha 95c237172d85/e5cbd103723a",
++   "s50l:S2Q01: promptLines 2/3 sha 3d66d378dd1c/cdea50e69de6",
++   "s50l:S2Q01F: promptLines 3/4 sha f35b50ebc45c/244fc29935a3",
++   "s50l:S2Q02: promptLines 1/2 sha 12371591adaf/a40d9de3ebb9",
++   "s50l:S2Q02F: promptLines 5/6 sha 847b5b4fa262/e7cdf058f452",
++   "s50l:S2Q03: promptLines 2/3 sha a21c27221bb8/4cd60bdae222",
++   "s50l:S2Q03F: promptLines 3/4 sha 927d54d7de52/45c08375abb3",
++   "s50l:S2Q04: promptLines 1/2 sha 3e0a952b568c/e3313d0ee09e",
++   "s50l:S2Q05: promptLines 2/3 sha f66d9d96a66a/bc1bd3b6e68e",
++   "s50l:S2Q06: promptLines 1/2 sha 14e628c27318/85fd61d1902a",
++   "s50l:S2Q07: promptLines 2/3 sha c3f66c6e3224/3091428a1c5a",
++   "s50l:S2Q08: promptLines 2/3 sha b95e8a805ea2/3e25600ce704",
++   "s50l:S2Q09: promptLines 1/2 sha d2b818a7b664/38e861f2bc97",
++   "s50l:S2Q09F: promptLines 4/5 sha 61da4ad60fb9/67db7f2b6d37",
++   "s50l:S2Q10: promptLines 1/2 sha cfee67837588/41528a5ac7f8",
++   "s50l:S2Q10F: promptLines 3/4 sha 1e08804668dd/ec2950d47f5b",
++ ]
+
+ ❯ electron/llm/earlierQuestion.parity.test.ts:101:25
+     99|                 if (current !== e.question) bad.push(`${key}: current …
+    100|             }
+    101|             expect(bad).toEqual([]);
+       |                         ^
+    102|             expect(n).toBe(39);
+    103|         });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 4 passed (7)
+   Start at  16:27:36
+   Duration  2.73s (transform 103ms, setup 0ms, collect 126ms, tests 302ms, environment 1.34s, prepare 133ms)
+

@@ -1,0 +1,24 @@
+fix(golden): capture what the app prints, for real, and retry a start that never arrives
+
+c97b537 tried to capture the app's stdout by handing the detached cmd.exe a
+file descriptor. Measured tonight, that captures nothing on the real chain:
+cmd's own echo arrives, but every node child of a console-less cmd — npm,
+concurrently, vite, electron — loses the handles it was given, and cmd's own
+redirection does not help. app-start.log stayed at 0 bytes on the 20:30 smoke
+that WORKED. A non-detached child captures fine but dies the moment app:start
+exits (libuv's kill-on-close job object).
+
+The shape that works, measured link by link before it touched this file:
+app:start spawns a detached node keeper (run.mjs app:keep), which keeps its
+handles; the keeper spawns npm start non-detached with both streams into
+app-start.log and lives as long as the app. The stand-in captured npm's stdout,
+a node child's stderr stack trace, and outlived its parent. appStop tree-kills
+the keeper, so the hour still ends the same way.
+
+Two attempts, with the failed tree killed and port 5180 confirmed free before
+the second — vite runs --strictPort, so retrying into a lingering listener
+exits at once. The 19:50 smoke lost only a smoke to a start that never reached
+whenReady; the same failure at 10:10 costs the flight day, and auto() runs
+this exact function.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

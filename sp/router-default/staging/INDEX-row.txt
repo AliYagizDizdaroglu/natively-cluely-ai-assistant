@@ -1,0 +1,2 @@
+<!-- REPLACEMENT for passes/INDEX.md line 43 (the ungraded row of 2026-10-07T00-22-47-router-default-r1): replace that line with the row below; do not append. -->
+| 2026-10-07T00-22-47-router-default-r1 | [record](2026-10-07T00-22-47-router-default-r1.md) | live40  47 items | fade67f | 47/47 | 46 | 1 | 0 | — | 4.9 s | 28/31 (3 weak, 0 wrong) | gemini-3.1-flash-lite_low 28/31 · gemini-3.5-flash-lite_captured-high UNUSABLE — mis-keyed prompts · gemini-3.5-flash-lite_high 28/31 | claude-opus-5-5 |

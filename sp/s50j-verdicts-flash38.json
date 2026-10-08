@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "All four numbers right (9,500 churners, 5,000 flagged, 2,850 TP, 30% recall, 57% precision) and answers the consistency question."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Left join with all three predicates in the join condition, ingested-at leakage guard, and count of a non-null events column for zeros."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers all four sub-parts soundly (namespaces, deterministic chunk IDs, Postgres offsets, pre-filter ACLs, MRR plus LLM-judge) but runs about 150 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every requested Azure component placed correctly plus the managed-versus-custom tradeoff; too long at roughly 120 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-Lock plus MessageId dedup plus deterministic chunk-key upserts and lock-expiry replay is exactly the idempotency answer, concisely spoken."
+  }
+}

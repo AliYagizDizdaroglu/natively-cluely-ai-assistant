@@ -1,0 +1,22 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Names the tabular/imbalanced fit, missing-value handling, inference speed, and a logistic regression baseline; concise and speakable."},
+  "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "True positives and 57 percent precision are right, but recall was explicitly asked and never stated, and 57 versus 60 is called rounding."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Randomized holdout with a control arm is exactly the mechanism that neutralizes seasonality and mix; clearly spoken."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Stable tie-break by original index and all three formulas correct, plus all three edge cases; well over length at about 145 words."},
+  "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Chronological split with a 30-day buffer for the label window, and ColumnTransformer inside a Pipeline so preprocessing fits on train only."},
+  "S1Q06": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Left join and count of event ids preserve zero-call customers, but the event-type filter is described as a final filter, which would drop them."},
+  "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers every asked stage and names feature definitions, artifacts and monitoring as shared; roughly 200 words, far too long to say."},
+  "S1Q08": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Logging, assignment and the temporal join are sound, but retraining selection is only a variant feature with an overstated causal claim, ignoring label maturity."},
+  "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct Azure mapping across all eight areas with operational reasons; about 110 words is beyond a spoken answer."},
+  "S1Q10": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Managed identity, Key Vault and private endpoints are right, but 'Database User' is not an Azure RBAC role; also over length."},
+  "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Every stage from parsing to citation metadata is mapped with real tooling; about 130 words is well past a spoken reply."},
+  "S2Q02": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Units and denominators are defensible, but Cohen's Kappa and five-fold cross-validation are miscast as the uncertainty of those metrics."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Compares all three approaches and lands on decomposition unless retrieval is conditional; about 110 words is too long."},
+  "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct one-over-c-plus-rank aggregation across both lists with document id as the deterministic tie-break; tight enough to say."},
+  "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Greedy relevance-first with skip-not-stop, id dedupe, per-document cap of two and a running budget; natural spoken length."},
+  "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Semaphore for eight, race-based per-case timeout, errors captured as results, order preserved by mapping; about 105 words."},
+  "S2Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Namespace isolation, relational metadata for versioning, pre-filtered retrieval and RAGAS evaluation all covered; roughly 130 words."},
+  "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Dual-write plus backfill keeps the new dimension current, with A/B comparison, config cutover and untouched legacy for rollback; about 180 words."},
+  "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct Azure service for every slot and a sensible managed-versus-custom line; about 95 words is slightly past spoken length."},
+  "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Dedupe store checked before processing with the ack last is the right idempotent shape; short and natural."}
+}

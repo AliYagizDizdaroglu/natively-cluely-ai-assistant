@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct on tabular fit, native missing-value handling, latency constraint, and names a logistic-regression baseline with AUC lift."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic exact: 2,850 true positives, 57 percent precision, 30 percent recall, flags the 60 percent as inconsistent; 90 words."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized control arm is the right answer for seasonality and mix; propensity matching added as a sensible secondary check."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Stable argsort tie-break and all three edge cases correct, but the answer is a raw Python code block, unspeakable."
+  },
+  "S1Q05": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Misses the embargo gap the 30-day label window requires, and never builds the asked scikit-learn pipeline for numeric and categorical columns."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Predicates correctly in the LEFT JOIN condition, but omits the event type filter so it counts all events, not support calls; 87 words."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers all seven stages and names shared feature definitions as the batch/online contract; 94 words."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, hash assignment and delayed joins right, but stratifying by experiment group does not remove offer-contaminated labels; training on control does; 152 words."
+  },
+  "S1Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Service mapping is accurate throughout, but the asked operational reasons collapse into one generic closing platitude; list-like imperative register."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC on the container, Entra ID for PostgreSQL, Key Vault for unavoidable secrets, private endpoints per tier; 88 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "All eight stages present and technically sound, including hybrid BM25 plus vector retrieval and a cross-encoder reranker."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives unit, denominator, construction and uncertainty for all three metrics with sound methodology; 122 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly contrasts all three options and names interdependent sub-questions as the limit of static decomposition, with the latency and cost tradeoff."
+  },
+  "S2Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Formula and ID tie-break right, but treating a missing rank as zero would give absent documents the maximum contribution; 96 words plus stray dollar signs."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dedup, relevance-descending greedy pass, skip-on-overflow, and the two-per-document cap are all handled correctly; 91 words."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, wait_for per case, and gather with return_exceptions preserving order and isolating failures are all the right primitives."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-partitioned hybrid index, ACLs in Postgres, filters injected before vector search, async ingestion and golden-set evaluation all correct; 99 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write to a separate new-dimension index, cursor backfill, side-by-side MRR comparison, read-flip cutover and instant rollback all correct; 139 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All seven components mapped to correct Azure services and both sides of the managed-versus-custom question answered; 118 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly pairs Service Bus duplicate detection within its window with a message-ID idempotency key in durable state for the crash-before-ack case."
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "note": "L38F: 12 chains of two clips (parent, follow-up), one Live session per chain. Q chains: easy parent + follow-up answerable from the parent question. A chains: hard parent + short follow-up about the candidate's answer or experience (expected 'hard'). Amendment 15:42 (before data): 4 real scenario50 pairs as a reported control (clips from scenario50-tts-local).",
+  "contextMain": "S1Q08",
+  "text": {
+    "QP1": "What's the average time complexity of a lookup in a hash map?",
+    "QF1": "And in the worst case?",
+    "AP1": "Walk me through how you would design a rate limiter for a public API.",
+    "AF1": "What's the time complexity of your approach?",
+    "QP2": "Are Python lists mutable?",
+    "QF2": "And tuples?",
+    "AP2": "Tell me about a time you had to debug a production outage.",
+    "AF2": "How long did it take you to fix it?",
+    "QP3": "Which HTTP status code means not found?",
+    "QF3": "And the one for an internal server error?",
+    "AP3": "How would you deduplicate events in a streaming pipeline?",
+    "AF3": "Which data store would you use for that?",
+    "QP4": "Is binary search on a sorted array logarithmic?",
+    "QF4": "What about inserting a new element into that array?",
+    "AP4": "Explain how you would evaluate a retrieval augmented generation system.",
+    "AF4": "Which of those metrics matters most?",
+    "QP5": "Does TCP guarantee in-order delivery?",
+    "QF5": "Does UDP?",
+    "AP5": "Describe how you migrated a monolith to microservices in your last role.",
+    "AF5": "Was that the right call?",
+    "QP6": "Which regularization drives some weights exactly to zero, L1 or L2?",
+    "QF6": "And which one only shrinks them toward zero?",
+    "AP6": "How would you handle class imbalance in a fraud detection model?",
+    "AF6": "Why that one over the others?"
+  },
+  "chains": [
+    [
+      "QP1",
+      "QF1"
+    ],
+    [
+      "AP1",
+      "AF1"
+    ],
+    [
+      "QP2",
+      "QF2"
+    ],
+    [
+      "S1Q03",
+      "S1Q03F"
+    ],
+    [
+      "AP2",
+      "AF2"
+    ],
+    [
+      "QP3",
+      "QF3"
+    ],
+    [
+      "AP3",
+      "AF3"
+    ],
+    [
+      "S2Q04",
+      "S2Q04F"
+    ],
+    [
+      "QP4",
+      "QF4"
+    ],
+    [
+      "AP4",
+      "AF4"
+    ],
+    [
+      "QP5",
+      "QF5"
+    ],
+    [
+      "S1Q10",
+      "S1Q10F"
+    ],
+    [
+      "AP5",
+      "AF5"
+    ],
+    [
+      "QP6",
+      "QF6"
+    ],
+    [
+      "AP6",
+      "AF6"
+    ],
+    [
+      "S2Q09",
+      "S2Q09F"
+    ]
+  ],
+  "roster": [
+    [
+      "S1Q03",
+      "S1Q03F"
+    ],
+    [
+      "S2Q04",
+      "S2Q04F"
+    ],
+    [
+      "S1Q10",
+      "S1Q10F"
+    ],
+    [
+      "S2Q09",
+      "S2Q09F"
+    ]
+  ]
+}

@@ -1,0 +1,189 @@
+===== W01 [easy / Docker / spoken] =====
+QUESTION: To start, what is the difference between a Docker image and a container?
+ANSWER (41 words): An image is a read-only template that contains the application code, libraries, and dependencies needed to run a program. A container is a live, runnable instance of that image. If the image is the blueprint, the container is the actual building.
+
+===== W02 [easy / Docker / spoken] =====
+QUESTION: Why do Docker layers matter for build times?
+ANSWER (63 words): Docker layers matter because they allow for caching; when you rebuild an image, Docker only re-runs the steps that have changed and reuses the cached layers for everything else. By ordering your Dockerfile from the least-frequently changed to the most-frequently changed instructions, you minimize the amount of work required for each build. This drastically reduces build times and speeds up the deployment pipeline.
+
+===== W03 [easy / S3 / spoken] =====
+QUESTION: When would you use S3 Standard versus S3 Glacier for training data?
+ANSWER (71 words): I'd use S3 Standard for active training sets where the model needs frequent, low-latency access to the data during the training loop. S3 Glacier is for archival data or raw datasets that are rarely accessed and only need to be retrieved for periodic retraining or auditing. The choice comes down to the trade-off between the high cost of frequent access in Standard and the retrieval delays and costs associated with Glacier.
+
+===== W04 [easy / SageMaker / spoken] =====
+QUESTION: What is a SageMaker endpoint, and what does it actually host?
+ANSWER (60 words): A SageMaker endpoint is a dedicated HTTPS URL that allows you to get real-time predictions from a machine learning model. It hosts a production-ready container that includes your trained model artifacts and a serving script to handle incoming requests and return inferences. This infrastructure manages the underlying compute instances and scaling, so you don't have to manually manage the servers.
+
+===== W05 [easy / Airflow / spoken] =====
+QUESTION: What is a DAG, and why does Airflow use that structure?
+ANSWER (67 words): A DAG, or Directed Acyclic Graph, is a collection of tasks organized in a way that defines their execution order and dependencies, ensuring the workflow only moves forward and never loops back on itself. Airflow uses this structure because it allows for complex dependency management, enabling tasks to run in parallel where possible while guaranteeing that a downstream task only starts once its prerequisites are successfully completed.
+
+===== W06 [easy / CI/CD for ML / spoken] =====
+QUESTION: Why version model artifacts alongside code?
+ANSWER (63 words): Versioning model artifacts with code ensures that every prediction can be traced back to the exact dataset, hyperparameters, and code version used to produce it. This prevents "training-serving skew" where a model behaves differently in production because it was paired with a different version of the preprocessing logic. It essentially turns the model into a reproducible software asset rather than a black-box file.
+
+===== W07 [easy / Kubernetes / spoken] =====
+QUESTION: What is the difference between a pod and a deployment?
+ANSWER (65 words): A pod is the smallest deployable unit in Kubernetes, representing a single instance of a running process. A deployment is a higher-level object that manages pods, allowing you to define the desired state—like how many replicas should run—and handling automatic scaling and rolling updates. Essentially, you rarely create pods directly; you use a deployment to ensure those pods are maintained and replaced if they fail.
+
+===== W08 [easy / Monitoring/drift / spoken] =====
+QUESTION: What is the difference between data drift and concept drift?
+ANSWER (82 words): Data drift happens when the input data changes, meaning the distribution of the features you're feeding the model has shifted, even if the relationship between input and output remains the same. Concept drift is different because the actual relationship between the input and the target variable changes, meaning the "concept" the model learned is no longer true. Essentially, data drift is a change in what the model sees, while concept drift is a change in what the model is trying to predict.
+
+===== W09 [easy / CloudFormation/IaC / spoken] =====
+QUESTION: What problem does infrastructure as code actually solve?
+ANSWER (14 words): Infrastructure as Code solves the problem of "configuration drift," where environments slowly diverge because
+
+===== W10 [easy / S3 / spoken] =====
+QUESTION: How would you organise an S3 bucket layout for a training dataset that gets versioned weekly?
+ANSWER (65 words): I'd use a date-partitioned prefix structure, like s3://bucket/dataset/year=YYYY/month=MM/day=DD/, to keep weekly versions isolated and easy to query. I'd store the actual data in a data/ folder and a metadata/ folder for the version manifest and checksums. This layout ensures that adding a new weekly version doesn't require rewriting old data and allows for simple rollbacks by pointing the training pipeline to a previous date prefix.
+
+===== W11 [easy / Docker / spoken] =====
+QUESTION: What goes in a multi-stage Dockerfile for a Python model server, and why?
+ANSWER (52 words): I use a build stage to install compilers and build-essential tools needed for C-extensions, then copy only the compiled site-packages into a slim runtime stage. This keeps the final image small and secure by removing the build toolchain and source code. It significantly reduces the attack surface and speeds up deployment times.
+
+===== W12 [easy / Airflow / spoken] =====
+QUESTION: What is the difference between an Airflow operator and a sensor?
+ANSWER (69 words): An operator defines a single task in a workflow, like executing a Python script or running a SQL query, to perform a specific action. A sensor is a special type of operator that polls for a specific condition to be met—like a file appearing in S3 or a record hitting a database—before allowing the downstream tasks to proceed. Essentially, operators do the work, while sensors wait for the trigger.
+
+===== M01 [medium / Monitoring/drift / spoken] =====
+QUESTION: How would you detect data drift in a model that is already running in production?
+ANSWER (72 words): I would monitor the statistical distribution of incoming features and compare them against the training baseline using metrics like the Kolmogorov-Smirnov test or Population Stability Index. I'd also track model performance metrics, such as accuracy or F1-score, to see if a drop in precision correlates with the shift in data. If I detect a significant divergence, I'd trigger an alert to investigate whether the model needs retraining on a more recent dataset.
+
+===== M03 [medium / Kubernetes / spoken] =====
+QUESTION: How would you handle autoscaling for a model inference service on Kubernetes?
+ANSWER (68 words): I'd use a Horizontal Pod Autoscaler based on custom metrics, like request latency or queue depth, rather than just CPU or memory, since inference is often GPU-bound. I'd pair this with a Cluster Autoscaler or Karpenter to provision new nodes when the pods can't be scheduled. To prevent cold starts and instability, I'd set a minimum replica count and implement a cooldown period to avoid rapid scaling oscillations.
+
+===== M04 [medium / CloudFormation/IaC / spoken] =====
+QUESTION: Why would you use CloudFormation instead of configuring things by hand in the console?
+ANSWER (55 words): Using CloudFormation allows me to treat my infrastructure as code, which means I can version control my environment and replicate it exactly across dev, staging, and production. It eliminates the human error and "configuration drift" that happens when people make manual changes in the console. This makes deployments predictable, repeatable, and much easier to audit.
+
+===== M05 [medium / S3 / spoken] =====
+QUESTION: How do you secure training data in S3 that contains customer information?
+ANSWER (73 words): I secure customer data in S3 by implementing a "least privilege" access model using IAM roles and bucket policies to ensure only authorized services can access the data. I enable AES-256 server-side encryption at rest and use TLS for all data in transit to prevent interception. Finally, I turn on S3 Versioning and Object Lock to protect against accidental deletion or tampering, while using CloudTrail for full audit logging of every access request.
+
+===== M06 [medium / CI/CD for ML / spoken] =====
+QUESTION: What does a good CI pipeline for a machine learning repository actually test?
+ANSWER (69 words): A good ML pipeline tests three main areas: code integrity, data quality, and model performance. It starts with standard unit tests for preprocessing logic and integration tests for the training loop, then moves to data validation to catch schema drifts or null values. Finally, it runs a "smoke test" on a small data subset to ensure the model converges and meets a minimum performance baseline before allowing a merge.
+
+===== M07 [medium / Airflow / spoken] =====
+QUESTION: How would you handle a task in Airflow that intermittently fails because of an upstream API?
+ANSWER (57 words): I'd implement an exponential backoff retry strategy in the task's retries and retry_delay parameters to handle transient API glitches without overloading the server. I would also set a retry_exponential_backoff to True to increase the wait time between attempts. For persistent failures, I'd configure an SLA or an alert via an on_failure_callback to notify the üzerinden team immediately.
+
+===== M08 [medium / Docker / spoken] =====
+QUESTION: Your training image is eight gigabytes. How would you approach shrinking it?
+ANSWER (23 words): I'd start by analyzing the image layers to identify and remove unnecessary build artifacts, such as package manager caches and temporary build files.
+
+===== M09 [medium / SageMaker / spoken] =====
+QUESTION: When would you choose a real-time endpoint over batch transform?
+ANSWER (75 words): I'd choose a real-time endpoint when the application requires immediate, low-latency predictions for a single request, such as a recommendation engine or a fraud detection system. Batch transform is better for processing large datasets asynchronously where latency isn't a concern, like generating weekly reports or updating a database of user scores. The decision comes down to whether the user is waiting for the result in real-time or if the data can be processed in bulk.
+
+===== M10 [medium / Monitoring/drift / spoken] =====
+QUESTION: Which metrics would you put on a dashboard for a production recommendation model?
+ANSWER (59 words): I'd track a mix of business and model performance metrics. For business impact, I'd monitor Click-Through Rate and Conversion Rate to see if recommendations drive actual actions. For model health, I'd track Precision@K and Mean Reciprocal Rank to measure ranking quality, and a diversity metric to ensure the model isn't just recommending the same few popular items to everyone.
+
+===== M12 [medium / CI/CD for ML / spoken] =====
+QUESTION: How would you roll out a new model version without risking a bad deployment?
+ANSWER (24 words): I'd use a canary deployment strategy, routing a small percentage of traffic to the new model version while keeping the majority on the stable
+
+===== M13 [medium / CloudFormation/IaC / spoken] =====
+QUESTION: How do you manage secrets in infrastructure as code without committing them?
+ANSWER (55 words): I use a dedicated secret manager like AWS Secrets Manager or HashiCorp Vault to store sensitive data centrally. In my IaC code, I reference these secrets via dynamic lookups or environment variables rather than hardcoding values. This ensures that the actual secrets never enter version control and are only injected into the infrastructure at runtime.
+
+===== M14 [medium / S3 / spoken] =====
+QUESTION: How would you make a large S3 training dataset load faster into a training job?
+ANSWER (80 words): I'd implement S3 Select to filter and retrieve only the necessary columns and rows directly from S3, reducing the amount of data transferred over the network. I'd also convert the raw data into a high-performance format like Parquet or TFRecord to enable efficient columnar reads and better compression. Finally, I'd use a data streaming approach, such as using the S3 mount or a specialized data loader, to stream samples into memory on demand rather than downloading the entire dataset first.
+
+===== M15 [medium / Airflow / spoken] =====
+QUESTION: How would you pass data between Airflow tasks when the payload is too large for XCom?
+ANSWER (67 words): For payloads too large for XCom, I would use an external storage layer like S3 or GCS as a staging area. The upstream task writes the data to a file in the bucket and passes only the URI or file path via XCom to the downstream task, which then reads the data directly from that location. This keeps the Airflow metadata database lean and prevents performance degradation.
+
+===== M16 [medium / SageMaker / spoken] =====
+QUESTION: How does the SageMaker Model Registry fit into a deployment workflow?
+ANSWER (71 words): The Model Registry acts as a central version control system for models, allowing us to catalog, version, and track the lineage of every model artifact. In a deployment workflow, it serves as the single source of truth where a model is registered, approved by a lead or auditor, and then triggered for deployment to an endpoint. This ensures that only vetted, approved versions are the some-time transition from staging to production.
+
+===== M17 [medium / Monitoring/drift / spoken] =====
+QUESTION: How would you monitor a model where ground truth labels arrive weeks late?
+ANSWER (65 words): I would implement a proxy monitoring system using performance indicators that correlate with the final labels, such as prediction distribution shifts or confidence score drops. I'd also track feature drift using a Kolmogorov-Smirnov test to detect if the input data has diverged from the training set. Once the ground truth finally arrives, I'd perform a retrospective analysis to validate these proxies and calibrate the alerts.
+
+===== M18 [medium / Docker / spoken] =====
+QUESTION: How do you handle CUDA and driver compatibility in containers for GPU training?
+ANSWER (11 words): I use the NVIDIA Container Toolkit to decouple the GPU drivers
+
+===== M19 [medium / Kubernetes / spoken] =====
+QUESTION: What is your approach to health checks for a model serving container?
+ANSWER (74 words): I implement two distinct checks: a liveness probe to ensure the container hasn't crashed and a readiness probe to verify the model is fully loaded into memory and ready to handle traffic. The readiness check specifically hits a lightweight endpoint that validates the model's weights are initialized and the inference engine is responsive. This prevents the load balancer from routing requests to a container that is still booting up, avoiding 503 errors during deployments.
+
+===== M20 [medium / CI/CD for ML / spoken] =====
+QUESTION: How would you test a data pipeline, given the data itself keeps changing?
+ANSWER (59 words): I'd implement a combination of data quality checks and gold-standard datasets. I'd use tools like Great Expectations to validate schemas and distribution shifts in real-time, ensuring the data stays within expected bounds. For logic testing, I'd use a static "golden dataset" with known inputs and outputs to verify that the transformation logic remains consistent regardless of the live data.
+
+===== M21 [medium / CloudFormation/IaC / spoken] =====
+QUESTION: How would you structure stacks for development, staging, and production?
+ANSWER (63 words): I'd use a modular approach with a shared base configuration and environment-specific overrides. I'd keep development and staging as mirrors of production to ensure parity, but with smaller instance sizes to save costs. Each environment would be isolated in its own account or VPC, with CI/CD pipelines promoting the same immutable artifact across the stages to eliminate "it works on my machine" issues.
+
+===== M22 [medium / SageMaker / spoken] =====
+QUESTION: How would you approach hyperparameter tuning at scale without burning the budget?
+ANSWER (10 words): I'd start with Bayesian Optimization or Hyperband instead of a
+
+===== M23 [medium / Monitoring/drift / spoken] =====
+QUESTION: What would make you decide to retrain a model rather than just alerting on drift?
+ANSWER (2 words): I'd ret
+
+===== M24 [medium / Airflow / spoken] =====
+QUESTION: How would you backfill a year of data without overwhelming the scheduler?
+ANSWER (62 words): I'd implement a sliding window approach, processing the data in small, manageable chunks—like one day or one week at a time—rather than triggering a year's worth of jobs at once. I would use a script to trigger these batches sequentially or with a concurrency limit to prevent scheduler saturation. This ensures the system maintains stability while providing a clear path to completion.
+
+===== M25 [medium / S3 / spoken] =====
+QUESTION: How would you handle a dataset that must be deleted on request for compliance?
+ANSWER (72 words): I would implement a clear mapping between user IDs and their data locations across all storage layers, including backups and logs. When a deletion request comes in, I'd trigger an automated workflow to purge those specific records and then generate a cryptographically signed certificate of erasure for compliance auditing. For immutable backups, I'd use a "crypto-shredding" approach, where I delete the unique encryption key for that user, rendering their data permanently unrecoverable.
+
+===== M26 [medium / Docker / spoken] =====
+QUESTION: How do you keep base images patched across many model services?
+ANSWER (38 words): I use a centralized base image pipeline that automatically rebuilds and pushes updated images whenever a new security patch is released. I then trigger a rolling update across all model services using a CI/CD orchestrator to ensure zero
+
+===== M28 [medium / CI/CD for ML / spoken] =====
+QUESTION: How do you keep feature engineering consistent between training and serving?
+ANSWER (54 words): I use a feature store to define the transformation logic once and apply it to both the training pipeline and the real-time serving layer. This ensures that the same code is used for both, preventing training-serving skew. By centralizing the feature definitions, any update to the transformation logic is automatically synchronized across both environments.
+
+===== H01 [hard / Monitoring/drift / spoken] =====
+QUESTION: Your model accuracy dropped fifteen percent overnight, but the input schema is unchanged. How do you debug that?
+ANSWER (67 words): I'd start by checking for data drift—specifically if the distribution of the
+incoming data has shifted, even if the schema remains the same. I'd then look for
+upstream pipeline failures, like a missing feature or a corrupted
+dataset, that could be causing the same values to be passed. I'd finally
+verify if any underlying infrastructure or dependency updates occurred overnight that
+could be altered the model's behavior.
+
+===== H02 [hard / SageMaker / spoken] =====
+QUESTION: A SageMaker endpoint serving ten thousand requests per second has p99 latency creeping up. How do you diagnose and fix it?
+ANSWER (93 words): I'd start by checking CloudWatch metrics to see if the latency spike correlates with CPU or memory saturation on the instances, which would signal a need to scale up the instance type or out by increasing the instance count. I'd also analyze the SageMaker Model Monitor logs to check for data drift or larger payload sizes that could be slowing down inference. If the hardware is fine, I'd look into optimizing the model itself using SageMaker Neo or switching to a more efficient runtime like TensorRT to reduce the compute overhead per request.
+
+===== H05 [hard / Airflow / spoken] =====
+QUESTION: A DAG that ran fine for months now misses its SLA every night. Where do you start?
+ANSWER (77 words): I'd start by checking the execution logs and Gantt chart to identify which specific task is lagging and whether it's a sudden spike or a gradual trend. I'd then investigate the data volume to see if we're hitting a "data skew" or "data volume" wall where the input size has finally outgrown the allocated resources. Finally, I'd check for external bottlenecks, like database lock contention or API rate limits, that might be slowing down the task's execution.
+
+===== H06 [hard / S3 / spoken] =====
+QUESTION: Training jobs are throttling on S3 reads at scale. What is happening and how do you fix it?
+ANSWER (56 words): This is likely caused by S3 request rate limits, where too many concurrent requests to the same prefix trigger 503 Slow Down errors. To fix it, actually distribute the data across multiple prefixes using a randomized hash of the key names. This prevents the 'hot partition' partition problem by spreading the load across more S3 shards.
+
+===== H08 [hard / Docker / spoken] =====
+QUESTION: The same image behaves differently on your laptop and in the cluster. How do you track that down?
+ANSWER (80 words): I'd start by comparing the environment variables and resource limits between my local machine and the cluster, as differences in memory or CPU quotas often cause silent failures. Next, I'd check the logs and events for the cluster pod to see if there are any architecture mismatches or missing secrets that aren't present locally. Finally, I'd use a tool like kubectl debug to shell into the running container and verify that the filesystem and network connectivity are behaving as expected.
+
+===== H09 [hard / CloudFormation/IaC / spoken] =====
+QUESTION: Someone changed a resource by hand and now your stack will not update. What do you do?
+ANSWER (57 words): I'll perform a drift detection to identify exactly which attributes were changed manually. Once the discrepancies are found, I'll either update the configuration code to match the manual change if it's desired, or I'll manually revert the resource to its defined state to resolve the conflict. This ensures the state file remains the synchronized source of truth.
+
+===== H10 [hard / CI/CD for ML / spoken] =====
+QUESTION: How would you roll back a model that is already serving traffic and has written bad data downstream?
+ANSWER (64 words): I would immediately trigger a rollback to the previous stable version in the Model Registry to stop the bad data from continuing. Simultaneously, I'd initiate a data cleanup pipeline to identify and purge or correct the corrupted downstream records using the model's version logs. Finally, I'd conduct a post-mortem to implement stricter validation gates, like a ConditionStep, to prevent similar regressions from reaching production.
+
+===== H11 [hard / SageMaker / spoken] =====
+QUESTION: Your training job costs tripled after a code change with no accuracy gain. How do you find the cause?
+ANSWER (73 words): I'd start by comparing the resource utilization logs and profiling data from before and after the change to identify if the spike is in compute, memory, or data transfer. I'll look for regressions in data loading pipelines, such as a loss of vectorization or an accidental shift to CPU-bound processing. Finally, I'd check for changes in hyperparameters or batch sizes that might have inadvertently increased the number of training steps or memory overhead.
+
+===== H12 [hard / Kubernetes / spoken] =====
+QUESTION: How would you design for a region outage in a serving stack that must stay available?
+ANSWER (5 words): I'd implement a multi-region active-active
+

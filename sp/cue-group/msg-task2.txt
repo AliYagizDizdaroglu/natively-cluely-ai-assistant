@@ -1,0 +1,10 @@
+feat(cues): trimCues — the cue block as displayed, notation cleaned then capped
+
+Pure and beside cleanNotation so the cleanup stays private: each line through
+the spoken-notation rules the prose gets (a cue came out as raw LaTeX in
+spike 4), then at most maxLines lines of maxWords words, cleanup first because
+it changes the count. Reports the raw line count and the raw text of every
+dropped, cut or cleaned line for the engine's log. The parser stays raw for
+the harness.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

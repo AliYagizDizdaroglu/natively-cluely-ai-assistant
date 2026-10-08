@@ -1,0 +1,3 @@
+30T11-45-30-br1        11:11:38 R21-route; last Live-only turn 11:11:16 (deduper DROPPED it) gap 22.2s  q="Explain your rag pipeline precisely. Walk through "
+
+R21 re-routed answers: 1; within 40 s after a Live-only turn the deduper dropped: 1

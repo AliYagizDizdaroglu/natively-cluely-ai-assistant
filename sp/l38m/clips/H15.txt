@@ -1,0 +1,1 @@
+An Airflow DAG with two hundred tasks takes six hours, but its critical path is only two hours. How would you find and fix the bottleneck?

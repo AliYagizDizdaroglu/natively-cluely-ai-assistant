@@ -1,0 +1,674 @@
+{
+    "k1":  {
+               "expectedSha256":  "",
+               "id":  "R1",
+               "supersede":  false,
+               "question":  "q",
+               "expectedBlock":  "",
+               "expectedCue":  "none",
+               "ledger":  [
+
+                          ],
+               "promptLines":  [
+
+                               ],
+               "expectedSha":  "",
+               "turnId":  1
+           },
+    "k2":  {
+               "expectedSha256":  "",
+               "id":  "R2",
+               "supersede":  false,
+               "question":  "q",
+               "expectedBlock":  "",
+               "expectedCue":  "none",
+               "ledger":  [
+
+                          ],
+               "promptLines":  [
+
+                               ],
+               "expectedSha":  "",
+               "turnId":  1
+           },
+    "k3":  {
+               "expectedSha256":  "",
+               "id":  "R3",
+               "supersede":  false,
+               "question":  "q",
+               "expectedBlock":  "",
+               "expectedCue":  "none",
+               "ledger":  [
+
+                          ],
+               "promptLines":  [
+
+                               ],
+               "expectedSha":  "",
+               "turnId":  1
+           },
+    "k4":  {
+               "expectedSha256":  "",
+               "id":  "R4",
+               "supersede":  false,
+               "question":  "q",
+               "expectedBlock":  "",
+               "expectedCue":  "none",
+               "ledger":  [
+
+                          ],
+               "promptLines":  [
+
+                               ],
+               "expectedSha":  "",
+               "turnId":  1
+           },
+    "k5":  {
+               "expectedSha256":  "",
+               "id":  "R5",
+               "supersede":  false,
+               "question":  "q",
+               "expectedBlock":  "",
+               "expectedCue":  "none",
+               "ledger":  [
+
+                          ],
+               "promptLines":  [
+
+                               ],
+               "expectedSha":  "",
+               "turnId":  1
+           },
+    "k6":  {
+               "expectedSha256":  "",
+               "id":  "R6",
+               "supersede":  false,
+               "question":  "q",
+               "expectedBlock":  "",
+               "expectedCue":  "none",
+               "ledger":  [
+
+                          ],
+               "promptLines":  [
+
+                               ],
+               "expectedSha":  "",
+               "turnId":  1
+           },
+    "k7":  {
+               "expectedSha256":  "",
+               "id":  "R7",
+               "supersede":  false,
+               "question":  "q",
+               "expectedBlock":  "",
+               "expectedCue":  "none",
+               "ledger":  [
+
+                          ],
+               "promptLines":  [
+
+                               ],
+               "expectedSha":  "",
+               "turnId":  1
+           },
+    "k8":  {
+               "expectedSha256":  "",
+               "id":  "R8",
+               "supersede":  false,
+               "question":  "q",
+               "expectedBlock":  "",
+               "expectedCue":  "none",
+               "ledger":  [
+
+                          ],
+               "promptLines":  [
+
+                               ],
+               "expectedSha":  "",
+               "turnId":  1
+           },
+    "k9":  {
+               "expectedSha256":  "",
+               "id":  "R9",
+               "supersede":  false,
+               "question":  "q",
+               "expectedBlock":  "",
+               "expectedCue":  "none",
+               "ledger":  [
+
+                          ],
+               "promptLines":  [
+
+                               ],
+               "expectedSha":  "",
+               "turnId":  1
+           },
+    "k10":  {
+                "expectedSha256":  "",
+                "id":  "R10",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k11":  {
+                "expectedSha256":  "",
+                "id":  "R11",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k12":  {
+                "expectedSha256":  "",
+                "id":  "R12",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k13":  {
+                "expectedSha256":  "",
+                "id":  "R13",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k14":  {
+                "expectedSha256":  "",
+                "id":  "R14",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k15":  {
+                "expectedSha256":  "",
+                "id":  "R15",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k16":  {
+                "expectedSha256":  "",
+                "id":  "R16",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k17":  {
+                "expectedSha256":  "",
+                "id":  "R17",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k18":  {
+                "expectedSha256":  "",
+                "id":  "R18",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k19":  {
+                "expectedSha256":  "",
+                "id":  "R19",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k20":  {
+                "expectedSha256":  "",
+                "id":  "R20",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k21":  {
+                "expectedSha256":  "",
+                "id":  "R21",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k22":  {
+                "expectedSha256":  "",
+                "id":  "R22",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k23":  {
+                "expectedSha256":  "",
+                "id":  "R23",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k24":  {
+                "expectedSha256":  "",
+                "id":  "R24",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k25":  {
+                "expectedSha256":  "",
+                "id":  "R25",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k26":  {
+                "expectedSha256":  "",
+                "id":  "R26",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k27":  {
+                "expectedSha256":  "",
+                "id":  "R27",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k28":  {
+                "expectedSha256":  "",
+                "id":  "R28",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k29":  {
+                "expectedSha256":  "",
+                "id":  "R29",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k30":  {
+                "expectedSha256":  "",
+                "id":  "R30",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k31":  {
+                "expectedSha256":  "",
+                "id":  "R31",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k32":  {
+                "expectedSha256":  "",
+                "id":  "R32",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k33":  {
+                "expectedSha256":  "",
+                "id":  "R33",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k34":  {
+                "expectedSha256":  "",
+                "id":  "R34",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k35":  {
+                "expectedSha256":  "",
+                "id":  "R35",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k36":  {
+                "expectedSha256":  "",
+                "id":  "R36",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k37":  {
+                "expectedSha256":  "",
+                "id":  "R37",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k38":  {
+                "expectedSha256":  "",
+                "id":  "R38",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k39":  {
+                "expectedSha256":  "",
+                "id":  "R39",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k40":  {
+                "expectedSha256":  "",
+                "id":  "R40",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k41":  {
+                "expectedSha256":  "",
+                "id":  "R41",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            },
+    "k42":  {
+                "expectedSha256":  "",
+                "id":  "R42",
+                "supersede":  false,
+                "question":  "q",
+                "expectedBlock":  "",
+                "expectedCue":  "none",
+                "ledger":  [
+
+                           ],
+                "promptLines":  [
+
+                                ],
+                "expectedSha":  "",
+                "turnId":  1
+            }
+}

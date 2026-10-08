@@ -1,0 +1,85 @@
+﻿MAIN adapter 16037 B 70683d814ac6a27f; MAIN adapter test 11766 B e80e5373b7d7b291
+
+[as expected] V0 control: MAIN adapter
+   Tests 12 passed (12)
+   (no test failed)
+
+[as expected] V1 gate removed
+   Tests 2 failed | 10 passed (12)
+   failed: R-LANGSWITCH: en -> id -> en -> multi on ONE running instance; each restarted socket gets its own gate
+   failed: a non-English connection passes every transcript through untouched, with no repair line
+
+[as expected] V2 gate inverted
+   Tests 5 failed | 7 passed (12)
+   failed: R-LANGSWITCH: en -> id -> en -> multi on ONE running instance; each restarted socket gets its own gate
+   failed: R-ADJACENT: the repair line is the very next log line after its final's Transcript event line (a logging listener present)
+   failed: emits the repaired final, logs the raw text plus one repair line, and a restarted socket starts with no remembered cut
+   failed: an empty INTERIM is not a pause: the repair still happens (the control for the three above)
+   failed: a non-English connection passes every transcript through untouched, with no repair line
+
+[as expected] V3 clear() dropped on the empty FINAL
+   Tests 1 failed | 11 passed (12)
+   failed: an empty FINAL between F1 and F2 is a pause: F2 is emitted as received, no repair line
+
+[as expected] V4 clear() dropped on UtteranceEnd
+   Tests 2 failed | 10 passed (12)
+   failed: R-STALE-UE: an UtteranceEnd on a REPLACED socket still clears that socket's own cut (its late F2 passes unchanged)
+   failed: an UtteranceEnd between F1 and F2 is a pause too, and is still re-emitted
+
+[as expected] V5 speech_final not passed
+   Tests 1 failed | 11 passed (12)
+   failed: speech_final on F1 reaches the module: Deepgram heard the utterance end there, so nothing is restored
+
+[as expected] V6 an empty INTERIM clears too
+   Tests 1 failed | 11 passed (12)
+   failed: an empty INTERIM is not a pause: the repair still happens (the control for the three above)
+
+[as expected] V7 bare .clear() on the empty FINAL (null repair)
+   Tests 1 failed | 11 passed (12)
+   failed: an empty FINAL on a non-English or multi connection is harmless: F2 is emitted as received, no error is logged
+
+[UNEXPECTED] V8 bare .clear() on UtteranceEnd (null repair)
+   Tests 2 failed | 10 passed (12)
+   failed: R-LANGSWITCH: en -> id -> en -> multi on ONE running instance; each restarted socket gets its own gate
+   failed: an UtteranceEnd on a non-English or multi connection is harmless and still re-emitted
+   wanted ["an UtteranceEnd on a non-English or multi connection is harmless"]
+
+ RUN  v2.1.9 C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/boundary-repair/sdd/task-4-review-scratch/m
+
+ × electron/audio/review.t4.test.ts > REVIEW probes > R-LANGSWITCH: en -> id -> en -> multi on ONE running instance; each restarted socket gets its own gate
+   → Cannot read properties of null (reading 'clear')
+ ✓ electron/audio/review.t4.test.ts > REVIEW probes > R-RECONNECT: a cut remembered on a socket the server closed (1011) is not repaired on the reconnected socket
+ ✓ electron/audio/review.t4.test.ts > REVIEW probes > R-ADJACENT: the repair line is the very next log line after its final's Transcript event line (a logging listener present)
+ ✓ electron/audio/review.t4.test.ts > REVIEW probes > R-STALE-UE: an UtteranceEnd on a REPLACED socket still clears that socket's own cut (its late F2 passes unchanged)
+ ✓ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > emits the repaired final, logs the raw text plus one repair line, and a restarted socket starts with no remembered cut
+ ✓ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > an empty FINAL between F1 and F2 is a pause: F2 is emitted as received, no repair line
+ ✓ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > an UtteranceEnd between F1 and F2 is a pause too, and is still re-emitted
+ ✓ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > speech_final on F1 reaches the module: Deepgram heard the utterance end there, so nothing is restored
+ ✓ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > an empty INTERIM is not a pause: the repair still happens (the control for the three above)
+ ✓ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > a non-English connection passes every transcript through untouched, with no repair line
+ ✓ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > an empty FINAL on a non-English or multi connection is harmless: F2 is emitted as received, no error is logged
+ × electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > an UtteranceEnd on a non-English or multi connection is harmless and still re-emitted
+   → Cannot read properties of null (reading 'clea
+
+[as expected] V9 UtteranceEnd clear moved under the stale() gate
+   Tests 1 failed | 11 passed (12)
+   failed: R-STALE-UE: an UtteranceEnd on a REPLACED socket still clears that socket's own cut (its late F2 passes unchanged)
+
+[as expected] V10 a log line inserted between the event line and the repair line
+   Tests 1 failed | 11 passed (12)
+   failed: R-ADJACENT: the repair line is the very next log line after its final's Transcript event line (a logging listener present)
+
+[as expected] V11 repair line logged after the emit
+   Tests 1 failed | 11 passed (12)
+   failed: R-ADJACENT: the repair line is the very next log line after its final's Transcript event line (a logging listener present)
+
+[as expected] V12 one repair per start(), shared by reconnect sockets
+   Tests 1 failed | 11 passed (12)
+   failed: R-RECONNECT: a cut remembered on a socket the server closed (1011) is not repaired on the reconnected socket
+
+junction removed: true; MAIN vitest still present: true
+mirror tree deleted: true; cache deleted: true
+MAIN node_modules/.vite unchanged by the mirror runs: true
+MAIN adapter after: 16037 B 70683d814ac6a27f (unchanged: true)
+
+variants whose failing set differed from the expectation: 1

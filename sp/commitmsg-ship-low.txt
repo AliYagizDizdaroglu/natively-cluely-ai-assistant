@@ -1,0 +1,32 @@
+feat(verbal): thinking level LOW is the shipped default for the Gemini answer
+
+The 2026-09-17 paired bench (the 39 prompts the app sent in s50e, three reps per arm,
+blind Opus grading, noise floor +/-4 on 38) sized the thinking levels on
+gemini-3.1-flash-lite against the shipped default:
+
+  control vs LOW    +21 acceptable on 117 pairs, 24 up / 3 down, mains 38 -> 49 of 57,
+                    zero wrong answers in three hours (control: 21 wrong verdicts of 342)
+  control vs HIGH   +10, 20 up / 10 down, slower on every rep
+  MEDIUM            not honoured by this model (s50h: 38 of 43 requests at zero thoughts)
+
+LOW's bench mains rate (16.3 of 19 expected) reproduces the s50g flight (16 of 20), and it
+costs about +1.2 s median / +2 s p90 to the first spoken token (bench 4.5 / 7.1 s).
+
+So geminiThinkingLevelFromEnv returns LOW when NATIVELY_GEMINI_THINKING_LEVEL is unset,
+and every verbal Gemini request carries thinkingConfig.thinkingLevel. The environment
+still overrides it: MINIMAL is the pre-bench behaviour (the provider default made
+explicit), HIGH the ceiling probe. The stall budget follows the level as before: 10 s at
+LOW (now the default), 4 s at MINIMAL. Gemma keeps its pinned MINIMAL config.
+
+The flight gate's TTFT p90 bar moves from 5 s to 10 s, the stall budget under the shipped
+level, above which the fallback replaces the answer anyway; 5 s would fail every LOW hour
+by design (s50g 7.8 s, bench 7.1 s). The detect p50 bar stays at 5 s.
+
+Tests: geminiThinking (unset -> LOW, budget 10 s by default, 4 s at MINIMAL), the verbal
+call (unset -> LOW on the request, MINIMAL explicit), the stall race (10 s with nothing
+set, 4 s at MINIMAL on both routes), and the gate (7.8 s passes, 10.1 s fails; watched fail
+against the old 5 s bar). Suite 684, tsc at the 6-error baseline.
+
+Confirming flight: s50i, 2026-09-18 10:10 local, launcher sets no level.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+﻿PREVIOUS behaviour: whole log, no slicing, no header refusals => RD-22 ,RD-22b,RD-22c,RD-22d,RD-22e | cal-build-blind-rd: 59/64 cases PASS -- FAILURES ABOVE
+slice to the end of the log (a later process leaks in) => RD-22 ,RD-22b | cal-build-blind-rd: 62/64 cases PASS -- FAILURES ABOVE
+first header instead of the last one at or before the start => RD-22  | cal-build-blind-rd: 63/64 cases PASS -- FAILURES ABOVE
+no refusal for a header inside the hour => RD-22e | cal-build-blind-rd: 63/64 cases PASS -- FAILURES ABOVE
+no refusal without a header at or before the start => RD-22c | cal-build-blind-rd: 63/64 cases PASS -- FAILURES ABOVE

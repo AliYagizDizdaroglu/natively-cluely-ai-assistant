@@ -1,0 +1,1 @@
+built 1 packet: 90 items (45 ids x 2 arms); holes 2 (EF01,RH14); not played 0; items without arm field 0

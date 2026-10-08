@@ -1,0 +1,13 @@
+fix(cues): a reused bubble drops its cues on a coaching card
+
+The engine's abort path drops a superseded generation without a final
+event, so a spoken answer that was streaming with cues can leave its
+bubble dangling (isStreaming: true, real cues). When the next answer is
+a negotiation-coaching short-circuit, the token handler's and the
+finalize handler's coaching branches both reused that dangling bubble by
+spreading it, so the finished coaching card rendered the old answer's
+cue block above it. Both spreads now set cues: undefined, mirroring the
+neighbouring R23 discipline that already clears isNegotiationCoaching
+and negotiationCoachingData on reuse.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

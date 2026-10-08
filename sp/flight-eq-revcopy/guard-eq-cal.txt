@@ -1,0 +1,444 @@
+guard-eq.mjs calibration (A2.10 P6, A3.7, A5; guard-h40d-cal.mjs's pattern)
+
+SETUP
+  guard under test: C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq.mjs (the real file, run as a child; cwd = the stub tree or MAIN's root; node v22.19.0); sha256/12 3b49e62f9542
+  stub tree: C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal - a throwaway git repo (never MAIN) built from REAL files of MAIN (HEAD b42ca32, read only): the LLMHelper, prompts, IntentClassifier, four EQ sources, the golden roster/flight files and the WHOLE dist-electron (946 files); stub base commit 0aff62d, second b7ef47b
+  MAIN: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant (HEAD b42ca3270200d53bfaba319ceed472f6b32f30a5, its parent 355ad0a074757544f1a36033373e47dff54de341); MAIN is only read
+  layout mirror C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-layout: E-shaped folders holding COPIES of the guard; the faithful copy is byte-identical to the guard (sha256 equal)
+  every case: the child inherits this session's environment minus every NATIVELY_* and EQ_* name (the launcher's clean slate), plus NATIVELY_STT_PROVIDER=deepgram, NATIVELY_ROSTER=scenario50, NATIVELY_SCENARIOS=S1,S2, NATIVELY_EARLIER_QUESTION=1, NATIVELY_FLIGHT_FOCUSED=off, NATIVELY_EQ_T=2026-10-05 21:00, NATIVELY_FLIGHT_COMMIT=<the stub HEAD>, and the options --settings <the -on stub> --smoke-result <a stub in the check-smoke-eq note format> unless the case says otherwise; parity-dist and night-gates.ps1 are the REAL scripts unless a case names a stub
+  a case counts as ok only if the exit code, the named check tag, the wanted message fragments (and the unwanted ones: no value is leaked) all read as expected, and a failing guard printed exactly one stderr line and no GUARD OK
+
+PURE PREDICATE CALIBRATION (guard-eq-git-cal.mjs: captured status strings incl. the real capture of MAIN, no git call)
+  ok   19. backslash paths are normalised :: got [] want []
+  PREDICATE CALIBRATION OK 19/19
+
+STUB TREE CASES (each breaks one premise of the correct environment A1)
+ok   A1    the correct environment, the DRY form (every override cleared, the flag exactly 1, focused off, T set, the registered commit = the stub HEAD, a .env with an unrelated name, the REAL parity-dist and the REAL night-gates.ps1 as children, the settings and smoke-result stubs) -> GUARD OK
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven (dist-proof exit 0, filter sha256/16 28d6c47b9da4fba6), four EQ markers in dist and source, parity-dist exit 0 with both exact lines, smoke result holds WHY and the blocks [S1Q04F 332, S1Q06F 401] (C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\result-ok.md), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\settings-on.json, mtime 2026-10-05T18:35:49.302Z), night gates OK, precheck not required (dry twin), .env carries none of the guarded names, question detector unchanged
+ok   A2    the same through the layout mirror (a byte-identical COPY of the guard in an E-shaped folder, the copy the mutants use) -> GUARD OK
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[595 more chars]
+ok   A3    the REAL form (--require-precheck): a precheck stamp at T - 7 min, now = T + 1 min -> GUARD OK and PRECHECK ACCEPTED
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[603 more chars]
+ok   B1    commit unset
+      exit 1 :: GUARD FAILED: (10b) NATIVELY_FLIGHT_COMMIT is not set - the launcher must set it to the commit this flight is registered for (the registered HEAD)
+ok   B2    commit wrong (forty zeros)
+      exit 1 :: GUARD FAILED: (10b) MAIN HEAD is b7ef47b6ffda11a4bee3a118b6008f4806e6f663, not the registered commit 0000000000000000000000000000000000000000 (NATIVELY_FLIGHT_COMMIT) - a peer or a later commit moved the tree since registration
+ok   B2b   A5 m7, HEAD MOVED: the commit = the PARENT of the stub HEAD (the registered HEAD is one commit behind; no commit is ever made on MAIN to test this) -> FAILED
+      exit 1 :: GUARD FAILED: (10b) MAIN HEAD is b7ef47b6ffda11a4bee3a118b6008f4806e6f663, not the registered commit 0aff62dc062560ddb6248682ad5d7610b2af9c64 (NATIVELY_FLIGHT_COMMIT) - a peer or a later commit moved the tree since registration
+ok   B3    commit abbreviated (7 characters)
+      exit 1 :: GUARD FAILED: (10b) NATIVELY_FLIGHT_COMMIT is "b7ef47b", not a full 40-hex commit hash - the controller fills in the registered HEAD at arming
+ok   B4    commit = the launcher placeholder token
+      exit 1 :: GUARD FAILED: (10b) NATIVELY_FLIGHT_COMMIT is "@@REGISTERED_HEAD_FULL_HASH@@", not a full 40-hex commit hash - the controller fills in the registered HEAD at arming
+ok   B5    commit with a trailing space (a cmd `set X=value ` artifact): trimmed -> GUARD OK
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[595 more chars]
+ok   B6    tree dirty: a tracked source file under electron/ edited (a peer edit)
+      exit 1 :: GUARD FAILED: (10b) the tree the flight's rebuild will compile is not clean: electron/knowledge/IntentClassifier.ts
+ok   B7    tree dirty: an UNTRACKED file under electron/
+      exit 1 :: GUARD FAILED: (10b) the tree the flight's rebuild will compile is not clean: electron/llm/newFile.ts
+ok   B8    tree dirty: scripts/build-electron.js edited
+      exit 1 :: GUARD FAILED: (10b) the tree the flight's rebuild will compile is not clean: scripts/build-electron.js
+ok   B9    tree dirty: an untracked file under src/
+      exit 1 :: GUARD FAILED: (10b) the tree the flight's rebuild will compile is not clean: src/new.tsx
+ok   B10   tree dirty: package.json edited
+      exit 1 :: GUARD FAILED: (10b) the tree the flight's rebuild will compile is not clean: package.json
+ok   B10b  tree dirty: a passes/ record edited under electron/ (the committed texts the launcher prints shas of)
+      exit 1 :: GUARD FAILED: (10b) the tree the flight's rebuild will compile is not clean: electron/test/golden/passes/flight-eq-AMENDMENT-A1.md
+ok   B11   the MAIN-like allowlisted dirt only: the three tracked files modified, the four untracked scratch paths, two stray untracked root files, a tracked root doc edited -> GUARD OK, the seven allowlisted paths named
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [electron/test/golden/interview60.chains.json, electron/test/golden/interview60.report.md, natively_debug.log.1, electron/test/golden/openrouter-probes/, electron/test/golden/openrouter.probe.mjs, electron/test/golden/zai-probes/, electron/test/golden/zai.probe.mjs], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven (dist-proof exit 0, filter sha256/16 28d6c47b9da4fba6), four EQ markers in dist and source, parity-dist exit 0 with both exact lines, smoke result holds WHY and the blocks [S1Q04F 332, S1Q06F 401] (C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\result-ok.md), knowledge mode ON (knowledgeMode = true in C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\settings-on.json, mtime 2026-10-05T18:35:49.302Z), night gates OK, precheck not required (dry twin), .env carries none of the guarded names, question detector unchanged
+ok   B12   restored: after B6-B11 undid their edits the correct environment passes again
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[595 more chars]
+ok   B13   the scope boundary, by design: ONLY a tracked root doc edited and a stray untracked root file -> GUARD OK
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[595 more chars]
+ok   B14   a gitignored stale file under electron/test/golden/ -> GUARD OK
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[595 more chars]
+ok   B15   git unusable: the stub's .git moved aside
+      exit 1 :: GUARD FAILED: (10b) git rev-parse HEAD failed: Command failed: git -C C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal rev-parse HEAD fatal: not a git repository (or any of the parent directories): .git
+ok   E1    .env declares NATIVELY_VERBAL_HEDGE (a dummy value): named, the value not leaked
+      exit 1 :: GUARD FAILED: (10a) .env declares NATIVELY_VERBAL_HEDGE - this would reach the app and never reach this guard (see the header comment); remove it from .env before the flight
+ok   E2    .env declares NATIVELY_FOLLOWUP_PARENT in the `export NAME=` form
+      exit 1 :: GUARD FAILED: (10a) .env declares NATIVELY_FOLLOWUP_PARENT - this would reach the app and never reach this guard (see the header comment); remove it from .env before the flight
+ok   E3    .env declares NATIVELY_QUESTION_DETECTION_MODEL in the `NAME: value` form
+      exit 1 :: GUARD FAILED: (10a) .env declares NATIVELY_QUESTION_DETECTION_MODEL - this would reach the app and never reach this guard (see the header comment); remove it from .env before the flight
+ok   E4    .env declares two guarded names with CRLF line ends
+      exit 1 :: GUARD FAILED: (10a) .env declares NATIVELY_VERBAL_HEDGE_TRIGGER_MS, NATIVELY_GEMINI_THINKING_LEVEL - this would reach the app and never reach this guard (see the header comment); remove it from .env before the flight
+ok   E5    .env absent altogether -> still GUARD OK
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[595 more chars]
+ok   E6    NATIVELY_QUESTION_DETECTION_MODEL set in the process environment
+      exit 1 :: GUARD FAILED: (10a) NATIVELY_QUESTION_DETECTION_MODEL is set - the pre-registration says the Groq question detector is unchanged; unset it
+ok   E7    A3.7 m12: .env names NATIVELY_EQ_T -> FAILED
+      exit 1 :: GUARD FAILED: (10a) .env declares NATIVELY_EQ_T - this would reach the app and never reach this guard (see the header comment); remove it from .env before the flight
+ok   E8    A3.7 m12: .env names NATIVELY_FLIGHT_FOCUSED -> FAILED
+      exit 1 :: GUARD FAILED: (10a) .env declares NATIVELY_FLIGHT_FOCUSED - this would reach the app and never reach this guard (see the header comment); remove it from .env before the flight
+ok   H1    the hedge variable set to 1
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set ("1") - flight-eq flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   H2    the hedge variable set to 0
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set ("0") - flight-eq flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   H4    the hedge variable set to the empty string
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set ("") - flight-eq flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   H5    the 09-26 build: verbalHedge.js with the OLD default (unset = off)
+      exit 1 :: GUARD FAILED: (6) the built default is not the hedge: "[Main] verbal hedge: off", want "[Main] verbal hedge: on trigger=5000ms" - rebuild from a tree with the hedge default (f745d7e)
+ok   H7    the hedge module missing from the dist
+      exit 1 :: GUARD FAILED: (6) dist-electron/electron/llm/verbalHedge.js does not load: Cannot find module 'C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal/dist-electron/electron/llm/verbalHedge.js' Require stack: - C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal/package.json. Run npm run build:electron.
+ok   T1    trigger override 1 ms
+      exit 1 :: GUARD FAILED: (7) the hedge trigger is 1ms, not the probed 5000ms - NATIVELY_VERBAL_HEDGE_TRIGGER_MS is set
+ok   T2    trigger override junk (abc)
+      exit 1 :: GUARD FAILED: (7) NATIVELY_VERBAL_HEDGE_TRIGGER_MS refuses this environment: NATIVELY_VERBAL_HEDGE_TRIGGER_MS="abc" is not a positive whole number of milliseconds; unset it for the default
+ok   T3    trigger set to its own default (5000) -> GUARD OK
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[595 more chars]
+ok   F1    follow-up parent flag on (b7: "the parent flag 1"): refused at check 8, before the earlier-question describer could
+      exit 1 :: GUARD FAILED: (8) the follow-up flag is set; flight-eq flies it OFF
+ok   F2    follow-up parent flag junk (abc)
+      exit 1 :: GUARD FAILED: (8) NATIVELY_FOLLOWUP_PARENT refuses this environment: NATIVELY_FOLLOWUP_PARENT="abc" is not 1, 0 or unset
+ok   F3    the follow-up module missing from the dist
+      exit 1 :: GUARD FAILED: (8) dist-electron/electron/llm/followUpParent.js does not load: Cannot find module 'C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal/dist-electron/electron/llm/followUpParent.js' Require stack: - C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal/package.json. Run npm run build:electron.
+ok   O1    answer-model override (gemini-3.5-flash-lite)
+      exit 1 :: GUARD FAILED: (3) an answer-model override is set: gemini-3.1-flash-lite resolves to gemini-3.5-flash-lite
+ok   O2    thinking-level override (HIGH)
+      exit 1 :: GUARD FAILED: (3) the app would think at HIGH, not the shipped LOW - NATIVELY_GEMINI_THINKING_LEVEL is set
+ok   R1    the wrong roster (holdout40, NATIVELY_SCENARIOS cleared)
+      exit 1 :: GUARD FAILED: (1) the harness would load roster holdout40, not scenario50 - NATIVELY_ROSTER did not arrive
+ok   R1b   the wrong roster (holdout40) with NATIVELY_SCENARIOS=S1,S2 left over: roster.mjs itself throws, and the guard names it
+      exit 1 :: GUARD FAILED: (1) roster.mjs does not load under this environment: NATIVELY_SCENARIOS names S1, S2, which holdout40 does not have. Known: A1, A2, A3, A4, A5, A6, A7
+ok   R2    no roster variable at all (the harness default interview60)
+      exit 1 :: GUARD FAILED: (1) the harness would load roster interview60, not scenario50 - NATIVELY_ROSTER did not arrive
+ok   R3    NATIVELY_SCENARIOS unset: scenario50 loads all five scenarios (100 items), not the 40 of S1+S2
+      exit 1 :: GUARD FAILED: (1) scenario50 loaded 100 items, expected 40 (S1+S2) - NATIVELY_SCENARIOS did not arrive as S1,S2
+ok   R4    NATIVELY_SCENARIOS=S1 only: 20 items
+      exit 1 :: GUARD FAILED: (1) scenario50 loaded 20 items, expected 40 (S1+S2) - NATIVELY_SCENARIOS did not arrive as S1,S2
+ok   R5    NATIVELY_SCENARIOS=S1,S3: ALSO 40 items, but the wrong pair - only the scenario read catches it
+      exit 1 :: GUARD FAILED: (1) the roster's scenarios are S1,S3, not S1,S2
+ok   R6    a roster name that does not exist (bogus)
+      exit 1 :: GUARD FAILED: (1) roster.mjs does not load under this environment: NATIVELY_ROSTER=bogus is not a roster. Known: interview60, scenario50, holdout40
+ok   Q-e1a e1: NATIVELY_EARLIER_QUESTION unset
+      exit 1 :: GUARD FAILED: (e1) NATIVELY_EARLIER_QUESTION is unset, not exactly "1" - flight-eq flies the flag ON, so the launcher must set it to 1
+ok   Q-e1b e1: NATIVELY_EARLIER_QUESTION=0 (the built code accepts it as off)
+      exit 1 :: GUARD FAILED: (e1) NATIVELY_EARLIER_QUESTION is "0", not exactly "1" - flight-eq flies the flag ON, so the launcher must set it to 1
+ok   Q-e1c e1: NATIVELY_EARLIER_QUESTION=yes (the built code would throw at startup)
+      exit 1 :: GUARD FAILED: (e1) NATIVELY_EARLIER_QUESTION is "yes", not exactly "1" - flight-eq flies the flag ON, so the launcher must set it to 1
+ok   Q-e1d e1: NATIVELY_EARLIER_QUESTION="1 " (a trailing space on a cmd `set` line; the built code TRIMS it and would accept it, the guard must not)
+      exit 1 :: GUARD FAILED: (e1) NATIVELY_EARLIER_QUESTION is "1 ", not exactly "1" - flight-eq flies the flag ON, so the launcher must set it to 1
+ok   Q-e1e e1: the BUILT describer returns "off" (a dist whose line says off while the flag reads 1)
+      exit 1 :: GUARD FAILED: (e1) the built describeEarlierQuestionAtStartup returns "earlier question: off", not "earlier question: on" - the app would not log the flag ON
+ok   Q-e1f e1: the BUILT earlierQuestion.js missing from the dist
+      exit 1 :: GUARD FAILED: (e1) dist-electron/electron/llm/earlierQuestion.js does not load: Cannot find module 'C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal/dist-electron/electron/llm/earlierQuestion.js' Require stack: - C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal/package.json. Run npm run build:electron.
+ok   G4a   g4: NATIVELY_EQ_T unset
+      exit 1 :: GUARD FAILED: (g4) NATIVELY_EQ_T is unset, not a yyyy-MM-dd HH:mm local time - the controller fills in T when the launchers are generated
+ok   G4b   g4: T 2026-10-05 18:00 (before the evening)
+      exit 1 :: GUARD FAILED: (g4) NATIVELY_EQ_T 2026-10-05 18:00 is outside 2026-10-05 19:30 .. 2026-10-06 01:00 (A1.1)
+ok   G4c   g4: T 2026-10-05 19:29 -> FAILED (A3.7)
+      exit 1 :: GUARD FAILED: (g4) NATIVELY_EQ_T 2026-10-05 19:29 is outside 2026-10-05 19:30 .. 2026-10-06 01:00 (A1.1)
+ok   G4d   g4: T 2026-10-05 19:30 -> GUARD OK (the lower bound is inclusive)
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 19:30 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[595 more chars]
+ok   G4e   g4: T 2026-10-06 01:00 -> GUARD OK (the upper bound is inclusive)
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-06 01:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[595 more chars]
+ok   G4f   g4: T 2026-10-06 01:01 -> FAILED (A3.7)
+      exit 1 :: GUARD FAILED: (g4) NATIVELY_EQ_T 2026-10-06 01:01 is outside 2026-10-05 19:30 .. 2026-10-06 01:00 (A1.1)
+ok   G4g   g4: T 2026-10-05 21:00 with a trailing space (the cmd artifact)
+      exit 1 :: GUARD FAILED: (g4) NATIVELY_EQ_T is "2026-10-05 21:00 ", not a yyyy-MM-dd HH:mm local time - the controller fills in T when the launchers are generated
+ok   G4h   g4: T 2026-10-05T21:00 (ISO form)
+      exit 1 :: GUARD FAILED: (g4) NATIVELY_EQ_T is "2026-10-05T21:00", not a yyyy-MM-dd HH:mm local time - the controller fills in T when the launchers are generated
+ok   G4i   g4: T 2026-10-05 25:00 (impossible time)
+      exit 1 :: GUARD FAILED: (g4) NATIVELY_EQ_T is "2026-10-05 25:00", not a yyyy-MM-dd HH:mm local time - the controller fills in T when the launchers are generated
+ok   G4j   g4: T 2026-02-30 21:00 (impossible date)
+      exit 1 :: GUARD FAILED: (g4) NATIVELY_EQ_T is "2026-02-30 21:00", not a yyyy-MM-dd HH:mm local time - the controller fills in T when the launchers are generated
+ok   G4k   g4: T 2026-10-04 21:00 (yesterday)
+      exit 1 :: GUARD FAILED: (g4) NATIVELY_EQ_T 2026-10-04 21:00 is outside 2026-10-05 19:30 .. 2026-10-06 01:00 (A1.1)
+ok   G4l   g4: T the launcher placeholder token
+      exit 1 :: GUARD FAILED: (g4) NATIVELY_EQ_T is "@@T@@", not a yyyy-MM-dd HH:mm local time - the controller fills in T when the launchers are generated
+ok   G3a   g3: NATIVELY_FLIGHT_FOCUSED unset (the four focused full-Flash arms would fly)
+      exit 1 :: GUARD FAILED: (g3) NATIVELY_FLIGHT_FOCUSED is unset, not exactly "off" - without it the four focused full-Flash arms would fly and spend quota this hour does not have
+ok   G3b   g3: NATIVELY_FLIGHT_FOCUSED=on
+      exit 1 :: GUARD FAILED: (g3) NATIVELY_FLIGHT_FOCUSED is "on", not exactly "off" - without it the four focused full-Flash arms would fly and spend quota this hour does not have
+ok   G3c   g3: NATIVELY_FLIGHT_FOCUSED empty string
+      exit 1 :: GUARD FAILED: (g3) NATIVELY_FLIGHT_FOCUSED is "", not exactly "off" - without it the four focused full-Flash arms would fly and spend quota this hour does not have
+ok   G3d   g3: NATIVELY_FLIGHT_FOCUSED=yes
+      exit 1 :: GUARD FAILED: (g3) NATIVELY_FLIGHT_FOCUSED is "yes", not exactly "off" - without it the four focused full-Flash arms would fly and spend quota this hour does not have
+ok   G3e   g3: a STALE harness (a clean tree at a commit whose focusedFor ignores the variable and returns the focused five)
+      exit 1 :: GUARD FAILED: (g3) the harness's focusedFor('scenario50') returned "S1Q02,S1Q08,S2Q02,S1Q07,S1Q06", not null - the focused arms would fly
+ok   G3f   g3: a harness WITHOUT the focusedFor export (the P2 edit is not in the tree)
+      exit 1 :: GUARD FAILED: (g3) interview60.flight.mjs has no focusedFor export - the focused-off edit (P2) is not in this tree
+ok   G3g   g3: P2's log-line marker gone from the harness source (focusedFor still returns null)
+      exit 1 :: GUARD FAILED: (g3) interview60.flight.mjs does not carry P2's log line ("off by NATIVELY_FLIGHT_FOCUSED=off - skipping the") - the focused-off proof line would never print
+ok   M1    the build's default answer model changed (gemini-3.1-flash)
+      exit 1 :: GUARD FAILED: (2) the build's default answer model is gemini-3.1-flash, not gemini-3.1-flash-lite
+ok   M3    a model module the guard requires missing from the dist (verbalPrimaryModel.js)
+      exit 1 :: GUARD FAILED: (2) dist-electron does not load: Cannot find module 'C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal/dist-electron/electron/llm/verbalPrimaryModel.js' Require stack: - C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal/package.json. Run npm run build:electron.
+ok   L1    the 3.5-lite LOW->HIGH turn removed from the built thinking levels
+      exit 1 :: GUARD FAILED: (4) the gemini-3.5-flash-lite fallback would fly at a level it ignores
+ok   K1    R09 in the dist: a bare "salary" negotiation term back in the build
+      exit 1 :: GUARD FAILED: (5) the build still lists bare "salary" as a negotiation term - rebuild after the R09 fix
+ok   K3    R09 in the SOURCE (a clean tree at a commit that reverts it)
+      exit 1 :: GUARD FAILED: (5) the source still lists bare "salary" as a negotiation term - the build would not match the tree the pass record names
+ok   G1    the hedge log line gone from the built LLMHelper.js
+      exit 1 :: GUARD FAILED: (6b) the build does not carry the hedge log line (verbal hedge: front=) - rebuild after the hedge lands
+ok   G2    streamGeminiWithHedge gone from the SOURCE
+      exit 1 :: GUARD FAILED: (6b) the source does not carry streamGeminiWithHedge - the build would not match the tree the pass record names
+ok   S1    a stale build: electron/LLMHelper.ts newer than dist-electron/electron/LLMHelper.js
+      exit 1 :: GUARD FAILED: (9) dist-electron/electron/LLMHelper.js (2026-10-05T18:36:37.525Z) is older than electron/LLMHelper.ts (2026-10-05T18:37:32.706Z) - the build is stale, rebuild
+ok   N1    a Groq id added to ANSWER_MODELS
+      exit 1 :: GUARD FAILED: (11) ANSWER_MODELS is ["gemini-3.1-flash-lite","gemini-3.5-flash-lite","groq/llama-3.3-70b-versatile"], not exactly ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"] - the arm-removal commit is not in this tree, or the export was renamed or reordered
+ok   N3    ANSWER_MODELS reordered
+      exit 1 :: GUARD FAILED: (11) ANSWER_MODELS is ["gemini-3.5-flash-lite","gemini-3.1-flash-lite"], not exactly ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"] - the arm-removal commit is not in this tree, or the export was renamed or reordered
+ok   N4    ANSWER_MODELS export removed
+      exit 1 :: GUARD FAILED: (11) ANSWER_MODELS is undefined, not exactly ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"] - the arm-removal commit is not in this tree, or the export was renamed or reordered
+ok   N5    interview60.flight.mjs that does not load (a syntax error)
+      exit 1 :: GUARD FAILED: (11) interview60.flight.mjs does not load under this environment: Unexpected token '}'
+ok   Q1    a dist WITHOUT CUE_LINE_PREFIX
+      exit 1 :: GUARD FAILED: (12) the dist is not the combined cue build: dist-proof.mjs exit 1, 2 failing line(s): BAD filter x0 "CUE_LINE_PREFIX" | NOT THE COMBINED BUILD (1 check(s) failed)
+ok   Q2    the built filter without `function trimCues`
+      exit 1 :: GUARD FAILED: (12) the built filter (dist-electron/electron/llm/verbalStreamFilter.js) has no "function trimCues" - this is not the cue build; dist-proof.mjs exit 1, 2 failing line(s): BAD filter x0 "function trimCues" | NOT THE COMBINED BUILD (1 check(s) failed)
+ok   Q3    the SOURCE prompts.ts without a CUE_RULE declaration
+      exit 1 :: GUARD FAILED: (12) the source electron/llm/prompts.ts does not declare CUE_RULE - the build would not match the tree the pass record names
+ok   Q5    a dist with the CUE_RULE changed (the benched rule's hash no longer reads 8e15e4e7dd41)
+      exit 1 :: GUARD FAILED: (12) the dist is not the combined cue build: dist-proof.mjs exit 1, 2 failing line(s): BAD CUE_RULE sha256/12 e90048368474 (the benched rule is 8e15e4e7dd41); ok limits 3 x 5 | NOT THE COMBINED BUILD (1 check(s) failed)
+ok   Q6    the built filter missing altogether
+      exit 1 :: GUARD FAILED: (12) cannot read dist-electron/electron/llm/verbalStreamFilter.js: ENOENT
+ok   D1    e2: the BUILT llm/earlierQuestion.js without the marker "EARLIER QUESTION (asked earlier; context only"
+      exit 1 :: GUARD FAILED: (e2) the built dist-electron/electron/llm/earlierQuestion.js does not carry the earlier-question marker "EARLIER QUESTION (asked earlier; context only" - rebuild from a tree that has the build
+ok   D1s   e2: the SOURCE electron/llm/earlierQuestion.ts without the marker (a clean tree at a commit that drops it)
+      exit 1 :: GUARD FAILED: (e2) the source electron/llm/earlierQuestion.ts does not carry the earlier-question marker "EARLIER QUESTION (asked earlier; context only" - the build would not match the tree the pass record names
+ok   D2    e2: the BUILT IntelligenceEngine.js without the marker "earlier question: gate="
+      exit 1 :: GUARD FAILED: (e2) the built dist-electron/electron/IntelligenceEngine.js does not carry the earlier-question marker "earlier question: gate=" - rebuild from a tree that has the build
+ok   D2s   e2: the SOURCE electron/IntelligenceEngine.ts without the marker (a clean tree at a commit that drops it)
+      exit 1 :: GUARD FAILED: (e2) the source electron/IntelligenceEngine.ts does not carry the earlier-question marker "earlier question: gate=" - the build would not match the tree the pass record names
+ok   D3    e2: the BUILT main.js without the marker "describeEarlierQuestionAtStartup"
+      exit 1 :: GUARD FAILED: (e2) the built dist-electron/electron/main.js does not carry the earlier-question marker "describeEarlierQuestionAtStartup" - rebuild from a tree that has the build
+ok   D3s   e2: the SOURCE electron/main.ts without the marker (a clean tree at a commit that drops it)
+      exit 1 :: GUARD FAILED: (e2) the source electron/main.ts does not carry the earlier-question marker "describeEarlierQuestionAtStartup" - the build would not match the tree the pass record names
+ok   D4    e2: the BUILT llm/WhatToAnswerLLM.js without the marker "earlierQuestionBlock"
+      exit 1 :: GUARD FAILED: (e2) the built dist-electron/electron/llm/WhatToAnswerLLM.js does not carry the earlier-question marker "earlierQuestionBlock" - rebuild from a tree that has the build
+ok   D4s   e2: the SOURCE electron/llm/WhatToAnswerLLM.ts without the marker (a clean tree at a commit that drops it)
+      exit 1 :: GUARD FAILED: (e2) the source electron/llm/WhatToAnswerLLM.ts does not carry the earlier-question marker "earlierQuestionBlock" - the build would not match the tree the pass record names
+ok   D5    e2: a dist file MISSING (main.js): dist-proof (check 12) reads main.js first and refuses before e2 is reached, by name
+      exit 1 :: GUARD FAILED: (12) the dist is not the combined cue build: dist-proof.mjs exit 2, 1 failing line(s): missing main (C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal\dist-electron\electron\main.js)
+ok   D6    e2: a stale EQ dist: electron/IntelligenceEngine.ts newer than dist-electron/electron/IntelligenceEngine.js (markers all present)
+      exit 1 :: GUARD FAILED: (e2) dist-electron/electron/IntelligenceEngine.js (2026-10-05T18:36:45.226Z) is older than electron/IntelligenceEngine.ts (2026-10-05T18:37:40.227Z) - the build is stale, rebuild
+ok   P1    g1: a parity stub that prints the OLD line (without "+ 117 captured prompt-line rows") and exits 0 -> FAILED g1
+      exit 1 :: GUARD FAILED: (g1) parity-dist exited 0 but did not print the expected line "PARITY DIST: 126 fixture entries (21 with a block) + 29 invented cases + 117 captured prompt-line rows; mismatches 0" - it is not the parity gate this hour was registered with
+ok   P2    g1: a parity stub with both right lines but exit 1
+      exit 1 :: GUARD FAILED: (g1) parity-dist exited 1, not 0 (last line: PARITY DIST: 126 fixture entries (21 with a block) + 29 invented cases + 117 captured prompt-line rows; mismatches 0)
+ok   P3    g1: a parity stub that prints nothing and exits 0
+      exit 1 :: GUARD FAILED: (g1) parity-dist exited 0 but did not print the expected line "EARLIER-QUESTION REF TESTS: 47/47 passed" - it is not the parity gate this hour was registered with
+ok   P4    g1: a parity script that does not exist
+      exit 1 :: GUARD FAILED: (g1) parity-dist exited 1, not 0 (last line: )
+ok   P5    g1: the stub parity with both right lines and exit 0 -> GUARD OK
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[595 more chars]
+ok   P6    g1: the REAL parity-dist with EQ_DIST_BREAK=1 inherited (it corrupts the ledger texts: MISMATCH lines, exit 1)
+      exit 1 :: GUARD FAILED: (g1) parity-dist exited 1, not 0 (last line: PARITY DIST: 126 fixture entries (21 with a block) + 29 invented cases + 117 captured prompt-line rows; mismatches 106)
+ok   P7    g1: the smoke result is absent
+      exit 1 :: GUARD FAILED: (g1) the smoke result C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\result-none.md does not exist - the smoke (b3) has not run, or its result was not written
+ok   P8    g1: the smoke result has no WHY line
+      exit 1 :: GUARD FAILED: (g1) the smoke result has no "WHY: gate=parent-in-prompt cue=short chars=0 turn=<n>" line
+ok   P8b   g1: the WHY line carries chars=12
+      exit 1 :: GUARD FAILED: (g1) the smoke result has no "WHY: gate=parent-in-prompt cue=short chars=0 turn=<n>" line
+ok   P8c   g1: the WHY line carries gate=block
+      exit 1 :: GUARD FAILED: (g1) the smoke result has no "WHY: gate=parent-in-prompt cue=short chars=0 turn=<n>" line
+ok   P9    g1: S1Q04F chars=199 (below 200)
+      exit 1 :: GUARD FAILED: (g1) the smoke result's S1Q04F block is 199 chars, outside 200..578
+ok   P10   g1: S1Q04F chars=200 -> GUARD OK (the lower bound is inclusive)
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[602 more chars]
+ok   P11   g1: S1Q06F chars=578 -> GUARD OK (the upper bound is inclusive)
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[602 more chars]
+ok   P12   g1: S1Q06F chars=579
+      exit 1 :: GUARD FAILED: (g1) the smoke result's S1Q06F block is 579 chars, outside 200..578
+ok   P13   g1: S1Q06F with cue=constraint (the pronoun cue is required)
+      exit 1 :: GUARD FAILED: (g1) the smoke result has no "S1Q06F: gate=block cue=pronoun chars=<n> turn=<n>" line
+ok   P14   g1: no S1Q04F line
+      exit 1 :: GUARD FAILED: (g1) the smoke result has no "S1Q04F: gate=block cue=constraint chars=<n> turn=<n>" line
+ok   P15   g1: the result contains NOT EXERCISED
+      exit 1 :: GUARD FAILED: (g1) the smoke result contains "NOT EXERCISED" - a smoke line that was not exercised is never a pass
+ok   W1    check 13: --settings the -off stub (knowledgeMode false)
+      exit 1 :: GUARD FAILED: (13) knowledge mode is not ON: knowledgeMode is false (the boolean true is required) in C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\settings-off.json (mtime 2026-10-05T18:35:49.302Z) - turn Context ON in the user's own app
+ok   W2    check 13: no knowledgeMode key
+      exit 1 :: GUARD FAILED: (13) knowledge mode is not ON: knowledgeMode is absent (main.ts restores nothing: knowledge mode OFF) in C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\settings-absent.json (mtime 2026-10-05T18:35:49.302Z) - turn Context ON in the user's own app
+ok   W4    check 13: a settings file that is not JSON: FAILED, and the file's text is not quoted
+      exit 1 :: GUARD FAILED: (13) cannot read the persisted settings C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\settings-broken.json: not valid JSON
+ok   W5    check 13: a missing settings file
+      exit 1 :: GUARD FAILED: (13) cannot read the persisted settings C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\settings-missing.json: ENOENT
+ok   W6    check 13: knowledgeMode the STRING "true" is not the boolean true
+      exit 1 :: GUARD FAILED: (13) knowledge mode is not ON: knowledgeMode is "true" (the boolean true is required) in C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\settings-string-true.json (mtime 2026-10-05T18:35:49.302Z) - turn Context ON in the user's own app
+ok   W7    check 13: a settings file that is a JSON array
+      exit 1 :: GUARD FAILED: (13) C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\settings-array.json is not a JSON object
+ok   W8    check 13 default path: APPDATA = a folder whose natively\settings.json is ON, no --settings -> GUARD OK
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[612 more chars]
+ok   W9    check 13 default path: APPDATA = a folder whose settings are OFF -> FAILED
+      exit 1 :: GUARD FAILED: (13) knowledge mode is not ON: knowledgeMode is false (the boolean true is required) in C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\appdata\off\natively\settings.json (mtime 2026-10-05T18:35:49.302Z) - turn Context ON in the user's own app
+ok   W10   check 13 default path: APPDATA unset and no --settings
+      exit 1 :: GUARD FAILED: (13) APPDATA is not set, so the persisted settings (%APPDATA%\natively\settings.json) cannot be found
+ok   N-a   g2: a night-gates stub exiting 1 (power FAIL) -> GUARD FAILED naming it, its lines echoed to stdout
+      exit 1 :: GUARD FAILED: (g2) night-gates.ps1 exited 1: NIGHT GATES FAILED (1): power
+ok   N-b   g2: a night-gates stub that exits 0 but whose last line is not NIGHT GATES OK
+      exit 1 :: GUARD FAILED: (g2) night-gates.ps1 exited 0 but its last line is "NIGHT standby-ac: OK stub", not "NIGHT GATES OK"
+ok   N-c   g2: a night-gates script that does not exist
+      exit 1 :: GUARD FAILED: (g2) the night-gates script C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\no-such-night.ps1 does not exist - the night gates cannot be read, so the hour does not fly
+ok   N-d   g2: the REAL night-gates.ps1 through its own -FakeJson (standby 900 s): the real FAIL lines carry through the child
+      exit 1 :: GUARD FAILED: (g2) night-gates.ps1 exited 1: NIGHT GATES FAILED (1): standby-ac
+ok   N-e   g2: a night-gates stub that passes -> GUARD OK and the stub's path printed
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[595 more chars]
+ok   V1    g5: the precheck file missing
+      exit 1 :: GUARD FAILED: (g5) C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\pre-none.txt does not exist - the precheck task has not run (it is the only thing that writes it), so the hour does not fly
+ok   V2    g5: a stamp 2 h before T
+      exit 1 :: GUARD FAILED: (g5) the precheck stamp 2026-10-05T18:53:00+03 is older than T - 10 min (T 2026-10-05 21:00): it is not this hour's precheck
+ok   V3    g5: the file ends with PRECHECK FAILED
+      exit 1 :: GUARD FAILED: (g5) C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\pre-failed.txt does not end with a PRECHECK OK line (its last line starts "PRECHECK FAILED (1): port")
+ok   V4    g5: a fresh PRECHECK OK (T - 7 min) with now = T + 1 -> accepted
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[603 more chars]
+ok   V5    g5: the same stamp with now = T + 11 min -> FAILED (A3.7)
+      exit 1 :: GUARD FAILED: (g5) now (2026-10-05 21:11) is later than T + 10 min (T 2026-10-05 21:00): the task started too late to fly this hour
+ok   V6    g5: the same stamp with now = T + 10 min -> accepted (the bound is inclusive)
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[603 more chars]
+ok   V7    g5: a stamp at exactly T - 10 min -> accepted
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[603 more chars]
+ok   V8    g5: a stamp at T - 10 min - 1 s -> FAILED
+      exit 1 :: GUARD FAILED: (g5) the precheck stamp 2026-10-05T20:49:59+03 is older than T - 10 min (T 2026-10-05 21:00): it is not this hour's precheck
+ok   V9    g5: a stamp AFTER now (a stamp from the future)
+      exit 1 :: GUARD FAILED: (g5) the precheck stamp 2026-10-05T21:30:00+03 lies after now (2026-10-05 21:01): a stamp from the future is not a precheck
+ok   V10   g5: a PRECHECK OK that is NOT the last line (a PRECHECK FAILED follows)
+      exit 1 :: GUARD FAILED: (g5) C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\pre-ok-then-failed.txt does not end with a PRECHECK OK line (its last line starts "PRECHECK FAILED (1): port")
+ok   V11   g5: a PRECHECK OK followed by a later gate line (the verdict must be last)
+      exit 1 :: GUARD FAILED: (g5) C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\pre-ok-then-more.txt does not end with a PRECHECK OK line (its last line starts "PRECHECK port: OK")
+ok   V12   g5: a stamp in the wrong format
+      exit 1 :: GUARD FAILED: (g5) the PRECHECK OK stamp "2026-10-05 20:53:00" is not yyyy-MM-ddTHH:mm:ss+03
+ok   V13   g5: PRECHECK OK with no stamp
+      exit 1 :: GUARD FAILED: (g5) C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\pre-ok-nostamp.txt does not end with a PRECHECK OK line (its last line starts "PRECHECK OK")
+ok   V14   g5: an empty precheck file
+      exit 1 :: GUARD FAILED: (g5) C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\pre-empty.txt does not end with a PRECHECK OK line (its last line starts "")
+ok   V15   g5: --now junk
+      exit 1 :: GUARD FAILED: (usage) --now junk is not an ISO instant
+ok   V16   g5: the DRY form (no --require-precheck) with NO precheck file at all -> GUARD OK (the dry twin must run before any precheck exists)
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6008f4806e6f663, tree clean but for the allowlisted paths present [none], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven ( ...[595 more chars]
+ok   I1    a built module whose shape changed (geminiThinking.js no longer exports thinkingLevelForModel): the guard's own crash ends as ONE named line
+      exit 1 :: GUARD FAILED: (internal) the guard itself crashed: TypeError: T.thinkingLevelForModel is not a function     at file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-lab/sp/flight-eq-revcopy/guard-eq.mjs:149:7
+ok   Y1    dist-proof child that outlives its timeout (a copy of the guard with the 120 s timeout cut to 1 ms): a named failure
+      exit 1 :: GUARD FAILED: (12) the dist is not the combined cue build: could not run C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-layout\mutant-timeout-dp\dist-proof.mjs: spawnSync C:\Program Files\nodejs\node.exe ETIMEDOUT
+ok   Y2    git rev-parse that outlives its timeout (cut to 1 ms)
+      exit 1 :: GUARD FAILED: (10b) git rev-parse HEAD failed: spawnSync git ETIMEDOUT
+ok   Y3    the parity child that outlives its timeout (cut to 1 ms)
+      exit 1 :: GUARD FAILED: (g1) could not run the parity script C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\followup-turn\build\parity-dist.mjs: spawnSync C:\Program Files\nodejs\node.exe ETIMEDOUT
+ok   Y4    the night-gates child that outlives its timeout (cut to 1 ms)
+      exit 1 :: GUARD FAILED: (g2) could not run C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\night-gates.ps1: spawnSync powershell.exe ETIMEDOUT
+ok   U1    usage: --settings with no file
+      exit 1 :: GUARD FAILED: (usage) --settings needs a value
+ok   U2    usage: an unknown argument is refused, not ignored
+      exit 1 :: GUARD FAILED: (usage) unknown argument(s): --setings C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\settings-on.json (the options are --require-precheck, --settings, --night-gates-script, --parity-script, --smoke-result, --precheck-file, --now; all but --require-precheck are for calibration)
+ok   U3    usage: --night-gates-script followed by another option (no value)
+      exit 1 :: GUARD FAILED: (usage) --night-gates-script needs a value
+
+AGAINST MAIN'S ROOT (MAIN's real tree, dist, harness; read only)
+ok   X1    MAIN's root, NATIVELY_FLIGHT_COMMIT = the PARENT of MAIN's current HEAD (A5 m7, step 8: the moved-HEAD case; never a commit on MAIN) -> FAILED at 10b
+      exit 1 :: GUARD FAILED: (10b) MAIN HEAD is b42ca3270200d53bfaba319ceed472f6b32f30a5, not the registered commit 355ad0a074757544f1a36033373e47dff54de341 (NATIVELY_FLIGHT_COMMIT) - a peer or a later commit moved the tree since registration
+ok   X2    MAIN's root, NATIVELY_FLIGHT_COMMIT unset -> FAILED at 10b
+      exit 1 :: GUARD FAILED: (10b) NATIVELY_FLIGHT_COMMIT is not set - the launcher must set it to the commit this flight is registered for (the registered HEAD)
+ok   X3    MAIN's root, commit = MAIN's HEAD, the REAL smoke-result path (the smoke has not written RESULT-smoke-eq.md yet): 1-13 up to g1 pass on MAIN's REAL tree, dist, parity-dist and harness, then g1 refuses on the absent smoke result. INFORMATION: the reading changes the day the smoke result exists
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b42ca3270200d53bfaba319ceed472f6b32f30a5, tree clean but for the allowlisted paths present [electron/test/golden/interview60.chains.json, electron/test/golden/interview60.report.md, natively_debug.log.1, electron/test/golden/o ...[807 more chars]
+ok   X4    MAIN's root, commit = MAIN's HEAD, T 2026-10-05 21:00, the smoke-result STUB and the REAL settings (admin share) and the REAL night-gates and parity: the TRUE environment on MAIN's real tree -> GUARD OK (dry form). The stub result is the one substitution
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b42ca3270200d53bfaba319ceed472f6b32f30a5, tree clean but for the allowlisted paths present [electron/test/golden/interview60.chains.json, electron/test/golden/interview60.report.md, natively_debug.log.1, electron/test/golden/openrouter-probes/, electron/test/golden/openrouter.probe.mjs, electron/test/golden/zai-probes/, electron/test/golden/zai.probe.mjs], ANSWER_MODELS = ["gemini-3.1-flash-lite","gemini-3.5-flash-lite"], focused Flash arms OFF (focusedFor null), cue build proven (dist-proof exit 0, filter sha256/16 28d6c47b9da4fba6), four EQ markers in dist and source, parity-dist exit 0 with both exact lines, smoke result holds WHY and the blocks [S1Q04F 332, S1Q06F 401] (C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq-cal-stubs\result-ok.md), knowledge mode ON (knowledgeMode = true in //localhost/C$/Users/sotka/AppData/Roaming/natively/settings.json, mtime 2026-09-12T00:09:43.918Z), night gates OK, precheck not required (dry twin), .env carries none of the guarded names, question detector unchanged
+ok   X5    MAIN's root, the true environment but the hedge variable set to 1 -> FAILED at 6 (read from MAIN's real dist)
+      exit 1 :: GUARD FAILED: (6) NATIVELY_VERBAL_HEDGE is set ("1") - flight-eq flies the shipped default with the variable UNSET, so the launcher must unset it, even for the value 1
+ok   X6    MAIN's root, the flag unset -> FAILED at e1 (read from MAIN's real built describer)
+      exit 1 :: GUARD FAILED: (e1) NATIVELY_EARLIER_QUESTION is unset, not exactly "1" - flight-eq flies the flag ON, so the launcher must set it to 1
+ok   X7    MAIN's root, NATIVELY_FLIGHT_FOCUSED unset -> FAILED at g3 (MAIN's real harness has the P2 edit; without the variable the four Flash arms would fly)
+      exit 1 :: GUARD FAILED: (g3) NATIVELY_FLIGHT_FOCUSED is unset, not exactly "off" - without it the four focused full-Flash arms would fly and spend quota this hour does not have
+
+WRONG FOLDER (the launcher's own folder guard exits 9 before the guard; if it were run anyway)
+ok   Z1    the guard run with cwd = E (not a checkout): the roster import fails, by name
+      exit 1 :: GUARD FAILED: (1) roster.mjs does not load under this environment: Cannot find module 'C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\electron\test\golden\roster.mjs' imported from C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq-revcopy\guard-eq.mjs
+
+LAUNCHER SEAM (cmd.exe running a .cmd of `set` lines, then the guard; the parent environment may carry a variable the .cmd must clear or set)
+ok   K1    the launcher's block (flag 1, focused off, T set, the commit set) -> GUARD OK
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6 ...[843 more chars]
+ok   K2    the PARENT environment carries NATIVELY_EARLIER_QUESTION=0 and NATIVELY_FLIGHT_FOCUSED=on (persistent user variables); the .cmd's `set` lines override both for the node child -> GUARD OK
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6 ...[843 more chars]
+ok   K3    NO `set NATIVELY_EARLIER_QUESTION=1` line (the parent carries nothing) -> the guard refuses at e1
+      exit 1 :: GUARD FAILED: (e1) NATIVELY_EARLIER_QUESTION is unset, not exactly "1" - flight-eq flies the flag ON, so the launcher must set it to 1
+ok   K4    a trailing space after the flag value (`set NATIVELY_EARLIER_QUESTION=1 `): cmd stores "1 ", so the guard refuses: the launcher generator must not leave one
+      exit 1 :: GUARD FAILED: (e1) NATIVELY_EARLIER_QUESTION is "1 ", not exactly "1" - flight-eq flies the flag ON, so the launcher must set it to 1
+ok   K5    a trailing space after T (`set NATIVELY_EQ_T=2026-10-05 21:00 `) -> the guard refuses at g4
+      exit 1 :: GUARD FAILED: (g4) NATIVELY_EQ_T is "2026-10-05 21:00 ", not a yyyy-MM-dd HH:mm local time - the controller fills in T when the launchers are generated
+ok   K6    the T value holds a SPACE, unquoted (`set NATIVELY_EQ_T=2026-10-05 21:00`): cmd keeps the whole text -> arrives intact (K1 passed on it); with the placeholder token instead -> the guard refuses at g4, naming it
+      exit 1 :: GUARD FAILED: (g4) NATIVELY_EQ_T is "@@T@@", not a yyyy-MM-dd HH:mm local time - the controller fills in T when the launchers are generated
+ok   K7    the PARENT carries NATIVELY_FLIGHT_FOCUSED=off and the .cmd does not set it (a persistent user variable would silently satisfy the guard): the guard sees "off" and passes. INFORMATION: the launcher sets the name itself, so this case documents what the guard cannot tell (variable origin)
+      exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, earlier question flag exactly 1 (built startup line "earlier question: on"), T 2026-10-05 21:00 (inside 19:30 .. 01:00), R09 fix in the build and the source, HEAD pinned at b7ef47b6ffda11a4bee3a118b6 ...[843 more chars]
+
+MUTATION SUITE (rule 8): a copy of the guard with ONE check switched off, run over the cases that must notice it. "caught" = every listed case turned BAD and A1 stayed ok.
+ok   e1-flag-not-exact
+      cases that turned BAD: [Q-e1a, Q-e1b, Q-e1c, Q-e1d] (must be [Q-e1a, Q-e1b, Q-e1c, Q-e1d]); A1 stayed ok
+ok   e1-describer-not-read
+      cases that turned BAD: [Q-e1e] (must be [Q-e1e]); A1 stayed ok
+ok   g4-unparseable-allowed
+      cases that turned BAD: [G4a, G4g, G4h, G4i, G4j, G4l] (must be [G4a, G4g, G4h, G4i, G4j, G4l]); A1 stayed ok
+ok   g4-range-not-checked
+      cases that turned BAD: [G4b, G4c, G4f, G4k] (must be [G4b, G4c, G4f, G4k]); A1 stayed ok
+ok   g4-lower-bound-exclusive
+      cases that turned BAD: [G4d] (must be [G4d]); A1 stayed ok
+ok   g4-upper-bound-exclusive
+      cases that turned BAD: [G4e] (must be [G4e]); A1 stayed ok
+ok   g3-variable-not-checked
+      cases that turned BAD: [G3a, G3b, G3c, G3d] (must be [G3a, G3b, G3c, G3d]); A1 stayed ok
+ok   g3-focusedFor-not-called
+      cases that turned BAD: [G3f] (must be [G3f]); A1 stayed ok
+ok   g3-focusedFor-null-not-required
+      cases that turned BAD: [G3e] (must be [G3e]); A1 stayed ok
+ok   g3-marker-not-checked
+      cases that turned BAD: [G3g] (must be [G3g]); A1 stayed ok
+ok   e2-dist-marker-not-checked
+      cases that turned BAD: [D1, D2, D3, D4] (must be [D1, D2, D3, D4]); A1 stayed ok
+ok   e2-source-marker-not-checked
+      cases that turned BAD: [D1s, D2s, D3s, D4s] (must be [D1s, D2s, D3s, D4s]); A1 stayed ok
+ok   e2-staleness-not-checked
+      cases that turned BAD: [D6] (must be [D6]); A1 stayed ok
+ok   g1-parity-exit-ignored
+      cases that turned BAD: [P2, P4, P6] (must be [P2, P4, P6]); A1 stayed ok
+ok   g1-parity-lines-ignored
+      cases that turned BAD: [P1, P3] (must be [P1, P3]); A1 stayed ok
+ok   g1-smoke-result-not-required
+      cases that turned BAD: [P7] (must be [P7]); A1 stayed ok
+ok   g1-chars-range-not-checked
+      cases that turned BAD: [P9, P12] (must be [P9, P12]); A1 stayed ok
+ok   g1-why-not-required
+      cases that turned BAD: [P8, P8b, P8c] (must be [P8, P8b, P8c]); A1 stayed ok
+ok   g1-not-exercised-allowed
+      cases that turned BAD: [P15] (must be [P15]); A1 stayed ok
+ok   g2-exit-ignored
+      cases that turned BAD: [N-a, N-d] (must be [N-a, N-d]); A1 stayed ok
+ok   g2-script-not-required
+      cases that turned BAD: [N-c] (must be [N-c]); A1 stayed ok
+ok   g2-last-line-ignored
+      cases that turned BAD: [N-b] (must be [N-b]); A1 stayed ok
+ok   g5-last-line-not-required
+      cases that turned BAD: [V3, V10, V11, V13, V14] (must be [V3, V10, V11, V13, V14]); A1 stayed ok
+ok   g5-stamp-age-not-checked
+      cases that turned BAD: [V2, V8] (must be [V2, V8]); A1 stayed ok
+ok   g5-stamp-future-not-checked
+      cases that turned BAD: [V9] (must be [V9]); A1 stayed ok
+ok   g5-now-late-not-checked
+      cases that turned BAD: [V5] (must be [V5]); A1 stayed ok
+ok   g5-file-not-required
+      cases that turned BAD: [V1] (must be [V1]); A1 stayed ok
+ok   g5-always-required-off (the --require-precheck gate removed: the precheck is never read)
+      cases that turned BAD: [V1, V2, V3] (must be [V1, V2, V3]); A1 stayed ok
+ok   hedge-variable-not-checked (check 6)
+      cases that turned BAD: [H1, H2, H4] (must be [H1, H2, H4]); A1 stayed ok
+ok   follow-up-not-checked (check 8)
+      cases that turned BAD: [F1] (must be [F1]); A1 stayed ok
+ok   commit-not-compared (check 10b)
+      cases that turned BAD: [B2, B2b] (must be [B2, B2b]); A1 stayed ok
+ok   tree-not-checked (check 10b)
+      cases that turned BAD: [B6, B7, B8, B9, B10] (must be [B6, B7, B8, B9, B10]); A1 stayed ok
+ok   roster-count-not-checked (check 1)
+      cases that turned BAD: [R3, R4] (must be [R3, R4]); A1 stayed ok
+ok   groq-test-only (check 11, the loose reading)
+      cases that turned BAD: [N3, N4] (must be [N3, N4]); A1 stayed ok
+ok   dist-proof-verdict-ignored (check 12)
+      cases that turned BAD: [Q1, Q2, Q5] (must be [Q1, Q2, Q5]); A1 stayed ok
+ok   knowledge-mode-not-checked (check 13)
+      cases that turned BAD: [W1, W2, W6, W9] (must be [W1, W2, W6, W9]); A1 stayed ok
+ok   env-scan-skipped (check 10a)
+      cases that turned BAD: [E1, E2, E3, E4, E7, E8] (must be [E1, E2, E3, E4, E7, E8]); A1 stayed ok
+ok   uncaught-handler-removed
+      cases that turned BAD: [I1] (must be [I1]); A1 stayed ok
+
+FINAL: the stub tree as left on disk, correct environment
+ok   exit 0 :: GUARD OK: roster scenario50 S1,S2 (40 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset ...[1095 more chars]
+
+GUARD CALIBRATION OK 208/208: 167 cases (stub tree, MAIN's root, the cmd.exe launcher seam), 38/38 mutants caught, the pure predicate, the layout mirror and the final stub state ok; 3 informational cases recorded and not counted

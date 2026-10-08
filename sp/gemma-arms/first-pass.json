@@ -1,0 +1,56 @@
+﻿{
+    "takenAt":  "2026-09-24T03:01:19",
+    "gemma-4-26b-a4b-it_high":  {
+                                    "records":  33,
+                                    "holes":  [
+                                                  "S1Q04: no answer within 180 s (runaway or hung stream)",
+                                                  "S1Q07: no answer within 180 s (runaway or hung stream)",
+                                                  "S1Q08: no answer within 180 s (runaway or hung stream)",
+                                                  "S1Q09: no answer within 180 s (runaway or hung stream)",
+                                                  "S1Q10: no answer within 180 s (runaway or hung stream)",
+                                                  "S1Q10F: no answer within 180 s (runaway or hung stream)",
+                                                  "S2Q02: no answer within 180 s (runaway or hung stream)",
+                                                  "S2Q02F: no answer within 180 s (runaway or hung stream)",
+                                                  "S2Q05: no answer within 180 s (runaway or hung stream)",
+                                                  "S2Q06: no answer within 180 s (runaway or hung stream)",
+                                                  "S2Q07: no answer within 180 s (runaway or hung stream)",
+                                                  "S2Q07F: no answer within 180 s (runaway or hung stream)"
+                                              ],
+                                    "empty":  [
+
+                                              ],
+                                    "cutRetried":  [
+
+                                                   ]
+                                },
+    "gemma-4-31b-it_high":  {
+                                "records":  39,
+                                "holes":  [
+
+                                          ],
+                                "empty":  [
+                                              "S2Q10"
+                                          ],
+                                "cutRetried":  [
+                                                   "S1Q05F",
+                                                   "S1Q06F",
+                                                   "S1Q07F",
+                                                   "S2Q07F",
+                                                   "S2Q10"
+                                               ]
+                            },
+    "gemma-4-31b-it_min":  {
+                               "records":  25,
+                               "holes":  [
+
+                                         ],
+                               "empty":  [
+
+                                         ],
+                               "cutRetried":  [
+                                                  "S1Q04F",
+                                                  "S1Q10",
+                                                  "S2Q01F"
+                                              ]
+                           }
+}

@@ -1,0 +1,25 @@
+﻿control:       Tests  57 passed (57)
+M1 label JUST SAID->JUST HEAR (same length):       Tests  1 failed | 56 passed (57)
+    × label, clip, formatBlock > label: 125 chars, says asked earlier / context only / do not answer it again, never "answered" 10ms
+    FAIL  electron/llm/earlierQuestion.test.ts > label, clip, formatBlock > label: 125 chars, says asked earlier / context only / do not answer it again, never "answered"
+M2 recordAsked stores whitespace-collapsed text:       Tests  2 failed | 55 passed (57)
+    × buildEarlierQuestion — spec §3.6 rows > parent with a line break (two joined finals): present in the prompt by overlap -> "" 13ms
+    × buildEarlierQuestion — spec §3.6 rows > parent with a line break, evicted: the block line is ONE line (whitespace collapsed) 2ms
+    FAIL  electron/llm/earlierQuestion.test.ts > buildEarlierQuestion — spec §3.6 rows > parent with a line break (two joined finals): present in the prompt by overlap -> ""
+    FAIL  electron/llm/earlierQuestion.test.ts > buildEarlierQuestion — spec §3.6 rows > parent with a line break, evicted: the block line is ONE line (whitespace collapsed)
+M3 norm without toLowerCase:       Tests  2 failed | 55 passed (57)
+    × buildEarlierQuestion — spec §3.6 rows > parent contained in the pinned line in other CASE only -> parent-in-pinned 9ms
+    × buildEarlierQuestion — spec §3.6 rows > parent contained in the pinned line in other case AND whitespace -> parent-in-pinned 1ms
+    FAIL  electron/llm/earlierQuestion.test.ts > buildEarlierQuestion — spec §3.6 rows > parent contained in the pinned line in other CASE only -> parent-in-pinned
+    FAIL  electron/llm/earlierQuestion.test.ts > buildEarlierQuestion — spec §3.6 rows > parent contained in the pinned line in other case AND whitespace -> parent-in-pinned
+M4 norm without whitespace collapse:       Tests  2 failed | 55 passed (57)
+    × buildEarlierQuestion — spec §3.6 rows > parent contained in the pinned line with other WHITESPACE only (line break, runs of spaces) -> parent-in-pinned 9ms
+    × buildEarlierQuestion — spec §3.6 rows > parent contained in the pinned line in other case AND whitespace -> parent-in-pinned 1ms
+    FAIL  electron/llm/earlierQuestion.test.ts > buildEarlierQuestion — spec §3.6 rows > parent contained in the pinned line with other WHITESPACE only (line break, runs of spaces) -> parent-in-pinned
+    FAIL  electron/llm/earlierQuestion.test.ts > buildEarlierQuestion — spec §3.6 rows > parent contained in the pinned line in other case AND whitespace -> parent-in-pinned
+M5 np.length >= 3 -> >= 0:       Tests  1 failed | 56 passed (57)
+    × buildEarlierQuestion — spec §3.6 rows > a 2-char parent contained in the question does NOT count: the block is built 9ms
+    FAIL  electron/llm/earlierQuestion.test.ts > buildEarlierQuestion — spec §3.6 rows > a 2-char parent contained in the question does NOT count: the block is built
+M6 np.length >= 3 -> > 3:       Tests  1 failed | 56 passed (57)
+    × buildEarlierQuestion — spec §3.6 rows > a 3-char parent contained in the question counts (the boundary: np.length >= 3) 9ms
+    FAIL  electron/llm/earlierQuestion.test.ts > buildEarlierQuestion — spec §3.6 rows > a 3-char parent contained in the question counts (the boundary: np.length >= 3)

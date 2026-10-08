@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names tabular non-linearity, latency fit, and a logistic-regression baseline judged on AUC lift; concise and natural."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic correct: 9,500 churners, 5,000 band, 3,000 true positives, 31.6 percent recall, judged consistent with 30 percent."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Difference-in-differences plus propensity matching correctly separates model effect from seasonality and mix, but runs near 115 words."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Stable sort, precision, recall and lift all right and all three edge cases answered, but about 155 words."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split with a 30-day embargo, ColumnTransformer fit on train only, time-series CV; length around 125 words."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Left join with time and ingestion predicates in the ON clause is right, but never filters event type to support calls."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every stage and names the feature store as the shared component, but exceeds 120 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Prediction log with model version and assignment, hashed experiment buckets, lagged outcome join, offer-aware retraining selection; slightly long."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure mapping across Blob, AML, ACR, AKS, Data Factory, Managed Identity and Monitor, but about 145 words."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity auth, least-privilege RBAC, Key Vault for unavoidable secrets, private endpoints and per-environment isolation; roughly 155 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every pipeline stage named with plausible concrete tooling and a domain tie-in, but well over 85 words."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Pairs token-level F1 with an entity denominator and offers inter-annotator agreement as uncertainty; also nearly 200 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Clean contrast of fixed workflow, decomposition and dynamic agent, with the conditional-branching criterion; about 110 words."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct one over c plus rank accumulation with score-then-id deterministic ordering and top-k slice; just under 100 words."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy relevance order with dedupe set, per-document cap of two and budget skip all covered; length around 100 words."
+  },
+  "S2Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Promise.all is the wrong primitive for recording failures without cancelling siblings; allSettled or per-case catch is the key mechanism."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Per-tenant namespaces, Postgres metadata, ACL pre-filtering and RAGAS evaluation, though deletion handling is barely touched and it is long."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write, versioned backfill with high-water mark, queue-synced updates, shadow comparison, config cutover and hot-standby rollback; about 160 words."
+  },
+  "S2Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Good Azure placements but the explicitly asked telemetry component is never named, and it runs past 100 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Message-id dedupe key written atomically with the embeddings plus conditional upsert gives a correct idempotency story; slightly long."
+  }
+}

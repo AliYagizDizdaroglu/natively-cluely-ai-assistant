@@ -1,0 +1,10 @@
+holdout NORMAL         n   29 (strict 28, tolerant 1) TRUE 0 FALSE 0 UNKNOWN 0
+holdout OTHER          n    3 (strict 1, tolerant 2) TRUE 0 FALSE 0 UNKNOWN 0
+holdout SKIP1_E2+      n    4 (strict 4, tolerant 0) TRUE 4 FALSE 0 UNKNOWN 0 gap ms min 1547 med 2650 max 3115
+holdout TAIL0          n    8 (strict 8, tolerant 0) TRUE 0 FALSE 6 UNKNOWN 2 gap ms min 1995 med 3823 max 4646
+other NORMAL           n  527 (strict 508, tolerant 19) TRUE 0 FALSE 0 UNKNOWN 0
+other OTHER            n    4 (strict 3, tolerant 1) TRUE 0 FALSE 0 UNKNOWN 0
+other SKIP1_E1         n    7 (strict 7, tolerant 0) TRUE 7 FALSE 0 UNKNOWN 0 gap ms min 806 med 1459 max 4441
+other SKIP1_E2+        n   18 (strict 18, tolerant 0) TRUE 18 FALSE 0 UNKNOWN 0 gap ms min 751 med 2959 max 3715
+other SKIPN            n    1 (strict 1, tolerant 0) TRUE 1 FALSE 0 UNKNOWN 0 gap ms min 794 med 794 max 794
+other TAIL0            n   49 (strict 34, tolerant 15) TRUE 8 FALSE 26 UNKNOWN 15 gap ms min 440 med 2131 max 4803

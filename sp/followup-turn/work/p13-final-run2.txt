@@ -1,0 +1,20 @@
+﻿ref-test      exit 0  marker: EARLIER-QUESTION REF TESTS: 47/47 passed
+stamp         exit 0  marker: STAMP OK
+decide-cal    exit 0  marker: CALIBRATION OK: every section 7 branch and edge reads as pre-registered
+mutate        exit 0  marker: EVERY MUTANT CAUGHT (98): the calibration can fail
+e2e           exit 0  marker: E2E OK
+runner        exit 0  marker: RUNNER SELF-TEST OK (mock fetch: no key, no network, no model call)
+gsc           exit 0  marker: GRADER-SESSION CALIBRATION OK
+gsc-C         exit 0  marker: GRADER-SESSION CALIBRATION OK
+gsc-B         exit 0  marker: GRADER-SESSION CALIBRATION OK
+cgq           exit 0  marker: instrument 8564ba96369a (pre-registered 8564ba96369a) OK
+dry-front     exit 0  marker: DRY RUN: 140 calls on gemini-3.5-flash-lite HIGH; no key read, no call made
+dry-back      exit 0  marker: DRY RUN: 48 calls on gemini-3.1-flash-lite LOW; no key read, no call made
+audit-noflag  exit 1  marker: AUDIT: FLAGGED (see lines above)
+audit-flag    exit 0  marker: AUDIT: all graders clean
+mem-real      exit 1  marker: MEMORY CHECK: at least one transcript LOADED
+models-real   exit 0  marker: ALL GRADERS claude-opus-5-5 (2 of 2 agents)
+fill-section2 exit 0
+DIFF CHECK (12.4) OK: the filled copy differs from the registered file only in section 2 cells, 2 inserted row(s), the Gated block hashes table and the dated I3 note (317 normalized lines identical)
+wrote section2-filled.md (42018 chars); registered file sha256 a91b3c773799fa4d4d11424d12a2da906b4645c7a32ff8500fb01ac4f575f830 (untouched)
+section 2 of the copy: 33 hashed files, 21 gated block hashes -> VERIFIES against the files on disk

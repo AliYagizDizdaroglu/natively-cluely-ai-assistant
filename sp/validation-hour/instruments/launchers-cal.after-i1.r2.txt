@@ -1,0 +1,220 @@
+launchers-cal.mjs: 2026-10-01 16:10 local
+node v22.19.0; MAIN and the worktree are read only (the worktree's five dist files are copied into stub trees)
+
+=== A. bytes of the four generated .cmd files, read by a reader independent of the generator ===
+PASS  launch-h40d.cmd: 8084 bytes, CRLF 103, bare LF 0, bare CR 0, bytes above 126 0, other control bytes 0, BOM no, ends with CRLF yes  [sha256/12 11338463ad0d]
+PASS  launch-h40d-dry.cmd: 6168 bytes, CRLF 91, bare LF 0, bare CR 0, bytes above 126 0, other control bytes 0, BOM no, ends with CRLF yes  [sha256/12 e458d40c11d9]
+PASS  launch-h40d-prestart.cmd: 10780 bytes, CRLF 130, bare LF 0, bare CR 0, bytes above 126 0, other control bytes 0, BOM no, ends with CRLF yes  [sha256/12 b35b1aba1ffa]
+PASS  h40d-merge.cmd: 4013 bytes, CRLF 61, bare LF 0, bare CR 0, bytes above 126 0, other control bytes 0, BOM no, ends with CRLF yes  [sha256/12 129cb2eeab63]
+PASS  gen-launchers.mjs --check on the four real files: exit 0, all pass, the dry twin equals the flight launcher up to the guard  [exit 0]
+PASS  known-bad: --check --armed on the real unarmed files fails (the three placeholders)  [exit 1]
+--- mutants: --check must FAIL each one and say why ---
+PASS  mutant m1lf: launch-h40d.cmd  [exit 1; bare LF]
+PASS  mutant m2high: launch-h40d.cmd  [exit 1; above 126]
+PASS  mutant m3bom: launch-h40d-dry.cmd  [exit 1; BOM]
+PASS  mutant m4gone: launch-h40d-prestart.cmd  [exit 1; source line\(s\) are missing|lines, the source gives]
+PASS  mutant m5altered: launch-h40d.cmd  [exit 1; differ from the source]
+PASS  mutant m6nocrlf: launch-h40d.cmd  [exit 1; does not end with CRLF]
+PASS  mutant m7short: launch-h40d.cmd  [exit 1; neither the placeholder nor a full hash]
+PASS  mutant m8tab: launch-h40d-dry.cmd  [exit 1; control byte]
+PASS  mutant m9merge: h40d-merge.cmd  [exit 1; source line\(s\) are missing|lines, the source gives]
+PASS  mutant m10upper: launch-h40d.cmd  [exit 1; neither the placeholder nor a full hash]
+PASS  mutant m11drift: launch-h40d-dry.cmd  [exit 1; differ from the source + structure: .* NO]
+--- arming: --commit and --prestart-commit ---
+PASS  a fresh out folder: all three launchers hold a placeholder  [exit 0]
+PASS  --commit fills the flight and the dry twin and leaves the prestart on its own placeholder  [exit 0]
+PASS  known-bad: --check --armed with the prestart still unfilled fails  [exit 1]
+PASS  --prestart-commit fills the prestart and KEEPS the flight and dry values already in the files  [exit 0]
+PASS  --check --armed on the fully armed folder: exit 0  [exit 0]
+PASS  known-bad: a 39 character hash is refused  [exit 2]
+PASS  known-bad: an uppercase hash is refused  [exit 2]
+PASS  known-bad: a 41 character hash is refused  [exit 2]
+PASS  known-bad: a short git hash is refused  [exit 2]
+PASS  known-bad: an unknown option is refused  [exit 2]
+PASS  known-bad: --armed without --check is refused  [exit 2]
+PASS  the refusals above wrote nothing (the armed values are unchanged)
+PASS  the real order, step 1: --prestart-commit alone fills the prestart and leaves the flight and the dry twin on their placeholder  [exit 0]
+PASS  the real order, step 2: --commit then fills the flight and the dry twin and KEEPS the prestart value of step 1  [exit 0]
+PASS  the real order: --check --armed passes on the result  [exit 0]
+PASS  re-arming after the HEAD moved: a second --commit replaces the flight and dry values and still keeps the prestart value  [exit 0]
+PASS  known-bad: a generator that forgets the values already in the files loses the prestart value in the real order (the check above reads KEEPS and would fail on it)  [prestart value after step 2: the placeholder]
+--- lint: the generator refuses a source with a cmd hazard (exit 2, nothing written) ---
+PASS  lint 1paren  [exit 2; an echo inside an if-block; files written: false]
+PASS  lint 2remamp  [exit 2; a rem line holds one of; files written: false]
+PASS  lint 3high  [exit 2; outside printable ASCII; files written: false]
+PASS  lint 4atat  [exit 2; an @@ token outside the commit line; files written: false]
+PASS  lint 5digit  [exit 2; digit directly before >>; files written: false]
+PASS  lint 6macro  [exit 2; unknown macro; files written: false]
+PASS  lint 7open  [exit 2; an echo inside an if-block|never closed; files written: false]
+PASS  lint 8dupsec  [exit 2; appears twice; files written: false]
+PASS  lint 9nosec  [exit 2; section tail-dry is missing|not used by any launcher; files written: false]
+PASS  lint is not over-strict: parentheses in a ONE-LINE if echo outside any block are accepted (only a block-level echo is the hazard the style rule names)  [exit 0]
+
+=== B. launcher flows: derived copies run by cmd in stub trees (the harness, flight, proof and guard are stubs) ===
+PASS  b01a the dry launcher COPY CUT BEFORE THE GUARD, run from a wrong folder (VH\instruments), as the brief names it: exit 9 (expected 9), trace [], derived-copy swaps {"run.mjs":1,"flight.mjs":0} (1 line(s) changed, path lines only: true)
+PASS  b01b flight launcher from a wrong folder: exit 9 (expected 9), trace [], derived-copy swaps {"run.mjs":1,"flight.mjs":1} (2 line(s) changed, path lines only: true)
+PASS  b01c dry launcher from a wrong folder: exit 9 (expected 9), trace [], derived-copy swaps {"run.mjs":1,"flight.mjs":0} (1 line(s) changed, path lines only: true)
+PASS  b01d prestart launcher from a wrong folder: exit 9 (expected 9), trace [], derived-copy swaps {"run.mjs":4,"flight.mjs":0} (4 line(s) changed, path lines only: true)
+PASS  b01e the same cut copy from the RIGHT folder is not exit 9 (it reaches the commit check, unarmed): exit 12 (expected 12), trace [], derived-copy swaps {"run.mjs":1,"flight.mjs":0} (1 line(s) changed, path lines only: true)
+PASS  b02 dry, holdout40.wav missing: exit 8 (expected 8), trace [], derived-copy swaps {"run.mjs":1,"flight.mjs":0} (1 line(s) changed, path lines only: true)
+PASS  b03 dry, roster file missing: exit 7 (expected 7), trace [], derived-copy swaps {"run.mjs":1,"flight.mjs":0} (1 line(s) changed, path lines only: true)
+PASS  b04 dry, the harness file lacks the exit listener (the h40a mangled-copy mutation): exit 6 (expected 6), trace [], derived-copy swaps {"run.mjs":1,"flight.mjs":0} (1 line(s) changed, path lines only: true)
+PASS  b05a flight, UNARMED (the placeholder is still in the file): exit 12 (expected 12), trace [], derived-copy swaps {"run.mjs":1,"flight.mjs":1} (2 line(s) changed, path lines only: true)
+PASS  b05b dry, UNARMED: exit 12 (expected 12), trace [], derived-copy swaps {"run.mjs":1,"flight.mjs":0} (1 line(s) changed, path lines only: true)
+PASS  b05c prestart, UNARMED: exit 12 (expected 12), trace [], derived-copy swaps {"run.mjs":4,"flight.mjs":0} (4 line(s) changed, path lines only: true)
+PASS  b06 dry, wav:check fails: exit 5 (expected 5), trace [run wav:check], derived-copy swaps {"run.mjs":1,"flight.mjs":0} (1 line(s) changed, path lines only: true)
+PASS  b07 dry, the REAL dist-proof against a tree with no dist: exit 3 (expected 3), trace [run wav:check], derived-copy swaps {"run.mjs":1,"flight.mjs":0} (1 line(s) changed, path lines only: true)
+PASS  b08 dry, the real dist-proof passes on the worktree dist, the guard fails: exit 4 (expected 4), trace [run wav:check | guard], derived-copy swaps {"run.mjs":1,"flight.mjs":0} (1 line(s) changed, path lines only: true)
+PASS  b09 dry, everything passes: no flight and no app step: exit 0 (expected 0), trace [run wav:check | guard], derived-copy swaps {"run.mjs":1,"flight.mjs":0} (1 line(s) changed, path lines only: true)
+PASS  b10 flight, everything passes, flight exit 0: both dist proofs real: exit 0 (expected 0), trace [run wav:check | guard | flight h40d], derived-copy swaps {"run.mjs":1,"flight.mjs":1} (2 line(s) changed, path lines only: true)
+PASS  b11 flight, the flight exits 1: the launcher exits 1: exit 1 (expected 1), trace [run wav:check | guard | flight h40d], derived-copy swaps {"run.mjs":1,"flight.mjs":1} (2 line(s) changed, path lines only: true)
+PASS  b12 flight, dist proof 1 passes and dist proof 2 fails (the dist changed during the run): exit 3 (expected 3), trace [run wav:check | proof 1 -> 0 | guard | flight h40d | proof 2 -> 1], derived-copy swaps {"run.mjs":1,"flight.mjs":1,"dist-proof.mjs":2} (4 line(s) changed, path lines only: true)
+PASS  b13 flight, dist proof 1 fails: no guard, no flight: exit 3 (expected 3), trace [run wav:check | proof 1 -> 1], derived-copy swaps {"run.mjs":1,"flight.mjs":1,"dist-proof.mjs":2} (4 line(s) changed, path lines only: true)
+PASS  b14 prestart, everything passes, with the REAL 60 s wait: exit 0 (expected 0), trace [run wav:check | guard | run app:start | run probe | run app:stop], the WAIT timestamps 60.54 s apart, derived-copy swaps {"run.mjs":4,"flight.mjs":0} (4 line(s) changed, path lines only: true)
+PASS  b15 prestart, app:start fails: no probe, no wait, app:stop still runs: exit 10 (expected 10), trace [run wav:check | guard | run app:start | run app:stop], derived-copy swaps {"run.mjs":4,"flight.mjs":0} (4 line(s) changed, path lines only: true)
+PASS  b16 prestart, the probe is NOT READY: the wait and app:stop still run: exit 11 (expected 11), trace [run wav:check | guard | run app:start | run probe | run app:stop], the WAIT timestamps 60.53 s apart, derived-copy swaps {"run.mjs":4,"flight.mjs":0} (4 line(s) changed, path lines only: true)
+PASS  b17 prestart, dist proof 2 fails after a clean run: app:stop already ran: exit 3 (expected 3), trace [run wav:check | proof 1 -> 0 | guard | run app:start | run probe | run app:stop | proof 2 -> 1], the WAIT timestamps 60.53 s apart, derived-copy swaps {"run.mjs":4,"flight.mjs":0,"dist-proof.mjs":2} (6 line(s) changed, path lines only: true)
+PASS  b18 prestart, app:start fails AND dist proof 2 fails: exit 3, and the error log names both: exit 3 (expected 3), trace [run wav:check | proof 1 -> 0 | guard | run app:start | run app:stop | proof 2 -> 1], derived-copy swaps {"run.mjs":4,"flight.mjs":0,"dist-proof.mjs":2} (6 line(s) changed, path lines only: true)
+PASS  b19 prestart, app:stop itself fails: exit 13 and the error log says an app may still be running: exit 13 (expected 13), trace [run wav:check | guard | run app:start | run probe | run app:stop], the WAIT timestamps 60.52 s apart, derived-copy swaps {"run.mjs":4,"flight.mjs":0} (4 line(s) changed, path lines only: true)
+INFO  b01a error log (the line the controller would read): wrong working directory: C:\Users\sotka\AppData\Local\Temp\claude\C-407A~1\9C5886~1\SCRATC~1\VALIDA~1\INSTRU~1
+INFO  b01a cut copy has 84 lines of the real dry launcher's 91; no guard, dist proof 2 or flight line is in it
+
+=== C. the dist proof call, from the launcher text, against the worktree (read-only) ===
+PASS  known-bad: the literal r4 and brief form '--root .' crashes dist-proof.mjs (createRequire needs an absolute path) after its marker lines, never printing a verdict  [exit 1]
+PASS  the launcher's own dist proof line (--root "%CD%", read from the real dry launcher), run by cmd from the worktree: exit 0, the verdict line, the filter hash of the 05:00 re-smoke  [exit 0]
+--- cmd facts the launchers rely on, measured ---
+PASS  findstr /R /X with 10 character classes on a 10 character hex line reads ACCEPTED  [the engine accepts 10 classes and silently refuses 16 and 40, so the commit check cannot be one 40-class pattern]
+PASS  findstr /R /X with 16 character classes on a 16 character hex line reads REFUSED  [the engine accepts 10 classes and silently refuses 16 and 40, so the commit check cannot be one 40-class pattern]
+PASS  findstr /R /X with 40 character classes on a 40 character hex line reads REFUSED  [the engine accepts 10 classes and silently refuses 16 and 40, so the commit check cannot be one 40-class pattern]
+PASS  an undefined variable with a substring modifier expands to ~39,1, not to nothing  [so the commit check tests hex-ness first; a length test alone would pass an unset variable]
+PASS  a rem line holding & | > ( ) ^ % executes nothing  [the generator refuses them in rem lines anyway, which is stricter than cmd needs]
+FAIL  timeout /t 5 with redirected input exits 125 after 123 ms with its refusal message  [r4's reason for ping]
+PASS  ping -n 3 127.0.0.1 with redirected input waits 2139 ms (n minus 1 seconds, so ping -n 61 is 60 s)
+--- what the launchers' first checks read in MAIN today (read only) ---
+PASS  MAIN holds interview60.flight.mjs, so the launcher's exit 9 check passes there
+PASS  MAIN holds holdout40.wav, so the launcher's exit 8 check passes there
+PASS  MAIN holds holdout40.questions.mjs, so the launcher's exit 7 check passes there
+PASS  MAIN's harness holds the exit listener line that the launcher's exit 6 check looks for
+PASS  MAIN's interview60.runs folder exists (every launcher log line is appended there, and a redirect into a missing folder fails)
+INFO  flight-h40d launcher logs in MAIN at this moment: 0 (the logs are appended to, so a stale one would mix two runs; this line is a state, not a check, and reads differently after the dry twin has run)
+INFO  the launcher error log in the real TEMP folder at this moment: absent (r4: it must not exist at arming)
+
+=== D. h40d-merge.cmd: derived copies with the verdicts folder pointed at a scratch folder and a stub judge ===
+PASS  the real merge script reads its verdicts from the validation-hour folder  [set S=<VH>]
+PASS  d01 wrong cwd (VH\instruments) with a relative run dir: exit 13 and the judge is never called  [exit 13]
+PASS  d03 no arguments: exit 12 and the usage line  [exit 12]
+PASS  d02 an ABSOLUTE run dir that exists, run from a wrong folder: exit 13 and NOTHING was copied into the run folder  [exit 13; copied: false]
+PASS  known-bad contrast: h40c's merge script in the same situation exits 1 only AFTER copying the verdicts file into the run folder (the gap the added check closes)  [exit 1; copied: true]
+PASS  d04 the in-app verdicts missing (another arm present): exit 10, nothing merged  [exit 10]
+PASS  d05 only the in-app verdicts present: the judge runs once (in-app, with --model), 14 other arms print SKIPPED-MISSING with their tag  [exit 0; skipped=14]
+PASS  d06 every verdicts file present (each holding its own tag): 15 judge calls, every one with --model, and each arm received ITS OWN verdicts file, the three no-cue arms included  [exit 0; calls 15; ]
+PASS  d07 one graded verdicts file missing (captured-no-cues-high-r2) with a STALE file already in the run folder: exactly one SKIPPED-MISSING, that arm is never merged, the stale file is untouched  [exit 0; calls 14]
+PASS  d08 the model id given on the command line is passed unchanged to every merge  [calls 15]
+PASS  d09 the in-app merge fails (the judge exits 1): the script stops with exit 1 before any other arm  [exit 1]
+PASS  d10 one arm merge fails (the judge exits 1 for captured-high-r2 only): that arm prints MERGE-FAILED with its tag, the other 14 merges still run, the script still ends with ALL MERGES RAN, exit 0 (h40c behaviour kept: the controller reads the lines)  [exit 0; failed=captured-high-r2; calls 15]
+PASS  the merge script has an :arm line, with the exact answers-file id, for every one of the flight's 12 paired arms (PAIRED_ARMS, imported from the worktree)
+PASS  known-bad: the same check run on h40c's merge script finds exactly the three no-cue arms missing  [missing: captured-no-cues-high, captured-no-cues-high-r2, captured-no-cues-high-r3]
+PASS  the dispatch text's ten rows carry the pairs file names the flight's own formula gives (interview60.judge.pairs.MODEL_TAG.json) and the verdicts names the merge script reads  [10 rows]
+PASS  known-bad: a dispatch row with the wrong model (3.1 for a no-cue twin) fails the same row comparison
+PASS  the dispatch text proper (from its marker line to the end) equals h40c's, character for character  [1135 bytes]
+PASS  known-bad: a one-word change in the dispatch text proper would be seen by the same comparison
+
+=== E. register-h40d.ps1 and h40d-precheck.ps1: instruments\ps-cal.ps1 (the parser, the functions cut out by AST, real tasks read-only, the precheck known case) ===
+--- 1. the parser, on both scripts (nothing is run) ---
+PASS  parse register-h40d.ps1: zero parse errors  [errors=0]
+PASS  bytes register-h40d.ps1: ASCII only, no BOM  [bytes above 126=0 length=9339]
+PASS  parse h40d-precheck.ps1: zero parse errors  [errors=0]
+PASS  bytes h40d-precheck.ps1: ASCII only, no BOM  [bytes above 126=0 length=4998]
+PASS  known-bad parse: register-h40d.ps1 with an unclosed if appended reads as parse errors  [errors=1]
+--- 2. register-h40d.ps1: the three pure functions, cut out of the file ---
+PASS  the file holds exactly three function definitions  [names=Get-TaskPlan,Get-StartTime,Get-RegistrationProblems]
+PASS  plan flight: Natively-flight-h40d, launch-h40d.cmd, 5 h  [Natively-flight-h40d C:\folder\launch-h40d.cmd 5]
+PASS  plan dry: Natively-flight-h40d-dry, launch-h40d-dry.cmd, 1 h  [Natively-flight-h40d-dry C:\folder\launch-h40d-dry.cmd 1]
+PASS  plan prestart: Natively-prestart-h40d, launch-h40d-prestart.cmd, 1 h  [Natively-prestart-h40d C:\folder\launch-h40d-prestart.cmd 1]
+PASS  plan: -Hours overrides the limit (3)
+PASS  known-bad: an unknown -Which throws
+PASS  the three plans name three different tasks and three different launchers
+PASS  the flight launcher the plan names exists beside the script  [launch-h40d.cmd]
+PASS  the dry launcher the plan names exists beside the script  [launch-h40d-dry.cmd]
+PASS  the prestart launcher the plan names exists beside the script  [launch-h40d-prestart.cmd]
+PASS  cross-file: the precheck default label gives the register script flight and dry task names  [default label=h40d]
+PASS  start time: 2026-10-02T13:30:00 parses to Friday 13:30 local  [2026-10-02 13:30:00]
+PASS  known-bad: a start one second in the past throws
+PASS  known-bad: a start equal to now throws (not in the future)
+PASS  known-bad: a start without the T and seconds throws
+PASS  known-bad: an ambiguous day-month order throws
+PASS  known-bad: a start without seconds throws
+PASS  known-bad: an empty start throws
+PASS  read-back: Ready, StartWhenAvailable False, next run as requested gives no problem  [problems=0]
+PASS  known-bad read-back: StartWhenAvailable True is named (the one condition the brief requires to read False)  [StartWhenAvailable reads True: a missed start would fire late, r4 section 2 requires False]
+PASS  known-bad read-back: a Disabled state is named  [the state reads 'Disabled', not Ready]
+PASS  known-bad read-back: a next run three hours off is named  [the next run reads 10/02/2026 16:30:00, not the requested 10/02/2026 13:30:00]
+PASS  read-back: no next run reported (null) is not a problem  [problems=0]
+PASS  read-back: the unset date 0001-01-01 is not a problem  [problems=0]
+PASS  known-bad read-back: two violations give two problems  [problems=2]
+--- 3. register-h40d.ps1: two of its own conditions, evaluated from the file text with test inputs ---
+PASS  the placeholder refusal is exactly one if statement in the file
+PASS  placeholder condition on the real launch-h40d.cmd reads True, the file holds a placeholder
+PASS  placeholder condition on the real launch-h40d-dry.cmd reads True, the file holds a placeholder
+PASS  placeholder condition on the real launch-h40d-prestart.cmd reads True, the file holds a placeholder
+PASS  placeholder condition on a copy of the flight launcher with a hash filled in reads False (registration allowed)
+PASS  the cue-source refusal is exactly one if statement in the file
+PASS  cue condition against the whole-turn worktree (cue source present) reads False: registration allowed
+PASS  known-bad: cue condition against a tree whose filter lacks CUE_LINE_PREFIX reads True: the script would refuse
+INFO  cue condition against MAIN today reads True (True = MAIN is not merged yet, so the script would refuse to register today; False = merged)
+--- 4. register-h40d.ps1: its read-back, against real tasks (read-only) ---
+PASS  the h40c flight task (Ready, StartWhenAvailable False, no next run) reads back clean through the same property reads  [state=Ready StartWhenAvailable=False next='']
+PASS  known-bad real task: Natively-smoke-cues holds StartWhenAvailable True and the read-back names it  [StartWhenAvailable=True problems=StartWhenAvailable reads True: a missed start would fire late, r4 section 2 requires False]
+--- 5. h40d-precheck.ps1: the Running-task filter, cut out of the file, on synthetic tasks ---
+PASS  the precheck holds exactly one Where-Object that filters on Running
+PASS  filter: the flight is excluded, two other Running tasks are counted, a Ready task is not  [counted=Natively-flight-h40d-dry,Natively-probe-live38]
+PASS  filter: with only the flight Running and the rest Ready the count is 0
+--- 5b. h40d-precheck.ps1: the dry-log line filter, cut out of the file, on real dist-proof output ---
+PASS  the precheck holds exactly one string that filters on DIST PROOF
+PASS  dry-log filter on the real dist-proof output of the combined build keeps exactly the verdict line and the filter hash line  [exit=0 lines=16 kept=2]
+INFO  dist-proof against MAIN's own dist today: 27 output lines, exit 1; lines kept by the filter: DIST PROOF: BAD prompts x0  "CUE_MAX_LINES = 3"  (small cues: the 3-line limit) || DIST PROOF: BAD filter  x0  "function trimCues"  (small cues: the display cap) || DIST PROOF: BAD engine  x0  "[Answer] cues trimmed:"  (small cues: every display edit is logged) || DIST PROOF: BAD prompts x0  "A one-part question gets exactly one line. Add a line only"  (the one-first wording) || DIST PROOF: BAD ipc     x0  "VERBAL_TYPED_PROMPT"  (typed chat sends the prompt without the cue rule) || DIST PROOF: BAD ipc     x2  "VERBAL_WHAT_TO_ANSWER_PROMPT"  (typed chat never names the hands-free prompt) || DIST PROOF: BAD filter  x0  "CUE_LINE_PREFIX"  (the early close (the constant's name, 3 times)) || DIST PROOF: BAD filter  x0  "offers block before the spoken answer"  (the offers block before the answer is kept apart from the answer)
+PASS  known-bad build: dist-proof against MAIN dist-electron today (pre-merge, no cue build) exits non-zero, which the launcher turns into exit 3  [exit=1]
+PASS  dry-log filter on the known-bad dist keeps the BAD marker lines and never shows an as-expected verdict  [kept=8]
+INFO  what MAIN's dist reads as (names only): DIST PROOF: BAD prompts x0 "CUE_MAX_LINES = 3" (small cues: the 3-line limit) || DIST PROOF: BAD filter x0 "function trimCues" (small cues: the display cap) || DIST PROOF: BAD engine x0 "[Answer] cues trimmed:" (small cues: every display edit is logged) || DIST PROOF: BAD prompts x0 "A one-part question gets exactly one line. Add a line only" (the one-first wording)
+--- 6. h40d-precheck.ps1 run as the r4 known case: -At the current minute, the h40c task names, -ReadOnly ---
+    | PRECHECK 16:12:20 label=h40c
+    | flight task: Ready next=none
+    | other Natively-* tasks Running: 0
+    | electron processes: 0
+    | processes named like natively: 0
+    | port 5180 held: False
+    | tail.exe watchers: 0
+    | power: BatteryStatus=2 (2 = AC) charge=57%
+    | default playback device: volume=93% muted=False
+    | dry-twin guard chain: NOT RUN (-ReadOnly); the guard lines already in its log follow
+    | GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON (front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW 
+    | (this guard proves the launcher environment as ITS OWN node child resolves it, and that dist-electron plus its source carry the hedge and pin HEAD; the app PROCESS itself is proven by Task 7's pre-hour smoke and, after t
+    | holdout40.wav matches holdout40  45 items
+    | GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON (front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW 
+    | (this guard proves the launcher environment as ITS OWN node child resolves it, and that dist-electron plus its source carry the hedge and pin HEAD; the app PROCESS itself is proven by Task 7's pre-hour smoke and, after t
+    | holdout40.wav matches holdout40  45 items
+    | GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON (front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW 
+    | (this guard proves the launcher environment as ITS OWN node child resolves it, and that dist-electron plus its source carry the hedge and pin HEAD; the app PROCESS itself is proven by Task 7's pre-hour smoke and, after t
+PASS  known case: the precheck exits 0 and writes nothing to stderr  [exit=0 stderr lines=0]
+PASS  known case: the PRECHECK header line with the label
+PASS  known case: the h40c flight task state line, with a next run of none because the once-trigger has run (h40c does not crash on it)
+PASS  known case: the new count of other Natively-* tasks Running
+PASS  known case: the electron process line
+PASS  known case: the natively-named process line
+PASS  known case: the port line
+PASS  known case: the tail.exe line
+PASS  known case: the audio line (audio-state.ps1 found one folder above)
+PASS  known case: -ReadOnly says the dry twin was NOT RUN, never silent
+INFO  power line present: True (a desktop without a battery prints none, as in h40c's script)
+PASS  known-bad: a label with no task prints NOT REGISTERED and does not crash  [exit=0 stderr lines=0]
+PASS  why the null-safe line exists: h40c's original expression fails on the h40c task  [ERROR: You cannot call a method on a null-valued expression.]
+--- 7. static checks of the code this calibration cannot run (the registration body, the dry-twin start in the precheck) ---
+PASS  static: register-h40d.ps1 reads no unassigned variable and passes only parameters that exist (New-ScheduledTask*, Register-ScheduledTask, Get-ScheduledTask*, Select-String, ...)
+PASS  static: h40d-precheck.ps1 reads no unassigned variable and passes only parameters that exist (Start-ScheduledTask, Get-ScheduledTask*, Get-NetTCPConnection, ...)
+PASS  known-bad static: a misspelled variable in the register script is named  [variable $rep0 is read but never assigned]
+PASS  known-bad static: a misspelled cmdlet parameter in the register script is named  [New-ScheduledTaskSettingsSet has no parameter -WakeToRunX]
+PASS  known-bad static: a misspelled variable in the precheck dry-twin loop is named  [variable $dx is read but never assigned]
+PASS  known-bad static: a misspelled parameter on Start-ScheduledTask in the precheck is named  [Start-ScheduledTask has no parameter -TaskNme]
+SUMMARY ps-cal: 65 PASS, 0 FAIL
+
+SUMMARY launchers-cal: 165 PASS, 1 FAIL (sections A-D counted by this script, section E by ps-cal.ps1)

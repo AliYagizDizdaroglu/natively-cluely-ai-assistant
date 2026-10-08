@@ -1,0 +1,6 @@
+electron/test/golden/passes/2026-10-01-l38r-result.md
+electron/test/golden/passes/PREREGISTER-l38r.md
+electron/test/golden/passes/2026-10-01-l38f-result.md
+electron/test/golden/passes/PREREGISTER-l38f.md
+electron/test/golden/passes/2026-10-01-l38p-result.md
+electron/test/golden/passes/PREREGISTER-l38p.md

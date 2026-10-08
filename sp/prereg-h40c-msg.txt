@@ -1,0 +1,22 @@
+probe(flight): pre-register h40c, the hedge's own holdout hour
+
+Written before the hour, reviewed by Opus over six rounds, never edited
+afterwards. h40c flies holdout40 with NATIVELY_VERBAL_HEDGE=1 and every
+other flag off; this commit is the registered HEAD, and MAIN is frozen
+from here to the end of the hour (the launcher's guard refuses any
+other HEAD).
+
+Rule 1 (mechanics; VOID only on mechanical absence), rule 2 (latency
+against h40b's exact median 5.026 s + 1.0 and p90 13.608 s, and no lost
+answers; PASS / FAIL / INCOMPLETE), rule 3 (in-app acceptable >= 35 of
+45 with e311019's attribution bias named, zero wrong outside the five
+follow-ups that lose their parent). Start window 12:00-15:00 local on
+the day the user names; grader pinned to claude-opus-5-5; a PASS
+licenses only a separate, reviewed commit making the hedge the default.
+
+Blocking before arming: the stats script calibrated on the live hedge
+smoke's default segment (smoke run 2026-09-26 23:20 at 998b5b7: all four
+segments PASS), and the dry-run launcher's guard GUARD OK as a scheduled
+task at this commit.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

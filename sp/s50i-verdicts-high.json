@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sound tabular/production rationale plus the regularized logistic-regression baseline, about 77 words and naturally spoken."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic all correct (9500, 5000, 2850, 57 percent, 30 percent) but calling 57 versus 60 consistent within rounding overclaims the verdict."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Holdout control, year-over-year seasonality, propensity matching and difference-in-differences all fit; about 88 words, slightly long."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Stable descending sort for tie order, correct precision, recall and lift definitions, and all three edge cases; roughly 110 words."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "ColumnTransformer inside one Pipeline plus a thirty-day embargo on the chronological split is exactly the leakage point; about 130 words."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Left join preserves zero-call customers, window and ingested-at cutoff both handled; roughly 115 words, no code read aloud."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested stage and names the shared feature definitions as the anti-skew element; about 93 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, deterministic hash assignment, windowed outcome joins and IPW or control-cohort retraining all addressed; roughly 110 words."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Azure service names all accurate across storage, training, registry, ACR, endpoints, ADF, identity and monitoring; about 100 words."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity with Entra, correct RBAC role, Key Vault fallback and per-environment private endpoints; roughly 120 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every requested stage including hybrid retrieval and cross-encoder reranking; about 103 words, a little long."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives unit, denominator, dataset construction and an uncertainty method for each of the three metrics; roughly 125 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Names conditional search as the real justification and contrasts all three approaches; about 120 words."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct reciprocal-rank accumulation with the configurable constant and a deterministic id tie-break, about 70 spoken words."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All four constraints handled, but the opening clause is ungrammatical (missing 'I would implement') and it runs past a hundred words."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore of eight, per-case timeout race, local error capture and index-preserving mapping are all right; roughly 110 words."
+  },
+  "S2Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Index, metadata, permissions and evaluation are solid, but citations and asynchronous ingestion are never mentioned; about 89 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioned namespaces, batch backfill, CDC dual-write, shadow NDCG comparison, flagged cutover and instant rollback; roughly 135 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure mapping for every component plus a defensible custom-chunking exception; about 105 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-lock with a durable processed-message record before acknowledgement is the right idempotency pattern, about 82 words."
+  }
+}

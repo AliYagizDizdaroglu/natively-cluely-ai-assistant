@@ -1,0 +1,14 @@
+test(cues): the typed-prompt pin compares three lines and ties the prompt to its call
+
+A failing pin printed the whole 3,600-line ipcHandlers.ts as "Received". It
+now collects the lines that name a verbal prompt or the cue rule and compares
+them exactly: the typed import and its two verbal branches, nothing else. A
+second test pins every line that names the prompt variable — its declaration,
+the knowledge branch's re-assignment and the one call to
+streamVerbalWithGeminiFlash — so nothing can change it between the pin and
+the call. Both source-text pins find their file by __dirname, which exists in
+the CommonJS copy the electron build makes of every .ts; the @ts-ignore on
+import.meta goes. One blank line separates two comments in ipcHandlers.ts
+that read as one.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,143 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn[39m
+
+ [31m❯[39m electron/services/interviewerTurn.replay.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[90m 35[2mms[22m[39m
+[31m   [31m×[31m replay of 2026-09-09T15-00-55-s50a[2m > [22manswers every spoken question exactly once[90m 19[2mms[22m[31m[39m
+[31m     → expected [ 'S1Q01F:2', 'S1Q02:2', 'S1Q08:2' ] to deeply equal [][39m
+[31m   [31m×[31m replay of 2026-09-09T15-00-55-s50a[2m > [22mnever supersedes on these runs (the transcript settles before the gate)[90m 4[2mms[22m[31m[39m
+[31m     → expected 17 to be +0 // Object.is equality[39m
+[31m   [31m×[31m replay of 2026-09-09T15-00-55-s50a[2m > [22mnever dispatches before the voice stops[90m 3[2mms[22m[31m[39m
+[31m     → expected [ 'S1Q01', 'S1Q02', 'S1Q03', …(14) ] to deeply equal [][39m
+[31m   [31m×[31m replay of 2026-09-09T15-00-55-s50a[2m > [22manswers every long question whole (coverage ≥ 0.8 of the script)[90m 2[2mms[22m[31m[39m
+[31m     → expected [ 'S1Q02:0.60', 'S1Q08:0.32' ] to deeply equal [][39m
+[31m   [31m×[31m replay of 2026-09-08T08-44-56-after9[2m > [22mnever supersedes on these runs (the transcript settles before the gate)[90m 2[2mms[22m[31m[39m
+[31m     → expected 1 to be +0 // Object.is equality[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 5 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m electron/services/interviewerTurn.replay.test.ts[2m > [22mreplay of 2026-09-09T15-00-55-s50a[2m > [22manswers every spoken question exactly once
+[31m[1mAssertionError[22m: expected [ 'S1Q01F:2', 'S1Q02:2', 'S1Q08:2' ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Array [][39m
+[31m+ Array [[39m
+[31m+   "S1Q01F:2",[39m
+[31m+   "S1Q02:2",[39m
+[31m+   "S1Q08:2",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m electron/services/interviewerTurn.replay.test.ts:[2m77:98[22m[39m
+    [90m 75| [39m        [35mconst[39m rows [33m=[39m [34mscore[39m(f[33m,[39m [34mreplay[39m(f))[33m;[39m
+    [90m 76| [39m        [34mit[39m([32m'answers every spoken question exactly once'[39m[33m,[39m () [33m=>[39m {
+    [90m 77| [39m            [34mexpect[39m(rows[33m.[39m[34mfilter[39m((r) [33m=>[39m r[33m.[39mdispatches [33m!==[39m [34m1[39m)[33m.[39m[34mmap[39m((r) [33m=>[39m [32m`[39m…
+    [90m   | [39m                                                                                                 [31m^[39m
+    [90m 78| [39m        })[33m;[39m
+    [90m 79| [39m        [34mit[39m([32m'never supersedes on these runs (the transcript settles bef[39m…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m electron/services/interviewerTurn.replay.test.ts[2m > [22mreplay of 2026-09-09T15-00-55-s50a[2m > [22mnever supersedes on these runs (the transcript settles before the gate)
+[31m[1mAssertionError[22m: expected 17 to be +0 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 0[39m
+[31m+ 17[39m
+
+[36m [2m❯[22m electron/services/interviewerTurn.replay.test.ts:[2m80:64[22m[39m
+    [90m 78| [39m        })[33m;[39m
+    [90m 79| [39m        [34mit[39m([32m'never supersedes on these runs (the transcript settles bef[39m…
+    [90m 80| [39m            [34mexpect[39m(rows[33m.[39m[34mreduce[39m((s[33m,[39m r) [33m=>[39m s [33m+[39m r[33m.[39msupersedes[33m,[39m [34m0[39m))[33m.[39m[34mtoBe[39m([34m0[39m)[33m;[39m
+    [90m   | [39m                                                               [31m^[39m
+    [90m 81| [39m        })[33m;[39m
+    [90m 82| [39m        [34mit[39m([32m'never dispatches before the voice stops'[39m[33m,[39m () [33m=>[39m {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m electron/services/interviewerTurn.replay.test.ts[2m > [22mreplay of 2026-09-09T15-00-55-s50a[2m > [22mnever dispatches before the voice stops
+[31m[1mAssertionError[22m: expected [ 'S1Q01', 'S1Q02', 'S1Q03', …(14) ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Array [][39m
+[31m+ Array [[39m
+[31m+   "S1Q01",[39m
+[31m+   "S1Q02",[39m
+[31m+   "S1Q03",[39m
+[31m+   "S1Q04",[39m
+[31m+   "S1Q05",[39m
+[31m+   "S1Q06",[39m
+[31m+   "S1Q07",[39m
+[31m+   "S1Q08",[39m
+[31m+   "S1Q09",[39m
+[31m+   "S1Q10",[39m
+[31m+   "S2Q01",[39m
+[31m+   "S2Q02",[39m
+[31m+   "S2Q03",[39m
+[31m+   "S2Q04",[39m
+[31m+   "S2Q05",[39m
+[31m+   "S2Q06",[39m
+[31m+   "S2Q07",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m electron/services/interviewerTurn.replay.test.ts:[2m83:66[22m[39m
+    [90m 81| [39m        })[33m;[39m
+    [90m 82| [39m        [34mit[39m([32m'never dispatches before the voice stops'[39m[33m,[39m () [33m=>[39m {
+    [90m 83| [39m            [34mexpect[39m(rows[33m.[39m[34mfilter[39m((r) [33m=>[39m r[33m.[39mearly)[33m.[39m[34mmap[39m((r) [33m=>[39m r[33m.[39mid))[33m.[39m[34mtoEqu[39m…
+    [90m   | [39m                                                                 [31m^[39m
+    [90m 84| [39m        })[33m;[39m
+    [90m 85| [39m        [34mit[39m([32m'answers every long question whole (coverage ≥ 0.8 of the s[39m…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m electron/services/interviewerTurn.replay.test.ts[2m > [22mreplay of 2026-09-09T15-00-55-s50a[2m > [22manswers every long question whole (coverage ≥ 0.8 of the script)
+[31m[1mAssertionError[22m: expected [ 'S1Q02:0.60', 'S1Q08:0.32' ] to deeply equal [][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Array [][39m
+[31m+ Array [[39m
+[31m+   "S1Q02:0.60",[39m
+[31m+   "S1Q08:0.32",[39m
+[31m+ ][39m
+
+[36m [2m❯[22m electron/services/interviewerTurn.replay.test.ts:[2m86:115[22m[39m
+    [90m 84| [39m        })[33m;[39m
+    [90m 85| [39m        [34mit[39m([32m'answers every long question whole (coverage ≥ 0.8 of the s[39m…
+    [90m 86| [39m            [34mexpect[39m(rows[33m.[39m[34mfilter[39m((r) [33m=>[39m r[33m.[39mlong [33m&&[39m r[33m.[39mcoverage [33m<[39m [34m0.8[39m)[33m.[39m[34mmap[39m(…
+    [90m   | [39m                                                                                                                  [31m^[39m
+    [90m 87| [39m        })[33m;[39m
+    [90m 88| [39m        [34mit[39m([32m'dispatches at the gate, or as soon as the detector spoke, [39m…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m electron/services/interviewerTurn.replay.test.ts[2m > [22mreplay of 2026-09-08T08-44-56-after9[2m > [22mnever supersedes on these runs (the transcript settles before the gate)
+[31m[1mAssertionError[22m: expected 1 to be +0 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 0[39m
+[31m+ 1[39m
+
+[36m [2m❯[22m electron/services/interviewerTurn.replay.test.ts:[2m80:64[22m[39m
+    [90m 78| [39m        })[33m;[39m
+    [90m 79| [39m        [34mit[39m([32m'never supersedes on these runs (the transcript settles bef[39m…
+    [90m 80| [39m            [34mexpect[39m(rows[33m.[39m[34mreduce[39m((s[33m,[39m r) [33m=>[39m s [33m+[39m r[33m.[39msupersedes[33m,[39m [34m0[39m))[33m.[39m[34mtoBe[39m([34m0[39m)[33m;[39m
+    [90m   | [39m                                                               [31m^[39m
+    [90m 81| [39m        })[33m;[39m
+    [90m 82| [39m        [34mit[39m([32m'never dispatches before the voice stops'[39m[33m,[39m () [33m=>[39m {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m5 failed[39m[22m[2m | [22m[1m[32m7 passed[39m[22m[90m (12)[39m
+[2m   Start at [22m 11:52:35
+[2m   Duration [22m 4.28s[2m (transform 123ms, setup 0ms, collect 142ms, tests 35ms, environment 2.35s, prepare 343ms)[22m
+

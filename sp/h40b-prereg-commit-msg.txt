@@ -1,0 +1,8 @@
+probe(flight): pre-register h40b's pass rule before the hour flies
+
+holdout40's second flight (2026-09-26 17:00) validates bb94db4, the R09 routing fix, under the
+holdout protocol's rule for every flight after the baseline: R09 answered as a technical
+question, live mains inside or above the in-app run's own twin band, the quality-gate rows for the
+33 gradeable mains, zero wrong. Written before the hour; the result goes in h40b.md.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -1,0 +1,4 @@
+typeof stripCueBlock in MAIN dist: undefined
+typeof P.CUE_RULE in MAIN dist: undefined
+call throws: TypeError - F.stripCueBlock is not a function
+'x'.includes(P.CUE_RULE) -> false  ; 'has undefined'.includes(P.CUE_RULE) -> true

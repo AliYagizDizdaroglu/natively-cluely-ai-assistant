@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers data fit, production constraints and a logistic-regression baseline; minor slip conflating training efficiency with serving latency; about 94 words."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Never estimates precision as 2850 over 5000 equals 57 percent; back-derives 4750 predicted positives, contradicting the 5000-subscriber band it just stated."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Difference-in-differences against a randomized control plus tenure and usage controls answers seasonality and mix cleanly; about 103 words."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Stable sort for ties and correct precision, recall and lift formulas; hedges invalid-k behaviour as zero or error; about 106 words."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Chronological split respecting the 30-day label window, column transformer fit only on train, holdout evaluation; tight and well-paced."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "As-of ingested-at predicate and left join preserving zero-call customers are right, but never filters event type to support calls."
+  },
+  "S1Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Ingestion, serving, storage, monitoring and sharing covered, but training is omitted and model registration only implied; about 132 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Request-id prediction logs, variant injection, post-window batch join and propensity-adjusted retraining hit all four sub-parts; about 132 words."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service named correctly across storage, training, registry, ACR, AKS, Data Factory, Entra and Monitor, with reasons; about 134 words."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "User-assigned managed identity, Blob Data Reader RBAC, Key Vault references and per-environment VNets with Private Link are all correct; about 129 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every requested stage through reranking and assembly and maps them to legal document work; about 112 words."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives unit, denominator, dataset construction and uncertainty for all three metrics coherently; roughly 160 words, far too long to say."
+  },
+  "S2Q03": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "One-sided: claims fixed retrieval usually fails and agents are superior, never weighing the latency and cost that decide justification."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct one-over-c-plus-rank accumulation and score-then-id tie-break; never confirms one-based ranks; about 91 words."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Greedy relevance sort with dedup set, per-document counter and budget check before adding covers every constraint in speakable length."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore for eight, per-task timeout race, order preserved by index mapping with per-case error capture; concise and natural."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Per-tenant namespaces, Postgres metadata with ACL pre-filtering, queued ingestion and RAGAS evaluation all sound; citations only glanced at; about 140 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write versioned fields, background backfill, queue-synced updates, side-by-side eval, config cutover and rollback cover all six asks; about 128 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Blob, Event Grid, Queue, Container Apps, AI Search, Azure OpenAI and App Insights placed correctly with a managed-versus-custom line; about 109 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Message-id dedup key, transactional write plus status update, and durable record before acknowledgement is the correct at-least-once pattern; about 116 words."
+  }
+}

@@ -1,0 +1,25 @@
+﻿[as expected] final adapter, expecting NO repair line: Tests 1 passed (1)
+[as expected] final adapter, expecting the one line: Tests 1 failed (1)
+     - Expected
+     + Received
+     
+     - Array [
+     -   "[DeepgramStreaming] boundary repair: restored \"menangani\" before \"data yang hilang di pipeline?\"",
+     - ]
+     + Array []
+     
+      ❯ electron/audio/DeepgramStreamingSTT.t4indo.test.ts:66:67
+[as expected] gate-removed adapter, expecting NO repair line: Tests 1 failed (1)
+     - Expected
+     + Received
+     
+     - Array []
+     + Array [
+     +   "[DeepgramStreaming] boundary repair: restored \"menangani\" before \"data yang hilang di pipeline?\"",
+     + ]
+     
+      ❯ electron/audio/DeepgramStreamingSTT.t4indo.test.ts:66:67
+[as expected] gate-removed adapter, expecting the one line: Tests 1 passed (1)
+junction removed: true; MAIN's vitest still present: true
+scratch tree deleted: true
+cells that differed from the expectation: 0

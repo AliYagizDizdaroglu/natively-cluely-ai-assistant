@@ -1,0 +1,33 @@
+incomplete pairs (excluded): C5#1 (B missing)
+answers empty after the filters (scored 0/0/0): none
+n = 47 complete (item, rep) pairs; roster pairs R = 21
+1. no new wrong answers        consensus-wrong B 0 <= A 0: holds
+2. no rise in off-topic        consensus-off-topic B 3 <= A 9: holds
+3a. not later (median)         median paired TTFT B-A 97 ms (holds <= +500, FAIL > +1000): holds
+3b. not later (p90)            p90 B 10663 ms vs p90 A 10966 ms + 2000: holds
+3c. stalls                     TTFT > 10 s: B 7 <= A 6 + 3: holds
+4. not longer                  median paired words B-A 3 (holds <= +5, FAIL > +10): holds
+5. gain, roster pairs          consensus-acceptable B 13 - A 10 = +3 (PASS >= +4, FAIL <= +1): INCONCLUSIVE
+DECISION: INCONCLUSIVE
+
+either grader: wrong A 0 B 0; off-topic A 9 B 4; mean-of-graders acceptable (all pairs) A 19.0 B 35.5
+per item, reps 1-3 (Y both acceptable, X both correctness 0, o both on_topic <= 1, w otherwise):
+  roster
+    S1Q04F A www  B YYY
+    S1Q06F A www  B YYY
+    S1Q08  A Ywo  B YYw
+    S2Q05F A Yoo  B ooo
+    S2Q08  A YYY  B YwY
+    S2Q08F A YoY  B YYw
+    S2Q09F A YYY  B wwY
+  callback
+    C1     A ooo  B YYY
+    C2     A www  B YYY
+    C3     A YYY  B YYY
+    C4     A www  B wYY
+    C5     A -YY  B -wY
+    C6     A YYY  B YYY
+  dropped
+    D1     A www  B www
+    D2     A wYw  B YwY
+    D3     A owo  B wwY

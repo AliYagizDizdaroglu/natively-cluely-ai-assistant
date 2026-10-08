@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sound data, production and baseline reasoning, but 91 words is over the spoken length budget."
+  },
+  "S1Q02": {
+    "correctness": 0,
+    "on_topic": 0,
+    "delivery": 1,
+    "reason": "Refuses to discuss the candidate's own CV metrics, doing none of the requested arithmetic."
+  },
+  "S1Q03": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Right to reach for a randomized trial, but asserts the CV's 1.4 point drop was the treatment-control delta."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Correct top-k metrics but never states the invalid-k, empty and no-positive behaviour the interviewer explicitly asked for."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names the chronological split with a 30-day gap and fits preprocessing on train only, exactly the leakage risks asked about."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Left join with the filters in the ON clause is right, but counts e.event_id, a column not in the given schema."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every named component and names the shared feature definitions and registry, but runs 90 words."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Notes labels are post-treatment yet retrains on them without a control holdout, and runs over 100 words."
+  },
+  "S1Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Good service mapping but omits two asked sub-parts, container registry and scheduling."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Managed identity, least-privilege RBAC, Key Vault fallback and per-environment isolation all answered at the right level of detail."
+  },
+  "S2Q01": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Walks all eight stages correctly but never maps them to the candidate's own document intelligence work as asked."
+  },
+  "S2Q02": {
+    "correctness": 0,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Invents annotation counts and confidence intervals about the candidate's own work, and calls the F1 denominator the union of spans."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sharp contrast of the three approaches on predictability of the path, but 108 words is too long to say."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Reciprocal rank fusion described correctly with deterministic id tie-breaking, but stray dollar-sign markup needs editing out."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy policy honours dedup, the per-document cap and skip-on-overflow, but reaches 100 words."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore, wait_for and gather with return_exceptions is the right shape, though the code identifiers need smoothing to speak."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers index, metadata, permissions, ingestion and evaluation, but at roughly 175 words it is far too long."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write versioned indexes with idempotent backfill, config-flip cutover and rollback all correct, but around 140 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Defensible Azure placement for every component plus a managed-versus-custom judgement, but roughly 160 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Durable pending-to-completed state checked on redelivery covers exactly the crash-before-ack window described."
+  }
+}

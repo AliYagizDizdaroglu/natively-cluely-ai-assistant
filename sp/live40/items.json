@@ -1,0 +1,679 @@
+{
+ "note": "live40: 47 turns, 31 chains (SET-draft section 5 order); route EASY|HARD from router40 key",
+ "chains": [
+  {
+   "chain": "C01",
+   "items": [
+    "RE01",
+    "RH01"
+   ]
+  },
+  {
+   "chain": "C02",
+   "items": [
+    "RE02",
+    "EF01"
+   ]
+  },
+  {
+   "chain": "C03",
+   "items": [
+    "RH03"
+   ]
+  },
+  {
+   "chain": "C04",
+   "items": [
+    "RE03",
+    "EF02"
+   ]
+  },
+  {
+   "chain": "C05",
+   "items": [
+    "RE08"
+   ]
+  },
+  {
+   "chain": "C06",
+   "items": [
+    "RE04",
+    "EF03"
+   ]
+  },
+  {
+   "chain": "C07",
+   "items": [
+    "RE05"
+   ]
+  },
+  {
+   "chain": "C08",
+   "items": [
+    "RH04"
+   ]
+  },
+  {
+   "chain": "C09",
+   "items": [
+    "RE06"
+   ]
+  },
+  {
+   "chain": "C10",
+   "items": [
+    "RH07",
+    "RH08"
+   ]
+  },
+  {
+   "chain": "C11",
+   "items": [
+    "RE07",
+    "EF04"
+   ]
+  },
+  {
+   "chain": "C12",
+   "items": [
+    "RH05",
+    "RH06"
+   ]
+  },
+  {
+   "chain": "C13",
+   "items": [
+    "RH09",
+    "RH10",
+    "RH11"
+   ]
+  },
+  {
+   "chain": "C14",
+   "items": [
+    "RE09"
+   ]
+  },
+  {
+   "chain": "C15",
+   "items": [
+    "RH19"
+   ]
+  },
+  {
+   "chain": "C16",
+   "items": [
+    "RE10"
+   ]
+  },
+  {
+   "chain": "C17",
+   "items": [
+    "RE11",
+    "EF05"
+   ]
+  },
+  {
+   "chain": "C18",
+   "items": [
+    "RH12",
+    "RH13",
+    "RH14"
+   ]
+  },
+  {
+   "chain": "C19",
+   "items": [
+    "RE12"
+   ]
+  },
+  {
+   "chain": "C20",
+   "items": [
+    "RE13"
+   ]
+  },
+  {
+   "chain": "C21",
+   "items": [
+    "RH17"
+   ]
+  },
+  {
+   "chain": "C22",
+   "items": [
+    "RE14",
+    "RH02"
+   ]
+  },
+  {
+   "chain": "C23",
+   "items": [
+    "RE15"
+   ]
+  },
+  {
+   "chain": "C24",
+   "items": [
+    "RH15",
+    "RH16"
+   ]
+  },
+  {
+   "chain": "C25",
+   "items": [
+    "RE16",
+    "EF06"
+   ]
+  },
+  {
+   "chain": "C26",
+   "items": [
+    "RE17",
+    "EF07"
+   ]
+  },
+  {
+   "chain": "C27",
+   "items": [
+    "RH18"
+   ]
+  },
+  {
+   "chain": "C28",
+   "items": [
+    "RE18"
+   ]
+  },
+  {
+   "chain": "C29",
+   "items": [
+    "RH20"
+   ]
+  },
+  {
+   "chain": "C30",
+   "items": [
+    "RE19"
+   ]
+  },
+  {
+   "chain": "C31",
+   "items": [
+    "RE20"
+   ]
+  }
+ ],
+ "items": [
+  {
+   "id": "RE01",
+   "tid": "T01",
+   "text": "What is the difference between mutable and immutable types in Python?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C01",
+   "sourceClip": null
+  },
+  {
+   "id": "RH01",
+   "tid": "T02",
+   "text": "Can you give me an example of each?",
+   "route": "HARD",
+   "class": "QF",
+   "parent": "RE01",
+   "chain": "C01",
+   "sourceClip": null
+  },
+  {
+   "id": "RE02",
+   "tid": "T03",
+   "text": "What is a Docker image?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C02",
+   "sourceClip": null
+  },
+  {
+   "id": "EF01",
+   "tid": "T04",
+   "text": "What's the difference between that and a container?",
+   "route": "HARD",
+   "class": "QF",
+   "parent": "RE02",
+   "chain": "C02",
+   "sourceClip": null
+  },
+  {
+   "id": "RH03",
+   "tid": "T05",
+   "text": "How would you detect data drift in a model that is already running in production?",
+   "route": "HARD",
+   "class": "H",
+   "parent": null,
+   "chain": "C03",
+   "sourceClip": "interview60:M01"
+  },
+  {
+   "id": "RE03",
+   "tid": "T06",
+   "text": "How do you run a small piece of code on AWS without managing a server?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C04",
+   "sourceClip": null
+  },
+  {
+   "id": "EF02",
+   "tid": "T07",
+   "text": "Have you used it in production?",
+   "route": "HARD",
+   "class": "AF",
+   "parent": "RE03",
+   "chain": "C04",
+   "sourceClip": null
+  },
+  {
+   "id": "RE08",
+   "tid": "T08",
+   "text": "What is the difference between a pod and a deployment?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C05",
+   "sourceClip": "interview60:W07"
+  },
+  {
+   "id": "RE04",
+   "tid": "T09",
+   "text": "What is a Python decorator?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C06",
+   "sourceClip": null
+  },
+  {
+   "id": "EF03",
+   "tid": "T10",
+   "text": "Can you give me an example?",
+   "route": "HARD",
+   "class": "QF",
+   "parent": "RE04",
+   "chain": "C06",
+   "sourceClip": null
+  },
+  {
+   "id": "RE05",
+   "tid": "T11",
+   "text": "What is the GIL in Python?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C07",
+   "sourceClip": null
+  },
+  {
+   "id": "RH04",
+   "tid": "T12",
+   "text": "What is a DAG, and why does Airflow use that structure?",
+   "route": "HARD",
+   "class": "H",
+   "parent": null,
+   "chain": "C08",
+   "sourceClip": "interview60:W05"
+  },
+  {
+   "id": "RE06",
+   "tid": "T13",
+   "text": "Why do Docker layers matter for build times?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C09",
+   "sourceClip": "interview60:W02"
+  },
+  {
+   "id": "RH07",
+   "tid": "T14",
+   "text": "What does async actually buy you? Explain what happens when an async FastAPI endpoint calls a blocking HTTP client, or performs expensive CPU work.",
+   "route": "HARD",
+   "class": "H",
+   "parent": null,
+   "chain": "C10",
+   "sourceClip": "scenario50:S3Q01"
+  },
+  {
+   "id": "RH08",
+   "tid": "T15",
+   "text": "When would you use asynchronous I/O, a thread pool, separate processes, or an external worker?",
+   "route": "HARD",
+   "class": "QF",
+   "parent": "RH07",
+   "chain": "C10",
+   "sourceClip": "scenario50:S3Q01F"
+  },
+  {
+   "id": "RE07",
+   "tid": "T16",
+   "text": "What is a readiness probe in Kubernetes?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C11",
+   "sourceClip": null
+  },
+  {
+   "id": "EF04",
+   "tid": "T17",
+   "text": "What happens when it fails?",
+   "route": "HARD",
+   "class": "QF",
+   "parent": "RE07",
+   "chain": "C11",
+   "sourceClip": null
+  },
+  {
+   "id": "RH05",
+   "tid": "T18",
+   "text": "Distinguish the three probe types: explain startup, readiness, and liveness probes for a model server that needs 90 seconds to load its model.",
+   "route": "HARD",
+   "class": "H",
+   "parent": null,
+   "chain": "C12",
+   "sourceClip": "scenario50:S4Q01"
+  },
+  {
+   "id": "RH06",
+   "tid": "T19",
+   "text": "Should temporary unavailability of an upstream database fail the liveness probe? Defend your decision.",
+   "route": "HARD",
+   "class": "QF",
+   "parent": "RH05",
+   "chain": "C12",
+   "sourceClip": "scenario50:S4Q01F"
+  },
+  {
+   "id": "RH09",
+   "tid": "T20",
+   "text": "Let's do a design question. We have a recommendation model that is retrained every night on about two terabytes of click data, and it serves roughly five thousand requests per second during the day. Walk me through how you would build the training pipeline, how you would validate a new model before it replaces the old one, and how you would roll it out so that a bad model never reaches all of the traffic at once.",
+   "route": "HARD",
+   "class": "H",
+   "parent": null,
+   "chain": "C13",
+   "sourceClip": "interview60:L01"
+  },
+  {
+   "id": "RH10",
+   "tid": "T21",
+   "text": "And in that design, what happens when the nightly training job finishes late?",
+   "route": "HARD",
+   "class": "AF",
+   "parent": "RH09",
+   "chain": "C13",
+   "sourceClip": "interview60:L01F1"
+  },
+  {
+   "id": "RH11",
+   "tid": "T22",
+   "text": "How would you notice that the new model is worse only for one segment of users?",
+   "route": "HARD",
+   "class": "QF",
+   "parent": "RH09",
+   "chain": "C13",
+   "sourceClip": "interview60:L01F2"
+  },
+  {
+   "id": "RE09",
+   "tid": "T23",
+   "text": "When would you choose a real-time endpoint over batch transform?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C14",
+   "sourceClip": "interview60:M09"
+  },
+  {
+   "id": "RH19",
+   "tid": "T24",
+   "text": "Real-time, serverless or batch transform for a model called two thousand times a day with a two-second SLA?",
+   "route": "HARD",
+   "class": "H",
+   "parent": null,
+   "chain": "C15",
+   "sourceClip": null
+  },
+  {
+   "id": "RE10",
+   "tid": "T25",
+   "text": "What is the Azure equivalent of AWS Lambda?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C16",
+   "sourceClip": null
+  },
+  {
+   "id": "RE11",
+   "tid": "T26",
+   "text": "What is overfitting?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C17",
+   "sourceClip": null
+  },
+  {
+   "id": "EF05",
+   "tid": "T27",
+   "text": "How would you detect it?",
+   "route": "HARD",
+   "class": "QF",
+   "parent": "RE11",
+   "chain": "C17",
+   "sourceClip": null
+  },
+  {
+   "id": "RH12",
+   "tid": "T28",
+   "text": "Design a Python AI gateway that fronts three LLM providers, with failover, per-tenant rate limits and cost tracking.",
+   "route": "HARD",
+   "class": "H",
+   "parent": null,
+   "chain": "C18",
+   "sourceClip": "l38m:H05"
+  },
+  {
+   "id": "RH13",
+   "tid": "T29",
+   "text": "What's the time complexity of your rate limiter?",
+   "route": "HARD",
+   "class": "AF",
+   "parent": "RH12",
+   "chain": "C18",
+   "sourceClip": "l38m:H05F"
+  },
+  {
+   "id": "RH14",
+   "tid": "T30",
+   "text": "And how would you monitor it?",
+   "route": "HARD",
+   "class": "AF",
+   "parent": "RH12",
+   "chain": "C18",
+   "sourceClip": null
+  },
+  {
+   "id": "RE12",
+   "tid": "T31",
+   "text": "What is the difference between precision and recall?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C19",
+   "sourceClip": null
+  },
+  {
+   "id": "RE13",
+   "tid": "T32",
+   "text": "What is the difference between data drift and concept drift?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C20",
+   "sourceClip": "interview60:W08"
+  },
+  {
+   "id": "RH17",
+   "tid": "T33",
+   "text": "Your model accuracy dropped fifteen percent overnight, but the input schema is unchanged. How do you debug that?",
+   "route": "HARD",
+   "class": "H",
+   "parent": null,
+   "chain": "C21",
+   "sourceClip": "interview60:H01"
+  },
+  {
+   "id": "RE14",
+   "tid": "T34",
+   "text": "Parquet or CSV for storing a large training set?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C22",
+   "sourceClip": null
+  },
+  {
+   "id": "RH02",
+   "tid": "T35",
+   "text": "Why that one?",
+   "route": "HARD",
+   "class": "AF",
+   "parent": "RE14",
+   "chain": "C22",
+   "sourceClip": null
+  },
+  {
+   "id": "RE15",
+   "tid": "T36",
+   "text": "What is the difference between an inner join and a left join?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C23",
+   "sourceClip": null
+  },
+  {
+   "id": "RH15",
+   "tid": "T37",
+   "text": "Tell me about a model you shipped that hurt a business metric, and what you changed afterwards.",
+   "route": "HARD",
+   "class": "H",
+   "parent": null,
+   "chain": "C24",
+   "sourceClip": "l38m:H20"
+  },
+  {
+   "id": "RH16",
+   "tid": "T38",
+   "text": "Was that the right call, in hindsight?",
+   "route": "HARD",
+   "class": "AF",
+   "parent": "RH15",
+   "chain": "C24",
+   "sourceClip": "l38m:H20F"
+  },
+  {
+   "id": "RE16",
+   "tid": "T39",
+   "text": "What is a database index for?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C25",
+   "sourceClip": null
+  },
+  {
+   "id": "EF06",
+   "tid": "T40",
+   "text": "What's the downside?",
+   "route": "HARD",
+   "class": "QF",
+   "parent": "RE16",
+   "chain": "C25",
+   "sourceClip": null
+  },
+  {
+   "id": "RE17",
+   "tid": "T41",
+   "text": "What is the difference between git merge and git rebase?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C26",
+   "sourceClip": null
+  },
+  {
+   "id": "EF07",
+   "tid": "T42",
+   "text": "Which one do you use day to day, and why?",
+   "route": "HARD",
+   "class": "AF",
+   "parent": "RE17",
+   "chain": "C26",
+   "sourceClip": null
+  },
+  {
+   "id": "RH18",
+   "tid": "T43",
+   "text": "Your training image is eight gigabytes. How would you approach shrinking it?",
+   "route": "HARD",
+   "class": "H",
+   "parent": null,
+   "chain": "C27",
+   "sourceClip": "interview60:M08"
+  },
+  {
+   "id": "RE18",
+   "tid": "T44",
+   "text": "How do you undo your last commit in git?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C28",
+   "sourceClip": null
+  },
+  {
+   "id": "RH20",
+   "tid": "T45",
+   "text": "Which cloud have you worked with most, and what did you build on it?",
+   "route": "HARD",
+   "class": "H",
+   "parent": null,
+   "chain": "C29",
+   "sourceClip": null
+  },
+  {
+   "id": "RE19",
+   "tid": "T46",
+   "text": "What does it mean for an API endpoint to be idempotent?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C30",
+   "sourceClip": null
+  },
+  {
+   "id": "RE20",
+   "tid": "T47",
+   "text": "When would you return a 400 versus a 500 status code?",
+   "route": "EASY",
+   "class": "E",
+   "parent": null,
+   "chain": "C31",
+   "sourceClip": null
+  }
+ ]
+}

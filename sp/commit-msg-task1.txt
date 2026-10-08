@@ -1,0 +1,9 @@
+fix(stt): ignore Deepgram events from a replaced socket
+
+A sample-rate restart left the first socket's handlers attached; its close
+marked the live socket closed, cleared its keepalive and reconnected, and the
+orphaned socket died 12 s later with 1011 — one close every 12.1 s for the
+whole hour (308 in after6). connect() now captures the socket it creates and
+every handler returns early when this.live is no longer that socket.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

@@ -1,0 +1,72 @@
+  private createSTTProvider(speaker: 'interviewer' | 'user'): STTProvider | null {
+    const { CredentialsManager } = require('./services/CredentialsManager');
+    const savedSttProvider = CredentialsManager.getInstance().getSttProvider();
+    // Dev-only: the flight harness selects the ear for one launch without editing the
+    // credential store (electron/services/sttProviderOverride.ts). Throws on a bad value.
+    const { provider: sttProvider, overridden } = resolveSttProvider(savedSttProvider, process.env.NATIVELY_STT_PROVIDER, app.isPackaged);
+    if (overridden) console.log(`[Main] NATIVELY_STT_PROVIDER=${sttProvider} overrides the saved STT provider (${savedSttProvider}) for this launch`);
+    const sttLanguage = CredentialsManager.getInstance().getSttLanguage();
+
+    // 'none' means the user has explicitly disabled STT (no provider selected).
+    // Return null so the pipeline skips STT without falling back to Google.
+    if (sttProvider === 'none') {
+      console.log(`[Main] STT provider is 'none' — audio capture will proceed but transcription is disabled.`);
+      return null;
+    }
+
+    let stt: STTProvider;
+
+    if (sttProvider === 'natively') {
+      const nativelyKey = CredentialsManager.getInstance().getNativelyApiKey();
+      if (!nativelyKey) {
+        // Natively is Coming Soon — no key means degrade gracefully like every other provider
+        console.warn(`[Main] No Natively API Key configured for ${speaker}, falling back to GoogleSTT`);
+        stt = new GoogleSTT(speaker);
+      } else {
+        // 'system' for interviewer (system audio), 'mic' for user (microphone).
+        // The server uses ${key}:${channel} as the session key so both streams
+        // can coexist without triggering concurrent_session_blocked.
+        stt = new NativelyProSTT(nativelyKey, speaker === 'interviewer' ? 'system' : 'mic');
+      }
+    } else if (sttProvider === 'deepgram') {
+      const apiKey = CredentialsManager.getInstance().getDeepgramApiKey();
+      if (apiKey) {
+        console.log(`[Main] Using DeepgramStreamingSTT for ${speaker}`);
+        stt = new DeepgramStreamingSTT(apiKey);
+      } else {
+        console.warn(`[Main] No API key for Deepgram STT, falling back to GoogleSTT`);
+        stt = new GoogleSTT(speaker);
+      }
+    } else if (sttProvider === 'soniox') {
+      const apiKey = CredentialsManager.getInstance().getSonioxApiKey();
+      if (apiKey) {
+        console.log(`[Main] Using SonioxStreamingSTT for ${speaker}`);
+        stt = new SonioxStreamingSTT(apiKey);
+      } else {
+        console.warn(`[Main] No API key for Soniox STT, falling back to GoogleSTT`);
+        stt = new GoogleSTT(speaker);
+      }
+    } else if (sttProvider === 'elevenlabs') {
+      const apiKey = CredentialsManager.getInstance().getElevenLabsApiKey();
+      if (apiKey) {
+        console.log(`[Main] Using ElevenLabsStreamingSTT for ${speaker}`);
+        stt = new ElevenLabsStreamingSTT(apiKey);
+      } else {
+        console.warn(`[Main] No API key for ElevenLabs STT, falling back to GoogleSTT`);
+        stt = new GoogleSTT(speaker);
+      }
+    } else if (sttProvider === 'openai') {
+      // OpenAI: WebSocket Realtime (gpt-4o-transcribe → gpt-4o-mini-transcribe) with whisper-1 REST fallback.
+      // If a custom OpenAI-compatible base URL is configured (e.g. Speaches), the STT class
+      // skips the Realtime WS path and uses REST against the custom endpoint.
+      const apiKey = CredentialsManager.getInstance().getOpenAiSttApiKey();
+      const baseUrl = CredentialsManager.getInstance().getOpenAiSttBaseUrl();
+      if (apiKey) {
+        console.log(`[Main] Using OpenAIStreamingSTT for ${speaker}${baseUrl ? ` (custom endpoint: ${baseUrl})` : ' (WebSocket+REST fallback)'}`);
+        stt = new OpenAIStreamingSTT(apiKey, baseUrl);
+      } else {
+        console.warn(`[Main] No API key for OpenAI STT, falling back to GoogleSTT`);
+        stt = new GoogleSTT(speaker);
+      }
+    } else if (sttProvider === 'groq' || sttProvider === 'azure' || sttProvider === 'ibmwatson') {
+      let apiKey: string | undefined;

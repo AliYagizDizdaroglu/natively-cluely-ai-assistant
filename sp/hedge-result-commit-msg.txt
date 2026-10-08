@@ -1,0 +1,9 @@
+docs(passes): the hedge probe's result - PROCEED to the env-flagged build
+
+Three evening windows, 39 s50m prompts x 2 policies each, run concurrently as the app would:
+pooled n=117, today (3.1-lite first, 3.5-lite at 10 s) median 6.1 s / p90 13.3 s / none 0;
+hedge (3.5-lite first, 3.1-lite alongside at 5 s, 3.5 kept) median 4.4 s / p90 11.5 s / none 0.
+All three pre-registered conditions hold. The hedge wins when 3.1-lite is failing (H1, H3) and
+loses on median when 3.5-lite stalls (H2: 10.2 vs 6.1 s); tails and the answer mix recorded.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

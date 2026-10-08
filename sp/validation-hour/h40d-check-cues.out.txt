@@ -1,0 +1,12 @@
+2026-10-02T11-39-41-h40d: answers 46 (real 46, failed 0), superseded 1, cue lines 47 (expected 47), malformed 0, block-only 0, trimmed 4
+  trimmed: {"rawLines":1,"dropped":[],"cut":[],"cleaned":["Adjacent comparison, $O(1)$ space"]}
+  trimmed: {"rawLines":2,"dropped":[],"cut":["Third-party gateway API limits and network egress"],"cleaned":[]}
+  trimmed: {"rawLines":3,"dropped":[],"cut":["Offline S3 and online Redis storage"],"cleaned":[]}
+  trimmed: {"rawLines":3,"dropped":[],"cut":["Baseline cache state and traffic shape"],"cleaned":[]}
+  hedge won by: gemini-3.5-flash-lite 41, gemini-3.1-flash-lite 6
+  e.g. [Answer] cues: ["Docker layer caching","Dependency ordering strategy"]
+  e.g. [Answer] cues: ["Custom metrics autoscaling","Queue length and latency","Scale to zero with KEDA"]
+  e.g. [Answer] cues: ["Standard Python dictionary","Hash table index array"]
+CUE SMOKE CLEAN
+
+[exit 0]

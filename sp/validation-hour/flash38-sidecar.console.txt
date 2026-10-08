@@ -1,0 +1,27 @@
+﻿ANSWER-ONLY PASS  model=gemini-3.8-flash  variant=flash38 (prompt suffix 0 chars)  prompts=captured (the app's own system + user turn, replayed)  8 spoken questions
+
+  R02F TRANSIENT HTTP 503
+  R07F TRANSIENT HTTP 503
+  R08   50w  ttft 14839ms  total 15092ms  thoughts  670  ok
+  R11F  54w  ttft  6921ms  total  7315ms  thoughts  563  ok
+  R12   56w  ttft  9152ms  total  9666ms  thoughts  540  ok
+  R13  100w  ttft 13980ms  total 14163ms  thoughts  671  FAIL budget
+  R22F TRANSIENT HTTP 429
+  R33   61w  ttft  8918ms  total  9429ms  thoughts  500  ok
+
+  answered 5/8   transient 3
+  TTFT   p50 9152ms  p90 14839ms  max 14839ms
+  TOTAL  p50 9666ms  p90 15092ms  max 15092ms
+  words  median 56  max 100  over 70w: 1/5
+  nonempty           5/5
+  sentinel_clean     5/5
+  budget             4/5
+  offers_wellformed  5/5
+  no_notation        5/5
+  ends_cleanly       5/5
+  cues_present       5/5
+  cues_wellformed    5/5
+  cues_grounded      5/5
+  cues_clean         5/5
+
+  wrote C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.answers.gemini-3.8-flash_flash38.json

@@ -1,0 +1,1 @@
+Design the S3 layout and lifecycle policy for training data that arrives daily, is reprocessed weekly and must be kept for seven years for audit.

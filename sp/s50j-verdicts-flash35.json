@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic right but the explicitly asked recall is never given and 2,850 true positives is mislabelled as the recall; stray dollar signs need editing."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correctly puts every predicate in the join condition, the real gotcha for preserving zeros, but runs to about 90 words."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Namespaces, Postgres source of truth, ACL post-filter and MRR plus LLM-judge all sound, but about 128 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure component placed correctly with a concrete custom-parser justification, but roughly 118 words in two paragraphs."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Deterministic chunk IDs plus a Cosmos DB dedupe key on MessageId covers both the write and the acknowledgement crash window."
+  }
+}

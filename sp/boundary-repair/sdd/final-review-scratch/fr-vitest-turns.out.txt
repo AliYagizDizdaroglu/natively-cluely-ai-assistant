@@ -1,0 +1,9 @@
+exit 1; cwd C:\Users\sotka\AppData\Local\Temp
+ ✓ electron/test/golden/interview60.turns-finals.test.ts > finalsFrom: the interviewer finals as the turn tracker saw them > reproduces the committed 2026-09-09T15-00-55-s50a fixture's finals from its run log (skipped where the run folder is absent)
+ ✓ electron/test/golden/interview60.turns-finals.test.ts > finalsFrom: the interviewer finals as the turn tracker saw them > reproduces the committed 2026-09-08T08-44-56-after9 fixture's finals from its run log (skipped where the run folder is absent)
+ Test Files  1 failed | 2 passed (3)
+      Tests  48 passed (48)
+   Duration  2.65s (transform 256ms, setup 0ms, collect 252ms, tests 52ms, environment 4.32s, prepare 605ms)
+ FAIL  electron/services/interviewerTurn.replay.test.ts [ electron/services/interviewerTurn.replay.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\sotka\AppData\Local\Temp\electron\test\golden\fixtures\2026-09-09T15-00-55-s50a-turns.json'
+Serialized Error: { errno: -4058, code: 'ENOENT', syscall: 'open', path: 'C:\Users\sotka\AppData\Local\Temp\electron\test\golden\fixtures\2026-09-09T15-00-55-s50a-turns.json' }

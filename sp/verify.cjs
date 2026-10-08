@@ -1,0 +1,13 @@
+const fs = require('fs');
+const vPath = 'C:/Users/sotka/OneDrive/Masaüstü/natively-lab/sp/s50l-verdicts-captured-high.json';
+const pPath = 'C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-09-21T08-22-34-s50l/interview60.judge.pairs.gemini-3.5-flash-lite_captured-high.json';
+const v = JSON.parse(fs.readFileSync(vPath, 'utf8'));
+const items = JSON.parse(fs.readFileSync(pPath, 'utf8')).items;
+const keys = Object.keys(v);
+console.log('parsed OK. verdict keys =', keys.length, ' items =', items.length);
+console.log('missing:', JSON.stringify(items.map(i => i.key).filter(k => !(k in v))));
+console.log('extra:', JSON.stringify(keys.filter(k => !items.some(i => i.key === k))));
+console.log('both 2/2:', keys.filter(k => v[k].correctness === 2 && v[k].on_topic === 2).length);
+console.log('any zero:', keys.filter(k => v[k].correctness === 0 || v[k].on_topic === 0).length);
+const tot = keys.map(k => [k, v[k].correctness + v[k].on_topic + v[k].delivery]).sort((a, b) => a[1] - b[1]);
+console.log('lowest:', JSON.stringify(tot.slice(0, 10)));

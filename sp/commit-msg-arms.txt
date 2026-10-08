@@ -1,0 +1,17 @@
+feat(interview60): Groq answer arms (qwen3.8-27b, gpt-oss-120b) and gemma-4-26b
+
+The answer-only pass can now run a model on Groq's OpenAI-compatible
+endpoint: a model id with a slash selects the Groq path (GROQ_API_KEY
+from .env, read lazily and never printed), same verbal prompt, same
+filter chain and record shape, output file tag with the slash replaced.
+401/403 aborts with exit 3 instead of being retried as transient; 429
+honours retry-after. --limit <n> answers only the first n questions
+(probes). The flight's ANSWER_MODELS gains qwen/qwen3.8-27b,
+openai/gpt-oss-120b and gemma-4-26b-a4b-it.
+
+Probe results so far: both Groq arms are blocked on the placeholder
+GROQ_API_KEY in .env (401); gemma-4-26b-a4b-it leaks its planning text
+into the spoken answer under the verbal prompt (952 words, one answer
+ran to MAX_TOKENS after 11 min), so its arm is not usable as-is.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

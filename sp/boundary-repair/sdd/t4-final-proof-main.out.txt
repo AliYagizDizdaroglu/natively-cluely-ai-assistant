@@ -1,0 +1,26 @@
+﻿NEW side = MAIN
+ok       the adapter test file (14246 chars, 5f43849a3ce22ae0) is byte-identical to the file fr-t4-cal.mjs proposes (14246 chars, 5f43849a3ce22ae0)
+
+Part A: the adapter test file against the real adapter and the clock-stuck-at-0 mutant
+[as expected] CURRENT A0_real              exit 0  10/10 passed
+[as expected] CURRENT A1_clock_constant_0  exit 0  10/10 passed
+[as expected] NEW     A0_real              exit 0  11/11 passed
+[as expected] NEW     A1_clock_constant_0  exit 1  10/11 passed  NOT PASSED: the 5 s window runs on the arrival clock: F2 5001 ms after F
+             AssertionError: expected [ [ …(2) ], [ …(2) ], [ …(2) ] ] to deeply equal [ [ …(2) ], [ …(2) ], [ …(2) ] ]
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true
+ok       the extractor test file (4132 chars, 0796ae6832b70d9f) is byte-identical to the file fr-t5-cal.mjs proposes (4132 chars, 0796ae6832b70d9f)
+
+Part B: the extractor test file against the real extractor and single-edit mutants (S = skipped: no interview60.runs/ in the mirror)
+[as expected] CURRENT M0_real                                    exit 0  [PPPSS]  no failure
+[as expected] CURRENT M1_refuse_only_repair_under_repair         exit 0  [PPPSS]  no failure
+[as expected] CURRENT M2_orphan_throw_removed                    exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its
+[as expected] CURRENT M3_wrong_final_throw_removed               exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its
+[as expected] CURRENT M4_gt_instead_of_ge                        exit 1  [PFPSS]  FAILED: keeps interims and empty finals out, and drops finals befo
+[as expected] NEW     M0_real                                    exit 0  [PPPSS]  no failure
+[as expected] NEW     M1_refuse_only_repair_under_repair         exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its
+[as expected] NEW     M2_orphan_throw_removed                    exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its
+[as expected] NEW     M3_wrong_final_throw_removed               exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its
+[as expected] NEW     M4_gt_instead_of_ge                        exit 1  [PFPSS]  FAILED: keeps interims and empty finals out, drops finals before `
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true
+
+all calibration rows as expected

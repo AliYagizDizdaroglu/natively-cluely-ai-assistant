@@ -1,0 +1,1 @@
+How would you autoscale a GPU inference service on Kubernetes when requests arrive in bursts and a cold start takes ninety seconds?

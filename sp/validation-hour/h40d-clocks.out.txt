@@ -1,0 +1,12 @@
+run: 2026-10-02T11-39-41-h40d
+answer-dispatch windows: 45; with a won-by line: 44; winners: {"gemini-3.5-flash-lite":38,"gemini-3.1-flash-lite":6}
+rule 2d: charged windows 0 = union of term 1 (h40c's definition) 0 and term 2 (last [Answer] full: is failure text) 0; UNRESOLVED windows 0 (a won-by line, no [Answer] full: line, not superseded); windows with no [Answer] full: line at all 1, of which superseded 1
+rule 2d reading: PASS (0 charged, 0 unresolved)
+screen clock (diag first token N ms, all lines in the window, h40c's method): n=44 median=4.878s p90=9.834s max=11.664s
+model clock (won-by at N ms, last won-by per window): n=44 median=4.051s p90=9.234s max=11.112s
+gap G (hedge t0 - screen-clock t0: the knowledge step before the hedge starts): n=44 median=0.593s p90=0.919s max=1.643s
+dispatch line -> screen-clock t0: n=44 median=0.009s p90=0.010s max=0.016s
+dispatch line -> won-by line: n=44 median=4.856s p90=9.768s max=11.633s
+cue cost C (won-by line -> first token line): n=44 median=0.054s p90=0.158s max=0.645s  (windows with no first-token line after their won-by: 0)
+identity check, per window: screen N - (G + model N + C) = 0 ms at most (0 by construction)
+cues line -> first token line: n=44 median=0.002s p90=0.003s max=0.006s

@@ -1,0 +1,38 @@
+// Verdict rows: [key, correctness, on_topic, delivery, reason]
+export default [
+  ['S2Q02#1', 1, 1, 1, 'Defines only extraction F1; hallucination and multi-hop metrics omitted, drifts into architecture; stray "pm 1.2%" artifact.'],
+  ['S2Q02#2', 1, 1, 2, 'Only extraction F1 defined and without uncertainty; the other two metrics are omitted in favour of pipeline description.'],
+  ['S2Q02#3', 1, 2, 1, 'Covers all three metrics with uncertainty, but F1 denominator missing and hallucination "denominator" is really the numerator; 94 words.'],
+  ['S2Q02#4', 1, 2, 2, 'Touches all three metrics but vaguely: units and dataset construction undefined, hallucination denominator hand-waved.'],
+  ['S2Q02#5', 1, 2, 2, 'Units and gold sets named for all three, but denominators never stated and uncertainty given only for F1.'],
+  ['S2Q02#6', 1, 2, 1, 'Clear unit, denominator and dataset for all three metrics, but uncertainty is never addressed; 116 words.'],
+  ['S2Q02#7', 1, 1, 1, 'Thorough on extraction F1 including bootstrap intervals, but hallucination and multi-hop metrics are omitted entirely; 94 words.'],
+  ['S2Q02#8', 1, 2, 1, 'Unit, denominator and dataset for all three metrics, but uncertainty given only for F1; 89 words.'],
+
+  ['S2Q02F#1', 1, 2, 2, 'Sound oracle substitutions for OCR, retrieval, orchestration plus position shuffle and kappa, but the prompting ablation is omitted.'],
+  ['S2Q02F#2', 1, 2, 2, 'Prompting ablation omitted, and position-swap tests are wrongly tied to length preference; other swaps are sound.'],
+  ['S2Q02F#3', 2, 2, 2, 'Ground-truth substitution per stage, single-hop baseline, static versus few-shot prompts, and position/verbosity judge checks cover every part.'],
+  ['S2Q02F#4', 1, 2, 2, 'OCR and classification swapped together so not separated, and prompting is never ablated; judge-bias audit is sound.'],
+  ['S2Q02F#5', 2, 2, 2, 'Stepwise ablations isolate OCR, classification, retrieval and orchestration; judge checked against stratified human sample and a second model.'],
+  ['S2Q02F#6', 2, 2, 1, 'Separate baseline swaps per component and a blinded dual-judge, position-shuffled check against human labels; 98 words.'],
+  ['S2Q02F#7', 1, 1, 1, 'Answers misheard "OCR prompting" versus orchestration; classification and retrieval ablations missing, though judge-bias check is good; 88 words.'],
+  ['S2Q02F#8', 1, 2, 1, 'OCR and classification swapped together, prompting merged with orchestration, so contributions are not separated; judge check sound; 105 words.'],
+
+  ['S1Q03#1', 2, 2, 2, 'Randomized untreated holdout of high-risk users compared concurrently with treated cohort isolates lift from seasonality and mix.'],
+  ['S1Q03#2', 2, 2, 2, 'Randomized no-offer control gives incremental lift; segmenting by tenure and channel handles customer-mix shifts.'],
+  ['S1Q03#3', 2, 2, 2, 'Randomized holdout over the same seasonal windows measures incremental lift; slightly overclaims attribution of the whole drop.'],
+  ['S1Q03#4', 2, 2, 2, 'Concurrent A/B of model-targeted versus standard offers isolates the model; regression and cohort adjustment part is a little vague.'],
+  ['S1Q03#5', 2, 2, 2, 'Randomized untreated control over identical time windows cleanly separates campaign effect from macro trends.'],
+  ['S1Q03#6', 2, 2, 2, 'Randomly withheld interventions within the same risk bands, plus population-stability and year-over-year cohort checks.'],
+  ['S1Q03#7', 2, 2, 2, 'Ten percent randomized holdout and difference in churn trajectories is the right causal design; "definitively" overclaims slightly.'],
+  ['S1Q03#8', 2, 2, 2, 'Randomized holdout alongside the campaign, with external shifts affecting both groups equally, gives direct lift.'],
+
+  ['S1Q03F#1', 2, 2, 2, 'Lost causes and costly offers versus persuadables who stay only because of the intervention; correct uplift reasoning.'],
+  ['S1Q03F#2', 2, 2, 2, 'Correctly contrasts lost causes and sure things with uplift targeting of customers whose behaviour actually changes.'],
+  ['S1Q03F#3', 2, 2, 2, 'Correct uplift framing: lost causes and sure things waste budget, persuadables maximise return.'],
+  ['S1Q03F#4', 2, 2, 0, 'Correct uplift explanation, but contains markdown asterisk emphasis and a paragraph break, and runs 114 words.'],
+  ['S1Q03F#5', 2, 2, 2, 'Risk-score targeting wastes budget on lost causes; treatment-effect targeting finds persuadables; concise and natural.'],
+  ['S1Q03F#6', 2, 2, 2, 'Persuadables versus lost causes and would-stay-anyway customers; correct and directly answers.'],
+  ['S1Q03F#7', 2, 2, 2, 'Baseline risk funds lost causes and sure things; uplift modelling targets incremental effect; correct and tight.'],
+  ['S1Q03F#8', 2, 2, 2, 'Correct persuadables versus lost causes and sure things argument tied to incremental ROI.'],
+];

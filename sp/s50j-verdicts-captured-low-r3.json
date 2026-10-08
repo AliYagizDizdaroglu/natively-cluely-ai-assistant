@@ -1,0 +1,236 @@
+{
+  "S1Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sound selection criteria for all three approaches, but runs well past 100 words."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic all correct: 9,500 churners, 2,850 true positives, 57% precision, 30% recall."
+  },
+  "S1Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly reads ROC inflation under imbalance and the roughly fourfold lift from PR-AUC."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Randomized holdout inside the risk band is the right answer, but over 100 words."
+  },
+  "S1Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Clear uplift/persuadables reasoning; slightly long and carries a stray paragraph break."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Stable-sort tie rule and all three edge cases answered; well over 80 words."
+  },
+  "S1Q04F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Quickselect plus index-encoded comparator is right, but says 'the Thai rule' for 'tie rule'."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split, embargoed label window and train-only fit are right; long, with markdown emphasis."
+  },
+  "S1Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly separates time-varying snapshots from the need for a customer-level holdout."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Left join with ingestion-time and window predicates in the join clause preserves zero-call customers."
+  },
+  "S1Q06F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Upsert on conflict overwrites history; misses that point-in-time correctness needs bitemporal versioned records."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every requested layer covered with the feature store named as the shared component; too long."
+  },
+  "S1Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Idempotency keys plus pinned model and feature versions answer both failure modes cleanly."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, joins and retraining covered, but experiment assignment is never actually designed."
+  },
+  "S1Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly names the feedback loop and the untreated control group as the mitigation."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate AWS-to-Azure mapping across every requested layer; over 100 words."
+  },
+  "S1Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Defensible split with real reasons: managed scaling, no cluster ops, and granular GPU control."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, Entra auth to Postgres, Key Vault and Private Link all correct; too long."
+  },
+  "S1Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Clean 401-versus-403-versus-network triage that maps each symptom to the right check."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every stage walked through with concrete tooling, but far past spoken length at ~165 words."
+  },
+  "S2Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names reranker drop, lost-in-the-middle and parametric override; omits chunking as a failure point."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Units and denominators defined, but 'uncertainty' answered with robustness checks, never an interval."
+  },
+  "S2Q02F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Good oracle and judge-bias tests, but classification and prompting ablations are skipped entirely."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Compares all three approaches with a sound conditional-path justification; over 120 words."
+  },
+  "S2Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Step limits, token budgets and a deterministic fallback cover all three asked controls."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accumulator, one-over-c-plus-rank scoring and score-then-id tie-break are exactly right."
+  },
+  "S2Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct scale-incompatibility argument and per-source weight coefficient; a bit long."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy sort with dedup set, per-document cap and skip-on-overflow all handled; slightly long."
+  },
+  "S2Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Concrete redundancy example plus MMR and agentic decomposition for multi-hop dependencies."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore, wait_for and gather with return_exceptions satisfy all four constraints; over 110 words."
+  },
+  "S2Q06F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Almost entirely about deterministic testing; the transient-retry-within-deadline half goes unanswered."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant sharding, ACL filter injection and eval covered; long, with a spoken SQL fragment."
+  },
+  "S2Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly places the just-in-time authorization check at retrieval rather than at request admission."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write, backfill, shadow comparison, canary and flag rollback all present; well over 80 words."
+  },
+  "S2Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Parity checksums, gold-set regression and shadow mode are a credible completeness proof."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every component placed on a sensible Azure service with a managed-versus-custom line; too long."
+  },
+  "S2Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Locally redundant storage, Azure Policy region pinning and Private Link address residency correctly."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Idempotency key plus atomic write-and-status transaction correctly handles crash-before-ack; slightly long."
+  },
+  "S2Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Max delivery count, DLQ inspection and optimistic version checks cover all three cases."
+  }
+}

@@ -1,0 +1,1 @@
+L38M Live replies, Opus graders 2026-10-02 ~21:38 local (both claude-opus-5-5 from transcripts): g1 a6e541b7e4bf98348, g2 a89a2bdd86670c09b; pairs blind/live-pairs.json (52 replies, the pipeline graders question text), key keyhold/live-key.json; readout live-analyze.out.txt

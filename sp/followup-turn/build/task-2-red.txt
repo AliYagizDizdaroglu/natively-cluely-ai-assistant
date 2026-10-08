@@ -1,0 +1,51 @@
+﻿node : [33mThe CJS build of Vite's Node API is deprecated. See 
+https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+At line:4 char:27
++ ... TMP; $out = node 'C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([33mThe CJS bu...e details.[39m:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/eq-build
+
+ ❯ electron/llm/earlierQuestion.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/llm/earlierQuestion.test.ts [ electron/llm/earlierQuestion.test.ts ]
+Error: Failed to resolve import "./earlierQuestion" from 
+"../../../natively-cluely-ai-assistant/.claude/worktrees/eq-build/electron/llm/earlierQuestion.test.ts". Does the file 
+exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/eq-build/electron/llm/earlierQu
+estion.test.ts:6:7
+  14 |    CLIP_TAIL,
+  15 |    EARLIER_QUESTION_ENV
+  16 |  } from "./earlierQuestion";
+     |          ^
+  17 |  import { gate } from "./earlierQuestionGate";
+  18 |  const P_CACHE = "Which eviction policy would you pick for the session cache, so that hot users stay resident?";
+ ❯ TransformPluginContext._formatError ../../../../../Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/vite
+/dist/node/chunks/dep-BK3b2jBa.js:49258:41
+ ❯ TransformPluginContext.error ../../../../../Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/vite/dist/n
+ode/chunks/dep-BK3b2jBa.js:49253:16
+ ❯ normalizeUrl ../../../../../Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/vite/dist/node/chunks/dep-B
+K3b2jBa.js:64307:23
+ ❯ ../../../../../Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64
+439:39
+ ❯ TransformPluginContext.transform ../../../../../Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/vite/di
+st/node/chunks/dep-BK3b2jBa.js:64366:7
+ ❯ PluginContainer.transform ../../../../../Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/vite/dist/node
+/chunks/dep-BK3b2jBa.js:49099:18
+ ❯ loadAndTransform ../../../../../Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/vite/dist/node/chunks/d
+ep-BK3b2jBa.js:51978:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  16:23:07
+   Duration  2.22s (transform 29ms, setup 0ms, collect 0ms, tests 0ms, environment 1.29s, prepare 181ms)
+
+

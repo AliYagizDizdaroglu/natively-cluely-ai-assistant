@@ -1,0 +1,4 @@
+2026-09-30T11-45-30-br1: n=46 app VAD-off minus WAV voice-off: min 1384 p10 1402 p50 1419 p90 1439 max 2003 ms
+S1Q07F:classify:1410  S1Q01F:classify:1416  S1Q08F:gate:1417  S2Q08F:classify:1419  S2Q05:classify:1423  S2Q07F:classify:1429  S1Q05F:classify:1436  S1Q06F:classify:1436  S1Q08:classify:1437  S1Q10F:classify:1439  S2Q09:classify:1442
+2026-09-30T13-46-52-cuesmoke: n=24 app VAD-off minus WAV voice-off: min 755 p10 757 p50 776 p90 789 max 792 ms
+S1Q08F:gate:755  S1Q02F:classify:763  S1Q10F:classify:778  S1Q08:gate:787  S1Q04F:classify:792

@@ -1,0 +1,15 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+stdout | electron/services/interviewerTurn.replay.test.ts
+2026-09-09T15-00-55-s50a: 40/40 once, 0 doubles, 0 never, 0 supersedes, 0 early, 15/15 long-whole, median 1200 ms (n=40), 2 drops
+2026-09-08T08-44-56-after9: 76/76 once, 0 doubles, 0 never, 0 supersedes, 0 early, 6/6 long-whole, median 1200 ms (n=76), 0 drops
+
+ ✓ electron/services/interviewerTurn.replay.test.ts (12 tests) 10ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  20:26:57
+   Duration  3.95s (transform 215ms, setup 0ms, collect 263ms, tests 10ms, environment 1.96s, prepare 416ms)
+

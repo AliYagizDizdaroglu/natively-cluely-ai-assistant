@@ -1,0 +1,44 @@
+﻿=== s50a
+C:\Users\sotka\AppData\Local\Temp\s50a-turns.check.json: 40 items, 132 finals, 106 detector fires, offset 1150 ms, 75 KB
+fresh:     C:\Users\sotka\AppData\Local\Temp\s50a-turns.check.json
+committed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\fixtures\2026-09-09T15-00-55-s50a-turns.json
+keys (fresh):     run, roster, offsetMs, extractedAt, items, finals, detections, actual
+keys (committed): run, roster, offsetMs, extractedAt, items, finals, detections, actual
+  finals: fresh 132, committed 132, deep-equal true
+  items: fresh 40, committed 40, deep-equal true
+  actual: fresh 106, committed 106, deep-equal true
+  detections: fresh 106, committed 106, deep-equal true
+  run: fresh "2026-09-09T15-00-55-s50a", committed "2026-09-09T15-00-55-s50a"
+  roster: fresh "unknown", committed "unknown"
+  offsetMs: fresh 1150, committed 1150
+  extractedAt: fresh 2026-09-29T20:38:33.400Z, committed 2026-09-10T15:17:38.546Z (differs by design: true)
+every key except extractedAt deep-equal: true
+  calibration [good] drop finals[0]: reported finals
+  calibration [good] append a char to finals[5].text: reported finals
+  calibration [good] shift finals[10].at by 1 ms: reported finals
+  calibration [good] swap items[0] and items[1]: reported items
+  calibration [good] change actual[3].question: reported actual
+  calibration [good] shift items[0].voice[0][0] by 20 ms: reported items
+RESULT: deep-equal, and the comparison is calibrated (6/6 mutations detected)
+=== after9
+C:\Users\sotka\AppData\Local\Temp\after9-turns.check.json: 79 items, 181 finals, 181 detector fires, offset 1150 ms, 102 KB
+fresh:     C:\Users\sotka\AppData\Local\Temp\after9-turns.check.json
+committed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\fixtures\2026-09-08T08-44-56-after9-turns.json
+keys (fresh):     run, roster, offsetMs, extractedAt, items, finals, detections, actual
+keys (committed): run, roster, offsetMs, extractedAt, items, finals, detections, actual
+  finals: fresh 181, committed 181, deep-equal true
+  items: fresh 79, committed 79, deep-equal true
+  actual: fresh 181, committed 181, deep-equal true
+  detections: fresh 181, committed 181, deep-equal true
+  run: fresh "2026-09-08T08-44-56-after9", committed "2026-09-08T08-44-56-after9"
+  roster: fresh "unknown", committed "unknown"
+  offsetMs: fresh 1150, committed 1150
+  extractedAt: fresh 2026-09-29T20:38:33.738Z, committed 2026-09-10T15:17:42.878Z (differs by design: true)
+every key except extractedAt deep-equal: true
+  calibration [good] drop finals[0]: reported finals
+  calibration [good] append a char to finals[5].text: reported finals
+  calibration [good] shift finals[10].at by 1 ms: reported finals
+  calibration [good] swap items[0] and items[1]: reported items
+  calibration [good] change actual[3].question: reported actual
+  calibration [good] shift items[0].voice[0][0] by 20 ms: reported items
+RESULT: deep-equal, and the comparison is calibrated (6/6 mutations detected)

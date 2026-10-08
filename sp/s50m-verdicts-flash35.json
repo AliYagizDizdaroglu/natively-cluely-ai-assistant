@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic all correct: 9,500 churners, 5,000 targeted, 2,850 true positives, 30% recall, 57% precision, with a defensible rounding verdict."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct point-in-time logic, filters in the join and count on event id preserving zeros, but about 107 words."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every requested layer covered and shared feature definitions named, but roughly 112 words is long for speech."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, randomized assignment, timestamp-anchored outcome join and control-group retraining all sound; about 96 words is over length."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Defends only extraction F1, never the hallucination or multi-hop metrics, and gives no uncertainty for any of them."
+  }
+}

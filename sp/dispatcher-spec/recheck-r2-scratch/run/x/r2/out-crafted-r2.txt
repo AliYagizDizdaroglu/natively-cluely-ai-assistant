@@ -1,0 +1,183 @@
+== S-1 PASS: a declined statement; a stale non-quoting whisper chip -> ignored (no unjudged tail); the window expires as not-a-question
+  23.7s classify finals=1 "Great, thanks for walking me through that."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  25.5s whisper evidence -> {"kind":"ignored","why":"no-quote","score":0} q="What is a consumer group in Kafka and wh"
+  32.1s close not-a-question
+  checks: ok:ignored no-quote; ok:no dispatch; ok:close not-a-question at 32.1
+== S-1L PASS: a declined statement; a non-quoting LIVE claim (a question the STT missed) -> split-replace with 0 moved finals: a Live-only turn, dispatched on the unfinished hold
+  23.7s classify finals=1 "Great, thanks for walking me through that."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  25.5s live evidence -> {"kind":"replaced-declined","by":"live","closed":"not-a-question","score":0,"moved":0,"unscorable":false} q="How would you index those tables for ran"
+  26.2s dispatch finals=0 path=unfinished live=1 "How would you index those tables for range queries?"
+  34.2s close continuation-expired
+  checks: ok:replaced-declined moved=0; ok:one Live-only dispatch; ok:dispatched on the unfinished hold at 26.2 (voice stop 22.5 + 3.7)
+== S-2 PASS: a declined statement and nothing after it -> exactly one close, not-a-question, at verdict + 8 s
+  23.7s classify finals=1 "Great, thanks for walking me through that."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  32.1s close not-a-question
+  checks: ok:no dispatch; ok:one close at 32.1
+== S-3 PASS: a declined statement, then a question inside the window; its chip (before the gate) quotes the joined finals -> revive; ONE dispatch of statement + question at the gate
+  23.7s classify finals=1 "Great, thanks for walking me through that."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  32.0s whisper evidence -> {"kind":"revived","by":"whisper","rule":"forward","how":"residual","score":1,"remScore":0,"residual":5,"hits":5,"finals":2} q="What is the difference between a process"
+  32.2s dispatch finals=2 path=gate live=0 "Great, thanks for walking me through that. What is the difference betw"
+  40.2s close continuation-expired
+  checks: ok:revived forward 1.0 finals=2; ok:one dispatch at 32.2 finals=2; ok:text = statement + question
+== S-3b PASS: as S-3 with no chip: the re-armed classify (finals=2) gets a crafted "question" -> revive by verdict; one dispatch from both finals
+  23.7s classify finals=1 "Great, thanks for walking me through that."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  32.2s classify finals=2 "Great, thanks for walking me through that. What is the difference betw"
+  32.6s verdict question (finals=2) -> {"kind":"revived","by":"verdict","finals":2}
+  32.6s dispatch finals=2 path=gate live=0 "Great, thanks for walking me through that. What is the difference betw"
+  40.6s close continuation-expired
+  checks: ok:re-armed classify at 32.2 finals=2; ok:revived by verdict; ok:one dispatch at 32.6 finals=2
+== S-4 PASS: Q0 answered; the STT silent; a Live claim for a NEW question reusing Q0's words -> absorbed (the accepted residual, pinned)
+  7.2s whisper evidence -> {"kind":"marked"} q="How would you shard a Postgres table by "
+  7.2s dispatch finals=1 path=gate live=0 "How would you shard a Postgres table by tenant?"
+  15.2s close continuation-expired
+  40.0s live evidence -> {"kind":"absorbed","source":"live","of":"How would you shard a Postgres table by tenant?","ofId":1,"score":0.7142857142857143,"openScore":0,"residual":2,"hits": q="Would you shard that Postgres table by t"
+  checks: ok:absorbed at 0.71; ok:Q0 answered once, nothing else
+== S-5 PASS: Q0 at 7 s and Q1 at 60 s answered; Q2's finals open at 120 s; a Live claim with Q0's text at 121 s -> absorbed (two turns back); Q2 dispatches with live=[]
+  7.2s whisper evidence -> {"kind":"marked"} q="How would you shard a Postgres table by "
+  7.2s dispatch finals=1 path=gate live=0 "How would you shard a Postgres table by tenant?"
+  15.2s close continuation-expired
+  60.0s whisper evidence -> {"kind":"marked"} q="What is a directed acyclic graph?"
+  60.4s dispatch finals=1 path=gate live=0 "What is a DAG?"
+  68.4s close continuation-expired
+  121.0s live evidence -> {"kind":"absorbed","source":"live","of":"How would you shard a Postgres table by tenant?","ofId":1,"score":1,"openScore":0.2,"residual":0,"hits":0,"ageMs":11380 q="How would you shard a Postgres table by "
+  121.5s whisper evidence -> {"kind":"marked"} q="How would you index those tables, and wh"
+  121.5s dispatch finals=1 path=gate live=0 "How would you index those tables, and what changes if history is kept?"
+  129.5s close continuation-expired
+  checks: ok:absorbed, echo of Q0 (two back); ok:Q2 dispatched once with live=[]
+== S-6 PASS: C3: a declined statement, then a SHORT question whose chip has 3 content words (unscorable; the reverse rule scores 3/8) -> split-replace: the question's own final moves to the fresh turn and is answered alone, as today
+  23.7s classify finals=1 "Okay, that makes sense, thanks for that."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  29.6s whisper evidence -> {"kind":"replaced-declined","by":"whisper","closed":"not-a-question","score":0.375,"moved":1,"unscorable":true} q="Why would you use Kafka here?"
+  29.6s dispatch finals=1 path=gate live=0 "So why would you use Kafka here?"
+  37.6s close continuation-expired
+  checks: ok:split-replace, 1 final moved, unscorable; ok:one dispatch of the question alone at 29.6
+== S-6L PASS: a declined statement; a Live claim for a question the STT missed entirely (no rejoined finals) -> split-replace with 0 moved: Live-only, today's rescue path
+  23.7s classify finals=1 "Okay, that makes sense, thanks for that."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  27.0s live evidence -> {"kind":"replaced-declined","by":"live","closed":"not-a-question","score":0,"moved":0,"unscorable":false} q="How would you index those tables for ran"
+  27.0s dispatch finals=0 path=unfinished live=1 "How would you index those tables for range queries?"
+  35.0s close continuation-expired
+  checks: ok:split-replace moved=0; ok:one Live-only dispatch at 27.0 (hold already elapsed since the stop at 22.5)
+== S-7 PASS: I1 (the s50g shape, real texts): the parent answered; the follow-up's finals open, undetected; Live's on-time claim inlines the parent's list -> JOINS (its residual words are in the finals), not absorbed
+  16.5s whisper evidence -> {"kind":"marked"} q="Explain your rag pipeline precisely walk"
+  17.5s dispatch finals=1 path=gate live=0 "Explain your rag pipeline precisely walk through ingestion, parsing, c"
+  25.5s close continuation-expired
+  judge: {"scorable":true,"remIdx":0,"remScore":0.631578947368421,"residual":7,"hits":7,"quotesOpen":true,"echo":false,"openScore":0.47368421052631576,"rule":"forward","by":"residual"}
+  83.0s live evidence -> {"kind":"marked"} q="Of the RAG pipeline stages (ingestion, p"
+  83.0s dispatch finals=2 path=gate live=1 "Which of those stages can cause a correct source document to produce a"
+  91.0s close continuation-expired
+  checks: ok:judge: remembered match >= 0.5, residual mostly in the finals, not an echo; ok:marked (joined); ok:follow-up dispatched once from its finals with the claim in live[]
+== S-7D PASS: as S-7 but the classify DECLINED the follow-up first; the inlining claim revives it through its residual words -> answered from its own finals
+  16.5s whisper evidence -> {"kind":"marked"} q="Explain your rag pipeline precisely walk"
+  17.5s dispatch finals=1 path=gate live=0 "Explain your rag pipeline precisely walk through ingestion, parsing, c"
+  25.5s close continuation-expired
+  82.2s classify finals=2 "Which of those stages can cause a correct source document to produce a"
+  82.6s verdict not-a-question (finals=2) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  83.0s live evidence -> {"kind":"revived","by":"live","rule":"forward","how":"residual","score":0.47368421052631576,"remScore":0.631578947368421,"residual":7,"hits":7,"finals":2} q="Of the RAG pipeline stages (ingestion, p"
+  83.0s dispatch finals=2 path=gate live=1 "Which of those stages can cause a correct source document to produce a"
+  91.0s close continuation-expired
+  checks: ok:revived forward; ok:one follow-up dispatch finals=2
+== S-8 PASS: I2: Q0 answered; a statement RESTATING it is declined; a stale whisper re-fire of Q0 -> absorbed (nothing new); a stale Live re-fire -> absorbed; the statement expires unanswered
+  7.2s whisper evidence -> {"kind":"marked"} q="How would you shard a Postgres table by "
+  7.2s dispatch finals=1 path=gate live=0 "How would you shard a Postgres table by tenant?"
+  15.2s close continuation-expired
+  23.7s classify finals=1 "Okay, so you would shard the Postgres table by tenant, got it."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  25.5s whisper evidence -> {"kind":"absorbed","source":"whisper","of":"How would you shard a Postgres table by tenant?","ofId":1,"score":1,"openScore":1,"residual":0,"hits":0,"ageMs":1830 q="How would you shard a Postgres table by "
+  26.0s live evidence -> {"kind":"absorbed","source":"live","of":"How would you shard a Postgres table by tenant?","ofId":1,"score":1,"openScore":1,"residual":0,"hits":0,"ageMs":18800} q="How would you shard a Postgres table by "
+  32.1s close not-a-question
+  checks: ok:both re-fires absorbed; ok:Q0 answered once; the statement never; ok:the statement closes not-a-question at 32.1
+== S-8b PASS: honesty pin: the re-armed classify on a statement + question turn says "question" -> the joined text is answered, statement prefix included
+  23.7s classify finals=1 "Great, thanks for walking me through that."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  32.2s classify finals=2 "Great, thanks for walking me through that. What is the difference betw"
+  32.6s verdict question (finals=2) -> {"kind":"revived","by":"verdict","finals":2}
+  32.6s dispatch finals=2 path=gate live=0 "Great, thanks for walking me through that. What is the difference betw"
+  40.6s close continuation-expired
+  checks: ok:one dispatch, text starts with the statement
+== S-9 PASS: I3: a final lands while the FIRST classify is in flight; the "no" on the old count is ignored as stale-finals and the classify is re-armed; a "question" on the grown text dispatches
+  4.7s classify finals=1 "We have a batch job that writes daily partitions."
+  5.1s verdict not-a-question (finals=1) -> {"kind":"ignored","why":"stale-finals"}
+  5.2s classify finals=2 "We have a batch job that writes daily partitions. How would you make i"
+  5.6s verdict question (finals=2) -> {"kind":"marked"}
+  5.6s dispatch finals=2 path=gate live=0 "We have a batch job that writes daily partitions. How would you make i"
+  13.6s close continuation-expired
+  checks: ok:stale-finals ignored; ok:re-armed classify at 5.2 with finals=2; ok:marked by the verdict; one dispatch finals=2 at 5.6
+== S-10 PASS: I9: a chip marks the turn before the gate; a late negative verdict for the same turn and count -> ignored (marked); the dispatch stands
+  4.2s whisper evidence -> {"kind":"marked"} q="Why did you choose XGBoost for the churn"
+  4.3s verdict no on the marked turn -> {"kind":"ignored","why":"marked"}
+  5.6s dispatch finals=1 path=gate live=0 "Why did you choose XGBoost for the churn model?"
+  13.6s close continuation-expired
+  checks: ok:ignored marked; ok:one dispatch at the gate 5.6
+== S-11 PASS: the re-smoke's S1Q08F shape (real texts, log-relative times): a 3-word fragment is declined; its verbatim chip revives it by the REVERSE rule; the Live claim and the continuation final join; one whole dispatch
+  6.1s classify finals=1 "How could repeatedly"
+  7.0s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  7.2s whisper evidence -> {"kind":"revived","by":"whisper","rule":"reverse","how":"reverse","score":1,"remScore":0,"residual":2,"hits":2,"finals":1} q="How could repeatedly"
+  7.7s live evidence -> {"kind":"marked"} q="How could repeatedly training on custome"
+  8.3s whisper evidence -> {"kind":"marked"} q="How could repeatedly training on custome"
+  8.4s dispatch finals=2 path=gate live=1 "How could repeatedly training on customers affected by previous campai"
+  16.4s close continuation-expired
+  checks: ok:declined on finals=1; ok:revived by the reverse rule (2 of 2 content words in the chip); ok:the Live claim joins; ok:one whole dispatch from 2 finals; ok:dispatched at the settle after final 2 (8.365)
+== S-12 PASS: the re-smoke's S1Q07F shape with the verdict landing BEFORE the question's final (what a 400 ms verdict would have done): the lead-in is declined; the question final rejoins; its chip quotes the joined finals -> revive; one dispatch of lead-in + question
+  8.4s classify finals=1 "A nightly job fails halfway through."
+  8.8s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  10.0s whisper evidence -> {"kind":"revived","by":"whisper","rule":"forward","how":"residual","score":1,"remScore":0,"residual":8,"hits":8,"finals":2} q="How do you resume it without duplicate c"
+  10.7s live evidence -> {"kind":"marked"} q="A nightly job fails halfway through. How"
+  10.7s dispatch finals=2 path=gate live=1 "A nightly job fails halfway through. How do you resume it without dupl"
+  18.7s close continuation-expired
+  checks: ok:declined on finals=1; ok:revived forward 1.0 with finals=2; ok:one dispatch, lead-in + question, from the finals; ok:the statement never dispatched alone
+== S-13 PASS: the reverse rule's negative: a declined statement with 5 content words; an unscorable chip of a different short question ("Why not Redis then?", 2 content words, none shared) -> reverse 0 of 5; no tail -> ignored; the statement is never answered
+  23.7s classify finals=1 "Okay, that makes sense, thanks for that."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  25.5s whisper evidence -> {"kind":"ignored","why":"unscorable","score":0} q="Why not Redis then?"
+  32.1s close not-a-question
+  (a 4-content-word chip sharing one word, "Thanks, what about cost?": {"kind":"ignored","why":"no-quote","score":0.25}; dispatches 0)
+  checks: ok:ignored unscorable (reverse 0/5); ok:no dispatch; ok:a scorable chip sharing one of five words is ignored no-quote (0.25)
+== S-13b PASS: the reverse rule's accepted edge: an unscorable chip made of the declined text's own words ("Walking me through that?") -> quotes (3 of 5) -> the statement is revived and answered: the detector said yes on this text
+  23.7s classify finals=1 "Great, thanks for walking me through that."
+  24.1s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  25.5s whisper evidence -> {"kind":"revived","by":"whisper","rule":"reverse","how":"reverse","score":0.6,"remScore":0,"residual":3,"hits":3,"finals":1} q="Walking me through that?"
+  25.5s dispatch finals=1 path=gate live=0 "Great, thanks for walking me through that."
+  33.5s close continuation-expired
+  checks: ok:revived reverse 0.6; ok:one dispatch of the statement
+== S-14 PASS: U12 twin: four answered turns Q0..Q3; an echo of Q1 (three back) -> absorbed; then an echo of Q0 (four back, evicted) -> not absorbed: a Live-only turn, answered again, and itself remembered
+  4.5s whisper evidence -> {"kind":"marked"} q="How would you shard a Postgres table by "
+  5.4s dispatch finals=1 path=gate live=0 "How would you shard a Postgres table by tenant?"
+  13.4s close continuation-expired
+  34.5s whisper evidence -> {"kind":"marked"} q="What is a consumer group in Kafka and wh"
+  35.4s dispatch finals=1 path=gate live=0 "What is a consumer group in Kafka and why does it matter?"
+  43.4s close continuation-expired
+  64.5s whisper evidence -> {"kind":"marked"} q="Why would you choose gRPC over REST for "
+  65.4s dispatch finals=1 path=gate live=0 "Why would you choose gRPC over REST for internal services?"
+  73.4s close continuation-expired
+  94.5s whisper evidence -> {"kind":"marked"} q="How does a Bloom filter trade memory for"
+  95.4s dispatch finals=1 path=gate live=0 "How does a Bloom filter trade memory for false positives?"
+  103.4s close continuation-expired
+  130.0s live evidence -> {"kind":"absorbed","source":"live","of":"What is a consumer group in Kafka and why does it matter?","ofId":2,"score":1,"openScore":0,"residual":0,"hits":0,"ageM q="What is a consumer group in Kafka and wh"
+  150.0s live evidence -> {"kind":"marked"} q="How would you shard a Postgres table by "
+  153.7s dispatch finals=0 path=unfinished live=1 "How would you shard a Postgres table by tenant?"
+  161.7s close continuation-expired
+  checks: ok:Q1 (three back) absorbed, no fifth dispatch; ok:Q0 (four back) not absorbed: marked, then a Live-only dispatch; ok:the memory holds 3 and now ends with the Q0 echo
+== S-15 PASS: §9 residual: the interviewer repeats Q0 within 60 s and the STT hears it; Live's claim for the repeat -> absorbed (its words add nothing to the remembered Q0); the repeat's finals go to the classify as today
+  7.2s whisper evidence -> {"kind":"marked"} q="How would you shard a Postgres table by "
+  7.2s dispatch finals=1 path=gate live=0 "How would you shard a Postgres table by tenant?"
+  15.2s close continuation-expired
+  35.0s live evidence -> {"kind":"absorbed","source":"live","of":"How would you shard a Postgres table by tenant?","ofId":1,"score":1,"openScore":1,"residual":0,"hits":0,"ageMs":27800} q="How would you shard a Postgres table by "
+  35.4s classify finals=1 "Let me repeat that. How would you shard a Postgres table by tenant?"
+  checks: ok:absorbed; ok:the repeat turn is left to the classify (asked at 35.4)
+== S-16 PASS: Minor 11, second fragility: the re-armed classify's own chip paraphrases the declined text under the bar -> with a tail, split-replace of the tail BEFORE its own "question" verdict lands, which then hits stale-turn; the tail is answered, the judged head is not
+  6.2s classify finals=1 "Now add delayed outcomes and experimentation to the churn platform des"
+  6.6s verdict not-a-question (finals=1) -> {"kind":"declined","verdict":"not-a-question","again":false}
+  7.4s classify finals=2 "Now add delayed outcomes and experimentation to the churn platform des"
+  8.5s whisper evidence -> {"kind":"replaced-declined","by":"whisper","closed":"not-a-question","score":0,"moved":1,"unscorable":false} q="Describe experiment assignment, label ar"
+  8.6s verdict question (finals=2) -> {"kind":"ignored","why":"stale-turn"}
+  8.7s dispatch finals=1 path=unfinished live=0 "Design the logging and the joins."
+  16.7s close continuation-expired
+  checks: ok:split-replace moved=1; ok:its verdict hits stale-turn; ok:the tail is dispatched alone
+
+22/22 crafted cases read as asserted; failing: []

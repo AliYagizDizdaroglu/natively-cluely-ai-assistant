@@ -1,0 +1,144 @@
+=================== node h40d-clocks.mjs 2026-09-29T11-42-00-h40c
+run: 2026-09-29T11-42-00-h40c
+answer-dispatch windows: 45; with a won-by line: 45; winners: {"gemini-3.5-flash-lite":44,"gemini-3.1-flash-lite":1}
+rule 2d: charged windows 0 = union of term 1 (h40c's definition) 0 and term 2 (last [Answer] full: is failure text) 0; UNRESOLVED windows 0 (a won-by line, no [Answer] full: line, not superseded); windows with no [Answer] full: line at all 0, of which superseded 0
+rule 2d reading: PASS (0 charged, 0 unresolved)
+screen clock (diag first token N ms, all lines in the window, h40c's method): n=45 median=4.100s p90=6.498s max=10.514s
+model clock (won-by at N ms, last won-by per window): n=45 median=3.499s p90=6.052s max=9.961s
+gap G (hedge t0 - screen-clock t0: the knowledge step before the hedge starts): n=45 median=0.504s p90=0.635s max=0.786s
+dispatch line -> screen-clock t0: n=45 median=0.004s p90=0.007s max=0.012s
+dispatch line -> won-by line: n=45 median=4.101s p90=6.500s max=10.512s
+cue cost C (won-by line -> first token line): n=45 median=0.002s p90=0.003s max=0.026s  (windows with no first-token line after their won-by: 0)
+identity check, per window: screen N - (G + model N + C) = 0 ms at most (0 by construction)
+cues line -> first token line: n/a (no non-empty cues line)
+
+=================== node h40d-clocks.mjs 2026-09-30T11-45-30-br1
+run: 2026-09-30T11-45-30-br1
+answer-dispatch windows: 40; with a won-by line: 40; winners: {"gemini-3.5-flash-lite":38,"gemini-3.1-flash-lite":2}
+rule 2d: charged windows 0 = union of term 1 (h40c's definition) 0 and term 2 (last [Answer] full: is failure text) 0; UNRESOLVED windows 0 (a won-by line, no [Answer] full: line, not superseded); windows with no [Answer] full: line at all 0, of which superseded 0
+rule 2d reading: PASS (0 charged, 0 unresolved)
+screen clock (diag first token N ms, all lines in the window, h40c's method): n=40 median=4.621s p90=11.148s max=20.417s
+model clock (won-by at N ms, last won-by per window): n=40 median=4.105s p90=10.661s max=19.985s
+gap G (hedge t0 - screen-clock t0: the knowledge step before the hedge starts): n=40 median=0.501s p90=0.555s max=1.219s
+dispatch line -> screen-clock t0: n=40 median=0.005s p90=0.006s max=0.021s
+dispatch line -> won-by line: n=40 median=4.624s p90=11.150s max=20.420s
+cue cost C (won-by line -> first token line): n=40 median=0.002s p90=0.003s max=0.006s  (windows with no first-token line after their won-by: 0)
+identity check, per window: screen N - (G + model N + C) = 0 ms at most (0 by construction)
+cues line -> first token line: n/a (no non-empty cues line)
+
+=================== node h40d-clocks.mjs 2026-09-30T13-46-52-cuesmoke
+run: 2026-09-30T13-46-52-cuesmoke
+answer-dispatch windows: 22; with a won-by line: 21; winners: {"gemini-3.5-flash-lite":21}
+rule 2d: charged windows 0 = union of term 1 (h40c's definition) 0 and term 2 (last [Answer] full: is failure text) 0; UNRESOLVED windows 0 (a won-by line, no [Answer] full: line, not superseded); windows with no [Answer] full: line at all 1, of which superseded 1
+rule 2d reading: PASS (0 charged, 0 unresolved)
+screen clock (diag first token N ms, all lines in the window, h40c's method): n=21 median=5.313s p90=6.411s max=13.084s
+model clock (won-by at N ms, last won-by per window): n=21 median=4.594s p90=5.035s max=5.649s
+gap G (hedge t0 - screen-clock t0: the knowledge step before the hedge starts): n=20 median=0.674s p90=1.165s max=6.879s
+dispatch line -> screen-clock t0: n=20 median=0.011s p90=0.017s max=0.026s
+dispatch line -> won-by line: n=21 median=5.061s p90=5.886s max=11.931s
+cue cost C (won-by line -> first token line): n=20 median=0.217s p90=0.717s max=1.170s  (windows with no first-token line after their won-by: 1)
+identity check, per window: screen N - (G + model N + C) = 0 ms at most (0 by construction)
+cues line -> first token line: n=20 median=0.004s p90=0.008s max=0.009s
+
+=================== node h40d-clocks.mjs 2026-09-30T02-38-22-cuesmoke
+run: 2026-09-30T02-38-22-cuesmoke
+answer-dispatch windows: 20; with a won-by line: 0; winners: {}
+rule 2d: charged windows 0 = union of term 1 (h40c's definition) 0 and term 2 (last [Answer] full: is failure text) 0; UNRESOLVED windows 0 (a won-by line, no [Answer] full: line, not superseded); windows with no [Answer] full: line at all 0, of which superseded 0
+rule 2d reading: PASS (0 charged, 0 unresolved)
+screen clock (diag first token N ms, all lines in the window, h40c's method): n=20 median=5.025s p90=6.448s max=6.731s
+model clock (won-by at N ms, last won-by per window): n=0 median=n/a p90=n/a max=n/a
+gap G (hedge t0 - screen-clock t0: the knowledge step before the hedge starts): n=0 median=n/a p90=n/a max=n/a
+dispatch line -> screen-clock t0: n=0 median=n/a p90=n/a max=n/a
+dispatch line -> won-by line: n=0 median=n/a p90=n/a max=n/a
+cue cost C (won-by line -> first token line): n=0 median=n/a p90=n/a max=n/a  (windows with no first-token line after their won-by: 0)
+identity check, per window: screen N - (G + model N + C) = n/a ms at most (0 by construction)
+cues line -> first token line: n/a (no non-empty cues line)
+
+=================== node h40d-clocks.mjs h40c-stats-cal-r2-failure
+run: h40c-stats-cal-r2-failure
+answer-dispatch windows: 1; with a won-by line: 1; winners: {"gemini-3.5-flash-lite":1}
+rule 2d: charged windows 1 = union of term 1 (h40c's definition) 1 and term 2 (last [Answer] full: is failure text) 1; UNRESOLVED windows 0 (a won-by line, no [Answer] full: line, not superseded); windows with no [Answer] full: line at all 0, of which superseded 0
+  2d charged:    window #1 dispatched 2026-09-26T18:00:10.000Z (answer); term 1: charged (failure line, won-by, failure text); term 2: failure text; won-by lines in the window: 1+, failure lines: 1
+rule 2d reading: FAIL (charged >= 1)
+screen clock (diag first token N ms, all lines in the window, h40c's method): n=1 median=0.900s p90=0.900s max=0.900s
+model clock (won-by at N ms, last won-by per window): n=1 median=0.900s p90=0.900s max=0.900s
+gap G (hedge t0 - screen-clock t0: the knowledge step before the hedge starts): n=1 median=0.000s p90=0.000s max=0.000s
+dispatch line -> screen-clock t0: n=1 median=0.100s p90=0.100s max=0.100s
+dispatch line -> won-by line: n=1 median=1.000s p90=1.000s max=1.000s
+cue cost C (won-by line -> first token line): n=1 median=0.000s p90=0.000s max=0.000s  (windows with no first-token line after their won-by: 0)
+identity check, per window: screen N - (G + model N + C) = 0 ms at most (0 by construction)
+cues line -> first token line: n/a (no non-empty cues line)
+
+=================== node h40d-clocks.mjs h40c-stats-cal-r2-delivered
+run: h40c-stats-cal-r2-delivered
+answer-dispatch windows: 2; with a won-by line: 1; winners: {"gemini-3.1-flash-lite":1}
+rule 2d: charged windows 0 = union of term 1 (h40c's definition) 0 and term 2 (last [Answer] full: is failure text) 0; UNRESOLVED windows 0 (a won-by line, no [Answer] full: line, not superseded); windows with no [Answer] full: line at all 1, of which superseded 1
+rule 2d reading: PASS (0 charged, 0 unresolved)
+screen clock (diag first token N ms, all lines in the window, h40c's method): n=1 median=2.100s p90=2.100s max=2.100s
+model clock (won-by at N ms, last won-by per window): n=1 median=2.100s p90=2.100s max=2.100s
+gap G (hedge t0 - screen-clock t0: the knowledge step before the hedge starts): n=1 median=0.000s p90=0.000s max=0.000s
+dispatch line -> screen-clock t0: n=1 median=0.050s p90=0.050s max=0.050s
+dispatch line -> won-by line: n=1 median=2.150s p90=2.150s max=2.150s
+cue cost C (won-by line -> first token line): n=1 median=0.000s p90=0.000s max=0.000s  (windows with no first-token line after their won-by: 0)
+identity check, per window: screen N - (G + model N + C) = 0 ms at most (0 by construction)
+cues line -> first token line: n/a (no non-empty cues line)
+
+=================== node h40d-clocks.mjs h40c-stats-cal-r2-unresolved
+run: h40c-stats-cal-r2-unresolved
+answer-dispatch windows: 2; with a won-by line: 1; winners: {"gemini-3.1-flash-lite":1}
+rule 2d: charged windows 0 = union of term 1 (h40c's definition) 0 and term 2 (last [Answer] full: is failure text) 0; UNRESOLVED windows 1 (a won-by line, no [Answer] full: line, not superseded); windows with no [Answer] full: line at all 2, of which superseded 1
+  2d UNRESOLVED: window #2 dispatched 2026-09-26T18:02:00.450Z (supersede); won by gemini-3.1-flash-lite at 2100 ms; no [Answer] full: line; failure lines: 1
+rule 2d reading: INCOMPLETE (an unresolved window, nothing charged)
+screen clock (diag first token N ms, all lines in the window, h40c's method): n=1 median=2.100s p90=2.100s max=2.100s
+model clock (won-by at N ms, last won-by per window): n=1 median=2.100s p90=2.100s max=2.100s
+gap G (hedge t0 - screen-clock t0: the knowledge step before the hedge starts): n=1 median=0.000s p90=0.000s max=0.000s
+dispatch line -> screen-clock t0: n=1 median=0.050s p90=0.050s max=0.050s
+dispatch line -> won-by line: n=1 median=2.150s p90=2.150s max=2.150s
+cue cost C (won-by line -> first token line): n=1 median=0.000s p90=0.000s max=0.000s  (windows with no first-token line after their won-by: 0)
+identity check, per window: screen N - (G + model N + C) = 0 ms at most (0 by construction)
+cues line -> first token line: n/a (no non-empty cues line)
+
+=================== node h40d-clocks.mjs 2026-09-30T13-46-52-cuesmoke --whole-log
+run: 2026-09-30T13-46-52-cuesmoke (WHOLE LOG, readiness probe included; rule 2d only)
+answer-dispatch windows: 24; with a won-by line: 23; winners: {"gemini-3.5-flash-lite":23}
+rule 2d: charged windows 1 = union of term 1 (h40c's definition) 0 and term 2 (last [Answer] full: is failure text) 1; UNRESOLVED windows 0 (a won-by line, no [Answer] full: line, not superseded); windows with no [Answer] full: line at all 1, of which superseded 1
+  2d charged:    window #2 dispatched 2026-09-30T13:12:04.732Z (answer); term 1: none; term 2: failure text; won-by lines in the window: 1+, failure lines: 0
+rule 2d reading: FAIL (charged >= 1)
+
+=================== node h40d-clocks.mjs 2026-09-29T11-42-00-h40c --whole-log
+run: 2026-09-29T11-42-00-h40c (WHOLE LOG, readiness probe included; rule 2d only)
+answer-dispatch windows: 47; with a won-by line: 47; winners: {"gemini-3.5-flash-lite":46,"gemini-3.1-flash-lite":1}
+rule 2d: charged windows 0 = union of term 1 (h40c's definition) 0 and term 2 (last [Answer] full: is failure text) 0; UNRESOLVED windows 0 (a won-by line, no [Answer] full: line, not superseded); windows with no [Answer] full: line at all 0, of which superseded 0
+rule 2d reading: PASS (0 charged, 0 unresolved)
+
+=================== node h40d-clocks.mjs h40c --list (first 6 rows)
+  # 1 answer    dispatched=2026-09-29T10:36:17.230Z won-by=2026-09-29T10:36:20.865Z gemini-3.5-flash-lite  at=3152 disp->won=3635 G=478 C=2 cues->ft=- ft=3632 2d=-
+  # 2 answer    dispatched=2026-09-29T10:37:25.169Z won-by=2026-09-29T10:37:31.174Z gemini-3.5-flash-lite  at=5530 disp->won=6005 G=469 C=3 cues->ft=- ft=6002 2d=-
+  # 3 answer    dispatched=2026-09-29T10:39:59.265Z won-by=2026-09-29T10:40:02.874Z gemini-3.5-flash-lite  at=3130 disp->won=3609 G=474 C=2 cues->ft=- ft=3606 2d=-
+  # 4 answer    dispatched=2026-09-29T10:41:07.329Z won-by=2026-09-29T10:41:11.574Z gemini-3.5-flash-lite  at=3659 disp->won=4245 G=581 C=2 cues->ft=- ft=4242 2d=-
+  # 5 answer    dispatched=2026-09-29T10:42:30.543Z won-by=2026-09-29T10:42:34.338Z gemini-3.5-flash-lite  at=3268 disp->won=3795 G=523 C=2 cues->ft=- ft=3793 2d=-
+  # 6 answer    dispatched=2026-09-29T10:45:04.535Z won-by=2026-09-29T10:45:08.354Z gemini-3.5-flash-lite  at=3027 disp->won=3819 G=786 C=2 cues->ft=- ft=3815 2d=-
+
+=================== node h40d-clocks.mjs 16:12 cuesmoke --list (all rows)
+  # 1 answer    dispatched=2026-09-30T13:12:32.086Z won-by=2026-09-30T13:12:36.777Z gemini-3.5-flash-lite  at=4673 disp->won=4691 G=8 C=15 cues->ft=2 ft=4696 2d=-
+  # 2 answer    dispatched=2026-09-30T13:13:39.132Z won-by=- none                   at=- disp->won=- G=- C=- cues->ft=- ft=- 2d=superseded
+  # 3 supersede dispatched=2026-09-30T13:13:39.850Z won-by=2026-09-30T13:13:45.256Z gemini-3.5-flash-lite  at=5239 disp->won=5406 G=- C=- cues->ft=- ft=- 2d=-
+  # 4 answer    dispatched=2026-09-30T13:15:05.322Z won-by=2026-09-30T13:15:10.915Z gemini-3.5-flash-lite  at=4977 disp->won=5593 G=603 C=217 cues->ft=8 ft=5797 2d=-
+  # 5 answer    dispatched=2026-09-30T13:16:31.473Z won-by=2026-09-30T13:16:36.479Z gemini-3.5-flash-lite  at=3953 disp->won=5006 G=1042 C=105 cues->ft=3 ft=5100 2d=-
+  # 6 answer    dispatched=2026-09-30T13:17:47.493Z won-by=2026-09-30T13:17:52.340Z gemini-3.5-flash-lite  at=4080 disp->won=4847 G=750 C=240 cues->ft=4 ft=5070 2d=-
+  # 7 answer    dispatched=2026-09-30T13:19:10.499Z won-by=2026-09-30T13:19:15.591Z gemini-3.5-flash-lite  at=4594 disp->won=5092 G=490 C=717 cues->ft=2 ft=5801 2d=-
+  # 8 answer    dispatched=2026-09-30T13:20:40.860Z won-by=2026-09-30T13:20:47.352Z gemini-3.5-flash-lite  at=5649 disp->won=6492 G=830 C=41 cues->ft=9 ft=6520 2d=-
+  # 9 answer    dispatched=2026-09-30T13:23:17.196Z won-by=2026-09-30T13:23:21.987Z gemini-3.5-flash-lite  at=4240 disp->won=4791 G=540 C=348 cues->ft=5 ft=5128 2d=-
+  #10 answer    dispatched=2026-09-30T13:24:41.743Z won-by=2026-09-30T13:24:53.674Z gemini-3.5-flash-lite  at=5035 disp->won=11931 G=6879 C=1170 cues->ft=4 ft=13084 2d=-
+  #11 answer    dispatched=2026-09-30T13:27:50.341Z won-by=2026-09-30T13:27:55.071Z gemini-3.5-flash-lite  at=3891 disp->won=4730 G=823 C=158 cues->ft=3 ft=4872 2d=-
+  #12 answer    dispatched=2026-09-30T13:29:18.084Z won-by=2026-09-30T13:29:23.489Z gemini-3.5-flash-lite  at=4722 disp->won=5405 G=674 C=131 cues->ft=3 ft=5527 2d=-
+  #13 answer    dispatched=2026-09-30T13:31:55.068Z won-by=2026-09-30T13:31:59.905Z gemini-3.5-flash-lite  at=4339 disp->won=4837 G=489 C=549 cues->ft=2 ft=5377 2d=-
+  #14 answer    dispatched=2026-09-30T13:33:22.012Z won-by=2026-09-30T13:33:27.898Z gemini-3.5-flash-lite  at=4695 disp->won=5886 G=1165 C=551 cues->ft=5 ft=6411 2d=-
+  #15 answer    dispatched=2026-09-30T13:35:57.804Z won-by=2026-09-30T13:36:03.576Z gemini-3.5-flash-lite  at=4863 disp->won=5772 G=897 C=333 cues->ft=6 ft=6093 2d=-
+  #16 answer    dispatched=2026-09-30T13:37:15.989Z won-by=2026-09-30T13:37:21.050Z gemini-3.5-flash-lite  at=4239 disp->won=5061 G=812 C=103 cues->ft=4 ft=5154 2d=-
+  #17 answer    dispatched=2026-09-30T13:38:32.443Z won-by=2026-09-30T13:38:37.610Z gemini-3.5-flash-lite  at=4642 disp->won=5167 G=513 C=214 cues->ft=4 ft=5369 2d=-
+  #18 answer    dispatched=2026-09-30T13:39:53.767Z won-by=2026-09-30T13:39:58.918Z gemini-3.5-flash-lite  at=4660 disp->won=5151 G=483 C=170 cues->ft=4 ft=5313 2d=-
+  #19 answer    dispatched=2026-09-30T13:41:13.608Z won-by=2026-09-30T13:41:18.558Z gemini-3.5-flash-lite  at=4059 disp->won=4950 G=880 C=338 cues->ft=2 ft=5277 2d=-
+  #20 answer    dispatched=2026-09-30T13:42:52.331Z won-by=2026-09-30T13:42:56.915Z gemini-3.5-flash-lite  at=3952 disp->won=4584 G=625 C=151 cues->ft=5 ft=4728 2d=-
+  #21 answer    dispatched=2026-09-30T13:44:12.688Z won-by=2026-09-30T13:44:17.667Z gemini-3.5-flash-lite  at=4447 disp->won=4979 G=524 C=8 cues->ft=2 ft=4979 2d=-
+  #22 answer    dispatched=2026-09-30T13:45:53.258Z won-by=2026-09-30T13:45:58.297Z gemini-3.5-flash-lite  at=4511 disp->won=5039 G=521 C=397 cues->ft=3 ft=5429 2d=-

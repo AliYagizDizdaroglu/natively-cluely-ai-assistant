@@ -1,0 +1,84 @@
+br1           once 40/40; doubles []; never []; reorders under the jitter rule 4
+  R1a unmatched replay classifies: 0
+  R1b recorded classifies never matched: 2
+      10:36:15.524 f=1 question/model [pre-roll]
+      11:00:27.204 f=2 question/model [race: a mark +4 ms from the ask]
+  R1c log not-a-question closes 1, not reproduced within 100 ms: 0
+  R1d first-dispatch source mismatches: 0 []
+  R1e first-dispatch time > 100 ms with no signal: 0 []; excluded by a signal: 5/40 [S1Q02[vad-offset +584] (would miss -600) S1Q02F[vad-offset +4129; blip x1] (would miss -4136) S1Q03F[app-held gate=53218; blip x6] (would miss -7648) S1Q08[blip x1] (would miss +3698) S1Q10F[app-timer-late: the log's dispatch rode on a mark (gate=1634)] (within 100 anyway)]
+cuesmoke      once 19/20; doubles [S1Q08]; never []; reorders under the jitter rule 3
+  R1a unmatched replay classifies: 0
+  R1b recorded classifies never matched: 1
+      13:11:47.693 f=1 question/model [pre-roll]
+  R1c log not-a-question closes 0, not reproduced within 100 ms: 0
+  R1d first-dispatch source mismatches: 0 []
+  R1e first-dispatch time > 100 ms with no signal: 0 []; excluded by a signal: 2/20 [S1Q08F[app-timer-late: the log's dispatch rode on a mark (gate=3207)] (would miss -1987) S1Q10F[app-timer-late: the log's dispatch rode on a mark (gate=1830)] (within 100 anyway)]
+cuesmoke2     once 20/20; doubles []; never []; reorders under the jitter rule 1
+  R1a unmatched replay classifies: 0
+  R1b recorded classifies never matched: 1
+      02:02:54.034 f=2 question/model [pre-roll]
+  R1c log not-a-question closes 2, not reproduced within 100 ms: 0
+  R1d first-dispatch source mismatches: 0 []
+  R1e first-dispatch time > 100 ms with no signal: 0 []; excluded by a signal: 1/20 [S1Q08F[app-held gate=4312] (within 100 anyway)]
+s50b          once 40/40; doubles []; never []; reorders under the jitter rule 6
+  R1a unmatched replay classifies: 0
+  R1b recorded classifies never matched: 0
+  R1c log not-a-question closes 1, not reproduced within 100 ms: 0
+  R1d first-dispatch source mismatches: 0 []
+  R1e first-dispatch time > 100 ms with no signal: 0 []; excluded by a signal: 1/40 [S1Q10F[app-timer-late: the log's dispatch rode on a mark (gate=1779)] (within 100 anyway)]
+s50c          once 40/40; doubles []; never []; reorders under the jitter rule 4
+  R1a unmatched replay classifies: 0
+  R1b recorded classifies never matched: 2
+      07:13:36.583 f=1 question/model [pre-roll]
+      07:25:04.458 f=2 question/model [race: a mark +166 ms from the ask]
+  R1c log not-a-question closes 1, not reproduced within 100 ms: 0
+  R1d first-dispatch source mismatches: 0 []
+  R1e first-dispatch time > 100 ms with no signal: 0 []; excluded by a signal: 14/40 [S1Q01[vad-offset -700] (would miss +698) S1Q01F[vad-offset -709] (would miss +706) S1Q02[vad-offset -686] (would miss +677) S1Q02F[vad-offset -714] (would miss +700) S1Q03[vad-offset -702] (would miss +697) S1Q03F[vad-offset -693] (would miss +692) S1Q04[vad-offset -720] (would miss +716) S1Q04F[vad-offset -688; app-timer-late: the log's dispatch rode on a mark (gate=1369)] (would miss +521) S1Q05[vad-offset -703] (would miss +701) S1Q05F[vad-offset -689] (would miss +681) S1Q06[vad-offset -704] (would miss +703) S1Q06F[vad-offset -706] (would miss +694) S1Q07[vad-offset -715] (would miss +700) S1Q10F[app-timer-late: the log's dispatch rode on a mark (gate=1665)] (within 100 anyway)]
+s50c-peritem  once 40/40; doubles []; never []; reorders under the jitter rule 4
+  R1a unmatched replay classifies: 0
+  R1b recorded classifies never matched: 1
+      07:13:36.583 f=1 question/model [pre-roll]
+  R1c log not-a-question closes 1, not reproduced within 100 ms: 0
+  R1d first-dispatch source mismatches: 0 []
+  R1e first-dispatch time > 100 ms with no signal: 0 []; excluded by a signal: 1/40 [S1Q10F[app-timer-late: the log's dispatch rode on a mark (gate=1665)] (within 100 anyway)]
+s50d          once 39/40; doubles []; never [S2Q09]; reorders under the jitter rule 2
+  R1a unmatched replay classifies: 0
+  R1b recorded classifies never matched: 0
+  R1c log not-a-question closes 10, not reproduced within 100 ms: 0
+  R1d first-dispatch source mismatches: 0 []
+  R1e first-dispatch time > 100 ms with no signal: 0 []; excluded by a signal: 1/40 [S1Q10F[app-timer-late: the log's dispatch rode on a mark (gate=1401)] (within 100 anyway)]
+s50e          once 40/40; doubles []; never []; reorders under the jitter rule 3
+  R1a unmatched replay classifies: 0
+  R1b recorded classifies never matched: 1
+      07:13:15.761 f=1 question/model [pre-roll]
+  R1c log not-a-question closes 0, not reproduced within 100 ms: 0
+  R1d first-dispatch source mismatches: 0 []
+  R1e first-dispatch time > 100 ms with no signal: 0 []; excluded by a signal: 2/40 [S1Q10F[app-timer-late: the log's dispatch rode on a mark (gate=1844)] (within 100 anyway) S2Q05[app-timer-late: the log's dispatch rode on a mark (gate=1750)] (within 100 anyway)]
+s50f          once 40/40; doubles []; never []; reorders under the jitter rule 6
+  R1a unmatched replay classifies: 0
+  R1b recorded classifies never matched: 1
+      07:13:17.463 f=1 question/model [pre-roll]
+  R1c log not-a-question closes 1, not reproduced within 100 ms: 0
+  R1d first-dispatch source mismatches: 0 []
+  R1e first-dispatch time > 100 ms with no signal: 0 []; excluded by a signal: 1/40 [S1Q10F[app-timer-late: the log's dispatch rode on a mark (gate=1730)] (within 100 anyway)]
+s50g          once 40/40; doubles []; never []; reorders under the jitter rule 6
+  R1a unmatched replay classifies: 0
+  R1b recorded classifies never matched: 0
+  R1c log not-a-question closes 0, not reproduced within 100 ms: 0
+  R1d first-dispatch source mismatches: 0 []
+  R1e first-dispatch time > 100 ms with no signal: 0 []; excluded by a signal: 1/40 [S1Q10F[app-timer-late: the log's dispatch rode on a mark (gate=1559)] (within 100 anyway)]
+s50i          once 40/40; doubles []; never []; reorders under the jitter rule 1
+  R1a unmatched replay classifies: 0
+  R1b recorded classifies never matched: 2
+      07:13:45.345 f=1 question/model [pre-roll]
+      07:14:01.830 f=1 question/model [pre-roll]
+  R1c log not-a-question closes 1, not reproduced within 100 ms: 0
+  R1d first-dispatch source mismatches: 0 []
+  R1e first-dispatch time > 100 ms with no signal: 0 []; excluded by a signal: 3/40 [S1Q10F[app-timer-late: the log's dispatch rode on a mark (gate=1694)] (within 100 anyway) S2Q05[app-timer-late: the log's dispatch rode on a mark (gate=1778)] (within 100 anyway) S2Q09[app-held gate=6011] (within 100 anyway)]
+s50j          once 40/40; doubles []; never []; reorders under the jitter rule 1
+  R1a unmatched replay classifies: 0
+  R1b recorded classifies never matched: 1
+      07:13:28.194 f=1 question/model [pre-roll]
+  R1c log not-a-question closes 3, not reproduced within 100 ms: 0
+  R1d first-dispatch source mismatches: 0 []
+  R1e first-dispatch time > 100 ms with no signal: 0 []; excluded by a signal: 3/40 [S1Q10F[app-held gate=7453] (within 100 anyway) S2Q05[app-timer-late: the log's dispatch rode on a mark (gate=1752)] (within 100 anyway) S2Q09[app-timer-late: the log's dispatch rode on a mark (gate=3205)] (would miss -1038)]

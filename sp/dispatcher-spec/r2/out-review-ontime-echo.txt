@@ -1,0 +1,6 @@
+on-time Live claims (<= 10 s after their clip) in 15 non-holdout whole-turn hours: 505
+ABSORBED by the spec's echo rule while their own turn is open (remembered >= 0.5 and > own): 1
+  16T08-42-43-s50g   08:09:57 S2Q01F  +1.7s own 0.47 remembered 0.63 (S2Q01) q="Of the RAG pipeline stages (ingestion, parsing, chunking, embedding, retrieval, "
+near (remembered >= 0.5 but own higher, or remembered >= 0.4 within 0.2 of own): 1
+  30T11-45-30-br1    11:22:15 S2Q04F  +3.4s own 0.58 remembered 0.50 (S2Q04) q="Modify your Reciprocal Rank Fusion implementation to accept a configurable weigh"
+own - remembered margin: min -0.16, p5 0.51, p50 0.83

@@ -1,0 +1,11 @@
+{
+  "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Walks every stage correctly, hybrid plus cross-encoder, tied to Textract work; generation stage thin; about ninety words, slightly over spoken budget."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Defines unit, denominator, construction and uncertainty for all three metrics credibly; but roughly 215 words in three paragraphs is far too long spoken."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Compares all three approaches with a concrete mid-stream tool-switch example and the latency trade-off; 'only way' overstates; about 150 words, trimmable."},
+  "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct RRF: accumulate one over c plus rank across lists, sum duplicates, sort descending with id tiebreak, slice top k. Natural spoken prose."},
+  "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Greedy relevance sort, dedup set, per-document cap of two, skip chunks exceeding remaining budget — every constraint covered. Spoken length fine; underscore name minor."},
+  "S2Q07": {"correctness": 0, "on_topic": 0, "delivery": 1, "reason": "Answers when agents justify complexity instead of the multi-tenant design; no index organization, metadata, permissions or evaluation. Would embarrass the candidate."},
+  "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Versioned dual-write, batched backfill with continued sync, shadow gold-set comparison, canary cutover, flag rollback — all six asked for. About 130 words."},
+  "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct Azure mapping: Blob, Event Grid, Service Bus, AKS, AI Search vectors, Azure OpenAI, Monitor, plus managed-versus-custom rationale. Around 125 words."},
+  "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Idempotent upsert by document id, redelivery safe, Postgres status table. Calling embedding write and ack 'coupled' is loose. About 120 words."}
+}

@@ -1,0 +1,24 @@
+OK  healthy: exit 0, DONE in go.log
+OK  healthy: the calls came in this order: probe once, then run1 extract1 mechanics, run2 extract2 mechanics, run3 extract3 mechanics
+OK  healthy: the reps never overlap (rep k ends before rep k+1 starts) and each was started as `run.mjs --rep k` with the l20d folder as its working directory
+OK  healthy: the health probe ran with the l20 folder as its working directory, before r1 started
+OK  healthy: run files, answers files, three filter.json sidecars with the stub filter's sha256, console files; the lock is gone
+OK  healthy: the pre-flight console went to l20/health/adhoc-l20d-<stamp>.console.txt
+OK  a second go.mjs while a lock exists: exit 8, nothing called, the other's lock NOT removed
+OK  instruction.txt one byte off -> exit 2, nothing called, no lock left
+OK  the prompts file changed -> exit 2, nothing called
+OK  the probe answers 4/5 -> exit 4, only the probe ran
+OK  the probe sees an abnormal close -> exit 4, no rep
+OK  r2 answers 10 of 38 -> exit 7 (broken window), r3 never run
+OK  r1 exits 3 but wrote its run file: counts as played (CUT SHORT), extracted and read, the chain goes on to DONE
+OK  run.mjs exits 2 and wrote no run file (the instruction-hash refusal path) -> exit 5, no extraction
+OK  a rep that hangs is killed at its timeout (1.5 s here): "exit signal SIGTERM", counted as played (CUT SHORT), extracted, the chain goes on
+OK  r1 already done -> skipped; the probe still runs; r2 and r3 run
+OK  a run file without its answers file -> REFUSED, exit 3, nothing called (never overwritten)
+OK  the extraction exits non-zero -> exit 5, no mechanics
+OK  the mechanics print no ARM line -> exit 5
+OK  the filter file changed and check-extract passes -> the chain runs (check-extract was called), the sidecars carry the NEW sha256
+OK  the filter file changed and check-extract fails -> exit 2, no probe, no rep
+OK  the registered filter hash -> check-extract is never called
+OK  the real l20d folder has no go.lock, no runs/ folder and no go.log (go.mjs was never run there)
+GO.MJS WIRING CALIBRATION OK

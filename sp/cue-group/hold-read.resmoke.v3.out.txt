@@ -1,0 +1,42 @@
+run 2026-09-30T13-46-52-cuesmoke  window 2026-09-30T12:56:45.277Z .. 2026-09-30T13:46:51.623Z
+lines: cues 24 (empty 0), budget 23, won-by 24; diag: invoked 24, first token 22, word budget 23
+R2  cues -> budget            : n 23, under 15 ms 16, median 8 ms, p90 152 ms, min 3 ms, max 861 ms, unpaired 1
+     in log order: 9, 43, 4, 3, 13, 6, 152, 3, 18, 8, 8, 5, 6, 3, 12, 20, 6, 6, 6, 29, 861, 469, 5
+     1 pair(s) with words=0 (a block-only or empty answer: no prose to time). Without them: n 22, under 15 ms 16, median 7 ms
+R1  won by -> cues            : n 24, under 15 ms 3, median 209.5 ms, p90 547 ms, min 6 ms, max 1166 ms, unpaired 0
+     in log order: 303, 7, 13, 219, 130, 209, 102, 236, 715, 32, 343, 1166, 155, 128, 547, 546, 327, 99, 210, 166, 336, 146, 6, 394
+T   won by -> budget          : n 23, under 15 ms 0, median 312 ms, p90 718 ms, min 17 ms, max 1174 ms, unpaired 1
+     in log order: 312, 50, 17, 222, 222, 108, 388, 718, 50, 351, 1174, 160, 134, 550, 558, 347, 105, 216, 172, 365, 1007, 475, 399
+C   won by -> first token     : n 22, under 15 ms 1, median 218.5 ms, p90 551 ms, min 8 ms, max 1170 ms, unpaired 2
+     in log order: 310, 15, 220, 217, 105, 240, 717, 41, 348, 1170, 158, 131, 549, 551, 333, 103, 214, 170, 338, 151, 8, 397
+B   first token -> word budget: n 22, under 15 ms 17, median 4 ms, p90 149 ms, min 1 ms, max 858 ms, unpaired 0
+     in log order: 3, 3, 3, 5, 5, 149, 2, 10, 4, 7, 2, 4, 1, 8, 15, 2, 3, 2, 28, 858, 467, 4
+     per finished answer, in log order (ms): R1 / R2 / T | B / C / cues->first token   words   (the whole log: the readiness probe's answers are in it)
+       13:11:52Z    303 /     9 /   312 |     3 /   310 /     7   52  gemini-3.5-flash-lite
+       13:12:08Z      7 /    43 /    50 |     - /     - /     -    0  gemini-3.5-flash-lite
+       13:12:36Z     13 /     4 /    17 |     3 /    15 /     2   63  gemini-3.5-flash-lite
+       13:13:44Z    219 /     3 /   222 |     3 /   220 /     1   59  gemini-3.5-flash-lite
+       13:15:11Z    209 /    13 /   222 |     5 /   217 /     8   53  gemini-3.5-flash-lite
+       13:16:36Z    102 /     6 /   108 |     5 /   105 /     3   83  gemini-3.5-flash-lite
+       13:17:52Z    236 /   152 /   388 |   149 /   240 /     4   74  gemini-3.5-flash-lite
+       13:19:16Z    715 /     3 /   718 |     2 /   717 /     2   59  gemini-3.5-flash-lite
+       13:20:47Z     32 /    18 /    50 |    10 /    41 /     9  131  gemini-3.5-flash-lite
+       13:23:22Z    343 /     8 /   351 |     4 /   348 /     5   59  gemini-3.5-flash-lite
+       13:24:54Z   1166 /     8 /  1174 |     7 /  1170 /     4   81  gemini-3.5-flash-lite
+       13:27:55Z    155 /     5 /   160 |     2 /   158 /     3   57  gemini-3.5-flash-lite
+       13:29:23Z    128 /     6 /   134 |     4 /   131 /     3   78  gemini-3.5-flash-lite
+       13:32:00Z    547 /     3 /   550 |     1 /   549 /     2   71  gemini-3.5-flash-lite
+       13:33:28Z    546 /    12 /   558 |     8 /   551 /     5   79  gemini-3.5-flash-lite
+       13:36:03Z    327 /    20 /   347 |    15 /   333 /     6   59  gemini-3.5-flash-lite
+       13:37:21Z     99 /     6 /   105 |     2 /   103 /     4   98  gemini-3.5-flash-lite
+       13:38:37Z    210 /     6 /   216 |     3 /   214 /     4   84  gemini-3.5-flash-lite
+       13:39:59Z    166 /     6 /   172 |     2 /   170 /     4   55  gemini-3.5-flash-lite
+       13:41:18Z    336 /    29 /   365 |    28 /   338 /     2   93  gemini-3.5-flash-lite
+       13:42:57Z    146 /   861 /  1007 |   858 /   151 /     5   84  gemini-3.5-flash-lite
+       13:44:18Z      6 /   469 /   475 |   467 /     8 /     2   94  gemini-3.5-flash-lite
+       13:45:58Z    394 /     5 /   399 |     4 /   397 /     3   71  gemini-3.5-flash-lite
+     C by winner: gemini-3.5-flash-lite n 22 median 218.5 ms
+the hold, by the early-close expectation: counted answers (won-by, a non-empty block, words, stream >= 50 ms) n 21; R2 under 15 ms 15; B under 15 ms 16
+     left out: no won-by line 0; no block, an empty block or a redirect 0; no words 1; a stream under 50 ms 1
+     rule: GONE = both at most a quarter of n; NOT GONE = either at least half; else, or n under 12, NO VERDICT
+HOLD NOT GONE (R2 and B at least half)

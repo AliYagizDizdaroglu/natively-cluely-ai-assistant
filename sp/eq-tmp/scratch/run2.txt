@@ -1,0 +1,51 @@
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-lab/sp/eq-tmp/scratch
+
+ ❯ electron/llm/earlierQuestion.parity.test.ts (3 tests | 2 failed | 1 skipped) 2037ms
+   × parity with the replay reference (local fixtures) > three hours are present, and the reference is beside them 11ms
+     → expected [ 'turn-parity-s50k.json' ] to deeply equal [ 'turn-parity-s50k.json', …(2) ]
+   × parity with the replay reference (local fixtures) > turn-parity-s50k.json: every entry reproduces its (cue, block, sha256) and the reference's (cue, why, block) 2024ms
+     → spawnSync C:\Program Files\nodejs\node.exe ETIMEDOUT
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/llm/earlierQuestion.parity.test.ts > parity with the replay reference (local fixtures) > three hours are present, and the reference is beside them
+AssertionError: expected [ 'turn-parity-s50k.json' ] to deeply equal [ 'turn-parity-s50k.json', …(2) ]
+
+- Expected
++ Received
+
+  Array [
+    "turn-parity-s50k.json",
+-   "turn-parity-s50l.json",
+-   "turn-parity-s50m.json",
+  ]
+
+ ❯ electron/llm/earlierQuestion.parity.test.ts:37:23
+     35| describe.skipIf(FILES.length === 0)('parity with the replay reference …
+     36|     it('three hours are present, and the reference is beside them', ()…
+     37|         expect(FILES).toEqual(['turn-parity-s50k.json', 'turn-parity-s…
+       |                       ^
+     38|         expect(fs.existsSync(REF_PATH)).toBe(true);
+     39|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  electron/llm/earlierQuestion.parity.test.ts > parity with the replay reference (local fixtures) > turn-parity-s50k.json: every entry reproduces its (cue, block, sha256) and the reference's (cue, why, block)
+Error: spawnSync C:\Program Files\nodejs\node.exe ETIMEDOUT
+ ❯ runReference electron/llm/earlierQuestion.parity.test.ts:26:17
+     24| function runReference(inputs: unknown[]): Array<{ block: string; cue: …
+     25|     // timeout: a sync call stops vitest's testTimeout from firing, so…
+     26|     const out = execFileSync(process.execPath, ['--input-type=module',…
+       |                 ^
+     27|     try {
+     28|         return JSON.parse(out.toString('utf8'));
+ ❯ electron/llm/earlierQuestion.parity.test.ts:46:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 skipped (3)
+   Start at  16:35:39
+   Duration  2.68s (transform 115ms, setup 0ms, collect 132ms, tests 2.04s, environment 0ms, prepare 160ms)
+

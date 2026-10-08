@@ -1,0 +1,34 @@
+L04#1     finals 7 | missing vs script: none | BOUNDARY LOSS unresumed-tail "upstream data regularly arrive" FALSE +2959ms (F2 "data regularly arrives late or gets corr")
+          repaired: "Now a data engineering one. You own a feature pipeline in Airflow that builds daily features for a fraud model from about a dozen upstream tables, and the upstr" | after repair missing: none
+S2Q01F#1  finals 2 | missing vs script: none | after repair missing: none
+S2Q03F#1  finals 2 | missing vs script: none | after repair missing: none
+S2Q07F#1  finals 2 | missing vs script: none | after repair missing: none
+S2Q10F#1  finals 2 | missing vs script: none | after repair missing: none
+S1Q07#1   finals 6 | missing vs script: paths | after repair missing: paths
+S2Q04#1   finals 6 | missing vs script: document | after repair missing: document
+S3Q10#1   finals 7 | missing vs script: none | after repair missing: none
+L01#1     finals 6 | missing vs script: five thousand | after repair missing: five thousand
+S5Q07#1   finals 6 | missing vs script: none | after repair missing: none
+L04#2     finals 7 | missing vs script: none | after repair missing: none
+S2Q01F#2  finals 2 | missing vs script: none | after repair missing: none
+S2Q03F#2  finals 2 | missing vs script: none | after repair missing: none
+S2Q07F#2  finals 2 | missing vs script: none | after repair missing: none
+S2Q10F#2  finals 2 | missing vs script: none | after repair missing: none
+S1Q07#2   finals 6 | missing vs script: paths | after repair missing: paths
+S2Q04#2   finals 6 | missing vs script: document | after repair missing: document
+S3Q10#2   finals 7 | missing vs script: none | BOUNDARY LOSS unresumed-tail "as" FALSE +4198ms (F2 "after public access to an upstream servi") | after repair missing: none
+L01#2     finals 6 | missing vs script: five thousand | after repair missing: five thousand
+S5Q07#2   finals 6 | missing vs script: none | after repair missing: none
+L04#3     finals 8 | missing vs script: or backfill | after repair missing: or backfill
+S2Q01F#3  finals 2 | missing vs script: none | after repair missing: none
+S2Q03F#3  finals 2 | missing vs script: none | after repair missing: none
+S2Q07F#3  finals 2 | missing vs script: none | after repair missing: none
+S2Q10F#3  finals 2 | missing vs script: none | after repair missing: none
+S1Q07#3   finals 6 | missing vs script: paths | after repair missing: paths
+S2Q04#3   finals 6 | missing vs script: document | after repair missing: document
+S3Q10#3   finals 7 | missing vs script: none | after repair missing: none
+L01#3     finals 6 | missing vs script: five thousand | after repair missing: five thousand
+S5Q07#3   finals 6 | missing vs script: none | after repair missing: none
+
+plays 30; cuts 37; resumed losses 0 (TRUE 0, FALSE 0); unresumed tails 2 (TRUE 0, FALSE 2); plays with a loss 2; plays the repair made more complete 0
+speech_final: on 53 of 174 finals; on 0 of 37 strict cut finals; on the cut final of 0 of 2 losses (v4 repairs none of those); utterance-ends 37; empty finals 35

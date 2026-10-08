@@ -1,0 +1,23 @@
+docs(golden): after8 flight report of record (levers 1-5 under Context ON)
+
+Hour 2026-09-07 07:13-08:14 UTC on gemini-3.1-flash-live-preview + Deepgram,
+Context toggle ON, JD in the notes box: judge 46 acceptable / 5 weak / 1
+"wrong" of 52 spoken (the wrong is the H02 head whose answer was superseded
+by its own double 1.1 s later; the delivered answer graded acceptable).
+Levers: W10, M27, H07, H09 recovered from after7 weak (M27 via an extend);
+6 extends, all correct, each 104-114 words (delivery 1; 4 of 6 restate the
+head); <user_context> appended on all 64 answers; 0 fallbacks; spoken
+words p50 58 by level 57/59/60, 0 cut, delivery-2 42 of 51 (after7 32 of
+57); TTFT p90 2.5 s; STT 0 closes / 0 lost (25 resolved) / 0 fragments;
+52/52 heard; chains 5x3 answered in context.
+
+Rows still red: W08 never answered - the 60 s answered window kept W07
+alive and questionReconcile.sameAnchor matched the shared "what is the
+difference between" frame (overlap 0.75), a rule the offline replay never
+modelled; H02 doubled - the whisper scenario merge produced a 3-content-
+word head ("has p 99 latency...") that no rule could tie to Live's full
+sentence ("P99"); one Live-invented question answered in the M11 window.
+Arms: 3.1 50/52, 3.5 48/52, gemma 38/50 (5 wrong). Coding cues C01-C03
+wrong in both flights (C02 replayed the previous spoken answer).
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

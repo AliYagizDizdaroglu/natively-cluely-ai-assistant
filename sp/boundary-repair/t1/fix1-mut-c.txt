@@ -1,0 +1,31 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts (58 tests | 1 failed) 23ms
+   × deepgramBoundaryRepair synthetic edges (the symptom's strings) > a punctuation-only final is no cut (it has no tokens) and does not throw 7ms
+     → expected 'How do you cut hallucinations in a ra…' to be 'you cut hallucinations in a rag answe…' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair synthetic edges (the symptom's strings) > a punctuation-only final is no cut (it has no tokens) and does not throw
+AssertionError: expected 'How do you cut hallucinations in a ra…' to be 'you cut hallucinations in a rag answe…' // Object.is equality
+
+Expected: "you cut hallucinations in a rag answer without just making it refuse?"
+Received: "How do you cut hallucinations in a rag answer without just making it refuse?"
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:112:14
+    110|     it('a punctuation-only final is no cut (it has no tokens) and does…
+    111|         expect(play([I, { ...F1, text: '?' }, { ...F2, text: 'you cut …
+    112|             .toBe('you cut hallucinations in a rag answer without just…
+       |              ^
+    113|     });
+    114| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 57 passed (58)
+   Start at  17:47:15
+   Duration  2.57s (transform 90ms, setup 0ms, collect 93ms, tests 23ms, environment 1.38s, prepare 177ms)
+

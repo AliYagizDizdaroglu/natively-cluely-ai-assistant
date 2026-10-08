@@ -1,0 +1,12 @@
+{
+ "startedAt": "2026-09-26T17:00:10.000Z",
+ "startedMs": 1790427610000,
+ "clock": "playsync",
+ "startDebug": 269,
+ "startDiag": 0,
+ "items": [],
+ "endedAt": "2026-09-26T17:03:40.000Z",
+ "endedMs": 1790427820000,
+ "endDebug": 5636,
+ "endDiag": 275
+}

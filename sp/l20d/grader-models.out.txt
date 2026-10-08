@@ -1,0 +1,9 @@
+a9889480909fd9572  verdicts-A-g1.json   claude-opus-5-5 x8  OK
+a7da794aca1e0cf8c  verdicts-A-g2.json   claude-opus-5-5 x7  OK
+a138d6f3c230a4930  verdicts-B-g1.json   claude-opus-5-5 x7  OK
+af23550b54dcfe7d7  verdicts-B-g2.json   claude-opus-5-5 x6  OK
+a35be7a8e0bc1ab54  verdicts-C-g1.json   claude-opus-5-5 x7  OK
+a15f3051573a0afb5  verdicts-C-g2.json   claude-opus-5-5 x8  OK
+ae7a8446442f892a6  verdicts-D-g1.json   claude-opus-5-5 x11  OK
+a7222f180cd2c45b0  verdicts-D-g2.json   claude-opus-5-5 x11  OK
+8 distinct verdict files; all graders ran on claude-opus-5-5 only, one verdict file each

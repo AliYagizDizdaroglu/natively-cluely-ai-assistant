@@ -1,0 +1,18 @@
+2026-10-06T01-12-56-eq: answers 42 (real 42, failed 0), superseded 0, cue lines 42 (expected 42), malformed 0, block-only 0, trimmed 8
+  trimmed: {"rawLines":3,"dropped":[],"cut":["Edge cases for k and labels"],"cleaned":[]}
+  trimmed: {"rawLines":4,"dropped":["Filter retraining data to un-influenced cohorts"],"cut":["Deterministic experiment assignment by subscriber hash","Join delayed outcomes using PostgreSQL window joins"],"cleaned":[]}
+  trimmed: {"rawLines":3,"dropped":[],"cut":["ACR images, app service inference, schedules"],"cleaned":[]}
+  trimmed: {"rawLines":3,"dropped":[],"cut":["Agent orchestration and judge bias checks"],"cleaned":[]}
+  trimmed: {"rawLines":2,"dropped":[],"cut":["Fixed versus decomposition versus dynamic tools"],"cleaned":[]}
+  trimmed: {"rawLines":3,"dropped":[],"cut":["One based rank with constant c"],"cleaned":[]}
+  trimmed: {"rawLines":2,"dropped":[],"cut":["Maximal Marginal Relevance and iterative retrieval"],"cleaned":[]}
+  trimmed: {"rawLines":3,"dropped":[],"cut":["Azure Blob, Event Grid, Service Bus"],"cleaned":[]}
+  hedge won by: gemini-3.5-flash-lite 39, gemini-3.1-flash-lite 3
+  e.g. [Answer] cues: ["Layer caching","Instruction ordering"]
+  e.g. [Answer] cues: ["Custom metrics (RPS/Queue)","KEDA for event-driven"]
+  e.g. [Answer] cues: ["Tabular data handling","Fast FastAPI deployment","Logistic regression baseline"]
+CUE SMOKE CLEAN
+
+--- stderr ---
+
+--- exit 0

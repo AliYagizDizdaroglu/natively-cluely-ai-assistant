@@ -1,0 +1,15 @@
+﻿final module 1592 B 52e2cd630c54fc95; test 3793 B fb02da7b501baa98
+log 2026-09-09T15-00-55-s50a: 321 final lines, 186 with empty text, 0 whitespace-padded
+log 2026-09-08T08-44-56-after9: 446 final lines, 262 with empty text, 0 whitespace-padded
+[as expected] control: the final module: 0 failed | 5 passed (5); failing: none
+[as expected] old inline parse (the brief's Step 3 calibration: 2 failed | 3 passed): 2 failed | 3 passed (5); failing: T1 restored+raw; T2 interims/empties/since
+[as expected] adjacency: a repair line up to 2 lines after the final is applied: 3 failed | 2 passed (5); failing: T1 restored+raw; T2 interims/empties/since; T3 not-adjacent
+[as expected] direction: the repair line is looked for BEFORE the final: 2 failed | 3 passed (5); failing: T1 restored+raw; T2 interims/empties/since
+[as expected] order: raw text first, restored words after: 2 failed | 3 passed (5); failing: T1 restored+raw; T2 interims/empties/since
+[as expected] no empty-text filter: 3 failed | 2 passed (5); failing: P1 s50a parity; P2 after9 parity; T1 restored+raw
+[info] no since filter: 3 failed | 2 passed (5); failing: P1 s50a parity; P2 after9 parity; T2 interims/empties/since
+[info] no trim: 0 failed | 5 passed (5); failing: none
+[info] since exclusive (> instead of >=): 0 failed | 5 passed (5); failing: none
+junction removed: true; MAIN's vitest still present: true
+scratch tree deleted: true
+variants that differed from the prediction: 0

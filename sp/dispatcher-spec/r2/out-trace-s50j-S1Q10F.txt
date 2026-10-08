@@ -1,0 +1,20 @@
+===== s50j S1Q10F [fix]
+2026-09-19T08-22-41-s50j [fix jitter=50]: 40/40 once; doubles []; never []; drops 0; absorbed 4 (whisper 0); subs 3; unmatched 0; reorders 0; supersedes 2
+trace S1Q10F: {"n":1,"lat":6128,"budget":6228,"path":"unfinished","finished":false,"fromLive":false,"finals":2,"cov":"1.00","closes":["continuation-expired"],"live":["The application receives an authorization error af"],"logFirst":"07:47:39.314","logGate":7453,"vadDev":null,"blips":0,"voiceOff":"07:47:31.851"}
+  07:47:22.811 voice ON
+  07:47:26.251 voice OFF
+  07:47:27.171 voice ON
+  07:47:31.851 voice OFF
+  07:47:33.747 final "The application receives an authorization error after deployment."
+  07:47:36.777 final "How would you distinguish an identity problem from a permissions probl"
+  07:47:38.103 final "problem?"
+  07:47:34.147 classify finals=1
+  07:47:37.177 classify finals=2 REARMED
+  07:47:37.979 dispatch finals=2 fromLive=false live=1 path=unfinished "The application receives an authorization error after deploy"
+  07:47:38.503 supersede finals=3 fromLive=undefined live=1 "The application receives an authorization error after deploy"
+  07:47:46.503 close continuation-expired
+  07:47:34.870 <verdict not-a-question> {"kind":"declined","verdict":"not-a-question","again":false}
+  07:47:37.577 <verdict unknown SUBSTITUTED> {"kind":"declined","verdict":"unknown","again":true}
+  07:47:37.979 <live rv=match> {"kind":"revived","by":"live","rule":"forward","how":"residual","score":0.9230769230769231,"remScore":0.23076923076923078,"residual":13,"hits":12,"finals":2} q="The application receives an authorization error af"
+  07:47:39.995 <whisper rv=match> {"kind":"marked"} q="How would you distinguish an identity problem from"
+

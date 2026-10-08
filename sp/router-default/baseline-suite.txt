@@ -1,0 +1,6 @@
+﻿full serial suite, live-router @ 17d199d, before build:electron (--no-file-parallelism, temp cwd, --root WT)
+Test Files  1 failed | 109 passed | 1 skipped (111)
+Tests       1187 passed | 9 skipped (1196)
+the 1 failed file: electron/test/golden/interview60.prompts.test.ts, a suite-level import error: it needs dist-electron/electron/llm/promptCapture.js, absent before the build (0 tests ran).
+After build:electron it is rerun alone (see report).
+After build:electron, interview60.prompts.test.ts alone: 1 file passed, 7 tests passed. Effective baseline: 111 files (110 pass + 1 skipped), 1194 tests pass (1187+7), 9 skipped, 0 fail.

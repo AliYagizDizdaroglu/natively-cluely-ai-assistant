@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct XGBoost rationale (imbalance, missing values, latency) plus a logistic-regression baseline; natural spoken length."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic exactly right (2,850 TP, 57% precision, 30% recall) and flags the CV's 60%, but fraction notation needs smoothing aloud."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names a randomised holdout plus difference-in-differences controlling for seasonality and mix; concise and speakable."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct precision, recall and lift definitions with all three edge cases, but equation notation reads awkwardly aloud."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Shifts the chronological split back 30 days for the label window and fits ColumnTransformer on train only; telegraphic, article-dropping grammar."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "SQL is correct (LATERAL, COALESCE, ingested_at guard) but it is a raw code block, unspeakable as-is."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested stage and names feature store, registry and monitoring as shared, but runs far past 85 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Handles logging, bucket assignment, 30-day outcome join and reweighted retraining; clipped, article-dropping phrasing."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure mapping for every component with operational reasons, but roughly double the speakable length plus a 'tiered tiers' stumble."
+  },
+  "S1Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, private endpoints and env separation are right, but 'Azure AD DB Reader' is not a real role and Key Vault is misused for URLs."
+  },
+  "S2Q01": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every RAG stage correctly but reads a literal placeholder employer 'XYZ' aloud, and is well over length."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives unit, denominator, dataset construction and interval for all three metrics; F1's single denominator is loose and the answer is long."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Cleanly contrasts fixed retrieval, decomposition and a dynamic agent and says when the complexity pays."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct RRF summation with one-based ranks, deterministic ID tie-break and top-k return; tight and speakable."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Greedy relevance order with dedup, two-per-document cap and budget skip — every stated constraint honoured."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore(8), per-case wait_for and index-slotted results correctly isolate failures, but the API calls are read as code."
+  },
+  "S2Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sound index, metadata and ACL design, but per-tenant encryption of vectors inside a shared HNSW graph would break search; also long."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write versioned vectors, backfill, offline comparison, router cutover and rollback all covered; roughly twice the speakable length."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure service per component with a justified custom worker path, but too long and Service Bus ordering needs sessions."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-lock plus duplicate detection with a unique messageId row makes reprocessing idempotent; concise and natural."
+  }
+}

@@ -1,0 +1,1454 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant[39m
+
+[90mstdout[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter fragment suppression[2m > [22m[2mdoes not emit a question for a contentless fragment, but still acks it
+[22m[39m[LiveRouter] ignored fragment (no subject matter): "What is?"
+
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter connection lifecycle[2m > [22m[2mretries with backoff and hard-fails VISIBLY after exhausting quick attempts
+[22m[39m[LiveRouter] reconnecting (attempt 1/3) in 300ms — boom 503
+[LiveRouter] reconnecting (attempt 2/3) in 600ms — boom 503
+
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter connection lifecycle[2m > [22m[2mretries with backoff and hard-fails VISIBLY after exhausting quick attempts
+[22m[39m[LiveRouter] reconnecting (attempt 3/3) in 900ms — boom 503
+[LiveRouter] 3 quick attempts failed (boom 503) — visible-failed, retrying every 15s
+
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter connection lifecycle[2m > [22m[2mkeeps retrying slowly after visible failure and resurrects on success
+[22m[39m[LiveRouter] reconnecting (attempt 1/3) in 300ms — offline
+[LiveRouter] reconnecting (attempt 2/3) in 600ms — offline
+[LiveRouter] reconnecting (attempt 3/3) in 900ms — offline
+
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter connection lifecycle[2m > [22m[2mkeeps retrying slowly after visible failure and resurrects on success
+[22m[39m[LiveRouter] 3 quick attempts failed (offline) — visible-failed, retrying every 15s
+
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter connection lifecycle[2m > [22m[2mkeeps retrying slowly after visible failure and resurrects on success
+[22m[39m[LiveRouter] slow retry failed (offline) — next in 15s
+
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter connection lifecycle[2m > [22m[2mreconnects on unexpected close and reuses the stored resumption handle
+[22m[39m[LiveRouter] reconnecting (attempt 1/3) in 300ms — network reset
+
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter connection lifecycle[2m > [22m[2mhandles goAway by closing and reconnecting proactively
+[22m[39m[LiveRouter] reconnecting (attempt 1/3) in 300ms — server goAway (connection time limit)
+
+[90mstdout[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter audio write path[2m > [22m[2mbuffers audio while disconnected and replays it on open
+[22m[39m[LiveRouter] replaying 1 buffered gap chunk(s)
+
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter audio write path[2m > [22m[2mreplays audio spoken during a goAway reconnect gap
+[22m[39m[LiveRouter] reconnecting (attempt 1/3) in 300ms — server goAway (connection time limit)
+
+[90mstdout[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter audio write path[2m > [22m[2mreplays audio spoken during a goAway reconnect gap
+[22m[39m[LiveRouter] replaying 1 buffered gap chunk(s)
+
+[90mstdout[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter audio write path[2m > [22m[2mcaps the gap buffer at 20s, dropping the oldest audio
+[22m[39m[LiveRouter] replaying 20 buffered gap chunk(s)
+
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter expired-resumption recovery[2m > [22m[2mdrops an expired resumption handle so the next connect starts fresh
+[22m[39m[LiveRouter] resumption handle expired — reconnecting without it
+[LiveRouter] reconnecting (attempt 1/3) in 300ms — BidiGenerateContent session expired
+
+ [32m✓[39m electron/services/interviewerTurn.test.ts [2m([22m[2m43 tests[22m[2m)[22m[90m 29[2mms[22m[39m
+ [32m✓[39m electron/llm/prompts.test.ts [2m([22m[2m31 tests[22m[2m)[22m[90m 18[2mms[22m[39m
+ [32m✓[39m electron/services/questionReconcile.test.ts [2m([22m[2m21 tests[22m[2m)[22m[90m 17[2mms[22m[39m
+ [32m✓[39m src/lib/answerMessages.test.ts [2m([22m[2m23 tests[22m[2m)[22m[90m 30[2mms[22m[39m
+ [32m✓[39m electron/test/golden/interview60.judge.test.ts [2m([22m[2m18 tests[22m[2m)[22m[90m 35[2mms[22m[39m
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mfires detection after 1.5s of silence following a final interviewer segment
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mfires detection after 1.5s of silence following a final interviewer segment
+[22m[39m[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=10
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2msetEnabled(false) mutes the pipeline: no fast-path fire, no debounce fire
+[22m[39m[QuestionDetector] detection disabled
+[QuestionDetector] detection enabled
+[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=10
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2msetEnabled(false) cancels a pending debounce so it never fires late
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QuestionDetector] detection disabled
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mresets silence timer on each new interviewer segment
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] reset sincePrev=1000ms interruptedTimer=true credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=15
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mfires immediately on speaker change (interviewer -> user)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=15
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdrops detections below confidence threshold (default 0.6)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.40 q.len=15
+
+ [32m✓[39m electron/test/golden/interview60.flight.test.ts [2m([22m[2m20 tests[22m[2m)[22m[90m 33[2mms[22m[39m
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdrops detections where detected=false
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=false conf=0.90 q.len=0
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdedups: 70%+ similarity emits update with existing id
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=33
+[QD-timing] reset sincePrev=1500ms interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=40
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2msingle-flight: queues at most 1 pending detection
+[22m[39m[QD-timing] detect issued
+[QD-timing] coalesced (one in-flight; setting queuedTrigger=true)
+[QD-timing] coalesced (one in-flight; setting queuedTrigger=true)
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=19
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=20
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mclear() resets dedup cache and timers
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=12
+[QD-timing] reset sincePrev=1500ms interruptedTimer=false credited=0ms remaining=1500ms
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mclear() resets dedup cache and timers
+[22m[39m[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=12
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mcredits elapsed time since speechEndedAt against the silence debounce
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=1000ms remaining=500ms
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mcredits elapsed time since speechEndedAt against the silence debounce
+[22m[39m[QD-timing] debounce elapsed=500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=16
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mfires immediately when speechEndedAt is older than the full debounce window
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=2000ms remaining=0ms
+[QD-timing] debounce elapsed=0ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=16
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2muses the full debounce when speechEndedAt is absent (streaming/other providers)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2muses the full debounce when speechEndedAt is absent (streaming/other providers)
+[22m[39m[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=16
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mfires detection immediately when a final segment ends with a question mark
+[22m[39m[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.95 q.len=25
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mquestion-mark fast path cancels a pending debounce timer (no duplicate detect)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mquestion-mark fast path cancels a pending debounce timer (no duplicate detect)
+[22m[39m[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.95 q.len=22
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdoes not fast-path short question-mark fragments (< 3 words)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.95 q.len=3
+[QuestionDetector] dropping fragment (1 words): "ok?"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mclear() during in-flight detection drops the result (no chip emitted)
+[22m[39m[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=18
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mmerges the scenario sentence deterministically when the model returns only the bare question (H02 shape)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=31
+[QuestionDetector] merged scenario sentence into question: "A SageMaker endpoint has p99 latency creeping up. How do you diagnose and fix it?"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2ma short interviewer fragment ("Um.") between the statement and the question does not evict the statement from recentFinals (R36 fix wave)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] reset sincePrev=0ms interruptedTimer=true credited=0ms remaining=1500ms
+[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=31
+[QuestionDetector] merged scenario sentence into question: "A SageMaker endpoint has p99 latency creeping up. How do you diagnose and fix it?"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdegraded detection when client.detect() returns null (run 3, Ruling: heuristic chip when the detector is unavailable)[2m > [22m[2mW09: two STT finals ("...actually..." then " solve....") join and normalize into one heuristic chip
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] reset sincePrev=1000ms interruptedTimer=true credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=null
+[QuestionDetector] degraded: chip from heuristic (detector unavailable): "What problem does infrastructure as code actually solve"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdegraded detection when client.detect() returns null (run 3, Ruling: heuristic chip when the detector is unavailable)[2m > [22m[2mM10: "...for a production..." then " model...." joins into one heuristic chip
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] reset sincePrev=1000ms interruptedTimer=true credited=0ms remaining=1500ms
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdegraded detection when client.detect() returns null (run 3, Ruling: heuristic chip when the detector is unavailable)[2m > [22m[2mM10: "...for a production..." then " model...." joins into one heuristic chip
+[22m[39m[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=null
+[QuestionDetector] degraded: chip from heuristic (detector unavailable): "Which metrics would you put on a dashboard for a production model"
+
+ [32m✓[39m electron/test/golden/interview60.pass-record.test.ts [2m([22m[2m27 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m[90m 49[2mms[22m[39m
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdegraded detection when client.detect() returns null (run 3, Ruling: heuristic chip when the detector is unavailable)[2m > [22m[2ma fragment final produces no chip
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=null
+[QuestionDetector] degraded: no chip (not question-shaped): "yeah okay"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdegraded detection when client.detect() returns null (run 3, Ruling: heuristic chip when the detector is unavailable)[2m > [22m[2ma degraded chip deduplicates against an existing similar chip (update, not a new chip)
+[22m[39m[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=41
+[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=null
+[QuestionDetector] degraded: chip from heuristic (detector unavailable): "What is the time complexity of quicksort exactly?"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdifficulty (2026-09-08: logged per detection, carried on the chip, routes nothing)[2m > [22m[2ma client that does not report difficulty leaves it undefined on the chip
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=10
+
+ [32m✓[39m electron/services/QuestionDetector.test.ts [2m([22m[2m28 tests[22m[2m)[22m[90m 81[2mms[22m[39m
+[90mstderr[2m | electron/llm/verbalStreamFilter.test.ts[2m > [22m[2mfilterCodeFences — the app suppresses fenced blocks, and so must the arms[2m > [22m[2msuppresses a fenced block and keeps the prose around it
+[22m[39m[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+[90mstderr[2m | electron/llm/verbalStreamFilter.test.ts[2m > [22m[2mfilterCodeFences — the app suppresses fenced blocks, and so must the arms[2m > [22m[2msuppresses it when the text arrives one character at a time
+[22m[39m[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+ [32m✓[39m electron/llm/verbalStreamFilter.test.ts [2m([22m[2m145 tests[22m[2m)[22m[90m 185[2mms[22m[39m
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter expired-resumption recovery[2m > [22m[2mstill resumes with the handle for an ordinary (non-expiry) drop
+[22m[39m[LiveRouter] reconnecting (attempt 1/3) in 300ms — connection reset
+
+ [32m✓[39m electron/test/golden/interview60.metrics.test.ts [2m([22m[2m42 tests[22m[2m)[22m[33m 303[2mms[22m[39m
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter quota backoff[2m > [22m[2mbacks off 5 s on a quota close and reconnects without the resumption handle
+[22m[39m[LiveRouter] quota close #1 — backing off 5000ms, reconnecting fresh
+
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter quota backoff[2m > [22m[2mdoubles the pause on consecutive quota closes and clears it once real messages flow
+[22m[39m[LiveRouter] quota close #1 — backing off 5000ms, reconnecting fresh
+[LiveRouter] quota close #2 — backing off 10000ms, reconnecting fresh
+[LiveRouter] quota close #1 — backing off 5000ms, reconnecting fresh
+
+[90mstderr[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter quota backoff[2m > [22m[2man ordinary close still quick-retries
+[22m[39m[LiveRouter] reconnecting (attempt 1/3) in 300ms — connection closed
+
+ [32m✓[39m electron/audio/GeminiLiveRouter.test.ts [2m([22m[2m30 tests[22m[2m)[22m[33m 837[2mms[22m[39m
+   [33m[2m✓[22m[39m GeminiLiveRouter expired-resumption recovery[2m > [22mdrops an expired resumption handle so the next connect starts fresh [33m393[2mms[22m[39m
+   [33m[2m✓[22m[39m GeminiLiveRouter expired-resumption recovery[2m > [22mstill resumes with the handle for an ordinary (non-expiry) drop [33m381[2mms[22m[39m
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mfront speaks at once: one call, the hedge sentinel, and the back never starts
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mhonors NATIVELY_GEMMA_TTFT_MS and falls back to a Gemini model when Gemma stalls past it
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[LLMHelper] ⏱ Gemma produced no first token within the 50ms budget (attempt 1) — falling back to Gemini Flash
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mfront silent past the trigger: the back starts beside it and wins
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mfront answers slowly, past the trigger, but before the back: front wins, back is aborted
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mfront answers slowly, past the trigger, but before the back: front wins, back is aborted
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mfront answers slowly, past the trigger, but before the back: front wins, back is aborted
+[22m[39m[LLMHelper] verbal hedge: back started at 5000ms reason=trigger
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mretries Gemma on a transient 500 within the budget and keeps the answer on Gemma when a retry succeeds
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[LLMHelper] Gemma attempt 1/3 failed fast ({"error":{"code":500,"status":"INTERNAL","message":"Internal error encountered."}}) — retrying in 150ms
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mfront answers slowly, past the trigger, but before the back: front wins, back is aborted
+[22m[39m[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 6000ms; other=aborted
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mfront is slow, back fails before its first token: front still wins once it answers
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mh40c review M1: front yields nothing (empty stream), back yields tokens — the back is started with reason=front-empty and wins; the loser is labelled empty, not aborted
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mh40c review M1: both legs yield nothing — the generator ends without throwing, and the warn line names both empty
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: back started at 0ms reason=front-empty
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mboth legs fail before a first token: the fronts error propagates, as the opt-out stall race (NATIVELY_VERBAL_HEDGE=0) does
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: back started at 0ms reason=front-error
+
+[90mstdout[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2maborts the request when the consumer closes the stream early
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstdout[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2maborts the request when the consumer closes on the first token
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mthe front carries the level 3.5-lite honours (LOW mapped to HIGH); the back keeps LOW; same system bytes
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mthe front carries the level 3.5-lite honours (LOW mapped to HIGH); the back keeps LOW; same system bytes
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2maborts a primary stalled before its response headers at its deadline, before its late response
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 50ms)
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mthe front carries the level 3.5-lite honours (LOW mapped to HIGH); the back keeps LOW; same system bytes
+[22m[39m[LLMHelper] verbal hedge: back started at 5000ms reason=trigger
+[LLMHelper] verbal hedge: won by gemini-3.1-flash-lite at 5000ms; other=aborted
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mNATIVELY_VERBAL_HEDGE_TRIGGER_MS overrides the trigger
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=300ms
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mNATIVELY_VERBAL_HEDGE_TRIGGER_MS overrides the trigger
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mNATIVELY_VERBAL_HEDGE_TRIGGER_MS overrides the trigger
+[22m[39m[LLMHelper] verbal hedge: back started at 300ms reason=trigger
+[LLMHelper] verbal hedge: won by gemini-3.1-flash-lite at 300ms; other=aborted
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mclosing on the winners sentinel aborts the winners request
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mclosing on the winners sentinel aborts the winners request
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mtrigger path, closing on the winners sentinel: both legs end up aborted (the loser by the winner-selection abort, the winner by the close)
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mtrigger path, closing on the winners sentinel: both legs end up aborted (the loser by the winner-selection abort, the winner by the close)
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mtrigger path, closing on the winners sentinel: both legs end up aborted (the loser by the winner-selection abort, the winner by the close)
+[22m[39m[LLMHelper] verbal hedge: back started at 5000ms reason=trigger
+[LLMHelper] verbal hedge: won by gemini-3.1-flash-lite at 5000ms; other=aborted
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mboth legs fail on the trigger path (the front never answers by the trigger, then both fail): the fronts error propagates
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mboth legs fail on the trigger path (the front never answers by the trigger, then both fail): the fronts error propagates
+[22m[39m[LLMHelper] verbal hedge: back started at 5000ms reason=trigger
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mM1 (h40c review): both legs first tokens land in the same tick after the trigger — the loser is still aborted, and labelled aborted, not empty
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mdefault-on pin: with the variable UNSET the technical route takes the hedge — front 3.5-lite first, the hedge sentinel, the back never starts
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mopt-out pin: '0' behaves exactly like the previous stall race (3.1-lite first, 3.5-lite raced in at 10 s), and logs no hedge line
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mopt-out pin: '0' behaves exactly like the previous stall race (3.1-lite first, 3.5-lite raced in at 10 s), and logs no hedge line
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 10000ms — falling back to gemini-3.5-flash-lite
+
+[90mstderr[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2minvalid-value pin: an invalid flag value throws, naming the variable, instead of flying silently on or off
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.verbalHedge.test.ts[2m > [22m[2mthe verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-lite[2m > [22m[2mthe behavioral route takes the same hedge (one implementation): front 3.5-lite first
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+
+ [32m✓[39m electron/LLMHelper.verbalHedge.test.ts [2m([22m[2m19 tests[22m[2m)[22m[90m 172[2mms[22m[39m
+[90mstderr[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2maborts a primary stalled before its response headers at its deadline, before its late response
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 50ms — falling back to gemini-3.5-flash-lite
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mretries Gemma on a transient 500 within the budget and keeps the answer on Gemma when a retry succeeds
+[22m[39m[LLMHelper] Gemma recovered on attempt 2/3
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mdoes NOT retry a non-retryable error (bad key) — falls straight to Flash
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[LLMHelper] Gemma failed (non-retryable: {"error":{"code":400,"status":"INVALID_ARGUMENT","message":"API key not valid. API_KEY_INVALID"}}) — falling back to Gemini Flash
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mcaps Gemma retries at NATIVELY_GEMMA_MAX_ATTEMPTS then falls back to Flash
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[LLMHelper] Gemma attempt 1/3 failed fast ({"error":{"code":503,"status":"UNAVAILABLE","message":"overloaded"}}) — retrying in 150ms
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2moverride on: the technical route names the model it calls
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+[Answer] budget: words=6 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2moverride on: the technical route names the model it calls
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2moverride on: the behavioral route names the model it calls
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+[Answer] budget: words=6 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2ma stall switch reaches the bar, ahead of the words the other model wrote
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2ma stall switch reaches the bar, ahead of the words the other model wrote
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2ma stall switch reaches the bar, ahead of the words the other model wrote
+[22m[39m[LLMHelper] gemini-3.5-flash-lite stalled after 10000ms — falling back to gemini-3.1-flash-lite
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2ma stall switch reaches the bar, ahead of the words the other model wrote
+[22m[39m[Answer] budget: words=4 cut=no allowance=no
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mcaps Gemma retries at NATIVELY_GEMMA_MAX_ATTEMPTS then falls back to Flash
+[22m[39m[LLMHelper] Gemma attempt 2/3 failed fast ({"error":{"code":503,"status":"UNAVAILABLE","message":"overloaded"}}) — retrying in 150ms
+
+[90mstdout[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2maborts a primary stalled after its headers, before its first token at its deadline, before its late response
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 50ms)
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2moverride on: a 503 on 3.5-lite is answered by 3.1-lite, and the bar says so
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+[Answer] budget: words=5 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2moverride on: a 503 on 3.5-lite is answered by 3.1-lite, and the bar says so
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[WhatToAnswerLLM] verbal primary failed before first token (got status: 503 Service Unavailable) — redirecting to gemini-3.1-flash-lite
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2moverride on: when the fallback fails too, the message names the fallback that was tried
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2moverride on: when the fallback fails too, the message names the fallback that was tried
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[WhatToAnswerLLM] verbal primary failed before first token (got status: 503 Service Unavailable) — redirecting to gemini-3.1-flash-lite
+[WhatToAnswerLLM] Stream failed: Error: got status: 503 Service Unavailable
+    at Object.<anonymous> (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.answeringModel.test.ts:33:33)
+    at Object.mockCall (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/spy/dist/index.js:61:17)
+    at Object.spy [as generateContentStream] (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4mtinyspy[24m/dist/index.js:45:80)
+    at LLMHelper.streamWithGeminiModel (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts:3282:52)
+    at streamWithGeminiModel.next (<anonymous>)
+    at LLMHelper.streamGeminiWithStallFallback (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts:3418:21)
+    at streamGeminiWithStallFallback.next (<anonymous>)
+    at LLMHelper.streamVerbalWithGeminiFlash (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts:3365:17)
+    at streamVerbalWithGeminiFlash.next (<anonymous>)
+    at watch (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.ts:110:30)
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2ma failure after the first words names no fallback — none ran
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2ma failure after the first words names no fallback — none ran
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[WhatToAnswerLLM] Stream failed: Error: socket hang up
+    at stream (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.answeringModel.test.ts:39:19)
+    at stream.next (<anonymous>)
+    at rawChunks (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts:3292:24)
+    at rawChunks.next (<anonymous>)
+    at LLMHelper.streamWithGeminiModel (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts:3324:22)
+    at streamWithGeminiModel.next (<anonymous>)
+    at LLMHelper.streamGeminiWithStallFallback (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts:3454:7)
+    at streamGeminiWithStallFallback.next (<anonymous>)
+    at LLMHelper.streamChat (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts:2732:23)
+    at streamChat.next (<anonymous>)
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2mwhen the model the stall race switched to fails too, the error fallback goes back to the other one
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2mwhen the model the stall race switched to fails too, the error fallback goes back to the other one
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2maborts a primary stalled after its headers, before its first token at its deadline, before its late response
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 50ms — falling back to gemini-3.5-flash-lite
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2mwhen the model the stall race switched to fails too, the error fallback goes back to the other one
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 10000ms — falling back to gemini-3.5-flash-lite
+[WhatToAnswerLLM] verbal primary failed before first token (got status: 503 Service Unavailable) — redirecting to gemini-3.1-flash-lite
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2mwhen the model the stall race switched to fails too, the error fallback goes back to the other one
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+[Answer] budget: words=4 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2moverride on, Gemma selected: the label keeps the Gemma name — the override never reaches that route
+[22m[39m[Answer] budget: words=3 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2mGemma selected: a handover to Flash reaches the bar, ahead of the words Flash wrote
+[22m[39m[LLMHelper] Switched to Cloud Model: gemma-4-31b-it
+[LLMHelper] Warming up gemma-4-31b-it (Gemma cold-start prevention)...
+[Answer] budget: words=3 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2mGemma selected: a handover to Flash reaches the bar, ahead of the words Flash wrote
+[22m[39m[LLMHelper] gemma-4-31b-it warmup failed (non-critical): activeClient.models.generateContent is not a function
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[LLMHelper] Gemma returned an empty stream (attempt 1) — likely RECITATION/safety block; falling back to Gemini Flash
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2mGemma selected and answering: its own head label is not taken for a switch
+[22m[39m[LLMHelper] Switched to Cloud Model: gemma-4-31b-it
+[LLMHelper] Warming up gemma-4-31b-it (Gemma cold-start prevention)...
+[Answer] budget: words=4 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2mGemma selected and answering: its own head label is not taken for a switch
+[22m[39m[LLMHelper] gemma-4-31b-it warmup failed (non-critical): activeClient.models.generateContent is not a function
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2mclosing the answer early still aborts the request, through the stall-switch layer
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2mclosing the answer early still aborts the request, through the stall-switch layer
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2moverride off: a 503 on 3.1-lite still goes to 3.5-lite — the pairing of the opt-out stall race (NATIVELY_VERBAL_HEDGE=0) is unchanged
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+[Answer] budget: words=1 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe answer is named after, and falls back from, the model that actually answered[2m > [22m[2moverride off: a 503 on 3.1-lite still goes to 3.5-lite — the pairing of the opt-out stall race (NATIVELY_VERBAL_HEDGE=0) is unchanged
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[WhatToAnswerLLM] verbal primary failed before first token (got status: 503 Service Unavailable) — redirecting to gemini-3.5-flash-lite
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe hedge winner is named through generateStream, not just LLMHelper[2m > [22m[2mback wins: the bar names gemini-3.1-flash-lite (hedge), ahead of the words it wrote
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe hedge winner is named through generateStream, not just LLMHelper[2m > [22m[2mback wins: the bar names gemini-3.1-flash-lite (hedge), ahead of the words it wrote
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe hedge winner is named through generateStream, not just LLMHelper[2m > [22m[2mback wins: the bar names gemini-3.1-flash-lite (hedge), ahead of the words it wrote
+[22m[39m[LLMHelper] verbal hedge: back started at 5000ms reason=trigger
+[LLMHelper] verbal hedge: won by gemini-3.1-flash-lite at 5000ms; other=aborted
+[Answer] budget: words=3 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe hedge winner is named through generateStream, not just LLMHelper[2m > [22m[2mfront wins: the bar names gemini-3.5-flash-lite (hedge)
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[Answer] budget: words=3 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe hedge winner is named through generateStream, not just LLMHelper[2m > [22m[2mfront wins: the bar names gemini-3.5-flash-lite (hedge)
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe hedge winner is named through generateStream, not just LLMHelper[2m > [22m[2mboth legs 503, then the redirect answers: the redirect re-enters the hedge
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: back started at 1ms reason=front-error
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[Answer] budget: words=4 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.answeringModel.test.ts[2m > [22m[2mthe hedge winner is named through generateStream, not just LLMHelper[2m > [22m[2mboth legs 503, then the redirect answers: the redirect re-enters the hedge
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[LLMHelper] verbal hedge: gemini-3.5-flash-lite failed before its first token: got status: 503 Service Unavailable
+[LLMHelper] verbal hedge: no answer - front error, back error
+[WhatToAnswerLLM] verbal primary failed before first token (got status: 503 Service Unavailable) — redirecting to gemini-3.5-flash-lite
+
+ [32m✓[39m electron/llm/WhatToAnswerLLM.answeringModel.test.ts [2m([22m[2m15 tests[22m[2m)[22m[90m 209[2mms[22m[39m
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mcaps Gemma retries at NATIVELY_GEMMA_MAX_ATTEMPTS then falls back to Flash
+[22m[39m[LLMHelper] Gemma failed 3x (last: {"error":{"code":503,"status":"UNAVAILABLE","message":"overloaded"}}) — falling back to Gemini Flash
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2ma multi-image request caps Gemma attempts at 2 then falls back to Flash
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[LLMHelper] Gemma attempt 1/2 failed fast ({"error":{"code":500,"status":"INTERNAL"}}) — retrying in 150ms
+
+[90mstdout[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2mdoes not abort when the stream completes naturally
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstdout[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2mpasses an AbortSignal to the SDK
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemma guarded stream aborts on early close[2m > [22m[2maborts the request when the consumer closes on the model-source sentinel
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemma guarded stream aborts on early close[2m > [22m[2maborts the request when the consumer closes on the first chunk
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemma guarded stream aborts on early close[2m > [22m[2maborts an attempt stalled before its response headers at its deadline, before its late response
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2ma multi-image request caps Gemma attempts at 2 then falls back to Flash
+[22m[39m[LLMHelper] Gemma failed 2x (last: {"error":{"code":500,"status":"INTERNAL"}}) — falling back to Gemini Flash
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat[2m > [22m[2mpings warmups (text, vision, flash) immediately and then on the interval, and stops cleanly
+[22m[39m[LLMHelper] Warmth heartbeat started (every 1000ms)
+[LLMHelper] Warmth heartbeat stopped
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat[2m > [22m[2mwarmupGemmaVision pings gemma-4-31b-it with an inline PNG image part (exercises the vision prefill)
+[22m[39m[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] gemma-4-31b-it vision warmed up in 0ms
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat[2m > [22m[2mstartWarmthHeartbeat is idempotent — a second call does not double the interval
+[22m[39m[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] Warmth heartbeat started (every 1000ms)
+[LLMHelper] Warmth heartbeat stopped
+[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] Warmth heartbeat started (every 1000ms)
+[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] Warmth heartbeat stopped
+[LLMHelper] gemma-4-31b-it vision warmed up in 1000ms
+[LLMHelper] gemma-4-31b-it vision warmed up in 1000ms
+[LLMHelper] gemma-4-31b-it vision warmed up in 0ms
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat — idle-aware (2026-09-03)[2m > [22m[2mdefaults to a five-minute cadence, not sixty seconds
+[22m[39m[LLMHelper] Warmth heartbeat started (every 300000ms)
+[LLMHelper] Warmth heartbeat stopped
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat — idle-aware (2026-09-03)[2m > [22m[2mskips a model the answers used inside the interval and still pings the idle ones
+[22m[39m[LLMHelper] Warmth heartbeat started (every 1000ms)
+[LLMHelper] Warmth heartbeat stopped
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat — idle-aware (2026-09-03)[2m > [22m[2mskips a model the answers used inside the interval and still pings the idle ones
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat — idle-aware (2026-09-03)[2m > [22m[2ma successful warmup counts as use, so back-to-back pings never double up
+[22m[39m[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] gemma-4-31b-it vision warmed up in 0ms
+
+ [32m✓[39m electron/LLMHelper.reliability.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 716[2mms[22m[39m
+   [33m[2m✓[22m[39m LLMHelper Gemma TTFT watchdog[2m > [22mcaps Gemma retries at NATIVELY_GEMMA_MAX_ATTEMPTS then falls back to Flash [33m319[2mms[22m[39m
+[90mstderr[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemma guarded stream aborts on early close[2m > [22m[2maborts an attempt stalled before its response headers at its deadline, before its late response
+[22m[39m[LLMHelper] ⏱ Gemma produced no first token within the 50ms budget (attempt 1) — falling back to Gemini Flash
+
+[90mstderr[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemma guarded stream aborts on early close[2m > [22m[2maborts an attempt stalled inside its first line at its deadline, before its late response
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemma guarded stream aborts on early close[2m > [22m[2maborts an attempt stalled inside its first line at its deadline, before its late response
+[22m[39m[LLMHelper] ⏱ Gemma produced no first token within the 50ms budget (attempt 1) — falling back to Gemini Flash
+
+[90mstderr[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemma guarded stream aborts on early close[2m > [22m[2msends no request when its deadline passes while the screenshot is prepared
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemma guarded stream aborts on early close[2m > [22m[2msends no request when its deadline passes while the screenshot is prepared
+[22m[39m[LLMHelper] ⏱ Gemma produced no first token within the 50ms budget (attempt 1) — falling back to Gemini Flash
+
+[90mstderr[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemma guarded stream aborts on early close[2m > [22m[2mdoes not abort the request when it completes naturally
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+ [32m✓[39m electron/LLMHelper.abortOnClose.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 1367[2mms[22m[39m
+ [32m✓[39m electron/audio/deepgramBoundaryRepair.test.ts [2m([22m[2m68 tests[22m[2m)[22m[90m 33[2mms[22m[39m
+[90mstdout[2m | electron/services/interviewerTurn.replay.test.ts
+[22m[39m2026-09-09T15-00-55-s50a: 40/40 once, 0 doubles, 0 never, 0 supersedes, 0 early, 15/15 long-whole, median 1200 ms (n=40), 2 drops
+2026-09-08T08-44-56-after9: 76/76 once, 0 doubles, 0 never, 0 supersedes, 0 early, 6/6 long-whole, median 1200 ms (n=76), 0 drops
+
+ [32m✓[39m electron/services/interviewerTurn.replay.test.ts [2m([22m[2m12 tests[22m[2m)[22m[90m 10[2mms[22m[39m
+ [32m✓[39m electron/services/ChipDeduper.test.ts [2m([22m[2m22 tests[22m[2m)[22m[90m 24[2mms[22m[39m
+ [32m✓[39m electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts [2m([22m[2m11 tests[22m[2m)[22m[90m 42[2mms[22m[39m
+ [32m✓[39m electron/services/fragmentHold.test.ts [2m([22m[2m11 tests[22m[2m)[22m[90m 27[2mms[22m[39m
+ [32m✓[39m electron/services/liveHold.test.ts [2m([22m[2m11 tests[22m[2m)[22m[90m 32[2mms[22m[39m
+ [32m✓[39m electron/services/questionShape.test.ts [2m([22m[2m25 tests[22m[2m)[22m[90m 18[2mms[22m[39m
+ [32m✓[39m electron/test/golden/roster.test.ts [2m([22m[2m13 tests[22m[2m)[22m[33m 349[2mms[22m[39m
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns parsed response on valid JSON
+[22m[39m[OllamaDetectionClient] detect issued at wall=1791042372306
+[OllamaDetectionClient] detect ok: gen=1ms body=0ms total=1ms
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on invalid JSON
+[22m[39m[OllamaDetectionClient] detect issued at wall=1791042372311
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on schema mismatch
+[22m[39m[OllamaDetectionClient] detect issued at wall=1791042372313
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on HTTP error
+[22m[39m[OllamaDetectionClient] detect issued at wall=1791042372314
+
+[90mstderr[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on HTTP error
+[22m[39m[OllamaDetectionClient] HTTP 500 after 0ms
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on network error
+[22m[39m[OllamaDetectionClient] detect issued at wall=1791042372315
+
+[90mstderr[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on network error
+[22m[39m[OllamaDetectionClient] Request failed: ECONNREFUSED
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on timeout (>3s) via AbortError path
+[22m[39m[OllamaDetectionClient] detect issued at wall=1791042372317
+
+[90mstderr[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on timeout (>3s) via AbortError path
+[22m[39m[OllamaDetectionClient] Detection timed out after 50ms
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mposts to /api/chat with correct payload
+[22m[39m[OllamaDetectionClient] detect issued at wall=1791042372375
+[OllamaDetectionClient] detect ok: gen=1ms body=0ms total=1ms
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mlogs warning after 5+ consecutive parse/schema failures, resets on success
+[22m[39m[OllamaDetectionClient] detect issued at wall=1791042372379
+[OllamaDetectionClient] detect ok: gen=1ms body=0ms total=1ms
+[OllamaDetectionClient] detect issued at wall=1791042372380
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+[OllamaDetectionClient] detect issued at wall=1791042372381
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+[OllamaDetectionClient] detect issued at wall=1791042372381
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+[OllamaDetectionClient] detect issued at wall=1791042372381
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+[OllamaDetectionClient] detect issued at wall=1791042372381
+[OllamaDetectionClient] detect ok: gen=1ms body=0ms total=1ms
+[OllamaDetectionClient] detect issued at wall=1791042372382
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+
+ [32m✓[39m electron/services/OllamaDetectionClient.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 82[2mms[22m[39m
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — classify caller-supplied text with no debounce[2m > [22m[2msends exactly the given text, emits a chip, resolves question
+[22m[39m[QD-timing] detect issued
+[QD-timing] detect returned +2ms result=detected=true conf=0.95 q.len=47
+
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — classify caller-supplied text with no debounce[2m > [22m[2mresolves not-a-question when the model says so, with no chip
+[22m[39m[QD-timing] detect issued
+[QD-timing] detect returned +1ms result=detected=false conf=0.90 q.len=0
+
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — classify caller-supplied text with no debounce[2m > [22m[2mfalls back to the text-shape heuristic when the client is rate-limited (null)
+[22m[39m[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=null
+[QuestionDetector] degraded: chip from heuristic (detector unavailable): "What is the difference between a process and a thread?"
+
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — classify caller-supplied text with no debounce[2m > [22m[2mis not-a-question while disabled, without calling the client
+[22m[39m[QuestionDetector] detection disabled
+
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — classify caller-supplied text with no debounce[2m > [22m[2ma throwing client resolves not-a-question rather than rejecting
+[22m[39m[QD-timing] detect issued
+
+[90mstderr[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — classify caller-supplied text with no debounce[2m > [22m[2ma throwing client resolves not-a-question rather than rejecting
+[22m[39m[QuestionDetector] detect() threw unexpectedly Error: boom
+    at Object.detect (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\services\QuestionDetector.detectNow.test.ts:43:52)
+    at QuestionDetector.runDetection (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\services\QuestionDetector.ts:292:45)
+    at QuestionDetector.startDetection (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\services\QuestionDetector.ts:253:26)
+    at QuestionDetector.detectNow (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\services\QuestionDetector.ts:212:34)
+    at C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\services\QuestionDetector.detectNow.test.ts:44:24
+    at file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:146:14
+    at file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:533:11
+    at runWithTimeout (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:39:7)
+    at runTest (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1056:17)
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — single-flight shared with the debounce path (R19)[2m > [22m[2mT-F1: detectNow never runs beside a detection the drain started: detections stay one at a time
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — single-flight shared with the debounce path (R19)[2m > [22m[2mT-F1: detectNow never runs beside a detection the drain started: detections stay one at a time
+[22m[39m[QD-timing] reset sincePrev=1500ms interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] coalesced (one in-flight; setting queuedTrigger=true)
+[QD-timing] detect returned +1500ms result=detected=false conf=0.90 q.len=0
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=false conf=0.90 q.len=0
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=68
+
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — single-flight shared with the debounce path (R19)[2m > [22m[2mT-F2: a trigger queued while detectNow runs is drained once when it settles
+[22m[39m[QD-timing] detect issued
+[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] coalesced (one in-flight; setting queuedTrigger=true)
+
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — single-flight shared with the debounce path (R19)[2m > [22m[2mT-F2: a trigger queued while detectNow runs is drained once when it settles
+[22m[39m[QD-timing] detect returned +1500ms result=detected=true conf=0.90 q.len=25
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=false conf=0.90 q.len=0
+
+ [32m✓[39m electron/services/QuestionDetector.detectNow.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 46[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mat MINIMAL, primary silent for 4 s → the answer streams from gemini-3.5-flash-lite, announced by the fallback sentinel
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mat MINIMAL, primary silent for 4 s → the answer streams from gemini-3.5-flash-lite, announced by the fallback sentinel
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mat MINIMAL, primary silent for 4 s → the answer streams from gemini-3.5-flash-lite, announced by the fallback sentinel
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 4000ms — falling back to gemini-3.5-flash-lite
+
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mwith LOW shipped, the fallback leg is sent HIGH — the level 3.5-flash-lite actually spends
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mwith LOW shipped, the fallback leg is sent HIGH — the level 3.5-flash-lite actually spends
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mwith LOW shipped, the fallback leg is sent HIGH — the level 3.5-flash-lite actually spends
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 10000ms — falling back to gemini-3.5-flash-lite
+
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2man explicit MINIMAL stays MINIMAL on both legs — it is the opt-out, not a level to raise
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2man explicit MINIMAL stays MINIMAL on both legs — it is the opt-out, not a level to raise
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2man explicit MINIMAL stays MINIMAL on both legs — it is the opt-out, not a level to raise
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 4000ms — falling back to gemini-3.5-flash-lite
+
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mprimary answers in time → one call, no fallback
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mprimary answers in time → one call, no fallback
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mA. the front wins with a chunked cue block: cues once, block gone, prose intact, winner named (hedge)
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 2ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mA. the front wins with a chunked cue block: cues once, block gone, prose intact, winner named (hedge)
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mA0. control: the same answer with NO block reports [] once, so the assertion above is not vacuous
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mA0. control: the same answer with NO block reports [] once, so the assertion above is not vacuous
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mB. the back wins after the trigger: cues once, the front is aborted, winner named 3.1-lite (hedge)
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mB. the back wins after the trigger: cues once, the front is aborted, winner named 3.1-lite (hedge)
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mwith nothing set (LOW ships) the stall budget is 10 s: 4 s of silence is thinking, 10 s is a stall
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mwith nothing set (LOW ships) the stall budget is 10 s: 4 s of silence is thinking, 10 s is a stall
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mwith nothing set (LOW ships) the stall budget is 10 s: 4 s of silence is thinking, 10 s is a stall
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 10000ms — falling back to gemini-3.5-flash-lite
+
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mNATIVELY_FIRST_TOKEN_TIMEOUT_MS overrides the budget (the live smoke forces the race with 300)
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 300ms)
+
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mthe behavioral route runs the same race with the same budget (one implementation): 4 s at MINIMAL
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mthe behavioral route runs the same race with the same budget (one implementation): 4 s at MINIMAL
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 4000ms — falling back to gemini-3.5-flash-lite
+
+ [32m✓[39m electron/LLMHelper.stallFallback.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 73[2mms[22m[39m
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mB. the back wins after the trigger: cues once, the front is aborted, winner named 3.1-lite (hedge)
+[22m[39m[LLMHelper] verbal hedge: back started at 5000ms reason=trigger
+[LLMHelper] verbal hedge: won by gemini-3.1-flash-lite at 5000ms; other=aborted
+[Answer] budget: words=19 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mC. both legs 503, the redirected answer carries the block: cues once
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: back started at 0ms reason=front-error
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mC. both legs 503, the redirected answer carries the block: cues once
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[LLMHelper] verbal hedge: gemini-3.5-flash-lite failed before its first token: got status: 503 Service Unavailable
+[LLMHelper] verbal hedge: no answer - front error, back error
+[WhatToAnswerLLM] verbal primary failed before first token (got status: 503 Service Unavailable) — redirecting to gemini-3.5-flash-lite
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mD. the once-guard holds across the fallback: the first stream reports, dies with no prose, the redirect must not report again
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mD. the once-guard holds across the fallback: the first stream reports, dies with no prose, the redirect must not report again
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[WhatToAnswerLLM] verbal primary failed before first token (socket hang up) — redirecting to gemini-3.1-flash-lite
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mD2. a stream that dies after its first prose chunk was shown is not redirected: one report with its own cue, its words, then the error
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mD2. a stream that dies after its first prose chunk was shown is not redirected: one report with its own cue, its words, then the error
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[WhatToAnswerLLM] Stream failed: Error: socket hang up
+    at stream (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.hedgeCues.test.ts:25:19)
+    at stream.next (<anonymous>)
+    at rawChunks (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts:3292:24)
+    at rawChunks.next (<anonymous>)
+    at LLMHelper.streamWithGeminiModel (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts:3324:22)
+    at streamWithGeminiModel.next (<anonymous>)
+    at deliver (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts:3505:18)
+    at deliver.next (<anonymous>)
+    at LLMHelper.streamGeminiWithHedge (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts:3514:14)
+    at streamGeminiWithHedge.next (<anonymous>)
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mD3. a stream that dies after the early close but before its first words clear the filters is redirected: its cue over the redirect's prose
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mD3. a stream that dies after the early close but before its first words clear the filters is redirected: its cue over the redirect's prose
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[WhatToAnswerLLM] verbal primary failed before first token (socket hang up) — redirecting to gemini-3.1-flash-lite
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mD4. a stream that dies inside a leading offers block is redirected: its cue over the redirect's prose, the redirect's block dropped by the once-guard
+[22m[39m[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mE. hedge OFF (NATIVELY_VERBAL_HEDGE=0), the old stall race: cues once, so both policies feed the same chain
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+[Answer] budget: words=19 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts[2m > [22m[2mhedge x cue mode[2m > [22m[2mE. hedge OFF (NATIVELY_VERBAL_HEDGE=0), the old stall race: cues once, so both policies feed the same chain
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+ [32m✓[39m electron/llm/WhatToAnswerLLM.hedgeCues.test.ts [2m([22m[2m9 tests[22m[2m)[22m[90m 129[2mms[22m[39m
+ [32m✓[39m electron/IntelligenceEngine.cues.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 30[2mms[22m[39m
+ [32m✓[39m electron/audio/DeepgramStreamingSTT.staleSocket.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 31[2mms[22m[39m
+ [32m✓[39m electron/IntelligenceEngine.followUpParent.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 39[2mms[22m[39m
+ [32m✓[39m electron/llm/geminiThinking.test.ts [2m([22m[2m12 tests[22m[2m)[22m[90m 19[2mms[22m[39m
+ [32m✓[39m src/hooks/useDetectedQuestions.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[90m 99[2mms[22m[39m
+ [32m✓[39m electron/llm/spokenNotation.test.ts [2m([22m[2m15 tests[22m[2m)[22m[90m 14[2mms[22m[39m
+ [32m✓[39m electron/services/ChipDeduper.answeredWindow.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 18[2mms[22m[39m
+[90mstderr[2m | electron/LLMHelper.streamChat.test.ts[2m > [22m[2mLLMHelper.streamChat — Gemma branch must honor caller system prompt overrides[2m > [22m[2msends CODE_HINT_PROMPT (not INTERVIEW_COPILOT_PROMPT) when CodeHintLLM calls streamChat on Gemma
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.streamChat.test.ts[2m > [22m[2mLLMHelper.streamChat — Gemma branch must honor caller system prompt overrides[2m > [22m[2mstill defaults to INTERVIEW_COPILOT_PROMPT on Gemma when the caller passes no override
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.streamChat.test.ts[2m > [22m[2mLLMHelper.streamChat — the coding style suffix must reach NON-Gemma Gemini models too[2m > [22m[2mappends the coding suffix for the coding caller on Flash Lite
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.streamChat.test.ts[2m > [22m[2mLLMHelper.streamChat — the coding style suffix must reach NON-Gemma Gemini models too[2m > [22m[2mdoes NOT append it for non-coding callers on Flash Lite
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.streamChat.test.ts[2m > [22m[2mLLMHelper.streamChat — the coding style suffix must reach NON-Gemma Gemini models too[2m > [22m[2mcarries the LFU guard and the must-run rule through to what Flash Lite actually receives
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+ [32m✓[39m electron/LLMHelper.streamChat.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 36[2mms[22m[39m
+ [32m✓[39m electron/llm/verbalHedge.test.ts [2m([22m[2m17 tests[22m[2m)[22m[90m 14[2mms[22m[39m
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mfalls back when the primary fails before any content
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mfalls back when the primary fails before any content
+[22m[39m[WhatToAnswerLLM] verbal primary failed before first token (HTTP 429 rate limit) — redirecting to gemini-3.5-flash-lite
+
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mannounces the redirect instead of swapping models silently
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mannounces the redirect instead of swapping models silently
+[22m[39m[WhatToAnswerLLM] verbal primary failed before first token (boom) — redirecting to gemini-3.5-flash-lite
+
+[90mstderr[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mdoes NOT restart after content has already shipped
+[22m[39m[WhatToAnswerLLM] Stream failed: Error: socket hang up
+    at failsAfter (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\verbalFallback.test.ts:24:11)
+    at failsAfter.next (<anonymous>)
+    at watch (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.ts:110:30)
+    at watch.next (<anonymous>)
+    at WhatToAnswerLLM.stripModelSentinel (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.ts:139:26)
+    at stripModelSentinel.next (<anonymous>)
+    at Module.stripCueBlock (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\verbalStreamFilter.ts:484:22)
+    at stripCueBlock.next (<anonymous>)
+    at Module.filterCodeFences (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\verbalStreamFilter.ts:190:22)
+    at filterCodeFences.next (<anonymous>)
+
+[90mstderr[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2msurfaces the real cause when the fallback ALSO fails
+[22m[39m[WhatToAnswerLLM] verbal primary failed before first token (primary died) — redirecting to gemini-3.5-flash-lite
+[WhatToAnswerLLM] Stream failed: Error: fallback died too
+    at failsImmediately (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\verbalFallback.test.ts:18:11)
+    at failsImmediately.next (<anonymous>)
+    at watch (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.ts:110:30)
+    at watch.next (<anonymous>)
+    at WhatToAnswerLLM.stripModelSentinel (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.ts:139:26)
+    at stripModelSentinel.next (<anonymous>)
+    at Module.stripCueBlock (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\verbalStreamFilter.ts:484:22)
+    at stripCueBlock.next (<anonymous>)
+    at Module.filterCodeFences (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\verbalStreamFilter.ts:190:22)
+    at filterCodeFences.next (<anonymous>)
+
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2memits onSuggestions exactly once even though two streams ran
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2memits onSuggestions exactly once even though two streams ran
+[22m[39m[WhatToAnswerLLM] verbal primary failed before first token (boom) — redirecting to gemini-3.5-flash-lite
+
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mleaves the healthy path untouched — no fallback redirect
+[22m[39m[Answer] budget: words=9 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mcue mode: when the primary dies before its first token, the fallback stream supplies the cues, once
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mcue mode: when the primary dies before its first token, the fallback stream supplies the cues, once
+[22m[39m[WhatToAnswerLLM] verbal primary failed before first token (boom) — redirecting to gemini-3.5-flash-lite
+
+ [32m✓[39m electron/llm/verbalFallback.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 50[2mms[22m[39m
+[90mstderr[2m | electron/LLMHelper.emptyStream.test.ts[2m > [22m[2mGemma empty-stream fallback[2m > [22m[2mfalls back to Flash when Gemma yields ZERO chunks (RECITATION / safety block)
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[LLMHelper] Gemma returned an empty stream (attempt 1) — likely RECITATION/safety block; falling back to Gemini Flash
+
+[90mstderr[2m | electron/LLMHelper.emptyStream.test.ts[2m > [22m[2mGemma empty-stream fallback[2m > [22m[2mdoes not present a bare model-source sentinel as the answer
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[LLMHelper] Gemma returned an empty stream (attempt 1) — likely RECITATION/safety block; falling back to Gemini Flash
+
+[90mstderr[2m | electron/LLMHelper.emptyStream.test.ts[2m > [22m[2mGemma empty-stream fallback[2m > [22m[2mstill streams normally when Gemma DOES produce content (no over-correction)
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.emptyStream.test.ts[2m > [22m[2mGemma empty-stream fallback[2m > [22m[2mtreats a stream of only empty-string chunks as empty too
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+[LLMHelper] Gemma returned an empty stream (attempt 1) — likely RECITATION/safety block; falling back to Gemini Flash
+
+ [32m✓[39m electron/LLMHelper.emptyStream.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 29[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2munset: the technical route answers on the selected model, exactly as today
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2munset: the technical route answers on the selected model, exactly as today
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2mset: the technical route answers on the override
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2mset: the technical route answers on the override
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2mset: the behavioral route answers on the override too
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+
+[90mstdout[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2mthe overridden primary carries the level that model honours, not the raw LOW
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2mthe overridden primary carries the level that model honours, not the raw LOW
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2mrefuses a model it will not answer with rather than silently using the selected one
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2ma caller that names its model gets that model — the override picks the primary, not every call
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+ [32m✓[39m electron/LLMHelper.verbalPrimary.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 36[2mms[22m[39m
+ [32m✓[39m electron/knowledge/IntentClassifier.test.ts [2m([22m[2m12 tests[22m[2m)[22m[90m 62[2mms[22m[39m
+ [32m✓[39m electron/llm/promptCapture.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 27[2mms[22m[39m
+ [32m✓[39m electron/audio/energyVad.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 85[2mms[22m[39m
+ [32m✓[39m electron/llm/lastInterviewerTurn.test.ts [2m([22m[2m13 tests[22m[2m)[22m[90m 13[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.geminiThinking.test.ts[2m > [22m[2mverbal Gemini call carries the thinking level, LOW by default, from NATIVELY_GEMINI_THINKING_LEVEL[2m > [22m[2munset → thinkingConfig.thinkingLevel LOW on the request (the shipped default)
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+[LLMHelper] gemini-3.1-flash-lite usage: thinking=LOW thoughts=143 out=160 in=5157
+
+[90mstdout[2m | electron/LLMHelper.geminiThinking.test.ts[2m > [22m[2mverbal Gemini call carries the thinking level, LOW by default, from NATIVELY_GEMINI_THINKING_LEVEL[2m > [22m[2mMINIMAL → thinkingConfig.thinkingLevel MINIMAL, the explicit way back to what flights through s50f sent
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+[LLMHelper] gemini-3.1-flash-lite usage: thinking=MINIMAL thoughts=143 out=160 in=5157
+
+[90mstdout[2m | electron/LLMHelper.geminiThinking.test.ts[2m > [22m[2mverbal Gemini call carries the thinking level, LOW by default, from NATIVELY_GEMINI_THINKING_LEVEL[2m > [22m[2mLOW → thinkingConfig.thinkingLevel LOW on the request, temperature and token cap unchanged
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+[LLMHelper] gemini-3.1-flash-lite usage: thinking=LOW thoughts=143 out=160 in=5157
+
+ [32m✓[39m electron/LLMHelper.geminiThinking.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 22[2mms[22m[39m
+ [32m✓[39m electron/test/golden/hedge-live.policy.test.ts [2m([22m[2m10 tests[22m[2m)[22m[90m 31[2mms[22m[39m
+ [32m✓[39m electron/llm/WhatToAnswerLLM.budget.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 39[2mms[22m[39m
+ [32m✓[39m electron/test/golden/interview60.lib.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 503[2mms[22m[39m
+ [32m✓[39m electron/audio/DeepgramStreamingSTT.socketSummary.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 25[2mms[22m[39m
+ [32m✓[39m electron/services/FadeManager.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 22[2mms[22m[39m
+ [32m✓[39m electron/test/golden/interview60.prompts.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 13[2mms[22m[39m
+[90mstderr[2m | electron/SessionTracker.test.ts[2m > [22m[2mSessionTracker.addAssistantMessage — full answer log[2m > [22m[2mdoes not log an empty answer
+[22m[39m[SessionTracker] Ignored short message (<10 chars)
+
+[90mstdout[2m | electron/SessionTracker.test.ts[2m > [22m[2mSessionTracker.addAssistantMessage — questionContext (fix round 1, C1)[2m > [22m[2ma passed question is stored as questionContext, trimmed
+[22m[39m[SessionTracker] addAssistantMessage called with: An answer long enough to pass the ten-character fi
+[Answer] full: "An answer long enough to pass the ten-character filter."
+[SessionTracker] lastAssistantMessage updated, history size: 1
+
+[90mstdout[2m | electron/SessionTracker.test.ts[2m > [22m[2mSessionTracker.addAssistantMessage — questionContext (fix round 1, C1)[2m > [22m[2mwithout a question, keeps today's getLastInterviewerTurn() behaviour
+[22m[39m[SessionTracker] addAssistantMessage called with: An answer long enough to pass the ten-character fi
+[Answer] full: "An answer long enough to pass the ten-character filter."
+[SessionTracker] lastAssistantMessage updated, history size: 1
+
+[90mstdout[2m | electron/SessionTracker.test.ts[2m > [22m[2mSessionTracker.addAssistantMessage — questionContext (fix round 1, C1)[2m > [22m[2man empty/whitespace-only question falls back to getLastInterviewerTurn()
+[22m[39m[SessionTracker] addAssistantMessage called with: An answer long enough to pass the ten-character fi
+[Answer] full: "An answer long enough to pass the ten-character filter."
+[SessionTracker] lastAssistantMessage updated, history size: 1
+
+ [32m✓[39m electron/SessionTracker.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 12[2mms[22m[39m
+ [32m✓[39m electron/test/golden/interview60.turns-finals.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 62[2mms[22m[39m
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.cues.test.ts[2m > [22m[2mWhatToAnswerLLM cue block[2m > [22m[2mverbal, no block: the answer is unchanged and the callback still fires once, empty
+[22m[39m[Answer] budget: words=19 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/WhatToAnswerLLM.cues.test.ts[2m > [22m[2mWhatToAnswerLLM cue block[2m > [22m[2moffers block BEFORE the spoken answer (spec 2026-09-30 offers-before-answer): the cues once, the answer shown, the offers once, neither block in the output
+[22m[39m[Answer] budget: words=19 cut=no allowance=no
+
+ [32m✓[39m electron/llm/WhatToAnswerLLM.cues.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 42[2mms[22m[39m
+ [32m✓[39m electron/llm/verbalStreamFilter.diagLog.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 58[2mms[22m[39m
+ [32m✓[39m electron/services/mergeScenarioSentence.test.ts [2m([22m[2m9 tests[22m[2m)[22m[90m 13[2mms[22m[39m
+ [32m✓[39m electron/IntelligenceEngine.pinnedQuestion.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 20[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mstreamChat with the verbal override (technical path) carries the <user_context> block
+[22m[39m[LLMHelper] <user_context> appended to the system prompt (66 chars)
+
+[90mstderr[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mstreamChat with the verbal override (technical path) carries the <user_context> block
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mstreamVerbalWithGeminiFlash (behavioral / fast path) carries the <user_context> block
+[22m[39m[LLMHelper] <user_context> appended to the system prompt (66 chars)
+[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstdout[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mno notes → no block on either path
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mno notes → no block on either path
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+ [32m✓[39m electron/LLMHelper.customNotes.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 31[2mms[22m[39m
+ [32m✓[39m electron/services/turnDispatch.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 11[2mms[22m[39m
+[90mstdout[2m | electron/services/GroqDetectionClient.test.ts[2m > [22m[2mGroqDetectionClient request shape[2m > [22m[2mgpt-oss default model: sends reasoning_effort=low and strict json_schema
+[22m[39m[GroqDetectionClient] detect issued at wall=1791042384279
+[GroqDetectionClient] detect ok: gen=2ms body=0ms total=2ms tokens=100
+
+[90mstdout[2m | electron/services/GroqDetectionClient.test.ts[2m > [22m[2mGroqDetectionClient request shape[2m > [22m[2mnon-gpt-oss override model: keeps json_object and omits reasoning_effort
+[22m[39m[GroqDetectionClient] detect issued at wall=1791042384287
+[GroqDetectionClient] detect ok: gen=0ms body=0ms total=0ms tokens=100
+
+[90mstdout[2m | electron/services/GroqDetectionClient.test.ts[2m > [22m[2mGroqDetectionClient request shape[2m > [22m[2mpasses the model's difficulty through on the validated response
+[22m[39m[GroqDetectionClient] detect issued at wall=1791042384288
+[GroqDetectionClient] detect ok: gen=1ms body=0ms total=1ms tokens=100
+
+ [32m✓[39m electron/services/GroqDetectionClient.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 15[2mms[22m[39m
+ [32m✓[39m electron/llm/followUpParent.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 15[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.knowledgeBudget.test.ts[2m > [22m[2mContext toggle on: the verbal path keeps its own prompt; the résumé arrives as context[2m > [22m[2mverbal answer → the verbal prompt itself + the custom notes; the knowledge rules stay out, the résumé block goes in the message
+[22m[39m[LLMHelper] KnowledgeOrchestrator attached
+[LLMHelper] <user_context> appended to the system prompt (36 chars)
+
+[90mstderr[2m | electron/LLMHelper.knowledgeBudget.test.ts[2m > [22m[2mContext toggle on: the verbal path keeps its own prompt; the résumé arrives as context[2m > [22m[2mverbal answer → the verbal prompt itself + the custom notes; the knowledge rules stay out, the résumé block goes in the message
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.knowledgeBudget.test.ts[2m > [22m[2mContext toggle on: the verbal path keeps its own prompt; the résumé arrives as context[2m > [22m[2mtyped chat (no verbal override) → knowledge prompt without the spoken budget block
+[22m[39m[LLMHelper] KnowledgeOrchestrator attached
+
+[90mstderr[2m | electron/LLMHelper.knowledgeBudget.test.ts[2m > [22m[2mContext toggle on: the verbal path keeps its own prompt; the résumé arrives as context[2m > [22m[2mtyped chat (no verbal override) → knowledge prompt without the spoken budget block
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+ [32m✓[39m electron/LLMHelper.knowledgeBudget.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 30[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.geminiSystemInstruction.test.ts[2m > [22m[2mnon-Gemma Gemini models get the system prompt as systemInstruction, like Gemma does[2m > [22m[2mverbal answer on gemini-3.1-flash-lite → systemInstruction carries the prompt, the user turn carries only the question
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.geminiSystemInstruction.test.ts[2m > [22m[2mnon-Gemma Gemini models get the system prompt as systemInstruction, like Gemma does[2m > [22m[2mverbal answer on gemini-3.1-flash-lite → systemInstruction carries the prompt, the user turn carries only the question
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.geminiSystemInstruction.test.ts[2m > [22m[2mnon-Gemma Gemini models get the system prompt as systemInstruction, like Gemma does[2m > [22m[2mtyped chat (no verbal override) keeps the inlined form it was measured with
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+ [32m✓[39m electron/LLMHelper.geminiSystemInstruction.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 36[2mms[22m[39m
+ [32m✓[39m electron/audio/deepgramKeyterms.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 13[2mms[22m[39m
+ [32m✓[39m electron/audio/SttChannel.test.ts [2m([22m[2m9 tests[22m[2m)[22m[90m 21[2mms[22m[39m
+ [32m✓[39m electron/llm/WhatToAnswerLLM.diagLog.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 2700[2mms[22m[39m
+ [32m✓[39m src/hooks/useContextToggle.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[90m 288[2mms[22m[39m
+ [32m✓[39m electron/llm/verbalPrimaryModel.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 11[2mms[22m[39m
+ [32m✓[39m electron/llm/streamTaps.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 10[2mms[22m[39m
+ [32m✓[39m electron/llm/summaryContextLimits.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 16[2mms[22m[39m
+[90mstdout[2m | electron/audio/DeepgramStreamingSTT.vadEvents.test.ts[2m > [22m[2mDeepgramStreamingSTT VAD events[2m > [22m[2mre-emits SpeechStarted and UtteranceEnd with a timestamp, on the live socket only
+[22m[39m[DeepgramStreaming] Connecting (rate=16000, ch=1, lang=en)...
+[DeepgramStreaming] keyterm prompting: 7 terms
+[DeepgramStreaming] Connected
+
+ [32m✓[39m electron/audio/DeepgramStreamingSTT.vadEvents.test.ts [2m([22m[2m1 test[22m[2m)[22m[90m 10[2mms[22m[39m
+ [32m✓[39m electron/llm/knowledgePromptBudget.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 12[2mms[22m[39m
+[90mstderr[2m | src/hooks/useFadeToggle.test.tsx[2m > [22m[2museFadeToggle[2m > [22m[2mrolls back on setEnabled failure
+[22m[39m[useFadeToggle] fadeSetEnabled failed: nope
+
+ [32m✓[39m src/hooks/useFadeToggle.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 351[2mms[22m[39m
+ [32m✓[39m electron/ipcHandlers.typedPrompt.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 14[2mms[22m[39m
+ [32m✓[39m electron/llm/WhatToAnswerLLM.liveEars.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 19[2mms[22m[39m
+ [32m✓[39m electron/rag/configRedaction.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 14[2mms[22m[39m
+ [32m✓[39m electron/llm/spokenNotation.json.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 9[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.groqSystemMessage.test.ts[2m > [22m[2mGroq models get the verbal prompt as a system message[2m > [22m[2mverbal answer on a Groq model → system + user messages
+[22m[39m[LLMHelper] Groq API Key updated.
+[LLMHelper] Switched to Cloud Model: qwen/qwen3.8-27b
+
+[90mstderr[2m | electron/LLMHelper.groqSystemMessage.test.ts[2m > [22m[2mGroq models get the verbal prompt as a system message[2m > [22m[2mverbal answer on a Groq model → system + user messages
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.groqSystemMessage.test.ts[2m > [22m[2mGroq models get the verbal prompt as a system message[2m > [22m[2mtyped chat (no verbal override) keeps the single inlined user message it was measured with
+[22m[39m[LLMHelper] Groq API Key updated.
+[LLMHelper] Switched to Cloud Model: qwen/qwen3.8-27b
+
+[90mstderr[2m | electron/LLMHelper.groqSystemMessage.test.ts[2m > [22m[2mGroq models get the verbal prompt as a system message[2m > [22m[2mtyped chat (no verbal override) keeps the single inlined user message it was measured with
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\LLMHelper.ts
+
+ [32m✓[39m electron/LLMHelper.groqSystemMessage.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 24[2mms[22m[39m
+[90mstdout[2m | electron/audio/RestSTT.test.ts[2m > [22m[2mRestSTT speechEndedAt stamping[2m > [22m[2mstamps speechEndedAt with the VAD flush time on speech-ended flushes
+[22m[39m[RestSTT] Initialized for provider: groq, model: whisper-large-v3-turbo
+[RestSTT] Starting (groq)...
+[RestSTT] Speech ended detected by native VAD — flushing buffer immediately
+[RestSTT-timing] flush start id=ebn2
+[RestSTT-timing] upload start id=ebn2 prep=0ms bytes=20044
+[RestSTT-timing] upload done id=ebn2 +0ms
+[RestSTT] Transcript: "hello world from stt..." id=ebn2
+[RestSTT] Stopping (groq)...
+
+[90mstdout[2m | electron/audio/RestSTT.test.ts[2m > [22m[2mRestSTT speechEndedAt stamping[2m > [22m[2mdoes NOT stamp speechEndedAt on safety-net interval flushes (speech may be ongoing)
+[22m[39m[RestSTT] Initialized for provider: groq, model: whisper-large-v3-turbo
+[RestSTT] Starting (groq)...
+[RestSTT-timing] flush start id=egaa
+[RestSTT-timing] upload start id=egaa prep=0ms bytes=20044
+[RestSTT-timing] upload done id=egaa +0ms
+[RestSTT] Transcript: "hello world from stt..." id=egaa
+[RestSTT] Stopping (groq)...
+
+ [32m✓[39m electron/audio/RestSTT.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 30[2mms[22m[39m
+ [32m✓[39m electron/test/golden/cueArm.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 7[2mms[22m[39m
+ [32m✓[39m src/components/DetectedQuestionsPanel.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 611[2mms[22m[39m
+   [33m[2m✓[22m[39m DetectedQuestionsPanel expand/collapse[2m > [22mdoes not expand a collapsed panel on hover [33m433[2mms[22m[39m
+[90mstdout[2m | electron/llm/verbalSentinel.test.ts[2m > [22m[2mverbal stream model sentinel[2m > [22m[2mannounces the primary model at the head of the general (verbal-technical) route
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/verbalSentinel.test.ts[2m > [22m[2mverbal stream model sentinel[2m > [22m[2mannounces the fixed fast model at the head of the behavioral route
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+ [32m✓[39m electron/llm/verbalSentinel.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 27[2mms[22m[39m
+ [32m✓[39m electron/test/golden/problems.verbal.cues.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 10[2mms[22m[39m
+ [32m✓[39m src/components/ui/LiveModeToggle.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 547[2mms[22m[39m
+   [33m[2m✓[22m[39m LiveModeToggle (three-state)[2m > [22mshows Suggest and explains chip-click behavior in the tooltip [33m336[2mms[22m[39m
+ [32m✓[39m electron/knowledge/ContextAssembler.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 8[2mms[22m[39m
+[90mstdout[2m | electron/IntelligenceEngine.cooldown.test.ts[2m > [22m[2mIntelligenceEngine trigger cooldown[2m > [22m[2mchip clicks (contextOverride) bypass the 3s trigger cooldown
+[22m[39m[IntelligenceEngine] Initializing LLMs with LLMHelper
+[IntelligenceEngine] runWhatShouldISay: using contextOverride snapshot
+[IntelligenceEngine] runWhatShouldISay: pinned question "Q1"
+[IntelligenceEngine] runWhatShouldISay: intent override → general
+[IntelligenceEngine] Temporal RAG: 0 responses, tone: neutral, intent: general
+[SessionTracker] addAssistantMessage called with: [No answer — the answer model failed: this.llmHelp
+[Answer] full: "[No answer — the answer model failed: this.llmHelper.getCurrentModelId is not a function]"
+[SessionTracker] lastAssistantMessage updated, history size: 1
+[IntelligenceEngine] runWhatShouldISay: using contextOverride snapshot
+[IntelligenceEngine] runWhatShouldISay: pinned question "Q2"
+[IntelligenceEngine] runWhatShouldISay: intent override → general
+[IntelligenceEngine] Temporal RAG: 1 responses, tone: neutral, intent: general
+[SessionTracker] addAssistantMessage called with: [No answer — the answer model failed: this.llmHelp
+[Answer] full: "[No answer — the answer model failed: this.llmHelper.getCurrentModelId is not a function]"
+[SessionTracker] lastAssistantMessage updated, history size: 2
+
+[90mstderr[2m | electron/IntelligenceEngine.cooldown.test.ts[2m > [22m[2mIntelligenceEngine trigger cooldown[2m > [22m[2mchip clicks (contextOverride) bypass the 3s trigger cooldown
+[22m[39m[WhatToAnswerLLM] Stream failed: TypeError: this.llmHelper.getCurrentModelId is not a function
+    at WhatToAnswerLLM.generateStream (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.ts:307:64)
+    at generateStream.next (<anonymous>)
+    at IntelligenceEngine.runWhatShouldISay (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\IntelligenceEngine.ts:432:30)
+    at C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\IntelligenceEngine.cooldown.test.ts:39:36
+    at file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:146:14
+    at file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:533:11
+    at runWithTimeout (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:39:7)
+    at runTest (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1056:17)
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at runSuite (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1205:15)
+[WhatToAnswerLLM] Stream failed: TypeError: this.llmHelper.getCurrentModelId is not a function
+    at WhatToAnswerLLM.generateStream (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.ts:307:64)
+    at generateStream.next (<anonymous>)
+    at IntelligenceEngine.runWhatShouldISay (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\IntelligenceEngine.ts:432:30)
+    at C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\IntelligenceEngine.cooldown.test.ts:46:37
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:533:5
+    at runTest (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1056:11)
+    at runSuite (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1205:15)
+    at runSuite (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1205:15)
+    at runFiles (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1262:5)
+
+[90mstdout[2m | electron/IntelligenceEngine.cooldown.test.ts[2m > [22m[2mIntelligenceEngine trigger cooldown[2m > [22m[2mauto-triggers (no overrides) still respect the cooldown
+[22m[39m[IntelligenceEngine] Initializing LLMs with LLMHelper
+[IntelligenceEngine] runWhatShouldISay: pinned question "Q1"
+[IntentClassifier] lastInterviewerTurn: "Q1"
+[IntentClassifier] Tier 1 (regex) no match — falling to SLM
+[IntentClassifier] Tier 3 (heuristic) result: intent=general confidence=0.5
+[IntelligenceEngine] Temporal RAG: 0 responses, tone: neutral, intent: general
+[SessionTracker] addAssistantMessage called with: [No answer — the answer model failed: this.llmHelp
+[Answer] full: "[No answer — the answer model failed: this.llmHelper.getCurrentModelId is not a function]"
+[SessionTracker] lastAssistantMessage updated, history size: 1
+
+[90mstderr[2m | electron/IntelligenceEngine.cooldown.test.ts[2m > [22m[2mIntelligenceEngine trigger cooldown[2m > [22m[2mauto-triggers (no overrides) still respect the cooldown
+[22m[39m[WhatToAnswerLLM] Stream failed: TypeError: this.llmHelper.getCurrentModelId is not a function
+    at WhatToAnswerLLM.generateStream (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.ts:307:64)
+    at generateStream.next (<anonymous>)
+    at IntelligenceEngine.runWhatShouldISay (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\IntelligenceEngine.ts:432:30)
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\IntelligenceEngine.cooldown.test.ts:55:23
+    at file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:533:5
+    at runTest (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1056:11)
+    at runSuite (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1205:15)
+    at runSuite (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1205:15)
+    at runFiles (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1262:5)
+
+ [32m✓[39m electron/IntelligenceEngine.cooldown.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 41[2mms[22m[39m
+ [32m✓[39m electron/llm/WhatToAnswerLLM.leadingChars.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 30[2mms[22m[39m
+[90mstderr[2m | electron/IntelligenceEngine.codingAdvisory.test.ts[2m > [22m[2mcoding intent from a detector without a screenshot[2m > [22m[2mis mapped to general so the spoken answer goes through the verbal filters
+[22m[39m[WhatToAnswerLLM] Stream failed: TypeError: this.llmHelper.getCurrentModelId is not a function
+    at WhatToAnswerLLM.generateStream (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.ts:307:64)
+    at generateStream.next (<anonymous>)
+    at IntelligenceEngine.runWhatShouldISay (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\IntelligenceEngine.ts:432:30)
+    at C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\IntelligenceEngine.codingAdvisory.test.ts:24:22
+    at file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:146:14
+    at file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:533:11
+    at runWithTimeout (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:39:7)
+    at runTest (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1056:17)
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at runSuite (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1205:15)
+
+[90mstderr[2m | electron/IntelligenceEngine.codingAdvisory.test.ts[2m > [22m[2mcoding intent from a detector without a screenshot[2m > [22m[2mstays coding when a screenshot is attached
+[22m[39m[WhatToAnswerLLM] Stream failed: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not async iterable
+    at WhatToAnswerLLM.generateStream (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\llm\WhatToAnswerLLM.ts:279:39)
+    at generateStream.next (<anonymous>)
+    at IntelligenceEngine.runWhatShouldISay (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\IntelligenceEngine.ts:432:30)
+    at C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\IntelligenceEngine.codingAdvisory.test.ts:35:22
+    at file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:146:14
+    at file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:533:11
+    at runWithTimeout (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:39:7)
+    at runTest (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1056:17)
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at runSuite (file:///C:/Users/sotka/OneDrive/Masa%C3%BCst%C3%BC/natively-cluely-ai-assistant/node_modules/[4m@vitest[24m/runner/dist/index.js:1205:15)
+
+ [32m✓[39m electron/IntelligenceEngine.codingAdvisory.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 29[2mms[22m[39m
+ [32m✓[39m electron/services/screenReference.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 8[2mms[22m[39m
+ [32m✓[39m electron/services/detectorCalibration.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 9[2mms[22m[39m
+ [32m✓[39m electron/services/jaccardSimilarity.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 12[2mms[22m[39m
+ [32m✓[39m electron/services/providerCooldown.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 9[2mms[22m[39m
+ [32m✓[39m electron/llm/prompts/questionDetection.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 11[2mms[22m[39m
+ [32m✓[39m electron/test/golden/interview60.chains.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 7[2mms[22m[39m
+ [32m✓[39m electron/services/sttProviderOverride.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 11[2mms[22m[39m
+ [32m✓[39m electron/services/intelligenceSurface.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 6[2mms[22m[39m
+ [32m✓[39m electron/services/containment.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 8[2mms[22m[39m
+ [32m✓[39m electron/services/detectionDispatch.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 7[2mms[22m[39m
+ [32m✓[39m electron/llm/userContext.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 5[2mms[22m[39m
+ [32m✓[39m electron/services/liveMode.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 7[2mms[22m[39m
+ [32m✓[39m src/components/CueBlock.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[90m 292[2mms[22m[39m
+ [32m✓[39m src/components/QuestionChip.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[90m 273[2mms[22m[39m
+ [32m✓[39m electron/services/__smoke__.test.ts [2m([22m[2m1 test[22m[2m)[22m[90m 5[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m102 passed[39m[22m[90m (102)[39m
+[2m      Tests [22m [1m[32m1089 passed[39m[22m[2m | [22m[33m4 skipped[39m[90m (1093)[39m
+[2m   Start at [22m 18:45:59
+[2m   Duration [22m 41.57s[2m (transform 12.87s, setup 0ms, collect 90.85s, tests 12.07s, environment 381.19s, prepare 38.66s)[22m
+

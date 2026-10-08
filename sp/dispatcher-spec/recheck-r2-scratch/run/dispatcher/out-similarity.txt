@@ -1,0 +1,8 @@
+br1 S1Q08 (hypothetical: revived turn answered at ~11:01:47.4; late Live claim 11:02:46.018 = +58.6 s)
+  answered: "Now add delayed outcomes and experimentation, Extend that design so churn outcomes arrive thirty days later, and retenti"
+  claim:    "Now, extend the platform design to handle delayed outcomes and experimentation. Churn outcomes arrive 30 days later, and"
+  containment=false  jaccard=0.78 (dedup needs >= 0.70)  contentWordSimilar=0.92 (>= 0.60, cross-detector <= 5 s only)  overlap(claim->answered)=0.92 (reconcile MATCH >= 0.50)
+cuesmoke S1Q08 (answered 13:37:15.989; late Live claim dispatched 13:38:32.443 = +76.5 s)
+  answered: "Now add delayed outcomes and experimentation. Extend that design so churn outcomes arrive thirty days later, and retenti"
+  claim:    "Extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design th"
+  containment=false  jaccard=0.82 (dedup needs >= 0.70)  contentWordSimilar=1.00 (>= 0.60, cross-detector <= 5 s only)  overlap(claim->answered)=1.00 (reconcile MATCH >= 0.50)

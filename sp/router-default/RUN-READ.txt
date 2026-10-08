@@ -1,0 +1,55 @@
+RUN items=47 offset_ms=1150 clock=playsync decisions_in_hour=47 decisions_outside_hour=2 dispatch_lines=49
+--- 1. DECISIONS (route x reason x shown; in-hour decisions)
+DECISION route=easy-answer reason=- shown=live n=21
+DECISION route=hard reason=- shown=pipeline n=15
+DECISION route=invalid reason=late shown=pipeline n=9
+DECISION route=invalid reason=no-router-turn shown=pipeline n=2
+DECISION reasons -=36 garbled-hard=0 too-short=0 too-long=0 incomplete=0 incomplete-after-show=0 marker=0 late=9 router-down=0 no-router-turn=2
+DECISION dup=0 unpaired=2 (shown=-, counted apart from decisions) other_shown_dash=0
+--- 2. SPEED
+SPEED live_first_ms shown=live q_src=all n=21 p50=1572 p90=2066
+SPEED live_first_ms shown=live q_src=vad n=21 p50=1572 p90=2066
+SPEED live_first_ms shown=live q_src=final n=0 p50=- p90=-
+SPEED shadow_first_token q_src=all n=47 p50=3903 p90=4914
+SPEED shadow_first_token q_src=vad n=45 p50=3966 p90=4914
+SPEED shadow_first_token q_src=final n=2 p50=3483.5 p90=3491
+SPEED live_words n=21 p50=36 max=75
+APPENDS total=0 
+--- 3. VOID INPUTS
+VOID_INPUT router session failed lines=0
+VOID_INPUT router_down_minutes=0.01 limit=2 start_state=known
+VOID_INPUT ear failovers=0 (reported only)
+--- 4. TALLIES (SESSION-WIDE: the whole app session, preflight and probe included, NOT the hour; CUTTABLE, spec 13: needs the user's ruling)
+TALLY session-wide router connects=2 up=2 reconnects=1 quota_reconnects=0 refused=0
+TALLY session-wide router close reason="Internal error encountered." code=1011 stale=no quota=no n=1
+TALLY session-wide router closes total=1 stale=0 quota_closes=0 (counted apart, I7)
+TALLY session-wide ear connected=3 reconnecting_status=2 reconnecting_lines=2 quota_closes=0
+TALLY session-wide ear close reason="connection closed" code=1000 stale=yes n=2
+TALLY session-wide ear closes total=2 stale=2
+--- 5. INTEGRITY
+INTEGRITY dispatched turns with no decision line: 0 (must be 0)
+INTEGRITY dispatched turns with nothing shown (sent=0): 0 (must be 0) sent_field_missing=0
+INTEGRITY dispatched turns with nothing shown (shown=pipeline with no pipeline token, shadow=-): 0 (must be 0; sent counts label events too)
+INTEGRITY decision lines without a dispatch line=0 duplicate decision lines=0 duplicate dispatch lines=0
+INTEGRITY unparsed_decision_lines=0 decisions_without_q_at=0
+CAPTURES live=21 (expected 21) shadow=21 (expected 21) appended=0 (expected 0) lost_live_captures=0
+SUPERSEDE superseded_turns=0 (streaming=0 done=0 line_written=yes 0 line_written=no 0) superseded_extra_lines=0 superseded_record_defects=0 superseded_orphan=0 (from the [Router] superseded diag line; supersedes before the Live decision are never logged by the producer and are not counted)
+CAPTURES check: MATCH missing=0 unexpected=0 orphan=0 duplicate=0 unparseable=0 outside_hour=2
+CAPTURE FILES: MATCH live_file=21 (log 21) shadow_file=21 (log 21) appended_in_file=0 (log 0) id_disagreements=0
+--- 6. BARS
+SAFETY live: hard-first=0 router-marker=0
+SAFETY pipeline: unknown-marker=0 bare-routing-token=0
+BAR Safety (text half): PASS live_hard_first=0 live_router_marker=0 pipeline_unknown_marker=0 pipeline_bare_routing_token=0
+BAR Safety (wrong-answer half): NEEDS GRADES
+BAR Fallback: PASS missing_appended=0 unflagged_live_failures=0 row4_with_live_capture=0 dispatched_nothing_shown=0 pipeline_no_token=0
+BAR Speed: PASS p50=1572 limit=2500 n=21
+ROUTING easy_caught_first_decision=17/20 easy_caught_any_decision(info only)=17/20hard_misrouted_any_decision=4/27 hard_misrouted_first_decision=4/27 items_with_more_than_one_decision=0 easy_without_decision=0
+ROUTING HARD late (not misrouted, M2): 7
+ROUTING HARD no-router-turn (not misrouted, M2): 1 router-down: 0 no decision line at all: 0
+BAR Routing: FAIL EASY caught 17/20 (>= 13); HARD misrouted 4/27 (<= 1)
+BAR Quality: NEEDS GRADES
+BAR No-regression: NEEDS GRADES
+--- 7. VERDICT
+VOID CHECK session-failed-before-dispatch-10: clear (lines=0, below floor=0)
+VOID CHECK router-down-minutes: clear (0.01 vs limit 2)
+READER VERDICT (pre-grade): INCONCLUSIVE-leaning; reader bars not met: Routing

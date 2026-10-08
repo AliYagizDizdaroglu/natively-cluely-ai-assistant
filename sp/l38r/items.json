@@ -1,0 +1,7 @@
+{
+  "note": "L38R, the Live router probe: 12 simple questions (spike 6's X1-X6 and the probe's F1-F6; clips rendered locally into l38r/clips) and the 10 'hard' scenario50 items of L20/ET38's hard group (clips from scenario50-tts-local). One Live session per item. The system prompt for every item is the app's captured s50k system prompt for S1Q08 plus that pair's CONTEXT block (the candidate's profile) plus the ROUTING live-mode block.",
+  "contextMain": "S1Q08",
+  "simple": ["X1", "X2", "X3", "X4", "X5", "X6", "F1", "F2", "F3", "F4", "F5", "F6"],
+  "hard": ["S1Q02", "S1Q02F", "S1Q04", "S1Q04F", "S1Q05", "S1Q05F", "S1Q07", "S1Q07F", "S2Q02", "S2Q02F"],
+  "order": ["X1", "S1Q02", "F1", "S1Q02F", "X2", "S1Q04", "F2", "S1Q04F", "X3", "S1Q05", "F3", "S1Q05F", "X4", "S1Q07", "F4", "S1Q07F", "X5", "S2Q02", "F5", "S2Q02F", "X6", "F6"]
+}

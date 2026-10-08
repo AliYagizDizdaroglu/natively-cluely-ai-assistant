@@ -1,0 +1,12 @@
+app repair lines 1; reference repairs on the same raw events 1
+MATCH    app "require" @10:52:19.389 | ref "require" before "a customer level holdout?" @10:52:19.388
+
+"require" @10:52:19.389  item S1Q05F: Customers appear in multiple snapshots. When is that legitimate, and when would you also require a c
+   next answer dispatch +1168 ms source=whisper: Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer level holdout?  -> HOLDS the restored word(s)
+
+PAUSE RULE: 0 repair(s) the reference makes only without clear()
+EXTRACTOR finalsFrom: 163 finals parsed, no refusal; app repairs replayed as "<restored> <raw>": 1/1
+
+HEDGE (the default flip, live): startup line(s) on trigger=5000ms; answers won by gemini-3.5-flash-lite 40, gemini-3.1-flash-lite 2
+
+SUMMARY app 1 / reference 1, app-only 0, ref-only 0; repairs reaching a dispatched question 1/1

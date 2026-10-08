@@ -1,0 +1,16 @@
+br1       once 40/40; unmatched replay classifies 0; recorded classifies never matched 2 @10:36:15.524 f=1 question/model,11:00:27.204 f=2 question/model; log not-a-question closes 1, not reproduced within 100 ms 0
+          first-dispatch source mismatch 0 []; first-dispatch time > 100 ms 4 [S1Q02:-600 S1Q02F:-4136 S1Q03F:-7648 S1Q08:+3698]
+cuesmoke  once 19/20; unmatched replay classifies 0; recorded classifies never matched 1 @13:11:47.693 f=1 question/model; log not-a-question closes 0, not reproduced within 100 ms 0
+          first-dispatch source mismatch 0 []; first-dispatch time > 100 ms 1 [S1Q08F:-1987]
+s50b      once 40/40; unmatched replay classifies 0; recorded classifies never matched 0; log not-a-question closes 1, not reproduced within 100 ms 0
+          first-dispatch source mismatch 0 []; first-dispatch time > 100 ms 0 []
+s50c      once 40/40; unmatched replay classifies 0; recorded classifies never matched 2 @07:13:36.583 f=1 question/model,07:25:04.458 f=2 question/model; log not-a-question closes 1, not reproduced within 100 ms 0
+          first-dispatch source mismatch 0 []; first-dispatch time > 100 ms 13 [S1Q01:+698 S1Q01F:+706 S1Q02:+677 S1Q02F:+700 S1Q03:+697 S1Q03F:+692 S1Q04:+716 S1Q04F:+521 S1Q05:+701 S1Q05F:+681 S1Q06:+703 S1Q06F:+694 S1Q07:+700]
+s50d      once 39/40; unmatched replay classifies 0; recorded classifies never matched 0; log not-a-question closes 10, not reproduced within 100 ms 0
+          first-dispatch source mismatch 0 []; first-dispatch time > 100 ms 0 []
+s50f      once 40/40; unmatched replay classifies 0; recorded classifies never matched 1 @07:13:17.463 f=1 question/model; log not-a-question closes 1, not reproduced within 100 ms 0
+          first-dispatch source mismatch 0 []; first-dispatch time > 100 ms 0 []
+s50i      once 40/40; unmatched replay classifies 0; recorded classifies never matched 2 @07:13:45.345 f=1 question/model,07:14:01.830 f=1 question/model; log not-a-question closes 1, not reproduced within 100 ms 0
+          first-dispatch source mismatch 0 []; first-dispatch time > 100 ms 0 []
+s50j      once 40/40; unmatched replay classifies 1 @07:47:37.977 f=1; recorded classifies never matched 1 @07:13:28.194 f=1 question/model; log not-a-question closes 3, not reproduced within 100 ms 0
+          first-dispatch source mismatch 0 []; first-dispatch time > 100 ms 1 [S2Q09:-1038]

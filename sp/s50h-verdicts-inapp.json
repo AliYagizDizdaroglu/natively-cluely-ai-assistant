@@ -1,0 +1,236 @@
+{
+  "S1Q01": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Solid data-fit rationale and logistic-regression baseline, but the asked production-constraints sub-part is only a passing 'highly efficient'."
+  },
+  "S1Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correctly separates interpretability, unstructured data and deterministic auditability across all three options; about 100 words, too long."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "True positives and 30 percent recall are right, but it derives 4,750 flagged from precision instead of checking the 5,000 in the top 5 percent band."
+  },
+  "S1Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly reads PR-AUC against the 0.095 prevalence baseline and asks for cost-benefit thresholding; crisp and well sized."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Randomized holdout plus regression controls for seasonality and mix is the right design; runs near 100 words."
+  },
+  "S1Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate uplift-modeling answer naming persuadables, sure things and lost causes; about 95 words, too long."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Precision, recall, lift and the index-based tie rule are all correct, and every edge case is covered; roughly 135 words."
+  },
+  "S1Q04F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Size-k heap at O(n log k) is right, but tie preservation is hand-waved and it says 'Thai rule' instead of tie rule."
+  },
+  "S1Q05": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split and train-only ColumnTransformer are right, but the 30-day label observation window embargo is never accounted for."
+  },
+  "S1Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Cleanly distinguishes time-varying modeling from generalization to new users and names the customer-ID leakage; well sized."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Left join, 30-day window and ingested-by filter are right, but it never filters event_type to support calls and misdescribes COUNT as returning nulls."
+  },
+  "S1Q06F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Composite index for the range scan plus valid_from/valid_to bitemporal versioning is exactly the right answer, and it is short."
+  },
+  "S1Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Good shared-feature-library insight, but LangSmith is an LLM-tracing tool misplaced as churn drift detection and prediction storage is skipped."
+  },
+  "S1Q07F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Idempotency keys are right, but it contradicts its own version pinning by re-fetching the current active version on restart."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Prediction log, point-in-time features and outcome joins are sound, but experiment assignment is mentioned rather than designed; about 155 words."
+  },
+  "S1Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names the feedback loop between intervention and observed label and mitigates with control groups and propensity matching; well sized."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every AWS component maps to a correct Azure service with operational reasons; about 105 words."
+  },
+  "S1Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct split of managed endpoints, App Service and AKS with sound reasons; about 115 words, too long."
+  },
+  "S1Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, Key Vault references and Private Link are right, but 'SQL Server Contributor' is the wrong role for PostgreSQL data access."
+  },
+  "S1Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Clean 401 versus 403 versus timeout triage with the right Azure tools for each; about 115 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every requested stage with concrete choices like hybrid BM25 plus cross-encoder reranking; about 125 words."
+  },
+  "S2Q01F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Names retrieval and context assembly but omits chunking and parsing, the stages most likely to corrupt a correct source document."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Units and denominators are given per metric, but token-level scoring is inconsistent with an entity denominator and uncertainty is a bare 95 percent CI."
+  },
+  "S2Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sequential component ablations plus human alignment sampling, judge rotation and order flipping for position bias; about 155 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Genuinely compares the three approaches and names the cost condition that justifies agent overhead; about 135 words."
+  },
+  "S2Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Step and cost budgets, redundant-call detection and a halt on low confidence are right, though 'high-confidence, high-impact' is a wording slip."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct one over c plus rank accumulation, summed across lists, with a deterministic id tie-break."
+  },
+  "S2Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Right scale-incomparability argument and a clean per-source weight multiplier; about 95 words."
+  },
+  "S2Q05": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy order and budget skipping are right, but chunk-id deduplication is omitted and a set cannot enforce a two-per-document count."
+  },
+  "S2Q05F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "MMR and recursive retrieval are good, but it describes a failure category instead of constructing the concrete example asked for."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, wait_for timeout, per-case exception capture and gather ordering are all exactly right, and it is short."
+  },
+  "S2Q06F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Barely addresses the retry-within-deadline extension and answers deterministic testing with Locust and k6 load runs, which are not deterministic."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant partitioning, Postgres ACL metadata with pre-filtering, tombstoned deletes and an eval loop cover every sub-part; about 140 words."
+  },
+  "S2Q07F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Right that the filter belongs at retrieval, but misses the re-check before generation and citation return once ACLs change mid-query."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write with a separate index, CDC-synchronized backfill, shadow comparison and a toggle rollback cover all six sub-parts; about 155 words."
+  },
+  "S2Q08F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Completeness is proved by count and coverage checks, but currency is never addressed with a CDC lag watermark."
+  },
+  "S2Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Single-region pinning, disabled geo-replication, regional Azure OpenAI deployments and Azure Policy enforcement are correct; about 95 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Idempotency key plus peek-lock completion only after the transaction commits directly solves the crash-before-ack case; about 118 words."
+  },
+  "S2Q10F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Max delivery count and version-guarded writes are right, but dead-letter replay is never addressed."
+  }
+}

@@ -1,0 +1,8 @@
+quota day starts 2026-10-02T07:00:00.000Z (10:00 local); generated 2026-10-02T07:45:02.875Z
+
+1. app logs, lines at/after the reset naming a lite model
+  natively_debug.log: last line 2026-10-01T18:04:15.664Z; 0 lines since the reset; lite mentions {}
+  .claude\worktrees\whole-turn\natively_debug.log: last line 2026-10-01T02:37:43.032Z; 0 lines since the reset; lite mentions {}
+
+2. files written since the reset that could hold model calls
+  0 file(s)

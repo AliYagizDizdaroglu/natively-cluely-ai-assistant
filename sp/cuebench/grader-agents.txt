@@ -1,0 +1,15 @@
+Cue bench graders, dispatched 2026-10-01 ~09:20 local (date read 09:21:31), model alias opus, h40c dispatch text verbatim.
+Keys were moved OUT of blind\ before dispatch (move-keys.mjs out); blind\ held only the six pairs files.
+
+r1 h1 g1  a724b4a1166d1c18a
+r1 h1 g2  a3e1cbe997eafbfc9
+r1 h2 g1  ab334090d3470a19c
+r1 h2 g2  aa3d4d8ffd4f69f62
+r2 h1 g1  a88111d6ccf5a108b
+r2 h1 g2  aaa8f15ae01e925d9
+r2 h2 g1  a5d9653129b41813c
+r2 h2 g2  af91436245d05adf5
+r3 h1 g1  a52c1c4135fac46c6
+r3 h1 g2  a87e2a07c9594012d
+r3 h2 g1  aab5f67e149c142b6
+r3 h2 g2  a91b6c488c8cf9419

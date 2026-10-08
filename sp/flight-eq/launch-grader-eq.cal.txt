@@ -1,0 +1,113 @@
+OK   no real `claude` is reachable on the cal PATH (a stray real launch is impossible)  [where exit 1]
+OK   dispatch: the marker appears exactly once in E\eq-grader-dispatch.txt
+OK   dispatch: the template region is BYTE-IDENTICAL to h40d's (sha256)  [3dd507745e98]
+OK   dispatch: fourteen per-arm rows, each verdicts file named after its tag  [14 rows]
+OK   dispatch: three blind rows (blind-1/2/3) with both graders
+OK   dispatch <-> eq-merge.cmd: the same fourteen tags
+OK   dispatch: the template carries the three substitution anchors
+OK   dispatch: a one-character change in the template changes the sha (the byte check can fail)
+OK   source: grep -c add-dir over the FLAGS and probe-args lines = 0 (eq launcher)
+OK   source: ... and = 0 in the original F\R\launch-grader.mjs (recorded)
+OK   source: the check can fail (an add-dir injected into FLAGS counts 1)
+OK   dry run (slot mode, pinned): argv carries --model claude-opus-5-5, Read,Write,Edit, dontAsk, strict MCP, no add-dir, no bare opus  [exit 0]
+OK   dry run: 3 permission rules (Read pairs, Read rubric, Edit verdicts) and the dispatch passes the audit's own check (exit 0)
+OK   USER settings never loaded: the argv of every kind (slot, pairs, probe 1, probe 3, unpinned dry) carries exactly one --setting-sources project,local, right before --allowed-tools  [slot:true pairs:true probe1:true probe3:true unpinned:true]
+OK   dry run without --model-id: argv shows --model opus and says NOT pinned (A3.5: absent shows the alias)
+OK   a REAL launch without --model-id is refused (exit 2), nothing created
+OK   --model-id must be an exact claude-... id: opus, a shell-metacharacter id and a missing value all exit 2  [2,2,2]
+OK   unknown option and an unknown slot exit 2
+OK   --make-pilot writes pairs.blind-1.json with 4 synthetic items; a second call refuses
+OK   PAIRS mode dry run: exit 0 (prompt passes the dispatch check), 3 rules naming the named files, cwd pilot-a1, mode pairs  [DRY RUN pilot attempt 1: mode pairs; model claude-opus-5-5; cwd C:\Users\sotka\OneDrive\Ma]
+OK   PAIRS mode prompt: only the pairs path, verdicts path and tag differ from the template (sha of the prompt differs from the template's, template anchors replaced)
+OK   PAIRS mode refuses a blind slot tag with --pairs (exit 2)  [exit 2]
+OK   PAIRS mode refuses an existing verdicts file (exit 2)  [exit 2]
+OK   PAIRS mode refuses a relative pairs path (exit 2)  [exit 2]
+OK   PAIRS mode refuses a missing pairs file (exit 2)  [exit 2]
+OK   PAIRS mode refuses --pairs without --verdicts (exit 2)  [exit 2]
+OK   PAIRS mode refuses duplicate keys (exit 2)  [exit 2]
+OK   PAIRS mode refuses an empty items list (exit 2)  [exit 2]
+OK   PAIRS mode refuses an unparsable pairs file (exit 2)  [exit 2]
+OK   PAIRS mode refuses a verdicts folder that does not exist (exit 2)  [exit 2]
+OK   PAIRS mode refuses a tag with a path separator (exit 2)  [exit 2]
+OK   PAIRS mode refuses a per-arm tag without --pairs (slot mode) (exit 2)  [exit 2]
+OK   PAIRS mode refuses pairs mode, real launch, no pin (exit 2)  [exit 2]
+OK   probes: cwdprobe-1 dry shows the pin; cwdprobe-3 dry shows --model opus and the alias note
+OK   probes: cwdprobe-3 WITH --model-id exits 2; cwdprobe-1 real without it exits 2; a bad probe name exits 2
+OK   probes: cwdprobe-2 before cwdprobe-1 is REFUSED (exit 2), nothing launched
+OK   a test seam in the environment WITHOUT EQ_CAL_FAKE is refused (exit 2) and named: a stand-in must never produce a real grade
+OK   PAIRS-mode pilot with the stand-in: exit 0, verdicts valid on the pairs file's 4 keys, model = pin  [pilot a1: session aedcf8de-930e-4e40-b421-4cafe0564497 model claude-opus-5-5 exit 0 cwd pilot-a1 slugJsonl 1 memoryDir absent memory ABSENT projectMem]
+OK   the launch record: slot pilot, attempt 1, exit 0, slugJsonl 1, memoryDir absent, cwd pilot-a1, session id  [pilot a1 exit 0]
+OK   eq-audit on that pilot transcript: clean, dispatch=match, Read x3 Write x1  [pilot (aedcf8de-930e-4e40): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match]
+OK   re-grading onto an existing verdicts file is refused (exit 2)
+OK   a cwd is never reused: the same attempt number again is refused (exit 2) even with the verdicts moved away
+OK   a stand-in reporting claude-opus-5 (not the pin) -> exit 1 and "MODEL IS NOT THE PIN"
+OK   a model string with a bracket suffix (claude-opus-5-5[1m]) is accepted (exit 0): the pin is a prefix match on bracket/date suffixes only
+OK   incomplete verdicts -> exit 1 "verdicts file MISSING/INVALID"
+OK   the CLI exiting 1 -> exit 1
+OK   M5: a rate-limited refusal (no model, no tool call) exits 1 and is LABELLED as consuming no replacement
+OK   M5: an ordinary failed grade is not labelled a rate-limit refusal
+OK   probe gate, REAL record shape (no memory/tools fields): the last record clean -> allowed (not "memory unknown")  [allowed]
+OK   probe gate: the last record LOADED -> refused naming memory LOADED
+OK   probe gate: a stale failed LOADED record followed by a clean one -> allowed (the LAST record decides)
+OK   probe gate: a clean record followed by a failed one (exit 1, LOADED) -> refused
+OK   probe gate: the last record read another model -> refused naming it
+OK   M5: probe 1 that read another model: it fails (exit 1) and probe 2 is REFUSED naming the model  [cwdprobe-2: REFUSED -- it starts only after cwdprobe-1's line in grader-cwd.launches.jsonl shows exit 0, the pinned mode]
+OK   M5: probe 1 whose transcript shows memory LOADED: it fails (exit 1) and probe 2 is REFUSED naming memory LOADED  [cwdprobe-2: REFUSED -- it starts only after cwdprobe-1's line in grader-cwd.launches.jsonl shows exit 0, the pinned mode]
+OK   SLOT mode with the stand-in: exit 0, valid on its 2 keys, launches.jsonl written in the blind dir  [blind-1.g1 a1: session 77021903-3282-4568-a6ba-681f9cbf7058 model claude-opus-5-5 exit 0 cwd blind-1.g1-a1 slugJsonl 1 m]
+OK   the ORIGINAL audit-graders.mjs on a slot-mode transcript with E\eq-grader-dispatch.txt: clean, dispatch=match  [blind-1.g1 (77021903-3282-4568): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match]
+OK   probe 1 with the stand-in: exit 0, one Read + one Write, ABSENT, model = pin  [cwdprobe-1 a1: session e67ae059-c8df-4f4d-9206-979b11f8ea39 model claude-opus-5-5 exit 0 slugJsonl 1 memoryDir absent memory ABSENT projectM]
+OK   probe 3 before probe 2 is REFUSED
+OK   probe 2 after probe 1 ran (exit 0)
+OK   probe 3 (alias read) after probe 2: runs without --model-id (argv shows opus), exit 0
+OK   probes append to grader-cwd.launches.jsonl in the log dir (3 lines)  [3]
+OK   eq-audit: 10 synthetic transcripts all flagged / clean as expected  [10/10]
+OK   eq-audit: its verdict equals audit-graders.mjs's on the same 10 transcripts for a blind-named slot  [10/10]
+OK   eq-audit, an arbitrary-file arm: clean / a Read of another arm's pairs FLAGS / a wrong tag in the prompt = DIFFERS
+OK   eq-audit: a transcript that cannot be found = exit 1 "cannot audit"; usage errors exit 2
+OK   the cmd's node path exists on this machine
+OK   eq-merge.cmd: ASCII only, every line CRLF, no parenthesis in any echo line
+OK   eq-merge.cmd: 14 merge rows = the in-app arm + 12 :arm rows + bare31  [14]
+OK   a run dir holding all 14 verdicts files: 14 MERGED lines, 14 judge calls, ALL MERGES RAN, exit 0  [exit 0 merged 14 stubs 14]
+OK   every judge call carries --model m-1 (the exact id)
+OK   every verdicts file was copied to the run dir as interview60.judge.verdicts[.arm].json (14 files, content = source)
+OK   answers files named per arm; bare31 reads the PLAIN interview60.answers.json; no arm reads another's
+OK   one arm's verdicts file missing: SKIPPED-MISSING captured-low-r2, 13 MERGED, nothing merged for it, exit 0
+OK   bare31 missing: SKIPPED-MISSING bare31, ALL MERGES RAN
+OK   the in-app verdicts file missing: exit 10 "MISSING", no arm merged
+OK   WRONG CWD (not MAIN): exit 13, the judge is not run  [exit 13]
+OK   WRONG CWD with the run dir present but no judge script: exit 13 and NOTHING copied into the run dir (the h40d guard h40c lacked)  [exit 13]
+OK   a wrong run dir (no flight.done.json): exit 13
+OK   no arguments / one argument: exit 12 USAGE
+OK   M1: a failing judge on one arm: MERGE-FAILED named, the other arms still merge (11 MERGED: low-r2 and bare31 were removed above), and the exit code is NON-ZERO (1) with SOME MERGES FAILED  [exit 1 merged 11 failed-lines MERGE-FAILED captured-high/SOME MERGES FAILED: see COPY-FAILED and MERGE-FAILED above]
+OK   M1: a copy that FAILS (the target is read-only) prints COPY-FAILED, does not run the judge for that arm, does not print MERGED for it, exit 1  [exit 1]
+OK   M1: the in-app copy FAILS: COPY-FAILED inapp, exit 1 at once, no judge call, no other arm  [exit 1]
+OK   a failing in-app merge: exit 1 immediately (the required file), no other arm runs
+MUTANT CAUGHT  launcher: pin refusal removed (a real launch without --model-id proceeds)  (first failing check: a REAL launch without --model-id is refused (exit 2), nothing created)
+MUTANT CAUGHT  launcher: FLAGS ignores the model id  (first failing check: dry run (slot mode, pinned): argv carries --model claude-opus-5-5, Read,Write,Ed)
+MUTANT CAUGHT  launcher: modelMatchesPin always true  (first failing check: a stand-in reporting claude-opus-5 (not the pin) -> exit 1 and "MODEL IS NOT THE)
+MUTANT CAUGHT  launcher: cwdprobe-3 may carry --model-id  (first failing check: probes: cwdprobe-3 WITH --model-id exits 2; cwdprobe-1 real without it exits 2; )
+MUTANT CAUGHT  launcher: an existing verdicts file is allowed in PAIRS mode  (first failing check: PAIRS mode refuses an existing verdicts file (exit 2))
+MUTANT CAUGHT  launcher: the test-seam guard removed  (first failing check: a test seam in the environment WITHOUT EQ_CAL_FAKE is refused (exit 2) and named)
+MUTANT CAUGHT  launcher: a blind slot tag accepted in PAIRS mode  (first failing check: PAIRS mode refuses a blind slot tag with --pairs (exit 2))
+MUTANT CAUGHT  launcher: probe gating removed  (first failing check: probes: cwdprobe-2 before cwdprobe-1 is REFUSED (exit 2), nothing launched)
+MUTANT CAUGHT  launcher: the verdicts path is not substituted in the PAIRS prompt  (first failing check: USER settings never loaded: the argv of every kind (slot, pairs, probe 1, probe )
+MUTANT CAUGHT  launcher: Read of the rubric not allowed (rules lose one)  (first failing check: PAIRS mode dry run: exit 0 (prompt passes the dispatch check), 3 rules naming th)
+MUTANT CAUGHT  launcher: probe gate uses the FIRST record of the slot  (first failing check: probe gate: a stale failed LOADED record followed by a clean one -> allowed (the)
+MUTANT CAUGHT  launcher: probe gating ignores the previous probe model  (first failing check: probe gate: the last record read another model -> refused naming it)
+MUTANT CAUGHT  launcher: probe gating ignores the previous probe memory  (first failing check: probe gate: the last record LOADED -> refused naming memory LOADED)
+MUTANT CAUGHT  launcher: no rate-limit label  (first failing check: M5: a rate-limited refusal (no model, no tool call) exits 1 and is LABELLED as c)
+MUTANT CAUGHT  launcher: --setting-sources dropped from FLAGS  (first failing check: source: the check can fail (an add-dir injected into FLAGS counts 1))
+MUTANT CAUGHT  launcher: verdict read-back skipped (always valid)  (first failing check: incomplete verdicts -> exit 1 "verdicts file MISSING/INVALID")
+MUTANT CAUGHT  audit: Bash allowed  (first failing check: eq-audit case "a Bash call" as expected and equal to the original audit)
+MUTANT CAUGHT  audit: the dispatch check removed  (first failing check: eq-audit on that pilot transcript: clean, dispatch=match, Read x3 Write x1)
+MUTANT CAUGHT  audit: denials ignored  (first failing check: eq-audit case "a denied call" as expected and equal to the original audit)
+MUTANT CAUGHT  audit: any Read allowed  (first failing check: eq-audit case "a Read of another file" as expected and equal to the original aud)
+MUTANT CAUGHT  merge: the wrong-cwd check removed  (first failing check: WRONG CWD with the run dir present but no judge script: exit 13 and NOTHING copi)
+MUTANT CAUGHT  merge: --model not passed on the arm rows  (first failing check: every judge call carries --model m-1 (the exact id))
+MUTANT CAUGHT  merge: SKIPPED-MISSING falls through to a merge  (first failing check: one arm's verdicts file missing: SKIPPED-MISSING captured-low-r2, 13 MERGED, not)
+MUTANT CAUGHT  merge: a failed copy on an arm still merges  (first failing check: M1: a copy that FAILS (the target is read-only) prints COPY-FAILED, does not run)
+MUTANT CAUGHT  merge: the exit code stays 0 after a MERGE-FAILED  (first failing check: M1: a failing judge on one arm: MERGE-FAILED named, the other arms still merge ()
+MUTANT CAUGHT  merge: the in-app copy failure does not stop  (first failing check: M1: the in-app copy FAILS: COPY-FAILED inapp, exit 1 at once, no judge call, no )
+MUTANT CAUGHT  merge: an arm row dropped  (first failing check: eq-merge.cmd: 14 merge rows = the in-app arm + 12 :arm rows + bare31)
+
+LAUNCHER-EQ CALIBRATION: 84/84 checks OK; mutants caught 27/27

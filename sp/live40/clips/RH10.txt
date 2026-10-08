@@ -1,0 +1,1 @@
+And in that design, what happens when the nightly training job finishes late?

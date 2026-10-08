@@ -1,0 +1,35 @@
+PASS  P3a-1 | `hard` | expected: hard | actual: hard
+PASS  P3a-2 | `Hard.` | expected: hard | actual: hard
+PASS  P3a-3 | `HARD! A Docker image is …` (+tail) | expected: hard+tail | actual: hard+tail
+PASS  P3a-4 | `<system> hard </system>` | expected: malformed [has < > or [] | actual: malformed [has < > or []
+PASS  P3a-5 | `This is hard to say …` (hard in the first 12, not first) | expected: malformed [hard among the first 12 words,] | actual: malformed [hard among the first 12 words,]
+PASS  P3a-6 | 8 consecutive words of BLOCK_B (a recital) | expected: malformed [recital: 8 consecutive words s] | actual: malformed [recital: 8 consecutive words s]
+PASS  P3a-7 | a Spanish sentence of 12 words | expected: malformed [no common English function wor] | actual: malformed [no common English function wor]
+PASS  P3a-8 | 14 neutral words + `so it is hard` (hard in the last 3 only) | expected: malformed [hard among the last 3 words] | actual: malformed [hard among the last 3 words]
+PASS  P3a-9 | two completed turns: 14 neutral words, then `hard, because it needs a full design` | expected: malformed [a later completed turn starts ] | actual: malformed [a later completed turn starts ]
+PASS  P3a-10 | 151 words | expected: too-long | actual: too-long
+PASS  P3a-11 | 150 words | expected: too-long | actual: too-long
+PASS  P3a-12 | 81 words | expected: too-long | actual: too-long
+PASS  P3a-13 | 80 words (the boundary) | expected: answer | actual: answer
+PASS  P3a-14 | 40 words | expected: answer | actual: answer
+PASS  P3a-15 | played, no output | expected: silent | actual: silent
+PASS  P3a-16 | `system error` | expected: apology | actual: apology
+PASS  P3a-17 | not played | expected: missing | actual: missing
+PASS  P3a-18 | a 40-word turn still open at the 90 s cap | expected: cut [the last output turn has no tu] | actual: cut [the last output turn has no tu]
+PASS  P3a-19 | 12 words then an abnormal close (1011) | expected: cut | actual: cut
+PASS  P3a-20 | 3 words before clipEnd, then a complete 40-word turn | expected: early | actual: early
+PASS  P3a-21 | played, abnormal close BEFORE itemDone, no output (A8: was written with the close after itemDone, which I1 now reads as silent) | expected: missing | actual: missing
+PASS  P3a-22 | a 40-word turn ended by `interrupted` (not complete) | expected: cut | actual: cut
+PASS  P3a-23 | negative control for rule 8: 14 neutral words + `so it is fine` | expected: answer | actual: answer
+PASS  P3a-24 | negative control for rule 9: 14 neutral words, then a second turn `fine, because it is easy` | expected: answer | actual: answer
+PASS  P3a-flip | one flipped expectation (case 5 expected `answer`) must be reported as a mismatch | expected: exactly 1 mismatch, case 5 | actual: 1 mismatch(es): case 5
+PASS  P3a-A | variant A: 150 words -> answer, 151 -> too-long | expected: answer, too-long | actual: answer, too-long
+PASS  P3b-1 | live40-r1 real events + live40 itemDone: counts by class | expected: 46 answer, RH14 silent, 0 malformed, 0 cut, 0 early, 0 hard, 0 missing, 0 too-long | actual: 46 answer, RH14 silent, 0 malformed, 0 cut, 0 early, 0 hard, 0 missing, 0 too-long
+PASS  P3b-2 | max words over the 46 answers | expected: 79 | actual: 79
+PASS  P3b-3 | every T byte-equal to live40-r1.answers.json text (after the trim the registration specifies for T) | expected: 46/46 | actual: 46/46 (untrimmed raw equality 46/46)
+PASS  P3b-4 | the confusion table has nine class columns and 4 live40-class rows summing to 47 | expected: 9 columns; rows E20 H11 QF9 AF7 | actual: 9 columns; rows E20 H11 QF9 AF7
+PASS  P3c-L1 | a finished 76-word answer turn, then a late turn ("Is there anything else...", 8 words) after itemDone | expected: answer, T = the first turn only (76 words) | actual: answer, T = first turn only
+PASS  P3c-L2 | a played item with no output, then an abnormal close (1011) after itemDone | expected: silent | actual: silent
+PASS  P3c-L3 | a 40-word turn still open at itemDone (cap); its turnComplete arrives in the post-itemDone gap | expected: cut | actual: cut
+PASS  P3c-L4 | ans.turns has 2 turns, the events 1 turn before itemDone and an extra turn after it | expected: answer, T = the first turn only (76 words) | actual: answer, T = first turn only
+read-r: 34/34 cases PASS

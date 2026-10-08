@@ -1,0 +1,59 @@
+﻿PASS  RD-0 | the builder file exists | expected: true | actual: true
+PASS  RD-1 | build exits 0 on a real-shaped folder name (2026-10-07T20-00-05-router-default-r1), 3 Live items one appended + 1 shadow-only | expected: exit 0 | actual: exit 0
+PASS  RD-2 | 3 L/S pairs: 3 L, 3 entries carrying S, each id has both | expected: 3 L, 3 S | actual: 3 L, 3 S
+PASS  RD-3 | 1 A item (the appended pipeline answer: RH03) | expected: 1 A: RH03 | actual: 1 A: RH03
+PASS  RD-4 | the appended turn's S text equals its appended text (sha12) | expected: d171d8dd90cf | actual: d171d8dd90cf
+PASS  RD-4b | a non-appended turn takes the hidden-shadow text for S (sha12) | expected: 5c1537c99915 | actual: 5c1537c99915
+PASS  RD-5 | the shadow-only item (RH01, no Live text) is not in the export at all | expected: 0 entries | actual: 0 entries
+PASS  RD-5b | the follow-up EF01's L and S carry the judge's [Follow-up to: ...] question (2 entries) | expected: 2 | actual: 2
+PASS  RD-6 | no arm / id / class / route / parent / turn names in the pairs files outside the answer and question | expected: false in every file | actual: false,false,false
+PASS  RD-6b | positive control for that scan: an item with an "arms" field is detected | expected: true | actual: true
+PASS  RD-6c | neutral contiguous keys q01.. per file, id = key | expected: true | actual: true
+PASS  RD-7 | the key maps every q back to its arms, id and turn (answer sha12 = the source text) | expected: true | actual: true
+PASS  RD-7b | I3: the appended item holds L plus ONE answer (key: arms [S,A]); no two answers in any file are identical | expected: 2 entries, [L] + [S,A]; 0 files with identical answers | actual: 2 entries, [L] + [S,A]; 0 files with identical answers
+PASS  RD-8 | key separation: key only in the key dir; out dir holds only pairs.blind-<n>.json; the run folder gained nothing | expected: key dir [build-record-rd.json,key-rd.json]; out all pairs true; run 3 files | actual: key dir [build-record-rd.json,key-rd.json]; out all pairs true; run 3 files
+PASS  RD-8b | the build prints counts only: no synthetic answer text, no q key | expected: false | actual: false
+PASS  RD-9 | the same seed gives byte-identical pairs files and key | expected: equal | actual: equal
+PASS  RD-10 | a stamped smoke folder (<stamp>-router-smoke) holding COMPLETE capture files | expected: exit 2, names the registered label, nothing written | actual: exit 2; names label true; out exists false; key exists false
+PASS  RD-10b | the stamped label plus a suffix (<stamp>-<label>-1002, a retried run) | expected: exit 2, names the registered label, nothing written | actual: exit 2; names label true; out exists false; key exists false
+PASS  RD-10c | the stamped prefix of the label (<stamp>-router-default-) | expected: exit 2, names the registered label, nothing written | actual: exit 2; names label true; out exists false; key exists false
+PASS  RD-10d | the bare label with no stamp (not how the harness names a folder) | expected: exit 2, names the registered label, nothing written | actual: exit 2; names label true; out exists false; key exists false
+PASS  RD-10e | a malformed stamp (date only, no time) | expected: exit 2, names the registered label, nothing written | actual: exit 2; names label true; out exists false; key exists false
+PASS  RD-10f | junk before the stamp | expected: exit 2, names the registered label, nothing written | actual: exit 2; names label true; out exists false; key exists false
+PASS  RD-10g | control: <stamp>-<label> is accepted (so the refusals above are the name rule and nothing else) | expected: exit 0 | actual: exit 0
+PASS  RD-11 | two Live entries with the same turn number | expected: exit 2 matching /duplicate/i; nothing written | actual: exit 2; match true; out false
+PASS  RD-11b | an entry whose id is not in the roster | expected: exit 2 matching /not in the roster/i; nothing written | actual: exit 2; match true; out false
+PASS  RD-11c | a shadow entry with no boolean appended | expected: exit 2 matching /appended/i; nothing written | actual: exit 2; match true; out false
+PASS  RD-11d | a hidden AND an appended pipeline entry for one TURN (ambiguous S) | expected: exit 2 matching /both/i; nothing written | actual: exit 2; match true; out false
+PASS  RD-11e | no exportable item at all (no Live text, no appended) | expected: exit 2 matching /nothing to export/i; nothing written | actual: exit 2; match true; out false
+PASS  RD-11f | an EMPTY Live text (shown=live with no text is a real anomaly) | expected: exit 2 matching /no text/i; nothing written | actual: exit 2; match true; out false
+PASS  RD-11g | a turn that maps to one id in the live file and another in the shadow file | expected: exit 2 matching /different items|disagree/i; nothing written | actual: exit 2; match true; out false
+PASS  RD-12 | a second build into the same out dir is refused, the existing files untouched | expected: exit 2; unchanged | actual: exit 2; unchanged
+PASS  RD-12b | a build whose key file already exists is refused before any pairs file is written | expected: exit 2; out dir absent | actual: exit 2; out dir absent
+PASS  RD-13 | I1: a Live turn whose shadow text is empty (EF01) or blank appended (RH03) exports exit 0, L alone, sEmpty marked on L; the intact turn (RE01) is unmarked | expected: exit 0; EF01 [L] sEmpty, RH03 [L] sEmpty, no S/A for them; RE01 has S, no sEmpty | actual: exit 0; EF01 true/1 entry; RH03 true/1 entry; RE01 S 1, sEmpty false
+PASS  RD-13b | I1: the count is printed ("empty pipeline answer 2") | expected: empty pipeline answer 2 | actual: empty pipeline answer 2
+PASS  RD-14 | I2: two Live turns of one id are BOTH exported (exit 0), each L paired with the S of its OWN turn (answer hashes verified by the key check), in the same file | expected: exit 0; 4 RE01 entries (turn 1 and 7 each L+S); keyMapsBack true; 1 file | actual: exit 0; 4 RE01 entries; paired by turn true; keyMapsBack true; 1 file
+PASS  RD-14b | I2: a shadow of ANOTHER turn is never joined to a Live turn (EF01 turn 2 has no shadow of its own): L alone, the stray shadow not exported | expected: 1 entry [L]; shadow text of turn 9 absent from the pairs files | actual: 1 entry [L]; stray text present false
+PASS  RD-14c | I2: the number of ids with more than one Live turn is printed ("ids with more than one Live turn 1"), and the rank of each turn is in the key | expected: ids with more than one Live turn 1; ranks 1,2 | actual: ids with more than one Live turn 1; ranks 1,2
+PASS  RD-15 | superseded: a turn marked superseded:true exports L alone, key superseded:true, the pipeline text that replaced it is NOT exported as S or A | expected: exit 0; 1 RE01 entry [L] superseded; replaced text absent | actual: exit 0; 1 entry [L] superseded true; replaced text present false
+PASS  RD-15b | superseded: the count is printed, the other turns stay unmarked (EF01 explicit false, RH03 field absent), and the 2 records without the field (RH03 live + appended) are counted | expected: superseded 1; records without superseded field 2; EF01 unmarked | actual: superseded 1; records without superseded field 2; EF01 unmarked
+FAIL  RD-21 | fix2: all capture flags false, only the diag line names turn 1 -> RE01 exports L alone, key superseded; EF01 (malformed diag line, phase=weird) is NOT marked | expected: exit 0; RE01 1 entry [L] superseded; EF01 two entries unmarked | actual: exit 0; RE01 1 entry [L] superseded false; EF01 2 entries, marked 0
+FAIL  RD-21b | fix2: each source counted, and the turns found only by the diag line (turn 9 has no capture entry; duplicate diag lines count once) | expected: diag line turns 2; capture flag true 0; union 2; found only by the diag line 2 | actual: no line
+FAIL  RD-21c | fix2: no natively_debug.log in the run folder -> REFUSED (the superseded set cannot be known), nothing written | expected: exit 2 naming natively_debug.log; out absent | actual: exit 0; names log false; out present
+FAIL  RD-21d | fix2: the UNION, not either source alone: turn 1 flagged by both, turn 2 by the diag line only -> both exported as [L] superseded, nothing else | expected: diag line turns 2; capture flag true 1; union 2; found only by the diag line 1; 2 entries both superseded | actual: no line; 3 entries, 1 superseded
+FAIL  RD-21e | fix2: a capture flag true with an EMPTY diag log still marks the turn (the union keeps the flag source) | expected: diag line turns 0; capture flag true 1; union 1; found only by the diag line 0 | actual: no line
+PASS  RD-15c | a pre-fix log (no record carries the field) shows up: the small case has 7 records, all without it | expected: records without superseded field 7 | actual: records without superseded field 7
+PASS  RD-15d | superseded true on the SHADOW record alone is enough (the live record of the same turn is read as L alone, marked) | expected: RE01 1 entry [L] superseded true | actual: RE01 1 entry [L] superseded true
+PASS  RD-16 | M1: the build record holds the sha256 of the roster module and of the judge file (64 hex, equal to the files) | expected: equal; equal | actual: equal; equal
+PASS  RD-16b | M1: --root pointing at a tree without the roster fails loudly (nonzero), nothing written | expected: exit != 0; out dir absent | actual: exit 1; out dir absent
+PASS  RD-17 | cut: 10 items -> 4 files of whole items, 3/3/2/2, contiguous slices of the roster order | expected: 4 files; 3,3,2,2; slices true | actual: 4 files; 3,3,2,2; slices true
+PASS  RD-17b | every item (all its entries, both turns of the twice-answered id) sits in ONE file; 11 L + 11 S + 3 appended-S/A merged = 11 + (11 - 3) + 3 = 22 entries | expected: true; 22 | actual: true; 22
+PASS  RD-17c | the key maps back on the big case too | expected: true | actual: true
+PASS  RD-17d | negative control: one key entry moved to another file is detected as a split item | expected: false | actual: false
+PASS  RD-18 | answers are shuffled inside a file: arms interleave (>= 3 arm-set changes in file 1) and the id order is not the roster order | expected: true; true | actual: true; true
+PASS  RD-19 | MUTATION: L and S swapped in the key -> the key-maps-back check must FAIL (false = the swap is caught) | expected: false | actual: false
+PASS  RD-19b | MUTATION: two ids swapped in the key -> caught | expected: false | actual: false
+PASS  RD-19c | MUTATION: the two turns of RE01 swapped in the key -> caught | expected: false | actual: false
+PASS  RD-20 | the calibration's label equals the builder's REGISTERED_RUN_LABEL constant | expected: router-default-r1 | actual: router-default-r1
+PASS  RD-20b | the builder uses the seed text blind:router-default:r1 | expected: blind:router-default:r1 | actual: blind:router-default:r1
+cal-build-blind-rd: 53/58 cases PASS -- FAILURES ABOVE

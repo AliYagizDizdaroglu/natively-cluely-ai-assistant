@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers data fit, production latency and a logistic-regression baseline correctly; only defect is length at roughly ninety-nine words."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "True positives and recall right, but never computes precision from the 5,000 band; the 4,750 denominator contradicts its own numbers."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout plus regression on customer mix is exactly the right isolation argument, at natural spoken length."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Formulas and stable tie-break correct, but capping a negative k at n is wrong and recall with no positives is unaddressed."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split, ColumnTransformer fit on train only, and a thirty-day embargo before the test window are all correct; too long."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Left join with predicates in the ON clause is right, but never filters to support calls and COUNT never returns null to coalesce."
+  },
+  "S1Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Feature store, Kafka, registry and monitoring all sound, but training is never described despite being explicitly asked."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, joins, maturity window and retraining are sound, but logging predictions into a feature store misplaces that component."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service named correctly across storage, training, registry, images, inference, scheduling, identity and monitoring; only too long."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, Storage Blob Data Reader, Entra for PostgreSQL, Key Vault and private endpoints are all precisely right; too long."
+  },
+  "S2Q01": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Walks every stage cleanly, but never maps them to the document intelligence experience the question explicitly asked for."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Defines unit, denominator and uncertainty per metric, but injecting synthetic noise measures detection, not the generator's own hallucination rate."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Names the condition for agents and compares all three approaches with the latency and cost trade-off; only too long."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Formula, aggregation, descending sort, id tie-break and top-k slice are all correct, at natural spoken length."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy sort, dedupe set, per-document cap and budget check are all correct; slightly long, with a snake_case identifier spoken."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, per-case timeout, ordered awaits and per-task exception capture are all correct and within length."
+  },
+  "S2Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Index, metadata, tenant filtering and evaluation covered, but document deletions and user-level ACL enforcement are never addressed."
+  },
+  "S2Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioning, backfill, dual write, cutover and flag rollback are sound, but cosine similarity cannot compare differently-dimensioned embedding spaces."
+  },
+  "S2Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Every component placed on the right Azure service, but telemetry is omitted despite being explicitly asked."
+  },
+  "S2Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Idempotency key and status flag are right, but one transaction across two stores is impossible and Azure messaging deduplication is never named."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic is right but it calls 57 percent consistent with the reported 60 percent within rounding, the exact point the question turns on."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Catches both traps: predicates in the left join ON clause and count of a column rather than count star, so zero-call customers survive."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All four sub-parts sound, including deterministic hashing and holdout or inverse propensity weighting, but about 100 words is too long to speak."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Methodology is right for all three metrics but it invents dataset sizes, kappa and interval widths the candidate cannot back up; about 140 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly pins the agent's justification to branching iterative retrieval where the next document depends on prior evidence."
+  }
+}

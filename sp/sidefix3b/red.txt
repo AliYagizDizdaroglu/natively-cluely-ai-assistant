@@ -1,0 +1,60 @@
+﻿node : [33mThe CJS build of Vite's Node API is deprecated. See 
+https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+At line:5 char:1
++ node "$m\node_modules\vitest\vitest.mjs" run electron/llm/verbalStrea ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([33mThe CJS bu...e details.[39m:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must 
+the arms > suppresses a fenced block and keeps the prose around it
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must 
+the arms > suppresses it when the text arrives one character at a time
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+ ❯ electron/llm/verbalStreamFilter.test.ts (151 tests | 1 failed) 190ms
+   × SPOKEN_WORD_GUARD — the verbal stream is clamped at 200 words and never cut under it (flight s50c, 2026-09-12) > a spoken answer that OPENS on a brace literal is still clamped, for every chunk size 23ms
+     → expected false to be true // Object.is equality
+stdout | electron/llm/WhatToAnswerLLM.negotiationCard.test.ts > a negotiation coaching card crosses the verbal route as the JSON the renderer parses > keeps a salary figure that follows a quote, and an escaped newline
+[LLMHelper] KnowledgeOrchestrator attached
+[Answer] budget: words=0 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.negotiationCard.test.ts > a negotiation coaching card crosses the verbal route as the JSON the renderer parses > arrives whole when its texts run past the spoken word guard
+[LLMHelper] KnowledgeOrchestrator attached
+[Answer] budget: words=0 cut=no allowance=no
+
+ ✓ electron/llm/WhatToAnswerLLM.negotiationCard.test.ts (2 tests) 21ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > SPOKEN_WORD_GUARD — the verbal stream is clamped at 200 words and 
+never cut under it (flight s50c, 2026-09-12) > a spoken answer that OPENS on a brace literal is still clamped, for 
+every chunk size
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:674:34
+    672|                 let out = '';
+    673|                 for await (const c of cutAtWordBudget(src, { ...SPOKEN…
+    674|                 expect(done.cut).toBe(true);
+       |                                  ^
+    675|                 expect(done.words).toBeGreaterThan(180);
+    676|                 expect(done.words).toBeLessThanOrEqual(200);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 152 passed (153)
+   Start at  22:04:28
+   Duration  57.23s (transform 1.04s, setup 0ms, collect 8.66s, tests 211ms, environment 63.75s, prepare 2.85s)
+

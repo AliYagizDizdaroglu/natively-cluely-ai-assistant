@@ -1,0 +1,39 @@
+consensus-wrong (both graders scored correctness 0):
+  live38-r3  S2Q04
+correctness 0 from ONE grader only:
+
+words per graded answer, by arm (n, median, max; over 85 words; over 150):
+  app35-inapp  n 38  median  78.5  max 129  over 85: 16  over 150: 0
+  app35-twin1  n 38  median    82  max 144  over 85: 16  over 150: 0
+  app35-twin2  n 37  median    79  max 139  over 85: 13  over 150: 0
+  app35-twin3  n 38  median    74  max 149  over 85: 17  over 150: 0
+  br1-inapp    n 37  median    85  max 144  over 85: 17  over 150: 0
+  live38-r1    n 35  median    67  max 113  over 85: 10  over 150: 0
+  live38-r2    n 38  median    63  max 133  over 85:  8  over 150: 0
+  live38-r3    n 38  median  65.5  max 163  over 85: 13  over 150: 1
+
+why an answer is not acceptable, by arm (each grade counted; an answer has two grades):
+  app35-inapp  grades  76  acceptable  50  correctness<2  20  on_topic<2  12  delivery 0  2  delivery 1  29
+  app35-twin1  grades  76  acceptable  58  correctness<2  15  on_topic<2   6  delivery 0  0  delivery 1  29
+  app35-twin2  grades  74  acceptable  58  correctness<2  12  on_topic<2  10  delivery 0  0  delivery 1  30
+  app35-twin3  grades  76  acceptable  61  correctness<2  12  on_topic<2   8  delivery 0  0  delivery 1  36
+  br1-inapp    grades  74  acceptable  57  correctness<2  17  on_topic<2   4  delivery 0  0  delivery 1  34
+  live38-r1    grades  70  acceptable  42  correctness<2  28  on_topic<2   6  delivery 0  0  delivery 1  21
+  live38-r2    grades  76  acceptable  43  correctness<2  33  on_topic<2   6  delivery 0  0  delivery 1  17
+  live38-r3    grades  76  acceptable  52  correctness<2  24  on_topic<2   3  delivery 0  0  delivery 1  26
+
+grader agreement on acceptable, per packet:
+  A: 76/77  disagree: S1Q05F (live38-r3)
+  B: 75/80  disagree: S1Q10 (live38-r3), S2Q01 (live38-r2), S2Q01 (live38-r1), S2Q01 (app35-inapp), S1Q06F (app35-inapp)
+  C: 78/79  disagree: S1Q04 (app35-twin3)
+  D: 61/63  disagree: S2Q10F (live38-r1), S2Q05F (br1-inapp)
+
+s50m in-app answers served by the 3.1-lite stall fallback (attributed to the last item that had started playing):
+  2026-09-22T07:21:10.724Z  S1Q03F
+  2026-09-22T07:22:40.988Z  S1Q04
+  2026-09-22T07:26:41.865Z  S1Q05
+  2026-09-22T07:29:50.494Z  S1Q05F
+
+the app's first token after the question ends, on the 38 items (score.mjs's method):
+  s50m in-app  n 38  p50 6.1 s  p90 14.3 s  max 18.7 s  (timeline clock: playsync)
+  br1 in-app   n 37  p50 6.6 s  p90 14.6 s  max 22.3 s  (timeline clock: playsync)

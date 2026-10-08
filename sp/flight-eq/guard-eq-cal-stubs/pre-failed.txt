@@ -1,0 +1,4 @@
+PRECHECK flight-task: OK
+PRECHECK port: OK
+PRECHECK port: FAIL held
+PRECHECK FAILED (1): port

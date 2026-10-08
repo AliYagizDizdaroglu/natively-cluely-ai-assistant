@@ -1,0 +1,3 @@
+run wav:check
+guard
+flight h40d

@@ -1,0 +1,9 @@
+docs(specs): the turn-based follow-up context design, approved
+
+Follow-ups lose their parent to the 120 s time window. This design keeps the last dispatched questions by turn and,
+on the auto turn path only, adds the immediately preceding question when a follow-up cannot stand alone and its parent
+is gone from the prompt (one line, "asked earlier" label, any failure = today's bytes). Written by Fable, three Opus
+review rounds applied; the user's five decisions are in section 11 ("all recommended"). Nothing is built before its
+pre-registered replay (188 calls) passes.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

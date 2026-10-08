@@ -1,0 +1,536 @@
+[
+ {
+  "name": "3.1-lite LOW  (s50m ref)",
+  "have": true,
+  "acc": 29,
+  "accMains": 15,
+  "accFollow": 14,
+  "weak": 10,
+  "wrong": 0,
+  "noAnswer": 0,
+  "ungraded": 0,
+  "delivery0": 0,
+  "band": [
+   29,
+   30,
+   31
+  ],
+  "strugglePool": 13,
+  "struggleAsked": 36,
+  "wordsP50": 103,
+  "ttftP50": 3901,
+  "ttftP90": 6016,
+  "totalP50": 4227,
+  "thoughtsP50": 696,
+  "cuts": 0,
+  "holes": 0,
+  "calls": 63,
+  "perQ": {
+   "S2Q02": [
+    "weak",
+    "weak",
+    "weak"
+   ],
+   "S2Q06F": [
+    "weak",
+    "weak",
+    "weak"
+   ],
+   "S2Q07F": [
+    "weak",
+    "weak",
+    "weak"
+   ],
+   "S1Q02": [
+    "weak",
+    "weak",
+    "weak"
+   ],
+   "S1Q04F": [
+    "acceptable",
+    "acceptable",
+    "acceptable"
+   ],
+   "S2Q02F": [
+    "weak",
+    "acceptable",
+    "weak"
+   ],
+   "S2Q10F": [
+    "acceptable",
+    "acceptable",
+    "weak"
+   ],
+   "S1Q04": [
+    "acceptable",
+    "acceptable",
+    "acceptable"
+   ],
+   "S1Q06": [
+    "weak",
+    "weak",
+    "acceptable"
+   ],
+   "S1Q06F": [
+    "weak",
+    "weak",
+    "acceptable"
+   ],
+   "S1Q10": [
+    "acceptable",
+    "weak",
+    "weak"
+   ],
+   "S2Q08F": [
+    "weak",
+    "weak",
+    "acceptable"
+   ]
+  }
+ },
+ {
+  "name": "3.5-lite HIGH (s50m ref)",
+  "have": true,
+  "acc": 33,
+  "accMains": 17,
+  "accFollow": 16,
+  "weak": 6,
+  "wrong": 0,
+  "noAnswer": 0,
+  "ungraded": 0,
+  "delivery0": 0,
+  "band": [
+   33,
+   30,
+   33
+  ],
+  "strugglePool": 18,
+  "struggleAsked": 36,
+  "wordsP50": 81,
+  "ttftP50": 3858,
+  "ttftP90": 4712,
+  "totalP50": 4248,
+  "thoughtsP50": 911,
+  "cuts": 0,
+  "holes": 0,
+  "calls": 63,
+  "perQ": {
+   "S2Q02": [
+    "weak",
+    "weak",
+    "weak"
+   ],
+   "S2Q06F": [
+    "weak",
+    "weak",
+    "weak"
+   ],
+   "S2Q07F": [
+    "weak",
+    "weak",
+    "weak"
+   ],
+   "S1Q02": [
+    "acceptable",
+    "weak",
+    "acceptable"
+   ],
+   "S1Q04F": [
+    "weak",
+    "weak",
+    "weak"
+   ],
+   "S2Q02F": [
+    "weak",
+    "acceptable",
+    "acceptable"
+   ],
+   "S2Q10F": [
+    "acceptable",
+    "weak",
+    "weak"
+   ],
+   "S1Q04": [
+    "weak",
+    "weak",
+    "acceptable"
+   ],
+   "S1Q06": [
+    "acceptable",
+    "acceptable",
+    "acceptable"
+   ],
+   "S1Q06F": [
+    "acceptable",
+    "acceptable",
+    "acceptable"
+   ],
+   "S1Q10": [
+    "acceptable",
+    "acceptable",
+    "acceptable"
+   ],
+   "S2Q08F": [
+    "acceptable",
+    "acceptable",
+    "acceptable"
+   ]
+  }
+ },
+ {
+  "name": "Gemma 31B MINIMAL",
+  "have": false,
+  "acc": null,
+  "accMains": null,
+  "accFollow": null,
+  "weak": null,
+  "wrong": null,
+  "noAnswer": null,
+  "ungraded": null,
+  "delivery0": null,
+  "band": [
+   null,
+   null,
+   null
+  ],
+  "strugglePool": 0,
+  "struggleAsked": 0,
+  "wordsP50": null,
+  "ttftP50": null,
+  "ttftP90": null,
+  "totalP50": null,
+  "thoughtsP50": null,
+  "cuts": 0,
+  "holes": 0,
+  "calls": 0,
+  "perQ": {
+   "S2Q02": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S2Q06F": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S2Q07F": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S1Q02": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S1Q04F": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S2Q02F": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S2Q10F": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S1Q04": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S1Q06": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S1Q06F": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S1Q10": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S2Q08F": [
+    "-",
+    "-",
+    "-"
+   ]
+  }
+ },
+ {
+  "name": "Gemma 31B HIGH",
+  "have": true,
+  "acc": 0,
+  "accMains": 0,
+  "accFollow": 0,
+  "weak": 0,
+  "wrong": 0,
+  "noAnswer": 0,
+  "ungraded": 12,
+  "delivery0": 0,
+  "band": [
+   null,
+   null,
+   null
+  ],
+  "strugglePool": 0,
+  "struggleAsked": 5,
+  "wordsP50": 70,
+  "ttftP50": 47762,
+  "ttftP90": 66369,
+  "totalP50": 52344,
+  "thoughtsP50": 638,
+  "cuts": 2,
+  "holes": 0,
+  "calls": 12,
+  "perQ": {
+   "S2Q02": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S2Q06F": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S2Q07F": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S1Q02": [
+    "ungraded",
+    "-",
+    "-"
+   ],
+   "S1Q04F": [
+    "ungraded",
+    "-",
+    "-"
+   ],
+   "S2Q02F": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S2Q10F": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S1Q04": [
+    "ungraded",
+    "-",
+    "-"
+   ],
+   "S1Q06": [
+    "ungraded",
+    "-",
+    "-"
+   ],
+   "S1Q06F": [
+    "ungraded",
+    "-",
+    "-"
+   ],
+   "S1Q10": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S2Q08F": [
+    "not-asked",
+    "-",
+    "-"
+   ]
+  }
+ },
+ {
+  "name": "Gemma 26B MINIMAL",
+  "have": false,
+  "acc": null,
+  "accMains": null,
+  "accFollow": null,
+  "weak": null,
+  "wrong": null,
+  "noAnswer": null,
+  "ungraded": null,
+  "delivery0": null,
+  "band": [
+   null,
+   null,
+   null
+  ],
+  "strugglePool": 0,
+  "struggleAsked": 0,
+  "wordsP50": null,
+  "ttftP50": null,
+  "ttftP90": null,
+  "totalP50": null,
+  "thoughtsP50": null,
+  "cuts": 0,
+  "holes": 0,
+  "calls": 0,
+  "perQ": {
+   "S2Q02": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S2Q06F": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S2Q07F": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S1Q02": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S1Q04F": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S2Q02F": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S2Q10F": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S1Q04": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S1Q06": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S1Q06F": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S1Q10": [
+    "-",
+    "-",
+    "-"
+   ],
+   "S2Q08F": [
+    "-",
+    "-",
+    "-"
+   ]
+  }
+ },
+ {
+  "name": "Gemma 26B HIGH",
+  "have": true,
+  "acc": 0,
+  "accMains": 0,
+  "accFollow": 0,
+  "weak": 0,
+  "wrong": 0,
+  "noAnswer": 1,
+  "ungraded": 3,
+  "delivery0": 0,
+  "band": [
+   null,
+   null,
+   null
+  ],
+  "strugglePool": 0,
+  "struggleAsked": 1,
+  "wordsP50": 56,
+  "ttftP50": 39180,
+  "ttftP90": 64321,
+  "totalP50": 40551,
+  "thoughtsP50": 1809,
+  "cuts": 0,
+  "holes": 1,
+  "calls": 4,
+  "perQ": {
+   "S2Q02": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S2Q06F": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S2Q07F": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S1Q02": [
+    "ungraded",
+    "-",
+    "-"
+   ],
+   "S1Q04F": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S2Q02F": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S2Q10F": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S1Q04": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S1Q06": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S1Q06F": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S1Q10": [
+    "not-asked",
+    "-",
+    "-"
+   ],
+   "S2Q08F": [
+    "not-asked",
+    "-",
+    "-"
+   ]
+  }
+ }
+]

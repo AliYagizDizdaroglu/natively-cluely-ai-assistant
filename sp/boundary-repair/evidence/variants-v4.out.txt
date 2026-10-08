@@ -1,0 +1,10 @@
+v3       repairs: non-holdout logs 25, holdout 4, seam 6
+strict   repairs: non-holdout logs 25, holdout 4, seam 4
+digit    repairs: non-holdout logs 25, holdout 4, seam 6
+digitcat repairs: non-holdout logs 25, holdout 4, seam 6
+pause    repairs: non-holdout logs 25, holdout 4, seam 6
+align    repairs: non-holdout logs 25, holdout 4, seam 6
+
+2 differences from v3:
+strict   seam 2026-09-29T13-36-36     v3="service" strict=null before "over 10,000,000 documents, it has to sup"
+strict   seam 2026-09-29T13-36-36     v3="service" strict=null before "over 10,000,000 documents, it has to sup"

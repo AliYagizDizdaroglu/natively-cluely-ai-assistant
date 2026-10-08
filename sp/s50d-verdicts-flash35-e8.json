@@ -1,0 +1,7 @@
+{
+  "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "True positives and precision right, but recall never stated and 57 percent called highly consistent with 60."},
+  "S1Q06": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Left join and predicates placed correctly, but 'count the events' leaves the count-star trap that would give zero-call customers one."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Logging, group assignment, 30-day outcome join, and control-only or offer-as-feature retraining all sound; 120 words."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Denominators stated precisely per metric with construction and uncertainty; 145 words is well past speakable."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "All three compared with a sensible agent threshold; decomposition called sequential and the three-document case only glanced at."}
+}

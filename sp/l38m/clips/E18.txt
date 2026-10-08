@@ -1,0 +1,1 @@
+Which Kubernetes object gives pods a stable network identity: a Deployment or a StatefulSet?

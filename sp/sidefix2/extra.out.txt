@@ -1,0 +1,4 @@
+﻿replies 624; with "$" 73; with a $...$ pair 73; with \frac 0; with any backslash 71
+old: whole "it was sim5 more."; chunk sizes {"1":"same","2":"DIFF","3":"DIFF","4":"same","5":"DIFF","6":"same","7":"same","8":"same","9":"same","11":"same"}
+new: whole "it was sim5 more."; chunk sizes {"1":"same","2":"DIFF","3":"DIFF","4":"same","5":"DIFF","6":"same","7":"same","8":"same","9":"same","11":"same"}
+mutant(no (?=$)): whole "it was sim5 more."; chunk sizes {"1":"same","2":"same","3":"DIFF","4":"same","5":"DIFF","6":"same","7":"DIFF","8":"same","9":"same","11":"same"}

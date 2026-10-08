@@ -1,0 +1,31 @@
+feat(flight): three more paired arms — the captured hour at LOW, and 3.5-lite at HIGH on both byte shapes
+
+The 2026-09-18 bench put gemini-3.5-flash-lite at HIGH level with gemini-3.1-flash-lite at LOW
+on quality: +3 acceptable on 117 pairs, 15 up / 12 down, inside the +/-4 noise floor, while each
+model beat the pre-bench default by a similar margin (+18 and +21). Two differences did show:
+3.5 answers far shorter (words p50 74 vs 95; 44 of 117 over 85 words vs 72), and it looked
+faster (p90 4.9 s vs 7.1 s, one answer over the 10 s stall budget vs five).
+
+The length result is clean. The latency result is not: the 3.1 arms ran 2026-09-17 at 10:05 and
+the 3.5 arms 2026-09-18 at 03:00, and free-tier latency swings with load (s50a measured 3.5-lite
+at p50 19.9 s / p90 86 s during a busy hour). Answering that needs both models in one window.
+
+So every flight now also runs:
+  captured-low   the hour's captured prompts at LOW, the offline twin of the hour itself. Against
+                 the in-app answers it isolates what the app pipeline adds over a raw API call,
+                 and it is the like-for-like partner for captured-high.
+  captured-high  the same captured prompts on 3.5-lite at HIGH — the head-to-head on app bytes
+  high           the bare verbal prompt on 3.5-lite at HIGH — the head-to-head on bare bytes,
+                 against the existing `low` arm
+All five paired arms answer minutes after the hour, so nothing is compared across times of day.
+About 155 lite calls, split across the two models' separate daily quotas.
+
+PAIRED_ARMS entries may now name either Flash Lite; answersFileFor already tags by model and tag,
+so each arm keeps its own file and pairs file. A test guards that no 3.5 arm is ever set to LOW:
+probes (n=2 per cell) had 3.5-lite reporting no thought tokens at LOW on 3 of 4 calls while
+honouring MEDIUM and HIGH every time, so a 3.5 arm at LOW would silently measure the provider
+default and be reported as a thinking arm. Watched that guard fail before relying on it.
+
+Suite 690, tsc at the 6-error baseline.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

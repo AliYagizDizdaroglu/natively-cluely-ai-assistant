@@ -1,0 +1,124 @@
+OK   identical arms: gain 0: FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:FAIL]
+OK   gain +2 (FAIL edge): FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:FAIL]
+OK   gain +3: INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:INCONCLUSIVE]
+OK   gain +7: INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:INCONCLUSIVE]
+OK   gain +8 (PASS edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8 by ONE grader only: consensus gain 0: FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:FAIL]
+OK   gain on D-case pairs only (A weak on every D pair): R unchanged, gain 0 (the 40-vs-70 split): FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:FAIL]
+OK   gain on back-leg pairs only: back is descriptive for clause 7: FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:FAIL]
+OK   gain +8, a front roster pair wrong in B (both graders): FAIL (expected FAIL)  [c1:FAIL c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, a front D-case pair wrong in B: clause 1 counts ALL front pairs: FAIL (expected FAIL)  [c1:FAIL c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, ONE back-leg pair wrong in B: the back leg fails clause 1 alone: FAIL (expected FAIL)  [c1:FAIL c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, ONE front pair wrong in B, back clean: the front leg fails clause 1 alone: FAIL (expected FAIL)  [c1:FAIL c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, wrong in B by ONE grader only: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, wrong in BOTH arms of a front pair (no NEW wrong): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, wrong in A only on a back pair (B better): holds: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, a back pair wrong in both arms: holds: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, one new wrong in B but one fewer elsewhere on the same leg: B <= A holds: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, a D-case pair off-topic in B (both graders): FAIL (expected FAIL)  [c1:holds c2:FAIL c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, a roster pair off-topic in B: FAIL (expected FAIL)  [c1:holds c2:FAIL c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, off-topic in B by ONE grader only: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, back-leg off-topic in B: reported, not decided: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, B first token +1001 ms on every roster pair: FAIL (expected FAIL)  [c1:holds c2:holds c3a:FAIL c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, +1000 ms (not over the FAIL bar): INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:INCONCLUSIVE c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, +501 ms: INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:INCONCLUSIVE c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, +500 ms (holds edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, B +5000 ms on every D-case pair only: R unchanged (40-vs-70), PASS: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, B +5000 ms on every back-leg pair: back is reported: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, B +5000 ms on 6 roster pairs: median 0, p90 up: INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:INCONCLUSIVE c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +20 but p90 up: still INCONCLUSIVE (PASS needs 3b): INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:INCONCLUSIVE c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, 4 more B answers over 10 s on R: FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:INCONCLUSIVE c3c:FAIL c4:holds c5:holds c7:PASS]
+OK   gain +8, 3 more B answers over 10 s (allowance edge; they sit above the p90 element): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, 10 D-case pairs over 10 s in B only: not on R (the 70-pair count is reported): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, an A stall offsets a B stall: INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:INCONCLUSIVE c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, B +11 words on every roster pair: FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:FAIL c5:holds c7:PASS]
+OK   gain +8, +10 words (not over the FAIL bar): INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:INCONCLUSIVE c5:holds c7:PASS]
+OK   gain +8, +6 words: INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:INCONCLUSIVE c5:holds c7:PASS]
+OK   gain +8, +5 words (holds edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, B +40 words on every D-case pair only: not on R: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, B +151 thinking tokens on every roster pair: FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:FAIL c7:PASS]
+OK   gain +8, +150 thinking tokens (holds edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, B +500 thinking tokens on every D-case pair only: not on R: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, B +2000 thinking tokens on every back-leg pair: back at LOW is reported: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   gain +8, B thinks LESS (-341 per pair): holds: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   3a INCONCLUSIVE together with a clause-4 FAIL: FAIL: FAIL (expected FAIL)  [c1:holds c2:holds c3a:INCONCLUSIVE c3b:holds c3c:holds c4:FAIL c5:holds c7:PASS]
+OK   gain FAIL together with every other clause holding: FAIL: FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:FAIL]
+OK   gain PASS with a clause-1 FAIL: FAIL: FAIL (expected FAIL)  [c1:FAIL c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   front B wrong +1 while back A is wrong +1: per leg the front FAILS (a pooled read would hold): FAIL (expected FAIL)  [c1:FAIL c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   back B wrong +1 while front A is wrong +1: per leg the back FAILS: FAIL (expected FAIL)  [c1:FAIL c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   half the roster pairs +2000 ms in B, D-case pairs 5000 ms faster in B: the median on R is +2000 (FAIL); the 70-pair median would read 0: FAIL (expected FAIL)  [c1:holds c2:holds c3a:FAIL c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   half the roster pairs +12 words in B, D-case pairs 40 words shorter: the median on R is +12 (FAIL); the 70-pair median would read 0: FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:FAIL c5:holds c7:PASS]
+OK   half the roster pairs +300 thinking tokens in B, D-case pairs 500 fewer: the median on R is +300 (FAIL); the 70-pair median would read 0: FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:FAIL c7:PASS]
+OK   B +600 ms on 22 of the 40 roster pairs: the median (element 20) is +600, not the 40th percentile: INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:INCONCLUSIVE c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   B +1500 ms only on the pairs with the slowest A (p90 gap 1500 inside the 2000 margin): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   re-run shape (R=60), gain +12 (PASS edge): PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   re-run shape (R=60), gain +11: a second INCONCLUSIVE is a FAIL: FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:INCONCLUSIVE]
+OK   re-run shape (R=60), gain +11, NOT flagged re-run: INCONCLUSIVE: INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:INCONCLUSIVE]
+OK   re-run shape (R=60), gain +4: INCONCLUSIVE band: INCONCLUSIVE (expected INCONCLUSIVE)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:INCONCLUSIVE]
+OK   re-run shape (R=60), gain +3 (FAIL edge): FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:FAIL]
+OK   re-run shape (R=60), 4 more B stalls: allowance 4 holds: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   re-run shape (R=60), 5 more B stalls: FAIL: FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:FAIL c4:holds c5:holds c7:PASS]
+OK   s50k alone (R=20): bars scale to PASS >= 4, FAIL <= 1: PASS (expected PASS)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:PASS]
+OK   s50k alone (R=20), gain +1: FAIL (expected FAIL)  [c1:holds c2:holds c3a:holds c3b:holds c3c:holds c4:holds c5:holds c7:FAIL]
+OK   a parity failure prints VOID and NOTHING else (no clause line), whatever the data would have said, even invalid data
+OK   a decided result prints the 9 clause lines (1, 2, 3a, 3b, 3c, 4, 5, 6, 7), the header and the DECISION line
+OK   refuses a null thoughts in a FRONT record (A side)
+OK   refuses a null thoughts in a FRONT record (B side, a D-case pair)
+OK   refuses a missing thoughts field in a FRONT record
+OK   thoughts 0 is a number (not null): accepted
+OK   refuses a front record whose model is the back leg's
+OK   refuses a front record whose thinking is LOW
+OK   refuses a front record whose leg says back
+OK   refuses a back record whose model is the front leg's
+OK   refuses a back record whose thinking is HIGH
+OK   refuses a D-case pair on the back leg
+OK   refuses an unknown kind
+OK   refuses a pair without its second grader
+OK   refuses a 3 on a 0-2 scale
+OK   refuses a pair with no ttft
+OK   refuses no complete front roster pair at all
+OK   a null thoughts on the BACK leg is not a refusal (reported n/a)
+OK   per-item rows (8 = 4 ids x 2 hours, symbols per rep) and per-hour deltas
+OK   additivity holds for a pooled set built from the first run and the re-run
+OK   additivity is violated (and named) when a pair is missing from the pooled set
+OK   additivity names a missing BACK pair (pair counts)
+OK   additivity is violated when only the consensus-acceptable count differs
+OK   additivity is violated when only A's consensus-acceptable count differs
+OK   additivity is violated when a pooled count differs from the sum of the two runs
+OK   percentile = element min(n-1, floor(n*p)) of the ascending list (p90 of 40 is element 36)
+OK   graders.json cross-check: 18 derived labels that agree with the tools' stdout: no disagreement
+OK   graders.json cross-check: graders.json says another model than the tool printed
+OK   graders.json cross-check: the tool printed another model (graders.json hand-typed claude-opus-5-5)
+OK   graders.json cross-check: graders.json hand-typed ABSENT over a LOADED transcript (the prep review's C2 workaround)
+OK   graders.json cross-check: graders.json says LOADED where the tool read ABSENT
+OK   graders.json cross-check: projectMemory differs
+OK   graders.json cross-check: claudeMem differs
+OK   graders.json cross-check: graders.json hand-typed clean over a FLAGGED audit
+OK   graders.json cross-check: an audit FLAGGED in both places still refuses the slot
+OK   graders.json cross-check: the allowed Bash length:sha12 list differs from the audit output
+OK   graders.json cross-check: the agent named in graders.json is not the transcript the audit read
+OK   graders.json cross-check: a stray slot beside the 18
+OK   graders.json cross-check: a slot missing (17 + a stray name still counts 18)
+OK   graders.json cross-check: a slot with no agent named
+OK   graders.json cross-check: graders.memory.out.txt absent
+OK   graders.json cross-check: two lines for one tag in a tool file
+OK   graders.json cross-check: replaced twice
+OK   graders.json cross-check: LOADED, consistent in both places, but NO departure: refused
+OK   graders.json cross-check: the same LOADED slot with departure: true AND the dated note: accepted
+OK   graders.json cross-check: a departure label with no note in the registered file: refused
+OK   graders.json cross-check: a note without a date time: refused
+OK   graders.json cross-check: under the departure a claude-mem context marker still refuses the slot
+OK   graders.json cross-check: a replacement whose .replaced lines show a FLAGGED audit in all three files: accepted
+OK   graders.json cross-check: a replacement with one tool file lacking its .replaced line: refused
+OK   graders.json cross-check: a replacement whose .replaced lines show nothing wrong (clean, pinned, ABSENT): refused
+OK   graders.json cross-check: .replaced lines with no replacement in graders.json: refused
+OK   departure note: a section 3 line starting with the marker, with its date time
+OK   departure note: ... a heading line above it carrying the date time
+OK   departure note: a mere mention in section 3 (A2's own prose: "contains `DEPARTURE-S6-ACCEPTED`") is NOT the note
+OK   departure note: the marker at the start of a line OUTSIDE section 3 (an amendment) is not the note
+OK   departure note: a note with no date time reads { when: null }
+OK   departure note: no marker anywhere
+OK   departure note: the real registered file today holds no departure note
+OK   tool lines parse as "<tag>: ..." and "<tag> (<id>): ...", the .replaced tag apart, noise ignored
+
+CALIBRATION OK: every section 7 branch and edge reads as pre-registered

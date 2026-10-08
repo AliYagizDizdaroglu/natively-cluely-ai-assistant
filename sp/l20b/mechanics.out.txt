@@ -1,0 +1,4 @@
+r1: answered 18/20 (hard 8/10, normal 10/10); abnormal sessions 3 of 12; answered first word p50 2.3 s, max 17.8 s; window 2026-09-29T14:21:45.292Z
+r2: answered 20/20 (hard 10/10, normal 10/10); abnormal sessions 0 of 10; answered first word p50 2.2 s, max 34.9 s; window 2026-09-29T14:39:20.136Z
+r3: answered 20/20 (hard 10/10, normal 10/10); abnormal sessions 0 of 10; answered first word p50 2.3 s, max 8.0 s; window 2026-09-29T14:57:18.170Z
+pooled 60: p50 2.3 s (bar 6.8 s), p90 12.9 s (bar 9.4 s) -> speed FAIL

@@ -1,0 +1,22 @@
+{
+ "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers data fit, latency constraint and logistic-regression baseline correctly; slightly over 85 words."},
+ "S1Q02": {"correctness": 0, "on_topic": 2, "delivery": 2, "reason": "Never computes 57 percent precision or 30 percent recall; invents 4,750 predictions contradicting the 5,000 band yet calls it consistent."},
+ "S1Q03": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Control group idea is right, but attributes the whole 1.4-point drop to the model and confuses points with percent; long."},
+ "S1Q04": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Core logic right but invalid-k behaviour is hedged rather than specified; opens with a code identifier."},
+ "S1Q05": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "ColumnTransformer and chronological split fine, but no explicit 30-day gap/embargo for the label window; over 85 words."},
+ "S1Q06": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Left join and ingestion filter right, but omits the support-call type filter and where conditions must sit to keep zeros."},
+ "S1Q07": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Sensible shared feature store and serving design, but training stage is never described; long."},
+ "S1Q08": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Hash assignment fine, but logging predictions in a feature store and dropping treated users is shaky handling of offer-biased labels."},
+ "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Covers every requested component with valid Azure services and a brief operational rationale."},
+ "S1Q10": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Managed identity, Private Link and Key Vault right, but 'PostgreSQL contributor' misstates how Entra database access is authorized; long."},
+ "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Walks through all stages coherently with layout-aware parsing, hybrid search and cross-encoder reranking; over 85 words."},
+ "S2Q02": {"correctness": 1, "on_topic": 1, "delivery": 1, "reason": "Partially defines denominators but units are vague and one identical confidence interval for all metrics is implausible; long."},
+ "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correctly ties agent value to steps that depend on earlier retrieval results; long."},
+ "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct RRF summation, descending sort and deterministic id tie-break in concise speech."},
+ "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct greedy algorithm with dedupe set, per-document cap and budget skip; over 85 words with code identifier."},
+ "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Semaphore, per-case timeout race, ordered Promise.all and caught failures are all correct; long."},
+ "S2Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Tenant namespaces, ACL metadata, async queue ingestion and RAGAS evaluation form a sound design; long."},
+ "S2Q08": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Dual-write, CDC backfill and rollback sound, but comparing cosine scores across models is not a valid quality comparison."},
+ "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Appropriate Azure service per component with a clear managed-versus-custom rationale; over 85 words."},
+ "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Peek-lock redelivery plus idempotent keyed upsert correctly makes processing safe to repeat; slightly long."}
+}

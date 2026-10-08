@@ -1,0 +1,104 @@
+﻿fixture tiers: 1=gemini-3.8-flash[R02F,R08]  2=gemini-3.7-flash[R03,R09F,R16]  3=gemini-3.6-flash[R01,R11F,R12,R17F,R23,R26F,R27,R28,R30,R31F,R32]  3b=gemini-3.5-flash[R01,R11F,R12,R17F,R23,R26F,R27,R28,R30,R31F,R32]
+
+e1: pairs exit 0 (4 files, 14 ids; 0 arm answers missing (scored as no answer); instrument 8564ba96369a; 3 stderr lines); 4 key files given all-acceptable verdicts; SCORER EXIT 0
+      blind files graded: 4
+      tier 1  gemini-3.8-flash  (0 questions, 3 reps)
+      gemini-3.8-flash on tier 1: answered 0 of 0 (ids × reps)
+      gemini-3.8-flash on tier 1: 0/0 acceptable; first word p50 ? s, p90 ? s, max 0.0 s; thinking tokens p50 ?; total p50 ? s
+      tier 2  gemini-3.7-flash  (3 questions, 3 reps)
+      gemini-3.7-flash on tier 2: answered 9 of 9 (ids × reps)
+      gemini-3.7-flash on tier 2: 9/9 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      tier 3  gemini-3.6-flash  (11 questions, 1 rep)
+      gemini-3.6-flash on tier 3: answered 11 of 11 (ids × reps)
+      gemini-3.6-flash on tier 3: 11/11 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      tier 3b  gemini-3.5-flash  (11 questions, 1 rep)
+      gemini-3.5-flash on tier 3b: answered 11 of 11 (ids × reps)
+      gemini-3.5-flash on tier 3b: 11/11 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      lite answered: 3.1 LOW 42 of 42 (ids × reps), 3.5 HIGH 42 of 42 (ids × reps)
+      on the same questions, re-graded in the same files: 3.1 LOW 42/42, 3.5 HIGH 42/42
+
+e3: pairs exit 0 (2 files, 5 ids; 0 arm answers missing (scored as no answer); instrument 8564ba96369a; 2 stderr lines); 2 key files given all-acceptable verdicts; SCORER EXIT 0
+      blind files graded: 2
+      tier 1  gemini-3.8-flash  (2 questions, 3 reps)
+      gemini-3.8-flash on tier 1: answered 6 of 6 (ids × reps)
+      gemini-3.8-flash on tier 1: 6/6 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      tier 2  gemini-3.7-flash  (3 questions, 3 reps)
+      gemini-3.7-flash on tier 2: answered 9 of 9 (ids × reps)
+      gemini-3.7-flash on tier 2: 9/9 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      tier 3  gemini-3.6-flash  (0 questions, 1 rep)
+      gemini-3.6-flash on tier 3: answered 0 of 0 (ids × reps)
+      gemini-3.6-flash on tier 3: 0/0 acceptable; first word p50 ? s, p90 ? s, max 0.0 s; thinking tokens p50 ?; total p50 ? s
+      tier 3b  gemini-3.5-flash  (0 questions, 1 rep)
+      gemini-3.5-flash on tier 3b: answered 0 of 0 (ids × reps)
+      gemini-3.5-flash on tier 3b: 0/0 acceptable; first word p50 ? s, p90 ? s, max 0.0 s; thinking tokens p50 ?; total p50 ? s
+      lite answered: 3.1 LOW 15 of 15 (ids × reps), 3.5 HIGH 15 of 15 (ids × reps)
+      on the same questions, re-graded in the same files: 3.1 LOW 15/15, 3.5 HIGH 15/15
+
+eall: pairs exit 0 (0 files, 0 ids; 0 arm answers missing (scored as no answer); instrument 8564ba96369a; 8 stderr lines); 0 key files given all-acceptable verdicts; SCORER EXIT 0
+      blind files graded: 0
+      tier 1  gemini-3.8-flash  (0 questions, 3 reps)
+      gemini-3.8-flash on tier 1: answered 0 of 0 (ids × reps)
+      gemini-3.8-flash on tier 1: 0/0 acceptable; first word p50 ? s, p90 ? s, max 0.0 s; thinking tokens p50 ?; total p50 ? s
+      tier 2  gemini-3.7-flash  (0 questions, 3 reps)
+      gemini-3.7-flash on tier 2: answered 0 of 0 (ids × reps)
+      gemini-3.7-flash on tier 2: 0/0 acceptable; first word p50 ? s, p90 ? s, max 0.0 s; thinking tokens p50 ?; total p50 ? s
+      tier 3  gemini-3.6-flash  (0 questions, 1 rep)
+      gemini-3.6-flash on tier 3: answered 0 of 0 (ids × reps)
+      gemini-3.6-flash on tier 3: 0/0 acceptable; first word p50 ? s, p90 ? s, max 0.0 s; thinking tokens p50 ?; total p50 ? s
+      tier 3b  gemini-3.5-flash  (0 questions, 1 rep)
+      gemini-3.5-flash on tier 3b: answered 0 of 0 (ids × reps)
+      gemini-3.5-flash on tier 3b: 0/0 acceptable; first word p50 ? s, p90 ? s, max 0.0 s; thinking tokens p50 ?; total p50 ? s
+      lite answered: 3.1 LOW 0 of 0 (ids × reps), 3.5 HIGH 0 of 0 (ids × reps)
+      on the same questions, re-graded in the same files: 3.1 LOW 0/0, 3.5 HIGH 0/0
+
+a: pairs exit 0 (4 files, 16 ids; 3 arm answers missing (scored as no answer); instrument 8564ba96369a; 1 stderr lines); 4 key files given all-acceptable verdicts; SCORER EXIT 0
+      blind files graded: 4
+      tier 1  gemini-3.8-flash  (2 questions, 3 reps)
+      gemini-3.8-flash on tier 1: answered 6 of 6 (ids × reps)
+      gemini-3.8-flash on tier 1: 6/6 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      tier 2  gemini-3.7-flash  (3 questions, 3 reps)
+      gemini-3.7-flash on tier 2: answered 6 of 9 (ids × reps)
+      gemini-3.7-flash on tier 2: 6/9 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      tier 3  gemini-3.6-flash  (11 questions, 1 rep)
+      gemini-3.6-flash on tier 3: answered 11 of 11 (ids × reps)
+      gemini-3.6-flash on tier 3: 11/11 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      tier 3b  gemini-3.5-flash  (11 questions, 1 rep)
+      gemini-3.5-flash on tier 3b: answered 11 of 11 (ids × reps)
+      gemini-3.5-flash on tier 3b: 11/11 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      lite answered: 3.1 LOW 48 of 48 (ids × reps), 3.5 HIGH 48 of 48 (ids × reps)
+      on the same questions, re-graded in the same files: 3.1 LOW 48/48, 3.5 HIGH 48/48
+
+skip: pairs exit 0 (4 files, 15 ids; 0 arm answers missing (scored as no answer); instrument 8564ba96369a; 0 stderr lines); 4 key files given all-acceptable verdicts; SCORER EXIT 0
+      blind files graded: 4
+      tier 1  gemini-3.8-flash  (2 questions, 3 reps)
+      gemini-3.8-flash on tier 1: answered 6 of 6 (ids × reps)
+      gemini-3.8-flash on tier 1: 6/6 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      tier 2  gemini-3.7-flash  (2 questions, 3 reps)
+      gemini-3.7-flash on tier 2: answered 6 of 6 (ids × reps)
+      gemini-3.7-flash on tier 2: 6/6 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      tier 3  gemini-3.6-flash  (11 questions, 1 rep)
+      gemini-3.6-flash on tier 3: answered 11 of 11 (ids × reps)
+      gemini-3.6-flash on tier 3: 11/11 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      tier 3b  gemini-3.5-flash  (11 questions, 1 rep)
+      gemini-3.5-flash on tier 3b: answered 11 of 11 (ids × reps)
+      gemini-3.5-flash on tier 3b: 11/11 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      lite answered: 3.1 LOW 45 of 45 (ids × reps), 3.5 HIGH 45 of 45 (ids × reps)
+      on the same questions, re-graded in the same files: 3.1 LOW 45/45, 3.5 HIGH 45/45
+
+tr: pairs exit 0 (4 files, 16 ids; 11 arm answers missing (scored as no answer); instrument 8564ba96369a; 0 stderr lines); 4 key files given all-acceptable verdicts; SCORER EXIT 0
+      blind files graded: 4
+      tier 1  gemini-3.8-flash  (2 questions, 3 reps)
+      gemini-3.8-flash on tier 1: answered 6 of 6 (ids × reps)
+      gemini-3.8-flash on tier 1: 6/6 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      tier 2  gemini-3.7-flash  (3 questions, 3 reps)
+      gemini-3.7-flash on tier 2: answered 9 of 9 (ids × reps)
+      gemini-3.7-flash on tier 2: 9/9 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      tier 3  gemini-3.6-flash  (11 questions, 1 rep)
+      gemini-3.6-flash on tier 3: answered 0 of 11 (ids × reps)
+      gemini-3.6-flash on tier 3: 0/11 acceptable; first word p50 ? s, p90 ? s, max 0.0 s; thinking tokens p50 ?; total p50 ? s
+      tier 3b  gemini-3.5-flash  (11 questions, 1 rep)
+      gemini-3.5-flash on tier 3b: answered 11 of 11 (ids × reps)
+      gemini-3.5-flash on tier 3b: 11/11 acceptable; first word p50 1.2 s, p90 1.2 s, max 1.2 s; thinking tokens p50 10; total p50 2.3 s
+      lite answered: 3.1 LOW 48 of 48 (ids × reps), 3.5 HIGH 48 of 48 (ids × reps)
+      on the same questions, re-graded in the same files: 3.1 LOW 48/48, 3.5 HIGH 48/48
+full: pairs exit 0 (4 files, 16 ids; 0 arm answers missing (scored as no answer); instrument 8564ba96369a); blind left ungraded for the calibration variants

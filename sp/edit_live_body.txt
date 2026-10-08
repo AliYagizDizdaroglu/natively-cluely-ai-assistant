@@ -1,0 +1,11 @@
+      const r = reconcileLiveQuestion(q.question, this.intelligenceManager.getRecentInterviewerSpeech(15_000));
+      if (r.verdict === 'replaced') {
+        console.log(`[Main] Live question replaced by transcript: live=${JSON.stringify(q.question.slice(0, 80))} said=${JSON.stringify(r.text.slice(0, 80))}`);
+      }
+      this.dispatchDetection({
+        question: r.text,
+        intent: r.verdict === 'replaced' ? 'verbal' : q.intent,
+        source: 'live',
+        anchor: r.anchor ?? undefined,
+        verdict: r.verdict,
+      });

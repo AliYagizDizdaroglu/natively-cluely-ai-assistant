@@ -1,0 +1,102 @@
+{
+ "model": "gemini-3.8-live",
+ "compression": "on",
+ "t0Iso": "2026-09-30T21:06:20.932Z",
+ "results": [
+  {
+   "id": "S1Q02",
+   "comp": "on",
+   "openedAt": 3,
+   "setupMs": 879,
+   "clipSeconds": 26.2,
+   "clipEndMs": 28225,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1962,
+   "lastWordMs": 9016,
+   "text": "With one hundred thousand subscribers and a nine point five percent churn rate, there are ninety-five hundred total churners. Our top five percent risk band covers five thousand subscribers and correctly captures twenty-eight hundred fifty churners, yielding exactly thirty percent recall. Given sixty percent precision, we made forty-seven hundred fifty total positive predictions, confirming the band's size and metrics are perfectly consistent.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q08",
+   "comp": "on",
+   "openedAt": 62973,
+   "setupMs": 848,
+   "clipSeconds": 19.3,
+   "clipEndMs": 83880,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the roll back.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1508,
+   "lastWordMs": 12625,
+   "text": "I version embeddings by appending the model name and dimensions to the collection name, using aliases to point to the active version. For the backfill, I run a background batch job to compute embeddings for the entire corpus using the new model, storing them in an isolated collection. To keep updates synchronized, I implement a dual-write mechanism where all incoming document changes are processed by both the old and new models simultaneously. I evaluate the new model's quality by running shadow A B tests on a golden dataset to ensure retrieval precision meets or exceeds the previous version. Once the backfill is complete and quality is verified, I perform the cutover by updating the search index alias to point to the new collection. Finally, I ensure a safe rollback by keeping the old index active for a buffer period, which allows an instant reroute if any post-deployment anomalies arise.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q01",
+   "comp": "on",
+   "openedAt": 138706,
+   "setupMs": 729,
+   "clipSeconds": 16.3,
+   "clipEndMs": 156452,
+   "heard": "Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those stages. To your document intelligence experience.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1338,
+   "lastWordMs": 11102,
+   "text": "For ingestion and parsing, I use AWS Textract to extract clean text and structure from millions of complex documents. Next, I apply semantic chunking to preserve context, generating embeddings via models like XLM-RoBERTa for dense vector representations.\n\nFor retrieval, I implement a hybrid approach combining dense vector search and sparse keyword matching to capture both meaning and exact terminology. Then, a re-ranker refines the retrieved passages to ensure only the highest-quality chunks remain.\n\nIn context assembly, I use LangGraph for agentic query decomposition and human-in-the-loop checkpoints to structure the final prompt. Finally, generation is executed with models like GPT-5, while deterministic tool checks minimize hallucinations.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q06",
+   "comp": "on",
+   "openedAt": 207252,
+   "setupMs": 710,
+   "clipSeconds": 27.7,
+   "clipEndMs": 236769,
+   "heard": "Now is sequel one. Construct a point in time feature. You have a snapshots table with a customer ID and a snapshot time and an events table with a customer ID, an event time, an ingested at time. And an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot. Includes only events ingested by the snapshot time and preserves customers with zero calls.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 2944,
+   "lastWordMs": 2944,
+   "text": "```sql\nSELECT s.customer_id, s.snapshot_time,\n       COUNT(e.customer_id) AS support_call_count\nFROM snapshots s\nLEFT JOIN events e \n  ON s.customer_id = e.customer_id\n  AND e.event_time >= s.snapshot_time - INTERVAL '30 days'\n  AND e.event_time < s.snapshot_time\n  AND e.ingested_at <= s.snapshot_time\n  AND e.event_type = 'support_call'\nGROUP BY s.customer_id, s.snapshot_time;\n```",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q04",
+   "comp": "on",
+   "openedAt": 247245,
+   "setupMs": 726,
+   "clipSeconds": 30.4,
+   "clipEndMs": 279580,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return precision at K, recall at K, and lift over the population prevalence. Assume binary labels and finite scores. And break score ties by original row order. Tell me what it does. Invalid K for empty inputs. And when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 6596,
+   "lastWordMs": 10522,
+   "text": "I'd first validate that $k$ is positive and that we have data to evaluate. I'd combine the scores and labels, then sort them in descending order of scores, using a stable sort to break ties by the original row order. After slicing to keep the top $k$ predictions, I'd calculate precision at $k$ as the proportion of positives correctly identified, recall at $k$ by dividing these true positives by the total positives in the dataset, and compute lift by dividing the precision at $k$ by the population prevalence. If there are no positive labels, I would return zero for recall and lift to avoid division errors. Lift is the ratio of model precision to the background rate of positives.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  }
+ ]
+}

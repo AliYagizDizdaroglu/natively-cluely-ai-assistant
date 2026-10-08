@@ -1,0 +1,17 @@
+docs(passes): flight-eq result: INCONCLUSIVE (3a +3 of 20 pairs, PASS needs +4); every other clause passes
+
+The scenario50 S1+S2 hands-free hour with the turn-based earlier-question block (flown 2026-10-06 03:04 TST
+under A7) read: block on exactly the four registered follow-ups (S1Q04F, S1Q06F, S2Q05F, S2Q08F), each naming
+the right parent, never on a main; block build p90 1 ms. The G sitting (block vs no-block twins, 3.5-lite HIGH
+front, 3.1-lite LOW back) graded by 21 pinned Opus sessions, all audit-clean with memory ABSENT:
+3a front +3 on 20 pairs (INCONCLUSIVE; S2Q05F reversed 0 vs 4, the other three moved the block's way), back
++5 on 12 (reported); 4b PASS (0 new wrong), 4c PASS (+0 off-topic), 2b +29 tokens, 2c +90 ms, 2d +3 words, all
+PASS. In-app 14/6/0 of 20 mains, follow-ups 16 of 20. Cue effect: thoughts +58 (PASS at +150), 3c PASS; cue
+content grading pending under its own registration.
+
+Includes the pass record and INDEX row, the arming record, the result note (sha e71fc8a0), the Opus review
+and re-check texts, the post-hour tool notes and the instruments ledger. Deviations (none moves a clause) are
+named in the result note, among them the grader launcher's --setting-sources project,local fix (live probe
+read claude-mem LOADED without it).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

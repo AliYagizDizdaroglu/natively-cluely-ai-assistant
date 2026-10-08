@@ -1,0 +1,29 @@
+feat(golden): holdout40 area 7 on invented figures, and the slot guard goes with the CV ones
+
+The candidate did not know their CV figures and chose invented ones over
+letting the résumé be read (2026-09-21). R31 and R32 are now framed as
+someone else's CV, "one from a CV I read last week" and "say a CV claims",
+which keeps the arithmetic and the interrogation while never contradicting
+the résumé in the model's context, a contradiction the grader, which never
+sees the résumé, could not score. R33 could not be invented in its CV form
+and became two conflicting claims, a rate that fell against a count that
+rose. R31's pair is inconsistent on purpose: 0.9 points on 400,000 sessions
+is 3,600 orders a month, not 5,000, and the failure scenario50 kept showing
+on this shape was a mismatch waved away as rounding. The intended answers
+sit under each item in the source file.
+
+Cost, recorded in the spec: the résumé-priming read on this area is lost.
+
+With no roster carrying a {{slot}} any more, the marker guard, its refusal
+at load and its tests are removed; the load test now runs unconditionally
+(45 items, own audio paths, the eight-clip sample). 29 of 29, tsc at the
+six-error baseline.
+
+Live exercise: NATIVELY_ROSTER=holdout40 through the real SAPI builder
+rendered 45 of 45 clips into holdout40.wav (65.8 min). The builder flags
+R05 and R15 as slow (1.16 and 1.50 words a second): a three- and a
+five-word clip, where SAPI's fixed lead-in and lead-out silence dominates.
+Nothing acts on that flag; the calibration gate on MAIN decides whether
+they are heard. The audio is ignored, per the block added in f21436e.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

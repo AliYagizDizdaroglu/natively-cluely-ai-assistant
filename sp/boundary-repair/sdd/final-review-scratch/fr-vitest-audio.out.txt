@@ -1,0 +1,6 @@
+exit 0; cwd C:\Users\sotka\AppData\Local\Temp
+ ✓ electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair synthetic edges (the symptom's strings) > a loss of three words is left alone: at most two skipped words are restored
+ ✓ electron/audio/energyVad.test.ts > calibration on a golden clip (skipped where the clip is absent) > reproduces the six known pauses of S1Q02 within ±120 ms
+ Test Files  10 passed (10)
+      Tests  142 passed (142)
+   Duration  4.33s (transform 1.70s, setup 0ms, collect 3.36s, tests 992ms, environment 21.16s, prepare 2.57s)

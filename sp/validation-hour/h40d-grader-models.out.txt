@@ -1,0 +1,18 @@
+probe: {"claude-opus-5-5":1} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a1a8e48677cb27f51.jsonl)
+inapp: {"claude-opus-5-5":6} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a68f0617659093394.jsonl)
+captured-high: {"claude-opus-5-5":7} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a4cb2b715aeca98ca.jsonl)
+captured-high-r2: {"claude-opus-5-5":10} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a1927dd9144f4a275.jsonl)
+captured-high-r3: {"claude-opus-5-5":6} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a964fbf85f94f245e.jsonl)
+captured-no-cues-high: {"claude-opus-5-5":7} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a904fd17a526c461b.jsonl)
+captured-no-cues-high-r2: {"claude-opus-5-5":10} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a0b15e352a53a8841.jsonl)
+captured-no-cues-high-r3: {"claude-opus-5-5":6} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a01d13ea96c03f1a6.jsonl)
+captured-low: {"claude-opus-5-5":8} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a1359b9c95562d880.jsonl)
+captured-low-r2: {"claude-opus-5-5":8} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-abe5f826f507156d8.jsonl)
+captured-low-r3: {"claude-opus-5-5":6} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-ab9e09f7f78e7ecae.jsonl)
+high: {"claude-opus-5-5":13} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a341c5e3185bd688e.jsonl)
+low: {"claude-opus-5-5":22} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a805cc8edc9deeec5.jsonl)
+flash38-A: {"claude-opus-5-5":6} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-adfb5d82a67eec6ab.jsonl)
+flash38-B: {"claude-opus-5-5":6} PINNED  (found by session path: s-nifty-lederberg-49681a/9c5886c7/subagents/agent-a4ee7f356c72c2d39.jsonl)
+ALL GRADERS claude-opus-5-5 (15 of 15 agents)
+
+[exit 0]

@@ -1,0 +1,257 @@
+{
+ "S2Q02#1": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "S2Q02"
+ },
+ "S2Q02#2": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 2,
+  "id": "S2Q02"
+ },
+ "S2Q02#3": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 2,
+  "id": "S2Q02"
+ },
+ "S2Q02#4": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q02"
+ },
+ "S2Q02#5": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q02"
+ },
+ "S2Q02#6": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 3,
+  "id": "S2Q02"
+ },
+ "S2Q02#7": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q02"
+ },
+ "S2Q02#8": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "S2Q02"
+ },
+ "S2Q02#9": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 3,
+  "id": "S2Q02"
+ },
+ "S2Q02#10": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 2,
+  "id": "S2Q02"
+ },
+ "S2Q02#11": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 2,
+  "id": "S2Q02"
+ },
+ "S2Q02#12": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "S2Q02"
+ },
+ "S2Q02#13": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q02"
+ },
+ "S2Q02#14": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "S2Q02"
+ },
+ "S2Q02#15": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q02"
+ },
+ "S2Q02#16": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S2Q02"
+ },
+ "S2Q02#17": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 3,
+  "id": "S2Q02"
+ },
+ "S2Q06F#1": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 3,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#2": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#3": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#4": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 2,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#5": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 3,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#6": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 2,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#7": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#8": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#9": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 3,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#10": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#11": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 2,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#12": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#13": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#14": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#15": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 3,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#16": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#17": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 2,
+  "id": "S2Q06F"
+ },
+ "S2Q06F#18": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q06F"
+ },
+ "S2Q07F#1": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#2": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 3,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#3": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#4": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 2,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#5": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#6": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#7": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#8": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 2,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#9": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#10": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#11": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 3,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#12": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#13": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 3,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#14": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 2,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#15": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q07F"
+ },
+ "S2Q07F#16": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 2,
+  "id": "S2Q07F"
+ }
+}

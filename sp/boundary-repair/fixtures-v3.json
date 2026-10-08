@@ -1,0 +1,996 @@
+{
+ "symptom": {
+  "run": "2026-09-29T11-42-00-h40c R22",
+  "cls": "REPAIR",
+  "events": [
+   {
+    "text": "How do you cut hallucinations in a rag answer without just making",
+    "isFinal": false,
+    "atMs": 0
+   },
+   {
+    "text": "How do you cut",
+    "isFinal": true,
+    "atMs": 17
+   },
+   {
+    "text": "in a rag answer without just making it refuse?",
+    "isFinal": true,
+    "atMs": 1564
+   }
+  ],
+  "expectedF2": "hallucinations in a rag answer without just making it refuse?"
+ },
+ "seam": {
+  "run": "seam-probe 2026-09-29T13-36-36-838Z S2Q07 play 3",
+  "cls": "REPAIR",
+  "events": [
+   {
+    "text": "Design a multi tenant RAC service over",
+    "isFinal": false,
+    "atMs": 0
+   },
+   {
+    "text": "Design a multi tenant Rag",
+    "isFinal": true,
+    "atMs": 990
+   },
+   {
+    "text": "over 10,000,000 documents, it has to support document updates",
+    "isFinal": true,
+    "atMs": 4180
+   }
+  ],
+  "expectedF2": "service over 10,000,000 documents, it has to support document updates"
+ },
+ "positives": [
+  {
+   "run": "2026-09-04T08-09-38-after4",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "Which metrics would you put on a dashboard for a production",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Which metrics would you put on a dashboard",
+     "isFinal": true,
+     "atMs": 999
+    },
+    {
+     "text": "production recommendation model?",
+     "isFinal": true,
+     "atMs": 1793
+    }
+   ],
+   "expectedF2": "for a production recommendation model?"
+  },
+  {
+   "run": "2026-09-05T13-50-01-after6",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "Your training job costs tripled after a code change",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Your training job costs tripled",
+     "isFinal": true,
+     "atMs": 1010
+    },
+    {
+     "text": "a code change with no accuracy gain.",
+     "isFinal": true,
+     "atMs": 1761
+    }
+   ],
+   "expectedF2": "after a code change with no accuracy gain."
+  },
+  {
+   "run": "2026-09-06T08-14-21-after7",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "How do you manage secrets in infrastructure as code without",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "How do you manage secrets in",
+     "isFinal": true,
+     "atMs": 28
+    },
+    {
+     "text": "as code without committing them?",
+     "isFinal": true,
+     "atMs": 924
+    }
+   ],
+   "expectedF2": "infrastructure as code without committing them?"
+  },
+  {
+   "run": "2026-09-08T08-44-56-after9",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "What does a good CI pipeline for a machine learning",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "What does a good CI pipeline for a",
+     "isFinal": true,
+     "atMs": 30
+    },
+    {
+     "text": "learning repository actually test?",
+     "isFinal": true,
+     "atMs": 2098
+    }
+   ],
+   "expectedF2": "machine learning repository actually test?"
+  },
+  {
+   "run": "2026-09-08T08-44-56-after9",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "How do you manage secrets in infrastructure as code without committing",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "How do you manage secrets in",
+     "isFinal": true,
+     "atMs": 25
+    },
+    {
+     "text": "as code without committing them?",
+     "isFinal": true,
+     "atMs": 846
+    }
+   ],
+   "expectedF2": "infrastructure as code without committing them?"
+  },
+  {
+   "run": "2026-09-08T08-44-56-after9",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "from about a dozen upstream tables, and the upstream data regularly arrive",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "from about a dozen upstream tables, and the",
+     "isFinal": true,
+     "atMs": 576
+    },
+    {
+     "text": "data regularly arrives late or gets corrected a few days after the fact.",
+     "isFinal": true,
+     "atMs": 3438
+    }
+   ],
+   "expectedF2": "upstream data regularly arrives late or gets corrected a few days after the fact."
+  },
+  {
+   "run": "2026-09-09T15-00-55-s50a",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "Which of those stages can cause a correct source",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Which of those stages can",
+     "isFinal": true,
+     "atMs": 1499
+    },
+    {
+     "text": "a correct source document to produce an incorrect answer?",
+     "isFinal": true,
+     "atMs": 2775
+    }
+   ],
+   "expectedF2": "cause a correct source document to produce an incorrect answer?"
+  },
+  {
+   "run": "2026-09-09T15-00-55-s50a",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "What stopping conditions, budgets, and failure policies would prevent loops and",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "What stopping conditions, budgets,",
+     "isFinal": true,
+     "atMs": 49
+    },
+    {
+     "text": "failure policies would prevent loops and unnecessary tool calls?",
+     "isFinal": true,
+     "atMs": 2048
+    }
+   ],
+   "expectedF2": "and failure policies would prevent loops and unnecessary tool calls?"
+  },
+  {
+   "run": "2026-09-09T15-00-55-s50a",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "A user loses access to a document while a query",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "A user loses access",
+     "isFinal": true,
+     "atMs": 23
+    },
+    {
+     "text": "a document while a query is running.",
+     "isFinal": true,
+     "atMs": 1091
+    }
+   ],
+   "expectedF2": "to a document while a query is running."
+  },
+  {
+   "run": "2026-09-09T15-00-55-s50a",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "How would you handle poison documents, dead letter replay, and a delete",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "How would you handle poison documents, dead letter replay,",
+     "isFinal": true,
+     "atMs": 1353
+    },
+    {
+     "text": "a delete event racing with an older update?",
+     "isFinal": true,
+     "atMs": 2415
+    }
+   ],
+   "expectedF2": "and a delete event racing with an older update?"
+  },
+  {
+   "run": "2026-09-12T08-22-49-s50c",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "Secure the churn platform without embedded",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Secure the churn",
+     "isFinal": true,
+     "atMs": 28
+    },
+    {
+     "text": "without embedded credentials. How would your inference service access the model",
+     "isFinal": true,
+     "atMs": 3711
+    }
+   ],
+   "expectedF2": "platform without embedded credentials. How would your inference service access the model"
+  },
+  {
+   "run": "2026-09-13T08-22-36-s50d",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "Under what conditions would you prefer logistic regression?",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Under what conditions would you",
+     "isFinal": true,
+     "atMs": 25
+    },
+    {
+     "text": "logistic regression, a neural network, or a rules based approach?",
+     "isFinal": true,
+     "atMs": 3709
+    }
+   ],
+   "expectedF2": "prefer logistic regression, a neural network, or a rules based approach?"
+  },
+  {
+   "run": "2026-09-14T08-22-28-s50e",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "How do you prove the replacement index is sufficiently complete and current before you send production",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "How do you prove the replacement index is sufficiently complete and current before you",
+     "isFinal": true,
+     "atMs": 11
+    },
+    {
+     "text": "production traffic to it?",
+     "isFinal": true,
+     "atMs": 1470
+    }
+   ],
+   "expectedF2": "send production traffic to it?"
+  },
+  {
+   "run": "2026-09-16T08-42-43-s50g",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "service over 10,000,000 documents. It has to support document updates",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "service over 10,000,000 documents, it has to",
+     "isFinal": true,
+     "atMs": 658
+    },
+    {
+     "text": "document updates and deletions, access controlled retrieval,",
+     "isFinal": true,
+     "atMs": 3690
+    }
+   ],
+   "expectedF2": "support document updates and deletions, access controlled retrieval,"
+  },
+  {
+   "run": "2026-09-18T08-22-57-s50i",
+   "cls": "REPAIR",
+   "events": [
+    {
+     "text": "What can you conclude from a PRAUC of 0.38 and an ROC AUC of 0.88? And what else would you need before deciding",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "What can you conclude from a PRAUC of 0.38 and an ROC AUC of 0.88? And what else would you need",
+     "isFinal": true,
+     "atMs": 3
+    },
+    {
+     "text": "deciding the model is useful?",
+     "isFinal": true,
+     "atMs": 809
+    }
+   ],
+   "expectedF2": "before deciding the model is useful?"
+  }
+ ],
+ "negatives": [
+  {
+   "run": "2026-09-02-before",
+   "cls": "NORMAL",
+   "events": [
+    {
+     "text": "How would you roll back a model that is already serving",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "How would you roll back a model that is already",
+     "isFinal": true,
+     "atMs": 1010
+    },
+    {
+     "text": "serving traffic and has written bad data downstream?",
+     "isFinal": true,
+     "atMs": 2631
+    }
+   ],
+   "expectedF2": "serving traffic and has written bad data downstream?"
+  },
+  {
+   "run": "2026-09-04T08-09-38-after4",
+   "cls": "NORMAL",
+   "events": [
+    {
+     "text": "How do you secure training data in s three that contains",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "How do you secure training data in s",
+     "isFinal": true,
+     "atMs": 1010
+    },
+    {
+     "text": "three that contains customer information?",
+     "isFinal": true,
+     "atMs": 1652
+    }
+   ],
+   "expectedF2": "three that contains customer information?"
+  },
+  {
+   "run": "2026-09-04T08-09-38-after4",
+   "cls": "NORMAL",
+   "events": [
+    {
+     "text": "How would you pass data between airflow tasks when the payload",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "How would you pass data between Airflow tasks",
+     "isFinal": true,
+     "atMs": 1002
+    },
+    {
+     "text": "when the payload is too large for XCOM?",
+     "isFinal": true,
+     "atMs": 1878
+    }
+   ],
+   "expectedF2": "when the payload is too large for XCOM?"
+  },
+  {
+   "run": "2026-09-04T08-09-38-after4",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "upstream API?",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "API?",
+     "isFinal": true,
+     "atMs": 333
+    },
+    {
+     "text": "Your training image is eight gigabytes.",
+     "isFinal": true,
+     "atMs": 58204
+    }
+   ],
+   "expectedF2": "Your training image is eight gigabytes."
+  },
+  {
+   "run": "2026-09-05T13-50-01-after6",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "When would you use s three standard versus s three",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "When would you use s three standard versus s",
+     "isFinal": true,
+     "atMs": 1024
+    },
+    {
+     "text": "What is a SageMaker endpoint?",
+     "isFinal": true,
+     "atMs": 49865
+    }
+   ],
+   "expectedF2": "What is a SageMaker endpoint?"
+  },
+  {
+   "run": "2026-09-06T08-14-21-after7",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "How would you handle auto scaling",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "How would you handle auto",
+     "isFinal": true,
+     "atMs": 993
+    },
+    {
+     "text": "for a model inference service on Kubernetes?",
+     "isFinal": true,
+     "atMs": 3059
+    }
+   ],
+   "expectedF2": "for a model inference service on Kubernetes?"
+  },
+  {
+   "run": "2026-09-06T08-14-21-after7",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "Walk me through how you would structure a SageMaker pipeline for a schedule",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Walk me through how you would structure a SageMaker pipeline for a",
+     "isFinal": true,
+     "atMs": 30
+    },
+    {
+     "text": "scheduled retraining.",
+     "isFinal": true,
+     "atMs": 1153
+    }
+   ],
+   "expectedF2": "scheduled retraining."
+  },
+  {
+   "run": "2026-09-06T08-14-21-after7",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "How do you keep feature engineering consistent between",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "How do you keep feature engineering consistent",
+     "isFinal": true,
+     "atMs": 1023
+    },
+    {
+     "text": "training and serving?",
+     "isFinal": true,
+     "atMs": 1463
+    }
+   ],
+   "expectedF2": "training and serving?"
+  },
+  {
+   "run": "2026-09-06T08-14-21-after7",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "Your model accuracy dropped fifteen",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Your model accuracy dropped",
+     "isFinal": true,
+     "atMs": 1021
+    },
+    {
+     "text": "15% overnight, but the input schema is unchanged.",
+     "isFinal": true,
+     "atMs": 4001
+    }
+   ],
+   "expectedF2": "15% overnight, but the input schema is unchanged."
+  },
+  {
+   "run": "2026-09-07T08-14-12-after8",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "What problem does infrastructure",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "What problem does",
+     "isFinal": true,
+     "atMs": 1025
+    },
+    {
+     "text": "as code actually solve?",
+     "isFinal": true,
+     "atMs": 2138
+    }
+   ],
+   "expectedF2": "as code actually solve?"
+  },
+  {
+   "run": "2026-09-08T08-44-56-after9",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "How would you handle auto scale",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "How would you handle auto",
+     "isFinal": true,
+     "atMs": 997
+    },
+    {
+     "text": "for a model inference service on Kubernetes?",
+     "isFinal": true,
+     "atMs": 3127
+    }
+   ],
+   "expectedF2": "for a model inference service on Kubernetes?"
+  },
+  {
+   "run": "2026-09-08T08-44-56-after9",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "How would you structure stacks for development, stage",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "How would you structure stacks for development,",
+     "isFinal": true,
+     "atMs": 1029
+    },
+    {
+     "text": "staging, and production?",
+     "isFinal": true,
+     "atMs": 1568
+    }
+   ],
+   "expectedF2": "staging, and production?"
+  },
+  {
+   "run": "2026-09-09T15-00-55-s50a",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "Why might targeting the highest risk customers be less profitable than targeting the customers with",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Why might targeting the highest risk customers be less profitable than targeting the customers",
+     "isFinal": true,
+     "atMs": 20
+    },
+    {
+     "text": "the largest estimated treatment effect?",
+     "isFinal": true,
+     "atMs": 2741
+    }
+   ],
+   "expectedF2": "the largest estimated treatment effect?"
+  },
+  {
+   "run": "2026-09-09T15-00-55-s50a",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "You are given customer snapshots containing a customer ID, a snapshot date, numeric features, category",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "You are given customer snapshots containing a customer ID, a snapshot date, numeric features,",
+     "isFinal": true,
+     "atMs": 360
+    },
+    {
+     "text": "categorical features, and a label, churn in the next thirty days.",
+     "isFinal": true,
+     "atMs": 4288
+    }
+   ],
+   "expectedF2": "categorical features, and a label, churn in the next thirty days."
+  },
+  {
+   "run": "2026-09-11T08-22-32-s50b",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "Using your churn project, explain why XGBoost was",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Using your churn project, explain why XG",
+     "isFinal": true,
+     "atMs": 684
+    },
+    {
+     "text": "XGBoost was suitable for the data and the production constraints,",
+     "isFinal": true,
+     "atMs": 4010
+    }
+   ],
+   "expectedF2": "XGBoost was suitable for the data and the production constraints,"
+  },
+  {
+   "run": "2026-09-11T08-22-32-s50b",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "Which workload would you put on Azure Machine Learning managed end",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Which workload would you put on Azure Machine Learning managed",
+     "isFinal": true,
+     "atMs": 17
+    },
+    {
+     "text": "endpoints, which on Azure App Service, and which on axe,",
+     "isFinal": true,
+     "atMs": 4718
+    }
+   ],
+   "expectedF2": "endpoints, which on Azure App Service, and which on axe,"
+  },
+  {
+   "run": "2026-09-11T08-22-32-s50b",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "Design a multi tenant Rag service",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Design a multi tenant rag",
+     "isFinal": true,
+     "atMs": 1025
+    },
+    {
+     "text": "over 10,000,000 documents. It has to support document updates",
+     "isFinal": true,
+     "atMs": 4720
+    }
+   ],
+   "expectedF2": "over 10,000,000 documents. It has to support document updates"
+  },
+  {
+   "run": "2026-09-12T08-22-49-s50c",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "Which workload would you put on Azure Machine Learning managed end",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Which workload would you put on Azure Machine Learning managed",
+     "isFinal": true,
+     "atMs": 22
+    },
+    {
+     "text": "endpoints, which on Azure app service, and which on axe, and why?",
+     "isFinal": true,
+     "atMs": 4825
+    }
+   ],
+   "expectedF2": "endpoints, which on Azure app service, and which on axe, and why?"
+  },
+  {
+   "run": "2026-09-13T08-22-36-s50d",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "How could repeatedly training on customers affected by previous campaigns introduced by",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "How could repeatedly training on customers affected by previous campaigns introduce",
+     "isFinal": true,
+     "atMs": 9
+    },
+    {
+     "text": "bias.",
+     "isFinal": true,
+     "atMs": 699
+    }
+   ],
+   "expectedF2": "bias."
+  },
+  {
+   "run": "2026-09-13T08-22-36-s50d",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "Which workload would you put on Azure Machine Learning managed endpoint",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Which workload would you put on Azure Machine Learning managed",
+     "isFinal": true,
+     "atMs": 8
+    },
+    {
+     "text": "endpoints, which on Azure app service, and which on axe, and why?",
+     "isFinal": true,
+     "atMs": 4427
+    }
+   ],
+   "expectedF2": "endpoints, which on Azure app service, and which on axe, and why?"
+  },
+  {
+   "run": "2026-09-14T08-22-28-s50e",
+   "cls": "TAIL1",
+   "events": [
+    {
+     "text": "Which workload would you put on Azure Machine Learning managed endpoint",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Which workload would you put on Azure Machine Learning managed",
+     "isFinal": true,
+     "atMs": 5
+    },
+    {
+     "text": "endpoints, which on Azure App Service, and which on axe,",
+     "isFinal": true,
+     "atMs": 4504
+    }
+   ],
+   "expectedF2": "endpoints, which on Azure App Service, and which on axe,"
+  },
+  {
+   "run": "2026-09-19T08-22-41-s50j",
+   "cls": "NUMBER",
+   "events": [
+    {
+     "text": "You report extraction f one increasing from 72.4% to 95.4%, hallucinations decreasing by eighty",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "You report extraction f one increasing from 72.4% to 95.4%, hallucinations",
+     "isFinal": true,
+     "atMs": 168
+    },
+    {
+     "text": "by 84%, and multi hop accuracy reaching 92%",
+     "isFinal": true,
+     "atMs": 4609
+    }
+   ],
+   "expectedF2": "by 84%, and multi hop accuracy reaching 92%"
+  },
+  {
+   "run": "2026-09-02-before",
+   "cls": "OTHER",
+   "events": [
+    {
+     "text": "Why do docker layers matter",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Times.",
+     "isFinal": true,
+     "atMs": 2629
+    },
+    {
+     "text": "Three glacier for training data.",
+     "isFinal": true,
+     "atMs": 52123
+    }
+   ],
+   "expectedF2": "Three glacier for training data."
+  },
+  {
+   "run": "2026-09-04T08-09-38-after4",
+   "cls": "OTHER",
+   "events": [
+    {
+     "text": "How do you keep feature engineering consistent",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Serving.",
+     "isFinal": true,
+     "atMs": 3082
+    },
+    {
+     "text": "Your model accuracy dropped 15% overnight,",
+     "isFinal": true,
+     "atMs": 67235
+    }
+   ],
+   "expectedF2": "Your model accuracy dropped 15% overnight,"
+  },
+  {
+   "run": "2026-09-05T13-50-01-after6",
+   "cls": "OTHER",
+   "events": [
+    {
+     "text": "What is a DAG, and why does",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "What is a DAG?",
+     "isFinal": true,
+     "atMs": 1002
+    },
+    {
+     "text": "Structure.",
+     "isFinal": true,
+     "atMs": 6759
+    }
+   ],
+   "expectedF2": "Structure."
+  },
+  {
+   "run": "2026-09-05T13-50-01-after6",
+   "cls": "OTHER",
+   "events": [
+    {
+     "text": "Inference pods are being evicted under load, you cannot",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Staging.",
+     "isFinal": true,
+     "atMs": 2786
+    },
+    {
+     "text": "How do you approach that?",
+     "isFinal": true,
+     "atMs": 4569
+    }
+   ],
+   "expectedF2": "How do you approach that?"
+  },
+  {
+   "run": "2026-09-09T15-00-55-s50a",
+   "cls": "OTHER",
+   "events": [
+    {
+     "text": "Use a greedy relevance first policy, skip chunks that do not fit, to duplicate chunkids,",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "Use a greedy relevance first policy, skip chunks that do not fit,",
+     "isFinal": true,
+     "atMs": 172
+    },
+    {
+     "text": "deduplicate chunkids, and allow at most two chunks per document.",
+     "isFinal": true,
+     "atMs": 2895
+    }
+   ],
+   "expectedF2": "deduplicate chunkids, and allow at most two chunks per document."
+  },
+  {
+   "run": "2026-09-11T08-22-32-s50b",
+   "cls": "OTHER",
+   "events": [
+    {
+     "text": "accuracy reaching ninety two percent",
+     "isFinal": false,
+     "atMs": 0
+    },
+    {
+     "text": "accuracy reaching 92%.",
+     "isFinal": true,
+     "atMs": 688
+    },
+    {
+     "text": "For each of those metrics, define the unit of evaluation,",
+     "isFinal": true,
+     "atMs": 5852
+    }
+   ],
+   "expectedF2": "For each of those metrics, define the unit of evaluation,"
+  }
+ ]
+}

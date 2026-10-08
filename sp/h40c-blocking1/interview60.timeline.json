@@ -1,0 +1,12 @@
+{
+ "startedAt": "2026-09-26T20:23:06.927Z",
+ "startedMs": 1790454186927,
+ "clock": "smoke-window",
+ "startDebug": 35094,
+ "startDiag": 2852160,
+ "items": [],
+ "endedAt": "2026-09-26T20:25:15.362Z",
+ "endedMs": 1790454315362,
+ "endDebug": 76023,
+ "endDiag": 2855545
+}

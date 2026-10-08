@@ -1,0 +1,1 @@
+﻿C:\Users\sotka\AppData\Local\Temp\s50a-turns.check.json: 40 items, 132 finals, 106 detector fires, offset 1150 ms, 75 KB

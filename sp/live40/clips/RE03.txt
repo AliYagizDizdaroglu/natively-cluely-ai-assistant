@@ -1,0 +1,1 @@
+How do you run a small piece of code on AWS without managing a server?

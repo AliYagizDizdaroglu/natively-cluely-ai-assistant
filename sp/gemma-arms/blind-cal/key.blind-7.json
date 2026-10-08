@@ -1,0 +1,262 @@
+{
+ "S2Q04F#1": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S2Q04F"
+ },
+ "S2Q04F#2": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q04F"
+ },
+ "S2Q04F#3": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q04F"
+ },
+ "S2Q04F#4": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q04F"
+ },
+ "S2Q04F#5": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q04F"
+ },
+ "S2Q04F#6": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q04F"
+ },
+ "S2Q05#1": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q05"
+ },
+ "S2Q05#2": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q05"
+ },
+ "S2Q05#3": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q05"
+ },
+ "S2Q05#4": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q05"
+ },
+ "S2Q05#5": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q05"
+ },
+ "S2Q05F#1": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q05F"
+ },
+ "S2Q05F#2": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q05F"
+ },
+ "S2Q05F#3": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q05F"
+ },
+ "S2Q05F#4": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q05F"
+ },
+ "S2Q05F#5": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q05F"
+ },
+ "S2Q05F#6": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S2Q05F"
+ },
+ "S2Q06#1": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q06"
+ },
+ "S2Q06#2": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S2Q06"
+ },
+ "S2Q06#3": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q06"
+ },
+ "S2Q06#4": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q06"
+ },
+ "S2Q06#5": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q06"
+ },
+ "S2Q06#6": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q06"
+ },
+ "S2Q07#1": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q07"
+ },
+ "S2Q07#2": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q07"
+ },
+ "S2Q07#3": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q07"
+ },
+ "S2Q07#4": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q07"
+ },
+ "S2Q07#5": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q07"
+ },
+ "S2Q08#1": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q08"
+ },
+ "S2Q08#2": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S2Q08"
+ },
+ "S2Q08#3": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q08"
+ },
+ "S2Q08#4": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q08"
+ },
+ "S2Q08#5": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q08"
+ },
+ "S2Q08#6": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q08"
+ },
+ "S2Q09#1": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q09"
+ },
+ "S2Q09#2": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q09"
+ },
+ "S2Q09#3": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S2Q09"
+ },
+ "S2Q09#4": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q09"
+ },
+ "S2Q09#5": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q09"
+ },
+ "S2Q09#6": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q09"
+ },
+ "S2Q09F#1": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q09F"
+ },
+ "S2Q09F#2": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q09F"
+ },
+ "S2Q09F#3": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q09F"
+ },
+ "S2Q09F#4": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q09F"
+ },
+ "S2Q09F#5": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q09F"
+ },
+ "S2Q09F#6": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S2Q09F"
+ },
+ "S2Q10#1": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q10"
+ },
+ "S2Q10#2": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q10"
+ },
+ "S2Q10#3": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q10"
+ },
+ "S2Q10#4": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S2Q10"
+ },
+ "S2Q10#5": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q10"
+ },
+ "S2Q10#6": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q10"
+ }
+}

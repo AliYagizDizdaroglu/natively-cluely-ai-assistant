@@ -1,0 +1,75 @@
+ 3528 2026-09-30T13:36:43.956Z [WARN] [LiveRouter] reconnecting (attempt 1/3) in 300ms — Internal error encountered.
+ 3529 2026-09-30T13:36:44.266Z [Main] Live Mode status: reconnecting
+ 3531 2026-09-30T13:36:44.829Z [Main] Live Mode status: connected
+ 3532 2026-09-30T13:36:44.834Z [LiveRouter] replaying 7 buffered gap chunk(s)
+ 3550 2026-09-30T13:36:57.492Z [Main] turn: deepgram speech-started vad=true
+ 3570 2026-09-30T13:37:01.124Z [Main] turn: deepgram speech-started vad=true
+ 3571 2026-09-30T13:37:01.147Z [DeepgramStreaming] Transcript event — isFinal=true, text="Now add delayed outcomes and experimentation."
+ 3572 2026-09-30T13:37:01.149Z [Engine-timing] segment-final speaker=interviewer textLen=45
+ 3573 2026-09-30T13:37:01.150Z [QD-timing] reset sincePrev=63968ms interruptedTimer=false credited=0ms remaining=1500ms
+ 3577 2026-09-30T13:37:02.658Z [QD-timing] debounce elapsed=1507ms → triggering detect
+ 3578 2026-09-30T13:37:02.660Z [QD-timing] detect issued
+ 3579 2026-09-30T13:37:02.662Z [GroqDetectionClient] detect issued at wall=1790775422662
+ 3584 2026-09-30T13:37:03.403Z [GroqDetectionClient] detect ok: gen=736ms body=5ms total=741ms tokens=685
+ 3585 2026-09-30T13:37:03.406Z [QD-timing] detect returned +746ms result=detected=false conf=0.95 q.len=0 difficulty=easy
+ 3589 2026-09-30T13:37:05.278Z [Main] turn: deepgram speech-started vad=true
+ 3590 2026-09-30T13:37:05.421Z [DeepgramStreaming] Transcript event — isFinal=true, text="Extend that design so churn outcomes arrive thirty days later,"
+ 3591 2026-09-30T13:37:05.423Z [Engine-timing] segment-final speaker=interviewer textLen=62
+ 3592 2026-09-30T13:37:05.423Z [QD-timing] reset sincePrev=4273ms interruptedTimer=false credited=0ms remaining=1500ms
+ 3600 2026-09-30T13:37:06.924Z [QD-timing] debounce elapsed=1501ms → triggering detect
+ 3601 2026-09-30T13:37:06.927Z [QD-timing] detect issued
+ 3602 2026-09-30T13:37:06.936Z [GroqDetectionClient] detect issued at wall=1790775426935
+ 3603 2026-09-30T13:37:07.420Z [GroqDetectionClient] detect ok: gen=457ms body=28ms total=485ms tokens=645
+ 3604 2026-09-30T13:37:07.425Z [QD-timing] detect returned +498ms result=detected=false conf=0.95 q.len=0 difficulty=easy
+ 3605 2026-09-30T13:37:07.441Z [DeepgramStreaming] Transcript event — isFinal=true, text="and retention offers affect the labels you observe."
+ 3606 2026-09-30T13:37:07.443Z [Engine-timing] segment-final speaker=interviewer textLen=51
+ 3607 2026-09-30T13:37:07.444Z [QD-timing] reset sincePrev=2021ms interruptedTimer=false credited=0ms remaining=1500ms
+ 3608 2026-09-30T13:37:07.799Z [Main] turn: deepgram speech-started vad=true
+ 3610 2026-09-30T13:37:08.945Z [QD-timing] debounce elapsed=1501ms → triggering detect
+ 3611 2026-09-30T13:37:08.948Z [QD-timing] detect issued
+ 3612 2026-09-30T13:37:08.949Z [GroqDetectionClient] detect issued at wall=1790775428949
+ 3614 2026-09-30T13:37:09.706Z [GroqDetectionClient] detect ok: gen=753ms body=4ms total=757ms tokens=669
+ 3615 2026-09-30T13:37:09.708Z [QD-timing] detect returned +761ms result=detected=false conf=0.95 q.len=0 difficulty=easy
+ 3633 2026-09-30T13:37:12.813Z [Main] turn: deepgram speech-started vad=true
+ 3634 2026-09-30T13:37:12.815Z [DeepgramStreaming] Transcript event — isFinal=true, text="Design the prediction logging, the experiment assignment,"
+ 3635 2026-09-30T13:37:12.815Z [Engine-timing] segment-final speaker=interviewer textLen=57
+ 3636 2026-09-30T13:37:12.816Z [QD-timing] reset sincePrev=5372ms interruptedTimer=false credited=0ms remaining=1500ms
+ 3646 2026-09-30T13:37:14.337Z [QD-timing] debounce elapsed=1520ms → triggering detect
+ 3647 2026-09-30T13:37:14.340Z [QD-timing] detect issued
+ 3648 2026-09-30T13:37:14.342Z [GroqDetectionClient] detect issued at wall=1790775434342
+ 3652 2026-09-30T13:37:15.270Z [GroqDetectionClient] detect ok: gen=890ms body=37ms total=927ms tokens=767
+ 3653 2026-09-30T13:37:15.271Z [QD-timing] detect returned +932ms result=detected=true conf=0.95 q.len=218 difficulty=hard
+ 3654 2026-09-30T13:37:15.272Z [QuestionDetector] chip emitted: intent=coding confidence=0.95 q="Now add delayed outcomes and experimentation. Extend that de"
+ 3655 2026-09-30T13:37:15.273Z [Main] dispatch: mark source=whisper anchor="Now add delayed outcomes and experimentation. Extend that design so churn outcom" verdict=match question="Now add delayed outcomes and experimentation. Extend that design so churn outcomes a
+ 3656 2026-09-30T13:37:15.534Z [DeepgramStreaming] Transcript event — isFinal=true, text="the outcome joins, and how you select data for retraining."
+ 3657 2026-09-30T13:37:15.537Z [Engine-timing] segment-final speaker=interviewer textLen=58
+ 3658 2026-09-30T13:37:15.540Z [QD-timing] reset sincePrev=2724ms interruptedTimer=false credited=0ms remaining=1500ms
+ 3659 2026-09-30T13:37:15.987Z [Main] turn: gate=1220 finals=5 live=0 finished=true
+ 3660 2026-09-30T13:37:15.989Z [Main] dispatch: answer source=whisper anchor="Now add delayed outcomes and experimentation. Extend that design so churn outcom" verdict=match question="Now add delayed outcomes and experimentation. Extend that design so churn outcomes
+ 3661 2026-09-30T13:37:15.991Z [IntelligenceEngine] runWhatShouldISay: pinned question "Now add delayed outcomes and experimentation. Extend that design so churn outcomes arrive thirty days later, and retention offers affect the labels you observe. Design the predic
+ 3664 2026-09-30T13:37:15.998Z [Main] answer source: gemini-3.1-flash-lite
+ 3669 2026-09-30T13:37:17.051Z [QD-timing] debounce elapsed=1510ms → triggering detect
+ 3670 2026-09-30T13:37:17.055Z [QD-timing] detect issued
+ 3671 2026-09-30T13:37:17.056Z [GroqDetectionClient] detect issued at wall=1790775437056
+ 3672 2026-09-30T13:37:17.812Z [GroqDetectionClient] detect ok: gen=751ms body=5ms total=756ms tokens=888
+ 3673 2026-09-30T13:37:17.814Z [QD-timing] detect returned +760ms result=detected=true conf=0.95 q.len=116 difficulty=hard
+ 3674 2026-09-30T13:37:17.816Z [QuestionDetector] chip emitted: intent=verbal confidence=0.95 q="Design the prediction logging, the experiment assignment, th"
+ 3675 2026-09-30T13:37:17.816Z [Main] dispatch: mark source=whisper anchor="Design the prediction logging, the experiment assignment, the outcome joins, and" verdict=match question="Design the prediction logging, the experiment assignment, the outcome joins, and how
+ 3680 2026-09-30T13:37:20.634Z [Main] turn: deepgram utterance-end vad=false
+ 3682 2026-09-30T13:37:21.050Z [LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 4239ms; other=not-started
+ 3692 2026-09-30T13:37:21.152Z [Main] answer source: gemini-3.5-flash-lite (hedge)
+ 3697 2026-09-30T13:37:23.996Z [Main] turn: close reason=continuation-expired
+ 3721 2026-09-30T13:37:58.140Z [WARN] [LiveRouter] reconnecting (attempt 1/3) in 300ms — The operation was aborted.
+ 3722 2026-09-30T13:37:58.454Z [Main] Live Mode status: reconnecting
+ 3723 2026-09-30T13:37:58.723Z [Main] Live Mode status: connected
+ 3724 2026-09-30T13:37:58.725Z [LiveRouter] replaying 5 buffered gap chunk(s)
+ 3752 2026-09-30T13:38:28.158Z [LiveCaption] fragment "add delayed outcomes and experimentation. Extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging. The experiment assignment. 
+ 3753 2026-09-30T13:38:28.720Z [Main] Live question (coding, mode=auto): "Extend that design so churn outcomes arrive 30 days later, and retention offers "
+ 3754 2026-09-30T13:38:28.725Z [Main] dispatch: mark source=live anchor="Extend that design so churn outcomes arrive 30 days later, and retention offers " verdict=unverifiable question="Extend that design so churn outcomes arrive 30 days later, and retention offers 
+ 3757 2026-09-30T13:38:32.441Z [Main] turn: gate=77675 finals=0 live=1 finished=true
+ 3758 2026-09-30T13:38:32.443Z [Main] dispatch: answer source=live anchor="Extend that design so churn outcomes arrive 30 days later, and retention offers " verdict=unverifiable question="Extend that design so churn outcomes arrive 30 days later, and retention offer
+ 3759 2026-09-30T13:38:32.445Z [IntelligenceEngine] runWhatShouldISay: pinned question "Extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outco
+ 3762 2026-09-30T13:38:32.454Z [Main] answer source: gemini-3.1-flash-lite
+ 3773 2026-09-30T13:38:37.610Z [LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 4642ms; other=not-started
+ 3781 2026-09-30T13:38:37.823Z [Main] answer source: gemini-3.5-flash-lite (hedge)
+ 3788 2026-09-30T13:38:40.454Z [Main] turn: close reason=continuation-expired

@@ -1,0 +1,41 @@
+finals speechFinal: {"true":61,"false":76}; cuts followed by a final: 40
+{"NORMAL sf=false":35,"REPAIRED sf=false":2,"TAIL1 sf=false":3}
+M10#1     NORMAL            sf=false tolerant emptyFinalsBetween=0 gap=974 |T|=2 T0 for[13.60-13.84] F1end 13.43 F2first for@13.59 | F2first-T0end -0.25 F2first-F1end 0.16 T0end-F1end 0.41
+S2Q08F#1  NORMAL            sf=false strict   emptyFinalsBetween=0 gap=2796 |T|=2 T0 is[22.42-22.66] F1end 22.44 F2first is@22.44 | F2first-T0end -0.22 F2first-F1end -0.00 T0end-F1end 0.22
+H11#1     REPAIRED LOST     sf=false strict   emptyFinalsBetween=0 gap=1187 |T|=4 restored=["tripled"] T0 tripled[47.28-47.68] F1end 47.50 F2first after@47.66 | F2first-T0end -0.02 F2first-F1end 0.16 T0end-F1end 0.18
+S1Q10#1   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=4724 |T|=1 T0 how[60.71-60.87] F1end 60.66 F2first How@60.66 | F2first-T0end -0.21 F2first-F1end 0.00 T0end-F1end 0.21
+S1Q10#1   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=2677 |T|=2 T0 and[63.86-64.02] F1end 63.80 F2first and@63.80 | F2first-T0end -0.22 F2first-F1end 0.00 T0end-F1end 0.22
+S1Q10#1   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=3713 |T|=3 T0 how[72.19-72.35] F1end 72.03 F2first how@72.03 | F2first-T0end -0.32 F2first-F1end -0.00 T0end-F1end 0.32
+M28#1     REPAIRED LOST     sf=false strict   emptyFinalsBetween=0 gap=966 |T|=2 restored=["between"] T0 between[84.02-84.42] F1end 84.24 F2first training@84.40 | F2first-T0end -0.02 F2first-F1end 0.16 T0end-F1end 0.18
+S1Q03F#1  NORMAL            sf=false strict   emptyFinalsBetween=0 gap=3236 |T|=1 T0 customers[100.37-100.77] F1end 100.30 F2first customers@100.30 | F2first-T0end -0.47 F2first-F1end -0.00 T0end-F1end 0.47
+S1Q03F#1  NORMAL            sf=false strict   emptyFinalsBetween=0 gap=856 |T|=3 T0 the[103.50-103.74] F1end 103.47 F2first the@103.47 | F2first-T0end -0.27 F2first-F1end 0.00 T0end-F1end 0.27
+S1Q05#1   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=4016 |T|=1 T0 you[143.72-143.88] F1end 143.62 F2first You@143.70 | F2first-T0end -0.18 F2first-F1end 0.08 T0end-F1end 0.26
+S1Q05#1   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=3700 |T|=3 T0 a[147.46-147.70] F1end 147.36 F2first a@147.44 | F2first-T0end -0.26 F2first-F1end 0.08 T0end-F1end 0.34
+S1Q05#1   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=2789 |T|=5 T0 and[161.55-161.79] F1end 161.43 F2first and@161.51 | F2first-T0end -0.28 F2first-F1end 0.08 T0end-F1end 0.36
+S1Q01#1   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=3178 |T|=2 T0 XGBoost[198.13-198.93] F1end 198.35 F2first XGBoost@198.35 | F2first-T0end -0.58 F2first-F1end -0.00 T0end-F1end 0.58
+S1Q01#1   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=1527 |T|=3 T0 and[201.95-202.11] F1end 201.82 F2first and@201.90 | F2first-T0end -0.21 F2first-F1end 0.08 T0end-F1end 0.29
+M06#2     TAIL1    LOST     sf=false strict   emptyFinalsBetween=0 gap=1478 |T|=1 T0 machine[211.29-211.53] F1end 211.36 F2first learning@211.52 | F2first-T0end -0.01 F2first-F1end 0.16 T0end-F1end 0.17
+S2Q08F#2  NORMAL            sf=false strict   emptyFinalsBetween=0 gap=3041 |T|=2 T0 is[229.54-229.78] F1end 229.56 F2first is@229.56 | F2first-T0end -0.22 F2first-F1end -0.00 T0end-F1end 0.22
+H11#2     NORMAL            sf=false strict   emptyFinalsBetween=0 gap=1201 |T|=3 T0 after[254.80-255.12] F1end 254.83 F2first after@254.83 | F2first-T0end -0.29 F2first-F1end 0.00 T0end-F1end 0.29
+S1Q10#2   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=4721 |T|=1 T0 how[267.82-267.98] F1end 267.77 F2first How@267.77 | F2first-T0end -0.21 F2first-F1end 0.00 T0end-F1end 0.21
+S1Q10#2   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=2713 |T|=2 T0 and[270.97-271.13] F1end 270.91 F2first and@270.91 | F2first-T0end -0.22 F2first-F1end -0.00 T0end-F1end 0.22
+S1Q10#2   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=3435 |T|=3 T0 how[279.23-279.47] F1end 279.15 F2first how@279.23 | F2first-T0end -0.24 F2first-F1end 0.08 T0end-F1end 0.32
+S1Q03F#2  NORMAL            sf=false strict   emptyFinalsBetween=0 gap=3229 |T|=1 T0 customers[307.47-307.87] F1end 307.40 F2first customers@307.40 | F2first-T0end -0.47 F2first-F1end -0.00 T0end-F1end 0.47
+S1Q03F#2  NORMAL            sf=false strict   emptyFinalsBetween=0 gap=875 |T|=3 T0 the[310.60-310.84] F1end 310.60 F2first the@310.60 | F2first-T0end -0.24 F2first-F1end -0.00 T0end-F1end 0.24
+M02#2     NORMAL            sf=false strict   emptyFinalsBetween=0 gap=1285 |T|=1 T0 SageMaker[319.57-320.05] F1end 319.52 F2first SageMaker@319.52 | F2first-T0end -0.53 F2first-F1end 0.00 T0end-F1end 0.53
+S1Q05#2   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=3938 |T|=3 T0 a[354.58-354.82] F1end 354.45 F2first a@354.53 | F2first-T0end -0.29 F2first-F1end 0.08 T0end-F1end 0.37
+S1Q05#2   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=2353 |T|=4 T0 and[368.66-368.82] F1end 368.54 F2first and@368.62 | F2first-T0end -0.20 F2first-F1end 0.08 T0end-F1end 0.28
+S1Q01#2   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=3313 |T|=2 T0 XGBoost[405.24-405.96] F1end 405.46 F2first XGBoost@405.46 | F2first-T0end -0.50 F2first-F1end 0.00 T0end-F1end 0.50
+S1Q01#2   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=1382 |T|=4 T0 and[409.06-409.22] F1end 408.93 F2first and@409.01 | F2first-T0end -0.21 F2first-F1end 0.08 T0end-F1end 0.29
+M06#3     TAIL1    LOST     sf=false strict   emptyFinalsBetween=0 gap=1486 |T|=1 T0 machine[418.40-418.64] F1end 418.47 F2first learning@418.63 | F2first-T0end -0.01 F2first-F1end 0.16 T0end-F1end 0.17
+S2Q08F#3  NORMAL            sf=false strict   emptyFinalsBetween=0 gap=2802 |T|=2 T0 is[436.65-436.89] F1end 436.67 F2first is@436.67 | F2first-T0end -0.22 F2first-F1end -0.00 T0end-F1end 0.22
+H11#3     NORMAL            sf=false tolerant emptyFinalsBetween=0 gap=1204 |T|=3 T0 after[461.91-462.23] F1end 461.73 F2first after@461.89 | F2first-T0end -0.34 F2first-F1end 0.16 T0end-F1end 0.50
+S1Q10#3   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=2689 |T|=2 T0 and[478.08-478.24] F1end 478.02 F2first and@478.02 | F2first-T0end -0.22 F2first-F1end 0.00 T0end-F1end 0.22
+S1Q10#3   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=3704 |T|=1 T0 how[486.33-486.49] F1end 486.25 F2first how@486.33 | F2first-T0end -0.16 F2first-F1end 0.08 T0end-F1end 0.24
+M28#3     TAIL1    LOST     sf=false strict   emptyFinalsBetween=0 gap=1007 |T|=1 T0 consistent[497.68-498.16] F1end 498.13 F2first between@498.21 | F2first-T0end 0.05 F2first-F1end 0.08 T0end-F1end 0.03
+S1Q03F#3  NORMAL            sf=false strict   emptyFinalsBetween=0 gap=807 |T|=3 T0 the[517.71-517.95] F1end 517.68 F2first the@517.68 | F2first-T0end -0.27 F2first-F1end 0.00 T0end-F1end 0.27
+H01#3     NORMAL            sf=false strict   emptyFinalsBetween=0 gap=2300 |T|=1 T0 but[537.28-537.44] F1end 537.25 F2first but@537.33 | F2first-T0end -0.11 F2first-F1end 0.08 T0end-F1end 0.19
+S1Q05#3   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=3653 |T|=3 T0 a[561.68-561.92] F1end 561.55 F2first a@561.63 | F2first-T0end -0.29 F2first-F1end 0.08 T0end-F1end 0.37
+S1Q05#3   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=2754 |T|=5 T0 and[575.77-575.93] F1end 575.65 F2first and@575.73 | F2first-T0end -0.20 F2first-F1end 0.08 T0end-F1end 0.28
+S1Q01#3   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=3211 |T|=2 T0 XGBoost[612.27-613.07] F1end 612.54 F2first XGBoost@612.54 | F2first-T0end -0.53 F2first-F1end 0.00 T0end-F1end 0.53
+S1Q01#3   NORMAL            sf=false strict   emptyFinalsBetween=0 gap=1412 |T|=4 T0 and[616.14-616.38] F1end 616.04 F2first and@616.12 | F2first-T0end -0.26 F2first-F1end 0.08 T0end-F1end 0.34

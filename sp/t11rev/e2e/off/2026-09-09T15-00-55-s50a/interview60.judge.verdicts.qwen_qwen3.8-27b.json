@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Ties XGBoost to tabular mixed features, native missing-value handling and CPU latency, and names logistic regression and random forest baselines."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic exact: 2,850 true positives, 57 percent precision, 30 percent recall, and correctly flags the 3-point gap as beyond rounding."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names a randomized holdout as the mechanism; closing line loosely credits the whole 1.4 points to the intervention."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Sorting, tie-break, precision, recall and lift all correct and edge cases stated, but delivered as raw Python."
+  },
+  "S1Q05": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Preprocessing fits on train only, but the test set sits inside the buffer so train labels still overlap it; customer id kept as feature."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "LEFT JOIN with all predicates in ON preserves zero-call customers; window and ingestion filters correct; delivered as raw SQL."
+  },
+  "S1Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Shared feature store, registry and monitoring identified, but training is never covered despite being an explicitly listed component."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All four asked parts covered soundly, including deterministic hashing and closed outcome windows, but delivered as a 137-word headed outline."
+  },
+  "S1Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Azure service mapping accurate throughout, but the requested operational reasons collapse into one generic clause about integration and cost."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Managed identity, Entra authentication for PostgreSQL, Key Vault for unavoidable secrets and private-endpoint environment separation all correct and concise."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Walks all eight stages in order with concrete choices, cross-encoder rerank and cited generation, at natural spoken length."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Gives one document-level denominator for all three metrics and no unit of evaluation, spending most words explaining why metrics improved."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Compares all three approaches and gives a real criterion: agents earn their cost when the retrieval path is non-deterministic."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Fusion formula, one-based ranks and deterministic tie-break all correct, but the reply carries LaTeX markup and a Python block."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Greedy relevance order, dedupe, two-per-document cap and skip-if-unfit all implemented correctly, but delivered as raw Python."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Semaphore, per-case timeout, index-preserving results and non-cancelling failure capture all correct, but delivered as Python code."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant partitioning, row-level security, tombstoned deletes and both offline and online evaluation covered, but 128 words is too long."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioning, dual-write, cursor backfill, CDC sync, comparison, flagged cutover and rollback all correct, but 166 words is far too long."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every requested component mapped to a fitting Azure service with a justified custom parser exception; second-person register and 124 words."
+  },
+  "S2Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-lock plus a durable dedupe table is the right pattern, but claiming one transactional flow across two stores leaves the crash window open."
+  }
+}

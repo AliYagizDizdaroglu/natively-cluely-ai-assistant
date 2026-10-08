@@ -1,0 +1,64 @@
+{
+ "at": "2026-10-08T12:57:58.112Z",
+ "bars": [
+  {
+   "id": "Q1",
+   "pass": true,
+   "detail": "acceptable C [39,39,40] T [40,37,41] (of 42); mean C 39.33 T 39.33; need T max >= C min and mean T >= mean C - 2"
+  },
+  {
+   "id": "Q2",
+   "pass": true,
+   "detail": "new wrong ids []; total wrong C 0 T 0; (instrument-style wrong incl. on_topic 0: C 0 T 0, reported only)"
+  },
+  {
+   "id": "Q3",
+   "pass": true,
+   "detail": "weak-drop ids (acceptable in 3/3 C, 0/3 T) [] (max 1); named SH/MP among them []"
+  },
+  {
+   "id": "L1a",
+   "pass": true,
+   "detail": "NS ids over 1.25x [RH05] (max 2); pooled NS median C 57.5 T 56 (T <= 1.05 x C = 60.4)"
+  },
+  {
+   "id": "L1b",
+   "pass": true,
+   "detail": "pooled MP median C 62 T 58 (T >= 0.9 x C = 55.8); MP ids with T median < 0.75 x C []"
+  },
+  {
+   "id": "L2",
+   "pass": true,
+   "detail": "pooled median thoughts C 824 T 684.5 (tolerance 50; C rep medians [825,812,842.5]); no-cue C 802.5 T 563.5; cue C 851 T 846 (subsets reported only)"
+  },
+  {
+   "id": "L3",
+   "pass": true,
+   "detail": "pooled TTFT p50 C 3425 T 2879.5 ms (tolerance 200; C rep p50s [3374,3535,3425]); p90 C 5835 T 3884 (reported)"
+  },
+  {
+   "id": "S1",
+   "pass": false,
+   "detail": "first-5-words key: C 16/18, T 13/18 (need T >= 15 and T >= C)"
+  },
+  {
+   "id": "S2",
+   "pass": false,
+   "detail": "SH1 spoken words in 10-35: T 1/12 (need >= 9; C 3/12); SH1 ids over 35 in all 3 T reps [RE14,RH16,RH13]"
+  },
+  {
+   "id": "C1",
+   "pass": true,
+   "detail": "MP ids meeting the frozen cue-line count per rep (of 9): C [9,9,9] T [9,8,8]; mean T 8.33 >= mean C 9.00 - 1"
+  },
+  {
+   "id": "C2",
+   "pass": true,
+   "detail": "no-cue ids with a cue block in T, per rep [0,0,0] (need 0 of 22); cue ids with a block in T [20,20,20] of 20 (need >= 18)"
+  }
+ ],
+ "failed": [
+  "S1",
+  "S2"
+ ]
+}

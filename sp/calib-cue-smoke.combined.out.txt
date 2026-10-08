@@ -1,0 +1,27 @@
+OK  good               exit 0 (want 0)  2026-01-01T00-00-00-good: answers 2 (real 2, failed 0), superseded 0, cue lines 2 (expected 2), malformed 0, block-only 0, trimmed 0
+OK  boundary-3x5       exit 0 (want 0)  2026-01-01T00-00-00-boundary-3x5: answers 1 (real 1, failed 0), superseded 0, cue lines 1 (expected 1), malformed 0, block-only 0, trimmed 0
+OK  money-dollar       exit 0 (want 0)  2026-01-01T00-00-00-money-dollar: answers 1 (real 1, failed 0), superseded 0, cue lines 1 (expected 1), malformed 0, block-only 0, trimmed 0
+OK  trimmed-then-cues  exit 0 (want 0)  2026-01-01T00-00-00-trimmed-then-cues: answers 1 (real 1, failed 0), superseded 0, cue lines 1 (expected 1), malformed 0, block-only 0, trimmed 1
+OK  four-lines         exit 1 (want 1)  2026-01-01T00-00-00-four-lines: answers 1 (real 1, failed 0), superseded 0, cue lines 1 (expected 1), malformed 1, block-only 0, trimmed 0
+OK  six-words          exit 1 (want 1)  2026-01-01T00-00-00-six-words: answers 1 (real 1, failed 0), superseded 0, cue lines 1 (expected 1), malformed 1, block-only 0, trimmed 0
+OK  backtick           exit 1 (want 1)  2026-01-01T00-00-00-backtick: answers 1 (real 1, failed 0), superseded 0, cue lines 1 (expected 1), malformed 1, block-only 0, trimmed 0
+OK  latex-log          exit 1 (want 1)  2026-01-01T00-00-00-latex-log: answers 1 (real 1, failed 0), superseded 0, cue lines 1 (expected 1), malformed 1, block-only 0, trimmed 0
+OK  absent-block       exit 1 (want 1)  2026-01-01T00-00-00-absent-block: answers 1 (real 1, failed 0), superseded 0, cue lines 1 (expected 1), malformed 1, block-only 0, trimmed 0
+OK  empty-cue          exit 1 (want 1)  2026-01-01T00-00-00-empty-cue: answers 1 (real 1, failed 0), superseded 0, cue lines 1 (expected 1), malformed 1, block-only 0, trimmed 0
+OK  missing-cues-line  exit 1 (want 1)  2026-01-01T00-00-00-missing-cues-line: answers 2 (real 2, failed 0), superseded 0, cue lines 1 (expected 2), malformed 0, block-only 0, trimmed 0
+OK  superseded         exit 0 (want 0)  2026-01-01T00-00-00-superseded: answers 1 (real 1, failed 0), superseded 1, cue lines 2 (expected 2), malformed 0, block-only 0, trimmed 0
+OK  extra-cues-unmatched exit 1 (want 1)  2026-01-01T00-00-00-extra-cues-unmatched: answers 1 (real 1, failed 0), superseded 0, cue lines 2 (expected 1), malformed 0, block-only 0, trimmed 0
+OK  failed-no-cues     exit 0 (want 0)  2026-01-01T00-00-00-failed-no-cues: answers 2 (real 1, failed 1), superseded 0, cue lines 1 (expected 1-2), malformed 0, block-only 0, trimmed 0
+OK  block-only         exit 1 (want 1)  2026-01-01T00-00-00-block-only: answers 2 (real 1, failed 1), superseded 0, cue lines 2 (expected 1-2), malformed 0, block-only 1, trimmed 0
+OK  block-only-first   exit 1 (want 1)  2026-01-01T00-00-00-block-only-first: answers 2 (real 1, failed 1), superseded 0, cue lines 2 (expected 1-2), malformed 0, block-only 1, trimmed 0
+OK  noanswer-with-cues exit 0 (want 0)  2026-01-01T00-00-00-noanswer-with-cues: answers 2 (real 1, failed 1), superseded 0, cue lines 2 (expected 1-2), malformed 0, block-only 0, trimmed 0
+OK  superseded-then-failed exit 0 (want 0)  2026-01-01T00-00-00-superseded-then-failed: answers 2 (real 1, failed 1), superseded 1, cue lines 2 (expected 2-3), malformed 0, block-only 0, trimmed 0
+OK  failed-no-answer-text exit 0 (want 0)  2026-01-01T00-00-00-failed-no-answer-text: answers 2 (real 1, failed 1), superseded 0, cue lines 1 (expected 1-2), malformed 0, block-only 0, trimmed 0
+OK  real-missing-cues-beside-failure exit 1 (want 1)  2026-01-01T00-00-00-real-missing-cues-beside-failure: answers 3 (real 2, failed 1), superseded 0, cue lines 1 (expected 2-3), malformed 0, block-only 0, trimmed 0
+OK  all-failed         exit 1 (want 1)  2026-01-01T00-00-00-all-failed: answers 1 (real 0, failed 1), superseded 0, cue lines 0 (expected 0-1), malformed 0, block-only 0, trimmed 0
+OK  failed-empty-stream exit 1 (want 1)  2026-01-01T00-00-00-failed-empty-stream: answers 2 (real 1, failed 1), superseded 0, cue lines 2 (expected 1-2), malformed 1, block-only 0, trimmed 0
+OK  trim-printed-in-full exit 0 (want 0)  2026-01-01T00-00-00-trim-printed-in-full: answers 1 (real 1, failed 0), superseded 0, cue lines 1 (expected 1), malformed 0, block-only 0, trimmed 1
+OK  hedge-split-printed exit 0 (want 0)  2026-01-01T00-00-00-hedge-split-printed: answers 2 (real 2, failed 0), superseded 0, cue lines 2 (expected 2), malformed 0, block-only 0, trimmed 0
+OK  h40b (no cues lines)  exit 1 (want 1)
+OK  env: GEMINI_API_KEY SET in C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn (exit 0)
+SMOKE CHECK CALIBRATION OK

@@ -1,0 +1,14 @@
+inapp.g2 exit 0
+inapp.g1 exit 0
+blind-1.g2 exit 0
+blind-1.g1 exit 0
+blind-2.g2 exit 0
+blind-2.g1 exit 0
+blind-3.g2 exit 0
+blind-3.g1 exit 0
+blind-4.g2 exit 0
+low exit 1
+blind-4.g1 exit 0
+high exit 1
+captured-high exit 1
+ALL DONE

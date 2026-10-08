@@ -1,0 +1,14 @@
+test(flight): NATIVELY_FLIGHT_FOCUSED=off skips the focused Flash arms (flight-eq ruling 3)
+
+interview60.flight.mjs gets an exported pure focusedFor(roster, env): NATIVELY_FLIGHT_FOCUSED
+exactly "off" -> no focused arms and one log line "FOCUSED  off by NATIVELY_FLIGHT_FOCUSED=off -
+skipping the 4 focused arms"; unset/empty -> today's focused five; any other value -> ABORT, exit 2
+before the .env check, probe or hour. main() reads the variable once for both the gate and the log.
+
+Tests: interview60.flight.focused.test.ts 3/3 + interview60.flight.test.ts 20/20. Opus review: spec
+PASS; its I1 (main() wiring unproven) closed by three --dry-run legs on a keyless copy: off = 0
+full-Flash RUN lines, bare 2, paired 12; unset = 4 Flash RUN lines (the known answer); yes = ABORT,
+exit 2, no RUN line. Pre-registered as flight-eq ruling 3 / A2 P2: tonight's flight spends no
+full-Flash quota.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

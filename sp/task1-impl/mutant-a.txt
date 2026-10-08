@@ -1,0 +1,40 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must the arms > suppresses a fenced block and keeps the prose around it
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must the arms > suppresses it when the text arrives one character at a time
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+ ❯ electron/llm/verbalStreamFilter.test.ts (105 tests | 1 failed) 290ms
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — a partial cue line ending in CR (CRLF, boundary between \r and \n): held — trim(), not trimStart() 51ms
+     → expected 2 to be 3 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — a partial cue line ending in CR (CRLF, boundary between \r and \n): held — trim(), not trimStart()
+AssertionError: expected 2 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 2
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:662:33
+    660|     it.each(ROWS)('partial state — %s', async (_state, partial, rest, …
+    661|         const r = await runCuesTimed([HEAD, partial, rest]);
+    662|         expect(r.reportedAfter).toBe(reportedAfter);
+       |                                 ^
+    663|         expect(r.cues).toEqual(cues);
+    664|         expect(r.out.join('')).toBe(prose);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 104 passed (105)
+   Start at  20:23:18
+   Duration  7.76s (transform 813ms, setup 0ms, collect 1.15s, tests 290ms, environment 3.85s, prepare 1.52s)
+

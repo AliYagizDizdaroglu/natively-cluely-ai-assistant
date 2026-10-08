@@ -1,0 +1,23 @@
+fix(flight): a run stops the app when it ends, not only when the next one starts
+
+auto() called appStop() at its start and never again. A flight launches
+the app with NATIVELY_AUTOSTART_MEETING=1, and nothing ever ended that
+meeting. After s50m (2026-09-22) the app sat in it for eleven hours: the
+mic was open, Live reconnected about every 75 s, and warm-up pings kept
+going.
+
+auto() now registers process.on('exit', appStop) right after its first
+stop. That covers the gate's process.exit on the normal path (after the
+snapshot), the probe giving up, appStart's failure exits and a crash.
+appStop is synchronous, as an 'exit' listener must be, and a second call
+is a no-op. Ctrl+C and a killed task emit no 'exit'; the comment and the
+README name that ceiling.
+
+Checked in the whole-turn worktree, where appStop can match nothing. An
+npm.cmd stub first on PATH made the build throw before appStart, and a
+stand-in .env held a placeholder key; it was removed afterwards. Before
+this change the run printed one APP STOP line, after it two. The gate and
+give-up exits share the same 'exit' event; the next flight's log proves
+them.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

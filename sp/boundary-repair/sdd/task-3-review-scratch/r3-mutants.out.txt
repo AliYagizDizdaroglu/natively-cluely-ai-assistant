@@ -1,0 +1,140 @@
+== module variants: MAIN's test file (68 tests) + check-v4.mjs --module ==
+
+[final (MAIN as is)]
+   unit: Tests 68 passed (68)
+   check-v4 EQUIVALENT (survives)
+
+[v3 module (t3-orig) = the RED state]
+   unit: Tests 10 failed | 58 passed (68)
+   check-v4 NOT EQUIVALENT (11 FAIL)
+   unit failed: negative #28 with the interim running on: a digit token at the cut ("ninety two percent" -> "92%.") is no cut
+   unit failed: "twenty five" -> "25": the same shape (v3 restored "five")
+   unit failed: "all right" -> "Alright": a final token longer than the interim's is a merge, not a re-spelling (v3 restored "right")
+   unit failed: "break" -> "breaks": a longer final token is refused even when it is only an inflection, so a word lost right after it stays lost (v3 restored "even")
+   unit failed: a re-spelling keeps its first letter: "put" for "cut" is no cut ("cat" for "cut" still is — the edge above)
+   unit failed: an interim with a non-ASCII letter that splits the tokenisers ("İ") is no cut
+   unit failed: an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+   unit failed: clear() between F1 and F2 (the adapter's empty final / UtteranceEnd) forgets the cut
+   unit failed: clear() also forgets the latest interim: a final after a pause is not a cut of it
+   unit failed: speechFinal on F1 (Deepgram heard the utterance end there) leaves no cut; on F2 it does not stop the repair
+   check-v4 FAIL: probe: 92% + interim ran 2 words on (v3: "two percent" inserted)
+   check-v4 FAIL: probe: 25 + interim ran 2 words on (v3: "five" inserted)
+   check-v4 FAIL: probe: 15% + interim ran on (v3: "percent" inserted)
+   check-v4 FAIL: probe: compound merge "all right" -> "Alright" (v3: "right" inserted; a longer final token)
+   check-v4 FAIL: probe: RECALL COST (review M1): an inflection is longer too
+   check-v4 FAIL: probe: RECALL COST: "break" -> "breaks" then "even" lost stays lost (the 7 log "breaks" cuts are aligned and lost nothing)
+
+[clear() keeps the latest interim]
+   unit: Tests 1 failed | 67 passed (68)
+   check-v4 EQUIVALENT (survives)
+   unit failed: clear() also forgets the latest interim: a final after a pause is not a cut of it
+
+[clear() keeps the cut]
+   unit: Tests 1 failed | 67 passed (68)
+   check-v4 NOT EQUIVALENT (1 FAIL)
+   unit failed: clear() between F1 and F2 (the adapter's empty final / UtteranceEnd) forgets the cut
+   check-v4 FAIL: probe: pause: clear() between F1 and F2 (empty final / UtteranceEnd)
+
+[window 4000]
+   unit: Tests 1 failed | 67 passed (68)
+   check-v4 EQUIVALENT (survives)
+   unit failed: the window is 5000 ms from F1's arrival, inclusive: 5000 restores, 5001 does not
+
+[window exclusive (<)]
+   unit: Tests 1 failed | 67 passed (68)
+   check-v4 EQUIVALENT (survives)
+   unit failed: the window is 5000 ms from F1's arrival, inclusive: 5000 restores, 5001 does not
+
+[speechFinal ignored]
+   unit: Tests 1 failed | 67 passed (68)
+   check-v4 NOT EQUIVALENT (1 FAIL)
+   unit failed: speechFinal on F1 (Deepgram heard the utterance end there) leaves no cut; on F2 it does not stop the repair
+   check-v4 FAIL: probe: pause: speech_final on F1 leaves no cut
+
+[speechFinal blocks F2's repair]
+   unit: Tests 1 failed | 67 passed (68)
+   check-v4 NOT EQUIVALENT (4 FAIL)
+   unit failed: speechFinal on F1 (Deepgram heard the utterance end there) leaves no cut; on F2 it does not stop the repair
+   check-v4 FAIL: data: every run log + both seam recordings
+   check-v4 FAIL: data: the same with the app's own utterance-end log lines applied as clear() (what the wiring does)
+   check-v4 FAIL: data: candidate == rule-v4 event for event under the v4 feed
+   check-v4 FAIL: probe: speech_final on F2 does not stop the repair
+
+[length rule flipped to <]
+   unit: Tests 2 failed | 66 passed (68)
+   check-v4 NOT EQUIVALENT (6 FAIL)
+   unit failed: seam — seam-probe 2026-09-29T13-36-36-838Z S2Q07 play 3: the tolerant cut ("RAC" re-spelled "Rag" at the cut) restores "service"
+   unit failed: a final that is not a prefix of its interim is no cut — only F1's LAST token may differ (the tolerant cut)
+   check-v4 FAIL: data: every run log + both seam recordings
+   check-v4 FAIL: data: the same with the app's own utterance-end log lines applied as clear() (what the wiring does)
+   check-v4 FAIL: data: candidate == rule-v4 event for event under the v4 feed
+   check-v4 FAIL: fixtures-v3.json: the candidate reproduces all 45 expected outputs
+   check-v4 FAIL: probe: re-spelling kept: "cat" for "cut" is still a tolerant cut
+   check-v4 FAIL: probe: seam S2Q07 tolerant re-spelling "RAC" -> "Rag" still restores "service"
+
+[length rule dropped]
+   unit: Tests 2 failed | 66 passed (68)
+   check-v4 NOT EQUIVALENT (3 FAIL)
+   unit failed: "all right" -> "Alright": a final token longer than the interim's is a merge, not a re-spelling (v3 restored "right")
+   unit failed: "break" -> "breaks": a longer final token is refused even when it is only an inflection, so a word lost right after it stays lost (v3 restored "even")
+   check-v4 FAIL: probe: compound merge "all right" -> "Alright" (v3: "right" inserted; a longer final token)
+   check-v4 FAIL: probe: RECALL COST (review M1): an inflection is longer too
+   check-v4 FAIL: probe: RECALL COST: "break" -> "breaks" then "even" lost stays lost (the 7 log "breaks" cuts are aligned and lost nothing)
+
+[digit rule dropped]
+   unit: Tests 68 passed (68)
+   check-v4 EQUIVALENT (survives)
+
+[first-letter rule dropped]
+   unit: Tests 1 failed | 67 passed (68)
+   check-v4 NOT EQUIVALENT (1 FAIL)
+   unit failed: a re-spelling keeps its first letter: "put" for "cut" is no cut ("cat" for "cut" still is — the edge above)
+   check-v4 FAIL: probe: first letter differs: "put" for "cut" is no cut (the only case for this rule: synthetic)
+
+[isRespelling args swapped]
+   unit: Tests 2 failed | 66 passed (68)
+   check-v4 NOT EQUIVALENT (3 FAIL)
+   unit failed: "all right" -> "Alright": a final token longer than the interim's is a merge, not a re-spelling (v3 restored "right")
+   unit failed: "break" -> "breaks": a longer final token is refused even when it is only an inflection, so a word lost right after it stays lost (v3 restored "even")
+   check-v4 FAIL: probe: compound merge "all right" -> "Alright" (v3: "right" inserted; a longer final token)
+   check-v4 FAIL: probe: RECALL COST (review M1): an inflection is longer too
+   check-v4 FAIL: probe: RECALL COST: "break" -> "breaks" then "even" lost stays lost (the 7 log "breaks" cuts are aligned and lost nothing)
+
+[non-ASCII guard removed]
+   unit: Tests 2 failed | 66 passed (68)
+   check-v4 NOT EQUIVALENT (2 FAIL)
+   unit failed: an interim with a non-ASCII letter that splits the tokenisers ("İ") is no cut
+   unit failed: an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+   check-v4 FAIL: probe: alignment guard: "İzmir" lowercases to "i" + "zmir" (v3: "zmir projesinde" inserted)
+   check-v4 FAIL: probe: non-ASCII guard (review M2): a lost "résumé" is not restored as "r sum" (v3 did)
+
+[non-ASCII guard on F1 instead of the interim]
+   unit: Tests 2 failed | 66 passed (68)
+   check-v4 NOT EQUIVALENT (2 FAIL)
+   unit failed: an interim with a non-ASCII letter that splits the tokenisers ("İ") is no cut
+   unit failed: an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+   check-v4 FAIL: probe: alignment guard: "İzmir" lowercases to "i" + "zmir" (v3: "zmir projesinde" inserted)
+   check-v4 FAIL: probe: non-ASCII guard (review M2): a lost "résumé" is not restored as "r sum" (v3 did)
+
+[\p{M} dropped from the guard]
+   unit: Tests 68 passed (68)
+   check-v4 EQUIVALENT (survives)
+
+== the proposed test change (NFD "résumé" expect folded into the résumé test) ==
+[final (MAIN as is)] unit: Tests 68 passed (68)
+[v3 module (t3-orig) = the RED state] unit: Tests 10 failed | 58 passed (68)
+   unit failed: negative #28 with the interim running on: a digit token at the cut ("ninety two percent" -> "92%.") is no cut
+   unit failed: "twenty five" -> "25": the same shape (v3 restored "five")
+   unit failed: "all right" -> "Alright": a final token longer than the interim's is a merge, not a re-spelling (v3 restored "right")
+   unit failed: "break" -> "breaks": a longer final token is refused even when it is only an inflection, so a word lost right after it stays lost (v3 restored "even")
+   unit failed: a re-spelling keeps its first letter: "put" for "cut" is no cut ("cat" for "cut" still is — the edge above)
+   unit failed: an interim with a non-ASCII letter that splits the tokenisers ("İ") is no cut
+   unit failed: an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+   unit failed: clear() between F1 and F2 (the adapter's empty final / UtteranceEnd) forgets the cut
+   unit failed: clear() also forgets the latest interim: a final after a pause is not a cut of it
+   unit failed: speechFinal on F1 (Deepgram heard the utterance end there) leaves no cut; on F2 it does not stop the repair
+[\p{M} dropped from the guard] unit: Tests 1 failed | 67 passed (68)
+   unit failed: an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+
+junction removed: true; MAIN's vitest still present: true
+mirror tree deleted: true

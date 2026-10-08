@@ -1,0 +1,35 @@
+feat(dispatch): answered questions stay deduped for 60 s; the fuller sentence of an answered head is answered
+
+Two pipeline findings of the 2026-09-06 weak-answer spike, replayed offline
+over the after5/after6/after7 flight logs before being wired in:
+
+1. Re-fires. Live 3.1 re-fires a question it already had answered 20-26 s
+   later (after7: M04 at 20.0 s, M27 at 26 s), past ChipDeduper's 20 s window,
+   so the hour got two answers. An ANSWERED entry now stays authoritative for
+   60 s (answeredWindowMs); unanswered chips still expire at 20 s. Past 20 s a
+   text with fewer than four content words on either side never matches by
+   containment/Jaccard — after5's answered "I'm going to go." would otherwise
+   have swallowed the next real question at +48 s (the replay's one false
+   suppression). Replay: exactly the two after7 doubles removed, zero false
+   suppressions.
+
+2. Extend on an added clause. The STT closes a final at a mid-question pause
+   ("What is a DAG?" … "and why does Airflow use that structure?"): the head
+   is answered at once and the fuller sentence is dropped as a duplicate, its
+   second half never answered (after7 W10, M27). shouldExtend
+   (services/extendOnClause.ts) fires when the later text CONTAINS the
+   answered text and adds at least three words within 30 s; dispatchDetection
+   then answers the fuller question (hands-free only), logs
+   "dispatch: extend … extends=… question=…", and ChipDeduper.extend() makes
+   the entry stand for the fuller sentence so a later re-fire of it is a plain
+   duplicate. Replay over 180 answers: 21 firings, 5 on heads the judge had
+   marked weak or wrong, 16 on heads judged acceptable whose second clause the
+   interviewer did ask; content-word variants miss M27's "and when would you
+   not?".
+
+Harness: the metrics parse the extend action (one surface, not a double;
+extendsTotal on the surfaced row) and the judge export appends an extension's
+answer to its head pair, so the judge grades what the candidate would say.
+Re-running the after7 gate is unchanged: 2 doubles, 0 extended.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

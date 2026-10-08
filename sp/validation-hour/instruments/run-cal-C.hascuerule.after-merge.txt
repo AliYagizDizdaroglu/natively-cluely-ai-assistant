@@ -1,0 +1,2 @@
+hascuerule: 15 of 15 cases read as expected -> h40d-hascuerule-cal.txt
+ALL CALIBRATION CASES READ AS EXPECTED

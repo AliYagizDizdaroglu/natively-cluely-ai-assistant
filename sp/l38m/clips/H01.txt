@@ -1,0 +1,1 @@
+Your churn model's PR-AUC fell from 0.62 to 0.48 in production this month. Walk me through how you would find out whether it is data drift, concept drift or a pipeline bug.

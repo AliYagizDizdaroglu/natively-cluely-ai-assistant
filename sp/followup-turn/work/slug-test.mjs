@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import path from 'node:path';
+const FT = path.dirname(path.dirname(new URL(import.meta.url).pathname.replace(/^\/(\w:)/, '$1')));
+const cwd = path.join(FT, 'grading');
+const san = (p) => p.replace(/[^a-zA-Z0-9]/g, '-');
+const simpleHash = (s) => { let h = 0; for (let i = 0; i < s.length; i++) { h = (h << 5) - h + s.charCodeAt(i); h |= 0; } return Math.abs(h).toString(36); };
+const full = san(cwd);
+console.log('cwd', cwd, 'slug length', full.length);
+const names = fs.readdirSync('C:/Users/sotka/.claude/projects').filter((n) => n.endsWith('7potx7'));
+console.log('existing', names.map((n) => n.length));
+console.log('candidate', simpleHash(cwd), full.slice(0, 200) + '-' + simpleHash(cwd) === names[0]);

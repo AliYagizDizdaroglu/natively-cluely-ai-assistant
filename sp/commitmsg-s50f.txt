@@ -1,0 +1,25 @@
+docs(passes): s50f — the grace rule in flight, in-app 14/20, follow-ups 18/20, and the index restored
+
+Flight s50f (2026-09-15 07:10 UTC, main at a367ad8): 40/40 heard and answered,
+15/15 long questions whole, 0 doubles, 0 cut, 1 supersede — S1Q02's last
+Deepgram final landed 0.95 s after the answer dispatched and replaced it in
+place with the same question, the designed continuation path, not a wordless
+swallow. Google was slow all hour: two 503 "high demand" errors on
+gemini-3.1-flash-lite answered by the 3.5-flash-lite fallback, and TTFT p90
+3.4 s against s50e's 1.6 s, reproduced by the offline arm on the same script
+(p50 1.8 s against 0.97 s).
+
+Graded on instrument 8564ba96369a by nine Opus grading agents, one per pairs
+file: in-app 14 acceptable, 6 weak, 0 wrong of 20 mains (s50e 15/5/0),
+follow-ups 18 of 20 (s50e 13). Every weak verdict is correctness 1 for an
+omitted sub-part; no delivery 0 anywhere in-app. Arms: 3.1-flash-lite 15/20
+(s50e 17), 3.5-flash-lite 12/20 (17), qwen3.8-27b 15/20 (15), gpt-oss-120b
+15/20 with 1 wrong (12). Five mains changed verdict against s50e, three each
+way or so, inside the measured grader disagreement of 7 of 20.
+
+INDEX.md: commits 1db5ede and 4bd0435 were generated from the worktree, whose
+interview60.runs folder is empty, so the committed index had no rows. This
+record and index were generated in the main checkout over its runs folder;
+all rows are back.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

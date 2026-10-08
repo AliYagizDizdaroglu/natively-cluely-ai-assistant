@@ -1,0 +1,170 @@
+=== OLD F1-a 3c: the no-text record
+    answers) are fenced answers, and the combined build's chain still empties them (`recheck-scratch/replay-stages.mjs`).
+=== NEW
+    answers) are fenced answers, and the combined build's chain still empties them (`recheck-scratch/replay-stages.mjs`).
+    **A no-text record** (re-check of revision 3) — no `transientError` and `rawLen` 0: the model returned nothing,
+    neither a block nor prose (the bench's cue rep 1, S2Q06F, finish `MALFORMED_RESPONSE`) — is neither of the two: it
+    counts wrong in the all-ids line and not acceptable in its rep, is named with its finish reason, stays in the cue
+    check's n as an absent block (the bench counted it so: 38 of 39 present in that rep), enters this clause on
+    neither side, and is not a hole (never re-run). By the code, the app's hedge starts its back leg when the front
+    ends with no text (`LLMHelper.ts:3517`, `reason=front-empty`), so live such a reply is answered by 3.1-lite, not
+    shown empty (not yet seen live). On file it has occurred only under the cue rule (1 of 169 3.5-lite HIGH calls:
+    the bench's 117 and the simple-question probe's 52) and never without it (0 of 4,005 lite answer records, every
+    one finished `STOP`; `recheck-r3-scratch/finish-scan.mjs`), so each one is named in the result note.
+=== END
+=== OLD F1-b counting rulings: the no-text record
+(a block-only twin yes, a `filterCodeFences` emptying no)
+=== NEW
+(a block-only twin yes, a `filterCodeFences` emptying no, a no-text record no)
+=== END
+=== OLD F1-c the adapter: the no-text record
+any other stage with cues present = a block-only twin, gated clause)
+=== NEW
+any other stage with cues present = a block-only twin, gated clause; `rawLen` 0 = a no-text record, all-ids line only, named with its finish reason, an absent block in the cue check)
+=== END
+=== OLD F1-d the adapter: case (9)
+strict alternative (both readings printed). Case (5)'s empty-prose record is built the same way.
+=== NEW
+strict alternative (both readings printed). Case (5)'s empty-prose record is built the same way; (9) the real
+     no-text record, the bench's `WT\electron\test\golden\interview60.answers.gemini-3.5-flash-lite_cues-r1.json` S2Q06F
+     (`rawLen` 0, `MALFORMED_RESPONSE`) → named as no-text, wrong in the all-ids line, absent in the cue check (that
+     rep 38 of 39 present, as `cuebench-score.mjs` printed), in neither side's gated clause.
+=== END
+=== OLD F1-e §11: the adapter's cases
+`h40d-twins` cases 1–7 `________`
+=== NEW
+`h40d-twins` cases 1–9 `________`
+=== END
+=== OLD F1-f §11: the new choices
+  the user's choice, made now: `________`.
+- Rule 1(g) at arming:
+=== NEW
+  the user's choice, made now: `________`; a no-text record (rule 3c): out of the gated clause on either side — the
+  controller's default — / in it on either side: `________`; ruling 6 for 2c and 2e outside the window: as applied /
+  vetoed: `________`; 3a NOISE re-flies: no cap — the default — / one: `________`.
+- Rule 1(g) at arming:
+=== END
+=== OLD F1-g §12: the veto paragraph
+1; the precedence edits (I5); the GRADER DRIFT choice made now.
+=== NEW
+1; the precedence edits (I5); the GRADER DRIFT choice made now. And from the scoped re-check of revision 3
+(`RECHECK-r3.md`): a no-text record kept out of 3c's gated clause on either side (rule 3c); ruling 6 named — outside
+the window every clause of rule 2, 2c and 2e included, is reported, not gated (§5 item 1, §6).
+=== END
+=== OLD F1-h "Only the user": item 5 resolved, items 6-8
+5. **The bench's thinking-token difference, if above 150 tokens** (rule 2c): raised with the user before arming;
+   never loosened quietly. Default: the threshold stays at 150.
+=== NEW
+5. **The bench's thinking-token difference, if above 150 tokens** (rule 2c): it read **+55 tokens** over the three
+   reps (§11), so this does not arise; the threshold stays at 150.
+6. **A no-text record in 3c** (re-check of revision 3): the controller's default keeps it out of the gated clause on
+   either side (it costs its rep one acceptable answer and one present block, so it can STOP 3c only through the band
+   or, five in one rep of 44, the cue check); the alternative counts it in the gated clause on either side (then ONE on
+   a gated cue id STOPs under the strict per-rep clause when the control's worst rep is 0, and under the sums default
+   it STOPs together with one more cue-side gated wrong when the control's total is 0). At the rate seen under the cue
+   rule (1 in 169 calls), 120 gated cue records expect about 0.7 a hour. Written into §11 with item 3.
+7. **Ruling 6, named** (§5 item 1, §6): outside the window every clause of rule 2 is reported, so a 2c or 2e failure
+   seen there is re-flown rather than acted on, although neither depends on provider load (the window's reason).
+   Default: as applied. Alternative: 2c and 2e read as in any hour (the edits in `RECHECK-r3.md`).
+8. **3a NOISE re-flies** (rule 3a, M13's gap of 1): nothing caps them. Default: no cap, as written. Alternative: one
+   NOISE re-fly under this pre-registration; a second NOISE reads as an other FAIL.
+=== END
+=== OLD F1-l "Only the user" item 3: the single-event consequence
+   strict per-rep clause (null STOP 12% at a 5% per-rep chance, against 0.9%). Written into §11 now.
+=== NEW
+   strict per-rep clause (null STOP 12% at a 5% per-rep chance, against 0.9%). Under the default a single gated wrong
+   or block-only twin is named, never a STOP by itself; under the strict clause one in any cue rep STOPs when the
+   control's worst rep is 0 (it was 0 in all nine 3.5-lite HIGH reps of h40a–h40c). Written into §11 now.
+=== END
+=== OLD F1-i "To know": the bench as it ran
+To know before the merge, not to decide (N9): the bench started at 09:04, four minutes after the 09:00 line, with 298
+of headroom; a last call after 10:00 puts part of a bench on the replay's quota day (the replay's own rule); in the
+"Otherwise" branch a Thursday merge after an afternoon bench goes against the letter of the bench's 3a sentence, and
+the replay moves to Saturday by the 01:18 ruling.
+=== NEW
+To know before arming, not to decide: the bench ran 09:04–09:16 on the 2026-09-30 quota day (298 of headroom, no call
+after 10:00), so the "Otherwise" branch did not happen. The bench PASSED but rated the cue arm −2, −3 and −3
+acceptable of 39 below its control in every rep (15 ids lower, 6 higher; sign test p ≈ 0.08; reported, never
+gating). If that cost is real and carries to holdout40, 3c's band STOPs about a third to a half of such hours (§10),
+and a 3a miss tends to read as 3a NOISE (item 8).
+=== END
+=== OLD F1-j §6 preconditions: every choice
+  choice and the 3c wrong-clause choice written into §11 (§12, "Only the user");
+=== NEW
+  choice, the 3c wrong-clause choice and every other choice of §12's "Only the user" written into §11;
+=== END
+=== OLD F1-k §7.8: the choices
+the user's two choices of §12 written in
+=== NEW
+the user's choices of §12 written in
+=== END
+=== OLD M1-a §11: the bench filled
+- Thursday's bench: verdict `________`; its thinking-token difference, cue reps against s50m's `captured-high`:
+  `________ tokens` (2c's first known case; `________` ≤ 150, or the amendment `________`); its TTFT p90 line, reported:
+  `________`.
+=== NEW
+- Thursday's bench (filled by the re-check of revision 3 from `passes/2026-10-01-cuebench-result.md`): verdict PASS
+  (band cue [24.5, 28.5] against control [27.5, 31.5]; wrong cue 1 / 1 / 0 against the worst control rep's 1; blocks
+  present and shaped 97–100%); its thinking-token difference, cue reps against s50m's `captured-high`: **+55 tokens**
+  over the three reps (pooled medians 955 against 900, n 116 a side, coverage 100%;
+  `recheck-r3-scratch/bench-2c-and-notext.mjs`) — 2c's first real reading, ≤ 150, no amendment. Rule 2c's command as
+  written reads two of the three reps (the bench tagged rep 1 `cues-r1`; the script reads `''`, `-r2`, `-r3` and
+  prints no line for a missing file): +83 on r2 and r3. Its TTFT p90 line, reported: cue above control by 505, 47 and
+  658 ms. Reported, never gating: the cue arm −2, −3 and −3 acceptable of 39 below control (§10).
+=== END
+=== OLD M1-b §11: the bench's last call
+used, 298 headroom on 3.5-lite), last call `________` (before / after the 10:00 reset);
+=== NEW
+used, 298 headroom on 3.5-lite), last call 09:16 (before the 10:00 reset; 117 calls, 0 transient errors);
+=== END
+=== OLD M1-c §10: a cost of the bench's size
+  ungraded; the paired-grading noise floor is about ±4 on 45; 3c's bands are three reps a side.
+=== NEW
+  ungraded; the paired-grading noise floor is about ±4 on 45; 3c's bands are three reps a side.
+- A quality cost of the bench's size. The bench (scenario50 bytes) rated the cue arm −2, −3 and −3 acceptable of 39
+  below its control in every rep (reported, never gating). If that cost is real and carries to holdout40 (about −3 of
+  44), 3c's band STOPs about a third to a half of such hours (29–49% at the holdout twins' own rep-to-rep SD of 1.5–2;
+  `recheck-r3-scratch/band-power.mjs`), so a PASS does not exclude it; and a 3a miss under it tends to read as 3a
+  NOISE, since the in-app count is compared with cue twins that carry the same cost.
+=== END
+=== OLD M3-a rule 3a: a miss while 3c is INCOMPLETE
+A 3a miss without both is an "other
+=== NEW
+A 3a miss while 3c is INCOMPLETE is INCOMPLETE (§5 item 4); with 3c decided, a 3a miss without both is an "other
+=== END
+=== OLD M3-b §5 bullet: a miss while 3c is INCOMPLETE
+  cue twins' counts on the shared ids (rule 3a); otherwise an other FAIL as above.
+=== NEW
+  cue twins' counts on the shared ids (rule 3a); INCOMPLETE while 3c is INCOMPLETE (item 4); otherwise an other FAIL as above.
+=== END
+=== OLD M4-a §7.4 h40d-rule3: the noise reading
+R09F and R11F wrong and excluded, on h40b; FAIL on h40a (R09 wrong on a gated item).
+=== NEW
+R09F and R11F wrong and excluded, on h40b; FAIL on h40a (R09 wrong on a gated item). It also prints rule 3a's noise
+     reading: the in-app acceptable count on the ids shared with the cue twins (best answer per item), each cue twin
+     rep's count on the same ids, and the gap to the lowest. Known cases (`recheck-r3-scratch/noise-gap.mjs`): h40c 35
+     against 36 / 37 / 38 → gap 1, within; h40b 35 against 38 / 36 / 39 → gap 1, within; h40a 39 against 37 / 42 / 38
+     → in-app above; and one that must fail: h40c with two in-app acceptable items set to weak in memory → 33 against
+     36, gap 3, not within.
+=== END
+=== OLD M5-a the re-run's environment
+away; from MAIN, as the flight invokes the arm (`flight.mjs:350–353`):
+=== NEW
+away; from MAIN, in a shell carrying the launcher's env block (`NATIVELY_ROSTER=holdout40` above all: under the
+  default roster `answers.mjs` refuses the resumed file, exit 3, `:277–283`), as the flight invokes the arm (`flight.mjs:350–353`):
+=== END
+=== OLD M6-a §12 item 4: N8-b's residue
+   difference adopted instead.
+=== NEW
+   difference read instead, as a first real reading (a preview, not a calibration; re-check N8).
+=== END
+=== OLD M6-b 3c: the dangling reference
+is named and read item by item (§5), never a STOP by itself.
+=== NEW
+is named and read item by item in the result note (h40c's three-way form), never a STOP by itself.
+=== END
+=== OLD M7-a §7.3: a wait that cannot refuse
+a 60 s wait (`timeout /t 60 /nobreak`)
+=== NEW
+a 60 s wait (`ping -n 61 127.0.0.1 >nul`, with `echo %TIME%` before and after it into the log; `timeout /t` exits at once when its input is redirected, and no launcher here has used it)
+=== END

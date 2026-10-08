@@ -1,0 +1,13 @@
+
+> natively@2.6.0 build:electron
+> node scripts/build-electron.js
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    electron/test/golden/interview60.metrics.test.ts:12:40:
+      12 │ const HERE = path.dirname(fileURLToPath(import.meta.url));
+         ╵                                         ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+[build-electron] Done in 1099ms

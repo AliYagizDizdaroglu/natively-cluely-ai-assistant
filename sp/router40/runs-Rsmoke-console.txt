@@ -1,0 +1,21 @@
+﻿router40 R runner: variant B, R_SYSTEM sha12 4571f563321f (5483 chars, registered), 1 chain(s), dry false, name router40-R-smoke, remaining est (start) 205 s
++2.96s [-] chainStart {"chain":"C02","items":["RE02","EF01"]}
++3.70s [-] open {"chain":"C02","attempt":1}
++4.07s [-] setupComplete {}
++4.09s [RE02] clipStart {"seconds":2.1,"tailSilenceMs":695,"attempt":1}
++6.39s [RE02 0.00s after end] clipEnd {}
++10.11s [RE02 3.71s after end] generationComplete {}
++19.13s [RE02 12.73s after end] turnComplete {}
++19.13s [RE02 12.74s after end] usage {"prompt":1987,"response":302,"thoughts":99,"total":2289}
++25.17s [RE02 18.78s after end] itemDone {"waitedMs":18781,"reason":"quietAfterTurn"}
+   RE02: firstText 856 ms, gen 3713 ms, turn 12735 ms, 28 words, early 0, end quietAfterTurn
++25.18s [RE02 18.78s after end] gapStart {"gapMs":10000,"after":"RE02"}
++35.23s [EF01] clipStart {"seconds":3.1,"tailSilenceMs":689,"attempt":1}
++38.48s [EF01 0.00s after end] clipEnd {}
++41.32s [EF01 2.84s after end] generationComplete {}
++48.33s [EF01 9.85s after end] turnComplete {}
++48.33s [EF01 9.85s after end] usage {"prompt":2432,"response":235,"thoughts":90,"total":2667}
++54.37s [EF01 15.89s after end] itemDone {"waitedMs":15888,"reason":"quietAfterTurn"}
+   EF01: firstText 558 ms, gen 2843 ms, turn 9851 ms, 27 words, early 0, end quietAfterTurn
++54.49s [EF01 16.01s after end] close {"code":1000,"reason":""}
+COMPLETE: wrote router40-R-smoke.json and router40-R-smoke.answers.json in C:/Users/sotka/OneDrive/Masaüstü/natively-lab/sp/router40/runs; chains run 1 of 1

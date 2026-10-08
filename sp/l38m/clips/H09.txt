@@ -1,0 +1,1 @@
+Design an A/B test for a new recommendation model on a retail site where purchases are rare and seasonal.

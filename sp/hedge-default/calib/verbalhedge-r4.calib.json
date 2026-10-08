@@ -1,0 +1,14 @@
+{
+  "negatives": {
+    "N1 code: '0' opts in": ["if (raw === '0') return false;", "if (raw === '0') return true;"],
+    "N2 string: the off line": ["return '[Main] verbal hedge: off';", "return '[Main] verbal hedge: OFF';"],
+    "N3 number: the default trigger": ["export const DEFAULT_HEDGE_TRIGGER_MS = 5000;", "export const DEFAULT_HEDGE_TRIGGER_MS = 5001;"],
+    "N4 code: '1' becomes '2'": ["if (!raw || raw === '1') return true;", "if (!raw || raw === '2') return true;"]
+  },
+  "positives": {
+    "P1 a // comment edited": ["// The value probed 2026-09-25 (H1-H3), fixed before any counted window.", "// The value probed 2026-09-25 (H1-H3), fixed before any counted window. (calibration)"],
+    "P2 the header docblock edited": ["The shipped default since flight h40c (2026-09-29, holdout40): first token median 4.1 s, p90", "The shipped default since flight h40c (2026-09-29, holdout40) (calibration): first token median 4.1 s, p90"],
+    "P3 whitespace inside a code line": ["const raw = env[VERBAL_HEDGE_ENV]?.trim();", "const raw =   env[VERBAL_HEDGE_ENV]?.trim();"],
+    "P4 the very comment this round rewrites": ["// NATIVELY_VERBAL_PRIMARY_MODEL (the two Flash Lites only) matters only with '0': the hedge takes either alike.", "// NATIVELY_VERBAL_PRIMARY_MODEL (the two Flash Lites only) matters only with '0': the hedge takes either alike. (calibration)"]
+  }
+}

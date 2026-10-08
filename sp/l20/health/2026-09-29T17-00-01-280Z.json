@@ -1,0 +1,102 @@
+{
+ "model": "gemini-3.8-live",
+ "compression": "on",
+ "t0Iso": "2026-09-29T17:00:01.280Z",
+ "results": [
+  {
+   "id": "S1Q02",
+   "comp": "on",
+   "openedAt": 3,
+   "setupMs": 905,
+   "clipSeconds": 26.2,
+   "clipEndMs": 28356,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": 2306,
+   "lastWordMs": 7749,
+   "text": "For a hundred thousand subscribers with a nine point five percent churn rate, we have ninety-five hundred churners in total. The top five percent risk band contains five thousand subscribers, capturing twenty-eight hundred and fifty true positives, which is exactly thirty percent recall. Since precision is sixty percent, we predict forty-seven hundred and fifty subscribers as churners in this band, which fits within the five thousand limit and is fully consistent.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q08",
+   "comp": "on",
+   "openedAt": 62179,
+   "setupMs": 716,
+   "clipSeconds": 19.3,
+   "clipEndMs": 83192,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the roll back.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1508,
+   "lastWordMs": 7980,
+   "text": "I’ll start by adding a version tag or schema suffix to the vector IDs to distinguish them. For the backfill, I’ll run the new model in the background to populate a secondary index with the new dimensional size. Updates stay synchronized by dualwriting incoming documents to both models simultaneously. I’ll validate the new model’s retrieval quality using offline benchmarks and LLM-as-judge evals before the cutover. Cutover involves updating the API endpoints to query the new index, while rolling back simply means pointing the application back to the legacy model.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q01",
+   "comp": "on",
+   "openedAt": 121706,
+   "setupMs": 1269,
+   "clipSeconds": 16.3,
+   "clipEndMs": 140096,
+   "heard": "Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those stages. To your document intelligence experience.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1523,
+   "lastWordMs": 9577,
+   "text": "I start with raw documents, utilizing AWS Textract for high-fidelity OCR and layout preservation. Instead of fixed size windows, I use semantic chunking to keep ideas together and rely on agentic query decomposition for complex questions. I embed these chunks using XLM-RoBERTa for strong semantic mapping. For retrieval, I combine sparse and dense hybrid search, re-ranking results before assembling the context. Finally, this context is passed to GPT five for generation, orchestrated by LangGraph with human-in-the-loop checkpoints to minimize hallucinations.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q06",
+   "comp": "on",
+   "openedAt": 183475,
+   "setupMs": 689,
+   "clipSeconds": 27.7,
+   "clipEndMs": 213184,
+   "heard": "Now is sequel one. Construct a point in time feature. You have a snapshots table with a customer ID and a snapshot time and an events table with a customer ID, an event time, an ingested at time. And an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot. Includes only events ingested by the snapshot time and preserves customers with zero calls.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 2430,
+   "lastWordMs": 7221,
+   "text": "I'll start by selecting the customer ID and snapshot time from the snapshots table, then perform a left join with the events table on the customer ID. In the join condition, I'll filter for support call events that occurred within thirty days before the snapshot time, ensuring the event was ingested by that point. Finally, I'll group by the snapshot and count the events, using a coalesce to return zero for customers without calls.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q04",
+   "comp": "on",
+   "openedAt": 245620,
+   "setupMs": 632,
+   "clipSeconds": 30.4,
+   "clipEndMs": 277935,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return precision at K, recall at K, and lift over the population prevalence. Assume binary labels and finite scores. And break score ties by original row order. Tell me what it does. Invalid K for empty inputs. And when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1413,
+   "lastWordMs": 8381,
+   "text": "To evaluate at a fixed budget, I'll first validate the inputs by checking if the lengths match, if the inputs are empty, if k is within bounds, and if there are positive labels; if anything fails, I return zeros. To handle ties, I attach the original row index, then sort by score descending and index ascending. After slicing the top k elements, I calculate precision by dividing true labels by k, recall by dividing true labels by total positives, and lift by dividing precision by the overall population prevalence.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  }
+ ]
+}

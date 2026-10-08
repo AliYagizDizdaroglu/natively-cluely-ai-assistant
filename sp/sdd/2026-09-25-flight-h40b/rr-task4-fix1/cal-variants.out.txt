@@ -1,0 +1,8 @@
+as expected  control: unmodified scorer copy, complete fixture copy fx-full: OK (exit 0; expected OK)  case A: ok | case B: ok | case C: ok
+as expected  wrong fixture: fx-a (tier 2 rep 3 file deleted, pairs rebuilt): FAILED (exit 1; expected FAILED)  case A: FAIL (1 of 5 checks) | case B: FAIL (1 of 6 checks) | case C: FAIL (1 of 4 checks)  first printed totals: on tier 1: 6/6 acceptable; on tier 2: 6/9 acceptable; on tier 3: 11/11 acceptable; on tier 3b: 11/11 acceptable; 3.1 LOW 48/48, 3.5 HIGH 48/48
+as expected  mutated scorer: every arm 3 reps (the 11/33 bug): FAILED (exit 1; expected FAILED)  case A: FAIL (2 of 5 checks) | case B: FAIL (2 of 6 checks) | case C: FAIL (2 of 4 checks)  first printed totals: on tier 1: 6/6 acceptable; on tier 2: 9/9 acceptable; on tier 3: 11/33 acceptable; on tier 3b: 11/33 acceptable; 3.1 LOW 48/48, 3.5 HIGH 48/48
+as expected  mutated scorer: lite totals over tier ids with repeats (the 81/81 bug): FAILED (exit 1; expected FAILED)  case A: FAIL (1 of 5 checks) | case B: FAIL (1 of 6 checks) | case C: FAIL (1 of 4 checks)  first printed totals: on tier 1: 6/6 acceptable; on tier 2: 9/9 acceptable; on tier 3: 11/11 acceptable; on tier 3b: 11/11 acceptable; 3.1 LOW 81/81, 3.5 HIGH 81/81
+as expected  mutated scorer: answeredCount always 0 (the new "answered N of M" line broken): OK (exit 0; expected OK)  case A: ok | case B: ok | case C: ok
+as expected  mutated scorer: 3.6 and 3.5 grades cross-wired (deferred Q-m1): OK (exit 0; expected OK)  case A: ok | case B: ok | case C: ok
+fx-full/flash after runs: blind tiers.json
+fx-a/flash after runs: blind tiers.json

@@ -1,0 +1,998 @@
+# Boundary repair: whole-change review package
+MAIN working tree vs HEAD f745d7edae887ca1887d95dcc71fc6edbd5f30a4 (generated 2026-09-30T04:03:11.949Z)
+
+STAT NEW       electron/audio/deepgramBoundaryRepair.ts  10743 B  sha256 d5ba4da0650e7531
+STAT NEW       electron/audio/deepgramBoundaryRepair.test.ts  13947 B  sha256 6956aea35dfef746
+STAT NEW       electron/audio/deepgramBoundaryRepair.fixtures.json  22788 B  sha256 e65c6e746f821642
+STAT MODIFIED  electron/audio/DeepgramStreamingSTT.ts  16236 B  sha256 57292516fc495df1
+STAT NEW       electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts  13838 B  sha256 2f3eb860c6142415
+STAT MODIFIED  electron/audio/deepgramKeyterms.ts  5801 B  sha256 b4431b9138d9688f
+STAT MODIFIED  electron/audio/deepgramKeyterms.test.ts  3429 B  sha256 bfdd8a5d91f48da7
+STAT NEW       electron/test/golden/interview60.turns-finals.mjs  2119 B  sha256 365cca381954a2e0
+STAT NEW       electron/test/golden/interview60.turns-finals.test.ts  4115 B  sha256 d40c6c235cb69281
+STAT MODIFIED  electron/test/golden/interview60.turns-fixture.mjs  5470 B  sha256 cfd7c87666393bb8
+
+===== electron/audio/deepgramBoundaryRepair.ts (new, full, line-numbered) =====
+   1| /**
+   2|  * Puts back the word(s) Deepgram drops at a segment boundary.
+   3|  *
+   4|  * nova-3 (interim_results, endpointing 300, smart_format) sometimes finalizes a segment SHORT of
+   5|  * its own latest interim and starts the next segment after a word that then appears in no final;
+   6|  * the turn text is built from finals, so the word is gone before the question is asked. Reproduced
+   7|  * at the seam on 2026-09-29 (scratchpad seam-probe.mjs, clips streamed straight to Deepgram with
+   8|  * the app's option object): 6 of 20 plays lost a word, then 9 of 48. Flight h40c R22 is the symptom:
+   9|  *
+  10|  *   interim  "How do you cut hallucinations in a rag answer without just making"
+  11|  *   final    "How do you cut"
+  12|  *   final    "in a rag answer without just making it refuse?"
+  13|  *
+  14|  * and the app dispatched "How do you cut in a rag answer without just making it refuse?".
+  15|  *
+  16|  * This is rule v4 of the design brief (scratchpad boundary-repair/DESIGN-v4.md), a port of
+  17|  * rule-v4.mjs, line for line except v2's alignment guard (rule-v4.mjs:64), which the non-ASCII
+  18|  * guard makes unreachable (re-review M-a); the two must agree event for event (check-v4.mjs
+  19|  * proves the reference on every recorded stream; the controller replays the built module the
+  20|  * same way).
+  21|  *
+  22|  *   CUT    a final F1 whose tokens equal the preceding interim I's first |F1| tokens (strict), or
+  23|  *          all but F1's last token, which must be a RE-SPELLING of I's token at that position
+  24|  *          (tolerant: Deepgram re-spells the word at the cut, "RAC" -> "Rag", 5 of 5 seam plays of
+  25|  *          S2Q07) — see isRespelling(). I must be longer than F1 and ASCII-LETTERED (the tokens
+  26|  *          are ASCII: accented English such as "résumé" stays aligned but tokenises as fragments,
+  27|  *          and a lost "résumé" came back as "r sum" in the 2026-09-29 review's probe; 0 such
+  28|  *          interims in the 28 English logs and the seam recordings). The ASCII-letter condition
+  29|  *          is also what keeps rawTok() index-aligned with tok(): no character it admits changes
+  30|  *          the token count, checked on every code point in the 2026-09-29 v4 re-review. T = I's
+  31|  *          tokens after F1; Traw = the same words in I's own spelling.
+  32|  *   PAUSE  clear() forgets the cut and the latest interim (the adapter calls it on an empty FINAL and
+  33|  *          on UtteranceEnd); a final with speechFinal (Deepgram heard the utterance end there) leaves
+  34|  *          no cut. None of the three occurred inside a repaired loss on the recorded data: 0 of 29 log
+  35|  *          repairs had an empty final between F1 and F2, 0 of 6 seam repairs an UtteranceEnd, and all
+  36|  *          63 seam cuts had speech_final=false.
+  37|  *   REPAIR on the NEXT final F2 only, within REPAIR_WINDOW_MS of F1, when F2 does not simply start
+  38|  *          with T[0] (the normal case, 527 in the logs: the word moved to the next segment): for
+  39|  *          k = 1 then 2 (k < |T|), if F2's first min(2, |T| - k) tokens EXACTLY equal T[k..], emit
+  40|  *          Traw[0..k) + ' ' + F2. Anything else, and every interim, passes through unchanged.
+  41|  *
+  42|  * Measured over every run log and both seam recordings (check-v4.mjs, 2026-09-29): non-holdout logs
+  43|  * 25 repairs, all 25 TRUE against the scripted question (the measured precision; 25 is a floor on
+  44|  * the number of losses, since the logs cannot show a loss that left no interim evidence); holdout
+  45|  * 4 / 4 TRUE — reported only, NOT an independent validation and not evidence for any choice here
+  46|  * (v2's holdout failures chose what v3 removed; R22 and these 4 are excluded from any future
+  47|  * holdout measurement of this rule); seam recordings 6 repairs, all true, of 15 boundary losses
+  48|  * (4 of 6 on the first; 2 of 9 on the second, where 4 losses left NO interim evidence — F1 longer
+  49|  * than its last interim — which no interim rule reaches). v2's two wider branches were dropped
+  50|  * after 4 FALSE repairs on holdout ("two" before "to answer", "fee" before "feature", "four point"
+  51|  * before "4.1%"), so two shapes stay unrepaired on purpose: the |T| == 1 tail (F2 does not start
+  52|  * with the interim's one remaining word — text alone cannot tell a lost word from Deepgram
+  53|  * re-hearing the same audio, "schedule" -> "scheduled"), and resumption evidence that differs only
+  54|  * by number formatting ("eighty" / "84%"). The weakest path is k = 2 with m = 1: one observed loss
+  55|  * ("for a" before "production").
+  56|  *
+  57|  * English only: the tokens are ASCII, and the spec review showed the rule mangling Spanish and
+  58|  * Turkish text. DeepgramStreamingSTT creates the repair only on an English connection (the same
+  59|  * test as keytermsFor) and passes every other language, and 'multi', through untouched.
+  60|  *
+  61|  * Pure: no clock, no logging. DeepgramStreamingSTT creates one per live socket, feeds every
+  62|  * NON-EMPTY Transcript event with its arrival time and speech_final flag, and logs each restore.
+  63|  */
+  64| 
+  65| /**
+  66|  * The longest F1 -> F2 gap among the repaired losses was 3715 ms (logs; 3115 holdout, 3207 seam); the
+  67|  * margin keeps a tail from being glued onto the next, unrelated utterance. NORMAL cuts (nothing lost)
+  68|  * reach 7835 ms, 12 of 527 past 5000, so the window will occasionally miss a real loss.
+  69|  */
+  70| const REPAIR_WINDOW_MS = 5000;
+  71| /** The largest skip observed: 1 loss of 2 words, 25 of 1 (non-holdout logs). */
+  72| const MAX_SKIPPED_WORDS = 2;
+  73| /** Resumption tokens that must match exactly: 2 — the evidence every observed loss provides — or 1 when the interim holds no more. */
+  74| const RESUME_MATCH_WORDS = 2;
+  75| 
+  76| /** Comparison tokens: thousands commas between digits removed ("10,000" -> "10000"), lowercase, [a-z0-9']+ runs — the evidence scans' normalisation. */
+  77| const stripThousands = (s: string): string => s.replace(/(\d),(\d)/g, '$1$2');
+  78| const tok = (s: string): string[] => stripThousands(s).toLowerCase().match(/[a-z0-9']+/g) ?? [];
+  79| /** The same tokens in the text's own spelling (not lowercased): index-aligned with tok() on any text without a non-ASCII letter — the NON_ASCII_LETTER guard in createBoundaryRepair is what guarantees it. */
+  80| const rawTok = (s: string): string[] => stripThousands(s).match(/[A-Za-z0-9']+/g) ?? [];
+  81| /** A letter or combining mark outside ASCII: the tokenisers split such a word into fragments, so an interim holding one is never a cut (2026-09-29 review M2). */
+  82| const NON_ASCII_LETTER = /(?![\x00-\x7F])[\p{L}\p{M}]/u;
+  83| 
+  84| /**
+  85|  * F1's last token may only be a RE-SPELLING of the interim's token at that position: same first
+  86|  * letter, no digit, no longer. smart_format writes "ninety two percent" as "92%" — one final token
+  87|  * over three interim words — and a compound merges "all right" into "Alright": a final token that
+  88|  * absorbed more audio than the interim's word shifts T, and v3 restored "two percent" / "right"
+  89|  * (the spec review's probes). Measured on the 42 tolerant cuts in the NON-HOLDOUT logs and seam
+  90|  * recordings (check-v4.out.txt): all 34 kept are no longer than the interim's token ("xgboost" ->
+  91|  * "xg", "dashboard" -> "dash", "RAC" -> "Rag"); 7 refused as longer (all "break" -> "breaks") and
+  92|  * 1 for a digit ("ninety" -> "92"), none of them followed by a repair; 0 refused for the first
+  93|  * letter, but check-v4 counts each cut under the FIRST rule that refuses it (digit, longer, first
+  94|  * letter), and a spelled-out number never shares its first character with its digits, so
+  95|  * "ninety" -> "92" fails the first-letter rule too: "1 digit, 0 first letter" only reflects that
+  96|  * order. The data isolates neither rule; the digit rule rests on the synthetic "v2" for "version"
+  97|  * case, the first-letter rule on the synthetic "put" for "cut" case. KNOWN RECALL COST: an
+  98|  * inflection is longer too, and it does not shift T (the 7 "breaks" cuts are aligned: F2 resumed at
+  99|  * the interim's next word, nothing lost); a word lost right after an inflected cut ("scale" ->
+ 100|  * "scales", then "horizontally") was restored by v3 and is not by v4. No such loss in the data.
+ 101|  */
+ 102| const isRespelling = (finalTok: string, interimTok: string): boolean =>
+ 103|     finalTok[0] === interimTok[0] && !/\d/.test(finalTok) && finalTok.length <= interimTok.length;
+ 104| 
+ 105| export interface BoundaryRepairResult {
+ 106|     /** What to emit: `text` as received, or the restored word(s) + ' ' + `text`. */
+ 107|     text: string;
+ 108|     /** The restored word(s) in the interim's own spelling, in order; null when nothing was restored. */
+ 109|     restored: string[] | null;
+ 110| }
+ 111| 
+ 112| export interface BoundaryRepair {
+ 113|     /**
+ 114|      * One call per NON-EMPTY Transcript event, in arrival order; `atMs` is the arrival time (only
+ 115|      * finals read it); `speechFinal` is Deepgram's speech_final flag (a final carrying it leaves no cut).
+ 116|      */
+ 117|     onTranscript(text: string, isFinal: boolean, atMs: number, speechFinal?: boolean): BoundaryRepairResult;
+ 118|     /** A pause (an empty final, an UtteranceEnd): forget the remembered cut and the latest interim. */
+ 119|     clear(): void;
+ 120| }
+ 121| 
+ 122| export function createBoundaryRepair(): BoundaryRepair {
+ 123|     let lastInterim: string | null = null;
+ 124|     let cut: { T: string[]; Traw: string[]; atMs: number } | null = null;
+ 125|     return {
+ 126|         clear() {
+ 127|             cut = null;
+ 128|             lastInterim = null;
+ 129|         },
+ 130|         onTranscript(text, isFinal, atMs, speechFinal = false) {
+ 131|             if (!isFinal) {
+ 132|                 lastInterim = text;
+ 133|                 return { text, restored: null };
+ 134|             }
+ 135|             let out = text;
+ 136|             let restored: string[] | null = null;
+ 137|             const remembered = cut;
+ 138|             if (remembered && atMs - remembered.atMs <= REPAIR_WINDOW_MS) {
+ 139|                 const T = remembered.T, f = tok(text);
+ 140|                 if (f.length && f[0] !== T[0]) {
+ 141|                     for (let k = 1; k <= MAX_SKIPPED_WORDS && k < T.length && !restored; k++) {
+ 142|                         const m = Math.min(RESUME_MATCH_WORDS, T.length - k);
+ 143|                         if (f.length >= m && T.slice(k, k + m).every((w, j) => w === f[j])) restored = remembered.Traw.slice(0, k);
+ 144|                     }
+ 145|                 }
+ 146|                 if (restored) out = `${restored.join(' ')} ${text}`;
+ 147|             }
+ 148|             cut = null;
+ 149|             if (lastInterim && !speechFinal && !NON_ASCII_LETTER.test(lastInterim)) {
+ 150|                 const iw = tok(lastInterim), fw = tok(text), raw = rawTok(lastInterim);
+ 151|                 if (fw.length > 0 && fw.length < iw.length) {
+ 152|                     const strict = fw.every((w, i) => w === iw[i]);
+ 153|                     const tolerant = !strict && fw.length >= 2 && fw.slice(0, -1).every((w, i) => w === iw[i]) && isRespelling(fw[fw.length - 1], iw[fw.length - 1]);
+ 154|                     if (strict || tolerant) cut = { T: iw.slice(fw.length), Traw: raw.slice(fw.length), atMs };
+ 155|                 }
+ 156|             }
+ 157|             lastInterim = null;
+ 158|             return { text: out, restored };
+ 159|         },
+ 160|     };
+ 161| }
+ 162| 
+
+===== electron/audio/deepgramBoundaryRepair.test.ts (new, full, line-numbered) =====
+   1| import { describe, it, expect } from 'vitest';
+   2| import { createBoundaryRepair } from './deepgramBoundaryRepair';
+   3| import fixtures from './deepgramBoundaryRepair.fixtures.json';
+   4| 
+   5| /**
+   6|  * The fixture file is a byte-for-byte copy of the design's fixtures-v3.json (2026-09-29): every
+   7|  * sequence was extracted VERBATIM from a non-holdout run log (the `run` field) as [interim I,
+   8|  * final F1, final F2] with atMs relative to I, and expectedF2 is what the reference rule-v3.mjs
+   9|  * emits for F2 — checked by the extractor to equal what it emitted inside the full stream. Only
+  10|  * `symptom` (flight h40c R22, the reported defect) comes from a holdout run, as the reproduction;
+  11|  * `seam` is a live seam-probe recording (S2Q07 play 3, the tolerant "RAC" -> "Rag" cut).
+  12|  * The synthetic edges at the end reuse the symptom's strings and one real interim from the logs.
+  13|  */
+  14| type Fixture = { run: string; cls: string; events: { text: string; isFinal: boolean; atMs: number }[]; expectedF2: string };
+  15| 
+  16| function lastFinal(f: Fixture): string {
+  17|     const r = createBoundaryRepair();
+  18|     let out = '';
+  19|     for (const e of f.events) {
+  20|         const res = r.onTranscript(e.text, e.isFinal, e.atMs);
+  21|         if (e.isFinal) out = res.text;
+  22|     }
+  23|     return out;
+  24| }
+  25| const lastRaw = (f: Fixture): string => f.events[f.events.length - 1].text;
+  26| 
+  27| describe('deepgramBoundaryRepair reproduces the reference (rule-v3.mjs) on the extracted fixtures', () => {
+  28|     it('the fixture file is the design\'s: 1 symptom, 1 seam, 15 positives that change F2, 28 negatives that do not', () => {
+  29|         expect(fixtures.positives).toHaveLength(15);
+  30|         expect(fixtures.negatives).toHaveLength(28);
+  31|         for (const f of [fixtures.symptom, fixtures.seam, ...fixtures.positives]) expect(f.expectedF2).not.toBe(lastRaw(f));
+  32|         for (const f of fixtures.negatives) expect(f.expectedF2).toBe(lastRaw(f));
+  33|     });
+  34| 
+  35|     it(`symptom — ${fixtures.symptom.run}: restores "hallucinations"`, () => {
+  36|         expect(lastFinal(fixtures.symptom)).toBe(fixtures.symptom.expectedF2);
+  37|     });
+  38| 
+  39|     it(`seam — ${fixtures.seam.run}: the tolerant cut ("RAC" re-spelled "Rag" at the cut) restores "service"`, () => {
+  40|         expect(lastFinal(fixtures.seam)).toBe(fixtures.seam.expectedF2);
+  41|     });
+  42| 
+  43|     describe('positives: every distinct v3 repair in the non-holdout logs', () => {
+  44|         fixtures.positives.forEach((f, i) => {
+  45|             it(`#${i + 1} ${f.run}: -> "${f.expectedF2.slice(0, 50)}"`, () => {
+  46|                 expect(lastFinal(f)).toBe(f.expectedF2);
+  47|             });
+  48|         });
+  49|     });
+  50| 
+  51|     describe('negatives: cuts the rule leaves alone (NORMAL, the |T| == 1 tail whether re-heard or really lost, number-formatted evidence, tolerant re-cover, turn boundaries)', () => {
+  52|         fixtures.negatives.forEach((f, i) => {
+  53|             it(`#${i + 1} ${f.cls} ${f.run}: "${lastRaw(f).slice(0, 40)}" unchanged`, () => {
+  54|                 expect(lastFinal(f)).toBe(lastRaw(f));
+  55|             });
+  56|         });
+  57|     });
+  58| 
+  59|     it('pins the documented residuals as NOT repaired: real losses in the |T| == 1 tail ("between", "scaling") and number-formatted evidence ("eighty" / "84%")', () => {
+  60|         const byF2 = (start: string): Fixture => {
+  61|             const f = fixtures.negatives.find((n) => lastRaw(n).startsWith(start));
+  62|             if (!f) throw new Error(`fixture missing: F2 starting "${start}"`);
+  63|             return f;
+  64|         };
+  65|         for (const f of [byF2('training and serving?'), byF2('for a model inference service on Kubernetes?'), byF2('by 84%,')]) {
+  66|             expect(lastFinal(f)).toBe(lastRaw(f));
+  67|         }
+  68|     });
+  69| });
+  70| 
+  71| describe('deepgramBoundaryRepair synthetic edges (the symptom\'s strings)', () => {
+  72|     const [I, F1, F2] = fixtures.symptom.events;                 // atMs 0 / 17 / 1564
+  73|     const play = (events: Fixture['events']): string => lastFinal({ run: 'synthetic', cls: 'EDGE', events, expectedF2: '' });
+  74| 
+  75|     it('the window is 5000 ms from F1\'s arrival, inclusive: 5000 restores, 5001 does not', () => {
+  76|         expect(play([I, F1, { ...F2, atMs: F1.atMs + 5000 }])).toBe(fixtures.symptom.expectedF2);
+  77|         expect(play([I, F1, { ...F2, atMs: F1.atMs + 5001 }])).toBe(F2.text);
+  78|     });
+  79| 
+  80|     it('a final that is not a prefix of its interim is no cut — only F1\'s LAST token may differ (the tolerant cut)', () => {
+  81|         expect(play([I, { ...F1, text: 'How do we cut' }, F2])).toBe(F2.text);
+  82|         expect(play([I, { ...F1, text: 'How do you cat' }, F2])).toBe(fixtures.symptom.expectedF2);
+  83|     });
+  84| 
+  85|     it('an interim-only stream passes through unchanged and leaves nothing to repair', () => {
+  86|         const r = createBoundaryRepair();
+  87|         expect(r.onTranscript('How do', false, 0)).toEqual({ text: 'How do', restored: null });
+  88|         expect(r.onTranscript(I.text, false, 500)).toEqual({ text: I.text, restored: null });
+  89|         expect(r.onTranscript(I.text, true, 1000)).toEqual({ text: I.text, restored: null });    // equal to its interim: no cut
+  90|         expect(r.onTranscript(F2.text, true, 2000)).toEqual({ text: F2.text, restored: null });
+  91|     });
+  92| 
+  93|     it('any final clears the remembered cut: only the NEXT final can be repaired', () => {
+  94|         expect(play([I, F1, { text: 'Okay.', isFinal: true, atMs: 500 }, F2])).toBe(F2.text);
+  95|     });
+  96| 
+  97|     it('an interim between F1 and F2 does not disturb the repair (after7 M13: the log has "as code without" at 07:38:26.576Z between the two finals)', () => {
+  98|         const m13 = fixtures.positives[2];                       // 2026-09-06T08-14-21-after7, "infrastructure"
+  99|         const [i, f1, f2] = m13.events;
+ 100|         expect(m13.run).toBe('2026-09-06T08-14-21-after7');
+ 101|         expect(play([i, f1, { text: 'as code without', isFinal: false, atMs: f1.atMs + 2 }, f2])).toBe(m13.expectedF2);
+ 102|     });
+ 103| 
+ 104|     it('restores the interim\'s own spelling, index-aligned past an apostrophe word before the cut', () => {
+ 105|         const I2 = { text: 'How\'d you cut RAG hallucinations in a rag answer without just making', isFinal: false, atMs: 0 };
+ 106|         expect(play([I2, { ...F1, text: 'How\'d you cut' }, { ...F2, text: 'hallucinations in a rag answer without just making it refuse?' }]))
+ 107|             .toBe('RAG hallucinations in a rag answer without just making it refuse?');
+ 108|     });
+ 109| 
+ 110|     it('a punctuation-only final is no cut (it has no tokens) and does not throw', () => {
+ 111|         expect(play([I, { ...F1, text: '?' }, { ...F2, text: 'you cut hallucinations in a rag answer without just making it refuse?' }]))
+ 112|             .toBe('you cut hallucinations in a rag answer without just making it refuse?');
+ 113|     });
+ 114| 
+ 115|     it('a one-word final is never a tolerant cut: a late "Wow." does not remember the interim', () => {
+ 116|         expect(play([I, { ...F1, text: 'Wow.' }, { ...F2, text: 'you cut hallucinations in a rag answer without just making it refuse?' }]))
+ 117|             .toBe('you cut hallucinations in a rag answer without just making it refuse?');
+ 118|     });
+ 119| 
+ 120|     it('a final with no interim before it is not compared with an older interim', () => {
+ 121|         expect(play([I, F1, { text: 'How do you', isFinal: true, atMs: 500 }, F2])).toBe(F2.text);
+ 122|     });
+ 123| 
+ 124|     it('a loss of three words is left alone: at most two skipped words are restored', () => {
+ 125|         expect(play([I, F1, { ...F2, text: 'rag answer without just making it refuse?' }])).toBe('rag answer without just making it refuse?');
+ 126|     });
+ 127| 
+ 128|     it('F2 starting with the interim\'s first tail word is the normal case, even when that word repeats', () => {
+ 129|         const I3 = { text: 'How do you cut hallucinations in in a rag answer without just making', isFinal: false, atMs: 0 };
+ 130|         expect(play([I3, { ...F1, text: 'How do you cut hallucinations' }, F2])).toBe(F2.text);
+ 131|     });
+ 132| });
+ 133| 
+ 134| describe('deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, ASCII-lettered interims only, pauses', () => {
+ 135|     const [I, F1, F2] = fixtures.symptom.events;                 // atMs 0 / 17 / 1564
+ 136|     const play = (events: Fixture['events']): string => lastFinal({ run: 'synthetic', cls: 'EDGE', events, expectedF2: '' });
+ 137|     const at = (text: string, isFinal: boolean, atMs: number) => ({ text, isFinal, atMs });
+ 138| 
+ 139|     // Negative #28 as logged has the interim stopping at "percent" and F2 5164 ms after F1 (outside the window). With the
+ 140|     // interim running on and F2 inside the window, v3 restored "two percent" — a FALSE insertion (probe-inputs.out.txt):
+ 141|     // smart_format wrote "ninety two percent" as the one token "92%", so T was shifted by two words.
+ 142|     it('negative #28 with the interim running on: a digit token at the cut ("ninety two percent" -> "92%.") is no cut', () => {
+ 143|         expect(play([at('accuracy reaching ninety two percent for each', false, 0), at('accuracy reaching 92%.', true, 688), at('For each of those metrics, define the unit of evaluation,', true, 2688)]))
+ 144|             .toBe('For each of those metrics, define the unit of evaluation,');
+ 145|     });
+ 146| 
+ 147|     it('"twenty five" -> "25": the same shape (v3 restored "five")', () => {
+ 148|         expect(play([at('we cut latency by twenty five last quarter', false, 0), at('We cut latency by 25', true, 100), at('last quarter. What changed?', true, 2100)]))
+ 149|             .toBe('last quarter. What changed?');
+ 150|         // "92" and "25" also fail the first-letter test; "v2" keeps "version"'s first letter and is shorter, so only
+ 151|         // the digit test refuses it (synthetic, like "put" for "cut"; v3 restored "two").
+ 152|         expect(play([at('we shipped version two last week', false, 0), at('We shipped v2', true, 100), at('last week, then rolled it back.', true, 2100)]))
+ 153|             .toBe('last week, then rolled it back.');
+ 154|     });
+ 155| 
+ 156|     it('"all right" -> "Alright": a final token longer than the interim\'s is a merge, not a re-spelling (v3 restored "right")', () => {
+ 157|         expect(play([at('thanks all right so tell me about', false, 0), at('Thanks. Alright.', true, 100), at('So tell me about your last project.', true, 2100)]))
+ 158|             .toBe('So tell me about your last project.');
+ 159|     });
+ 160| 
+ 161|     // A documented RECALL COST, not a fix (DESIGN-v4 §4, §8): an inflection is longer too, and it does not shift T — the 7
+ 162|     // "break" -> "breaks" cuts in the logs are aligned and lost nothing. Here "even" IS lost after the inflected cut; v3
+ 163|     // restored it, v4 does not, because the same length test is what refuses the merges above. Pinned so the cost is known.
+ 164|     it('"break" -> "breaks": a longer final token is refused even when it is only an inflection, so a word lost right after it stays lost (v3 restored "even")', () => {
+ 165|         expect(play([at('the deploy would break even before the rollout', false, 0), at('The deploy would breaks', true, 100), at('before the rollout finishes.', true, 2100)]))
+ 166|             .toBe('before the rollout finishes.');
+ 167|     });
+ 168| 
+ 169|     it('a re-spelling keeps its first letter: "put" for "cut" is no cut ("cat" for "cut" still is — the edge above)', () => {
+ 170|         expect(play([I, { ...F1, text: 'How do you put' }, F2])).toBe(F2.text);
+ 171|     });
+ 172| 
+ 173|     // The spec review's Turkish probe (probe-lang.out.txt): "İ" lowercases to "i" + a combining dot, so tok() holds one
+ 174|     // token more than rawTok() and v3 restored "zmir projesinde" — a shifted Traw. The adapter never sends non-English
+ 175|     // audio here; the non-ASCII guard refuses it (it subsumes v2's alignment guard).
+ 176|     it('an interim with a non-ASCII letter that splits the tokenisers ("İ") is no cut', () => {
+ 177|         expect(play([at('Peki İzmir projesinde hangi veritabanını seçtiniz', false, 0), at('Peki', true, 100), at('projesinde hangi veritabanını seçtiniz?', true, 2100)]))
+ 178|             .toBe('projesinde hangi veritabanını seçtiniz?');
+ 179|     });
+ 180| 
+ 181|     // Accented English stays aligned ("résumé" -> "r" + "sum" in both tokenisers) but is fragments: v3 restored "r sum"
+ 182|     // (the v4 review's M2 probe). 0 interims with a non-ASCII letter in the 28 English logs and the seam recordings.
+ 183|     it('an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"', () => {
+ 184|         expect(play([at('tell me about your résumé and your last role', false, 0), at('Tell me about your', true, 100), at('and your last role.', true, 2100)]))
+ 185|             .toBe('and your last role.');
+ 186|         // The same word DECOMPOSED ("e" + U+0301, escaped so no editor can normalise it): the \p{M} half of the guard.
+ 187|         expect(play([at('tell me about your re\u0301sume\u0301 and your last role', false, 0), at('Tell me about your', true, 100), at('and your last role.', true, 2100)]))
+ 188|             .toBe('and your last role.');
+ 189|     });
+ 190| 
+ 191|     it('clear() between F1 and F2 (the adapter\'s empty final / UtteranceEnd) forgets the cut', () => {
+ 192|         const r = createBoundaryRepair();
+ 193|         r.onTranscript(I.text, false, I.atMs);
+ 194|         r.onTranscript(F1.text, true, F1.atMs);
+ 195|         r.clear();
+ 196|         expect(r.onTranscript(F2.text, true, F2.atMs)).toEqual({ text: F2.text, restored: null });
+ 197|     });
+ 198| 
+ 199|     it('clear() also forgets the latest interim: a final after a pause is not a cut of it', () => {
+ 200|         const r = createBoundaryRepair();
+ 201|         r.onTranscript(I.text, false, I.atMs);
+ 202|         r.clear();
+ 203|         r.onTranscript(F1.text, true, F1.atMs);
+ 204|         expect(r.onTranscript(F2.text, true, F2.atMs)).toEqual({ text: F2.text, restored: null });
+ 205|     });
+ 206| 
+ 207|     it('speechFinal on F1 (Deepgram heard the utterance end there) leaves no cut; on F2 it does not stop the repair', () => {
+ 208|         const r = createBoundaryRepair();
+ 209|         r.onTranscript(I.text, false, I.atMs);
+ 210|         r.onTranscript(F1.text, true, F1.atMs, true);
+ 211|         expect(r.onTranscript(F2.text, true, F2.atMs)).toEqual({ text: F2.text, restored: null });
+ 212|         const r2 = createBoundaryRepair();
+ 213|         r2.onTranscript(I.text, false, I.atMs);
+ 214|         r2.onTranscript(F1.text, true, F1.atMs, false);
+ 215|         expect(r2.onTranscript(F2.text, true, F2.atMs, true).text).toBe(fixtures.symptom.expectedF2);
+ 216|     });
+ 217| });
+ 218| 
+
+===== electron/audio/deepgramBoundaryRepair.fixtures.json (stat only) =====
+byte-identical to BR/fixtures-v3.json: true
+
+===== electron/audio/DeepgramStreamingSTT.ts (git diff -U10 HEAD) =====
+diff --git a/electron/audio/DeepgramStreamingSTT.ts b/electron/audio/DeepgramStreamingSTT.ts
+index 47e2985..5d133e6 100644
+--- a/electron/audio/DeepgramStreamingSTT.ts
++++ b/electron/audio/DeepgramStreamingSTT.ts
+@@ -3,21 +3,22 @@
+  *
+  * Uses @deepgram/sdk v3 (listen.live) instead of raw WebSocket.
+  * Implements the same EventEmitter interface as GoogleSTT:
+  *   Events: 'transcript' ({ text, isFinal, confidence }), 'error' (Error),
+  *     'speech-started' ({ at }), 'utterance-end' ({ at })
+  *   Methods: start(), stop(), write(chunk), setSampleRate(), setAudioChannelCount()
+  */
+ 
+ import { EventEmitter } from 'events';
+ import { RECOGNITION_LANGUAGES } from '../config/languages';
+-import { keytermsFor } from './deepgramKeyterms';
++import { keytermsFor, isEnglishLanguage } from './deepgramKeyterms';
++import { createBoundaryRepair } from './deepgramBoundaryRepair';
+ 
+ const RECONNECT_BASE_DELAY_MS = 1000;
+ const RECONNECT_MAX_DELAY_MS = 30000;
+ const RECONNECT_MAX_ATTEMPTS = 10;
+ const KEEPALIVE_INTERVAL_MS = 8000;
+ 
+ export class DeepgramStreamingSTT extends EventEmitter {
+     private apiKey: string;
+     private live: any = null;
+     private isActive = false;
+@@ -189,20 +190,26 @@ export class DeepgramStreamingSTT extends EventEmitter {
+             this.live = live;
+             // Every handler below belongs to THIS socket. stop() and restartStream()
+             // replace `this.live` but cannot detach handlers already attached, so a
+             // replaced socket's Open/Close/Error must not touch the instance. Measured
+             // 2026-09-05 (after6): the first sample-rate restart left socket A's
+             // handlers live; A's close marked the live socket B closed, cleared B's
+             // keepalive and reconnected, orphaning B — which the server closed 12 s
+             // later with 1011, and that close orphaned C: one 1011 every 12.1 s for
+             // the whole hour (308 closes), each dropping the audio the orphan held.
+             const stale = (): boolean => this.live !== live;
++            // The boundary repair belongs to THIS socket, like the handlers: a restart's new socket
++            // starts with no remembered cut, so nothing is ever repaired across a reconnect. English
++            // sockets only (the test keytermsFor uses): the rule compares ASCII tokens, and mangled
++            // Spanish and Turkish text in the 2026-09-29 spec review; any other language, and
++            // 'multi', passes through untouched.
++            const boundaryRepair = isEnglishLanguage(this.languageCode) ? createBoundaryRepair() : null;
+ 
+             live.on(LiveTranscriptionEvents.Open, () => {
+                 if (stale()) {
+                     console.log('[DeepgramStreaming] Stale socket opened after a restart — closing it');
+                     try { live.requestClose(); } catch { }
+                     return;
+                 }
+                 this.isConnecting = false;
+                 this.isOpen = true;
+                 console.log('[DeepgramStreaming] Connected');
+@@ -211,36 +218,55 @@ export class DeepgramStreamingSTT extends EventEmitter {
+                 this.sockChunks = 0; this.sockBytes = 0; this.sockKeepAlives = 0;
+                 this.sockLastSendAt = this.sockOpenedAt; this.sockLastReadyState = 'n/a'; this.sockNotOpenWrites = 0;
+ 
+                 // Register Transcript inside Open per SDK README pattern
+                 live.on(LiveTranscriptionEvents.Transcript, (data: any) => {
+                     try {
+                         const alt = data.channel?.alternatives?.[0];
+                         const transcript = alt?.transcript;
+                         const isFinal = data.is_final ?? false;
+                         console.log(`[DeepgramStreaming] Transcript event — isFinal=${isFinal}, text="${transcript ?? '(empty)'}"`);
+-                        if (!transcript) return;
++                        if (!transcript) {
++                            // An empty FINAL is a pause (median 187 per flight hour): a cut remembered
++                            // before it must not be glued onto the next utterance. Empty interims are
++                            // not (they are frequent and can precede a segment's words).
++                            if (isFinal) boundaryRepair?.clear();
++                            return;
++                        }
++                        // Deepgram sometimes finalizes short of its own interim and resumes one word
++                        // later; the word is in no final. Measured 2026-09-29: 25 repaired losses in
++                        // the non-holdout logs, all 25 true to the script (the measured precision; 25
++                        // is a floor on the losses), Deepgram lost a word in 6 of 20 seam1 plays;
++                        // the rule lives in deepgramBoundaryRepair. speech_final = Deepgram heard the
++                        // utterance end at this final, so it leaves no cut (never logged: its in-app
++                        // effect is unmeasured).
++                        const repaired = boundaryRepair?.onTranscript(transcript, isFinal, Date.now(), data.speech_final === true);
++                        if (repaired?.restored) {
++                            // interview60.turns-finals.mjs pairs this line with the final logged just above it: keep the two adjacent
++                            console.log(`[DeepgramStreaming] boundary repair: restored "${repaired.restored.join(' ')}" before "${transcript.slice(0, 40)}"`);
++                        }
+                         this.emit('transcript', {
+-                            text: transcript,
++                            text: repaired?.text ?? transcript,
+                             isFinal,
+                             confidence: alt?.confidence ?? 1.0,
+                         });
+                     } catch (err) {
+                         console.error('[DeepgramStreaming] Parse error:', err);
+                     }
+                 });
+ 
+                 // vad_events / utterance_end_ms are requested in the connect options
+                 // above; until 2026-09-09 nobody listened. The interviewer turn logs
+                 // them beside its own VAD (a calibration signal, not a decision input).
+                 live.on(LiveTranscriptionEvents.SpeechStarted, () => { if (!stale()) this.emit('speech-started', { at: Date.now() }); });
+-                live.on(LiveTranscriptionEvents.UtteranceEnd, () => { if (!stale()) this.emit('utterance-end', { at: Date.now() }); });
++                // An UtteranceEnd is a pause for the boundary repair too (its state is this socket's own).
++                live.on(LiveTranscriptionEvents.UtteranceEnd, () => { boundaryRepair?.clear(); if (!stale()) this.emit('utterance-end', { at: Date.now() }); });
+ 
+                 // Flush buffered audio
+                 const buffered = this.buffer.splice(0);
+                 for (const chunk of buffered) {
+                     try { live.send(chunk); } catch { }
+                 }
+                 if (buffered.length > 0) {
+                     console.log(`[DeepgramStreaming] Flushed ${buffered.length} buffered chunks`);
+                 }
+ 
+
+
+===== electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts (new, full, line-numbered) =====
+   1| import { describe, it, expect, vi, beforeEach, afterEach, afterAll } from 'vitest';
+   2| import fixtures from './deepgramBoundaryRepair.fixtures.json';
+   3| 
+   4| // The class requires '@deepgram/sdk' inside connect(). vi.mock() does not reach a CommonJS
+   5| // require() (see DeepgramStreamingSTT.socketSummary.test.ts for the evidence), so Node's own
+   6| // require cache is seeded with a fake whose listen.live() returns a NEW live object per call —
+   7| // a restart makes a second socket, and the repair state must not follow it there.
+   8| type Handler = (...a: any[]) => void;
+   9| interface FakeLive {
+  10|     handlers: Record<string, Handler[]>;
+  11|     on: (ev: string, cb: Handler) => void;
+  12|     send: (d: any) => void;
+  13|     keepAlive: () => void;
+  14|     requestClose: () => void;
+  15|     getReadyState: () => number;
+  16|     fire: (ev: string, ...args: any[]) => void;
+  17| }
+  18| const lives: FakeLive[] = [];
+  19| function makeLive(): FakeLive {
+  20|     const live: FakeLive = {
+  21|         handlers: {},
+  22|         on(ev, cb) { (this.handlers[ev] ??= []).push(cb); },
+  23|         send() { },
+  24|         keepAlive() { },
+  25|         requestClose() { },
+  26|         getReadyState: () => 1,
+  27|         fire(ev, ...args) { (this.handlers[ev] ?? []).forEach((h: Handler) => h(...args)); },
+  28|     };
+  29|     lives.push(live);
+  30|     return live;
+  31| }
+  32| const deepgramPath = require.resolve('@deepgram/sdk');
+  33| const priorDeepgramCacheEntry = require.cache[deepgramPath];
+  34| require.cache[deepgramPath] = {
+  35|     id: deepgramPath,
+  36|     filename: deepgramPath,
+  37|     loaded: true,
+  38|     exports: {
+  39|         createClient: () => ({ listen: { live: () => makeLive() } }),
+  40|         LiveTranscriptionEvents: { Open: 'open', Close: 'close', Error: 'error', Transcript: 'Results', SpeechStarted: 'SpeechStarted', UtteranceEnd: 'UtteranceEnd' },
+  41|     },
+  42|     children: [],
+  43|     paths: [],
+  44| } as any;
+  45| 
+  46| import { DeepgramStreamingSTT } from './DeepgramStreamingSTT';
+  47| 
+  48| const results = (transcript: string, isFinal: boolean, speechFinal = false) => ({ is_final: isFinal, speech_final: speechFinal, channel: { alternatives: [{ transcript, confidence: 0.9 }] } });
+  49| 
+  50| describe('DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut)', () => {
+  51|     let log: string[];
+  52|     beforeEach(() => {
+  53|         lives.length = 0;
+  54|         log = [];
+  55|         vi.spyOn(console, 'log').mockImplementation((...a: any[]) => { log.push(a.join(' ')); });
+  56|         vi.useFakeTimers();
+  57|     });
+  58|     afterEach(() => { vi.restoreAllMocks(); vi.useRealTimers(); });
+  59|     afterAll(() => {
+  60|         if (priorDeepgramCacheEntry) require.cache[deepgramPath] = priorDeepgramCacheEntry;
+  61|         else delete require.cache[deepgramPath];
+  62|     });
+  63| 
+  64|     it('emits the repaired final, logs the raw text plus one repair line, and a restarted socket starts with no remembered cut', () => {
+  65|         const [I, F1, F2] = fixtures.seam.events;                // atMs 0 / 990 / 4180
+  66|         const stt = new DeepgramStreamingSTT('key');
+  67|         const seen: { text: string; isFinal: boolean; confidence: number }[] = [];
+  68|         stt.on('transcript', (t: any) => seen.push(t));
+  69|         stt.start();
+  70|         lives[0].fire('open');
+  71| 
+  72|         // socket #1 remembers a cut; a sample-rate restart replaces it before the resumption arrives
+  73|         lives[0].fire('Results', results(I.text, false));
+  74|         vi.advanceTimersByTime(F1.atMs);
+  75|         lives[0].fire('Results', results(F1.text, true));
+  76|         stt.setSampleRate(48000);                                // restartStream(): stop() + start() -> socket #2
+  77|         lives[1].fire('open');
+  78|         vi.advanceTimersByTime(F2.atMs - F1.atMs);               // 3190 ms: inside the window, but a fresh socket
+  79|         lives[1].fire('Results', results(F2.text, true));
+  80| 
+  81|         // the whole sequence on socket #2
+  82|         lives[1].fire('Results', results(I.text, false));
+  83|         vi.advanceTimersByTime(F1.atMs);
+  84|         lives[1].fire('Results', results(F1.text, true));
+  85|         vi.advanceTimersByTime(F2.atMs - F1.atMs);
+  86|         lives[1].fire('Results', results(F2.text, true));
+  87|         lives[1].fire('Results', results('', false));            // empty: still not emitted
+  88|         stt.stop();
+  89| 
+  90|         expect(seen.map((t) => [t.text, t.isFinal])).toEqual([
+  91|             [I.text, false],
+  92|             [F1.text, true],
+  93|             [F2.text, true],                                     // socket #2's first final: nothing remembered
+  94|             [I.text, false],
+  95|             [F1.text, true],
+  96|             [fixtures.seam.expectedF2, true],                    // 'service over 10,000,000 documents, it has to support document updates'
+  97|         ]);
+  98|         expect(seen.every((t) => t.confidence === 0.9)).toBe(true);
+  99|         expect(log.filter((l) => l.includes('boundary repair:'))).toEqual([
+ 100|             '[DeepgramStreaming] boundary repair: restored "service" before "over 10,000,000 documents, it has to sup"',
+ 101|         ]);
+ 102|         // The event line the harness and the offline scans parse still carries Deepgram's RAW text.
+ 103|         expect(log.filter((l) => l === `[DeepgramStreaming] Transcript event — isFinal=true, text="${F2.text}"`)).toHaveLength(2);
+ 104|         expect(log.some((l) => l.includes(`text="${fixtures.seam.expectedF2}"`))).toBe(false);
+ 105|     });
+ 106| 
+ 107|     describe('v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29)', () => {
+ 108|         const [I, F1, F2] = fixtures.seam.events;                // atMs 0 / 990 / 4180
+ 109|         const unchanged = [[I.text, false], [F1.text, true], [F2.text, true]];
+ 110|         const repairs = () => log.filter((l) => l.includes('boundary repair:'));
+ 111|         /** A started instance on socket #1, recording every emitted transcript as [text, isFinal]. */
+ 112|         const start = (language?: string) => {
+ 113|             const stt = new DeepgramStreamingSTT('key');
+ 114|             if (language) stt.setRecognitionLanguage(language);   // before start(): no restart, just the code
+ 115|             const seen: [string, boolean][] = [];
+ 116|             stt.on('transcript', (t: any) => seen.push([t.text, t.isFinal]));
+ 117|             stt.start();
+ 118|             lives[0].fire('open');
+ 119|             return { stt, seen };
+ 120|         };
+ 121|         /** Streams the seam fixture with its own timing on socket #1, running `between` right after F1. */
+ 122|         const playSeam = (between: () => void = () => { }, f1SpeechFinal = false) => {
+ 123|             lives[0].fire('Results', results(I.text, false));
+ 124|             vi.advanceTimersByTime(F1.atMs);
+ 125|             lives[0].fire('Results', results(F1.text, true, f1SpeechFinal));
+ 126|             between();
+ 127|             vi.advanceTimersByTime(F2.atMs - F1.atMs);
+ 128|             lives[0].fire('Results', results(F2.text, true));
+ 129|         };
+ 130| 
+ 131|         it('an empty FINAL between F1 and F2 is a pause: F2 is emitted as received, no repair line', () => {
+ 132|             const { stt, seen } = start();
+ 133|             playSeam(() => lives[0].fire('Results', results('', true)));
+ 134|             stt.stop();
+ 135|             expect(seen).toEqual(unchanged);
+ 136|             expect(repairs()).toEqual([]);
+ 137|         });
+ 138| 
+ 139|         it('an UtteranceEnd between F1 and F2 is a pause too, and is still re-emitted', () => {
+ 140|             const { stt, seen } = start();
+ 141|             const ends: number[] = [];
+ 142|             stt.on('utterance-end', (e: { at: number }) => ends.push(e.at));
+ 143|             playSeam(() => lives[0].fire('UtteranceEnd', { type: 'UtteranceEnd', last_word_end: 1.2 }));
+ 144|             stt.stop();
+ 145|             expect(seen).toEqual(unchanged);
+ 146|             expect(ends).toHaveLength(1);
+ 147|             expect(repairs()).toEqual([]);
+ 148|         });
+ 149| 
+ 150|         it('speech_final on F1 reaches the module: Deepgram heard the utterance end there, so nothing is restored', () => {
+ 151|             const { stt, seen } = start();
+ 152|             playSeam(() => { }, true);
+ 153|             stt.stop();
+ 154|             expect(seen).toEqual(unchanged);
+ 155|             expect(repairs()).toEqual([]);
+ 156|         });
+ 157| 
+ 158|         it('an empty INTERIM is not a pause: the repair still happens (the control for the three above)', () => {
+ 159|             const { stt, seen } = start();
+ 160|             playSeam(() => lives[0].fire('Results', results('', false)));
+ 161|             stt.stop();
+ 162|             expect(seen).toEqual([[I.text, false], [F1.text, true], [fixtures.seam.expectedF2, true]]);
+ 163|             expect(repairs()).toHaveLength(1);
+ 164|         });
+ 165| 
+ 166|         // Indonesian is written in plain ASCII, so the module's own non-ASCII guard does not refuse it: the rule ALONE
+ 167|         // would restore "menangani" here (a rule never validated for that language). Only the gate keeps it out.
+ 168|         // (The reviews' Spanish/Russian probes are refused by the module's guard already, so they cannot test the gate.)
+ 169|         it('a non-English connection passes every transcript through untouched, with no repair line', () => {
+ 170|             const { stt, seen } = start('indonesian');            // RECOGNITION_LANGUAGES.indonesian.iso639 = 'id'
+ 171|             const id = ['bagaimana cara anda menangani data yang hilang di pipeline', 'Bagaimana cara Anda', 'data yang hilang di pipeline?'];
+ 172|             lives[0].fire('Results', results(id[0], false));
+ 173|             vi.advanceTimersByTime(100);
+ 174|             lives[0].fire('Results', results(id[1], true));
+ 175|             vi.advanceTimersByTime(2000);
+ 176|             lives[0].fire('Results', results(id[2], true));
+ 177|             stt.stop();
+ 178|             expect(log.some((l) => l.includes('lang=id)'))).toBe(true);   // the connection really was Indonesian
+ 179|             expect(seen).toEqual([[id[0], false], [id[1], true], [id[2], true]]);
+ 180|             expect(repairs()).toEqual([]);
+ 181|         });
+ 182| 
+ 183|         // A non-English or 'multi' connection holds NO repair object (null), so both pause signals must be harmless on it too. Nothing
+ 184|         // else pins the `?.` on those two clear() calls: electron/tsconfig.json has no strictNullChecks, so tsc accepts a bare call, and
+ 185|         // the Transcript handler's try/catch turns its TypeError into one logged "Parse error" (hence the console.error spy below).
+ 186|         const noRepair = [['indonesian', 'id'], ['auto', 'multi']];   // [picker key, the code Deepgram is connected with]
+ 187| 
+ 188|         it('an empty FINAL on a non-English or multi connection is harmless: F2 is emitted as received, no error is logged', () => {
+ 189|             const errors = vi.spyOn(console, 'error').mockImplementation(() => { });
+ 190|             for (const [language, code] of noRepair) {
+ 191|                 lives.length = 0;                                     // each connection is socket #1 of a fresh instance
+ 192|                 const { stt, seen } = start(language);
+ 193|                 playSeam(() => lives[0].fire('Results', results('', true)));
+ 194|                 stt.stop();
+ 195|                 expect(log.some((l) => l.includes(`lang=${code})`)), language).toBe(true);   // the connection really was that language
+ 196|                 expect(seen, language).toEqual(unchanged);
+ 197|             }
+ 198|             expect(errors).not.toHaveBeenCalled();
+ 199|             expect(repairs()).toEqual([]);
+ 200|         });
+ 201| 
+ 202|         it('an UtteranceEnd on a non-English or multi connection is harmless and still re-emitted', () => {
+ 203|             for (const [language, code] of noRepair) {
+ 204|                 lives.length = 0;
+ 205|                 const { stt, seen } = start(language);
+ 206|                 const ends: number[] = [];
+ 207|                 stt.on('utterance-end', (e: { at: number }) => ends.push(e.at));
+ 208|                 playSeam(() => lives[0].fire('UtteranceEnd', { type: 'UtteranceEnd', last_word_end: 1.2 }));   // a bare clear() throws here, outside any try/catch
+ 209|                 stt.stop();
+ 210|                 expect(log.some((l) => l.includes(`lang=${code})`)), language).toBe(true);
+ 211|                 expect(seen, language).toEqual(unchanged);
+ 212|                 expect(ends, language).toHaveLength(1);
+ 213|             }
+ 214|             expect(repairs()).toEqual([]);
+ 215|         });
+ 216| 
+ 217|         // interview60.turns-finals.mjs pairs each `boundary repair:` line with the `Transcript event` line directly above it, so the
+ 218|         // repair is logged before the emit and nothing is logged in between. A logging listener makes that observable: a repair line
+ 219|         // logged after the emit, or any other log line before it, would put a different line first.
+ 220|         it('the repair line is the very next log line after its final\'s Transcript event line, before any listener runs', () => {
+ 221|             const { stt } = start();
+ 222|             stt.on('transcript', (t: any) => console.log(`[listener] ${t.text}`));   // the app's own listener logs synchronously
+ 223|             playSeam();
+ 224|             stt.stop();
+ 225|             const k = log.findIndex((l) => l.includes('boundary repair:'));
+ 226|             expect(k).toBeGreaterThan(0);
+ 227|             expect(log[k - 1]).toBe(`[DeepgramStreaming] Transcript event — isFinal=true, text="${F2.text}"`);
+ 228|         });
+ 229| 
+ 230|         // Each socket owns its repair. The restart test above covers stop() + start(); this covers the other way a socket is replaced:
+ 231|         // the server closes it (1011) and scheduleReconnect() opens a new one 1000 ms later (RECONNECT_BASE_DELAY_MS).
+ 232|         it('a socket the server closed (1011) and replaced does not share its cut: F2 on the reconnected socket is emitted as received', () => {
+ 233|             const { stt, seen } = start();
+ 234|             lives[0].fire('Results', results(I.text, false));
+ 235|             vi.advanceTimersByTime(F1.atMs);
+ 236|             lives[0].fire('Results', results(F1.text, true));
+ 237|             lives[0].fire('close', { code: 1011, reason: 'timeout' });
+ 238|             vi.advanceTimersByTime(1000);
+ 239|             expect(lives).toHaveLength(2);
+ 240|             lives[1].fire('open');
+ 241|             vi.advanceTimersByTime(F2.atMs - F1.atMs - 1000);     // still inside the 5 s window: only the socket differs
+ 242|             lives[1].fire('Results', results(F2.text, true));
+ 243|             stt.stop();
+ 244|             expect(seen).toEqual(unchanged);
+ 245|             expect(repairs()).toEqual([]);
+ 246|         });
+ 247|     });
+ 248| });
+ 249| 
+
+===== electron/audio/deepgramKeyterms.ts (git diff -U10 HEAD) =====
+diff --git a/electron/audio/deepgramKeyterms.ts b/electron/audio/deepgramKeyterms.ts
+index ebb0a5f..41479ab 100644
+--- a/electron/audio/deepgramKeyterms.ts
++++ b/electron/audio/deepgramKeyterms.ts
+@@ -70,20 +70,29 @@
+ export const DEEPGRAM_KEYTERMS: readonly string[] = [
+     'tie rule',
+     'tie-breaking',
+     'deduplicate',
+     'document ids',
+     'chunk ids',
+     'AKS',
+     'reranking',
+ ];
+ 
++/**
++ * English (`en`, `en-US`, …) as Deepgram names it; 'multi' and every other code fail it. The one
++ * test shared by keyterm prompting (below) and the boundary repair (deepgramBoundaryRepair.ts,
++ * DeepgramStreamingSTT.connect): both are built for English transcripts only.
++ */
++export function isEnglishLanguage(languageCode: string): boolean {
++    return /^en(-|$)/i.test(languageCode);
++}
++
+ /**
+  * keyterm prompting is a nova-3, English-only parameter. The app switches Deepgram to another
+  * language — and to 'multi' — at runtime from the language picker, and sending keyterm on
+  * those connections is at best ignored and at worst a 400 that costs the socket. So the list
+  * rides only on English sockets, and every other language gets undefined (the caller spreads
+  * it, so undefined means the parameter is simply absent).
+  */
+ export function keytermsFor(languageCode: string): readonly string[] | undefined {
+-    return /^en(-|$)/i.test(languageCode) ? DEEPGRAM_KEYTERMS : undefined;
++    return isEnglishLanguage(languageCode) ? DEEPGRAM_KEYTERMS : undefined;
+ }
+
+
+===== electron/audio/deepgramKeyterms.test.ts (git diff -U10 HEAD) =====
+diff --git a/electron/audio/deepgramKeyterms.test.ts b/electron/audio/deepgramKeyterms.test.ts
+index dbdc22c..c02e020 100644
+--- a/electron/audio/deepgramKeyterms.test.ts
++++ b/electron/audio/deepgramKeyterms.test.ts
+@@ -1,12 +1,12 @@
+ import { describe, it, expect } from 'vitest';
+-import { DEEPGRAM_KEYTERMS, keytermsFor } from './deepgramKeyterms';
++import { DEEPGRAM_KEYTERMS, keytermsFor, isEnglishLanguage } from './deepgramKeyterms';
+ 
+ /**
+  * Every term here was LOST by Deepgram in two or more flights, measured by diffing each
+  * scripted roster question against the text the app actually heard for it (233 pairs across
+  * every run we still hold). These are not guesses about what might be hard to hear.
+  *
+  * Two of them changed an answer's meaning rather than its spelling:
+  *   "preserving the tie rule"          -> "preserving the Thai rule"      (S1Q04F)
+  *   "deduplicate chunk ids"            -> "duplicate chunk IDs"           (S2Q05)
+  * The first produced the only wrong answer of flight s50j, in every arm, because every arm
+@@ -51,10 +51,21 @@ describe('keytermsFor', () => {
+         expect(keytermsFor('en')).toEqual(DEEPGRAM_KEYTERMS);
+         expect(keytermsFor('en-US')).toEqual(DEEPGRAM_KEYTERMS);
+     });
+ 
+     it('attaches nothing on any other language, including multi', () => {
+         expect(keytermsFor('multi')).toBeUndefined();
+         expect(keytermsFor('tr')).toBeUndefined();
+         expect(keytermsFor('es-419')).toBeUndefined();
+     });
+ });
++
++/**
++ * The boundary repair (deepgramBoundaryRepair.ts) is English-only too — its tokens are ASCII — and
++ * gates on the same predicate, so the two can never disagree about what "English" is.
++ */
++describe('isEnglishLanguage', () => {
++    it('is true for en and regional English, false for every other language and for multi', () => {
++        for (const code of ['en', 'en-US', 'en-GB']) expect(isEnglishLanguage(code)).toBe(true);
++        for (const code of ['multi', 'es', 'tr', 'es-419', 'ru', 'ja']) expect(isEnglishLanguage(code)).toBe(false);
++    });
++});
+
+
+===== electron/test/golden/interview60.turns-finals.mjs (new, full, line-numbered) =====
+   1| // interview60.turns-finals.mjs — the interviewer finals of a run log, as the turn tracker saw them
+   2| // (interview60.turns-fixture.mjs builds its `finals` from this; interviewerTurn.replay.test.ts feeds
+   3| // them to turn.final()).
+   4| //
+   5| // The `Transcript event` line keeps Deepgram's RAW text (the offline scans parse it), but since the
+   6| // boundary repair (deepgramBoundaryRepair.ts, 2026-09-29) the app emits the REPAIRED final; the
+   7| // restore is logged on the very next line by the same synchronous handler:
+   8| //   [DeepgramStreaming] boundary repair: restored "<words>" before "<first 40 chars of the raw final>"
+   9| // so a final directly followed by that line replays as `<words> <raw>`. A repair line anywhere else
+  10| // (no final right above it, or under a final its `before` text does not name) refuses: that log is not
+  11| // what the app saw. Logs from before the repair hold no such line and parse exactly as they always did.
+  12| const FINAL = /^(\S+) \[LOG\] \[DeepgramStreaming\] Transcript event — isFinal=true, text="((?:[^"\\]|\\.)*)"/;
+  13| const REPAIR = /^\S+ \[LOG\] \[DeepgramStreaming\] boundary repair: restored "((?:[^"\\]|\\.)*)" before "/;
+  14| const unq = (s) => JSON.parse(`"${s}"`);
+  15| /** @returns {{ at: number, text: string }[]} non-empty finals at or after sinceMs, in log order */
+  16| export function finalsFrom(dbg, sinceMs) {
+  17|     const lines = dbg.split('\n');
+  18|     const out = [];
+  19|     for (let i = 0; i < lines.length; i++) {
+  20|         const m = lines[i].match(FINAL);
+  21|         if (!m) {
+  22|             if (REPAIR.test(lines[i]) && !FINAL.test(lines[i - 1] ?? '')) throw new Error(`finalsFrom: line ${i + 1} is a boundary repair with no final directly above it`);
+  23|             continue;
+  24|         }
+  25|         const rep = lines[i + 1]?.match(REPAIR);
+  26|         if (rep && !lines[i + 1].includes(`before "${m[2].slice(0, 40)}"`)) throw new Error(`finalsFrom: line ${i + 2} is a boundary repair for another final than line ${i + 1}`);
+  27|         const text = (rep ? `${unq(rep[1])} ${unq(m[2])}` : unq(m[2])).trim();
+  28|         const at = Date.parse(m[1]);
+  29|         if (text && at >= sinceMs) out.push({ at, text });
+  30|     }
+  31|     return out;
+  32| }
+  33| 
+
+===== electron/test/golden/interview60.turns-finals.test.ts (new, full, line-numbered) =====
+   1| import { describe, it, expect } from 'vitest';
+   2| import fs from 'node:fs';
+   3| import path from 'node:path';
+   4| // @ts-ignore — untyped ESM harness module
+   5| import { finalsFrom } from './interview60.turns-finals.mjs';
+   6| 
+   7| // R22 (flight h40c) as the app logs it since the boundary repair: the Transcript event line keeps
+   8| // Deepgram's RAW final and the restore follows on the very next line, from the same handler.
+   9| const LOG = [
+  10|     '2026-09-29T11:19:27.809Z [LOG] [DeepgramStreaming] Transcript event — isFinal=false, text="How do you cut hallucinations in a rag answer without just making"',
+  11|     '2026-09-29T11:19:27.826Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text="How do you cut"',
+  12|     '2026-09-29T11:19:29.373Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text="in a rag answer without just making it refuse?"',
+  13|     '2026-09-29T11:19:29.373Z [LOG] [DeepgramStreaming] boundary repair: restored "hallucinations" before "in a rag answer without just making it r"',
+  14|     '2026-09-29T11:19:29.900Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text=""',
+  15|     '2026-09-29T11:19:30.000Z [LOG] [Main] turn: classify finals=2 question="How do you cut hallucinations in a rag answer without just making it refuse?"',
+  16|     '2026-09-29T11:19:31.000Z [LOG] [DeepgramStreaming] Transcript event — isFinal=true, text="Okay."',
+  17|     '2026-09-29T11:19:31.001Z [LOG] [Main] turn: deepgram utterance-end vad=false',
+  18| ].join('\n');
+  19| const at = (iso: string) => Date.parse(iso);
+  20| 
+  21| describe('finalsFrom: the interviewer finals as the turn tracker saw them', () => {
+  22|     it('a final directly followed by a boundary-repair line replays as the restored words + the raw text', () => {
+  23|         expect(finalsFrom(LOG, 0)).toEqual([
+  24|             { at: at('2026-09-29T11:19:27.826Z'), text: 'How do you cut' },
+  25|             { at: at('2026-09-29T11:19:29.373Z'), text: 'hallucinations in a rag answer without just making it refuse?' },
+  26|             { at: at('2026-09-29T11:19:31.000Z'), text: 'Okay.' },
+  27|         ]);
+  28|     });
+  29| 
+  30|     it('keeps interims and empty finals out, and drops finals before `since`', () => {
+  31|         expect(finalsFrom(LOG, at('2026-09-29T11:19:29.373Z')).map((f) => f.text))
+  32|             .toEqual(['hallucinations in a rag answer without just making it refuse?', 'Okay.']);
+  33|     });
+  34| 
+  35|     it('refuses a boundary-repair line that is not right under its own final (one synchronous handler writes both lines)', () => {
+  36|         const [, f1, f2, rep] = LOG.split('\n');
+  37|         expect(() => finalsFrom([f2, rep, rep].join('\n'), 0)).toThrow(/line 3 is a boundary repair with no final directly above it/);
+  38|         expect(() => finalsFrom([f1, rep].join('\n'), 0)).toThrow(/line 2 is a boundary repair for another final than line 1/);
+  39|     });
+  40| 
+  41|     // Pre-repair logs hold no repair line, so the parser must equal the old inline parse there: the two
+  42|     // committed fixtures are the calibration (extracted with `since = startedMs - 2000`, as the extractor does).
+  43|     // Paths hang off __dirname (this folder): vitest workers keep the caller's cwd, which is %TEMP% under the
+  44|     // repo's test command, not --root.
+  45|     for (const name of ['2026-09-09T15-00-55-s50a', '2026-09-08T08-44-56-after9']) {
+  46|         const golden = __dirname;
+  47|         const run = path.join(golden, 'interview60.runs', name);
+  48|         // interview60.runs/ is gitignored (.gitignore:258): a clean checkout has no run logs, so these skip there.
+  49|         it.skipIf(!fs.existsSync(path.join(run, 'natively_debug.log')))(`reproduces the committed ${name} fixture's finals from its run log (skipped where the run folder is absent)`, () => {
+  50|             const tl = JSON.parse(fs.readFileSync(path.join(run, 'interview60.timeline.json'), 'utf8'));
+  51|             const dbg = fs.readFileSync(path.join(run, 'natively_debug.log'), 'utf8');
+  52|             const fixture = JSON.parse(fs.readFileSync(path.join(golden, 'fixtures', `${name}-turns.json`), 'utf8'));
+  53|             expect(dbg.includes('boundary repair: restored')).toBe(false);
+  54|             expect(finalsFrom(dbg, tl.startedMs - 2000)).toEqual(fixture.finals);
+  55|         });
+  56|     }
+  57| });
+  58| 
+
+===== electron/test/golden/interview60.turns-fixture.mjs (git diff -U10 HEAD) =====
+diff --git a/electron/test/golden/interview60.turns-fixture.mjs b/electron/test/golden/interview60.turns-fixture.mjs
+index 194e705..60ddbbe 100644
+--- a/electron/test/golden/interview60.turns-fixture.mjs
++++ b/electron/test/golden/interview60.turns-fixture.mjs
+@@ -5,20 +5,21 @@
+ // 2026-09-09 spike (scratchpad/turn-spike.mjs).
+ //
+ //   node interview60.turns-fixture.mjs <run-dir> <tts-dir> [--offset-ms N] [--out <file>]
+ //
+ // --offset-ms: timelines written before Task 1 of the 2026-09-09 plan stamped
+ // startedMs ~1.15 s before the audio started (PowerShell + SoundPlayer start-up);
+ // pass 1150 for those. Timelines with clock === 'playsync' need 0 (the default).
+ import fs from 'node:fs';
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
++import { finalsFrom } from './interview60.turns-finals.mjs';
+ 
+ const HERE = path.dirname(fileURLToPath(import.meta.url));
+ const [runDir, ttsDir] = process.argv.slice(2);
+ if (!runDir || !ttsDir) { console.error('usage: node interview60.turns-fixture.mjs <run-dir> <tts-dir> [--offset-ms N] [--out file]'); process.exit(2); }
+ const arg = (name, fallback) => { const i = process.argv.indexOf(name); return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : fallback; };
+ 
+ const tl = JSON.parse(fs.readFileSync(path.join(runDir, 'interview60.timeline.json'), 'utf8'));
+ const OFFSET = Number(arg('--offset-ms', 0));
+ const dbg = fs.readFileSync(path.join(runDir, 'natively_debug.log'), 'utf8');
+ const ts = (s) => Date.parse(s);
+@@ -43,22 +44,22 @@ function voiceSegments(file, at0) {
+     }
+     if (start !== null) out.push([at0 + start * 20, at0 + (last + 1) * 20]);
+     return out;
+ }
+ 
+ const items = tl.items.map((i) => {
+     const playedAt = tl.startedMs + OFFSET + Math.round(i.startSec * 1000);
+     return { id: i.id, level: i.level, kind: i.kind ?? 'spoken', ...(i.long ? { long: true } : {}), q: i.q, playedAt, clipSecs: i.clipSecs, voice: voiceSegments(path.join(ttsDir, `${i.id}.wav`), playedAt) };
+ });
+ const since = tl.startedMs - 2000;
+-const finals = [...dbg.matchAll(/^(\S+) \[LOG\] \[DeepgramStreaming\] Transcript event — isFinal=true, text="((?:[^"\\]|\\.)*)"/gm)]
+-    .map((m) => ({ at: ts(m[1]), text: unq(m[2]).trim() })).filter((f) => f.text && f.at >= since);
++// As the turn tracker saw them: a boundary-repaired final carries its restored word(s) (interview60.turns-finals.mjs).
++const finals = finalsFrom(dbg, since);
+ const dispatchRe = /^(\S+) \[LOG\] \[Main\] dispatch: (answer|chip|drop|extend|hold|mark|supersede) source=(live|whisper) anchor="((?:[^"\\]|\\.)*)" verdict=(\w+)(?:[^\n]*? question="((?:[^"\\]|\\.)*)")?/gm;
+ const actual = [...dbg.matchAll(dispatchRe)].map((m) => ({ at: ts(m[1]), action: m[2], source: m[3], anchor: unq(m[4]), verdict: m[5], question: m[6] ? unq(m[6]) : '' })).filter((d) => d.at >= since);
+ // A "hold" dispatch was the OLD pipeline explicitly withholding on a fragmentary anchor
+ // (reason=fragmentary) — that pipeline never dispatched it, so earlier extractions dropped
+ // it as unconfirmed, like the new machine's own `hold` decision, not a fired detection.
+ // Ruling R17: the NEW app is different — Task 8 put the turn's mark block immediately after
+ // the short-Live-claim isFragment drop and BEFORE both the liveHold and fragmentHold blocks,
+ // so in hands-free mode a fragmentary detection now MARKS the open turn and no
+ // `dispatch: hold` line is even emitted by the new app. These old-log `hold` fires are
+ // therefore detections the new app would have seen; excluding them made the replay feed
+

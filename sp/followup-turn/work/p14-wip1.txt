@@ -1,0 +1,41 @@
+﻿BAD [clean expected, flagged] POS the pilot command  <- point 14: readFileSync other than as a call on fs / require('fs')
+BAD [clean expected, flagged] POS literal-name form  <- point 14: readFileSync other than as a call on fs / require('fs')
+OK  [clean expected, clean] POS require(process.argv[1]) with the own verdicts as arg 1 (a real s50l grader)
+OK  [clean expected, clean] POS const fs=require('fs') binding then fs.readFileSync(own literal)
+BAD [clean expected, flagged] POS fs.existsSync(process.argv[1])  <- point 14: existsSync other than as a call on fs / require('fs')
+BAD [clean expected, flagged] POS loop variable index o[k] (receiver is local data)  <- point 14: readFileSync other than as a call on fs / require('fs')
+BAD [clean expected, flagged] POS numeric index and a message string  <- point 14: readFileSync other than as a call on fs / require('fs')
+OK  [flagged expected, flagged] globalThis['req'+'uire']  <- point 14: the identifier q is not in the frozen allowlist (A2 point 14)
+OK  [flagged expected, flagged] globalThis[k] with k built from variables (reads CLEAN under point 10)  <- point 14: the identifier q is not in the frozen allowlist (A2 point 14)
+OK  [flagged expected, flagged] global[k]  <- point 14: the identifier q is not in the frozen allowlist (A2 point 14)
+OK  [flagged expected, flagged] this.constructor  <- point 14: the word this is banned (A2 point 14)
+OK  [flagged expected, flagged] ({}).constructor.constructor('...')  <- point 14: the word constructor is banned (A2 point 14)
+OK  [flagged expected, flagged] Function('...')  <- point 14: the word Function is banned (A2 point 14)
+OK  [flagged expected, flagged] require(['f','s'].join(''))  <- point 14: the identifier q is not in the frozen allowlist (A2 point 14)
+OK  [flagged expected, flagged] process['mainModule']  <- point 14: process used other than as process.exit / .stdout / .stderr / .argv[<digit>]
+OK  [flagged expected, flagged] a regex literal  <- point 14: the character "/" (a regex literal, a comment, a template literal, a division and ~ ^ # @ are not ad
+OK  [flagged expected, flagged] a template literal (backtick)  <- not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>...] (no shell metacharacters, nothing afte
+OK  [flagged expected, flagged] require('fs/promises')  <- point 14: require(...) of something other than require('fs') or require(process.argv[<digit>]) naming an own f
+OK  [flagged expected, flagged] require('child_process')  <- point 14: require(...) of something other than require('fs') or require(process.argv[<digit>]) naming an own f
+OK  [flagged expected, flagged] fs.readFileSync(v) with v a variable  <- point 14: readFileSync other than as a call on fs / require('fs')
+OK  [flagged expected, flagged] a string literal 'keyhold/key.json'  <- point 14: the string literal 'keyhold/key.json' is not an own-file name, fs, utf8 or a short message without .
+OK  [flagged expected, flagged] a string literal 'keyhold' joined into a path by the .. of the cwd (dot-free, 40+ chars)  <- point 14: the string literal 'aaaaaaaaaabbbbbbbbbbccccccccccdddddddddd' is not an own-file name, fs, utf8 or a
+OK  [flagged expected, flagged] const o=require('fs');o[k]('x')  <- point 14: require('fs') other than as the binding const fs=require('fs') or directly dereferenced as .readFile
+OK  [flagged expected, flagged] const f=fs;f.readdirSync  <- point 14: fs used other than as the binding const fs=require('fs') or fs.readFileSync( / fs.existsSync(  (no a
+OK  [flagged expected, flagged] fs['readdirSync']  <- point 14: fs used other than as the binding const fs=require('fs') or fs.readFileSync( / fs.existsSync(  (no a
+OK  [flagged expected, flagged] fs passed as an argument  <- point 14: fs used other than as the binding const fs=require('fs') or fs.readFileSync( / fs.existsSync(  (no a
+OK  [flagged expected, flagged] o=require('fs') with no const/let/var  <- point 14: require('fs') other than as the binding const fs=require('fs') or directly dereferenced as .readFile
+OK  [flagged expected, flagged] require(process.argv[0])  <- point 14: require(...) of something other than require('fs') or require(process.argv[<digit>]) naming an own f
+OK  [flagged expected, flagged] fs.readFileSync(process.argv[0]) with the own verdicts as the ONLY arg  <- point 14: readFileSync other than as a call on fs / require('fs')
+OK  [flagged expected, flagged] require(process.argv[2]) with ONE arg  <- point 14: require(...) of something other than require('fs') or require(process.argv[<digit>]) naming an own f
+OK  [flagged expected, flagged] process.argv with no index  <- point 14: process.argv[<digit>] must index an existing trailing argument (1..1); process.argv[0] is the node b
+OK  [flagged expected, flagged] a destructured readFileSync  <- point 14: readFileSync other than as a call on fs / require('fs')
+OK  [flagged expected, flagged] computed access on process  <- point 14: process used other than as process.exit / .stdout / .stderr / .argv[<digit>]
+OK  [flagged expected, flagged] computed access on a call result  <- point 14: require('fs') other than as the binding const fs=require('fs') or directly dereferenced as .readFile
+OK  [flagged expected, flagged] calling a computed result o[k](...)  <- point 14: readFileSync other than as a call on fs / require('fs')
+OK  [flagged expected, flagged] calling a called result f()()  <- point 14: a call of a called / computed result: )( or ]( 
+OK  [flagged expected, flagged] new of something other than Set / Error / Array  <- point 14: new of something other than Set / Error / Array
+OK  [flagged expected, flagged] an identifier outside the frozen set (readdirSync)  <- point 14: fs used other than as the binding const fs=require('fs') or fs.readFileSync( / fs.existsSync(  (no a
+OK  [flagged expected, flagged] an identifier outside the frozen set (a plain variable name zz)  <- point 14: the identifier zz is not in the frozen allowlist (A2 point 14)
+OK  [flagged expected, flagged] index with a member expression i.key (outside the brief's single-identifier rule)  <- point 14: readFileSync other than as a call on fs / require('fs')
+P14 CASES: 5 BAD of 40

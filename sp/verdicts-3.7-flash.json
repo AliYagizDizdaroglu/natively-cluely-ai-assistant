@@ -1,0 +1,8 @@
+{
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly pairs Service Bus duplicate detection and Peek-Lock with idempotent deterministic-ID upserts for crash-before-ack repeats."
+  }
+}

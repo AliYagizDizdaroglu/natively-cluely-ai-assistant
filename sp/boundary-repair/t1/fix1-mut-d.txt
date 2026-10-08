@@ -1,0 +1,31 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts (58 tests | 1 failed) 25ms
+   × deepgramBoundaryRepair synthetic edges (the symptom's strings) > a one-word final is never a tolerant cut: a late "Wow." does not remember the interim 8ms
+     → expected 'do you cut hallucinations in a rag an…' to be 'you cut hallucinations in a rag answe…' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair synthetic edges (the symptom's strings) > a one-word final is never a tolerant cut: a late "Wow." does not remember the interim
+AssertionError: expected 'do you cut hallucinations in a rag an…' to be 'you cut hallucinations in a rag answe…' // Object.is equality
+
+Expected: "you cut hallucinations in a rag answer without just making it refuse?"
+Received: "do you cut hallucinations in a rag answer without just making it refuse?"
+
+ ❯ electron/audio/deepgramBoundaryRepair.test.ts:117:14
+    115|     it('a one-word final is never a tolerant cut: a late "Wow." does n…
+    116|         expect(play([I, { ...F1, text: 'Wow.' }, { ...F2, text: 'you c…
+    117|             .toBe('you cut hallucinations in a rag answer without just…
+       |              ^
+    118|     });
+    119| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 57 passed (58)
+   Start at  17:47:25
+   Duration  2.60s (transform 97ms, setup 0ms, collect 98ms, tests 25ms, environment 1.37s, prepare 211ms)
+

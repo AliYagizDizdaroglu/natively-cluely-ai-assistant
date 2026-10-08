@@ -1,0 +1,59 @@
+run: 2026-10-02T11-39-41-h40d
+answer-dispatch windows: 45; with a won-by line: 44; winners: {"gemini-3.5-flash-lite":38,"gemini-3.1-flash-lite":6}
+rule 2d: charged windows 0 = union of term 1 (h40c's definition) 0 and term 2 (last [Answer] full: is failure text) 0; UNRESOLVED windows 0 (a won-by line, no [Answer] full: line, not superseded); windows with no [Answer] full: line at all 1, of which superseded 1
+rule 2d reading: PASS (0 charged, 0 unresolved)
+screen clock (diag first token N ms, all lines in the window, h40c's method): n=44 median=4.878s p90=9.834s max=11.664s
+model clock (won-by at N ms, last won-by per window): n=44 median=4.051s p90=9.234s max=11.112s
+gap G (hedge t0 - screen-clock t0: the knowledge step before the hedge starts): n=44 median=0.593s p90=0.919s max=1.643s
+dispatch line -> screen-clock t0: n=44 median=0.009s p90=0.010s max=0.016s
+dispatch line -> won-by line: n=44 median=4.856s p90=9.768s max=11.633s
+cue cost C (won-by line -> first token line): n=44 median=0.054s p90=0.158s max=0.645s  (windows with no first-token line after their won-by: 0)
+identity check, per window: screen N - (G + model N + C) = 0 ms at most (0 by construction)
+cues line -> first token line: n=44 median=0.002s p90=0.003s max=0.006s
+  # 1 answer    dispatched=2026-10-02T10:33:59.879Z won-by=2026-10-02T10:34:04.206Z gemini-3.5-flash-lite  at=3026 disp->won=4327 G=1291 C=81 cues->ft=2 ft=4398 2d=-
+  # 2 answer    dispatched=2026-10-02T10:35:07.444Z won-by=2026-10-02T10:35:11.351Z gemini-3.5-flash-lite  at=3013 disp->won=3907 G=885 C=87 cues->ft=2 ft=3985 2d=-
+  # 3 answer    dispatched=2026-10-02T10:37:42.429Z won-by=2026-10-02T10:37:46.749Z gemini-3.5-flash-lite  at=3663 disp->won=4320 G=648 C=9 cues->ft=3 ft=4320 2d=-
+  # 4 answer    dispatched=2026-10-02T10:38:49.579Z won-by=2026-10-02T10:38:54.911Z gemini-3.5-flash-lite  at=4811 disp->won=5332 G=512 C=279 cues->ft=2 ft=5602 2d=-
+  # 5 answer    dispatched=2026-10-02T10:40:12.805Z won-by=2026-10-02T10:40:16.818Z gemini-3.5-flash-lite  at=3394 disp->won=4013 G=611 C=65 cues->ft=3 ft=4070 2d=-
+  # 6 answer    dispatched=2026-10-02T10:42:47.009Z won-by=2026-10-02T10:42:50.689Z gemini-3.5-flash-lite  at=3137 disp->won=3680 G=538 C=135 cues->ft=2 ft=3810 2d=-
+  # 7 answer    dispatched=2026-10-02T10:44:54.051Z won-by=2026-10-02T10:44:59.160Z gemini-3.5-flash-lite  at=4466 disp->won=5109 G=634 C=478 cues->ft=4 ft=5578 2d=-
+  # 8 answer    dispatched=2026-10-02T10:45:58.583Z won-by=2026-10-02T10:46:03.439Z gemini-3.5-flash-lite  at=3901 disp->won=4856 G=946 C=31 cues->ft=1 ft=4878 2d=-
+  # 9 answer    dispatched=2026-10-02T10:47:22.376Z won-by=2026-10-02T10:47:26.110Z gemini-3.5-flash-lite  at=3213 disp->won=3734 G=512 C=33 cues->ft=2 ft=3758 2d=-
+  #10 answer    dispatched=2026-10-02T10:48:24.033Z won-by=2026-10-02T10:48:28.555Z gemini-3.5-flash-lite  at=4011 disp->won=4522 G=500 C=5 cues->ft=1 ft=4516 2d=-
+  #11 answer    dispatched=2026-10-02T10:49:52.107Z won-by=2026-10-02T10:49:57.844Z gemini-3.5-flash-lite  at=4965 disp->won=5737 G=764 C=86 cues->ft=1 ft=5815 2d=-
+  #12 answer    dispatched=2026-10-02T10:52:19.799Z won-by=2026-10-02T10:52:24.941Z gemini-3.5-flash-lite  at=4277 disp->won=5142 G=856 C=5 cues->ft=3 ft=5138 2d=-
+  #13 answer    dispatched=2026-10-02T10:53:29.569Z won-by=2026-10-02T10:53:34.595Z gemini-3.5-flash-lite  at=4467 disp->won=5026 G=552 C=99 cues->ft=1 ft=5118 2d=-
+  #14 answer    dispatched=2026-10-02T10:54:59.185Z won-by=2026-10-02T10:55:04.655Z gemini-3.5-flash-lite  at=4868 disp->won=5470 G=593 C=17 cues->ft=3 ft=5478 2d=-
+  #15 answer    dispatched=2026-10-02T10:57:28.939Z won-by=2026-10-02T10:57:33.688Z gemini-3.5-flash-lite  at=3855 disp->won=4749 G=884 C=53 cues->ft=2 ft=4792 2d=-
+  #16 answer    dispatched=2026-10-02T10:58:38.616Z won-by=2026-10-02T10:58:42.749Z gemini-3.5-flash-lite  at=3619 disp->won=4133 G=506 C=227 cues->ft=2 ft=4352 2d=-
+  #17 answer    dispatched=2026-10-02T11:01:41.330Z won-by=2026-10-02T11:01:46.699Z gemini-3.5-flash-lite  at=3719 disp->won=5369 G=1643 C=92 cues->ft=3 ft=5454 2d=-
+  #18 answer    dispatched=2026-10-02T11:03:47.737Z won-by=2026-10-02T11:03:51.357Z gemini-3.5-flash-lite  at=3133 disp->won=3620 G=477 C=158 cues->ft=2 ft=3768 2d=-
+  #19 answer    dispatched=2026-10-02T11:04:53.657Z won-by=2026-10-02T11:04:59.898Z gemini-3.5-flash-lite  at=5523 disp->won=6241 G=709 C=50 cues->ft=2 ft=6282 2d=-
+  #20 answer    dispatched=2026-10-02T11:07:29.129Z won-by=2026-10-02T11:07:33.243Z gemini-3.5-flash-lite  at=3301 disp->won=4114 G=807 C=23 cues->ft=1 ft=4131 2d=-
+  #21 answer    dispatched=2026-10-02T11:08:38.438Z won-by=2026-10-02T11:08:42.217Z gemini-3.5-flash-lite  at=3207 disp->won=3779 G=564 C=10 cues->ft=6 ft=3781 2d=-
+  #22 answer    dispatched=2026-10-02T11:09:58.532Z won-by=2026-10-02T11:10:03.301Z gemini-3.5-flash-lite  at=4186 disp->won=4769 G=574 C=6 cues->ft=2 ft=4766 2d=-
+  #23 answer    dispatched=2026-10-02T11:11:20.393Z won-by=2026-10-02T11:11:25.313Z gemini-3.5-flash-lite  at=4051 disp->won=4920 G=863 C=54 cues->ft=2 ft=4968 2d=-
+  #24 answer    dispatched=2026-10-02T11:12:19.912Z won-by=2026-10-02T11:12:24.037Z gemini-3.5-flash-lite  at=3626 disp->won=4125 G=489 C=64 cues->ft=2 ft=4179 2d=-
+  #25 answer    dispatched=2026-10-02T11:13:27.751Z won-by=2026-10-02T11:13:32.619Z gemini-3.5-flash-lite  at=4346 disp->won=4868 G=513 C=59 cues->ft=2 ft=4918 2d=-
+  #26 answer    dispatched=2026-10-02T11:14:45.552Z won-by=2026-10-02T11:14:49.150Z gemini-3.5-flash-lite  at=3008 disp->won=3598 G=581 C=6 cues->ft=1 ft=3595 2d=-
+  #27 answer    dispatched=2026-10-02T11:15:51.478Z won-by=2026-10-02T11:15:55.762Z gemini-3.5-flash-lite  at=3774 disp->won=4284 G=502 C=10 cues->ft=3 ft=4286 2d=-
+  #28 answer    dispatched=2026-10-02T11:17:12.706Z won-by=2026-10-02T11:17:16.621Z gemini-3.5-flash-lite  at=3358 disp->won=3915 G=548 C=4 cues->ft=2 ft=3910 2d=-
+  #29 answer    dispatched=2026-10-02T11:18:31.528Z won-by=2026-10-02T11:18:36.290Z gemini-3.5-flash-lite  at=3827 disp->won=4762 G=919 C=106 cues->ft=3 ft=4852 2d=-
+  #30 answer    dispatched=2026-10-02T11:19:36.215Z won-by=2026-10-02T11:19:41.619Z gemini-3.5-flash-lite  at=4724 disp->won=5404 G=670 C=27 cues->ft=2 ft=5421 2d=-
+  #31 answer    dispatched=2026-10-02T11:20:41.359Z won-by=2026-10-02T11:20:45.536Z gemini-3.5-flash-lite  at=3574 disp->won=4177 G=593 C=45 cues->ft=2 ft=4212 2d=-
+  #32 answer    dispatched=2026-10-02T11:22:01.822Z won-by=2026-10-02T11:22:12.602Z gemini-3.1-flash-lite  at=10262 disp->won=10780 G=509 C=79 cues->ft=3 ft=10850 2d=-
+  #33 answer    dispatched=2026-10-02T11:23:21.405Z won-by=2026-10-02T11:23:32.785Z gemini-3.1-flash-lite  at=10895 disp->won=11380 G=477 C=57 cues->ft=2 ft=11429 2d=-
+  #34 answer    dispatched=2026-10-02T11:25:03.904Z won-by=2026-10-02T11:25:13.803Z gemini-3.1-flash-lite  at=9273 disp->won=9899 G=617 C=25 cues->ft=4 ft=9915 2d=-
+  #35 answer    dispatched=2026-10-02T11:26:20.068Z won-by=2026-10-02T11:26:29.576Z gemini-3.1-flash-lite  at=8918 disp->won=9508 G=580 C=100 cues->ft=3 ft=9598 2d=-
+  #36 answer    dispatched=2026-10-02T11:27:32.347Z won-by=2026-10-02T11:27:40.196Z gemini-3.1-flash-lite  at=6654 disp->won=7849 G=1185 C=144 cues->ft=1 ft=7983 2d=-
+  #37 answer    dispatched=2026-10-02T11:29:00.269Z won-by=2026-10-02T11:29:09.241Z gemini-3.1-flash-lite  at=8341 disp->won=8972 G=623 C=6 cues->ft=3 ft=8970 2d=-
+  #38 answer    dispatched=2026-10-02T11:30:19.059Z won-by=2026-10-02T11:30:24.672Z gemini-3.5-flash-lite  at=4709 disp->won=5613 G=898 C=5 cues->ft=2 ft=5612 2d=-
+  #39 answer    dispatched=2026-10-02T11:31:25.671Z won-by=- none                   at=- disp->won=- G=- C=- cues->ft=- ft=- 2d=superseded
+  #40 supersede dispatched=2026-10-02T11:31:28.625Z won-by=2026-10-02T11:31:32.632Z gemini-3.5-flash-lite  at=3098 disp->won=4007 G=900 C=55 cues->ft=2 ft=4053 2d=-
+  #41 answer    dispatched=2026-10-02T11:33:00.792Z won-by=2026-10-02T11:33:06.216Z gemini-3.5-flash-lite  at=4825 disp->won=5424 G=592 C=10 cues->ft=2 ft=5427 2d=-
+  #42 answer    dispatched=2026-10-02T11:34:55.561Z won-by=2026-10-02T11:35:00.251Z gemini-3.5-flash-lite  at=4165 disp->won=4690 G=516 C=49 cues->ft=2 ft=4730 2d=-
+  #43 answer    dispatched=2026-10-02T11:35:50.972Z won-by=2026-10-02T11:36:02.605Z gemini-3.5-flash-lite  at=11112 disp->won=11633 G=514 C=38 cues->ft=2 ft=11664 2d=-
+  #44 answer    dispatched=2026-10-02T11:37:01.183Z won-by=2026-10-02T11:37:10.951Z gemini-3.5-flash-lite  at=9234 disp->won=9768 G=526 C=74 cues->ft=2 ft=9834 2d=-
+  #45 answer    dispatched=2026-10-02T11:38:32.390Z won-by=2026-10-02T11:38:36.389Z gemini-3.5-flash-lite  at=3251 disp->won=3999 G=741 C=645 cues->ft=2 ft=4637 2d=-
+
+[exit 0]

@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "All three quantities exact (2,850 true positives, 30% recall, 57% precision); only weakness is calling 57 a direct round to 60."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly puts the type, ingested-at and 30-day predicates in the left join clause so zero-call snapshots survive; all sub-parts covered."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers all eight requested components plus the shared feature path, but about 126 words is far too long to say aloud."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Prediction ID, deterministic variant assignment, delayed outcome join and treated-user exclusion all handled; propensity weighting on a randomized control is slightly redundant."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Recites the techniques used instead of the asked definitions; gives no denominators and omits uncertainty entirely."
+  }
+}

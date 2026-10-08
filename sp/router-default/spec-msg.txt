@@ -1,0 +1,12 @@
+docs(specs): live router as default extension (3.8 Live answers easy questions, pipeline shadow)
+
+Approved by the user 2026-10-06 ~20:40 TST after a section-by-section brainstorm, an Opus author and a separate
+Opus spec review (APPROVE WITH CHANGES, all adopted). A second 3.8 Live session routes each question: easy ->
+it speaks a short answer that streams to screen once the turn dispatches and the first word is valid; anything
+else -> today's pipeline (hedge + cues), which always answers in parallel as a hidden shadow and takes over on
+any Live failure. Behind NATIVELY_LIVE_ROUTER (off until its validation run passes). Ride-along fixes: Live
+reconnect generation guard (26 -> ~6 reconnects/hour), unknown __WORD__ marker filter, turnId on answer events,
+harness waits for the probe's answers, live40 made hands-free. Validation run on live40, 2026-10-07 08:00
+(go/no-go 05:30, fallback 23:00), bars fixed in the spec.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

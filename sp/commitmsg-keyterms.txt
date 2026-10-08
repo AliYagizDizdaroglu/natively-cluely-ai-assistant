@@ -1,0 +1,33 @@
+feat(stt): keyterm-prompt Deepgram with the roster terms it measurably loses
+
+Flight s50j's only wrong answer was not the model's. Deepgram heard "while preserving the tie
+rule" as "the Thai rule", and the model answered the garble — in every offline arm too, since
+they all replay the same transcript. An STT defect scored as a quality miss.
+
+The list is measured, not guessed. Diffing each scripted roster question against the text the
+app actually heard for it (233 scripted-vs-heard pairs across every run we still hold) and
+keeping only words lost in two or more separate flights leaves a short list; hyphenation and
+numeral rewrites ("dead-letter", "million") were excluded as smart_format artefacts the model
+reads correctly anyway. Two of the survivors change an answer's meaning rather than its
+spelling — the tie rule above, and S2Q05's "deduplicate chunk ids" heard as "duplicate chunk
+IDs", which inverts the requirement.
+
+Verified against the original symptom, by replaying the clips through a real nova-3 live
+socket at the app's own settings (16 kHz linear16, smart_format, endpointing 300), list off
+then on:
+
+    FIXED      "Thai rule"   -> "tie rule"    S1Q04F, the answer-changing one
+    FIXED      "re ranking"  -> "reranking"   S2Q01
+    NOT FIXED  "axe" for AKS                  S1Q09F
+    NOT FIXED  "documenteds" for document ids S2Q04
+
+The two that do not respond were chased rather than assumed: six keyterm spellings each, and
+the decoder returns "axe" at 0.64-0.74 confidence every time. The synthetic roster audio
+genuinely says "axe", so no keyterm can reach it — a human interviewer saying the letters
+would not produce this. Both terms stay in the list for that case, documented as unverified
+rather than counted as fixes.
+
+keyterm is a nova-3 English-only parameter and the app switches language at runtime, so the
+list rides only on English sockets; every other language, 'multi' included, sends nothing.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,22 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Sound XGBoost rationale for tabular data, regularisation, latency, plus logistic-regression baseline. Natural first-person, 66 words."},
+  "S1Q02": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Arithmetic correct: 9,500 churners, 2,850 true positives, 4,750 predictions fitting the 5,000 band; consistency conclusion justified. Spoken, 66 words."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Holdout RCT plus difference-in-differences correctly separates model effect from seasonality and mix. Spoken but 109 words, needs trimming."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Precision, recall and lift definitions right, stable ordering for ties, sensible edge-case choices. Prose not code, but 144 words."},
+  "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Chronological split, ColumnTransformer fit on train only, embargo equal to the 30-day label window. Spoken but 135 words."},
+  "S1Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "LEFT JOIN preserves zero-call customers, 30-day window and ingested_at cutoff in the join, grouped count. 89 words, speakable."},
+  "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Covers every stage and names the feature store as the shared batch/online contract, but 166 words is far too long spoken."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correlation-ID prediction log, delayed outcome join, propensity weighting for offer-biased labels, retraining filter. 109 words, slightly long."},
+  "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct Azure mapping across storage, AML, ACR, AKS, Data Factory, Managed Identity, Azure Monitor, with operational reasons. 121 words."},
+  "S1Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Managed identity plus RBAC, Key Vault for residual secrets, separate resource groups and Private Link. 107 words, slightly long."},
+  "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Walks every stage with concrete tooling; \"eliminate hallucinations\" overclaims slightly. 107 words, a little long for speech."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Gives unit, denominator, dataset construction and uncertainty for all three metrics, but 160 words is unusable spoken."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Clear contrast of fixed retrieval, decomposition and dynamic agent, with a measurable justification test. 149 words, too long."},
+  "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct RRF formula one over c plus rank, summed across lists, descending sort, doc-id tie-break, top k. 91 words."},
+  "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Greedy relevance-first with dedupe set, per-document counter capped at two, skips chunks exceeding the budget. 90 words, speakable."},
+  "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Semaphore of eight, wait_for timeout, per-task try/except recording failures, gather preserving input order. Accurate and compact at 74 words."},
+  "S2Q07": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Per-tenant namespaces, Postgres metadata with soft deletes and CDC, pre-filtered permissions, citations, evaluation. 161 words far too long."},
+  "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Dual-write versioned vectors, batched backfill, CDC re-embedding, shadow evaluation, flag cutover and rollback. 158 words is far too long."},
+  "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct service choices across storage, Event Grid, Service Bus, AKS, AI Search, App Insights, with build-versus-buy reasoning. 114 words."},
+  "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Idempotent doc-id key, processed-state check, peek-lock acknowledgement; the single-transaction claim across vector store and Postgres is loose. 98 words."}
+}

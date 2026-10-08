@@ -1,0 +1,6 @@
+﻿../../../natively-cluely-ai-assistant/.claude/worktrees/eq-build/electron/audio/GeminiLiveRouter.ts(125,44)
+../../../natively-cluely-ai-assistant/.claude/worktrees/eq-build/electron/ipcHandlers.ts(3436,18)
+../../../natively-cluely-ai-assistant/.claude/worktrees/eq-build/electron/ipcHandlers.ts(3436,38)
+../../../natively-cluely-ai-assistant/.claude/worktrees/eq-build/electron/ipcHandlers.ts(3439,31)
+../../../natively-cluely-ai-assistant/.claude/worktrees/eq-build/electron/knowledge/KnowledgeOrchestrator.ts(349,35)
+../../../natively-cluely-ai-assistant/.claude/worktrees/eq-build/electron/knowledge/KnowledgeOrchestrator.ts(351,25)

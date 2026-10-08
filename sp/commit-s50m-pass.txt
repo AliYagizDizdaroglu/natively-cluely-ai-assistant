@@ -1,0 +1,29 @@
+docs(passes): s50m — the quality case replicates and the latency condition sinks it
+
+The replication flight for gemini-3.5-flash-lite at HIGH, flown on the rule
+pre-registered in passes/PREREGISTER-s50m.md and amended, before takeoff, to
+scope the safety condition to the candidate.
+
+On the 18 shared mains the quality case replicated cleanly. 3.1 LOW scored
+14/13/15 against 3.5 HIGH's 16/15/17, a mean gain of 2.00 where the rule asked
+for 1.0, per-question movement of five to one where it asked for two to one,
+and a worst rep of 15 against 13. Conditions 1, 2 and 3 all pass, and the
+s50l mains hypothesis is now replicated rather than merely sliced.
+
+Condition 4 fails. Four answers in the live hour crossed the ten-second stall
+budget, at 12.8, 15.7, 16.3 and 17.3 seconds, and one more did so in a 3.5
+captured arm. No answer was graded wrong anywhere in the live hour or the three
+3.5 arms, and the stall race armed correctly on all forty answers with the
+right pair and budget, so this is latency rather than a broken fallback.
+
+The rule requires all four. gemini-3.1-flash-lite at LOW therefore stays as the
+shipped default, permanently, and the model question closes. No further flight
+is spent on it; the remaining flights go to the length lever via the prompt.
+
+Recorded alongside, outside the rule: the length row passes for the first time
+at p90 107 words with none over 150, against s50k's p90 159 and five over. The
+in-app hour scored 18 of 20 mains, its third consecutive quality-gate pass, but
+only 12 of 20 follow-ups, the weakest of the series and below its own captured
+band, which is the open question this flight leaves behind.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

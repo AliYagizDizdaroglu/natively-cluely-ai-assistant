@@ -1,0 +1,44 @@
+OK  L20c r1: answered, holes, first word p50 (s) over the answered: [17,["S1Q09F"],1.3]
+OK  L20c r2: answered, holes, first word p50 (s) over the answered: [18,[],1.3]
+OK  L20c r3: answered, holes, first word p50 (s) over the answered: [18,[],1.9]
+OK  old Live arm, 38 items per rep: answered 35, 38, 38; r1 holes S1Q02 S1Q02F S1Q09F: [[35,38,38],["S1Q02","S1Q02F","S1Q09F"]]
+OK  old Live arm: clause 4 reads 111/114 -> PASS: [111,114,"PASS"]
+OK  old Live arm: clause 5 over 114 (3 holes = no first word, no slow feed): p50 1.8 s, p90 6.4 s (RESULT-l20c.md), n 114 -> PASS: [1.8,6.4,114,3,0,"PASS"]
+OK  old Live arm: retried pairs, pairs retried more than once, abnormal sessions, per rep = L20b's record: [[[["S1Q02","S1Q04"],[],3],[[],[],0],[[],[],0]]]
+OK  isAnswered: not played: false
+OK  isAnswered: an empty answer: false
+OK  isAnswered: a spoken system-error apology: false
+OK  isAnswered: a real answer: true
+OK  armState: 2 reps -> CONTINUE, 3 -> DONE: ["CONTINUE","DONE"]
+OK  clause 4: 38 + 36 + 36 = 110 answered -> PASS (the edge): "PASS"
+OK  clause 4: 38 + 36 + 35 = 109 answered -> FAIL: "FAIL"
+OK  clause 4: 114 answered but a pair retried more than once -> INVALID, never PASS: {"state":"INVALID","answered":114,"of":114,"over":["S1Q04"]}
+OK  clause 4: two reps, 4 holes so far -> NOT READABLE (110 still reachable): "NOT READABLE"
+OK  clause 4: two reps, 5 holes so far -> FAIL (110 of 114 is out of reach): "FAIL"
+OK  clause 4: a broken-window rep (18 answered) leaves 20 holes -> FAIL by arithmetic: "FAIL"
+OK  clause 5: 114 at 1 s -> PASS: "PASS"
+OK  clause 5: p50 exactly 3000 ms (57 at 1000, 57 at 3000) -> PASS (<=): "PASS"
+OK  clause 5: p50 3001 ms -> FAIL: "FAIL"
+OK  clause 5: p90 exactly 6600 (102 at 1000, 12 at 6600) -> PASS: "PASS"
+OK  clause 5: p90 6601 -> FAIL: "FAIL"
+OK  clause 5: 11 holes (no first word) at the top, 103 at 1 s -> PASS: "PASS"
+OK  clause 5: 12 holes -> FAIL (a hole is a slow item, not a missing one): "FAIL"
+OK  clause 5: one rep only -> NOT READABLE: "NOT READABLE"
+OK  clause 5: an empty population -> FAIL, never a pass: "FAIL"
+OK  slow feed: ratio 1.30 is not slow (> 1.3 is), 1.31 and 1.50 are: ["A2","A4"]
+OK  slow feed: the latency population leaves the slow ANSWERED item A2 out and keeps the slow HOLE A4 as Infinity (A1 20 s, A3 2 s, A4 none): [[20000,2000,null],["A2"]]
+OK  slow feed: A2 stays answered (its answer is graded and counts for clause 4): [["A1","A2","A3"],["A4"]]
+OK  same items with normal feeds: nothing is left out and the hole A4 is Infinity (the exclusion is what differed): [20000,20000,2000,null]
+OK  retries: a pair with two sessions is retried; a pair with three is over-retried; abnormal sessions counted: [["A1"],["B1"],3]
+OK  quota close: two quota closes recorded (A1 final, A3 in a failed attempt); the internal-error close and the normal close are not: [{"item":"A1","final":true},{"item":"A3","final":false}]
+OK  quota close: A1 (a final-attempt quota close) is a hole although its text exists; A3 stays answered; its latency is Infinity: [["A1"],["A2","A3"],null]
+OK  quota close, the constant flipped: A1 is answered again, the closes are still recorded: [[],true,2]
+OK  words by 6.6 s: "I would use a queue" + "and retry" (6600 included) = 7 words; the holding line, the premature chunk, 6601 and another item are not counted: 7
+OK  words by 6.6 s: a turn boundary is a space ("queue" | "and" stay two words, not "queueand"): 2
+OK  words by 3 s only: "I would use a queue" = 5: 5
+OK  CLI, one rep: the ARM line says reps 1, answered 35/38, holes 3, last run answered 35 -> CONTINUE: "ARM l20d: reps 1, answered 35/38, holes 3, last run answered 35 -> CONTINUE"
+OK  CLI, one rep: clause 4 and 5 read NOT READABLE: [true,true]
+OK  CLI, three reps: ARM line: "ARM l20d: reps 3, answered 111/114, holes 3, last run answered 38 -> DONE"
+OK  CLI, three reps: clause 4 111/114 PASS; clause 5 p50 1.8 s, p90 6.4 s PASS: ["clause 4 (reliability): answered 111/114, need >= 110 -> PASS","clause 5 (speed): first word p50 1.8 s <= 3.0 s and p90 6.4 s <= 6.6 s over 114 slots -> PASS"]
+OK  CLI: a pair with three sessions -> clause 4 INVALID and the pair is named: [true,true]
+L20D MECHANICS CALIBRATION OK

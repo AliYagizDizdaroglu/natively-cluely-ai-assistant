@@ -1,0 +1,22 @@
+{
+ "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sound tabular, missing-value, latency and interpretability rationale with logistic baseline; slightly over 85 words."},
+ "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Arithmetic right (2,850 TP, 57% precision, 30% recall) but wrongly calls 57 vs 60 consistent within rounding."},
+ "S1Q03": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Randomized holdout is right, but adding propensity matching on a randomized test is muddled and unnecessary."},
+ "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Stable tie-break sort, correct metrics and all three edge cases covered; runs past 85 words."},
+ "S1Q05": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Pipeline-in-ColumnTransformer correct, but the label-window gap is described confusingly as excluding post-cutoff data from training."},
+ "S1Q06": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Left join with type, window and ingested-at filters in the ON clause, grouped per snapshot; long."},
+ "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers every stage with a shared feature store; DynamoDB sub-millisecond is a mild overstatement; long."},
+ "S1Q08": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Logging and hash assignment fine, but joining churn events on prediction ID is not workable; should join on customer and window."},
+ "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Reasonable Azure mapping for every component with operational rationale; over 85 words."},
+ "S1Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Managed identity, RBAC, private endpoints, Key Vault and per-environment separation all correct; long."},
+ "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Walks every stage with concrete tools and maps to experience; slightly long."},
+ "S2Q02": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Gives F1 a single recall-style denominator and presents Cohen's kappa as uncertainty of the hallucination reduction."},
+ "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Clear escalation from fixed workflow to decomposition to agent when retrieval depends on findings; long."},
+ "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct RRF accumulation with one-based ranks and deterministic ID tie-break, concise."},
+ "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Greedy relevance-sorted packing with dedup, per-document cap and skip-if-not-fit; slightly long."},
+ "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Semaphore of eight, wait_for timeout, caught failures and order-preserving gather."},
+ "S2Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Per-tenant partitioning, Postgres metadata, ACL pre-filtering and RAGAS evaluation; well over 85 words."},
+ "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Versioned field, backfill, dual-write or CDC, shadow comparison and flag-based cutover and rollback; long."},
+ "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sensible Blob, Event Grid, Service Bus, Container Apps, AI Search, Azure OpenAI mapping with custom justification; long."},
+ "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Idempotent keyed upsert, write before Complete, redelivery after lock expiry; over 85 words."}
+}

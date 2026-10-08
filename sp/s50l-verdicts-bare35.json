@@ -1,0 +1,22 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct on native missing-value handling, sequential boosting and a class-weighted logistic baseline, but runs about 100 words."},
+  "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Never states the implied 57 percent precision and mislabels 3,000 as predicted positives; stray dollar sign in speech."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Randomized holdout, propensity matching and difference-in-differences correctly separate model effect from seasonality; about 90 words."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Stable index tie-break plus sensible invalid-k, empty and no-positive behaviour, all three asked cases covered; about 90 words."},
+  "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Chronological split with a thirty-day buffer and ColumnTransformer inside a Pipeline is the right leakage answer; roughly 140 words."},
+  "S1Q06": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Omits the support-call event type filter the question asked for, and never distinguishes ON from WHERE for the left join."},
+  "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers every requested stage and names shared transformation logic and artifacts, but about 175 words is far past spoken length."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Prediction IDs, hashed deterministic assignment, delayed label join and inverse propensity weighting all correct; about 100 words."},
+  "S1Q09": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Misplaces the product: training belongs on AML compute clusters, not Compute Instances running managed Spark pools; rest of the mapping is right."},
+  "S1Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Managed identity, RBAC, Key Vault fallback, private endpoints and per-environment isolation all correct; about 90 words."},
+  "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "All eight stages mapped accurately with hybrid retrieval and cross-encoder reranking, but near 200 words is unusable as one spoken turn."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Gives unit, denominator, dataset construction and a named interval for each metric; about 165 words and a run-together word."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correctly pins the agent's value to conditional, dependent retrieval steps that decomposition cannot plan ahead; about 118 words."},
+  "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "One over c plus one-based rank, accumulated per id, with score-then-id ordering for determinism; about 95 words."},
+  "S2Q05": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Core greedy policy right, but the closing edge-case line wrongly says duplicate ids return an empty list, contradicting its own dedup step."},
+  "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Semaphore of eight, per-case timeout, order preserved by awaiting the mapped promises, failures recorded without cancellation; about 100 words."},
+  "S2Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Tenant namespaces, ACL metadata filters at retrieval, async update queue and citation tracing all addressed; about 100 words."},
+  "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Dual-write both vector fields, CDC backfill, holdout quality check, pointer cutover and rollback; about 95 words."},
+  "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Accurate Azure mapping for every named component plus a clear managed-versus-custom boundary, in a natural spoken 84 words."},
+  "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Duplicate detection plus durable Cosmos state checked on restart is the correct idempotency answer, delivered in 74 speakable words."}
+}

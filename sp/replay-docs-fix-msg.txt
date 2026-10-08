@@ -1,0 +1,10 @@
+docs(passes): the follow-up replay result note, not a second copy of its pre-registration
+
+51e349d wrote the pre-registration's text into
+2026-09-26-followup-replay-result.md: the copy script's read of the
+result note failed on a source path over 260 characters and the write
+reused the previous file's text. This puts the result note there. The
+pre-registration is unchanged and stays byte-identical to what was
+registered (its three em dashes were mis-encoded when it was written).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,270 @@
+{
+ "runDir": "C:\\Users\\sotka\\OneDrive\\Masaüstü\\natively-cluely-ai-assistant\\electron\\test\\golden\\interview60.runs\\2026-10-07T00-22-47-router-default-r1",
+ "runFolder": "2026-10-07T00-22-47-router-default-r1",
+ "model": "gemini-3.8-flash",
+ "requestCap": 20,
+ "pairThreshold": 0.7,
+ "misKeyed": [
+  {
+   "id": "EF02",
+   "score": 0
+  },
+  {
+   "id": "RE08",
+   "score": 0.25
+  },
+  {
+   "id": "RE04",
+   "score": 0
+  },
+  {
+   "id": "EF03",
+   "score": 0
+  },
+  {
+   "id": "RE05",
+   "score": 0.5
+  },
+  {
+   "id": "RH04",
+   "score": 0
+  },
+  {
+   "id": "RH09",
+   "score": 0.09
+  },
+  {
+   "id": "RH10",
+   "score": 0.11
+  },
+  {
+   "id": "RH11",
+   "score": 0.13
+  },
+  {
+   "id": "RH15",
+   "score": 0.09
+  },
+  {
+   "id": "RH16",
+   "score": 0
+  },
+  {
+   "id": "RE16",
+   "score": 0.33
+  },
+  {
+   "id": "EF06",
+   "score": 0.5
+  },
+  {
+   "id": "EF07",
+   "score": 0
+  },
+  {
+   "id": "RH18",
+   "score": 0.13
+  },
+  {
+   "id": "RH20",
+   "score": 0.13
+  },
+  {
+   "id": "RE19",
+   "score": 0
+  }
+ ],
+ "rekeyed": [
+  {
+   "id": "RE08",
+   "key": "EF02"
+  },
+  {
+   "id": "RE04",
+   "key": "RE08"
+  },
+  {
+   "id": "RH04",
+   "key": "RE05"
+  },
+  {
+   "id": "RE06",
+   "key": "RH04"
+  },
+  {
+   "id": "RH10",
+   "key": "RH09"
+  },
+  {
+   "id": "RH11",
+   "key": "RH10"
+  },
+  {
+   "id": "RE09",
+   "key": "RH11"
+  },
+  {
+   "id": "RH16",
+   "key": "RH15"
+  },
+  {
+   "id": "RE16",
+   "key": "RH16"
+  },
+  {
+   "id": "EF06",
+   "key": "RE16"
+  },
+  {
+   "id": "RE17",
+   "key": "EF06"
+  },
+  {
+   "id": "RH18",
+   "key": "EF07"
+  },
+  {
+   "id": "RE18",
+   "key": "RH18"
+  },
+  {
+   "id": "RE19",
+   "key": "RH20"
+  },
+  {
+   "id": "RE20",
+   "key": "RE19"
+  }
+ ],
+ "noCapture": [
+  "EF02",
+  "RH09",
+  "RH15",
+  "EF07",
+  "RH20"
+ ],
+ "items": [
+  {
+   "id": "RH09",
+   "rank": 1,
+   "tier": 1,
+   "src": "inapp",
+   "noA": true,
+   "noAWhy": "no capture",
+   "shadow": null,
+   "turns": [
+    22
+   ],
+   "reasons": [
+    "inapp:weak(c=3/4)"
+   ]
+  },
+  {
+   "id": "RH19",
+   "rank": 2,
+   "tier": 1,
+   "src": "inapp",
+   "noA": false,
+   "noAWhy": null,
+   "shadow": null,
+   "turns": [
+    27
+   ],
+   "reasons": [
+    "inapp:weak(c=3/4)",
+    "bare:high:weak(c=2/4)",
+    "bare:low:wrong(c=0/4)",
+    "bare:captured-high:weak(c=2/4)"
+   ]
+  },
+  {
+   "id": "RE06",
+   "rank": 3,
+   "tier": 1,
+   "src": "live",
+   "noA": false,
+   "noAWhy": null,
+   "shadow": "acceptable",
+   "turns": [
+    15
+   ],
+   "reasons": [
+    "live:blind-2:weak(c=2/4)"
+   ]
+  },
+  {
+   "id": "RH08",
+   "rank": 4,
+   "tier": 1,
+   "src": "live",
+   "noA": false,
+   "noAWhy": null,
+   "shadow": "acceptable",
+   "turns": [
+    17
+   ],
+   "reasons": [
+    "live:blind-2:weak(c=2/4)"
+   ]
+  },
+  {
+   "id": "RH07",
+   "rank": 5,
+   "tier": 1,
+   "src": "bare",
+   "noA": false,
+   "noAWhy": null,
+   "shadow": null,
+   "turns": [],
+   "reasons": [
+    "bare:high:weak(c=2/4)"
+   ]
+  },
+  {
+   "id": "RH12",
+   "rank": 6,
+   "tier": 1,
+   "src": "bare",
+   "noA": false,
+   "noAWhy": null,
+   "shadow": null,
+   "turns": [],
+   "reasons": [
+    "bare:high:weak(c=2/4)",
+    "bare:captured-high:weak(c=2/4)"
+   ]
+  },
+  {
+   "id": "RH18",
+   "rank": 7,
+   "tier": 1,
+   "src": "bare",
+   "noA": false,
+   "noAWhy": null,
+   "shadow": null,
+   "turns": [],
+   "reasons": [
+    "bare:low:weak(c=2/4)"
+   ]
+  },
+  {
+   "id": "RE18",
+   "rank": 8,
+   "tier": 1,
+   "src": "bare",
+   "noA": false,
+   "noAWhy": null,
+   "shadow": null,
+   "turns": [],
+   "reasons": [
+    "bare:low:weak(c=2/4)"
+   ]
+  }
+ ],
+ "refusedAmbiguous": [],
+ "cappedOut": [],
+ "cappedSrc": {},
+ "ungraded": 0,
+ "droppedCapturedHigh": 17,
+ "candidates": 8
+}

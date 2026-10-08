@@ -1,0 +1,34 @@
+﻿[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ❯ electron/test/golden/interview60.turns-finals.test.ts (5 tests | 1 failed) 32ms
+   × finalsFrom: the interviewer finals as the turn tracker saw them > refuses a boundary-repair line that is not right under its own final (one synchronous handler writes both lines) 8ms
+     → expected [Function] to throw an error
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/test/golden/interview60.turns-finals.test.ts > finalsFrom: the interviewer finals as the turn tracker saw them > refuses a boundary-repair line that is not right under its own final (one synchronous handler writes both lines)
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ electron/test/golden/interview60.turns-finals.test.ts:37:64
+     35|     it('refuses a boundary-repair line that is not right under its own…
+     36|         const [, f1, f2, rep] = LOG.split('\n');
+     37|         expect(() => finalsFrom([f2, rep, rep].join('\n'), 0)).toThrow…
+       |                                                                ^
+     38|         expect(() => finalsFrom([f1, rep].join('\n'), 0)).toThrow(/lin…
+     39|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  23:34:32
+   Duration  2.39s (transform 64ms, setup 0ms, collect 56ms, tests 32ms, environment 1.32s, prepare 213ms)
+

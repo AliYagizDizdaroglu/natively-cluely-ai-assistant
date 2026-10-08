@@ -1,0 +1,40 @@
+feat(verbal): let a flight swap the answer model, and stop LaTeX reaching the ear
+
+Three changes that prepare s50l, the proof flight for gemini-3.5-flash-lite at HIGH as the
+primary answer model. The shipped default does not move.
+
+NATIVELY_VERBAL_PRIMARY_MODEL (new, verbalPrimaryModel.ts) points the VERBAL answer at the
+other Flash Lite for one hour without changing what the app ships. s50k put 3.5 ahead of the
+3.1 band by a margin that met the pre-registered rule at exactly both thresholds — mean +4.0,
+per-question wins 12 to 6 — with the bands still overlapping at 26-31 against 29-34. That
+earns a proof flight, not a default. The thinking level took this same route, and the reason
+the LOW default is trusted today is that it was measured behind a flag first.
+
+Scope is the verbal answer only: vision, the coding path, typed chat and the warm-ups keep
+the selected model. Both routes resolve it, so an hour cannot measure one model on the
+behavioral question and another on the other thirty-nine. The capture records the resolved
+model, so the offline twin replays the prompt the right model answered. An unrecognised
+value REFUSES: a silent fallback would let a launcher typo spend an hour answering on the
+model we were trying to replace and report it as the new one.
+
+LaTeX-typeset numbers no longer reach the spoken text. 3.5-lite writes them by habit and two
+of three s50k reps spoke "a population of DOLLAR one hundred thousand". The opening delimiter
+is indistinguishable from money by lookahead — "$100,000" is exactly how money is written —
+so the pair is the signal, because money never carries a closing delimiter. The hold now
+spans the whole number, commas included, and a leading comma is excluded from it: allowing
+"$," let a closing delimiter pair with the comma after it and split the very pair the rule
+needs to see whole. A wrapped fraction is now spoken as "a over b" rather than leaking
+"frac". Money with no closing delimiter is untouched, and that is the calibration case in
+the tests — if it ever fails, the fix has gone too far.
+
+filterCodeFences moves from a private method on WhatToAnswerLLM into verbalStreamFilter, so
+the offline flight arms run the suppression the app has always had. Without it an arm scored
+a correct SQL or Python answer as an unspeakable code block while the app scored the same
+answer acceptable: s50k lost two marks on each side that way, and the focused-five re-pick
+ranked those questions as hard when they are not. This changes the measuring instrument, so
+arm delivery scores before and after are not comparable; everything else is.
+
+Suite 730 passing across 83 files, tsc at the documented six pre-existing errors, none in
+the files touched.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

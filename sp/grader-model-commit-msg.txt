@@ -1,0 +1,19 @@
+fix(judge): a merged pass records the model that graded it
+
+The --verdicts merge wrote JUDGE_MODEL ('claude-opus-5') into every judge
+file whoever graded, so when the grading agents' "opus" alias moved to
+claude-opus-5-5 (2026-09-22 -> 09-24) the same answers lost 4-7 of 39
+acceptable and nothing on the record showed it.
+
+- mergeVerdicts needs the grader model and refuses a missing one or an
+  alias that names no version. The refusal points at the grading agent's
+  transcript instead of offering an id to copy; the judge file carries
+  the model as graderModel.
+- The pass record names the grader in its header and on each graded arm,
+  and INDEX.md gains a grader column, explained in its preface. A file
+  merged before this change shows as unrecorded instead of printing its
+  default label as fact.
+- Every printed grading command (judge.mjs's hints, flight.mjs's next:
+  hint, the golden README) now carries --model.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

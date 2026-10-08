@@ -1,0 +1,6 @@
+﻿row files: 9; rows: 624
+[cal 1] OLD vs OLD: changed pairs 0, whole differ 0 (expect 0, 0)
+[cal 2] crafted 230-word card, 6 sizes: OLD parses 0, NEW parses 6, NEW onDone {"words":0,"cut":false,"allowance":false} (expect 0, 6, words 0 cut false)
+[cal 3] crafted spoken answer with a brace: changed pairs 0 (expect 0)
+REPLAY CALIBRATION OK
+

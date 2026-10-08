@@ -1,0 +1,20 @@
+[BEFORE] A. override 3.5-lite, healthy
+  requests  : gemini-3.5-flash-lite
+  stream    : [label gemini-3.1-flash-lite] [first words]
+  bar ends  : gemini-3.1-flash-lite
+  answer    : "I ensure idempotency by generating a cryptographic content hash of the document "…  (3644 ms)
+[BEFORE] B. override 3.5-lite, 503 on the primary before its first token
+  requests  : gemini-3.5-flash-lite [503 injected]  ->  gemini-3.5-flash-lite
+  stream    : [label gemini-3.1-flash-lite] [label gemini-3.5-flash-lite (fallback)] [first words]
+  bar ends  : gemini-3.5-flash-lite (fallback)
+  answer    : "I make a document ingestion pipeline idempotent by using content-based hashing, "…  (3855 ms)
+[BEFORE] C. override 3.5-lite, primary stalls (budget forced to 50 ms)
+  requests  : gemini-3.5-flash-lite  ->  gemini-3.1-flash-lite
+  stream    : [label gemini-3.1-flash-lite] [first words]
+  bar ends  : gemini-3.1-flash-lite
+  answer    : "I make the pipeline idempotent by generating a deterministic hash of the documen"…  (4589 ms)
+[BEFORE] D. shipped config, 503 on 3.1-lite (the pairing must not change)
+  requests  : gemini-3.1-flash-lite [503 injected]  ->  gemini-3.5-flash-lite
+  stream    : [label gemini-3.1-flash-lite] [label gemini-3.5-flash-lite (fallback)] [first words]
+  bar ends  : gemini-3.5-flash-lite (fallback)
+  answer    : "I make an ingestion pipeline idempotent by generating a SHA-256 hash of each doc"…  (4146 ms)

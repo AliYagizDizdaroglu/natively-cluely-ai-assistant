@@ -1,0 +1,40 @@
+REPAIR L04#1 restored "upstream" -> TRUE (the script holds it before F2)
+   interim before the cut: "from about a dozen upstream tables, and the upstream data regularly arrive"
+   cut final (speech_final false): "from about a dozen upstream tables, and the"
+   next final +2959 ms: "data regularly arrives late or gets corrected a few days after the fact."
+repairs 1, true against the script 1
+
+S3Q10#2 script: Debug an Azure private-connectivity failure: after public access to an upstream service is disabled, your deployed application times out, while local development still works through another route. Describe your investigation of name resolution, routing, private endpoints, network rules, TLS, and identity.
+   interim    Debug and
+   interim    Debug in Azure private
+   interim    Debug in Azure private connectivity failure.
+   interim    Debug in Azure private connectivity failure, as
+   FINAL      Debug in Azure private connectivity failure,
+   interim    after public
+   interim    after public access to an
+   interim    after public access to an upstream service is
+   interim    after public access to an upstream service is disabled,
+   interim    After public access to an upstream service is disabled, your deployed
+   FINAL      after public access to an upstream service is disabled,
+   interim    your deployed application
+   interim    your deployed application times out,
+   interim    your deployed application times out,
+   interim    your deployed application times out, while local development
+   interim    your deployed application times out, while local development still works through
+   FINAL      your deployed application times out, while local development still works
+   interim    through another route.
+   FINAL   sf through another route.
+   interim    Describe your
+   interim    Describe your investigation of
+   interim    Describe your investigation of name resolution,
+   interim    Describe your investigation of name resolution,
+   interim    Describe your investigation of name resolution, routing,
+   FINAL      Describe your investigation of name resolution, routing,
+   interim    private endpoint,
+   interim    private endpoints,
+   interim    private endpoints, network rules,
+   interim    private endpoints, network rules,
+   interim    private endpoints, network rules, TLS,
+   FINAL      private endpoints, network rules, TLS,
+   interim    and identity.
+   FINAL   sf and identity.

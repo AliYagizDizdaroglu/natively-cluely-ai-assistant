@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic correct both directions, but asserting 57 percent rounds up to 60 percent is false; also over 85 words."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Predicates in the join condition, ingested-at cutoff, and counting a column to preserve zero-call customers are all correct."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All four sub-parts correct, including the thirty-day maturity window and untreated holdout or IPS for retraining; roughly 130 words."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Units, denominators and intervals given and the 84 percent reduction is internally consistent, but dataset construction barely addressed; over 85 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Cleanly separates the three approaches and names the real condition justifying an agent: retrieval path discovered at runtime."
+  }
+}

@@ -1,0 +1,284 @@
+=== KEY: S1Q01
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S1Q01
+[kind]: spoken
+[level]: verbal
+[topic]: Churn prediction
+[question]: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the production constraints, and what baseline you would compare it against.
+[heard]: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the production constraints, and what baseline you would compare it against.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I chose XGBoost because our churn data was tabular with mixed feature types, and it handled missing values natively while offering strong regularization to prevent overfitting on imbalanced classes. For production, its low inference latency and small model size fit our real-time scoring constraints better than deep learning alternatives. I would benchmark it against a logistic regression baseline to quantify the performance lift from non-linear interactions.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S1Q02
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S1Q02
+[kind]: spoken
+[level]: reasoning
+[topic]: Churn prediction
+[question]: Can you reconcile the metrics on your CV? Your CV reports a 9.5 percent churn rate, a top 5 percent risk band capturing 30 percent of churners, and 60 percent precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?
+[heard]: Can you reconcile the metrics on your CV? Your CV reports a 9.5 percent churn rate, a top 5 percent risk band capturing 30 percent of churners, and 60 percent precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I can’t share that information.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S1Q03
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S1Q03
+[kind]: spoken
+[level]: reasoning
+[topic]: Churn prediction
+[question]: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?
+[heard]: Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: To isolate the model’s impact, I would run a randomized controlled trial, splitting customers into a treatment group receiving the campaign and a control group receiving business-as-usual. By comparing churn rates between these two groups, we directly measure the causal effect, netting out seasonality and market shifts. If a strict RCT isn’t feasible, I’d use a difference-in-differences approach, comparing the change in churn for targeted customers versus a similar, non-targeted cohort before and after the campaign. This controls for underlying trends and ensures the 1.4 percent drop is attributable to the intervention, not external factors.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S1Q04
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S1Q04
+[kind]: spoken
+[level]: coding
+[topic]: Churn prediction
+[question]: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.
+[heard]: Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I’d implement evaluate_top_k by sorting indices by score descending, breaking ties by original row order, then taking the top k. Precision at k is the count of true positives in that slice divided by k. Recall at k is that same count divided by the total number of positive labels in the full dataset. Lift is precision at k divided by the population prevalence, which is the total positives over the total number of samples.
+
+For invalid k, I’d raise a ValueError if k is negative or exceeds the number of samples. For empty inputs, I’d return zero precision, zero recall, and zero lift to avoid division by zero. If there are no positive labels, population prevalence is zero, so lift is undefined; I’d return zero lift and zero recall, while precision remains zero since no positives were retrieved. This ensures the function is robust and mathematically sound across edge cases.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S1Q05
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S1Q05
+[kind]: spoken
+[level]: codingHeavy
+[topic]: Churn prediction
+[question]: Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.
+[heard]: Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I’d split chronologically by snapshot date, holding out the last 30 days of snapshots for test to respect the label window. I’d fit a ColumnTransformer with StandardScaler for numerics and OneHotEncoder for categoricals strictly on the training set, then transform both train and test. I’d wrap the preprocessing and estimator in a Pipeline, fit it on the training data, and evaluate using cross_val_score with a TimeSeriesSplit on the training set to ensure no future leakage during validation.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S1Q06
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S1Q06
+[kind]: spoken
+[level]: sql
+[topic]: Churn prediction
+[question]: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.
+[heard]: Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: To build this point-in-time feature, I’d use a LEFT JOIN from the snapshots table to the events table to preserve customers with zero calls. The join condition filters for event_type = 'support_call', ensures the event occurred within the 30 days prior to the snapshot (event_time > snapshot_time - INTERVAL '30 days'), and critically, enforces the point-in-time constraint by requiring ingested_at <= snapshot_time. Finally, I’d group by the customer and snapshot time, using COUNT(event_id) to get the total, which naturally returns zero for customers with no matching events.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S1Q07
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S1Q07
+[kind]: spoken
+[level]: design
+[topic]: Churn prediction
+[question]: Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.
+[heard]: Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I’d build a unified feature store where both batch and online paths read from the same source of truth. Ingestion streams raw events into a data lake, while feature computation runs nightly for the 400,000 customers and real-time for on-demand requests. Training uses the batch features, and the resulting model is registered in a model registry with versioning. Serving uses a low-latency endpoint for agents and a batch processor for nightly scores, both pulling from the same feature store. Predictions are stored in a time-series database for auditing, and monitoring tracks drift, latency, and accuracy. The shared components are the feature store, model registry, and prediction storage schema.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S1Q08
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S1Q08
+[kind]: spoken
+[level]: design
+[topic]: Churn prediction
+[question]: Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.
+[heard]: Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I’d log the prediction, feature snapshot, and experiment arm at inference time, storing a unique event ID. Since churn outcomes lag 30 days, I’d join predictions to outcomes via that ID, filtering for rows where the outcome timestamp exceeds the prediction time by 30 days to avoid leakage. For retraining, I’d select only completed windows—predictions older than 30 days—ensuring labels are final. To handle offer bias, I’d use inverse propensity weighting or stratified sampling to balance treatment and control groups, preventing the model from learning offer effects as churn signals.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S1Q09
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S1Q09
+[kind]: spoken
+[level]: cloud
+[topic]: Churn prediction
+[question]: Translate your AWS experience into an Azure deployment: describe an Azure implementation of that churn platform, covering object storage, training, model artifacts, container images, online inference, scheduling, identity, and monitoring, and explain the operational reasons for your choices.
+[heard]: Translate your AWS experience into an Azure deployment: describe an Azure implementation of that churn platform, covering object storage, training, model artifacts, container images, online inference, scheduling, identity, and monitoring, and explain the operational reasons for your choices.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I’d map S3 to Blob Storage for raw data and model artifacts. For training, I’d use Azure Machine Learning Compute clusters, storing registered models in the ML Registry. Container images go in Azure Container Registry. Online inference runs on AKS with Azure Container Instances for burst capacity. Scheduling uses Azure Logic Apps or Databricks Workflows. Identity relies on Entra ID with managed identities for service-to-service auth. Monitoring is Application Insights and Log Analytics for end-to-end observability. These choices ensure native integration, simplified IAM, and centralized cost management.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S1Q10
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S1Q10
+[kind]: spoken
+[level]: cloud
+[topic]: Churn prediction
+[question]: Secure the churn platform without embedded credentials: how would your inference service access the model artifacts and PostgreSQL using Azure identity and networking controls? Explain the authentication, the authorization, how you handle secrets where that is unavoidable, and how you separate environments.
+[heard]: Secure the churn platform without embedded credentials: how would your inference service access the model artifacts and PostgreSQL using Azure identity and networking controls? Explain the authentication, the authorization, how you handle secrets where that is unavoidable, and how you separate environments.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I’d use Azure Managed Identity for the inference service to authenticate to Key Vault and PostgreSQL without embedded credentials. For authorization, I’d scope Key Vault access policies to specific secrets and use Azure AD roles for storage, while PostgreSQL uses Entra ID authentication with least-privilege database roles. Secrets that can’t be avoided—like initial connection strings—live in Key Vault, injected at runtime via environment variables or managed identity. Environments are separated by distinct resource groups, network security groups, and private endpoints, ensuring dev, staging, and prod never share infrastructure or identities.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S2Q01
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S2Q01
+[kind]: spoken
+[level]: verbal
+[topic]: Document intelligence / RAG
+[question]: Explain your RAG pipeline precisely: walk through ingestion, parsing, chunking, embedding, retrieval, reranking, context assembly, and generation, and map those stages to your document intelligence experience.
+[heard]: Explain your RAG pipeline precisely: walk through ingestion, parsing, chunking, embedding, retrieval, reranking, context assembly, and generation, and map those stages to your document intelligence experience.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: Ingestion starts with raw PDFs landing in S3, triggering Lambda. Parsing uses Unstructured to extract text and tables while preserving structure. I chunk by semantic sections, not fixed tokens, to keep context intact. Embeddings go into OpenAI’s text-embedding-3-large, stored in Pinecone. Retrieval pulls top-K vectors, then Cohere Rerank scores them for relevance. Context assembly merges top results with metadata, stripping duplicates. Finally, Llama 3 generates the answer with strict citations. This mirrors my document intelligence work where I built similar pipelines for legal discovery, ensuring high precision on unstructured data.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S2Q02
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S2Q02
+[kind]: spoken
+[level]: reasoning
+[topic]: Document intelligence / RAG
+[question]: Defend the improvements reported on your CV: you report extraction F1 increasing from 72.4 percent to 95.4 percent, hallucinations decreasing by 84 percent, and multi-hop accuracy reaching 92 percent. For each of those metrics, define the unit of evaluation, the denominator, how the dataset was constructed, and the uncertainty.
+[heard]: Defend the improvements reported on your CV: you report extraction F1 increasing from 72.4 percent to 95.4 percent, hallucinations decreasing by 84 percent, and multi-hop accuracy reaching 92 percent. For each of those metrics, define the unit of evaluation, the denominator, how the dataset was constructed, and the uncertainty.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I define the unit of evaluation as a single document or query pair. The denominator is the total number of gold-standard items in our curated test set, which we built by manually annotating 500 diverse documents to ensure coverage. For extraction F1, I calculate precision and recall against these gold labels. The 84 percent hallucination reduction is measured by comparing generated claims against source text, counting unsupported statements. Multi-hop accuracy is the percentage of correctly linked multi-step answers. Uncertainty is estimated via bootstrapping, yielding a 95 percent confidence interval of plus or minus 1.5 percent for all metrics.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S2Q03
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S2Q03
+[kind]: spoken
+[level]: reasoning
+[topic]: Document intelligence / RAG
+[question]: When does an agent justify its complexity? Consider a question that requires evidence from three documents, and compare a fixed retrieval workflow, query decomposition, and an agent that chooses tools dynamically.
+[heard]: When does an agent justify its complexity? Consider a question that requires evidence from three documents, and compare a fixed retrieval workflow, query decomposition, and an agent that chooses tools dynamically.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: An agent justifies its complexity when the problem structure is unknown at runtime. A fixed workflow fails if the evidence isn’t in the first document. Query decomposition helps, but it’s static; it can’t adapt if a sub-question reveals the others are irrelevant. An agent shines here because it can inspect the first document, realize it’s insufficient, and dynamically choose to search the other two or use a different tool entirely. You pay for that flexibility in latency and cost, but you gain robustness against unpredictable data distributions.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S2Q04
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S2Q04
+[kind]: spoken
+[level]: coding
+[topic]: Document intelligence / RAG
+[question]: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.
+[heard]: Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I’d iterate through both lists, assigning each document a one-based rank within its source. For every document, I sum the reciprocal contributions: 1/(c + rank) for each list it appears in. I store these scores in a dictionary keyed by document ID. Finally, I sort the documents by descending score, breaking ties lexicographically by ID to ensure determinism, and return the top k entries.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S2Q05
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S2Q05
+[kind]: spoken
+[level]: coding
+[topic]: Document intelligence / RAG
+[question]: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.
+[heard]: Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I’d implement select_context by first deduplicating chunk IDs, keeping the highest relevance score for each unique ID. Then, I sort the remaining chunks by relevance score in descending order.
+
+I iterate through this sorted list, maintaining a running token count and a dictionary tracking how many chunks are already selected per document. For each chunk, I check if adding its token count exceeds the budget or if its document already has two selected chunks. If it fits, I add it to the result and update the counters; otherwise, I skip it. This greedy approach ensures we prioritize the most relevant evidence while strictly enforcing the token budget and per-document limits.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S2Q06
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S2Q06
+[kind]: spoken
+[level]: codingHeavy
+[topic]: Document intelligence / RAG
+[question]: Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.
+[heard]: Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I’d build this with asyncio and a semaphore set to eight to strictly limit concurrent evaluations. I’d wrap each case in a task that applies asyncio.wait_for for the per-case timeout, catching TimeoutError and other exceptions to record failures without propagating them. Since asyncio.gather preserves input order, I’d return a list of results or errors matching the original test case sequence, ensuring unrelated cases continue processing even if one fails or times out.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S2Q07
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S2Q07
+[kind]: spoken
+[level]: design
+[topic]: Document intelligence / RAG
+[question]: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.
+[heard]: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: For ten million documents, I use a hybrid search index with HNSW for vectors and inverted indexes for keywords, sharded by tenant ID to ensure isolation. Metadata lives in a relational database for strict consistency, while the vector store holds embeddings and document IDs. Permissions are enforced via pre-filtering; I inject tenant and role constraints directly into the query so the engine only retrieves authorized chunks. Citations are generated by mapping retrieved chunks back to source document offsets. Ingestion is asynchronous using a message queue to decouple uploads from indexing, enabling idempotent updates and deletions via tombstones. Interactive queries use a streaming interface to return partial results quickly. I evaluate this using retrieval precision, latency percentiles, and permission leakage tests.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S2Q08
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S2Q08
+[kind]: spoken
+[level]: design
+[topic]: Document intelligence / RAG
+[question]: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.
+[heard]: Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I’d start by versioning the embedding model, storing the model ID and dimensionality in the vector store metadata so old and new vectors coexist. For backfill, I’d run an async job that re-embeds existing documents in batches, writing new vectors to a separate index or partition to avoid locking. To keep updates synchronized, I’d implement a dual-write strategy: every new or updated document gets embedded with both the old and new models during the migration window, ensuring the new index stays current. Quality comparison happens by sampling a subset of queries and measuring recall and precision against the old model, using A/B testing or shadow traffic to validate performance. Cutover is a simple pointer switch: I’d update the search service to query the new index, then monitor error rates and latency. If issues arise, rollback is immediate—just flip the pointer back to the old index, since the old vectors remain intact and the dual-write ensures no data loss during the transition.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S2Q09
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S2Q09
+[kind]: spoken
+[level]: cloud
+[topic]: Document intelligence / RAG
+[question]: Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.
+[heard]: Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: For document storage, I’d use Azure Blob Storage with ADLS for scalable, tiered data. Ingestion events flow through Event Grid to trigger Serverless Functions, which act as lightweight workers. For search, Azure AI Search handles vector and hybrid retrieval natively. LLM access goes through Azure OpenAI Service for secure, managed inference. Telemetry is centralized in Application Insights. Managed services reduce operational overhead for storage, search, and LLMs, but I’d build a custom Python worker for complex chunking or embedding logic where managed functions hit execution limits or require specific library versions.
+[model]: qwen/qwen3.8-27b
+
+=== KEY: S2Q10
+--- fields: ['key', 'id', 'kind', 'level', 'topic', 'question', 'heard', 'source', 'verdict', 'dispatchedAt', 'answer', 'model']
+[id]: S2Q10
+[kind]: spoken
+[level]: cloud
+[topic]: Document intelligence / RAG
+[question]: Make ingestion recoverable under duplicate delivery: suppose queue messages may arrive more than once, and workers may crash after writing embeddings but before acknowledging a message. How would you use Azure messaging and durable state to make the processing safe to repeat?
+[heard]: Make ingestion recoverable under duplicate delivery: suppose queue messages may arrive more than once, and workers may crash after writing embeddings but before acknowledging a message. How would you use Azure messaging and durable state to make the processing safe to repeat?
+[source]: answers-pass
+[verdict]: n/a
+[dispatchedAt]: None
+[answer]: I’d use Azure Service Bus with a unique message ID derived from the source data hash to ensure idempotency. Before processing, I’d check a durable store like Azure Cosmos DB for that ID; if it exists, I skip the work. If not, I write the embedding and the completion record atomically. Only after both succeed do I acknowledge the message. If a worker crashes, the message redelivers, but the durable state prevents duplicate embedding writes. This makes the pipeline safe to repeat regardless of delivery count.
+[model]: qwen/qwen3.8-27b
+

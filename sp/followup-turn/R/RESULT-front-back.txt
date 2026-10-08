@@ -1,0 +1,44 @@
+instrument 8564ba96369a; graders claude-opus-5-5 x 18
+incomplete pairs (excluded): none
+answers empty after the filters (scored 0/0/0): none
+n_front = 70 complete front pairs (roster + D); R = 40 complete roster pairs (the bars below are formulas on R); n_back = 24 complete back pairs
+1. no new wrong, per leg       front: consensus-wrong B 0 <= A 0: holds; back: B 0 <= A 0: holds  =>  holds
+2. no rise in off-topic        front consensus-off-topic B 1 <= A 4: holds   (back, reported: B 2, A 3)
+3a. not later (median)         median paired TTFT B-A on R 131 ms (holds <= +500, FAIL > +1000): holds   (all 70 front pairs, reported: 25 ms)
+3b. not later (p90)            p90 B 4048 ms vs p90 A 3947 ms + 2000: holds   (all front pairs, reported: B 3846 vs A 3987)
+3c. stalls                     TTFT > 10 s on R: B 0 <= A 0 + 3: holds   (all front pairs, reported: B 0 <= A 0 + 4)
+4. not longer                  median paired words B-A on R 4 (holds <= +5, FAIL > +10): holds   (all front pairs, reported: 1)
+5. not more thinking           median paired thoughts B-A on R 58 tokens (holds <= +150): holds   (all front pairs, reported: 31; back leg at LOW, reported: 35)
+6. parity                      checked before any verdict was opened: holds
+7. gain, on R                  consensus-acceptable B 24 - A 5 = +19 (PASS >= +8, FAIL <= +2): PASS   (back leg, descriptive: +12 on 24 pairs)
+DECISION: PASS
+
+either grader (front): wrong A 5 B 2; off-topic A 17 B 9
+front leg, per item (reps in order; Y both graders acceptable, X both correctness 0, o both on_topic <= 1, w otherwise):
+  s50m:S1Q04F roster   A wYwww  B wwYYw   acceptable A 1 B 2 of 5
+  s50m:S1Q06F roster   A wwwww  B YwYwY   acceptable A 0 B 3 of 5
+  s50m:S2Q05F roster   A wwwww  B wwwww   acceptable A 0 B 0 of 5
+  s50m:S2Q08F roster   A oowYo  B YYYYY   acceptable A 1 B 5 of 5
+  s50m:D1     dropped  A wwwww  B wYYwY   acceptable A 0 B 3 of 5
+  s50m:D2     dropped  A wwwww  B YYwYw   acceptable A 0 B 3 of 5
+  s50m:D3     dropped  A wYwYw  B wYYYY   acceptable A 2 B 4 of 5
+  s50l:S1Q04F roster   A wwwww  B YYYYY   acceptable A 0 B 5 of 5
+  s50l:S1Q06F roster   A wwwww  B YYYYY   acceptable A 0 B 5 of 5
+  s50l:S2Q05F roster   A Ywwww  B YoYwY   acceptable A 1 B 3 of 5
+  s50l:S2Q08F roster   A wwYwY  B Ywwww   acceptable A 2 B 1 of 5
+  s50l:D1     dropped  A wwoww  B wYwwY   acceptable A 0 B 2 of 5
+  s50l:D2     dropped  A wwwww  B wwwww   acceptable A 0 B 0 of 5
+  s50l:D3     dropped  A wYwYY  B wYYww   acceptable A 3 B 2 of 5
+  hour s50m: roster pairs 20, consensus-acceptable A 2 B 10, delta +8
+  hour s50l: roster pairs 20, consensus-acceptable A 3 B 14, delta +11
+back leg, per item (reps in order; Y both graders acceptable, X both correctness 0, o both on_topic <= 1, w otherwise):
+  s50m:S1Q04F roster   A www  B YYY   acceptable A 0 B 3 of 3
+  s50m:S1Q06F roster   A wYw  B YYY   acceptable A 1 B 3 of 3
+  s50m:S2Q05F roster   A oYo  B YYw   acceptable A 1 B 2 of 3
+  s50m:S2Q08F roster   A www  B Yww   acceptable A 0 B 1 of 3
+  s50l:S1Q04F roster   A www  B YYY   acceptable A 0 B 3 of 3
+  s50l:S1Q06F roster   A Yww  B YYY   acceptable A 1 B 3 of 3
+  s50l:S2Q05F roster   A YYw  B woY   acceptable A 2 B 1 of 3
+  s50l:S2Q08F roster   A Yow  B oYY   acceptable A 1 B 2 of 3
+  hour s50m: roster pairs 12, consensus-acceptable A 2 B 9, delta +7
+  hour s50l: roster pairs 12, consensus-acceptable A 4 B 9, delta +5

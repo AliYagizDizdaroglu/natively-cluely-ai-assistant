@@ -1,0 +1,10 @@
+﻿[f1-green-runs] test test.v1.ts (4003 B) + module interview60.turns-finals.mjs (1592 B), WITH interview60.runs/
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+  ✓ a final directly followed by a boundary-repair line replays as the restored words + the raw text
+  ✓ keeps interims and empty finals out, and drops finals before `since`
+  ✓ a repair line that is not the very next line after a final is not applied (one synchronous handler writes both lines)
+  ✓ reproduces the committed 2026-09-09T15-00-55-s50a fixture's finals from its run log (skipped where the run folder is absent)
+  ✓ reproduces the committed 2026-09-08T08-44-56-after9 fixture's finals from its run log (skipped where the run folder is absent)
+as expected: the Tests line contains "5 passed (5)"
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true

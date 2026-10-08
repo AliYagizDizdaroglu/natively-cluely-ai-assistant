@@ -1,0 +1,4 @@
+classifies 73: call adjacent 34, waited 38, none within 3 s 1, coalesced trigger between 2, picked call right after a fast-path line 0
+cuesmoke 13:23:16.446 a coalesced trigger sits between the ask and the picked call (picked 13:23:17.203, prev line: [LOG] [IntelligenceEngine] Temporal RAG: 1 responses, tone: neutr)
+s50i 07:14:01.830 a coalesced trigger sits between the ask and the picked call (picked 07:14:02.314, prev line: [LOG] [Main] dispatch: mark source=whisper anchor="How would you )
+s50j 08:17:12.511 no call picked

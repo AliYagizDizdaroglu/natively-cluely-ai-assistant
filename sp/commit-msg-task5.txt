@@ -1,0 +1,7 @@
+feat(cues): render the cue block above the answer
+
+The first token's cues land on the bubble it creates or restarts, later
+tokens keep them, finalization spreads them; CueBlock draws the numbered
+lines larger and bolder than the prose, inside the existing bubble (layout B).
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

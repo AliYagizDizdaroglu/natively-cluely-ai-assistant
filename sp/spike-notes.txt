@@ -1,0 +1,19 @@
+My prep notes (MLOps / AWS / Kubernetes):
+
+CloudFormation drift: if someone changed a resource by hand and the stack will not update, run drift detection (DetectStackDrift) to see the exact differences, decide per resource whether to revert the manual change or keep it; keep it by updating the template to match and, for resources CloudFormation lost track of, importing them (resource import); protect production with stack policies, change sets, and least-privilege IAM so manual edits cannot happen again. Terraform and kubectl are the wrong tools for a CloudFormation stack.
+
+Environments: separate stacks per environment (dev, staging, prod) from one template with parameters or a shared nested/base stack, separate accounts or at least separate VPCs, one pipeline that promotes the same artifact through them. Structure means stack layout, not the deployment process.
+
+SageMaker endpoint p99 latency: split CloudWatch ModelLatency (the container) from OverheadLatency (SageMaker in front of it). Model side: right-size or GPU instance, batching, model optimisation/compilation, warm containers. Overhead side: payload size and serialization, connection reuse, autoscaling on InvocationsPerInstance before saturation. Multi-model endpoints are for packing many models cheaply, they do not lower p99 for one hot model.
+
+S3 training data loading: S3 Select filters inside one object and is not a bulk-loading tool. For speed: shard into fewer, larger files (100 MB to 1 GB), SageMaker FastFile or Pipe input mode, or FSx for Lustre linked to the bucket for repeated epochs; parallel reads; keep the data in the same region.
+
+CUDA containers: base on the NVIDIA CUDA runtime image, match the CUDA version to what the driver on the nodes supports (the driver is on the host, not in the image), multi-stage builds to drop build tools, pin versions. Alpine or distroless bases do not work for CUDA/GPU training images.
+
+Drift alert vs broken upstream pipeline: first check the pipeline itself (row counts, null rates, schema and timestamps of the latest batch, recent deploys of upstream jobs). A broken pipeline usually shows as a sudden step change, nulls or constant values in specific features, or many features shifting at the same moment; genuine drift is gradual and shows up in the raw source too.
+
+Airflow backfill of a year of data: run it as its own DAG or with catchup on daily partitions, idempotent tasks that write by partition, pools and max_active_runs to limit concurrency, and monitor the first partitions before letting the rest run.
+
+Deletion requests (GDPR): locate every copy of the user's records (raw data, feature store, training sets, backups, logs), delete or anonymise them, then retrain or roll to a model that never saw them; keep an audit record of what was deleted and when. There is no such thing as a certificate of erasure that a pipeline emits.
+
+Service mesh in ML serving: reach for it when you need mTLS between many services, traffic splitting for canaries, and per-request observability across services; skip it for a small number of services or a single model server because the sidecars add latency, resource cost and operational complexity.

@@ -1,0 +1,22 @@
+docs(stt): record the keyterm regression sweep, and the control that reinterprets it
+
+Keyterm prompting biases the decoder toward the terms it is given, so the list could make
+questions it never mentions worse. That risk was documented in the module and not tested.
+
+All 40 s50j clips replayed through the live socket off and on, scored by word error rate
+against the scripted text: mean WER 22.35% off, 22.43% on, 35 of 40 clips byte-identical. The
+sweep flagged 2 clips worse and 3 better — at ONE run per config, which is precisely the
+single-sample reading the s50j twin reps exist to forbid.
+
+Three reps per config on those five settles it. S1Q08's 17.1-point "regression" reproduces in
+full with the list OFF: its within-config spread is 17.1 points, because this harness's fixed
+6 s tail sometimes truncates the clip (24 words captured instead of 31 — the words it does
+capture are identical). S1Q06's "regression" and S1Q07's "improvement" both vanish at 0.0
+spread and 0.0 difference. Only S2Q01 moves, -7.7 points with the list on, stable across 3 of
+3 reps — the reranking recovery.
+
+So the list costs nothing measurable and its gains are reproducible. The word-error-rate
+metric was itself calibrated first against seven known cases (identical, substitution,
+deletion, insertion, empty, punctuation-only, unrelated text).
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

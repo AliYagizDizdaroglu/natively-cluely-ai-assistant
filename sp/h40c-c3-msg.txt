@@ -1,0 +1,25 @@
+feat(verbal): the hedge behind NATIVELY_VERBAL_HEDGE (off)
+
+The policy probed live on 2026-09-25 (PROCEED: pooled median 4.4 vs 6.1 s,
+p90 11.5 vs 13.3 s): gemini-3.5-flash-lite (HIGH) starts first; with no
+first token by 5 s, or on a failure before one, gemini-3.1-flash-lite (LOW)
+starts beside it and 3.5-lite keeps running; the first token wins and the
+other request is aborted through its own stop signal (no AbortSignal.any).
+Both failing throws the front's error, so the pre-token redirect applies
+as today. On h40b the TTFT gate row failed on five 3.1-lite 10 s stalls
+alone - the case this answers faster.
+
+The winner is announced as `__model_source:<model> (hedge)__` and
+WhatToAnswerLLM re-announces it, so the answer bar names the model that
+answered (the head label names the shipped primary before any request).
+main.ts logs each answer's source label and, at startup, `[Main] verbal
+hedge: on trigger=<ms>ms` or `off`; a bad NATIVELY_VERBAL_HEDGE or
+NATIVELY_VERBAL_HEDGE_TRIGGER_MS refuses to start (app.exit(1)) instead of
+failing every answer mid-interview. The today's-race test files clear the
+flag so a flight shell cannot break them.
+
+Off unless NATIVELY_VERBAL_HEDGE=1: with the flag unset the verbal path is
+today's race (pinned by a test). Reviewed by Opus over three rounds; flight
+h40c is to measure it on holdout40 under its own pre-registration.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

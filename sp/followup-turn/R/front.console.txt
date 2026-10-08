@@ -1,0 +1,146 @@
+FOLLOW-UP TURN REPLAY  leg=front  model=gemini-3.5-flash-lite  thinkingLevel=HIGH  temperature=0.4  hours=s50m,s50l  14 items x 5 reps x 2 arms = 140 calls
+section 2 verified (PREREGISTER-turn-followup.md); filter main-precue-73d7f01/dist-electron/electron/llm/verbalStreamFilter.js sha256/12 d8fee6ca0170
+A first in 35 pairs, B first in 35
+#  1 s50m:S1Q04F r1 B:  67w  ttft  3474ms  total  3644ms  thoughts 757  finish STOP
+#  2 s50m:S1Q04F r1 A:  60w  ttft  3387ms  total  3540ms  thoughts 726  finish STOP
+#  3 s50m:S1Q04F r2 A:  58w  ttft  3937ms  total  4128ms  thoughts 1042  finish STOP
+#  4 s50m:S1Q04F r2 B:  54w  ttft  4068ms  total  4264ms  thoughts 934  finish STOP
+#  5 s50m:S1Q04F r3 B:  56w  ttft  3144ms  total  3296ms  thoughts 755  finish STOP
+#  6 s50m:S1Q04F r3 A:  50w  ttft  3510ms  total  3664ms  thoughts 861  finish STOP
+#  7 s50m:S1Q04F r4 A:  58w  ttft  3700ms  total  3905ms  thoughts 981  finish STOP
+#  8 s50m:S1Q04F r4 B:  58w  ttft  3181ms  total  3339ms  thoughts 735  finish STOP
+#  9 s50m:S1Q04F r5 B:  56w  ttft  3218ms  total  3411ms  thoughts 734  finish STOP
+# 10 s50m:S1Q04F r5 A:  55w  ttft  3947ms  total  4064ms  thoughts 935  finish STOP
+# 11 s50m:S1Q06F r1 A:  58w  ttft  3185ms  total  3300ms  thoughts 854  finish STOP
+# 12 s50m:S1Q06F r1 B:  68w  ttft  3215ms  total  3398ms  thoughts 859  finish STOP
+# 13 s50m:S1Q06F r2 B:  70w  ttft  3627ms  total  3855ms  thoughts 1035  finish STOP
+# 14 s50m:S1Q06F r2 A:  69w  ttft  3459ms  total  3631ms  thoughts 840  finish STOP
+# 15 s50m:S1Q06F r3 A:  50w  ttft  3551ms  total  3684ms  thoughts 845  finish STOP
+# 16 s50m:S1Q06F r3 B:  59w  ttft  3353ms  total  3601ms  thoughts 884  finish STOP
+# 17 s50m:S1Q06F r4 B:  53w  ttft  3122ms  total  3252ms  thoughts 780  finish STOP
+# 18 s50m:S1Q06F r4 A:  61w  ttft  2709ms  total  2844ms  thoughts 674  finish STOP
+# 19 s50m:S1Q06F r5 A:  54w  ttft  3216ms  total  3370ms  thoughts 807  finish STOP
+# 20 s50m:S1Q06F r5 B:  89w  ttft  3486ms  total  3735ms  thoughts 880  finish STOP
+# 21 s50m:S2Q05F r1 B:  79w  ttft  3413ms  total  3601ms  thoughts 859  finish STOP
+# 22 s50m:S2Q05F r1 A: 106w  ttft  3504ms  total  3692ms  thoughts 808  finish STOP
+# 23 s50m:S2Q05F r2 A:  89w  ttft  3885ms  total  4119ms  thoughts 832  finish STOP
+# 24 s50m:S2Q05F r2 B:  95w  ttft  3846ms  total  4047ms  thoughts 873  finish STOP
+# 25 s50m:S2Q05F r3 B:  94w  ttft  3815ms  total  3999ms  thoughts 898  finish STOP
+# 26 s50m:S2Q05F r3 A:  86w  ttft  3906ms  total  4197ms  thoughts 959  finish STOP
+# 27 s50m:S2Q05F r4 A: 109w  ttft  4029ms  total  4271ms  thoughts 976  finish STOP
+# 28 s50m:S2Q05F r4 B: 114w  ttft  3626ms  total  3910ms  thoughts 808  finish STOP
+# 29 s50m:S2Q05F r5 B:  96w  ttft  4048ms  total  4414ms  thoughts 925  finish STOP
+# 30 s50m:S2Q05F r5 A: 119w  ttft  3825ms  total  4236ms  thoughts 741  finish STOP
+# 31 s50m:S2Q08F r1 A:  51w  ttft  2488ms  total  2574ms  thoughts 506  finish STOP
+# 32 s50m:S2Q08F r1 B:  55w  ttft  3804ms  total  3935ms  thoughts 846  finish STOP
+# 33 s50m:S2Q08F r2 B:  56w  ttft  3464ms  total  3587ms  thoughts 818  finish STOP
+# 34 s50m:S2Q08F r2 A:  50w  ttft  2588ms  total  2727ms  thoughts 579  finish STOP
+# 35 s50m:S2Q08F r3 A:  57w  ttft  3151ms  total  3280ms  thoughts 713  finish STOP
+# 36 s50m:S2Q08F r3 B:  54w  ttft  3687ms  total  3775ms  thoughts 868  finish STOP
+# 37 s50m:S2Q08F r4 B:  53w  ttft  3728ms  total  3855ms  thoughts 782  finish STOP
+# 38 s50m:S2Q08F r4 A:  57w  ttft  3377ms  total  3495ms  thoughts 724  finish STOP
+# 39 s50m:S2Q08F r5 A:  47w  ttft  2598ms  total  2710ms  thoughts 520  finish STOP
+# 40 s50m:S2Q08F r5 B:  63w  ttft  3401ms  total  3558ms  thoughts 761  finish STOP
+# 41 s50m:D1     r1 B:  80w  ttft  3608ms  total  3862ms  thoughts 852  finish STOP
+# 42 s50m:D1     r1 A:  53w  ttft  3846ms  total  3990ms  thoughts 987  finish STOP
+# 43 s50m:D1     r2 A:  77w  ttft  3185ms  total  3410ms  thoughts 810  finish STOP
+# 44 s50m:D1     r2 B:  79w  ttft  3058ms  total  3236ms  thoughts 761  finish STOP
+# 45 s50m:D1     r3 B:  62w  ttft  3355ms  total  3563ms  thoughts 848  finish STOP
+# 46 s50m:D1     r3 A:  54w  ttft  3050ms  total  3187ms  thoughts 758  finish STOP
+# 47 s50m:D1     r4 A:  63w  ttft  3494ms  total  3692ms  thoughts 916  finish STOP
+# 48 s50m:D1     r4 B:  59w  ttft  2959ms  total  3076ms  thoughts 675  finish STOP
+# 49 s50m:D1     r5 B:  57w  ttft  3159ms  total  3160ms  thoughts 780  finish STOP
+# 50 s50m:D1     r5 A:  75w  ttft  3269ms  total  3457ms  thoughts 809  finish STOP
+# 51 s50m:D2     r1 A:  87w  ttft  3367ms  total  3572ms  thoughts 812  finish STOP
+# 52 s50m:D2     r1 B:  88w  ttft  3392ms  total  3551ms  thoughts 769  finish STOP
+# 53 s50m:D2     r2 B: 109w  ttft  3848ms  total  4149ms  thoughts 872  finish STOP
+# 54 s50m:D2     r2 A:  91w  ttft  3901ms  total  4129ms  thoughts 935  finish STOP
+# 55 s50m:D2     r3 A: 102w  ttft  3951ms  total  4206ms  thoughts 923  finish STOP
+# 56 s50m:D2     r3 B: 108w  ttft  3728ms  total  4103ms  thoughts 776  finish STOP
+# 57 s50m:D2     r4 B: 106w  ttft  3657ms  total  3950ms  thoughts 804  finish STOP
+# 58 s50m:D2     r4 A:  83w  ttft  3258ms  total  3466ms  thoughts 807  finish STOP
+# 59 s50m:D2     r5 A: 102w  ttft  4206ms  total  4489ms  thoughts 948  finish STOP
+# 60 s50m:D2     r5 B: 102w  ttft  3460ms  total  3728ms  thoughts 750  finish STOP
+# 61 s50m:D3     r1 B:  50w  ttft  3569ms  total  3679ms  thoughts 965  finish STOP
+# 62 s50m:D3     r1 A:  53w  ttft  3074ms  total  3160ms  thoughts 647  finish STOP
+# 63 s50m:D3     r2 A:  58w  ttft  3349ms  total  3513ms  thoughts 766  finish STOP
+# 64 s50m:D3     r2 B:  65w  ttft  3443ms  total  3612ms  thoughts 710  finish STOP
+# 65 s50m:D3     r3 B:  56w  ttft  3128ms  total  3231ms  thoughts 708  finish STOP
+# 66 s50m:D3     r3 A:  62w  ttft  3023ms  total  3157ms  thoughts 683  finish STOP
+# 67 s50m:D3     r4 A:  57w  ttft  3158ms  total  3256ms  thoughts 734  finish STOP
+# 68 s50m:D3     r4 B:  55w  ttft  3517ms  total  3649ms  thoughts 972  finish STOP
+# 69 s50m:D3     r5 B:  61w  ttft  3450ms  total  3620ms  thoughts 793  finish STOP
+# 70 s50m:D3     r5 A:  55w  ttft  3448ms  total  3580ms  thoughts 889  finish STOP
+# 71 s50l:S1Q04F r1 A:  67w  ttft  3858ms  total  4013ms  thoughts 955  finish STOP
+# 72 s50l:S1Q04F r1 B:  60w  ttft  3176ms  total  3345ms  thoughts 735  finish STOP
+# 73 s50l:S1Q04F r2 B:  57w  ttft  3006ms  total  3181ms  thoughts 679  finish STOP
+# 74 s50l:S1Q04F r2 A:  48w  ttft  3899ms  total  3998ms  thoughts 903  finish STOP
+# 75 s50l:S1Q04F r3 A:  57w  ttft  3963ms  total  4146ms  thoughts 843  finish STOP
+# 76 s50l:S1Q04F r3 B:  64w  ttft  4096ms  total  4322ms  thoughts 931  finish STOP
+# 77 s50l:S1Q04F r4 B:  59w  ttft  3431ms  total  3600ms  thoughts 916  finish STOP
+# 78 s50l:S1Q04F r4 A:  54w  ttft  3173ms  total  3274ms  thoughts 752  finish STOP
+# 79 s50l:S1Q04F r5 A:  62w  ttft  3884ms  total  4240ms  thoughts 994  finish STOP
+# 80 s50l:S1Q04F r5 B:  72w  ttft  3397ms  total  3613ms  thoughts 821  finish STOP
+# 81 s50l:S1Q06F r1 B:  58w  ttft  3716ms  total  3869ms  thoughts 1044  finish STOP
+# 82 s50l:S1Q06F r1 A:  59w  ttft  2840ms  total  3006ms  thoughts 653  finish STOP
+# 83 s50l:S1Q06F r2 A:  66w  ttft  2699ms  total  2818ms  thoughts 698  finish STOP
+# 84 s50l:S1Q06F r2 B:  52w  ttft  2944ms  total  3093ms  thoughts 749  finish STOP
+# 85 s50l:S1Q06F r3 B:  88w  ttft  3305ms  total  3522ms  thoughts 907  finish STOP
+# 86 s50l:S1Q06F r3 A:  50w  ttft  3351ms  total  3535ms  thoughts 828  finish STOP
+# 87 s50l:S1Q06F r4 A:  65w  ttft  3701ms  total  3828ms  thoughts 881  finish STOP
+# 88 s50l:S1Q06F r4 B:  80w  ttft  3498ms  total  3750ms  thoughts 926  finish STOP
+# 89 s50l:S1Q06F r5 B:  64w  ttft  3573ms  total  3778ms  thoughts 948  finish STOP
+# 90 s50l:S1Q06F r5 A:  55w  ttft  2970ms  total  3142ms  thoughts 721  finish STOP
+# 91 s50l:S2Q05F r1 A:  87w  ttft  3382ms  total  3582ms  thoughts 760  finish STOP
+# 92 s50l:S2Q05F r1 B:  97w  ttft  3733ms  total  3909ms  thoughts 868  finish STOP
+# 93 s50l:S2Q05F r2 B:  52w  ttft  3042ms  total  3216ms  thoughts 720  finish STOP
+# 94 s50l:S2Q05F r2 A:  73w  ttft  3618ms  total  3818ms  thoughts 847  finish STOP
+# 95 s50l:S2Q05F r3 A:  67w  ttft  3170ms  total  3330ms  thoughts 756  finish STOP
+# 96 s50l:S2Q05F r3 B:  68w  ttft  3793ms  total  3981ms  thoughts 886  finish STOP
+# 97 s50l:S2Q05F r4 B:  69w  ttft  4355ms  total  4690ms  thoughts 1004  finish STOP
+# 98 s50l:S2Q05F r4 A:  94w  ttft  4820ms  total  5091ms  thoughts 915  finish STOP
+# 99 s50l:S2Q05F r5 A:  93w  ttft  3537ms  total  3795ms  thoughts 936  finish STOP
+#100 s50l:S2Q05F r5 B:  60w  ttft  3541ms  total  3692ms  thoughts 810  finish STOP
+#101 s50l:S2Q08F r1 B:  63w  ttft  3183ms  total  3337ms  thoughts 705  finish STOP
+#102 s50l:S2Q08F r1 A:  56w  ttft  2906ms  total  3069ms  thoughts 638  finish STOP
+#103 s50l:S2Q08F r2 A:  64w  ttft  2726ms  total  2865ms  thoughts 605  finish STOP
+#104 s50l:S2Q08F r2 B:  56w  ttft  2904ms  total  3018ms  thoughts 705  finish STOP
+#105 s50l:S2Q08F r3 B:  44w  ttft  2820ms  total  2977ms  thoughts 628  finish STOP
+#106 s50l:S2Q08F r3 A:  50w  ttft  2920ms  total  3053ms  thoughts 650  finish STOP
+#107 s50l:S2Q08F r4 A:  53w  ttft  2584ms  total  2671ms  thoughts 604  finish STOP
+#108 s50l:S2Q08F r4 B:  54w  ttft  3786ms  total  3958ms  thoughts 799  finish STOP
+#109 s50l:S2Q08F r5 B:  52w  ttft  2880ms  total  3003ms  thoughts 646  finish STOP
+#110 s50l:S2Q08F r5 A:  69w  ttft  3138ms  total  3354ms  thoughts 724  finish STOP
+#111 s50l:D1     r1 A:  55w  ttft  2905ms  total  3039ms  thoughts 661  finish STOP
+#112 s50l:D1     r1 B:  67w  ttft  3848ms  total  4081ms  thoughts 928  finish STOP
+#113 s50l:D1     r2 B:  56w  ttft  2998ms  total  3165ms  thoughts 706  finish STOP
+#114 s50l:D1     r2 A:  55w  ttft  2724ms  total  2877ms  thoughts 660  finish STOP
+#115 s50l:D1     r3 A:  72w  ttft  3792ms  total  4019ms  thoughts 778  finish STOP
+#116 s50l:D1     r3 B:  66w  ttft  3516ms  total  3713ms  thoughts 796  finish STOP
+#117 s50l:D1     r4 B:  73w  ttft  2880ms  total  3031ms  thoughts 704  finish STOP
+#118 s50l:D1     r4 A:  59w  ttft  3141ms  total  3315ms  thoughts 791  finish STOP
+#119 s50l:D1     r5 A:  68w  ttft  3678ms  total  3903ms  thoughts 961  finish STOP
+#120 s50l:D1     r5 B:  67w  ttft  3366ms  total  3575ms  thoughts 877  finish STOP
+#121 s50l:D2     r1 B:  79w  ttft  3257ms  total  3428ms  thoughts 756  finish STOP
+#122 s50l:D2     r1 A: 104w  ttft  4185ms  total  4416ms  thoughts 926  finish STOP
+#123 s50l:D2     r2 A:  80w  ttft  4132ms  total  4342ms  thoughts 951  finish STOP
+#124 s50l:D2     r2 B:  85w  ttft  3710ms  total  4003ms  thoughts 915  finish STOP
+#125 s50l:D2     r3 B:  84w  ttft  3474ms  total  3692ms  thoughts 831  finish STOP
+#126 s50l:D2     r3 A: 102w  ttft  3987ms  total  4192ms  thoughts 882  finish STOP
+#127 s50l:D2     r4 A:  95w  ttft  4041ms  total  4567ms  thoughts 973  finish STOP
+#128 s50l:D2     r4 B:  83w  ttft  3781ms  total  4017ms  thoughts 882  finish STOP
+#129 s50l:D2     r5 B:  83w  ttft  3682ms  total  3926ms  thoughts 906  finish STOP
+#130 s50l:D2     r5 A:  95w  ttft  3912ms  total  4213ms  thoughts 996  finish STOP
+#131 s50l:D3     r1 A:  49w  ttft  2993ms  total  3109ms  thoughts 662  finish STOP
+#132 s50l:D3     r1 B:  50w  ttft  3529ms  total  3614ms  thoughts 908  finish STOP
+#133 s50l:D3     r2 B:  54w  ttft  3271ms  total  3419ms  thoughts 765  finish STOP
+#134 s50l:D3     r2 A:  57w  ttft  2834ms  total  2964ms  thoughts 619  finish STOP
+#135 s50l:D3     r3 A:  60w  ttft  3804ms  total  3949ms  thoughts 921  finish STOP
+#136 s50l:D3     r3 B:  62w  ttft  2943ms  total  3170ms  thoughts 678  finish STOP
+#137 s50l:D3     r4 B:  53w  ttft  3380ms  total  3512ms  thoughts 811  finish STOP
+#138 s50l:D3     r4 A:  53w  ttft  3217ms  total  3345ms  thoughts 749  finish STOP
+#139 s50l:D3     r5 A:  65w  ttft  3049ms  total  3207ms  thoughts 654  finish STOP
+#140 s50l:D3     r5 B:  58w  ttft  3156ms  total  3330ms  thoughts 707  finish STOP
+arm A: answered 70/70  transient 0  ttft p50 3382ms p90 3987ms  words p50 61  empty spoken 0  thoughts null 0
+arm B: answered 70/70  transient 0  ttft p50 3460ms p90 3846ms  words p50 63  empty spoken 0  thoughts null 0
+incomplete (transient after every retry, NEVER re-called; named, excluded from the decision): none

@@ -1,0 +1,6 @@
+﻿modified extractor: 0 items, 90 finals, 0 detector fires, offset 0 ms, 7 KB
+[ok] MODIFIED extractor: fixture.finals deep-equals the finals the adapter emitted (repaired words included): 90 vs 90
+original extractor: 0 items, 90 finals, 0 detector fires, offset 0 ms, 7 KB
+[ok] calibration: the ORIGINAL extractor differs on exactly the repaired finals: 17 differ vs 17 repair lines
+[ok] R22 in the fixture: "hallucinations in a rag answer without just making it refuse?": "hallucinations in a rag answer without just making it refuse?"
+RESULT: the extractor replays the repaired finals; the original did not

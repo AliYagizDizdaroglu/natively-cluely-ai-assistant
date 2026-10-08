@@ -1,0 +1,43 @@
+export cue strings 634 distinct (>= 30 chars 158); known set (export + log + full outputs) 645 distinct, < 24 chars 257, shortest 7
+ok   wrapper all on h40d with --export: exit 0 (got 0), 4 summaries leak-checked
+ok   h40d summary smoke -> "leak 0", exit 0 (got "leak 0", exit 0)
+ok   h40d summary facts -> "leak 0", exit 0 (got "leak 0", exit 0)
+ok   h40d summary twins -> "leak 0", exit 0 (got "leak 0", exit 0)
+ok   h40d summary thoughts -> "leak 0", exit 0 (got "leak 0", exit 0)
+ok   mutant: one whole cue (>= 30 chars) inserted -> leak 1: 158 of 158
+ok   mutant: first 30 characters of a cue -> leak 1: 158 of 158
+ok   mutant: a 24-character run from inside a cue -> leak 1: 158 of 158
+ok   mutant: upper case + broken whitespace -> leak 1: 158 of 158
+ok   CLI, one cue inserted into the h40d summaries -> "leak 1", exit 1 (got "leak 1", exit 1)
+ok   CLI, two different cues -> "leak 2" (got "leak 2")
+ok   two regions: the same cue at two places -> leak 2 (got 2)
+ok   short cue (< 24 chars) inserted whole -> leak >= 1: 257 of 257
+ok   short cue with an "s" appended (substring, no word boundary) -> leak 1: 257 of 257
+ok   short cue inside a longer letter run "x<cue>x" -> leak 1: 257 of 257
+info: short cues minus their last 2 chars read leak 0 for 244 of 257 (registered rule: whole only; named in Uncovered)
+ok   h40d strings in the log but not in the export: 11 found; with the export-only set 7 of them read leak 0 (the blind spot); with the widened set 11 of 11 read leak >= 1
+ok   facts full output: 116 strings harvested, 11 distinct not in the export, all caught by the widened set: true
+ok   full-output harvester on synthetic lines: 3 cue strings, keys and a failed-answer line excluded (got 3)
+ok   synthetic cue with a quote, backslashes and non-ASCII: clean text reads leak 0 (got 0)
+ok     raw form inserted -> leak 1 (got 1)
+ok     JSON-escaped form inserted -> leak 1 (got 1)
+ok     JSON \uXXXX form inserted -> leak 1 (got 1)
+ok     markdown-escaped form inserted -> leak 1 (got 1)
+ok     HTML-escaped form inserted -> leak 1 (got 1)
+ok     forms tried per known string: 4 distinct
+ok   malformed export (truncated JSON): wrapper exit 2 and CLI exit 2 (want 2/2), one refusal line each, no stderr; output leak-scanned: leak 0
+ok   malformed export (wrong schema): wrapper exit 2 and CLI exit 2 (want 2/2), one refusal line each, no stderr; output leak-scanned: leak 0
+ok   malformed export (cues not strings): wrapper exit 2 and CLI exit 2 (want 2/2), one refusal line each, no stderr; output leak-scanned: leak 0
+ok   malformed export (a log, not an export): wrapper exit 2 and CLI exit 2 (want 2/2), one refusal line each, no stderr; output leak-scanned: leak 0
+ok   missing export file: exit 2, refusal shape (got exit 2)
+ok   wrapper without --export: exit 2, usage only (got exit 2), no summary printed
+ok   failing instrument twins: summary says INSTRUMENT FAILED (1 line), wrapper exit 3 (want 3), the summary file holds only that line
+ok   failing instrument thoughts: summary says INSTRUMENT FAILED (1 line), wrapper exit 3 (want 3), the summary file holds only that line
+ok   the thoughts failure carries the crash signature: true
+ok   smoke on a folder with no log: refused, exit 2 (got 2)
+ok   withhold path: stdout "WITHHELD leak 1", exit 5 (got exit 5), no summary file left: true
+ok   all with extra tool args: refused, exit 2 (got 2)
+ok   twins with --strict after "--": ran, exit 0 (0 or 1 a reading), summary mentions STRICT: true
+ok   h40d summaries regenerated: wrapper exit 0
+ok   this calibration's own output (above) leak-scanned: leak 0
+TOTAL 40 ok, 0 FAIL

@@ -1,0 +1,18 @@
+ok  probe 5/5 clean: true
+ok  probe 4/5: false
+ok  probe with an abnormal close: false
+ok  probe: no final line: false
+ok  arm line: continue: {"level":"low","reps":1,"answered":36,"of":38,"holes":2,"last":36,"state":"CONTINUE"}
+ok  arm line: stop: "STOP"
+ok  arm line: a line without the last-run count is not read: null
+ok  arm line: absent: null
+ok  20:26 may start (ends 21:26): true
+ok  19:00 may not (would run into the 20:00 probe): false
+ok  20:10 may not (inside the probe window): false
+ok  03:24 may start (ends 04:24): true
+ok  03:26 may not (ends 04:26, inside the 04:30 window): false
+ok  05:30 may not (the re-smoke hour): false
+ok  06:31 may start: true
+ok  08:56 may not (would run into the 10:00 probe): false
+ok  23:30 may start (crosses midnight, ends 00:30): true
+ok  10:26 may start: true

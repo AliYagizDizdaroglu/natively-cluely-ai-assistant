@@ -1,0 +1,236 @@
+{
+  "S1Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names a sound condition for each of the three approaches; concise, natural spoken length."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic is right both ways, 3,000 versus 2,850, and reaches the consistency verdict."
+  },
+  "S1Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly reads ROC masking on imbalance and PR AUC against base rate; asks for cost-benefit next."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout inside the risk band plus difference-in-differences is the right causal answer."
+  },
+  "S1Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Uplift framing with lost causes, sure things and persuadables is exactly the point."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All three edge cases and the tie rule handled correctly, but about 140 words."
+  },
+  "S1Q04F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Swaps customer ID for original row order, breaking the stated tie rule, and misses partial selection."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Train-only fit and a thirty-day buffer gap are right; runs near a hundred words."
+  },
+  "S1Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Explains the legitimate rolling case and the leakage condition requiring a customer-level holdout."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Filters in the join condition preserve zero-call customers and ingested-at guards leakage; slightly over length."
+  },
+  "S1Q06F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Composite index plus append-only bitemporal columns answers both halves cleanly."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested stage and names the shared components, but about 125 words."
+  },
+  "S1Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Idempotent state table plus a pinned artifact hash addresses duplicates and mixed versions."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, hashed assignment, delayed join and IPW all correct; roughly 108 words."
+  },
+  "S1Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names the mislabelling feedback loop and the uplift or exposure-control remedy."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure mapping is accurate with operational reasons, but well over the spoken length."
+  },
+  "S1Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sensible split of managed endpoints, App Service and AKS with real justifications."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC, Key Vault CSI and environment isolation all correct; about 125 words."
+  },
+  "S1Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Clean token-versus-403-versus-timeout triage, but runs well past a hundred words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Touches every named stage and ties to experience; embedding stage thin and answer over length."
+  },
+  "S2Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly fingers parsing, chunking, reranking and generation as the failure stages."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives no uncertainty for the hallucination metric and muddles field-level with token-level units; over length."
+  },
+  "S2Q02F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Ablates OCR, classification, retrieval and orchestration but omits the explicitly asked prompting ablation."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sharp distinction between fixed, decomposed and dynamic paths; about a hundred words."
+  },
+  "S2Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Step cap, convergence check, token budgets, timeouts and a deterministic fallback cover all three."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Formula, one-based ranks and deterministic secondary sort are right, but around 94 words."
+  },
+  "S2Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Scale incomparability and per-source weights both correct; just past the length limit."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Skip-not-break greedy, dedup set and two-per-document cap all correct, but about 140 words."
+  },
+  "S2Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Concrete coverage-failure example plus MMR and query decomposition; well-sized."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore, per-case timeout, local exception capture and gather ordering all correct; roughly 127 words."
+  },
+  "S2Q06F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Transient-only retry inside an overall deadline, and a mocked clock for determinism."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Namespaces, Postgres metadata, pre-filtered permissions and judge evaluation covered; slightly over length."
+  },
+  "S2Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names both check points and why the pre-prompt recheck matters; ideally short."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual index, dual write, shadow eval, pointer cutover and hot rollback all right; about 145 words."
+  },
+  "S2Q08F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Completeness check is solid, but proves currency with shadow quality rather than change-stream lag."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every component placed sensibly with a managed-versus-custom rationale, but about 120 words."
+  },
+  "S2Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Region pinning, replication disabled and private endpoints answer residency directly."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Duplicate detection plus an idempotency key checked before writing handles the crash-before-ack case."
+  },
+  "S2Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Dead-letter threshold, isolated replay pool and version-timestamp concurrency cover all three."
+  }
+}

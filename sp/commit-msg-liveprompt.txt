@@ -1,0 +1,24 @@
+fix(live): ask the Live listener for the whole question, not "one clear sentence"
+
+Measured on the six long design questions of the 2026-09-08 roster, each
+clip written as PCM into the real GeminiLiveRouter (scratchpad
+record-long.mjs, three runs on the same clips):
+
+  prompt                                   whole (cov >= 0.8)  events  after clip
+  "as one clear sentence" (before)          0 of 6              1 each  1.0-1.5 s
+  + include the scenario sentences          5 of 6              L02 x2  0.15-0.8 s
+  + do not fire while a scenario is still   6 of 6              1 each  0.24-1.35 s
+    being set up; report it once (this)
+
+Before, Live returned 23-35 of 69-84 words (the last sentence), so the
+answer never saw the constraints. The control (calibrate-audio: W02, M02,
+H03, the C01 cue) is unchanged: each fired once, heard 92-100%. Mid-clip
+fires on long questions remain stochastic (2 of 18 long plays across the
+new wordings; the whole question still follows), which is why the
+calibration now scores a long item by its best hearing and passes it on
+at least one fire.
+
+Spec 2026-09-07 §4b lists the after9 expectations that follow; the README
+names the Groq-key requirement for the two Groq arms.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

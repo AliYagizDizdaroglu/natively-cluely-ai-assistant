@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names tabular non-linearity, native missing-value handling, production efficiency and a logistic regression baseline; concise and fully responsive."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic is right but recall is never stated, and a 57-versus-60 gap is wrongly called rounding."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout plus difference-in-differences correctly isolates model lift from seasonality, mix and other business changes."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Formulas, stable tie-breaking and all three edge cases are correct, but roughly 175 words is far past spoken length."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct 30-day embargo and ColumnTransformer inside a Pipeline so preprocessing fits on train only; over 100 words."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "LEFT JOIN predicates in ON and COUNT on event id are right, but the support-call event type filter is missing."
+  },
+  "S1Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every layer and names the feature store as shared, but claims sub-millisecond DynamoDB lookups; 114 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Prediction logging, sticky assignment, matured 30-day outcome joins and treatment handling for retraining are all correct; over 100 words."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure mapping for all eight components with operational reasons, but roughly 146 words to speak."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, precise RBAC roles, Entra auth to PostgreSQL, Key Vault and VNet separation all correct; 129 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All eight stages covered accurately, including hybrid BM25 retrieval and cross-encoder reranking; roughly 116 words."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Addresses every metric, but a hold-out split is not an uncertainty method and the F1 denominator is under-specified."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "States the justification criterion up front and contrasts all three approaches with the latency cost; 125 words."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Reciprocal rank fusion formula, one-based ranks, score aggregation and deterministic id tie-break are all correct; 106 words."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy relevance sort with dedupe set, two-per-document cap and budget fit check are all correct; 109 words."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore bound, per-case timeout, isolated failures and ordered awaits over pre-created tasks; concise and correct."
+  },
+  "S2Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Index, metadata, pre-filtering and evaluation are covered, but citations are never addressed and per-user id lists scale poorly."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioning, race-aware backfill, dual writes, shadow comparison, flag cutover and rollback are all correct; 114 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure service for every component plus a clear managed-versus-custom boundary; roughly 119 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "MessageId-keyed upsert with completion only after the durable write is sound idempotency; the complete() token needs an edit."
+  }
+}

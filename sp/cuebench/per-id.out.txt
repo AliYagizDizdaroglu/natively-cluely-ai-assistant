@@ -1,0 +1,33 @@
+totals (must equal cuebench-score.out.txt): {"control r1":29.5,"cue r1":27.5,"cue r2":24.5,"control r2":27.5,"cue r3":28.5,"control r3":31.5}
+
+ids where the cue arm is LOWER over the three reps (control sum vs cue sum, per rep):
+  S2Q10F  control 3.0 [1.0 1.0 1.0]  cue 1.0 [0.0 0.0 1.0]  diff -2.0
+  S1Q09   control 2.5 [1.0 1.0 0.5]  cue 1.0 [0.0 1.0 0.0]  diff -1.5
+  S2Q08F  control 3.0 [1.0 1.0 1.0]  cue 1.5 [1.0 0.0 0.5]  diff -1.5
+  S1Q02F  control 3.0 [1.0 1.0 1.0]  cue 2.0 [1.0 0.0 1.0]  diff -1.0
+  S1Q05F  control 2.0 [1.0 0.0 1.0]  cue 1.0 [0.0 1.0 0.0]  diff -1.0
+  S1Q08   control 3.0 [1.0 1.0 1.0]  cue 2.0 [1.0 1.0 0.0]  diff -1.0
+  S1Q09F  control 3.0 [1.0 1.0 1.0]  cue 2.0 [0.0 1.0 1.0]  diff -1.0
+  S2Q01   control 3.0 [1.0 1.0 1.0]  cue 2.0 [0.0 1.0 1.0]  diff -1.0
+  S2Q05   control 3.0 [1.0 1.0 1.0]  cue 2.0 [0.0 1.0 1.0]  diff -1.0
+  S2Q07   control 2.5 [1.0 0.5 1.0]  cue 1.5 [1.0 0.0 0.5]  diff -1.0
+  S2Q10   control 3.0 [1.0 1.0 1.0]  cue 2.0 [1.0 1.0 0.0]  diff -1.0
+  S1Q02   control 1.5 [0.5 0.0 1.0]  cue 1.0 [0.0 0.0 1.0]  diff -0.5
+  S1Q06   control 2.5 [1.0 0.5 1.0]  cue 2.0 [0.5 0.5 1.0]  diff -0.5
+  S1Q06F  control 2.0 [0.0 1.0 1.0]  cue 1.5 [1.0 0.0 0.5]  diff -0.5
+  S2Q03F  control 3.0 [1.0 1.0 1.0]  cue 2.5 [1.0 0.5 1.0]  diff -0.5
+ids where the cue arm is HIGHER:
+  S1Q10F  control 1.0 [0.0 1.0 0.0]  cue 3.0 [1.0 1.0 1.0]  diff +2.0
+  S2Q01F  control 1.0 [0.0 0.0 1.0]  cue 2.5 [1.0 0.5 1.0]  diff +1.5
+  S1Q04F  control 0.0 [0.0 0.0 0.0]  cue 1.0 [1.0 0.0 0.0]  diff +1.0
+  S2Q02F  control 1.0 [0.0 0.5 0.5]  cue 2.0 [1.0 0.0 1.0]  diff +1.0
+  S2Q06   control 2.0 [1.0 0.0 1.0]  cue 3.0 [1.0 1.0 1.0]  diff +1.0
+  S1Q04   control 1.5 [1.0 0.0 0.5]  cue 2.0 [1.0 0.0 1.0]  diff +0.5
+equal: 18 ids
+
+consensus-wrong:
+  S1Q02: cue r2
+  S2Q06: control r2 (empty)
+  S2Q06F: cue r1 (empty)
+
+net over all ids and reps: -8.0 (15 ids lower, 6 higher)

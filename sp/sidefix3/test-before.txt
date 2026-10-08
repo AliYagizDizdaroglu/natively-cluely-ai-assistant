@@ -1,0 +1,140 @@
+﻿node.exe : [33mThe CJS build of Vite's Node API is deprecated. See 
+https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+At line:1 char:616
++ ... \cwd"; $o = & node "$m\node_modules\vitest\vitest.mjs" run electron/l ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([33mThe CJS bu...e details.[39m:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must 
+the arms > suppresses a fenced block and keeps the prose around it
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must 
+the arms > suppresses it when the text arrives one character at a time
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+ ❯ electron/llm/verbalStreamFilter.test.ts (148 tests | 2 failed) 172ms
+   × SPOKEN_WORD_GUARD — the verbal stream is clamped at 200 words and never cut under it (flight s50c, 2026-09-12) > a structured payload in place of speech is not words: it passes whole past 200, and none of it is counted 21ms
+     → expected '{"__negotiationCoaching":{"exactScrip…' to be '{"__negotiationCoaching":{"exactScrip…' // Object.is equality
+   × SPOKEN_WORD_GUARD — the verbal stream is clamped at 200 words and never cut under it (flight s50c, 2026-09-12) > a payload is known by its first non-blank character, not by its first chunk 3ms
+     → expected ' \n{"__negotiationCoaching":{"exactSc…' to be ' \n{"__negotiationCoaching":{"exactSc…' // Object.is equality
+stdout | electron/llm/WhatToAnswerLLM.negotiationCard.test.ts > a negotiation coaching card crosses the verbal route as the JSON the renderer parses > keeps a salary figure that follows a quote, and an escaped newline
+[LLMHelper] KnowledgeOrchestrator attached
+[Answer] budget: words=37 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.negotiationCard.test.ts > a negotiation coaching card crosses the verbal route as the JSON the renderer parses > arrives whole when its texts run past the spoken word guard
+[LLMHelper] KnowledgeOrchestrator attached
+[Answer] budget: words=194 cut=yes allowance=no
+
+ ❯ electron/llm/WhatToAnswerLLM.negotiationCard.test.ts (2 tests | 1 failed) 24ms
+   × a negotiation coaching card crosses the verbal route as the JSON the renderer parses > arrives whole when its texts run past the spoken word guard 10ms
+     → Unterminated string in JSON at position 1119 (line 1 column 1120)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > SPOKEN_WORD_GUARD — the verbal stream is clamped at 200 words and 
+never cut under it (flight s50c, 2026-09-12) > a structured payload in place of speech is not words: it passes whole 
+past 200, and none of it is counted
+AssertionError: expected '{"__negotiationCoaching":{"exactScrip…' to be '{"__negotiationCoaching":{"exactScrip…' // 
+Object.is equality
+
+Expected: "{"__negotiationCoaching":{"exactScript":"w1x0 w1x1 w1x2 w1x3 w1x4 w1x5 w1x6 w1x7 w1x8 w1x9 w1x10 w1x11 
+w1x12 w1x13 w1x14 w1x15 w1x16 w1x17 w1x18 w1x19 w1x20 w1x21 w1x22 w1x23 w1x24 w1x25 w1x26 w1x27 w1x28 w1x29 w1x30 
+w1x31 w1x32 w1x33 w1x34 w1x35 w1x36 w1x37 w1x38 w1x39 w1x40 w1x41 w1x42 w1x43 w1x44 w1x45. w2x0 w2x1 w2x2 w2x3 w2x4 
+w2x5 w2x6 w2x7 w2x8 w2x9 w2x10 w2x11 w2x12 w2x13 w2x14 w2x15 w2x16 w2x17 w2x18 w2x19 w2x20 w2x21 w2x22 w2x23 w2x24 
+w2x25 w2x26 w2x27 w2x28 w2x29 w2x30 w2x31 w2x32 w2x33 w2x34 w2x35 w2x36 w2x37 w2x38 w2x39 w2x40 w2x41 w2x42 w2x43 
+w2x44 w2x45. w3x0 w3x1 w3x2 w3x3 w3x4 w3x5 w3x6 w3x7 w3x8 w3x9 w3x10 w3x11 w3x12 w3x13 w3x14 w3x15 w3x16 w3x17 w3x18 
+w3x19 w3x20 w3x21 w3x22 w3x23 w3x24 w3x25 w3x26 w3x27 w3x28 w3x29 w3x30 w3x31 w3x32 w3x33 w3x34 w3x35 w3x36 w3x37 
+w3x38 w3x39 w3x40 w3x41 w3x42 w3x43 w3x44 w3x45. w4x0 w4x1 w4x2 w4x3 w4x4 w4x5 w4x6 w4x7 w4x8 w4x9 w4x10 w4x11 w4x12 
+w4x13 w4x14 w4x15 w4x16 w4x17 w4x18 w4x19 w4x20 w4x21 w4x22 w4x23 w4x24 w4x25 w4x26 w4x27 w4x28 w4x29 w4x30 w4x31 
+w4x32 w4x33 w4x34 w4x35 w4x36 w4x37 w4x38 w4x39 w4x40 w4x41 w4x42 w4x43 w4x44 w4x45. w5x0 w5x1 w5x2 w5x3 w5x4 w5x5 
+w5x6 w5x7 w5x8 w5x9 w5x10 w5x11 w5x12 w5x13 w5x14 w5x15 w5x16 w5x17 w5x18 w5x19 w5x20 w5x21 w5x22 w5x23 w5x24 w5x25 
+w5x26 w5x27 w5x28 w5x29 w5x30 w5x31 w5x32 w5x33 w5x34 w5x35 w5x36 w5x37 w5x38 w5x39 w5x40 w5x41 w5x42 w5x43 w5x44 
+w5x45."}}"
+Received: "{"__negotiationCoaching":{"exactScript":"w1x0 w1x1 w1x2 w1x3 w1x4 w1x5 w1x6 w1x7 w1x8 w1x9 w1x10 w1x11 
+w1x12 w1x13 w1x14 w1x15 w1x16 w1x17 w1x18 w1x19 w1x20 w1x21 w1x22 w1x23 w1x24 w1x25 w1x26 w1x27 w1x28 w1x29 w1x30 
+w1x31 w1x32 w1x33 w1x34 w1x35 w1x36 w1x37 w1x38 w1x39 w1x40 w1x41 w1x42 w1x43 w1x44 w1x45. w2x0 w2x1 w2x2 w2x3 w2x4 
+w2x5 w2x6 w2x7 w2x8 w2x9 w2x10 w2x11 w2x12 w2x13 w2x14 w2x15 w2x16 w2x17 w2x18 w2x19 w2x20 w2x21 w2x22 w2x23 w2x24 
+w2x25 w2x26 w2x27 w2x28 w2x29 w2x30 w2x31 w2x32 w2x33 w2x34 w2x35 w2x36 w2x37 w2x38 w2x39 w2x40 w2x41 w2x42 w2x43 
+w2x44 w2x45. w3x0 w3x1 w3x2 w3x3 w3x4 w3x5 w3x6 w3x7 w3x8 w3x9 w3x10 w3x11 w3x12 w3x13 w3x14 w3x15 w3x16 w3x17 w3x18 
+w3x19 w3x20 w3x21 w3x22 w3x23 w3x24 w3x25 w3x26 w3x27 w3x28 w3x29 w3x30 w3x31 w3x32 w3x33 w3x34 w3x35 w3x36 w3x37 
+w3x38 w3x39 w3x40 w3x41 w3x42 w3x43 w3x44 w3x45. w4x0 w4x1 w4x2 w4x3 w4x4 w4x5 w4x6 w4x7 w4x8 w4x9 w4x10 w4x11 w4x12 
+w4x13 w4x14 w4x15 w4x16 w4x17 w4x18 w4x19 w4x20 w4x21 w4x22 w4x23 w4x24 w4x25 w4x26 w4x27 w4x28 w4x29 w4x30 w4x31 
+w4x32 w4x33 w4x34 w4x35 w4x36 w4x37 w4x38 w4x39 w4x40 w4x41 w4x42 w4x43 w4x44 w4x45."
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:647:21
+    645|     it('a structured payload in place of speech is not words: it passe…
+    646|         const { out, done } = await run(payload);
+    647|         expect(out).toBe(payload);
+       |                     ^
+    648|         expect(done).toEqual({ words: 0, cut: false, allowance: false …
+    649|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > SPOKEN_WORD_GUARD — the verbal stream is clamped at 200 words and 
+never cut under it (flight s50c, 2026-09-12) > a payload is known by its first non-blank character, not by its first 
+chunk
+AssertionError: expected ' \n{"__negotiationCoaching":{"exactSc…' to be ' \n{"__negotiationCoaching":{"exactSc…' // 
+Object.is equality
+
+- Expected
++ Received
+
+   
+- {"__negotiationCoaching":{"exactScript":"w1x0 w1x1 w1x2 w1x3 w1x4 w1x5 w1x6 w1x7 w1x8 w1x9 w1x10 w1x11 w1x12 w1x13 
+w1x14 w1x15 w1x16 w1x17 w1x18 w1x19 w1x20 w1x21 w1x22 w1x23 w1x24 w1x25 w1x26 w1x27 w1x28 w1x29 w1x30 w1x31 w1x32 
+w1x33 w1x34 w1x35 w1x36 w1x37 w1x38 w1x39 w1x40 w1x41 w1x42 w1x43 w1x44 w1x45. w2x0 w2x1 w2x2 w2x3 w2x4 w2x5 w2x6 w2x7 
+w2x8 w2x9 w2x10 w2x11 w2x12 w2x13 w2x14 w2x15 w2x16 w2x17 w2x18 w2x19 w2x20 w2x21 w2x22 w2x23 w2x24 w2x25 w2x26 w2x27 
+w2x28 w2x29 w2x30 w2x31 w2x32 w2x33 w2x34 w2x35 w2x36 w2x37 w2x38 w2x39 w2x40 w2x41 w2x42 w2x43 w2x44 w2x45. w3x0 w3x1 
+w3x2 w3x3 w3x4 w3x5 w3x6 w3x7 w3x8 w3x9 w3x10 w3x11 w3x12 w3x13 w3x14 w3x15 w3x16 w3x17 w3x18 w3x19 w3x20 w3x21 w3x22 
+w3x23 w3x24 w3x25 w3x26 w3x27 w3x28 w3x29 w3x30 w3x31 w3x32 w3x33 w3x34 w3x35 w3x36 w3x37 w3x38 w3x39 w3x40 w3x41 
+w3x42 w3x43 w3x44 w3x45. w4x0 w4x1 w4x2 w4x3 w4x4 w4x5 w4x6 w4x7 w4x8 w4x9 w4x10 w4x11 w4x12 w4x13 w4x14 w4x15 w4x16 
+w4x17 w4x18 w4x19 w4x20 w4x21 w4x22 w4x23 w4x24 w4x25 w4x26 w4x27 w4x28 w4x29 w4x30 w4x31 w4x32 w4x33 w4x34 w4x35 
+w4x36 w4x37 w4x38 w4x39 w4x40 w4x41 w4x42 w4x43 w4x44 w4x45. w5x0 w5x1 w5x2 w5x3 w5x4 w5x5 w5x6 w5x7 w5x8 w5x9 w5x10 
+w5x11 w5x12 w5x13 w5x14 w5x15 w5x16 w5x17 w5x18 w5x19 w5x20 w5x21 w5x22 w5x23 w5x24 w5x25 w5x26 w5x27 w5x28 w5x29 
+w5x30 w5x31 w5x32 w5x33 w5x34 w5x35 w5x36 w5x37 w5x38 w5x39 w5x40 w5x41 w5x42 w5x43 w5x44 w5x45."}}
++ {"__negotiationCoaching":{"exactScript":"w1x0 w1x1 w1x2 w1x3 w1x4 w1x5 w1x6 w1x7 w1x8 w1x9 w1x10 w1x11 w1x12 w1x13 
+w1x14 w1x15 w1x16 w1x17 w1x18 w1x19 w1x20 w1x21 w1x22 w1x23 w1x24 w1x25 w1x26 w1x27 w1x28 w1x29 w1x30 w1x31 w1x32 
+w1x33 w1x34 w1x35 w1x36 w1x37 w1x38 w1x39 w1x40 w1x41 w1x42 w1x43 w1x44 w1x45. w2x0 w2x1 w2x2 w2x3 w2x4 w2x5 w2x6 w2x7 
+w2x8 w2x9 w2x10 w2x11 w2x12 w2x13 w2x14 w2x15 w2x16 w2x17 w2x18 w2x19 w2x20 w2x21 w2x22 w2x23 w2x24 w2x25 w2x26 w2x27 
+w2x28 w2x29 w2x30 w2x31 w2x32 w2x33 w2x34 w2x35 w2x36 w2x37 w2x38 w2x39 w2x40 w2x41 w2x42 w2x43 w2x44 w2x45. w3x0 w3x1 
+w3x2 w3x3 w3x4 w3x5 w3x6 w3x7 w3x8 w3x9 w3x10 w3x11 w3x12 w3x13 w3x14 w3x15 w3x16 w3x17 w3x18 w3x19 w3x20 w3x21 w3x22 
+w3x23 w3x24 w3x25 w3x26 w3x27 w3x28 w3x29 w3x30 w3x31 w3x32 w3x33 w3x34 w3x35 w3x36 w3x37 w3x38 w3x39 w3x40 w3x41 
+w3x42 w3x43 w3x44 w3x45. w4x0 w4x1 w4x2 w4x3 w4x4 w4x5 w4x6 w4x7 w4x8 w4x9 w4x10 w4x11 w4x12 w4x13 w4x14 w4x15 w4x16 
+w4x17 w4x18 w4x19 w4x20 w4x21 w4x22 w4x23 w4x24 w4x25 w4x26 w4x27 w4x28 w4x29 w4x30 w4x31 w4x32 w4x33 w4x34 w4x35 
+w4x36 w4x37 w4x38 w4x39 w4x40 w4x41 w4x42 w4x43 w4x44 w4x45.
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:654:21
+    652|         let out = '';
+    653|         for await (const c of cutAtWordBudget(src, { ...SPOKEN_WORD_GU…
+    654|         expect(out).toBe(' \n' + payload);
+       |                     ^
+    655|     });
+    656|     it('a spoken answer that merely contains a brace is still clamped'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  electron/llm/WhatToAnswerLLM.negotiationCard.test.ts > a negotiation coaching card crosses the verbal route as 
+the JSON the renderer parses > arrives whole when its texts run past the spoken word guard
+SyntaxError: Unterminated string in JSON at position 1119 (line 1 column 1120)
+ ❯ electron/llm/WhatToAnswerLLM.negotiationCard.test.ts:91:21
+     89|         const card = { ...CARD, exactScript: LONG_SCRIPT };
+     90|         expect(words(JSON.stringify({ __negotiationCoaching: card })))…
+     91|         expect(JSON.parse(await finishedAnswer(card))).toEqual({ __neg…
+       |                     ^
+     92|     });
+     93| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 147 passed (150)
+   Start at  18:59:23
+   Duration  4.72s (transform 690ms, setup 0ms, collect 1.84s, tests 196ms, environment 4.03s, prepare 639ms)
+
+

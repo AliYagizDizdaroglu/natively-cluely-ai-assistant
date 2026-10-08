@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Sound data-fit rationale and named logistic-regression baseline, but the asked production constraints are never addressed."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic exactly right at 2850 true positives, 57 percent and 30 percent, but waves off the 57-versus-60 gap as rounding."
+  },
+  "S1Q03": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Difference-in-differences against a control group is the right method, but a permutation test does not control for customer mix."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Negating the index key in lexsort inverts the required original-order tie-break; answer is a code block with stray LaTeX."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Nails the real trap: purges snapshots whose 30-day label window crosses the chronological split, with preprocessing fit on train only."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Correct LEFT JOIN with predicates in the ON clause and an ingested-at cutoff, but it dictates a raw SQL block."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers all seven components and names the feature store as the shared batch-online layer, but runs 125 words."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Decoupled logging and delayed outcome join are right, but embedding the variant in the feature vector to filter causal bias is muddled."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Idiomatic Azure mapping across storage, training, ACR images, AKS, scheduling, managed identity and monitoring."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate user-assigned managed identity, RBAC role, Entra auth for Postgres, Key Vault fallback and private endpoints, but 101 words."
+  },
+  "S2Q01": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate stage walkthrough but never describes generation, and volunteers an unsupported 40 percent hallucination figure; 107 words."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Defines all four dimensions, but a token-level unit with an entity denominator is inconsistent and variance is misused for a confidence interval."
+  },
+  "S2Q03": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Compares all three approaches but declares the agent superior without weighing the cost, latency and non-determinism that justify the complexity."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Correct reciprocal rank fusion with score-then-id tie-breaking, but the raw LaTeX fragment cannot be spoken."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Greedy packing honours dedup, per-document cap and skip-if-it-does-not-fit, but the answer is bare fenced code with no spoken text."
+  },
+  "S2Q06": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Concurrency limit, timeout and ordering handled, but Promise.all aborts on first rejection and failure recording is never addressed."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant-partitioned index, relational metadata, ACL pre-filtering and RAGAS evaluation all placed correctly, but 121 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write versioned field, batched backfill, shadow-query comparison and field-reference rollback cover every asked stage; slightly long."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure placement from Blob and Event Grid through AI Search and Azure OpenAI, with a managed-versus-custom rationale, but 102 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Proper idempotency key on message id with an atomic embedding-plus-marker commit before acknowledging Service Bus."
+  }
+}

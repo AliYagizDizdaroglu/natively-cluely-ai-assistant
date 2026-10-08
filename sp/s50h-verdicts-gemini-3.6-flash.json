@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "All four figures computed correctly (9,500 churners, 2,850 TPs, 30% recall, 57% precision); calling 57 a clean round to 60 is a mild overstatement."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correctly puts every filter in the LEFT JOIN ON clause including the ingested-at cutoff for point-in-time safety, though it counts a non-existent event id column."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers index organization, metadata store, pre-filtered permission enforcement and evaluation accurately, but runs about 140 words across four paragraphs."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service is named and characterized correctly with a defensible managed-versus-custom split, but the answer is roughly 110 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Peek-Lock, MessageId dedup and deterministic chunk ids for idempotent upserts are exactly right; length is about 105 words."
+  }
+}

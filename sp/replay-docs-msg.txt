@@ -1,0 +1,10 @@
+docs(passes): follow-up parent replay - FAIL by rule step 1, flag stays off
+
+The pre-registration (written before any model call) and the result of
+the offline replay of 6c50ec3 on scenario50 (s50m; 10 follow-ups x 3 reps
+x 2 arms on gemini-3.1-flash-lite LOW, graded blind by claude-opus-5-5):
+wrong 0 -> 1, acceptable 16 -> 22. The registered rule reads wrong
+answers first, so NATIVELY_FOLLOWUP_PARENT stays off. Nothing touches
+holdout40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

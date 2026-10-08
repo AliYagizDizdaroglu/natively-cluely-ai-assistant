@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct arithmetic throughout and gives true positives, recall and precision plus the consistency verdict in about 55 words."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Join mechanism and all three predicates are right, but it counts an event ID column absent from the given schema and hedges the group-by key."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All four sub-parts answered well, including tombstones and permission-leakage regression tests; about 110 words is too long to speak."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct service for each of the seven components plus a concrete custom-component justification, but roughly 125 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-Lock, hash-based MessageId dedup, deterministic vector IDs for idempotent upserts and Postgres chunk status cover crash-after-write cleanly."
+  }
+}

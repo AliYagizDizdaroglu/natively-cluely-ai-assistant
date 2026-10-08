@@ -1,0 +1,16 @@
+2026-10-02T13:44:51.274Z  a1a8e48677cb27f51  (no verdicts file named)  {"claude-opus-5-5":1}
+2026-10-02T13:47:00.407Z  a4cb2b715aeca98ca  h40d-verdicts-captured-high.json  {"claude-opus-5-5":7}
+2026-10-02T13:47:08.923Z  a68f0617659093394  h40d-verdicts-inapp.json  {"claude-opus-5-5":6}
+2026-10-02T13:47:15.420Z  a964fbf85f94f245e  h40d-verdicts-captured-high-r3.json  {"claude-opus-5-5":6}
+2026-10-02T13:47:15.433Z  a01d13ea96c03f1a6  h40d-verdicts-captured-no-cues-high-r3.json  {"claude-opus-5-5":6}
+2026-10-02T13:47:23.336Z  a1927dd9144f4a275  h40d-verdicts-captured-high-r2.json  {"claude-opus-5-5":10}
+2026-10-02T13:47:33.860Z  a904fd17a526c461b  h40d-verdicts-captured-no-cues-high.json  {"claude-opus-5-5":7}
+2026-10-02T13:47:40.302Z  a0b15e352a53a8841  h40d-verdicts-captured-no-cues-high-r2.json  {"claude-opus-5-5":10}
+2026-10-02T13:47:46.151Z  a1359b9c95562d880  h40d-verdicts-captured-low.json  {"claude-opus-5-5":8}
+2026-10-02T13:48:09.372Z  abe5f826f507156d8  h40d-verdicts-captured-low-r2.json  {"claude-opus-5-5":8}
+2026-10-02T13:48:15.073Z  ab9e09f7f78e7ecae  h40d-verdicts-captured-low-r3.json  {"claude-opus-5-5":6}
+2026-10-02T14:07:09.035Z  adfb5d82a67eec6ab  flash38-verdicts-A.json  {"claude-opus-5-5":6}
+2026-10-02T14:07:10.720Z  a4ee7f356c72c2d39  flash38-verdicts-B.json  {"claude-opus-5-5":6}
+2026-10-02T14:22:23.199Z  a341c5e3185bd688e  h40d-verdicts-high.json  {"claude-opus-5-5":13}
+2026-10-02T14:24:56.200Z  a805cc8edc9deeec5  h40d-verdicts-low.json  {"claude-opus-5-5":22}
+agents since 12:30Z: 15

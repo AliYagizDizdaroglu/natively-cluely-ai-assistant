@@ -1,0 +1,152 @@
+{
+ "R16#1": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "R16"
+ },
+ "R16#2": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "R16"
+ },
+ "R16#3": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "R16"
+ },
+ "R16#4": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "R16"
+ },
+ "R16#5": {
+  "arm": "gemini-3.7-flash default",
+  "rep": 1,
+  "id": "R16"
+ },
+ "R16#6": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "R16"
+ },
+ "R16#7": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "R16"
+ },
+ "R01#1": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "R01"
+ },
+ "R01#2": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "R01"
+ },
+ "R01#3": {
+  "arm": "gemini-3.5-flash default",
+  "rep": 1,
+  "id": "R01"
+ },
+ "R01#4": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "R01"
+ },
+ "R01#5": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "R01"
+ },
+ "R01#6": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "R01"
+ },
+ "R01#7": {
+  "arm": "gemini-3.6-flash default",
+  "rep": 1,
+  "id": "R01"
+ },
+ "R01#8": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "R01"
+ },
+ "R11F#1": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "R11F"
+ },
+ "R11F#2": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "R11F"
+ },
+ "R11F#3": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "R11F"
+ },
+ "R11F#4": {
+  "arm": "gemini-3.5-flash default",
+  "rep": 1,
+  "id": "R11F"
+ },
+ "R11F#5": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "R11F"
+ },
+ "R11F#6": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "R11F"
+ },
+ "R11F#7": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "R11F"
+ },
+ "R11F#8": {
+  "arm": "gemini-3.6-flash default",
+  "rep": 1,
+  "id": "R11F"
+ },
+ "R12#1": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "R12"
+ },
+ "R12#2": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "R12"
+ },
+ "R12#3": {
+  "arm": "gemini-3.6-flash default",
+  "rep": 1,
+  "id": "R12"
+ },
+ "R12#4": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "R12"
+ },
+ "R12#5": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "R12"
+ },
+ "R12#6": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "R12"
+ },
+ "R12#7": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "R12"
+ }
+}

@@ -1,0 +1,60 @@
+const fs = require('fs');
+const V = {
+  W01: [2,2,2, "Accurate read-only template versus running instance distinction, with a clean analogy and natural spoken length."],
+  W02: [2,2,2, "Correctly explains layer caching and ordering the Dockerfile from least to most frequently changed."],
+  W03: [2,2,2, "Correct access-pattern and cost trade-off between Standard and Glacier for training data."],
+  W04: [2,2,2, "Correctly describes the hosted serving container, model artifacts, and the managed compute behind the endpoint."],
+  W05: [2,2,2, "Correct DAG definition plus the dependency-ordering and parallelism rationale Airflow needs."],
+  W06: [2,2,2, "Correct reproducibility and training-serving skew rationale for versioning artifacts with code."],
+  W07: [2,2,2, "Correct pod-versus-deployment distinction with replicas and self-healing; 'automatic scaling' is loose but not wrong."],
+  W08: [2,2,2, "Precisely separates a shift in feature distribution from a change in the input-target relationship."],
+  W09: [1,2,1, "Names configuration drift then cuts off mid-sentence after fourteen words, leaving the reason unstated."],
+  W10: [2,2,0, "Sound versioned prefix layout, but it reads a raw s3:// URI with partition syntax aloud."],
+  W11: [2,2,2, "Correct build-versus-runtime stage split with the image size and attack surface rationale."],
+  W12: [2,2,2, "Correct operator-versus-sensor distinction with a concrete polling example."],
+  M01: [2,2,2, "Names KS and PSI, pairs them with performance tracking, and ties the alert to retraining."],
+  M02: [0,1,0, "Correct pipeline skeleton collapses into roughly nine hundred repetitions of 'same'; unspeakable and embarrassing."],
+  M03: [2,2,2, "Custom-metric HPA plus cluster autoscaler, with minimum replicas and cooldown against oscillation."],
+  M04: [2,2,2, "Correct version control, environment parity, and drift-elimination rationale over console clicking."],
+  M05: [2,2,2, "Least privilege, encryption at rest and in transit, versioning with Object Lock, and CloudTrail auditing."],
+  M06: [2,2,2, "Covers code tests, data validation, and a minimum performance gate before merge."],
+  M07: [2,2,1, "Correct exponential backoff and failure callback, but a stray Turkish word breaks the final sentence."],
+  M08: [1,2,1, "Only layer and cache cleanup; misses multi-stage builds and a slim base, and stops at twenty-three words."],
+  M09: [2,2,2, "Correct latency-versus-throughput framing with fitting examples for each mode."],
+  M10: [2,2,2, "Sensible mix of click-through and conversion, ranking quality metrics, and a diversity check."],
+  M12: [1,2,1, "Names canary routing but cuts off before any traffic ramp or rollback criteria."],
+  M13: [2,2,2, "Correct secret manager with dynamic references and runtime injection, nothing committed."],
+  M14: [2,2,2, "Columnar format, server-side filtering, and streaming all genuinely reduce load time at scale."],
+  M15: [2,2,2, "Correct claim-check pattern, writing to object storage and passing only the URI through XCom."],
+  M16: [2,2,1, "Registry role and approval gate are right, but the closing clause is garbled and unspeakable."],
+  M17: [2,2,2, "Proxy signals plus feature drift, then retrospective calibration once labels land."],
+  M18: [1,2,1, "Names the NVIDIA Container Toolkit then cuts off after eleven words without explaining the decoupling."],
+  M19: [2,2,2, "Correct liveness-versus-readiness split tied to model load, avoiding 503s during deployments."],
+  M20: [2,2,2, "Pairs live schema and distribution validation with a golden dataset for transformation logic."],
+  M21: [2,2,2, "Shared base with environment overrides, account isolation, and one immutable artifact promoted through stages."],
+  M22: [1,2,1, "Names Bayesian optimization and Hyperband then cuts off after ten words with no budget controls."],
+  M23: [0,1,1, "Two-character stub, 'I'd ret', with no content at all; would embarrass the candidate."],
+  M24: [2,2,2, "Chunked backfill with a concurrency limit is the right way to protect the scheduler."],
+  M25: [2,2,2, "Location mapping, automated purge, erasure certificate, and crypto-shredding for immutable backups."],
+  M26: [2,2,1, "Correct centralized rebuild and rolling update, but the sentence is cut off mid-phrase."],
+  M28: [2,2,2, "Feature store as the single transformation definition, correctly framed as skew prevention."],
+  H01: [2,2,1, "Right triage order, but 'could be altered the model's behavior' is broken to say aloud."],
+  H02: [2,2,1, "Correct saturation, payload, and runtime-optimization path, but ninety-three words is over length."],
+  H03: [0,1,0, "Degenerates after two sentences into roughly thirty-two thousand repetitions of 'same'; unusable and embarrassing."],
+  H04: [0,1,0, "Opens on an irrelevant Model Registry, then loops 'the same node's resource limits' endlessly."],
+  H05: [2,2,2, "Gantt and log triage, data volume growth, then external contention: the right order."],
+  H06: [2,2,1, "Correct 503 Slow Down diagnosis and prefix sharding, but the duplicated 'partition' clause stumbles."],
+  H07: [0,1,0, "Emits a code comment line then loops on the letter 'a' for thousands of words."],
+  H08: [2,2,2, "Environment, resource limits, architecture, and events, plus kubectl debug to inspect the live container."],
+  H09: [1,2,2, "Drift detection is right, but 'state file' is Terraform, not CloudFormation, so the mechanism is misplaced."],
+  H10: [2,2,2, "Registry rollback, downstream cleanup by version logs, then a validation gate to prevent recurrence."],
+  H11: [2,2,2, "Profiling comparison, data loader regressions, and step or batch size changes: the right suspects."],
+  H12: [1,2,1, "Names multi-region active-active then cuts off after five words with no failover detail."]
+};
+const out = {};
+for (const [k, v] of Object.entries(V)) {
+  out[k] = { correctness: v[0], on_topic: v[1], delivery: v[2], reason: v[3] };
+}
+const dest = "C:/Users/sotka/OneDrive/Masa\u00fcst\u00fc/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-09-07T08-14-12-after8/interview60.judge.verdicts.gemma-4-31b-it.json";
+fs.writeFileSync(dest, JSON.stringify(out, null, 2) + "\n", "utf8");
+console.log("wrote", Object.keys(out).length, "entries to", dest);

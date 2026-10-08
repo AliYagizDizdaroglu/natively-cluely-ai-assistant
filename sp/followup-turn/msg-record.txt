@@ -1,0 +1,20 @@
+docs(passes): the turn-based follow-up context replay PASSES (gain +19 on 40 pairs, no new wrong)
+
+The pre-registered offline replay of the turn-based earlier-question block (spec
+docs/superpowers/specs/2026-10-03-turn-based-followup-context-design.md) on s50m + s50l, front leg 3.5-lite HIGH
+(140 calls) and back leg 3.1-lite LOW (48 calls), all answered, 0 transient. DECISION: PASS. Gain on the 40 roster
+pairs: consensus-acceptable 5 -> 24 (+19; PASS >= +8); no new wrong on either leg; off-topic 4 -> 1; median TTFT
++131 ms, words +4, thinking +58 tokens, all inside their bars. Not helped: s50m:S2Q05F, s50l:D2 (0/0), s50l:S2Q08F
+(2 -> 1).
+
+Registration FINAL sha256 eac1ad4f414b688ef5f2dd50cdf44734994c1e9a69e13cf0ad464db77a8290f5 (A1 + A2 points 1-16
+appended). Departures, all recorded before any decision: the user's delegation replaced the hash OK (2026-10-03
+22:52:10, verbatim in the record); a 00:22 gate failure from the controller's invocation was voided by A2 point 16 and
+the gate re-run whole; A3 ruled 20 grader launches refused by the account rate limit (no output) not grader attempts;
+a first decide refused for the controller's derive-script omission (no verdict read), fixed and re-run. 18 graders
+claude-opus-5-5 from fresh outside cwds, no Bash, memory ABSENT, audit clean. Captured prompts never committed (their
+sha256 in MANIFEST.txt); run.log and two outputs committed CR-normalised, original hashes in MANIFEST.txt.
+
+Not shown: offline replay of a reference implementation, not the app; the in-app build and a live flight are next.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

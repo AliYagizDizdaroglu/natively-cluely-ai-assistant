@@ -1,0 +1,16 @@
+[
+  {"tool": "eq-flight-read.mjs", "cal": "eq-flight-read.cal.txt", "review": "b5-b10-review.md", "verdict": "Re-review READY; addendum 482d9829 I12"},
+  {"tool": "eq-cues-export.mjs", "cal": "eq-cues-export.cal.txt", "review": "b5-b10-review.md", "verdict": "Re-review READY"},
+  {"tool": "eq-twins.mjs", "cal": "eq-twins.cal.txt", "review": "b6-b8-review.md", "verdict": "Re-review ready for first use"},
+  {"tool": "launch-grader-eq.mjs", "cal": "launch-grader-eq.cal.txt", "review": "b6-b8-review.md", "verdict": "Re-review ready for first use; substitute per NOTE-post-hour-tools (c)", "note": "add-dir source check recorded at first launch"},
+  {"tool": "eq-audit.mjs", "cal": "launch-grader-eq.cal.txt", "review": "b6-b8-review.md", "verdict": "Re-review sound for first use; substitute per NOTE (c)"},
+  {"tool": "eq-merge.cmd", "cal": "launch-grader-eq.cal.txt", "review": "b6-b8-review.md", "verdict": "Re-review M1 closed"},
+  {"tool": "eq-grader-dispatch.txt", "cal": null, "review": "b6-b8-review.md", "verdict": "template region byte-identical to h40d"},
+  {"tool": "cue-report.mjs", "cal": "cue-leak-check.cal.txt", "review": "cue-report-review.md", "verdict": "Re-review READY; run twins alone with --dist MAIN (addendum-2 2f5ce603)"},
+  {"tool": "cue-leak-check.mjs", "cal": "cue-leak-check.cal.txt", "review": "cue-report-review.md", "verdict": "Re-review READY"},
+  {"tool": "eq-b4-cal.mjs", "cal": "eq-b4-cal.cal.txt", "review": "tools-367-rereview.md", "verdict": "APPROVE (pre-hour, 2026-10-05)"},
+  {"tool": "window-eq.mjs", "cal": "window-eq.cal.txt", "review": "window-tools-review.md", "verdict": "PASS (A7 bounds)", "note": "A7.3 asked for this line before step 10; recorded late at 05:3x, sha unchanged since the 00:10 cal"},
+  {"tool": "guard-eq.mjs", "cal": "guard-eq-cal.txt", "review": "window-tools-review.md", "verdict": "PASS (A7 bounds)", "note": "recorded late, as above"},
+  {"tool": "gen-launchers-eq.mjs", "cal": "launchers-eq-cal.txt", "review": "window-tools-review.md", "verdict": "PASS (A7 bounds)", "note": "recorded late, as above"},
+  {"tool": "register-eq.ps1", "cal": "register-eq-cal.txt", "review": "window-tools-review.md", "verdict": "PASS (A7 bounds); cal-driver snapshot I1/I2 deferred", "note": "recorded late, as above"}
+]

@@ -1,0 +1,16 @@
+===== br1 S2Q04F [fix]
+2026-09-30T11-45-30-br1 [fix jitter=50]: 40/40 once; doubles []; never []; drops 0; absorbed 6 (whisper 0); subs 0; unmatched 0; reorders 4; supersedes 0
+trace S2Q04F: {"n":1,"lat":1200,"budget":1700,"path":"gate","finished":true,"fromLive":false,"finals":2,"cov":"1.00","closes":["continuation-expired"],"live":["Why might you use rank fusion instead of adding th"],"logFirst":"11:22:14.142","logGate":1201,"vadDev":-35,"blips":0,"voiceOff":"11:22:12.972"}
+  11:22:05.872 voice ON
+  11:22:09.172 voice OFF
+  11:22:09.632 voice ON
+  11:22:10.897 final "Why might you use Rank Fusion instead of adding the raw scores,"
+  11:22:12.972 voice OFF
+  11:22:13.697 final "and how would you add a configurable weight for each retrieval source?"
+  11:22:14.172 dispatch finals=2 fromLive=false live=1 path=gate "Why might you use Rank Fusion instead of adding the raw scor"
+  11:22:22.172 close continuation-expired
+  11:22:10.793 <live rv=match> {"kind":"marked"} q="Why might you use rank fusion instead of adding th"
+  11:22:12.902 <whisper rv=match> {"kind":"marked"} q="Why might you use Rank Fusion instead of adding th"
+  11:22:14.617 <whisper rv=match> {"kind":"marked"} q="Why might you use Rank Fusion instead of adding th"
+  11:22:15.739 <live rv=match> {"kind":"marked"} q="Modify your Reciprocal Rank Fusion implementation "
+

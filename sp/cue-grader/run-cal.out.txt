@@ -1,0 +1,35 @@
+﻿cal-1.g1 exit 0
+cal-2.g1 exit 0
+cal-3.g1 exit 0
+cal-1.g2 exit 0
+cal-2.g2 exit 0
+cal-3.g2 exit 0
+PASS [the 48 plants] g1: catch: planted bad rated not-good (of 24) = 24 (bar >= 22)
+PASS [the 48 plants] g1: wrong is wrong: must-be-wrong rated wrong (of 12) = 12 (bar >= 11)
+PASS [the 48 plants] g1: no blind spot: wrong_fact caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g1: no blind spot: off_question caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g1: no blind spot: repeats caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g1: no blind spot: filler caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g1: no blind spot: cut caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g1: no blind spot: contradicts caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g1: no blind spot: missing caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g1: pass good: good rated good (of 16) = 16 (bar >= 14)
+PASS [the 48 plants] g1: pass good: good rated WRONG (of 16), must be 0 = 0 (bar >= 0)
+PASS [the 48 plants] g1: halo: not wrong with every line C=2 (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g1: label check: own label = derived verdict (of 48) = 47 (bar >= 42)
+PASS [the 48 plants] g2: catch: planted bad rated not-good (of 24) = 24 (bar >= 22)
+PASS [the 48 plants] g2: wrong is wrong: must-be-wrong rated wrong (of 12) = 12 (bar >= 11)
+PASS [the 48 plants] g2: no blind spot: wrong_fact caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g2: no blind spot: off_question caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g2: no blind spot: repeats caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g2: no blind spot: filler caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g2: no blind spot: cut caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g2: no blind spot: contradicts caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g2: no blind spot: missing caught (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g2: pass good: good rated good (of 16) = 16 (bar >= 14)
+PASS [the 48 plants] g2: pass good: good rated WRONG (of 16), must be 0 = 0 (bar >= 0)
+PASS [the 48 plants] g2: halo: not wrong with every line C=2 (of 4) = 4 (bar >= 3)
+PASS [the 48 plants] g2: label check: own label = derived verdict (of 48) = 47 (bar >= 42)
+PASS [the 48 plants] agreement g1/g2 = 47/48 (bar >= 40)
+CALIBRATION PASS: both graders pass every bar
+score exit 0

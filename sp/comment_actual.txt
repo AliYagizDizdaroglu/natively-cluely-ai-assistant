@@ -1,0 +1,1 @@
+Proved for deepgram (DeepgramStreamingSTT); groq logs "RestSTT (groq)" and matches too; natively logs no Using line and cannot pass this row. 

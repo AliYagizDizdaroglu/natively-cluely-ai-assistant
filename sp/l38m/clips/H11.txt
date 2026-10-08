@@ -1,0 +1,1 @@
+Compare a SageMaker real-time endpoint, serverless inference and batch transform for a model called two thousand times a day with a two-second SLA.

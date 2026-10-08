@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sound XGBoost rationale plus explicit logistic-regression baseline; about 100 words, longer than a natural spoken answer."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "True positives and recall right, but it back-solves 4,750 predictions instead of stating precision at the fixed 5,000 band, so 57 versus 60 is never reconciled."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Difference-in-differences with control group, year-over-year seasonality check and propensity matching for mix; compact and natural."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct precision, recall, lift and stable tie-handling, and all three edge cases answered; roughly 110 words."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split with a thirty-day embargo gap and ColumnTransformer fit only on train; correct but around 110 words."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Left join, window and ingested-at guard are right, but it never filters event type to support calls, so the count includes every event."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested stage and names the shared feature store and transformation library; roughly 160 words, far past spoken length."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Request-ID prediction logs, treatment flag at inference, delayed outcome join and an embargoed retraining window; about 140 words."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Azure service names all accurate across storage, AML, ACR, AKS, Data Factory, managed identity and Monitor; roughly 125 words."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, Storage Blob Data Reader, Entra auth for PostgreSQL, Key Vault references and private-endpoint separation are all correct; about 135 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every named stage including hybrid retrieval and cross-encoder reranking; the experience mapping is thin and it runs about 100 words."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives unit, denominator, dataset construction and uncertainty for all three metrics; at roughly 215 words it is far too long to speak."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Compares fixed workflow, decomposition and dynamic agent on the three-document case and names the cost tradeoff; about 120 words."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Reciprocal rank fusion formula, aggregation and score-then-id tie-break are correct, but the answer opens mid-sentence with 'This by iterating'."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy relevance sort with dedup set, per-document cap of two and skip-if-it-does-not-fit all handled; about 90 words with a spoken underscore."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, per-case timeout race, order preserved by mapping and per-case error capture; 'race condition' is a loose name for a timeout race."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Per-tenant collections, relational metadata with ACLs, security context as a mandatory filter, async ingestion and golden-set evaluation; roughly 160 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioned schema, batched backfill with dual-write sync, shadow quality comparison, toggle cutover and revert rollback; about 130 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Blob, Event Grid, Functions, Service Bus, AI Search, Azure OpenAI and App Insights are the right fits, plus the managed-versus-custom line; about 125 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dedup key in durable state checked before write, with the embedding and state update in one transaction, is the right at-least-once pattern; about 100 words."
+  }
+}

@@ -1,0 +1,8 @@
+(1) restored tokens with punctuation inside (rule-v4 == the module):
+  decimal   interim "we measured a latency of 4.1 seconds at peak" -> restored ["4","1"] -> "4 1 seconds at peak."
+  percent   interim "we cut the error rate by 50% last quarter" -> restored ["50"] -> "50 last quarter."
+  hyphen    interim "explain deterministic tie-breaking for equal scores" -> restored ["tie","breaking"] -> "tie breaking for equal scores."
+  c++       interim "have you shipped C++ services in production" -> restored ["C"] -> "C services in production?"
+  thousands interim "it serves 10,000 requests per second today" -> restored ["10000"] -> "10000 requests per second today."
+(2) code points admitted by the non-ASCII guard: 968587; misaligned tok/rawTok: 0
+    calibration: "İzmir" tok ["peki","i","zmir"] raw ["peki","zmir"] (guard refuses it: true)

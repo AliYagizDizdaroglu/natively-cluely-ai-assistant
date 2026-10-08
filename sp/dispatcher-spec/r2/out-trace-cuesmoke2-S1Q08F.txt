@@ -1,0 +1,46 @@
+===== cuesmoke2 S1Q08F [calib]
+2026-10-01T02-37-41-cuesmoke [calib jitter=50]: 20/20 once; doubles []; never []; drops 1; absorbed 0 (whisper 0); subs 0; unmatched 0; reorders 1; supersedes 0
+trace S1Q08F: {"n":1,"lat":4290,"budget":2440,"path":"gate","finished":true,"fromLive":false,"finals":1,"cov":"0.88","closes":["not-a-question","continuation-expired"],"live":["How could repeatedly training on customers affecte"],"logFirst":"02:30:43.805","logGate":4312,"vadDev":5,"blips":0,"voiceOff":"02:30:39.499"}
+  02:30:34.619 voice ON
+  02:30:39.499 voice OFF
+  02:30:39.796 final "How could repeatedly"
+  02:30:42.589 final "training on customers affected by previous campaigns introduce bias?"
+  02:30:40.699 classify finals=1
+  02:30:41.580 close not-a-question
+  02:30:43.789 dispatch finals=1 fromLive=false live=1 path=gate "training on customers affected by previous campaigns introdu"
+  02:30:51.789 close continuation-expired
+  02:30:41.580 <verdict not-a-question> {"kind":"marked"}
+  02:30:41.839 <whisper rv=match> {"kind":"marked"} q="How could repeatedly"
+  02:30:42.275 <live rv=match> {"kind":"marked"} q="How could repeatedly training on customers affecte"
+  02:30:42.941 <whisper rv=match> {"kind":"marked"} q="How could repeatedly training on customers affecte"
+
+===== cuesmoke2 S1Q08F [fix]
+2026-10-01T02-37-41-cuesmoke [fix jitter=50]: 20/20 once; doubles []; never []; drops 0; absorbed 1 (whisper 0); subs 1; unmatched 0; reorders 1; supersedes 0
+trace S1Q08F: {"n":1,"lat":3490,"budget":2440,"path":"gate","finished":true,"fromLive":false,"finals":2,"cov":"1.00","closes":["continuation-expired"],"live":["How could repeatedly training on customers affecte"],"logFirst":"02:30:43.805","logGate":4312,"vadDev":5,"blips":0,"voiceOff":"02:30:39.499"}
+  02:30:34.619 voice ON
+  02:30:39.499 voice OFF
+  02:30:39.796 final "How could repeatedly"
+  02:30:42.589 final "training on customers affected by previous campaigns introduce bias?"
+  02:30:40.699 classify finals=1
+  02:30:42.989 dispatch finals=2 fromLive=false live=1 path=gate "How could repeatedly training on customers affected by previ"
+  02:30:50.989 close continuation-expired
+  02:30:41.580 <verdict not-a-question> {"kind":"declined","verdict":"not-a-question","again":false}
+  02:30:41.839 <whisper rv=match> {"kind":"revived","by":"whisper","rule":"reverse","how":"reverse","score":1,"remScore":0,"residual":2,"hits":2,"finals":1} q="How could repeatedly"
+  02:30:42.275 <live rv=match> {"kind":"marked"} q="How could repeatedly training on customers affecte"
+  02:30:42.941 <whisper rv=match> {"kind":"marked"} q="How could repeatedly training on customers affecte"
+
+===== cuesmoke2 S1Q08F [fixunk]
+2026-10-01T02-37-41-cuesmoke [fixunk jitter=50]: 20/20 once; doubles []; never []; drops 0; absorbed 1 (whisper 0); subs 1; unmatched 0; reorders 1; supersedes 0
+trace S1Q08F: {"n":1,"lat":3490,"budget":2440,"path":"gate","finished":true,"fromLive":false,"finals":2,"cov":"1.00","closes":["continuation-expired"],"live":["How could repeatedly training on customers affecte"],"logFirst":"02:30:43.805","logGate":4312,"vadDev":5,"blips":0,"voiceOff":"02:30:39.499"}
+  02:30:34.619 voice ON
+  02:30:39.499 voice OFF
+  02:30:39.796 final "How could repeatedly"
+  02:30:42.589 final "training on customers affected by previous campaigns introduce bias?"
+  02:30:40.699 classify finals=1
+  02:30:42.989 dispatch finals=2 fromLive=false live=1 path=gate "How could repeatedly training on customers affected by previ"
+  02:30:50.989 close continuation-expired
+  02:30:41.580 <verdict not-a-question> {"kind":"declined","verdict":"not-a-question","again":false}
+  02:30:41.839 <whisper rv=match> {"kind":"revived","by":"whisper","rule":"reverse","how":"reverse","score":1,"remScore":0,"residual":2,"hits":2,"finals":1} q="How could repeatedly"
+  02:30:42.275 <live rv=match> {"kind":"marked"} q="How could repeatedly training on customers affecte"
+  02:30:42.941 <whisper rv=match> {"kind":"marked"} q="How could repeatedly training on customers affecte"
+

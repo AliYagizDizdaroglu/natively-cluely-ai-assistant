@@ -1,0 +1,10 @@
+docs(passes): router-default-r1 pre-registration, sealed before the flight
+
+The pre-registration of the router-default validation flight (live40 hands-free, NATIVELY_LIVE_ROUTER=1, run label
+router-default-r1): bars and verdict per spec 10.2 and 11, amendments A1-A10 made before data (A1 the router silence
+padding found by smoke 2 and verified by smoke 3; A2 wrong = either grader), the smoke result, and copies of the
+reader, the blind export, the scorer, the grader launcher and its dispatch text, the launcher source, the guard, the
+precheck and the quota ledger. Opus author and a separate Opus re-check (APPROVE WITH CHANGES, all adopted).
+T, this commit's sha and the dry twin go to the arming record.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

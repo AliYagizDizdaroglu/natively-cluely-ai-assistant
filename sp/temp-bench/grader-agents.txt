@@ -1,0 +1,7 @@
+temp probe graders, dispatched 2026-10-02 ~20:26 local, model alias opus, h40d dispatch text with paths substituted; keys moved out first
+blind-1 g1 a50a778fc12f945f0
+blind-1 g2 a880c511598b66ea0
+blind-2 g1 ad412d59311ae41ca
+blind-2 g2 a0cbb20f4c248035a
+blind-3 g1 a6692de3318659b18
+blind-3 g2 a4bea23e284df90e0

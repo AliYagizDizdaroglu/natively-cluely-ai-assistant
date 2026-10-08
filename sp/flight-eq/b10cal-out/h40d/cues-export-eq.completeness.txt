@@ -1,0 +1,18 @@
+LOG natively_debug.log feec720cca2d5a10a4295e61cd5cc466d2972861b4da069faab0f735211ba46d
+ARMING sha256/12 d3c85a46dca4 head 56bda9e
+window 2026-10-02T10:33:52.110Z 2026-10-02T11:39:41.435Z
+in-app entries 44 ids 44
+in-app joined to pairs 44 unjoined 0
+cue lines in window 45 outside window 2
+full lines in window 44 outside window 2
+superseded 6541
+full lines exempt (probe) 0
+empties 0
+cueBlocks present 45 = non-empty entries 44 + non-empty superseded 1 + non-empty probe lines 0: OK
+twin captured-high-r1 entries 44 asked 44 (prompts.json keys)
+twin captured-high-r2 entries 44 asked 44 (prompts.json keys)
+twin captured-high-r3 entries 44 asked 44 (prompts.json keys)
+twin captured-low-r1 entries 44 asked 44 (prompts.json keys)
+twin captured-low-r2 entries 44 asked 44 (prompts.json keys)
+twin captured-low-r3 entries 44 asked 44 (prompts.json keys)
+EXPORT COMPLETE

@@ -1,0 +1,27 @@
+original sha256 4d0adc4c71359df68dae57b97a6782cbee453434e235714073eec94a10ccdb57
+
+=== M5_drop_startsWith (mutated sha 68664c082f6292f70b1e27b6354f045cd562f66939bf038bdd55f34184d9e8ed)
+ ❯ electron/test/golden/earlierQuestionArm.test.ts (3 tests | 1 failed) 12ms
+   × --no-block: the EARLIER QUESTION block of a captured user turn, removed byte for byte > refuses a turn without a block, a block that is not the last context part, two labels, and a two-line block 8ms
+     → expected { …(2) } to be null
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  electron/test/golden/earlierQuestionArm.test.ts > --no-block: the EARLIER QUESTION block of a captured user turn, removed byte for byte > refuses a turn without a block, a block that is not the last context part, two labels, and a two-line block
+AssertionError: expected { …(2) } to be null
+ ❯ electron/test/golden/earlierQuestionArm.test.ts:43:109
+restored sha256 4d0adc4c71359df68dae57b97a6782cbee453434e235714073eec94a10ccdb57 equal=true
+
+=== M4_drop_endsWith (mutated sha 2b6e3fe1f0a9ce0187a00513bf387cbe65dbaea9007433d84c65b8cacf678288)
+ ❯ electron/test/golden/earlierQuestionArm.test.ts (3 tests | 1 failed) 13ms
+   × --no-block: the EARLIER QUESTION block of a captured user turn, removed byte for byte > refuses a turn without a block, a block that is not the last context part, two labels, and a two-line block 8ms
+     → expected { …(2) } to be null
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  electron/test/golden/earlierQuestionArm.test.ts > --no-block: the EARLIER QUESTION block of a captured user turn, removed byte for byte > refuses a turn without a block, a block that is not the last context part, two labels, and a two-line block
+AssertionError: expected { …(2) } to be null
+ ❯ electron/test/golden/earlierQuestionArm.test.ts:42:96
+restored sha256 4d0adc4c71359df68dae57b97a6782cbee453434e235714073eec94a10ccdb57 equal=true
+
+final sha256 4d0adc4c71359df68dae57b97a6782cbee453434e235714073eec94a10ccdb57 equal=true

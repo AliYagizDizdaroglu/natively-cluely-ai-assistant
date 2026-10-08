@@ -1,0 +1,236 @@
+{
+  "S1Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Cleanly distinguishes all three approaches by interpretability, data modality and determinism; concise natural spoken length."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic right but never states the implied 57 percent precision, back-solving instead and declaring consistency."
+  },
+  "S1Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct on ROC optimism under imbalance and names cost, lift and pilot; roughly 128 words."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout is the right mechanism and correctly explains why it neutralises seasonality and business changes."
+  },
+  "S1Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accurate uplift framing: lost causes, sure things, persuadables and CATE, delivered at good spoken length."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct precision, recall, lift and all three edge cases, with index tie-break preserved; roughly 103 words."
+  },
+  "S1Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Partial selection to O(N log K) with tuple tie-break is right; slightly long at roughly 89 words."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split, train-only fit and the label-window embargo are all correct; roughly 143 words."
+  },
+  "S1Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Both halves answered: snapshots legitimate as time-indexed states, customer-level holdout against identity memorisation; roughly 140 words."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Left join, thirty-day window, ingested-at filter and count of event id for zeros are correct; too long."
+  },
+  "S1Q06F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Composite index plus SCD Type 2 with valid-from and valid-to answers both halves crisply."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every named stage and names the shared feature store and inference logic; roughly 135 words."
+  },
+  "S1Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Idempotency key plus pinned model version answers both halves at an acceptable spoken length."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Hashed assignment, prediction logging, delayed join and propensity weighting all correct; roughly 125 words."
+  },
+  "S1Q08F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Feedback loop framing right, but claims bias favours persuadable segments when contaminated labels bias against them."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure mapping for all eight components with operational reasons; roughly 125 words."
+  },
+  "S1Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sensible split of managed endpoints, App Service and AKS with a reason for each."
+  },
+  "S1Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Identity side is precise, but the explicitly asked networking controls are entirely absent."
+  },
+  "S1Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Textbook triage: 401 identity, 403 permissions, timeout network with private endpoint and DNS checks."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All eight stages covered and mapped to experience; roughly 150 words is well over spoken length."
+  },
+  "S2Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correctly names retrieval, context assembly and generation as the failure points; slightly over length at 86 words."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Answers only the F1 metric, skipping hallucination and multi-hop, and treats uncertainty as tool verification."
+  },
+  "S2Q02F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Strong bias checks, but prompting is never ablated separately and retrieval merges with orchestration; roughly 190 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Compares all three approaches on determinism of the query path and names the latency trade-off."
+  },
+  "S2Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Iteration cap, token budget and schema-validation fallback all correct; at 85 words it exceeds spoken length."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accurate reciprocal rank fusion with the configurable constant and deterministic id tie-break, tightly delivered."
+  },
+  "S2Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct scale-incompatibility argument for RRF and a clean per-source weighting scheme."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every constraint honoured including skip-not-break and the two-per-document cap; roughly 103 words."
+  },
+  "S2Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Concrete failure example plus MMR and agentic decomposition; roughly 180 words is far over spoken length."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore, wait_for, gather with return_exceptions and order preservation are all correct; roughly 112 words."
+  },
+  "S2Q06F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Never designs the transient-error retry within a deadline, answering only the deterministic testing half."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant namespaces, Postgres ACL filter-first, queue ingestion, citations and evaluation all covered; roughly 210 words."
+  },
+  "S2Q07F": {
+    "correctness": 2,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Right two enforcement points, but half the answer drifts into unasked ingestion metadata validation."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioned index, backfill, dual-write, shadow comparison, config cutover and warm rollback all correct; roughly 125 words."
+  },
+  "S2Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Counts and checksums, gold-set regression and shadow mode form a concrete, well-sized proof."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "All seven components mapped to correct Azure services with a managed-versus-custom justification."
+  },
+  "S2Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Region pinning, disabled replication, Private Link and in-region VNet compute correctly enforce residency."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dedup hash, atomic state write and redelivery-after-crash reasoning are right; roughly 90 words."
+  },
+  "S2Q10F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Poison handling and delete-versus-update race correct, but dead-letter replay is never addressed, only alerting."
+  }
+}

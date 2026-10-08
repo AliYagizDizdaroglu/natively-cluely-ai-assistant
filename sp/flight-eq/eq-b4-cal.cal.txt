@@ -1,0 +1,167 @@
+eq-b4-cal calibration  2026-10-05T15:13:26.443Z
+tool sha256 aa8dad9776722a5a28c1f38c496c6d10d14ab268d4d15c318a3158e00ff24671
+driver sha256 a2ec4d996d89448d37419390c0c271fdb22810043baf0a9500f78ccaf6d75b47
+cuesmoke folder ...\2026-10-01T02-37-41-cuesmoke  prompts ids 19  prompts.json sha256 d1e9b83fca7c0f89ca3302f78ea5e542efcfdd7aa6b1b3f661259d4428c302b9
+LABEL length 125  synthetic block length 175  X=S1Q01F  Y=S1Q02 (first two ids with a flippable window turn)
+
+(a) unmodified cuesmoke, --g ''
+  cmd:      eq-b4-cal.mjs <cuesmoke copy> --g ""
+  expected: TRANSCRIPT OK 19/19 | BLOCK NONE (no --g ids) | LABEL OUTSIDE --g NONE  (exit 0)
+  actual:   TRANSCRIPT OK 19/19 | BLOCK NONE (no --g ids) | LABEL OUTSIDE --g NONE  (exit 0)
+  => PASS
+(b) X given a synthetic block via withEarlierQuestion, --g X
+  cmd:      eq-b4-cal.mjs <b> --g S1Q01F
+  expected: TRANSCRIPT OK 19/19 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE  (exit 0)
+  actual:   TRANSCRIPT OK 19/19 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE  (exit 0)
+  => PASS
+(c) as (b) + one NON-final transcript line of X: a lowercase letter upper-cased
+  cmd:      eq-b4-cal.mjs <c> --g S1Q01F
+  expected: TRANSCRIPT DIFF S1Q01F | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE  (exit 1)
+  actual:   TRANSCRIPT DIFF S1Q01F | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE  (exit 1)
+  => PASS
+(d) as (b) + the block's trailing \n\n reduced to \n
+  cmd:      eq-b4-cal.mjs <d> --g S1Q01F
+  expected: TRANSCRIPT OK 19/19 | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  actual:   TRANSCRIPT OK 19/19 | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  => PASS
+(e) as (b) + one NON-G id (Y) transcript part changed
+  cmd:      eq-b4-cal.mjs <e> --g S1Q01F
+  expected: TRANSCRIPT UNCALIBRATED 1 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE  (exit 3)
+  actual:   TRANSCRIPT UNCALIBRATED 1 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE  (exit 3)
+  => PASS
+(e2) no G, one id (Y) transcript part changed
+  cmd:      eq-b4-cal.mjs <e2> --g ""
+  expected: TRANSCRIPT UNCALIBRATED 1 | BLOCK NONE (no --g ids) | LABEL OUTSIDE --g NONE  (exit 3)
+  actual:   TRANSCRIPT UNCALIBRATED 1 | BLOCK NONE (no --g ids) | LABEL OUTSIDE --g NONE  (exit 3)
+  => PASS
+
+Fix round 1, new cases (each one is also run against a mutant of the tool with the check removed, below):
+(R12) well-formed block in X (--g X) AND in the non-G id Y
+  cmd:      eq-b4-cal.mjs <r12> --g S1Q01F
+  expected: TRANSCRIPT OK 19/19 | BLOCK OK 1/1 | LABEL OUTSIDE --g S1Q02  (exit 1)
+  actual:   TRANSCRIPT OK 19/19 | BLOCK OK 1/1 | LABEL OUTSIDE --g S1Q02  (exit 1)
+  note:     TRANSCRIPT cannot see a block: it sits in the verbatim-copied part before the marker
+  => PASS
+(R13) MALFORMED block (trailing \n only) in the non-G id Y, --g ''
+  cmd:      eq-b4-cal.mjs <r13> --g ""
+  expected: TRANSCRIPT OK 19/19 | BLOCK NONE (no --g ids) | LABEL OUTSIDE --g S1Q02  (exit 1)
+  actual:   TRANSCRIPT OK 19/19 | BLOCK NONE (no --g ids) | LABEL OUTSIDE --g S1Q02  (exit 1)
+  => PASS
+(R7) as (b) with the LEADING separator before the block reduced to one \n
+  cmd:      eq-b4-cal.mjs <r7> --g S1Q01F
+  expected: TRANSCRIPT OK 19/19 | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  actual:   TRANSCRIPT OK 19/19 | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  => PASS
+(R8) as (b) with the LEADING separator before the block raised to \n\n\n
+  cmd:      eq-b4-cal.mjs <r8> --g S1Q01F
+  expected: TRANSCRIPT OK 19/19 | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  actual:   TRANSCRIPT OK 19/19 | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  => PASS
+(R14) as (c) AND the same change in the non-G id Y
+  cmd:      eq-b4-cal.mjs <r14> --g S1Q01F
+  expected: TRANSCRIPT UNCALIBRATED 1; G-ids also failing: S1Q01F | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE  (exit 3)
+  actual:   TRANSCRIPT UNCALIBRATED 1; G-ids also failing: S1Q01F | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE  (exit 3)
+  note:     before: TRANSCRIPT UNCALIBRATED 1 only, so X's DIFF was never named (exit stays 3 by A4-RECHECK m4)
+  => PASS
+(mf) synthetic: the marker text occurs BEFORE the LABEL (and once after it)
+  cmd:      eq-b4-cal.mjs <mf> --g S1Q01F
+  expected: TRANSCRIPT DIFF S1Q01F | BLOCK FAIL S1Q01F (marker-first marker=0 label=4401) | LABEL OUTSIDE --g NONE  (exit 1)
+  actual:   TRANSCRIPT DIFF S1Q01F | BLOCK FAIL S1Q01F (marker-first marker=0 label=4401) | LABEL OUTSIDE --g NONE  (exit 1)
+  note:     marker index 0 < label index 4401; the first marker also starts the builder's transcript part, so TRANSCRIPT reads DIFF too
+  => PASS
+(mf2) marker text before the LABEL AND a malformed block (two parent lines; the split returns null) -> plain BLOCK FAIL, no tag
+  cmd:      eq-b4-cal.mjs <mf2> --g S1Q01F
+  expected: TRANSCRIPT DIFF S1Q01F | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  actual:   TRANSCRIPT DIFF S1Q01F | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  note:     the reviewer's case: with the old rule this id read "(marker-first ...)" and A5.1 would call it "reported, not 5d"
+  => PASS
+(mf3) marker text before the LABEL AND the leading separator reduced to one \n (split non-null, a second check fails) -> plain BLOCK FAIL, no tag
+  cmd:      eq-b4-cal.mjs <mf3> --g S1Q01F
+  expected: TRANSCRIPT DIFF S1Q01F | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  actual:   TRANSCRIPT DIFF S1Q01F | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  note:     the tag needs the round trip to be the ONLY failing check
+  => PASS
+(crash) prompts.json is truncated JSON that contains a canary string
+  cmd:      eq-b4-cal.mjs <crash> --g ""
+  expected: stderr "B4CAL CRASH: ..." without the canary, no stdout lines, exit 4 (not 1, 2 or 3), work folder removed
+  actual:   stderr "B4CAL CRASH: SyntaxError (message not echoed: it can carry prompt text) | at JSON.parse (<anonymous>)", stdout lines 0, canary printed: false  (exit 4)
+  => PASS
+(rb) REPLAY_BREAK=1 in the environment, case (b)
+  expected: refusal naming REPLAY_BREAK on stderr, no stdout lines, exit 2
+  actual:   stderr "B4CAL REFUSED: REPLAY_BREAK is set in the environment; unset it (it makes the builder corrupt every id)", stdout lines 0  (exit 2)   => PASS
+(rb) REPLAY_BREAK=0 in the environment, case (b)
+  expected: refusal naming REPLAY_BREAK on stderr, no stdout lines, exit 2
+  actual:   stderr "B4CAL REFUSED: REPLAY_BREAK is set in the environment; unset it (it makes the builder corrupt every id)", stdout lines 0  (exit 2)   => PASS
+
+KNOWN BLIND SPOTS of TRANSCRIPT (tools-367-review B-I2; A4.1 (c') ; they must read OK - a changed byte the renderer can produce is invisible):
+(c') as (b) + a lowercase-for-lowercase swap: candidate 1 (line 0, word 2, offset 4422; 1 char changed)
+  cmd:      eq-b4-cal.mjs <c'> --g S1Q01F
+  expected: TRANSCRIPT OK 19/19 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE  (exit 0)
+  actual:   TRANSCRIPT OK 19/19 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE  (exit 0)
+  note:     KNOWN BLIND SPOT: TRANSCRIPT OK although a transcript byte changed (the renderer reproduces it)
+  => PASS
+(c'') as (b) + the PINNED last transcript line changed (a lowercase letter upper-cased; 1 char changed)
+  cmd:      eq-b4-cal.mjs <c''> --g S1Q01F
+  expected: TRANSCRIPT OK 19/19 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE  (exit 0)
+  actual:   TRANSCRIPT OK 19/19 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE  (exit 0)
+  note:     KNOWN BLIND SPOT: pinSettledQuestion copies the settled text verbatim, so a change in the pinned line is invisible
+  => PASS
+Contrast: case (c) above changes one char of a NON-final line to upper case and reads TRANSCRIPT DIFF - so the two OK readings are not an artefact of a dead check.
+
+Extra negative controls (beyond A3 a-f):
+(g) --g names an id that carries NO block
+  cmd:      eq-b4-cal.mjs <a> --g S1Q01F
+  expected: TRANSCRIPT OK 19/19 | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  actual:   TRANSCRIPT OK 19/19 | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  => PASS
+(h) two blocks in X (strip refuses: not a single well-formed block)
+  cmd:      eq-b4-cal.mjs <h> --g S1Q01F
+  expected: TRANSCRIPT OK 19/19 | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  actual:   TRANSCRIPT OK 19/19 | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE  (exit 1)
+  => PASS
+
+Mutants (a copy of the tool with ONE check removed/changed; the targeted case must NOT read as expected, i.e. the case can see the check):
+  M-plus3: BLOCK length identity "+ 2" -> "+ 3", case (b)
+    now reads: TRANSCRIPT OK 19/19 | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE (exit 1)  => FLIPPED (calibrated)
+  M-outside: LABEL OUTSIDE detection removed, case (R12)
+    now reads: TRANSCRIPT OK 19/19 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE (exit 0)  => FLIPPED (calibrated)
+  M-outside (R13 form): same mutant, case (R13)
+    now reads: TRANSCRIPT OK 19/19 | BLOCK NONE (no --g ids) | LABEL OUTSIDE --g NONE (exit 0)  => FLIPPED (calibrated)
+  M-lead: leading-separator clause removed, case (R7)
+    now reads: TRANSCRIPT OK 19/19 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE (exit 0)  => FLIPPED (calibrated)
+  M-lead: same mutant, case (R8)
+    now reads: TRANSCRIPT OK 19/19 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE (exit 0)  => FLIPPED (calibrated)
+  M-galso: "G-ids also failing" removed, case (R14)
+    now reads: TRANSCRIPT UNCALIBRATED 1 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE (exit 3)  => FLIPPED (calibrated)
+  M-markerfirst: marker-first classification removed, case (mf)
+    now reads: TRANSCRIPT DIFF S1Q01F | BLOCK FAIL S1Q01F | LABEL OUTSIDE --g NONE (exit 1)  => FLIPPED (calibrated)
+  M-markerfirst-old: the OLD tagging rule (tag any BLOCK FAIL with marker text before the LABEL), case (mf2)
+    now reads: TRANSCRIPT DIFF S1Q01F | BLOCK FAIL S1Q01F (marker-first marker=0 label=4401) | LABEL OUTSIDE --g NONE (exit 1)  => FLIPPED (calibrated)
+  M-markerfirst-old: same mutant, case (mf3)
+    now reads: TRANSCRIPT DIFF S1Q01F | BLOCK FAIL S1Q01F (marker-first marker=0 label=4400) | LABEL OUTSIDE --g NONE (exit 1)  => FLIPPED (calibrated)
+  M-markerfirst-norest: tag without requiring the other clauses ("rest"), case (mf3)
+    now reads: TRANSCRIPT DIFF S1Q01F | BLOCK FAIL S1Q01F (marker-first marker=0 label=4400) | LABEL OUTSIDE --g NONE (exit 1)  => FLIPPED (calibrated)
+  M-crash: the crash exit code 4 -> 1 (a crash reads like a FAIL), case (crash)
+    now reads: exit 1  => FLIPPED (calibrated)
+  M-replay: the REPLAY_BREAK refusal removed, REPLAY_BREAK=1 on case (b)
+    now reads: TRANSCRIPT UNCALIBRATED 18; G-ids also failing: S1Q01F | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE (exit 3)  => FLIPPED (calibrated)
+  M-nostrip (tools-367-review M1): the strip step removed, case (b) - must stay OK
+    now reads: TRANSCRIPT OK 19/19 | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE (exit 0)  => UNCHANGED, as the known blind spot predicts (PASS)
+  M-nostrip: same mutant, case (c) - must stay DIFF
+    now reads: TRANSCRIPT DIFF S1Q01F | BLOCK OK 1/1 | LABEL OUTSIDE --g NONE (exit 1)  => UNCHANGED, as the known blind spot predicts (PASS)
+
+(r) refusals: --g NOPE -> exit 2 "B4CAL REFUSED: --g id NOPE is not in prompts.json"; no --g -> exit 2; bare trailing --g -> exit 0 (= none)  => PASS
+(w) work folders removed by the tool after runs (incl. the refusal and the crash): b4cal-tmp absent, b4cal-tmp-out absent
+
+(f) three-way equality, cmd: node eq-b4-cal.cal.mjs --smoke-ok S1Q04,S1Q04F,S1Q06,S1Q06F,WHY   (played ids from smoke-eq-on.played.json)
+    run dir prompts keys   [S1Q04,S1Q04F,S1Q06,S1Q06F,WHY]
+    played ids             [S1Q04,S1Q04F,S1Q06,S1Q06F,WHY]
+    verify-smoke-prompts OK [S1Q04,S1Q04F,S1Q06,S1Q06F,WHY]
+    registered ids         [S1Q04,S1Q04F,S1Q06,S1Q06F,WHY]  => PASS (all four equal)
+    negative: the --smoke-ok list WITHOUT WHY (B-m4 negative) => NOT EQUAL (PASS: reads FAIL as it must)
+    negative: the played ids WITHOUT S1Q06F => NOT EQUAL (PASS: reads FAIL as it must)
+    negative: the run dir keys WITHOUT S1Q04 => NOT EQUAL (PASS: reads FAIL as it must)
+    negative: the --smoke-ok list plus one extra id (S1Q99) => NOT EQUAL (PASS: reads FAIL as it must)
+    negative: the --smoke-ok list with WHY twice instead of once => NOT EQUAL (PASS: reads FAIL as it must)
+
+CALIBRATION PASSED (a-e2, g, h, R7, R8, R12, R13, R14, mf, mf2, mf3, crash, rb, c', c'', 12 checks x mutants, r, w; f three-way on the smoke dir)

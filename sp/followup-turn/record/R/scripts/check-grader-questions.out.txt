@@ -1,0 +1,18 @@
+s50m:S1Q04F roster   chain S1Q04   follow-up WITH its parent (question 94 chars + parent 408 chars)
+s50m:S1Q06F roster   chain S1Q06   follow-up WITH its parent (question 106 chars + parent 385 chars)
+s50m:S2Q05F roster   chain S2Q05   follow-up WITH its parent (question 142 chars + parent 335 chars)
+s50m:S2Q08F roster   chain S2Q08   follow-up WITH its parent (question 117 chars + parent 305 chars)
+s50m:D1     dropped  chain S1Q06   follow-up WITH its parent (question 106 chars + parent 385 chars)
+s50m:D2     dropped  chain S2Q05   follow-up WITH its parent (question 142 chars + parent 335 chars)
+s50m:D3     dropped  chain S2Q08   follow-up WITH its parent (question 117 chars + parent 305 chars)
+s50l:S1Q04F roster   chain S1Q04   follow-up WITH its parent (question 94 chars + parent 408 chars)
+s50l:S1Q06F roster   chain S1Q06   follow-up WITH its parent (question 106 chars + parent 385 chars)
+s50l:S2Q05F roster   chain S2Q05   follow-up WITH its parent (question 142 chars + parent 335 chars)
+s50l:S2Q08F roster   chain S2Q08   follow-up WITH its parent (question 117 chars + parent 305 chars)
+s50l:D1     dropped  chain S1Q06   follow-up WITH its parent (question 106 chars + parent 385 chars)
+s50l:D2     dropped  chain S2Q05   follow-up WITH its parent (question 142 chars + parent 335 chars)
+s50l:D3     dropped  chain S2Q08   follow-up WITH its parent (question 117 chars + parent 305 chars)
+h40d grader dispatch text: validation-hour/h40d-grader-dispatch.txt sha256 f8d646701e6ee3b160ef4ade64961db82851720d020838d8559bc89bcd5981cd (9064 bytes)
+interview60.judge.mjs sha256 f5dba64f6646...: section 2 row OK
+h40d-grader-dispatch.txt sha256 f8d646701e6e...: section 2 row and the pinned f8d64670...81cd, 9064 bytes: OK
+instrument 8564ba96369a (pre-registered 8564ba96369a) OK

@@ -1,0 +1,14 @@
+import fs from 'fs';
+const R='C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-09-22T08-22-50-s50m/';
+const j=JSON.parse(fs.readFileSync(R+'interview60.judge.json','utf8'));
+console.log('judge top keys:',Object.keys(j));
+const ids=Object.keys(j.items);
+console.log('n items',ids.length);
+console.log('ids',ids.join(' '));
+console.log('sample item keys:',Object.keys(j.items[ids[0]]));
+console.log(JSON.stringify(j.items['S2Q02F'],null,1).slice(0,2500));
+const a=JSON.parse(fs.readFileSync(R+'interview60.answers.gemini-3.5-flash-lite_captured-high.json','utf8'));
+console.log('answers type',Array.isArray(a)?'array':'object', Array.isArray(a)?a.length:Object.keys(a).slice(0,8));
+const first=Array.isArray(a)?a[0]:a[Object.keys(a)[0]];
+console.log('answer rec keys:',Object.keys(first));
+console.log(JSON.stringify(first).slice(0,1200));

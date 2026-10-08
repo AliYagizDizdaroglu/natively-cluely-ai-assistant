@@ -1,0 +1,79 @@
+captures in the run: 44; within [-0.5 s, +10 s] of 2026-09-30T13:12:04.732Z: gemini-3.1-flash-lite@+487ms
+using the capture at 2026-09-30T13:12:05.219Z, model gemini-3.1-flash-lite; system 17195 chars, user 4326 chars; carries the dist's CUE_RULE: true
+nocue arm: 16223 chars (the rule's 972 removed: true)
+cue   rep 1: out  123 tok, finish STOP; words raw 83 -> cue-strip 69 -> fences 69 -> line filter 69 -> offers 54 -> notation 54
+            shape: CUES cue(3w) cue(3w) cue(4w) blank prose(54w) blank MORE offer(6w) offer(6w)
+            cues ["Prometheus custom metrics","KEDA for queues","Scale-to-zero and cold starts"]  offers ["handling vLLM batching and concurrency limits","node affinity and GPU resource requests"]
+cue   rep 2: out  116 tok, finish STOP; words raw 80 -> cue-strip 69 -> fences 69 -> line filter 69 -> offers 54 -> notation 54
+            shape: CUES cue(4w) cue(4w) blank prose(54w) blank MORE offer(6w) offer(6w)
+            cues ["Custom queue depth metrics","KEDA for event-driven scaling"]  offers ["managing cold starts with pre-warmed pods","tuning stabilization windows for traffic spikes"]
+cue   rep 3: out   98 tok, finish STOP; words raw 78 -> cue-strip 63 -> fences 63 -> line filter 63 -> offers 63 -> notation 63
+            shape: CUES cue(3w) cue(4w) cue(4w) blank prose(63w)
+            cues ["KEDA custom metrics","Resource requests and limits","Prometheus and warm pools"]
+cue   rep 4: out  105 tok, finish STOP; words raw 70 -> cue-strip 54 -> fences 54 -> line filter 54 -> offers 49 -> notation 49
+            shape: CUES cue(4w) cue(4w) cue(4w) blank prose(49w) blank MORE offer(3w)
+            cues ["KEDA with custom metrics","Queue depth and latency","Resource requests and limits"]  offers ["Scale-to-zero cold-start trade-offs"]
+cue   rep 5: out  114 tok, finish STOP; words raw 82 -> cue-strip 64 -> fences 64 -> line filter 64 -> offers 54 -> notation 54
+            shape: CUES cue(4w) cue(5w) cue(5w) prose(54w) MORE offer(3w) offer(4w)
+            cues ["KEDA with custom metrics","Queue depth and latency scaling","Minimum baseline for cold starts"]  offers ["GPU-aware resource allocation","Model warm-up time mitigation"]
+cue   rep 6: out   86 tok, finish STOP; words raw 64 -> cue-strip 52 -> fences 52 -> line filter 52 -> offers 52 -> notation 52
+            shape: CUES cue(4w) cue(5w) prose(52w)
+            cues ["KEDA with custom metrics","Queue depth and GPU utilization"]
+cue   rep 7: out   91 tok, finish STOP; words raw 69 -> cue-strip 53 -> fences 53 -> line filter 53 -> offers 53 -> notation 53
+            shape: CUES cue(4w) cue(5w) cue(3w) blank prose(53w)
+            cues ["KEDA with custom metrics","Queue depth and GPU load","Managing cold-start latency"]
+cue   rep 8: out  125 tok, finish STOP; words raw 90 -> cue-strip 77 -> fences 77 -> line filter 77 -> offers 65 -> notation 65
+            shape: CUES cue(3w) cue(3w) cue(3w) blank prose(65w) blank MORE offer(5w) offer(4w)
+            cues ["KEDA custom metrics","Precise resource requests","Minimum baseline replicas"]  offers ["scale-to-zero cold start latency trade-offs","queue-based concurrency scaling parameters"]
+cue   rep 9: out   99 tok, finish STOP; words raw 70 -> cue-strip 58 -> fences 58 -> line filter 58 -> offers 51 -> notation 51
+            shape: CUES cue(4w) cue(5w) blank prose(51w) blank MORE offer(5w)
+            cues ["KEDA and custom metrics","Queue length over CPU usage"]  offers ["Scale-to-zero trade-offs for cold starts"]
+cue   rep10: out   84 tok, finish STOP; words raw 66 -> cue-strip 48 -> fences 48 -> line filter 48 -> offers 48 -> notation 48
+            shape: CUES cue(4w) cue(5w) cue(5w) blank prose(48w)
+            cues ["KEDA with custom metrics","Queue depth and GPU utilization","Readiness probes for model weights"]
+cue   rep11: out  102 tok, finish STOP; words raw 76 -> cue-strip 59 -> fences 59 -> line filter 59 -> offers 59 -> notation 59
+            shape: CUES cue(4w) cue(4w) cue(5w) blank prose(59w)
+            cues ["KEDA and Prometheus autoscaling","Custom queue depth metrics","Baseline min-replicas for cold starts"]
+cue   rep12: out  104 tok, finish STOP; words raw 73 -> cue-strip 61 -> fences 61 -> line filter 61 -> offers 47 -> notation 47
+            shape: CUES cue(4w) cue(5w) prose(47w) MORE offer(6w) offer(5w)
+            cues ["Custom metrics via KEDA","Baseline replicas for cold starts"]  offers ["GPU memory limits and batching thresholds","Scale-to-zero trade-offs for asynchronous jobs"]
+== cue: 0 of 12 answers show NOTHING after the app's filters
+nocue rep 1: out   64 tok, finish STOP; words raw 55 -> cue-strip 55 -> fences 55 -> line filter 55 -> offers 55 -> notation 55
+            shape: prose(55w)
+            cues []
+nocue rep 2: out   65 tok, finish STOP; words raw 56 -> cue-strip 56 -> fences 56 -> line filter 56 -> offers 56 -> notation 56
+            shape: prose(56w)
+            cues []
+nocue rep 3: out   70 tok, finish STOP; words raw 54 -> cue-strip 54 -> fences 54 -> line filter 54 -> offers 54 -> notation 54
+            shape: prose(54w)
+            cues []
+nocue rep 4: out   54 tok, finish STOP; words raw 48 -> cue-strip 48 -> fences 48 -> line filter 48 -> offers 48 -> notation 48
+            shape: prose(48w)
+            cues []
+nocue rep 5: out   67 tok, finish STOP; words raw 59 -> cue-strip 59 -> fences 59 -> line filter 59 -> offers 59 -> notation 59
+            shape: prose(59w)
+            cues []
+nocue rep 6: out   66 tok, finish STOP; words raw 50 -> cue-strip 50 -> fences 50 -> line filter 50 -> offers 50 -> notation 50
+            shape: prose(50w)
+            cues []
+nocue rep 7: out   57 tok, finish STOP; words raw 46 -> cue-strip 46 -> fences 46 -> line filter 46 -> offers 46 -> notation 46
+            shape: prose(46w)
+            cues []
+nocue rep 8: out   70 tok, finish STOP; words raw 60 -> cue-strip 60 -> fences 60 -> line filter 60 -> offers 60 -> notation 60
+            shape: prose(60w)
+            cues []
+nocue rep 9: out   61 tok, finish STOP; words raw 53 -> cue-strip 53 -> fences 53 -> line filter 53 -> offers 53 -> notation 53
+            shape: prose(53w)
+            cues []
+nocue rep10: out   82 tok, finish STOP; words raw 75 -> cue-strip 75 -> fences 75 -> line filter 75 -> offers 75 -> notation 75
+            shape: prose(75w)
+            cues []
+nocue rep11: out   54 tok, finish STOP; words raw 48 -> cue-strip 48 -> fences 48 -> line filter 48 -> offers 48 -> notation 48
+            shape: prose(48w)
+            cues []
+nocue rep12: out   62 tok, finish STOP; words raw 51 -> cue-strip 51 -> fences 51 -> line filter 51 -> offers 51 -> notation 51
+            shape: prose(51w)
+            cues []
+== nocue: 0 of 12 answers show NOTHING after the app's filters
+rows written: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\cue-group\repro-blockonly-2026-09-30T13-56-26-448Z.json
+exit 0

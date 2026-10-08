@@ -1,0 +1,144 @@
+FOLLOW-UP TURN REPLAY  leg=front  model=gemini-3.5-flash-lite  thinkingLevel=HIGH  temperature=0.4  hours=s50m,s50l  14 items x 5 reps x 2 arms = 140 calls
+section 2 verified (section2-filled.md); filter main-precue-73d7f01/dist-electron/electron/llm/verbalStreamFilter.js sha256/12 d8fee6ca0170
+A first in 35 pairs, B first in 35
+DRY #  1 s50m:S1Q04F roster   r1 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4769
+DRY #  2 s50m:S1Q04F roster   r1 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4230
+DRY #  3 s50m:S1Q04F roster   r2 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4230
+DRY #  4 s50m:S1Q04F roster   r2 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4769
+DRY #  5 s50m:S1Q04F roster   r3 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4769
+DRY #  6 s50m:S1Q04F roster   r3 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4230
+DRY #  7 s50m:S1Q04F roster   r4 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4230
+DRY #  8 s50m:S1Q04F roster   r4 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4769
+DRY #  9 s50m:S1Q04F roster   r5 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4769
+DRY # 10 s50m:S1Q04F roster   r5 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4230
+DRY # 11 s50m:S1Q06F roster   r1 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4205
+DRY # 12 s50m:S1Q06F roster   r1 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4724
+DRY # 13 s50m:S1Q06F roster   r2 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4724
+DRY # 14 s50m:S1Q06F roster   r2 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4205
+DRY # 15 s50m:S1Q06F roster   r3 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4205
+DRY # 16 s50m:S1Q06F roster   r3 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4724
+DRY # 17 s50m:S1Q06F roster   r4 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4724
+DRY # 18 s50m:S1Q06F roster   r4 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4205
+DRY # 19 s50m:S1Q06F roster   r5 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4205
+DRY # 20 s50m:S1Q06F roster   r5 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4724
+DRY # 21 s50m:S2Q05F roster   r1 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4995
+DRY # 22 s50m:S2Q05F roster   r1 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4532
+DRY # 23 s50m:S2Q05F roster   r2 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4532
+DRY # 24 s50m:S2Q05F roster   r2 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4995
+DRY # 25 s50m:S2Q05F roster   r3 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4995
+DRY # 26 s50m:S2Q05F roster   r3 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4532
+DRY # 27 s50m:S2Q05F roster   r4 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4532
+DRY # 28 s50m:S2Q05F roster   r4 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4995
+DRY # 29 s50m:S2Q05F roster   r5 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4995
+DRY # 30 s50m:S2Q05F roster   r5 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4532
+DRY # 31 s50m:S2Q08F roster   r1 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4146
+DRY # 32 s50m:S2Q08F roster   r1 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4580
+DRY # 33 s50m:S2Q08F roster   r2 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4580
+DRY # 34 s50m:S2Q08F roster   r2 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4146
+DRY # 35 s50m:S2Q08F roster   r3 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4146
+DRY # 36 s50m:S2Q08F roster   r3 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4580
+DRY # 37 s50m:S2Q08F roster   r4 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4580
+DRY # 38 s50m:S2Q08F roster   r4 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4146
+DRY # 39 s50m:S2Q08F roster   r5 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4146
+DRY # 40 s50m:S2Q08F roster   r5 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4580
+DRY # 41 s50m:D1     dropped  r1 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4208
+DRY # 42 s50m:D1     dropped  r1 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3956
+DRY # 43 s50m:D1     dropped  r2 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3956
+DRY # 44 s50m:D1     dropped  r2 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4208
+DRY # 45 s50m:D1     dropped  r3 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4208
+DRY # 46 s50m:D1     dropped  r3 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3956
+DRY # 47 s50m:D1     dropped  r4 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3956
+DRY # 48 s50m:D1     dropped  r4 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4208
+DRY # 49 s50m:D1     dropped  r5 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4208
+DRY # 50 s50m:D1     dropped  r5 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3956
+DRY # 51 s50m:D2     dropped  r1 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4283
+DRY # 52 s50m:D2     dropped  r1 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4547
+DRY # 53 s50m:D2     dropped  r2 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4547
+DRY # 54 s50m:D2     dropped  r2 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4283
+DRY # 55 s50m:D2     dropped  r3 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4283
+DRY # 56 s50m:D2     dropped  r3 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4547
+DRY # 57 s50m:D2     dropped  r4 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4547
+DRY # 58 s50m:D2     dropped  r4 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4283
+DRY # 59 s50m:D2     dropped  r5 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4283
+DRY # 60 s50m:D2     dropped  r5 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4547
+DRY # 61 s50m:D3     dropped  r1 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4132
+DRY # 62 s50m:D3     dropped  r1 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3897
+DRY # 63 s50m:D3     dropped  r2 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3897
+DRY # 64 s50m:D3     dropped  r2 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4132
+DRY # 65 s50m:D3     dropped  r3 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4132
+DRY # 66 s50m:D3     dropped  r3 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3897
+DRY # 67 s50m:D3     dropped  r4 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3897
+DRY # 68 s50m:D3     dropped  r4 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4132
+DRY # 69 s50m:D3     dropped  r5 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4132
+DRY # 70 s50m:D3     dropped  r5 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3897
+DRY # 71 s50l:S1Q04F roster   r1 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4230
+DRY # 72 s50l:S1Q04F roster   r1 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4769
+DRY # 73 s50l:S1Q04F roster   r2 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4769
+DRY # 74 s50l:S1Q04F roster   r2 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4230
+DRY # 75 s50l:S1Q04F roster   r3 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4230
+DRY # 76 s50l:S1Q04F roster   r3 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4769
+DRY # 77 s50l:S1Q04F roster   r4 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4769
+DRY # 78 s50l:S1Q04F roster   r4 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4230
+DRY # 79 s50l:S1Q04F roster   r5 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4230
+DRY # 80 s50l:S1Q04F roster   r5 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4769
+DRY # 81 s50l:S1Q06F roster   r1 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4724
+DRY # 82 s50l:S1Q06F roster   r1 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4205
+DRY # 83 s50l:S1Q06F roster   r2 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4205
+DRY # 84 s50l:S1Q06F roster   r2 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4724
+DRY # 85 s50l:S1Q06F roster   r3 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4724
+DRY # 86 s50l:S1Q06F roster   r3 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4205
+DRY # 87 s50l:S1Q06F roster   r4 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4205
+DRY # 88 s50l:S1Q06F roster   r4 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4724
+DRY # 89 s50l:S1Q06F roster   r5 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4724
+DRY # 90 s50l:S1Q06F roster   r5 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4205
+DRY # 91 s50l:S2Q05F roster   r1 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4508
+DRY # 92 s50l:S2Q05F roster   r1 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4971
+DRY # 93 s50l:S2Q05F roster   r2 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4971
+DRY # 94 s50l:S2Q05F roster   r2 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4508
+DRY # 95 s50l:S2Q05F roster   r3 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4508
+DRY # 96 s50l:S2Q05F roster   r3 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4971
+DRY # 97 s50l:S2Q05F roster   r4 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4971
+DRY # 98 s50l:S2Q05F roster   r4 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4508
+DRY # 99 s50l:S2Q05F roster   r5 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4508
+DRY #100 s50l:S2Q05F roster   r5 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4971
+DRY #101 s50l:S2Q08F roster   r1 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4580
+DRY #102 s50l:S2Q08F roster   r1 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4146
+DRY #103 s50l:S2Q08F roster   r2 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4146
+DRY #104 s50l:S2Q08F roster   r2 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4580
+DRY #105 s50l:S2Q08F roster   r3 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4580
+DRY #106 s50l:S2Q08F roster   r3 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4146
+DRY #107 s50l:S2Q08F roster   r4 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4146
+DRY #108 s50l:S2Q08F roster   r4 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4580
+DRY #109 s50l:S2Q08F roster   r5 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4580
+DRY #110 s50l:S2Q08F roster   r5 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4146
+DRY #111 s50l:D1     dropped  r1 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3956
+DRY #112 s50l:D1     dropped  r1 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4208
+DRY #113 s50l:D1     dropped  r2 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4208
+DRY #114 s50l:D1     dropped  r2 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3956
+DRY #115 s50l:D1     dropped  r3 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3956
+DRY #116 s50l:D1     dropped  r3 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4208
+DRY #117 s50l:D1     dropped  r4 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4208
+DRY #118 s50l:D1     dropped  r4 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3956
+DRY #119 s50l:D1     dropped  r5 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3956
+DRY #120 s50l:D1     dropped  r5 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4208
+DRY #121 s50l:D2     dropped  r1 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4518
+DRY #122 s50l:D2     dropped  r1 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4259
+DRY #123 s50l:D2     dropped  r2 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4259
+DRY #124 s50l:D2     dropped  r2 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4518
+DRY #125 s50l:D2     dropped  r3 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4518
+DRY #126 s50l:D2     dropped  r3 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4259
+DRY #127 s50l:D2     dropped  r4 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4259
+DRY #128 s50l:D2     dropped  r4 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4518
+DRY #129 s50l:D2     dropped  r5 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4518
+DRY #130 s50l:D2     dropped  r5 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4259
+DRY #131 s50l:D3     dropped  r1 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3897
+DRY #132 s50l:D3     dropped  r1 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4132
+DRY #133 s50l:D3     dropped  r2 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4132
+DRY #134 s50l:D3     dropped  r2 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3897
+DRY #135 s50l:D3     dropped  r3 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3897
+DRY #136 s50l:D3     dropped  r3 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4132
+DRY #137 s50l:D3     dropped  r4 B (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4132
+DRY #138 s50l:D3     dropped  r4 A (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3897
+DRY #139 s50l:D3     dropped  r5 A (first)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 3897
+DRY #140 s50l:D3     dropped  r5 B (second)  model gemini-3.5-flash-lite thinkingLevel HIGH  system 16223  user 4132
+DRY RUN: 140 calls on gemini-3.5-flash-lite HIGH; no key read, no call made

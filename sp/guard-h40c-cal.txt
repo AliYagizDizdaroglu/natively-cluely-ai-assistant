@@ -1,0 +1,152 @@
+guard-h40c.mjs calibration — 2026-09-26
+
+=== FIX ROUND 1 ADDENDUM (~19:10) — checks 10a and 10b (review findings I1/I8) ===
+Between the original calibration below and this addendum, the controller ran the real-dist
+calibration (guard-h40c-realcal.txt, 5/5, checks 1-7 against MAIN's actual dist-electron,
+HEAD da28f25). This addendum covers ONLY the two new checks; it still runs against the
+scratchpad stub tree (guard-h40c-cal\), which this round I also `git init`'d as a throwaway
+repo (one commit) so check 10b's `git rev-parse HEAD` / `git status` calls have something real,
+isolated from MAIN, to compare against. Stub HEAD = cc48b4acfbc061dc7be82df3ced4258ae2442b86.
+
+1. Correct env (as below) + NATIVELY_FLIGHT_COMMIT=<stub HEAD> -> GUARD OK, now also printing
+   "HEAD pinned at cc48b4ac..., tree clean, .env carries none of the guarded names".
+2. NATIVELY_FLIGHT_COMMIT unset -> GUARD FAILED: NATIVELY_FLIGHT_COMMIT is not set - the
+   launcher must set it to the commit this flight is registered for (filled in by the
+   controller once HEAD is final). (No hardcoded fallback any more - see the Groq-arm addendum
+   in task-8-report.md's Fix round 1 section for why.)
+3. NATIVELY_FLIGHT_COMMIT=0000000000000000000000000000000000000000 (wrong) -> GUARD FAILED:
+   MAIN HEAD is cc48b4ac..., not the registered commit 0000...0000 (NATIVELY_FLIGHT_COMMIT) -
+   a peer or a later commit moved the tree since registration.
+4. electron/knowledge/IntentClassifier.ts edited in the STUB repo (append one comment line),
+   correct HEAD -> GUARD FAILED: the tree the flight's rebuild will compile is not clean:
+   electron/knowledge/IntentClassifier.ts. Restored (git checkout), re-ran -> GUARD OK again.
+   (Check 9's staleness check fired first on an earlier attempt that edited LLMHelper.ts instead
+   - `git checkout` rewrites the file and bumps its mtime past dist's, which is check 9 doing
+   its job correctly, not a bug; switched the dirty-file target to IntentClassifier.ts, which
+   check 9 does not read by mtime, to isolate check 10b's own path.)
+5. .env in the stub tree containing "NATIVELY_VERBAL_HEDGE=1" (flag only, no real value) ->
+   GUARD FAILED: .env declares NATIVELY_VERBAL_HEDGE - this would reach the app and never
+   reach this guard (see the header comment); remove it from .env before the flight. Removed,
+   re-ran -> GUARD OK again.
+6. M1 (bundled into this addendum): dist-electron/electron/llm/WhatToAnswerLLM.js replaced with
+   a plain-English sentence containing unescaped "(hedge)" (the shape a JSDoc comment has) but
+   neither "HEDGE_WINNER" nor "\(hedge\)__" -> GUARD FAILED: the build does not carry the hedge
+   winner regex (HEDGE_WINNER / \(hedge\)__) in WhatToAnswerLLM.js - rebuild after the hedge
+   lands. This is the exact false-positive the review caught (the pre-fix check read
+   `.includes('(hedge)')`, which this same text would have satisfied). Restored, re-ran ->
+   GUARD OK.
+7. Final end-to-end sanity re-run of the complete current file (all round-1 checks 1-10b
+   together) against the stub tree, correct env -> GUARD OK, exit 0, same full message as case 1.
+
+guard-h40c-git.mjs's unexpectedDirtyPaths() pure predicate — calibrated separately, with NO git
+call at all, in guard-h40c-git-cal.mjs (6/6, all "ok"): the real captured
+`git status --porcelain -- electron src premium package.json` output from MAIN (2026-09-26,
+HEAD da28f25) is fully whitelisted; empty status is fine; a peer edit to a tracked file
+alongside the known-dirty files is correctly NOT whitelisted (proves the check can fail, rule
+8); an untracked file outside the known list is correctly NOT whitelisted; a rename is read by
+its destination path; CRLF line endings don't confuse the parser.
+
+PENDING (unchanged in nature from the original note below, now specifically for checks 10a/10b
+only — 1-9 already have a real-MAIN pass via guard-h40c-realcal.txt): the controller re-runs
+this same set of cases against MAIN's own root, with a real NATIVELY_FLIGHT_COMMIT value, once
+the Groq-arm-removal and pre-registration commits have landed and HEAD is final.
+=== END FIX ROUND 1 ADDENDUM ===
+
+guard-h40c.mjs calibration — 2026-09-26 (ORIGINAL, checks 1-9 only; superseded in shape by the
+addendum above for checks 8-9's exact wording, but the case-by-case results below are still
+accurate for what they tested)
+
+IMPORTANT DEVIATION FROM THE BRIEF (per the controller's Task 8 notes, which override the brief
+here): the brief says "calibrate from MAIN's root". The controller's notes say dist-electron is
+NOT yet rebuilt with the new hedge/follow-up modules and to do every calibration that does not
+need those new dist modules now, exercising the env checks with a STUB, and to list the
+dist-dependent calibrations as PENDING for the controller to run after the build. This transcript
+therefore runs guard-h40c.mjs from a scratchpad calibration tree
+(SP\guard-h40c-cal\), not from MAIN, built as:
+  - REAL copies of MAIN's already-built, non-hedge-related dist files (checks 1-5, unchanged from
+    guard-h40b.mjs): electron/test/golden/roster.mjs + its 3 question files, electron/LLMHelper.ts
+    (real source — already contains streamGeminiWithHedge, so check 8's source half needs no stub),
+    electron/knowledge/IntentClassifier.ts, dist-electron/electron/llm/verbalPrimaryModel.js,
+    dist-electron/electron/llm/geminiThinking.js, dist-electron/electron/knowledge/IntentClassifier.js,
+    guard-r09.mjs.
+  - HAND-WRITTEN stand-ins (checks 6, 7, 8's dist half, 9) for the two NEW dist modules the plan's
+    Tasks 1-4 add: dist-electron/electron/llm/verbalHedge.js and .../followUpParent.js (logic
+    copied verbatim from the real electron/llm/*.ts source, read 2026-09-26), plus minimal text
+    stubs for dist-electron/electron/LLMHelper.js (the GEMINI_FLASH_MODEL consts + the hedge log
+    line's literal text — the guard only reads this file as text, never requires it) and
+    dist-electron/electron/llm/WhatToAnswerLLM.js (the "(hedge)" substring, also text-only).
+
+NOTE (Task 8 report): MAIN's actual dist-electron was observed to already contain the real,
+esbuild-built verbalHedge.js and followUpParent.js (mtimes newer than their .ts sources; content
+byte-identical to hand-derivation from the source) at the time of this session — apparently a
+concurrent Task 5 build already ran. This transcript still calibrates against the scratchpad
+stub tree, not MAIN, per the controller's explicit instruction; the controller should re-run
+guard-h40c.mjs from MAIN's own root directly (no scratchpad tree) to get the authoritative,
+non-PENDING result once the build is confirmed final.
+
+Calibration tree: SP\guard-h40c-cal\ (package.json, electron/, dist-electron/, guard-r09.mjs,
+guard-h40c.mjs — a copy of this file's sibling in SP).
+
+=== case 1: NATIVELY_VERBAL_HEDGE unset (expect check 6 to fail) ===
+$ (cd guard-h40c-cal && env -u NATIVELY_VERBAL_HEDGE -u NATIVELY_FOLLOWUP_PARENT -u NATIVELY_VERBAL_HEDGE_TRIGGER_MS -u NATIVELY_VERBAL_PRIMARY_MODEL -u NATIVELY_GEMINI_THINKING_LEVEL NATIVELY_ROSTER=holdout40 node guard-h40c.mjs)
+GUARD FAILED: NATIVELY_VERBAL_HEDGE did not arrive
+exit=1
+RESULT: PASS (failed as expected, naming check 6's premise)
+
+=== case 2: NATIVELY_FOLLOWUP_PARENT=1, hedge correctly on (expect check 7 to fail) ===
+$ (... NATIVELY_ROSTER=holdout40 NATIVELY_VERBAL_HEDGE=1 NATIVELY_FOLLOWUP_PARENT=1 node guard-h40c.mjs)
+GUARD FAILED: the follow-up flag is set; h40c flies it OFF
+exit=1
+RESULT: PASS
+
+=== case 3: NATIVELY_VERBAL_HEDGE_TRIGGER_MS=1 (expect check 6 to fail: trigger != 5000) ===
+$ (... NATIVELY_ROSTER=holdout40 NATIVELY_VERBAL_HEDGE=1 NATIVELY_VERBAL_HEDGE_TRIGGER_MS=1 node guard-h40c.mjs)
+GUARD FAILED: the hedge trigger is 1ms, not the probed 5000ms - NATIVELY_VERBAL_HEDGE_TRIGGER_MS is set
+exit=1
+RESULT: PASS
+
+=== case 4: NATIVELY_VERBAL_PRIMARY_MODEL=gemini-3.5-flash-lite (expect check 3 to fail) ===
+$ (... NATIVELY_ROSTER=holdout40 NATIVELY_VERBAL_HEDGE=1 NATIVELY_VERBAL_PRIMARY_MODEL=gemini-3.5-flash-lite node guard-h40c.mjs)
+GUARD FAILED: an answer-model override is set: gemini-3.1-flash-lite resolves to gemini-3.5-flash-lite
+exit=1
+RESULT: PASS
+
+=== case 5: correct environment (expect GUARD OK) ===
+$ (... NATIVELY_ROSTER=holdout40 NATIVELY_VERBAL_HEDGE=1 node guard-h40c.mjs)
+GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON (front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build
+(this guard proves the environment its own process sees; the app process itself is proven by the run's "[Main] verbal hedge: on trigger=...ms" startup line, read by h40c-hedge-stats.mjs after the hour)
+exit=0
+RESULT: PASS (the brief's 5 required cases; matches guard-h40b.mjs's own GUARD OK line for checks 1-5)
+
+--- extra cases (not required by the brief, run for rule-8 thoroughness on the two NEW checks the brief adds, 8 and 9) ---
+
+=== case 6: electron/LLMHelper.ts touched newer than dist-electron/electron/LLMHelper.js (expect check 9 to fail: stale build) ===
+$ touch electron/LLMHelper.ts; (cd guard-h40c-cal && ... node guard-h40c.mjs)
+GUARD FAILED: dist-electron/electron/LLMHelper.js (2026-09-26T15:36:03.330Z) is older than electron/LLMHelper.ts (2026-09-26T15:36:49.192Z) - the build is stale, rebuild
+exit=1
+RESULT: PASS
+(restored: touched dist-electron/electron/LLMHelper.js so it is newer again; re-ran, GUARD OK — confirms the check is not permanently tripped, only by real staleness)
+
+=== case 7: dist-electron/electron/LLMHelper.js edited to remove the hedge log line's text (expect check 8 to fail) ===
+$ sed -i 's/verbal hedge: front=/NOTHERE/' dist-electron/electron/LLMHelper.js; (cd guard-h40c-cal && ... node guard-h40c.mjs)
+GUARD FAILED: the build does not carry the hedge log line (verbal hedge: front=) - rebuild after the hedge lands
+exit=1
+RESULT: PASS
+(restored the file from its backup afterwards; final sanity run below confirms GUARD OK again)
+
+=== final sanity: correct env after restore (expect GUARD OK) ===
+GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON (front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build
+exit=0
+
+Checks 1, 2, 4, 5 (roster count, built default/fallback text, thinking levels, R09 fix) are
+unchanged from guard-h40b.mjs, already calibrated on MAIN there (SDD ledger
+2026-09-25-flight-h40b/progress.md) and re-exercised here incidentally by every case above (they
+never failed in any of the 7 runs, including the two negative cases that broke a different check).
+
+PENDING (the controller runs these against MAIN directly once Task 5's build is confirmed final,
+per the controller's Task 8 note): the exact same 5+2 cases above, re-run from MAIN's own root so
+checks 6, 7, 8 and 9 read the REAL dist-electron/electron/llm/verbalHedge.js,
+.../followUpParent.js, LLMHelper.js and WhatToAnswerLLM.js instead of this scratchpad tree's
+stand-ins. Given the observation above (MAIN's dist-electron already appears to carry the real
+built modules), this re-run is expected to reproduce the same 7 results, but has not been treated
+as done.

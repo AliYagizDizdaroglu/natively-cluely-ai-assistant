@@ -1,0 +1,665 @@
+[
+  {
+    "id": "W01",
+    "verdict": "match",
+    "q": "To start, what is the difference between a Docker image and a container?",
+    "lead": "Think of a Docker image as a read-only template or a snapshot",
+    "keys": [
+      "container",
+      "instance",
+      "difference",
+      "programming"
+    ],
+    "answerWords": 58
+  },
+  {
+    "id": "W02",
+    "verdict": "match",
+    "q": "Why do Docker layers matter for build times?",
+    "lead": "Docker layers act as a cache for your build process.",
+    "keys": [
+      "instruction",
+      "Dockerfile",
+      "individually",
+      "ordering"
+    ],
+    "answerWords": 53
+  },
+  {
+    "id": "W03",
+    "verdict": "match",
+    "q": "When would you use S3 Standard versus S3 Glacier for training data?",
+    "lead": "I use S3 Standard for active training data that needs immediate",
+    "keys": [
+      "long-term",
+      "archival",
+      "historical",
+      "datasets"
+    ],
+    "answerWords": 60
+  },
+  {
+    "id": "W04",
+    "verdict": "match",
+    "q": "What is a SageMaker endpoint, and what does it actually host?",
+    "lead": "A SageMaker endpoint is essentially a fully managed",
+    "keys": [
+      "abstracts",
+      "underlying",
+      "infrastructure",
+      "instances"
+    ],
+    "answerWords": 119
+  },
+  {
+    "id": "W05",
+    "verdict": "match",
+    "q": "What is a DAG, and why does Airflow use that structure?",
+    "lead": "A DAG or Directed Acyclic Graph is essentially a collection of tasks",
+    "keys": [
+      "structure",
+      "provides",
+      "deterministic",
+      "pipelines"
+    ],
+    "answerWords": 58
+  },
+  {
+    "id": "W06",
+    "verdict": "match",
+    "q": "Why version model artifacts alongside code?",
+    "lead": "Versioning model artifacts with code is critical",
+    "keys": [
+      "reproduce",
+      "specific",
+      "behavior",
+      "coupling"
+    ],
+    "answerWords": 57
+  },
+  {
+    "id": "W07",
+    "verdict": "match",
+    "q": "What is the difference between a pod and a deployment?",
+    "lead": "A pod is the smallest deployable unit in Kubernetes",
+    "keys": [
+      "deployment",
+      "higher-level",
+      "abstraction",
+      "identical"
+    ],
+    "answerWords": 55
+  },
+  {
+    "id": "W09",
+    "verdict": "match",
+    "q": "What problem does infrastructure as code actually solve?",
+    "lead": "As code solves the problem of manual",
+    "keys": [
+      "reproducibility",
+      "auditability",
+      "consistency",
+      "environments"
+    ],
+    "answerWords": 57
+  },
+  {
+    "id": "W10",
+    "verdict": "match",
+    "q": "How would you organise an S3 bucket layout for a training dataset that gets versioned weekly?",
+    "lead": "I d structure it using a hierarchical prefix approach s3 bucket/data/dataset name/YYYY-MM-DD/.",
+    "keys": [
+      "immutable",
+      "processed",
+      "feature-engineered",
+      "versions"
+    ],
+    "answerWords": 55
+  },
+  {
+    "id": "W11",
+    "verdict": "match",
+    "q": "What goes in a multi-stage Dockerfile for a Python model server, and why?",
+    "lead": "I use a multi-stage Dockerfile to keep the final image lean and",
+    "keys": [
+      "installing",
+      "dependencies",
+      "compiling",
+      "artifacts"
+    ],
+    "answerWords": 58
+  },
+  {
+    "id": "W12",
+    "verdict": "match",
+    "q": "What is the difference between an Airflow operator and a sensor?",
+    "lead": "An operator is the workhorse",
+    "keys": [
+      "specialized",
+      "specific",
+      "condition",
+      "appearing"
+    ],
+    "answerWords": 59
+  },
+  {
+    "id": "M01",
+    "verdict": "match",
+    "q": "How would you detect data drift in a model that is already running in production?",
+    "lead": "I approach drift detection by monitoring the statistical distribution of input features",
+    "keys": [
+      "typically",
+      "Kolmogorov-Smirnov",
+      "Jensen-Shannon",
+      "divergence"
+    ],
+    "answerWords": 104
+  },
+  {
+    "id": "M02",
+    "verdict": "match",
+    "q": "Walk me through how you would structure a SageMaker pipeline for a scheduled retraining.",
+    "lead": "I d structure it using SageMaker Pipelines to ensure the entire workflow",
+    "keys": [
+      "Processing",
+      "validation",
+      "followed",
+      "Training"
+    ],
+    "answerWords": 68
+  },
+  {
+    "id": "M03",
+    "verdict": "match",
+    "q": "How would you handle autoscaling for a model inference service on Kubernetes?",
+    "lead": "I d handle auto-scaling by configuring a Horizontal Pod Autoscaler HPA in",
+    "keys": [
+      "implement",
+      "provision",
+      "dynamically",
+      "KServe"
+    ],
+    "answerWords": 59
+  },
+  {
+    "id": "M04",
+    "verdict": "match",
+    "q": "Why would you use CloudFormation instead of configuring things by hand in the console?",
+    "lead": "Using the console is prone to configuration drift and human error",
+    "keys": [
+      "CloudFormation",
+      "infrastructure",
+      "allowing",
+      "version-controlled"
+    ],
+    "answerWords": 56
+  },
+  {
+    "id": "M05",
+    "verdict": "match",
+    "q": "How do you secure training data in S3 that contains customer information?",
+    "lead": "I secure sensitive data in S3 by enforcing encryption at rest using",
+    "keys": [
+      "fine-grained",
+      "policies",
+      "ensuring",
+      "principle"
+    ],
+    "answerWords": 60
+  },
+  {
+    "id": "M06",
+    "verdict": "match",
+    "q": "What does a good CI pipeline for a machine learning repository actually test?",
+    "lead": "A robust ML CI pipeline needs to go beyond standard unit tests.",
+    "keys": [
+      "validating",
+      "integration",
+      "engineering",
+      "performing"
+    ],
+    "answerWords": 59
+  },
+  {
+    "id": "M07",
+    "verdict": "match",
+    "q": "How would you handle a task in Airflow that intermittently fails because of an upstream API?",
+    "lead": "When dealing with intermittent upstream API failures in Airflow",
+    "keys": [
+      "operators",
+      "implement",
+      "jittered",
+      "thundering"
+    ],
+    "answerWords": 116
+  },
+  {
+    "id": "M08",
+    "verdict": "match",
+    "q": "Your training image is eight gigabytes. How would you approach shrinking it?",
+    "lead": "I d start by switching to a minimal base image like Alpine",
+    "keys": [
+      "multi-stage",
+      "separate",
+      "environment",
+      "ensuring"
+    ],
+    "answerWords": 63
+  },
+  {
+    "id": "M09",
+    "verdict": "match",
+    "q": "When would you choose a real-time endpoint over batch transform?",
+    "lead": "I choose real-time endpoints when the business case requires immediate action",
+    "keys": [
+      "requirements",
+      "sub-second",
+      "individual",
+      "essential"
+    ],
+    "answerWords": 59
+  },
+  {
+    "id": "M10",
+    "verdict": "match",
+    "q": "Which metrics would you put on a dashboard for a production recommendation model?",
+    "lead": "I d focus on a three-tier dashboard.",
+    "keys": [
+      "performance",
+      "precision",
+      "recommendation",
+      "throughput"
+    ],
+    "answerWords": 57
+  },
+  {
+    "id": "M11",
+    "verdict": "match",
+    "q": "How do you manage GPU resources across multiple teams sharing one cluster?",
+    "lead": "I manage GPU resources by implementing strict namespace-level quotas and priority classes",
+    "keys": [
+      "Karpenter",
+      "provisioning",
+      "ensuring",
+      "environments"
+    ],
+    "answerWords": 58
+  },
+  {
+    "id": "M12",
+    "verdict": "match",
+    "q": "How would you roll out a new model version without risking a bad deployment?",
+    "lead": "I d use a canary deployment strategy with automated health checks.",
+    "keys": [
+      "percentage",
+      "Rollouts",
+      "real-time",
+      "deviates"
+    ],
+    "answerWords": 59
+  },
+  {
+    "id": "M13",
+    "verdict": "match",
+    "q": "How do you manage secrets in infrastructure as code without committing them?",
+    "lead": "I never commit secrets directly to the repository.",
+    "keys": [
+      "HashiCorp",
+      "sensitive",
+      "injecting",
+      "environment"
+    ],
+    "answerWords": 55
+  },
+  {
+    "id": "M14",
+    "verdict": "match",
+    "q": "How would you make a large S3 training dataset load faster into a training job?",
+    "lead": "To speed up data loading from S3",
+    "keys": [
+      "frequently",
+      "optimized",
+      "high-performance",
+      "predicate"
+    ],
+    "answerWords": 62
+  },
+  {
+    "id": "M15",
+    "verdict": "match",
+    "q": "How would you pass data between Airflow tasks when the payload is too large for XCom?",
+    "lead": "When the payload exceeds XCom limits",
+    "keys": [
+      "external",
+      "intermediary",
+      "partitioned",
+      "database"
+    ],
+    "answerWords": 61
+  },
+  {
+    "id": "M16",
+    "verdict": "match",
+    "q": "How does the SageMaker Model Registry fit into a deployment workflow?",
+    "lead": "I treat the SageMaker Model Registry as the single source of truth",
+    "keys": [
+      "transition",
+      "lifecycle",
+      "production",
+      "triggers"
+    ],
+    "answerWords": 57
+  },
+  {
+    "id": "M17",
+    "verdict": "match",
+    "q": "How would you monitor a model where ground truth labels arrive weeks late?",
+    "lead": "In those cases I shift the focus to monitoring proxy metrics and",
+    "keys": [
+      "distributions",
+      "prediction",
+      "confidence",
+      "compared"
+    ],
+    "answerWords": 56
+  },
+  {
+    "id": "M18",
+    "verdict": "match",
+    "q": "How do you handle CUDA and driver compatibility in containers for GPU training?",
+    "lead": "I standardize my container environments by using NVIDIA s official CUDA base",
+    "keys": [
+      "specific",
+      "versions",
+      "cuDNN",
+      "libraries"
+    ],
+    "answerWords": 60
+  },
+  {
+    "id": "M19",
+    "verdict": "match",
+    "q": "What is your approach to health checks for a model serving container?",
+    "lead": "I implement a two-tiered approach.",
+    "keys": [
+      "liveness",
+      "container",
+      "dedicated",
+      "readiness"
+    ],
+    "answerWords": 57
+  },
+  {
+    "id": "M20",
+    "verdict": "match",
+    "q": "How would you test a data pipeline, given the data itself keeps changing?",
+    "lead": "I approach pipeline testing with a multi-layered strategy.",
+    "keys": [
+      "individual",
+      "transformation",
+      "functions",
+      "integration"
+    ],
+    "answerWords": 110
+  },
+  {
+    "id": "M21",
+    "verdict": "match",
+    "q": "How would you structure stacks for development, staging, and production?",
+    "lead": "I use a GitOps-driven approach with infrastructure-as-code to ensure parity across environments.",
+    "keys": [
+      "maintain",
+      "identical",
+      "container",
+      "configurations"
+    ],
+    "answerWords": 57
+  },
+  {
+    "id": "M22",
+    "verdict": "match",
+    "q": "How would you approach hyperparameter tuning at scale without burning the budget?",
+    "lead": "I prioritize efficiency by starting with Bayesian optimization or Hyperband to prune",
+    "keys": [
+      "leverage",
+      "instances",
+      "training",
+      "implement"
+    ],
+    "answerWords": 57
+  },
+  {
+    "id": "M23",
+    "verdict": "match",
+    "q": "What would make you decide to retrain a model rather than just alerting on drift?",
+    "lead": "I decide to retrain when drift crosses a threshold that directly degrades",
+    "keys": [
+      "temporary",
+      "pipeline",
+      "underlying",
+      "distribution"
+    ],
+    "answerWords": 62
+  },
+  {
+    "id": "M24",
+    "verdict": "match",
+    "q": "How would you backfill a year of data without overwhelming the scheduler?",
+    "lead": "I approach backfills by partitioning the data into smaller",
+    "keys": [
+      "parallelize",
+      "concurrency",
+      "saturate",
+      "downstream"
+    ],
+    "answerWords": 57
+  },
+  {
+    "id": "M25",
+    "verdict": "match",
+    "q": "How would you handle a dataset that must be deleted on request for compliance?",
+    "lead": "I handle data deletion requests by implementing a robust",
+    "keys": [
+      "idempotent",
+      "auditability",
+      "soft-delete",
+      "hard-purge"
+    ],
+    "answerWords": 55
+  },
+  {
+    "id": "M26",
+    "verdict": "match",
+    "q": "How do you keep base images patched across many model services?",
+    "lead": "I manage base image updates by centralizing our Dockerfiles in a shared",
+    "keys": [
+      "leverage",
+      "Dependabot",
+      "Renovate",
+      "vulnerabilities"
+    ],
+    "answerWords": 59
+  },
+  {
+    "id": "M27",
+    "verdict": "match",
+    "q": "When would you reach for a service mesh in an ML serving stack, and when would you not?",
+    "lead": "I d reach for a service mesh when the complexity of managing",
+    "keys": [
+      "Specifically",
+      "implement",
+      "advanced",
+      "management"
+    ],
+    "answerWords": 119
+  },
+  {
+    "id": "M28",
+    "verdict": "match",
+    "q": "How do you keep feature engineering consistent between training and serving?",
+    "lead": "I ensure consistency by using a centralized feature store as the single",
+    "keys": [
+      "defining",
+      "features",
+      "repository",
+      "transformation"
+    ],
+    "answerWords": 62
+  },
+  {
+    "id": "H01",
+    "verdict": "match",
+    "q": "Your model accuracy dropped fifteen percent overnight, but the input schema is unchanged. How do you debug that?",
+    "lead": "I d start by checking for data drift or a shift in",
+    "keys": [
+      "upstream",
+      "source's",
+      "distribution",
+      "production"
+    ],
+    "answerWords": 61
+  },
+  {
+    "id": "H02",
+    "verdict": "match",
+    "q": "A SageMaker endpoint serving ten thousand requests per second has p99 latency creeping up. How do you diagnose and fix it?",
+    "lead": "I d start by isolating the bottleneck using CloudWatch and SageMaker model",
+    "keys": [
+      "instance",
+      "saturation",
+      "auto-scaling",
+      "inference"
+    ],
+    "answerWords": 58
+  },
+  {
+    "id": "H03",
+    "verdict": "match",
+    "q": "How would you design a pipeline that retrains, validates, and deploys with no human in the loop, and what guardrails would you put in?",
+    "lead": "I d build an automated pipeline using Airflow to orchestrate the full",
+    "keys": [
+      "retraining",
+      "detection",
+      "SageMaker",
+      "validation"
+    ],
+    "answerWords": 116
+  },
+  {
+    "id": "H04",
+    "verdict": "match",
+    "q": "Inference pods are being evicted under load and you cannot reproduce it in staging. How do you approach that?",
+    "lead": "I d start by checking the resource limits and requests in our",
+    "keys": [
+      "Prometheus",
+      "correlate",
+      "eviction",
+      "timestamps"
+    ],
+    "answerWords": 65
+  },
+  {
+    "id": "H05",
+    "verdict": "match",
+    "q": "A DAG that ran fine for months now misses its SLA every night. Where do you start?",
+    "lead": "I d start by checking the Airflow task metadata and logs to",
+    "keys": [
+      "upstream",
+      "execution",
+      "infrastructure",
+      "concurrent"
+    ],
+    "answerWords": 65
+  },
+  {
+    "id": "H06",
+    "verdict": "match",
+    "q": "Training jobs are throttling on S3 reads at scale. What is happening and how do you fix it?",
+    "lead": "It sounds like a classic I/O bottleneck where the throughput of S3",
+    "keys": [
+      "checking",
+      "implement",
+      "parallelization",
+      "efficient"
+    ],
+    "answerWords": 65
+  },
+  {
+    "id": "H07",
+    "verdict": "match",
+    "q": "How would you tell a genuine drift alert apart from a broken upstream feature pipeline?",
+    "lead": "I d start by comparing the feature distribution against the model s",
+    "keys": [
+      "pipeline",
+      "emitting",
+      "infrastructure",
+      "correctly"
+    ],
+    "answerWords": 65
+  },
+  {
+    "id": "H08",
+    "verdict": "match",
+    "q": "The same image behaves differently on your laptop and in the cluster. How do you track that down?",
+    "lead": "I d start by verifying the environment parity",
+    "keys": [
+      "identical",
+      "preprocessing",
+      "consistent",
+      "normalization"
+    ],
+    "answerWords": 57
+  },
+  {
+    "id": "H09",
+    "verdict": "match",
+    "q": "Someone changed a resource by hand and now your stack will not update. What do you do?",
+    "lead": "I d start by performing a drift analysis between the current state",
+    "keys": [
+      "isolated",
+      "manually",
+      "reconcile",
+      "resource"
+    ],
+    "answerWords": 60
+  },
+  {
+    "id": "H10",
+    "verdict": "match",
+    "q": "How would you roll back a model that is already serving traffic and has written bad data downstream?",
+    "lead": "Yes I would roll it back immediately.",
+    "keys": [
+      "priority",
+      "corruption",
+      "diverted",
+      "previous"
+    ],
+    "answerWords": 54
+  },
+  {
+    "id": "H11",
+    "verdict": "match",
+    "q": "Your training job costs tripled after a code change with no accuracy gain. How do you find the cause?",
+    "lead": "I d start by comparing the resource utilization logs in CloudWatch or",
+    "keys": [
+      "MLflow",
+      "specifically",
+      "inefficient",
+      "increased"
+    ],
+    "answerWords": 66
+  },
+  {
+    "id": "H12",
+    "verdict": "match",
+    "q": "How would you design for a region outage in a serving stack that must stay available?",
+    "lead": "I d implement a multi-region active-active architecture using Route 53 for global",
+    "keys": [
+      "containerized",
+      "services",
+      "clusters",
+      "multiple"
+    ],
+    "answerWords": 55
+  }
+]

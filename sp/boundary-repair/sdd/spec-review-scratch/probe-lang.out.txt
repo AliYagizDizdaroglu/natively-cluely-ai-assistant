@@ -1,0 +1,5 @@
+es: lost "migración"           -> RESTORED ["migraci","n"]: "migraci n de datos que hiciste?"
+tok ["i","stanbul","ofisinde"] rawTok ["stanbul","ofisinde"]
+tok ["istanbul","ofisinde"] rawTok ["Istanbul","ofisinde"]
+tr: İ shifts Traw              -> RESTORED ["zmir","projesinde"]: "zmir projesinde projesinde hangi veritabanını seçtiniz?"
+ru: Latin-only tokens          -> RESTORED ["Redis"]: "Redis Редис и S3 для файлов."

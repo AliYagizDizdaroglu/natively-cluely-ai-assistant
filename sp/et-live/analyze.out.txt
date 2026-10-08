@@ -1,0 +1,19 @@
+TIMING (first word / last word after the question audio ended)
+  ETLOW answered 6/8  apologies S2Q02F S2Q10F  first word p50 2.2 s max 2.4 s  last word p50 21.8 s  thinking p50 510  words p50 69
+  ETMED answered 2/8  apologies S2Q02 S2Q06F S2Q07F S1Q02 S1Q04F S2Q02F  first word p50 39.5 s max 39.5 s  last word p50 73.0 s  thinking p50 3276  words p50 91
+  LIVE  answered 24/24  apologies -  first word p50 1.8 s max 4.1 s  last word p50 6.6 s  thinking p50 232  words p50 59
+
+QUALITY (blind, frozen grader prompt, 4 verdict files; graded 56 of 56)
+  ETLOW graded 6 of 8  acceptable 3.0 (rate 0.38, holes count as not)  wrong (both) 0
+  ETMED graded 2 of 8  acceptable 1.0 (rate 0.13, holes count as not)  wrong (both) 1
+  LIVE  graded 24 of 24  acceptable 9.0 (rate 0.38, holes count as not)  wrong (both) 0
+  APP   graded 24 of 24  acceptable 6.5 (rate 0.27, holes count as not)  wrong (both) 0
+  per item, acceptable summed (graded count):  item   ETLOW  ETMED   LIVE    APP
+    S2Q02     0.0/1  0.0/0  1.0/3  0.0/3
+    S2Q06F    0.0/1  0.0/0  0.0/3  0.0/3
+    S2Q07F    1.0/1  0.0/0  1.0/3  0.0/3
+    S1Q02     1.0/1  0.0/0  1.5/3  3.0/3
+    S1Q04F    0.0/1  0.0/0  3.0/3  0.0/3
+    S2Q02F    0.0/0  0.0/0  0.0/3  1.0/3
+    S2Q10F    0.0/0  0.0/1  1.5/3  1.0/3
+    S1Q02F    1.0/1  1.0/1  1.0/3  1.5/3

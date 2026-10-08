@@ -1,0 +1,20 @@
+{
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant namespaces, deterministic chunk IDs, pre-retrieval ACL filters, offset citations, NDCG plus judge evals all sound; roughly 140 words, needs trimming."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Blob, Event Grid, Service Bus, AKS, AI Search, Azure OpenAI behind APIM, Monitor; managed-versus-custom addressed. About 130 words, too long."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "PeekLock redelivery, duplicate detection, deterministic IDs making upserts idempotent, status write before complete. Natural first-person prose near sixty words."
+  }
+}

@@ -1,0 +1,4 @@
+cuesmoke2 offset 608 ms (n=22, min 582, p10 590, p90 627, max 644; spread p10-p90 37) -> fx-cuesmoke2-off.json: 20 items, 81 finals, 84 marks
+  per-measurement: S1Q07:gate:582  S1Q07F:classify:587  S1Q06F:gate:590  S1Q09F:gate:593  S1Q10:gate:597  S1Q01F:gate:601  S1Q09:gate:605  S1Q01:gate:606  S1Q02F:gate:608  S1Q03:gate:608  S1Q04:gate:608  S1Q06:gate:608  S1Q02:gate:611  S1Q03F:gate:612  S1Q05:gate:612  S1Q08:gate:613  S1Q08F:classify:613  S1Q01F:classify:616  S1Q04F:gate:617  S1Q05F:gate:627  S1Q04F:classify:631  S1Q10F:gate:644
+s50e      offset 694 ms (n=47, min 673, p10 679, p90 710, max 723; spread p10-p90 31) -> fx-s50e-off.json: 40 items, 157 finals, 144 marks
+s50g      offset 707 ms (n=43, min 681, p10 690, p90 722, max 737; spread p10-p90 32) -> fx-s50g-off.json: 40 items, 155 finals, 142 marks

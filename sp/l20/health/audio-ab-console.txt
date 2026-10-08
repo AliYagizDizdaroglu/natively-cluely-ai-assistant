@@ -1,0 +1,25 @@
++24.97s [S2Q08 n24] close {"code":1011,"reason":"Internal error encountered."}
++50.32s [S2Q08 d16] close {"code":1011,"reason":"Internal error encountered."}
++87.73s [S1Q04 d16] close {"code":1011,"reason":"Internal error encountered."}
++137.03s [S1Q04 n24] close {"code":1011,"reason":"Internal error encountered."}
++169.90s [S1Q02 n24] first word 2144 ms after clip end
++197.74s [S1Q02 n24] close {"code":1000,"reason":""}
++230.70s [S1Q02 d16] first word 1879 ms after clip end
++259.59s [S1Q02 d16] close {"code":1000,"reason":""}
+
+id      arm   first word  words  thoughts  close
+S2Q08   n24           -      0         -  1011 Internal error encountered.
+        heard: Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality while documents keep changing through
+S2Q08   d16           -      0         -  1011 Internal error encountered.
+        heard: Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throug
+S1Q04   d16           -      0         -  1011 Internal error encountered.
+        heard: Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return preci
+S1Q04   n24           -      0         -  1011 Internal error encountered.
+        heard: Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that returns prec
+S1Q02   n24       2.1 s     65       663  1000 
+        heard: Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners, and 60% precision. Assuming the same 
+S1Q02   d16       1.9 s     66       786  1000 
+        heard: Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same 
+n24: answered 1/3; abnormal closes 2
+d16: answered 1/3; abnormal closes 2
+wrote C:/Users/sotka/AppData/Local/Temp/claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-cdbd-48af-b8bc-e9275012ec64/scratchpad/l20/health/audio-ab-2026-09-28T15-32-36-686Z.json

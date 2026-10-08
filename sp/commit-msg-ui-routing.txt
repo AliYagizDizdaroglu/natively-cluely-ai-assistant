@@ -1,0 +1,23 @@
+fix(ui): route intelligence events to the overlay while a meeting is active
+
+Hands-free answers, detected-question chips, recap, clarify, follow-ups and
+refined answers were sent to WindowHelper.getMainWindow(), which follows
+currentWindowMode. That mode names the launcher whenever the launcher was the
+last window switched to: an autostarted meeting never switches it, the
+launcher's ready-to-show handler switches back to it even while a meeting runs,
+and the overlay's logo click does too. The answers then went to the hidden
+launcher, which renders none of them, and the overlay showed only the broadcast
+question bubbles — "only questions appear".
+
+Reproduced 2026-09-06 on the dev build (NATIVELY_DETECTOR_CHAIN_TEST=1, overlay
+DOM read over the DevTools protocol): two hands-free answers streamed by the
+main process while the mode was 'launcher'; neither was in the overlay 40 s
+later, and the same answer rendered within 2 s once the mode was 'overlay'.
+After the fix the first chain-test answer is in the overlay 9 s after it
+streamed, with the mode still 'launcher' at the time.
+
+pickIntelligenceSurface (new, unit-tested) picks the overlay while a meeting is
+active and the mode's window otherwise; setupIntelligenceEvents uses it for all
+of its sends.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

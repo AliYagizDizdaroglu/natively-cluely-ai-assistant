@@ -1,0 +1,483 @@
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn[39m
+
+ [32m✓[39m electron/services/interviewerTurn.test.ts [2m([22m[2m37 tests[22m[2m)[22m[90m 23[2mms[22m[39m
+ [32m✓[39m electron/llm/verbalStreamFilter.test.ts [2m([22m[2m32 tests[22m[2m)[22m[90m 42[2mms[22m[39m
+ [32m✓[39m electron/llm/prompts.test.ts [2m([22m[2m26 tests[22m[2m)[22m[90m 15[2mms[22m[39m
+ [32m✓[39m electron/services/questionReconcile.test.ts [2m([22m[2m21 tests[22m[2m)[22m[90m 17[2mms[22m[39m
+ [32m✓[39m electron/services/liveHold.test.ts [2m([22m[2m11 tests[22m[2m)[22m[90m 27[2mms[22m[39m
+ [32m✓[39m electron/test/golden/interview60.judge.test.ts [2m([22m[2m10 tests[22m[2m)[22m[90m 23[2mms[22m[39m
+ [32m✓[39m electron/services/questionShape.test.ts [2m([22m[2m25 tests[22m[2m)[22m[90m 18[2mms[22m[39m
+[90mstdout[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter fragment suppression[2m > [22m[2mdoes not emit a question for a contentless fragment, but still acks it
+[22m[39m[LiveRouter] ignored fragment (no subject matter): "What is?"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mfires detection after 1.5s of silence following a final interviewer segment
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mfires detection after 1.5s of silence following a final interviewer segment
+[22m[39m[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=10
+
+ [32m✓[39m electron/test/golden/interview60.metrics.test.ts [2m([22m[2m30 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m[90m 75[2mms[22m[39m
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2msetEnabled(false) mutes the pipeline: no fast-path fire, no debounce fire
+[22m[39m[QuestionDetector] detection disabled
+
+[90mstdout[2m | electron/services/interviewerTurn.replay.test.ts
+[22m[39m2026-09-09T15-00-55-s50a: 40/40 once, 0 doubles, 0 never, 0 supersedes, 0 early, 15/15 long-whole, median 1200 ms (n=40), 2 drops
+2026-09-08T08-44-56-after9: 76/76 once, 0 doubles, 0 never, 0 supersedes, 0 early, 6/6 long-whole, median 1310 ms (n=76), 0 drops
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2msetEnabled(false) mutes the pipeline: no fast-path fire, no debounce fire
+[22m[39m[QuestionDetector] detection enabled
+[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=10
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2msetEnabled(false) cancels a pending debounce so it never fires late
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QuestionDetector] detection disabled
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mresets silence timer on each new interviewer segment
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+
+[90mstdout[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter audio write path[2m > [22m[2mbuffers audio while disconnected and replays it on open
+[22m[39m[LiveRouter] replaying 1 buffered gap chunk(s)
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mresets silence timer on each new interviewer segment
+[22m[39m[QD-timing] reset sincePrev=1000ms interruptedTimer=true credited=0ms remaining=1500ms
+
+[90mstdout[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter audio write path[2m > [22m[2mreplays audio spoken during a goAway reconnect gap
+[22m[39m[LiveRouter] replaying 1 buffered gap chunk(s)
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mresets silence timer on each new interviewer segment
+[22m[39m[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=15
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mfires immediately on speaker change (interviewer -> user)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=15
+
+[90mstdout[2m | electron/audio/GeminiLiveRouter.test.ts[2m > [22m[2mGeminiLiveRouter audio write path[2m > [22m[2mcaps the gap buffer at 20s, dropping the oldest audio
+[22m[39m[LiveRouter] replaying 20 buffered gap chunk(s)
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdrops detections below confidence threshold (default 0.6)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdrops detections below confidence threshold (default 0.6)
+[22m[39m[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.40 q.len=15
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdrops detections where detected=false
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=false conf=0.90 q.len=0
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdedups: 70%+ similarity emits update with existing id
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=33
+[QD-timing] reset sincePrev=1500ms interruptedTimer=false credited=0ms remaining=1500ms
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdedups: 70%+ similarity emits update with existing id
+[22m[39m[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=40
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2msingle-flight: queues at most 1 pending detection
+[22m[39m[QD-timing] detect issued
+[QD-timing] coalesced (one in-flight; setting queuedTrigger=true)
+[QD-timing] coalesced (one in-flight; setting queuedTrigger=true)
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=19
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=20
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mclear() resets dedup cache and timers
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=12
+[QD-timing] reset sincePrev=1500ms interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=12
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mcredits elapsed time since speechEndedAt against the silence debounce
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=1000ms remaining=500ms
+[QD-timing] debounce elapsed=500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=16
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mfires immediately when speechEndedAt is older than the full debounce window
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=2000ms remaining=0ms
+[QD-timing] debounce elapsed=0ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=16
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2muses the full debounce when speechEndedAt is absent (streaming/other providers)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=16
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mfires detection immediately when a final segment ends with a question mark
+[22m[39m[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.95 q.len=25
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mquestion-mark fast path cancels a pending debounce timer (no duplicate detect)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.95 q.len=22
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdoes not fast-path short question-mark fragments (< 3 words)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.95 q.len=3
+[QuestionDetector] dropping fragment (1 words): "ok?"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mclear() during in-flight detection drops the result (no chip emitted)
+[22m[39m[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=18
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mmerges the scenario sentence deterministically when the model returns only the bare question (H02 shape)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=31
+[QuestionDetector] merged scenario sentence into question: "A SageMaker endpoint has p99 latency creeping up. How do you diagnose and fix it?"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2ma short interviewer fragment ("Um.") between the statement and the question does not evict the statement from recentFinals (R36 fix wave)
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] reset sincePrev=0ms interruptedTimer=true credited=0ms remaining=1500ms
+[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=31
+[QuestionDetector] merged scenario sentence into question: "A SageMaker endpoint has p99 latency creeping up. How do you diagnose and fix it?"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdegraded detection when client.detect() returns null (run 3, Ruling: heuristic chip when the detector is unavailable)[2m > [22m[2mW09: two STT finals ("...actually..." then " solve....") join and normalize into one heuristic chip
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] reset sincePrev=1000ms interruptedTimer=true credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=null
+[QuestionDetector] degraded: chip from heuristic (detector unavailable): "What problem does infrastructure as code actually solve"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdegraded detection when client.detect() returns null (run 3, Ruling: heuristic chip when the detector is unavailable)[2m > [22m[2mM10: "...for a production..." then " model...." joins into one heuristic chip
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+[QD-timing] reset sincePrev=1000ms interruptedTimer=true credited=0ms remaining=1500ms
+[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=null
+[QuestionDetector] degraded: chip from heuristic (detector unavailable): "Which metrics would you put on a dashboard for a production model"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdegraded detection when client.detect() returns null (run 3, Ruling: heuristic chip when the detector is unavailable)[2m > [22m[2ma fragment final produces no chip
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdegraded detection when client.detect() returns null (run 3, Ruling: heuristic chip when the detector is unavailable)[2m > [22m[2ma fragment final produces no chip
+[22m[39m[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=null
+[QuestionDetector] degraded: no chip (not question-shaped): "yeah okay"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdegraded detection when client.detect() returns null (run 3, Ruling: heuristic chip when the detector is unavailable)[2m > [22m[2ma degraded chip deduplicates against an existing similar chip (update, not a new chip)
+[22m[39m[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=41
+[QD-timing] fast-path: final ends with '?' → triggering detect immediately
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=null
+[QuestionDetector] degraded: chip from heuristic (detector unavailable): "What is the time complexity of quicksort exactly?"
+
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdifficulty (2026-09-08: logged per detection, carried on the chip, routes nothing)[2m > [22m[2ma client that does not report difficulty leaves it undefined on the chip
+[22m[39m[QD-timing] reset sincePrev=first interruptedTimer=false credited=0ms remaining=1500ms
+
+ [32m✓[39m electron/services/interviewerTurn.replay.test.ts [2m([22m[2m12 tests[22m[2m)[22m[90m 11[2mms[22m[39m
+[90mstdout[2m | electron/services/QuestionDetector.test.ts[2m > [22m[2mQuestionDetector[2m > [22m[2mdifficulty (2026-09-08: logged per detection, carried on the chip, routes nothing)[2m > [22m[2ma client that does not report difficulty leaves it undefined on the chip
+[22m[39m[QD-timing] debounce elapsed=1500ms → triggering detect
+[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=true conf=0.90 q.len=10
+
+ [32m✓[39m electron/services/QuestionDetector.test.ts [2m([22m[2m28 tests[22m[2m)[22m[90m 69[2mms[22m[39m
+ [32m✓[39m electron/services/ChipDeduper.test.ts [2m([22m[2m22 tests[22m[2m)[22m[90m 25[2mms[22m[39m
+ [32m✓[39m electron/test/golden/interview60.pass-record.test.ts [2m([22m[2m10 tests[22m[2m | [22m[33m3 skipped[39m[2m)[22m[90m 33[2mms[22m[39m
+ [32m✓[39m electron/services/fragmentHold.test.ts [2m([22m[2m11 tests[22m[2m)[22m[90m 25[2mms[22m[39m
+ [32m✓[39m electron/audio/GeminiLiveRouter.test.ts [2m([22m[2m30 tests[22m[2m)[22m[33m 812[2mms[22m[39m
+   [33m[2m✓[22m[39m GeminiLiveRouter expired-resumption recovery[2m > [22mdrops an expired resumption handle so the next connect starts fresh [33m384[2mms[22m[39m
+   [33m[2m✓[22m[39m GeminiLiveRouter expired-resumption recovery[2m > [22mstill resumes with the handle for an ordinary (non-expiry) drop [33m357[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mretries Gemma on a transient 500 within the budget and keeps the answer on Gemma when a retry succeeds
+[22m[39m[LLMHelper] Gemma recovered on attempt 2/3
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat[2m > [22m[2mpings warmups (text, vision, flash) immediately and then on the interval, and stops cleanly
+[22m[39m[LLMHelper] Warmth heartbeat started (every 1000ms)
+[LLMHelper] Warmth heartbeat stopped
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat[2m > [22m[2mwarmupGemmaVision pings gemma-4-31b-it with an inline PNG image part (exercises the vision prefill)
+[22m[39m[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] gemma-4-31b-it vision warmed up in 1ms
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat[2m > [22m[2mstartWarmthHeartbeat is idempotent — a second call does not double the interval
+[22m[39m[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] Warmth heartbeat started (every 1000ms)
+[LLMHelper] Warmth heartbeat stopped
+[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] Warmth heartbeat started (every 1000ms)
+[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] Warmth heartbeat stopped
+[LLMHelper] gemma-4-31b-it vision warmed up in 1000ms
+[LLMHelper] gemma-4-31b-it vision warmed up in 1000ms
+[LLMHelper] gemma-4-31b-it vision warmed up in 0ms
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat — idle-aware (2026-09-03)[2m > [22m[2mdefaults to a five-minute cadence, not sixty seconds
+[22m[39m[LLMHelper] Warmth heartbeat started (every 300000ms)
+[LLMHelper] Warmth heartbeat stopped
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat — idle-aware (2026-09-03)[2m > [22m[2mskips a model the answers used inside the interval and still pings the idle ones
+[22m[39m[LLMHelper] Warmth heartbeat started (every 1000ms)
+[LLMHelper] Warmth heartbeat stopped
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat — idle-aware (2026-09-03)[2m > [22m[2ma successful warmup counts as use, so back-to-back pings never double up
+[22m[39m[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] gemma-4-31b-it vision warmed up in 0ms
+
+ [32m✓[39m electron/LLMHelper.reliability.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 732[2mms[22m[39m
+   [33m[2m✓[22m[39m LLMHelper Gemma TTFT watchdog[2m > [22mcaps Gemma retries at NATIVELY_GEMMA_MAX_ATTEMPTS then falls back to Flash [33m328[2mms[22m[39m
+ [32m✓[39m electron/services/ChipDeduper.answeredWindow.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 15[2mms[22m[39m
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns parsed response on valid JSON
+[22m[39m[OllamaDetectionClient] detect issued at wall=1789037154580
+[OllamaDetectionClient] detect ok: gen=2ms body=0ms total=2ms
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on invalid JSON
+[22m[39m[OllamaDetectionClient] detect issued at wall=1789037154586
+[OllamaDetectionClient] detect ok: gen=1ms body=0ms total=1ms
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on schema mismatch
+[22m[39m[OllamaDetectionClient] detect issued at wall=1789037154588
+[OllamaDetectionClient] detect ok: gen=0ms body=1ms total=1ms
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on HTTP error
+[22m[39m[OllamaDetectionClient] detect issued at wall=1789037154589
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on network error
+[22m[39m[OllamaDetectionClient] detect issued at wall=1789037154591
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mreturns null on timeout (>3s) via AbortError path
+[22m[39m[OllamaDetectionClient] detect issued at wall=1789037154593
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mposts to /api/chat with correct payload
+[22m[39m[OllamaDetectionClient] detect issued at wall=1789037154658
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+
+[90mstdout[2m | electron/services/OllamaDetectionClient.test.ts[2m > [22m[2mOllamaDetectionClient[2m > [22m[2mlogs warning after 5+ consecutive parse/schema failures, resets on success
+[22m[39m[OllamaDetectionClient] detect issued at wall=1789037154662
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+[OllamaDetectionClient] detect issued at wall=1789037154663
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+[OllamaDetectionClient] detect issued at wall=1789037154663
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+[OllamaDetectionClient] detect issued at wall=1789037154663
+[OllamaDetectionClient] detect ok: gen=1ms body=0ms total=1ms
+[OllamaDetectionClient] detect issued at wall=1789037154664
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+[OllamaDetectionClient] detect issued at wall=1789037154664
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+[OllamaDetectionClient] detect issued at wall=1789037154664
+[OllamaDetectionClient] detect ok: gen=0ms body=0ms total=0ms
+
+ [32m✓[39m electron/services/OllamaDetectionClient.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 90[2mms[22m[39m
+ [32m✓[39m electron/audio/DeepgramStreamingSTT.socketSummary.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 17[2mms[22m[39m
+ [32m✓[39m electron/services/FadeManager.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 25[2mms[22m[39m
+ [32m✓[39m electron/audio/DeepgramStreamingSTT.staleSocket.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 31[2mms[22m[39m
+ [32m✓[39m electron/llm/lastInterviewerTurn.test.ts [2m([22m[2m13 tests[22m[2m)[22m[90m 12[2mms[22m[39m
+ [32m✓[39m electron/audio/energyVad.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 116[2mms[22m[39m
+ [32m✓[39m electron/test/golden/roster.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 275[2mms[22m[39m
+ [32m✓[39m src/hooks/useDetectedQuestions.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[90m 107[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2maborts the request when the consumer closes the stream early
+[22m[39m[LLMHelper] streamVerbalWithGeminiFlash: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+
+[90mstdout[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2mdoes not abort when the stream completes naturally
+[22m[39m[LLMHelper] streamVerbalWithGeminiFlash: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+
+[90mstdout[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2mpasses an AbortSignal to the SDK
+[22m[39m[LLMHelper] streamVerbalWithGeminiFlash: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+
+ [32m✓[39m electron/LLMHelper.abortOnClose.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 18[2mms[22m[39m
+ [32m✓[39m electron/LLMHelper.streamChat.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 36[2mms[22m[39m
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mfalls back when the primary fails before any content
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mannounces the redirect instead of swapping models silently
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2memits onSuggestions exactly once even though two streams ran
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mleaves the healthy path untouched — no fallback redirect
+[22m[39m[Answer] budget: words=9 cut=no allowance=no
+
+ [32m✓[39m electron/llm/verbalFallback.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 51[2mms[22m[39m
+ [32m✓[39m electron/LLMHelper.emptyStream.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 27[2mms[22m[39m
+ [32m✓[39m electron/services/mergeScenarioSentence.test.ts [2m([22m[2m9 tests[22m[2m)[22m[90m 11[2mms[22m[39m
+ [32m✓[39m electron/IntelligenceEngine.pinnedQuestion.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 18[2mms[22m[39m
+[90mstdout[2m | electron/services/GroqDetectionClient.test.ts[2m > [22m[2mGroqDetectionClient request shape[2m > [22m[2mgpt-oss default model: sends reasoning_effort=low and strict json_schema
+[22m[39m[GroqDetectionClient] detect issued at wall=1789037159203
+[GroqDetectionClient] detect ok: gen=2ms body=0ms total=2ms tokens=100
+
+[90mstdout[2m | electron/services/GroqDetectionClient.test.ts[2m > [22m[2mGroqDetectionClient request shape[2m > [22m[2mnon-gpt-oss override model: keeps json_object and omits reasoning_effort
+[22m[39m[GroqDetectionClient] detect issued at wall=1789037159211
+[GroqDetectionClient] detect ok: gen=0ms body=0ms total=0ms tokens=100
+
+[90mstdout[2m | electron/services/GroqDetectionClient.test.ts[2m > [22m[2mGroqDetectionClient request shape[2m > [22m[2mpasses the model's difficulty through on the validated response
+[22m[39m[GroqDetectionClient] detect issued at wall=1789037159213
+[GroqDetectionClient] detect ok: gen=0ms body=1ms total=1ms tokens=100
+
+ [32m✓[39m electron/services/GroqDetectionClient.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 16[2mms[22m[39m
+ [32m✓[39m electron/llm/streamTaps.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 15[2mms[22m[39m
+ [32m✓[39m electron/audio/SttChannel.test.ts [2m([22m[2m9 tests[22m[2m)[22m[90m 16[2mms[22m[39m
+ [32m✓[39m electron/llm/spokenNotation.test.ts [2m([22m[2m10 tests[22m[2m)[22m[90m 10[2mms[22m[39m
+ [32m✓[39m src/hooks/useContextToggle.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[90m 222[2mms[22m[39m
+ [32m✓[39m electron/services/screenReference.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 11[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.knowledgeBudget.test.ts[2m > [22m[2mContext toggle on: the knowledge prompt keeps the verbal path's counted word budget[2m > [22m[2mverbal answer → knowledge prompt + [SPOKEN LENGTH + OPTIONAL DEPTH] + the custom notes
+[22m[39m[LLMHelper] KnowledgeOrchestrator attached
+[LLMHelper] <user_context> appended to the system prompt (36 chars)
+
+[90mstdout[2m | electron/LLMHelper.knowledgeBudget.test.ts[2m > [22m[2mContext toggle on: the knowledge prompt keeps the verbal path's counted word budget[2m > [22m[2mtyped chat (no verbal override) → knowledge prompt without the spoken budget block
+[22m[39m[LLMHelper] KnowledgeOrchestrator attached
+
+ [32m✓[39m electron/LLMHelper.knowledgeBudget.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 24[2mms[22m[39m
+ [32m✓[39m electron/llm/summaryContextLimits.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 13[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mstreamChat with the verbal override (technical path) carries the <user_context> block
+[22m[39m[LLMHelper] <user_context> appended to the system prompt (66 chars)
+
+[90mstdout[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mstreamVerbalWithGeminiFlash (behavioral / fast path) carries the <user_context> block
+[22m[39m[LLMHelper] <user_context> appended to the system prompt (66 chars)
+[LLMHelper] streamVerbalWithGeminiFlash: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+
+[90mstdout[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mno notes → no block on either path
+[22m[39m[LLMHelper] streamVerbalWithGeminiFlash: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+
+ [32m✓[39m electron/LLMHelper.customNotes.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 26[2mms[22m[39m
+ [32m✓[39m electron/llm/WhatToAnswerLLM.budget.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 26[2mms[22m[39m
+ [32m✓[39m electron/test/golden/interview60.lib.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 318[2mms[22m[39m
+[90mstdout[2m | electron/audio/DeepgramStreamingSTT.vadEvents.test.ts[2m > [22m[2mDeepgramStreamingSTT VAD events[2m > [22m[2mre-emits SpeechStarted and UtteranceEnd with a timestamp, on the live socket only
+[22m[39m[DeepgramStreaming] Connecting (rate=16000, ch=1, lang=en)...
+[DeepgramStreaming] Connected
+
+ [32m✓[39m electron/audio/DeepgramStreamingSTT.vadEvents.test.ts [2m([22m[2m1 test[22m[2m)[22m[90m 9[2mms[22m[39m
+ [32m✓[39m src/hooks/useFadeToggle.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[90m 231[2mms[22m[39m
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — classify caller-supplied text with no debounce[2m > [22m[2msends exactly the given text, emits a chip, resolves question
+[22m[39m[QD-timing] detect issued
+[QD-timing] detect returned +2ms result=detected=true conf=0.95 q.len=47
+
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — classify caller-supplied text with no debounce[2m > [22m[2mresolves not-a-question when the model says so, with no chip
+[22m[39m[QD-timing] detect issued
+[QD-timing] detect returned +0ms result=detected=false conf=0.90 q.len=0
+
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — classify caller-supplied text with no debounce[2m > [22m[2mfalls back to the text-shape heuristic when the client is rate-limited (null)
+[22m[39m[QD-timing] detect issued
+[QD-timing] detect returned +1ms result=null
+[QuestionDetector] degraded: chip from heuristic (detector unavailable): "What is the difference between a process and a thread?"
+
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — classify caller-supplied text with no debounce[2m > [22m[2mis not-a-question while disabled, without calling the client
+[22m[39m[QuestionDetector] detection disabled
+
+[90mstdout[2m | electron/services/QuestionDetector.detectNow.test.ts[2m > [22m[2mQuestionDetector.detectNow — classify caller-supplied text with no debounce[2m > [22m[2ma throwing client resolves not-a-question rather than rejecting
+[22m[39m[QD-timing] detect issued
+
+ [32m✓[39m electron/services/QuestionDetector.detectNow.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 30[2mms[22m[39m
+ [32m✓[39m electron/IntelligenceEngine.extendOf.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 13[2mms[22m[39m
+ [32m✓[39m electron/knowledge/IntentClassifier.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 29[2mms[22m[39m
+ [32m✓[39m electron/rag/configRedaction.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 12[2mms[22m[39m
+ [32m✓[39m electron/llm/WhatToAnswerLLM.leadingChars.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 29[2mms[22m[39m
+ [32m✓[39m electron/llm/spokenNotation.json.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 9[2mms[22m[39m
+[90mstdout[2m | electron/llm/verbalSentinel.test.ts[2m > [22m[2mverbal stream model sentinel[2m > [22m[2mannounces the primary model at the head of the general (verbal-technical) route
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/verbalSentinel.test.ts[2m > [22m[2mverbal stream model sentinel[2m > [22m[2mannounces the fixed fast model at the head of the behavioral route
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+ [32m✓[39m electron/llm/verbalSentinel.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 18[2mms[22m[39m
+ [32m✓[39m electron/test/golden/interview60.flight.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 8[2mms[22m[39m
+ [32m✓[39m electron/services/extendOnClause.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 9[2mms[22m[39m
+[90mstdout[2m | electron/audio/RestSTT.test.ts[2m > [22m[2mRestSTT speechEndedAt stamping[2m > [22m[2mstamps speechEndedAt with the VAD flush time on speech-ended flushes
+[22m[39m[RestSTT] Initialized for provider: groq, model: whisper-large-v3-turbo
+[RestSTT] Starting (groq)...
+[RestSTT] Speech ended detected by native VAD — flushing buffer immediately
+[RestSTT-timing] flush start id=jbtl
+[RestSTT-timing] upload start id=jbtl prep=0ms bytes=20044
+[RestSTT-timing] upload done id=jbtl +0ms
+[RestSTT] Transcript: "hello world from stt..." id=jbtl
+[RestSTT] Stopping (groq)...
+
+[90mstdout[2m | electron/audio/RestSTT.test.ts[2m > [22m[2mRestSTT speechEndedAt stamping[2m > [22m[2mdoes NOT stamp speechEndedAt on safety-net interval flushes (speech may be ongoing)
+[22m[39m[RestSTT] Initialized for provider: groq, model: whisper-large-v3-turbo
+[RestSTT] Starting (groq)...
+[RestSTT-timing] flush start id=jggr
+[RestSTT-timing] upload start id=jggr prep=0ms bytes=20044
+[RestSTT-timing] upload done id=jggr +0ms
+[RestSTT] Transcript: "hello world from stt..." id=jggr
+
+[90mstdout[2m | electron/audio/RestSTT.test.ts[2m > [22m[2mRestSTT speechEndedAt stamping[2m > [22m[2mdoes NOT stamp speechEndedAt on safety-net interval flushes (speech may be ongoing)
+[22m[39m[RestSTT] Stopping (groq)...
+
+ [32m✓[39m electron/audio/RestSTT.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 27[2mms[22m[39m
+ [32m✓[39m src/components/DetectedQuestionsPanel.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 537[2mms[22m[39m
+   [33m[2m✓[22m[39m DetectedQuestionsPanel expand/collapse[2m > [22mdoes not expand a collapsed panel on hover [33m387[2mms[22m[39m
+ [32m✓[39m electron/IntelligenceEngine.codingAdvisory.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 29[2mms[22m[39m
+ [32m✓[39m src/components/ui/LiveModeToggle.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 434[2mms[22m[39m
+[90mstdout[2m | electron/IntelligenceEngine.cooldown.test.ts[2m > [22m[2mIntelligenceEngine trigger cooldown[2m > [22m[2mchip clicks (contextOverride) bypass the 3s trigger cooldown
+[22m[39m[IntelligenceEngine] Initializing LLMs with LLMHelper
+[IntelligenceEngine] runWhatShouldISay: using contextOverride snapshot
+[IntelligenceEngine] runWhatShouldISay: pinned question "Q1"
+[IntelligenceEngine] runWhatShouldISay: intent override → general
+[IntelligenceEngine] Temporal RAG: 0 responses, tone: neutral, intent: general
+[SessionTracker] addAssistantMessage called with: [No answer — both the primary model and the gemini
+[Answer] full: "[No answer — both the primary model and the gemini-3.5-flash-lite fallback failed: this.llmHelper.getCurrentModelId is not a function]"
+[SessionTracker] lastAssistantMessage updated, history size: 1
+[IntelligenceEngine] runWhatShouldISay: using contextOverride snapshot
+[IntelligenceEngine] runWhatShouldISay: pinned question "Q2"
+[IntelligenceEngine] runWhatShouldISay: intent override → general
+[IntelligenceEngine] Temporal RAG: 1 responses, tone: neutral, intent: general
+[SessionTracker] addAssistantMessage called with: [No answer — both the primary model and the gemini
+[Answer] full: "[No answer — both the primary model and the gemini-3.5-flash-lite fallback failed: this.llmHelper.getCurrentModelId is not a function]"
+[SessionTracker] lastAssistantMessage updated, history size: 2
+
+[90mstdout[2m | electron/IntelligenceEngine.cooldown.test.ts[2m > [22m[2mIntelligenceEngine trigger cooldown[2m > [22m[2mauto-triggers (no overrides) still respect the cooldown
+[22m[39m[IntelligenceEngine] Initializing LLMs with LLMHelper
+[IntelligenceEngine] runWhatShouldISay: pinned question "Q1"
+[IntentClassifier] lastInterviewerTurn: "Q1"
+[IntentClassifier] Tier 1 (regex) no match — falling to SLM
+[IntentClassifier] Tier 3 (heuristic) result: intent=general confidence=0.5
+[IntelligenceEngine] Temporal RAG: 0 responses, tone: neutral, intent: general
+[SessionTracker] addAssistantMessage called with: [No answer — both the primary model and the gemini
+[Answer] full: "[No answer — both the primary model and the gemini-3.5-flash-lite fallback failed: this.llmHelper.getCurrentModelId is not a function]"
+[SessionTracker] lastAssistantMessage updated, history size: 1
+
+ [32m✓[39m electron/IntelligenceEngine.cooldown.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 37[2mms[22m[39m
+ [32m✓[39m electron/knowledge/ContextAssembler.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 9[2mms[22m[39m
+ [32m✓[39m electron/services/jaccardSimilarity.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 8[2mms[22m[39m
+ [32m✓[39m electron/services/detectorCalibration.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 10[2mms[22m[39m
+ [32m✓[39m electron/services/providerCooldown.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 9[2mms[22m[39m
+ [32m✓[39m electron/llm/prompts/questionDetection.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 9[2mms[22m[39m
+ [32m✓[39m electron/SessionTracker.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 9[2mms[22m[39m
+ [32m✓[39m electron/services/sttProviderOverride.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 10[2mms[22m[39m
+ [32m✓[39m electron/services/containment.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 7[2mms[22m[39m
+ [32m✓[39m electron/services/intelligenceSurface.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 8[2mms[22m[39m
+ [32m✓[39m electron/services/detectionDispatch.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 7[2mms[22m[39m
+ [32m✓[39m electron/llm/knowledgePromptBudget.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 6[2mms[22m[39m
+ [32m✓[39m electron/llm/userContext.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 5[2mms[22m[39m
+ [32m✓[39m electron/services/liveMode.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 5[2mms[22m[39m
+ [32m✓[39m electron/services/__smoke__.test.ts [2m([22m[2m1 test[22m[2m)[22m[90m 3[2mms[22m[39m
+ [32m✓[39m src/components/QuestionChip.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[90m 209[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m72 passed[39m[22m[90m (72)[39m
+[2m      Tests [22m [1m[32m584 passed[39m[22m[2m | [22m[33m5 skipped[39m[90m (589)[39m
+[2m   Start at [22m 13:45:45
+[2m   Duration [22m 25.28s[2m (transform 8.70s, setup 0ms, collect 42.73s, tests 5.27s, environment 244.30s, prepare 24.56s)[22m
+

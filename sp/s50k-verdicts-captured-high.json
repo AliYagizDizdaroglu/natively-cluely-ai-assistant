@@ -1,0 +1,236 @@
+{
+  "S1Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "All three model classes correctly conditioned on interpretability, compliance and data modality; crisp 56-word spoken answer."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic exactly right (3,000 TPs, 31.6% recall, consistent), but dollar signs before subscriber counts need editing before speaking."
+  },
+  "S1Q02F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Misses the key point that ROC 0.88 is optimistic under imbalance; claims PR 0.38 'proves high precision'."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout control of high-risk subscribers is the right causal answer to seasonality and mix confounds."
+  },
+  "S1Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct uplift argument: lost causes and sure things waste budget, persuadables maximize incremental ROI."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Code is correct including stable-sort tie rule and edge cases, but a raw Python block is unspeakable."
+  },
+  "S1Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "argpartition with original index as tiebreak is the right linear-time answer; customer-ID secondary key is harmless redundancy."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Names the thirty-day buffer gap, ColumnTransformer and fit-on-train-only correctly; about ninety words, slightly long."
+  },
+  "S1Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly separates temporal evaluation from the customer-level holdout needed to stop identity memorization."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers LEFT JOIN, 30-day window, ingested-at guard and zero preservation, but runs about a hundred words."
+  },
+  "S1Q06F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Composite index plus bitemporal effective-date versioning is right; the upsert alternative slightly undercuts point-in-time correctness."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All eight areas covered with shared feature modules called out, but roughly 120 words and 'nightly batch runs' misphrases the scale."
+  },
+  "S1Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Idempotent upserts with checkpoints plus pinning the artifact hash at kickoff answers both duplicate actions and mixed versions."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, deterministic hash assignment, delayed join and IPS retraining all correct; about a hundred words."
+  },
+  "S1Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct policy-bias mechanism: saved churners relabel as retained, poisoning later training unless controls or weighting are kept."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure mapping across all eight areas with operational reasons, but at roughly 165 words far too long."
+  },
+  "S1Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Sharp, accurate split of managed endpoints, App Service and AKS with the right justification for each."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, least-privilege RBAC, Key Vault and subscription plus private-endpoint separation all correct; about 120 words."
+  },
+  "S1Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct triage by failure point (token acquisition, 403, connection timeout), but around a hundred words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every stage mapped to concrete tooling, though XLM-RoBERTa as embedder is odd and the answer runs 115 words."
+  },
+  "S2Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names chunking, retrieval and generation with real failure mechanisms; omitting OCR is a gap, not an error."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives units and datasets but never states denominators for two metrics or any real uncertainty; also over a hundred words."
+  },
+  "S2Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "One concrete ablation per component plus positional-bias and dual-judge checks; strong and well-sized."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Right criterion: agents earn complexity when the path depends on intermediate findings; contrasts all three approaches."
+  },
+  "S2Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Iteration cap, token budgets, circuit-breaker fallback and convergence exit cover stopping, budget and failure policy."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "RRF accumulation, one-based ranks and doc-id tiebreak all correct, but about a hundred words spoken."
+  },
+  "S2Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct scale-incommensurability argument for rank fusion plus a clean per-source weighting scheme."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All constraints handled correctly, but the answer opens mid-sentence on a bare identifier and runs 113 words."
+  },
+  "S2Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Concrete redundancy example, MMR for diversity and decomposition for multi-hop; both sub-parts answered."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore, per-case timeout, local exception capture and gather order are all correct; about 105 words."
+  },
+  "S2Q06F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Answers only the testing half; no retry policy, backoff or overall per-case deadline mechanics."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant sharding, metadata ACLs, pre-filtered retrieval, citations and evaluation all covered; slightly over a hundred words."
+  },
+  "S2Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly requires a second authorization check at context assembly, not just the retrieval-time filter."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioned namespaces, backfill, dual-write CDC, shadow eval, gradual cutover and warm rollback all present; roughly 125 words."
+  },
+  "S2Q08F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Proves completeness by counts but never proves currency, with no update-lag or freshness check on in-flight writes."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate service-by-service Azure placement plus the managed-versus-custom rationale, but about 108 words."
+  },
+  "S2Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Region pinning with private endpoints is right; does not mention disabling geo-redundant storage replication."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-lock redelivery plus deterministic content-hash IDs for idempotent writes is exactly the right answer."
+  },
+  "S2Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Dead-letter replay and ETag plus version-timestamp tombstone check correctly prevent zombie resurrection."
+  }
+}

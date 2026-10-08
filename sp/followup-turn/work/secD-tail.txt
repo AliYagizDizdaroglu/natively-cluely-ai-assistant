@@ -1,0 +1,113 @@
+    // the CLI against a stand-in for the claude binary (TURN_FAKE_CLAUDE): it records its argv, writes the verdicts file named in the prompt (all the pairs' keys) and
+    // a transcript in the EXACT slug folder Claude Code would use for its cwd (the launcher's own projectSlug, which section D's first check ties to the real folder)
+    const fakeDir = path.join(tmp, 'fake'); fs.mkdirSync(fakeDir, { recursive: true });
+    const fake = path.join(fakeDir, 'fake-claude.mjs');
+    fs.writeFileSync(fake, `import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto';
+const { projectSlug } = await import(process.env.FAKE_LG);
+const a = process.argv.slice(2); const dir = process.env.FAKE_DIR; const sid = crypto.randomUUID();
+fs.appendFileSync(path.join(dir, 'calls.jsonl'), JSON.stringify({ args: a, cwd: process.cwd() }) + '\\n');
+const prompt = a[1]; const v = /<VERDICTS_FILE> = (.+)/.exec(prompt); const o = /into the file (\\S+)/.exec(prompt);
+if (v && !process.env.FAKE_NO_WRITE) {
+    const vf = v[1].trim(); const items = JSON.parse(fs.readFileSync(path.join(path.dirname(vf), 'pairs.blind-1.json'), 'utf8')).items;
+    const keep = process.env.FAKE_PARTIAL ? items.slice(0, 1) : items;
+    fs.writeFileSync(vf, JSON.stringify(Object.fromEntries(keep.map((i) => [i.key, { correctness: 2, on_topic: 2, delivery: 2 }]))));
+}
+if (o) fs.writeFileSync(o[1].replace(/[.]$/, ''), '3');
+const slugDir = path.join(process.env.TURN_PROJECTS, projectSlug(process.cwd())); fs.mkdirSync(slugDir, { recursive: true });
+const use = [{ type: 'tool_use', name: 'Read', input: {} }, ...(o || v ? [{ type: 'tool_use', name: 'Write', input: {} }] : [])];
+const lines = [{ type: 'user', message: { role: 'user', content: process.env.FAKE_MEMORY ? '# Memory Index' : 'hi' } }, { type: 'assistant', message: { role: 'assistant', model: 'claude-opus-5-5', content: use } }];
+fs.writeFileSync(path.join(slugDir, sid + '.jsonl'), lines.map((l) => JSON.stringify(l)).join('\\n') + '\\n');
+if (process.env.FAKE_SECOND_JSONL) fs.writeFileSync(path.join(slugDir, crypto.randomUUID() + '.jsonl'), '{}\\n');
+if (process.env.FAKE_MEMDIR) { fs.mkdirSync(path.join(slugDir, 'memory')); fs.writeFileSync(path.join(slugDir, 'memory', 'note.md'), 'x'); }
+process.stdout.write(JSON.stringify({ type: 'result', subtype: 'success', is_error: !!process.env.FAKE_IS_ERROR, session_id: sid, modelUsage: { 'claude-opus-5-5': {} }, result: 'DONE' }));
+process.exit(process.env.FAKE_EXIT ? Number(process.env.FAKE_EXIT) : 0);
+`);
+    const gdir = path.join(tmp, 'grading-D'), pdir = path.join(tmp, 'pilot-D'), projD = path.join(tmp, 'projects-fake'), outD = path.join(tmp, 'R-D');
+    fs.mkdirSync(projD, { recursive: true });
+    const lenv = (extra = {}) => ({ ...process.env, FQ_OUT_DIR: outD, TURN_GRADING_DIR: gdir, TURN_PROJECTS: projD, TURN_FAKE_CLAUDE: fake, FAKE_DIR: fakeDir, FAKE_LG: new URL(`file:///${path.join(R, 'launch-grader.mjs').replace(/\\/g, '/')}`).href, ...extra });
+    const lg = (a, extra) => { const x = spawnSync(process.execPath, [path.join(R, 'launch-grader.mjs'), ...a], { encoding: 'utf8', env: lenv(extra) }); return { code: x.status, out: `${x.stdout}${x.stderr}` }; };
+    const winDir = (p) => p.replace(/\\/g, '/');
+    const jl = (f) => (fs.existsSync(f) ? fs.readFileSync(f, 'utf8').trim().split('\n').map((l) => JSON.parse(l)) : []);
+    const calls = () => jl(path.join(fakeDir, 'calls.jsonl'));
+    const rec = () => jl(path.join(pdir, 'launches.jsonl'));
+    const FIELDS = ['attempt', 'cwd', 'endedAt', 'exit', 'memoryDir', 'model', 'session_id', 'slot', 'slugJsonl', 'startedAt'];
+    let x = lg(['--make-pilot', winDir(pdir)]);
+    check('--make-pilot writes a synthetic pairs.blind-1.json (4 items) and nothing else', x.code === 0 && fs.existsSync(path.join(pdir, 'pairs.blind-1.json')) && JSON.parse(fs.readFileSync(path.join(pdir, 'pairs.blind-1.json'), 'utf8')).items.length === 4 && fs.readdirSync(pdir).length === 1);
+    check('... and refuses to overwrite it', lg(['--make-pilot', winDir(pdir)]).code === 2);
+    x = lg(['pilot', '--pilot', winDir(pdir), '--dry-run']);
+    check('--dry-run: prints cwd pilot-a1, the argv (prompt as length + sha12) and the rules; creates no cwd, calls nothing', x.code === 0 && /DRY RUN pilot attempt 1: cwd .*pilot-a1 \(fresh\)/.test(x.out) && /<prompt \d+ chars sha12 [0-9a-f]{12}>/.test(x.out) && /--allowed-tools Read\(\/\/c/.test(x.out) === /^[A-Za-z]:/.test(gdir) && !fs.existsSync(gdir) && !fs.existsSync(path.join(fakeDir, 'calls.jsonl')));
+    x = lg(['blind-1.g1', '--pilot', winDir(pdir)]);
+    check('the slot `pilot` goes with --pilot: blind-1.g1 --pilot and pilot without --pilot are usage errors (exit 2), nothing created', x.code === 2 && lg(['pilot']).code === 2 && !fs.existsSync(gdir));
+    x = lg(['pilot', '--pilot', winDir(pdir)]);
+    check('a pilot launch: exit 0, ids printed (session, model, cwd pilot-a1, slugJsonl 1, memoryDir absent, memory ABSENT, tools, verdicts valid on the pairs)', x.code === 0 && /pilot a1: session [0-9a-f-]{36} model claude-opus-5-5 exit 0 cwd pilot-a1 slugJsonl 1 memoryDir absent memory ABSENT projectMemory=0 claudeMem=0 tools \{"Read":1,"Write":1\} verdicts file valid on its pairs \(4 keys\)/.test(x.out), x.out.slice(-200));
+    check('... ONE line in <pilot dir>/launches.jsonl with exactly the ten fields of point 11(d), slot pilot, attempt 1, exit 0, slugJsonl 1', rec().length === 1 && JSON.stringify(Object.keys(rec()[0]).sort()) === JSON.stringify(FIELDS) && rec()[0].slot === 'pilot' && rec()[0].attempt === 1 && rec()[0].exit === 0 && rec()[0].slugJsonl === 1 && rec()[0].memoryDir === 'absent' && /^\d{4}-\d\d-\d\dT/.test(rec()[0].startedAt) && rec()[0].endedAt >= rec()[0].startedAt);
+    check('... the cwd is a fresh, EMPTY folder grading\\pilot-a1 and claude ran INSIDE it; the line carries that cwd', fs.existsSync(path.join(gdir, 'pilot-a1')) && fs.readdirSync(path.join(gdir, 'pilot-a1')).length === 0 && calls().length === 1 && path.resolve(calls()[0].cwd) === path.resolve(path.join(gdir, 'pilot-a1')) && path.resolve(rec()[0].cwd) === path.resolve(path.join(gdir, 'pilot-a1')));
+    check('... the prompt it was given passes the audit\'s dispatch check as blind-1.g1 (dispatch text, only paths and tag substituted)', AG.dispatchProblem(calls()[0].args[1], template, { blindDir: winDir(pdir), files: AG.ownFiles('blind-1.g1'), tag: 'blind-1.g1' }) === null);
+    check('... argv: -p <prompt> --model opus --output-format json --permission-mode dontAsk --tools Read,Write,Edit,Bash --strict-mcp-config --add-dir <pilot dir> --allowed-tools <5 rules>; no --dangerously-skip-permissions', (() => { const a = calls()[0].args; return a[0] === '-p' && a[2] === '--model' && a[3] === 'opus' && a[a.indexOf('--permission-mode') + 1] === 'dontAsk' && a.includes('--strict-mcp-config') && a[a.indexOf('--allowed-tools') - 1] === winDir(pdir).replace(/\//g, path.sep) || a[a.indexOf('--allowed-tools') - 1] === pdir; })() && !calls()[0].args.some((a) => /dangerously/.test(a)) && calls()[0].args.slice(calls()[0].args.indexOf('--allowed-tools') + 1).length === 5);
+    x = lg(['pilot', '--pilot', winDir(pdir)]);
+    check('a second launch is refused while the slot\'s verdicts exist (move the earlier attempt away before a re-grade): exit 2, no call', x.code === 2 && calls().length === 1);
+    fs.renameSync(path.join(pdir, 'verdicts.blind-1.g1.json'), path.join(pdir, 'verdicts.blind-1.g1.attempt1.json'));
+    x = lg(['pilot', '--pilot', winDir(pdir)]);
+    check('... with the verdicts moved away the SAME attempt number still cannot reuse its cwd: REFUSED, exit 2, no call', x.code === 2 && /already exists/.test(x.out) && calls().length === 1);
+    x = lg(['pilot', '--pilot', winDir(pdir), '--attempt', '2']);
+    check('--attempt 2 gets its own fresh cwd pilot-a2 and a second line; the first attempt\'s slug folder (a .jsonl) does NOT block it', x.code === 0 && fs.existsSync(path.join(gdir, 'pilot-a2')) && rec().length === 2 && rec()[1].attempt === 2 && rec()[1].slugJsonl === 1 && calls().length === 2);
+    fs.renameSync(path.join(pdir, 'verdicts.blind-1.g1.json'), path.join(pdir, 'verdicts.blind-1.g1.attempt2.json'));
+    const slugOf = (n) => path.join(projD, LG.projectSlug(path.join(gdir, `pilot-a${n}`)));
+    fs.mkdirSync(path.join(slugOf(3), 'memory'), { recursive: true }); fs.writeFileSync(path.join(slugOf(3), 'memory', 'note.md'), 'x');
+    x = lg(['pilot', '--pilot', winDir(pdir), '--attempt', '3']);
+    check('point 9: a non-empty memory\\ in the attempt\'s EXACT projects folder -> REFUSED before the launch (exit 2, claude not called, no cwd created)', x.code === 2 && /non-empty memory/.test(x.out) && calls().length === 2 && !fs.existsSync(path.join(gdir, 'pilot-a3')));
+    fs.mkdirSync(slugOf(4), { recursive: true }); fs.writeFileSync(path.join(slugOf(4), 'stale.jsonl'), '{}\n');
+    x = lg(['pilot', '--pilot', winDir(pdir), '--attempt', '4']);
+    check('point 9: a .jsonl already in the attempt\'s EXACT projects folder -> REFUSED (exit 2, claude not called)', x.code === 2 && /already holds 1 \.jsonl/.test(x.out) && calls().length === 2);
+    fs.mkdirSync(path.join(slugOf(5), 'memory'), { recursive: true });
+    x = lg(['pilot', '--pilot', winDir(pdir), '--attempt', '5']);
+    check('... an EMPTY memory\\ folder (as the real 22:19 probe left) does not block the launch; the line reads memoryDir empty', x.code === 0 && rec()[2]?.attempt === 5 && rec()[2].memoryDir === 'empty' && rec()[2].slugJsonl === 1, x.out.slice(-160));
+    fs.renameSync(path.join(pdir, 'verdicts.blind-1.g1.json'), path.join(pdir, 'verdicts.blind-1.g1.attempt5.json'));
+    x = lg(['blind-2.g1', '--rerun']);
+    check('a slot whose pairs file does not exist is a usage error (exit 2), nothing created', x.code === 2 && !fs.existsSync(path.join(gdir, 'blind-2.g1-a1')));
+    const go = (extra, attemptN) => { fs.rmSync(path.join(pdir, 'verdicts.blind-1.g1.json'), { force: true }); return lg(['pilot', '--pilot', winDir(pdir), '--attempt', String(attemptN)], extra); };
+    x = go({ FAKE_NO_WRITE: '1' }, 6);
+    check('a grader that exits 0 but wrote no verdicts file: the line says MISSING/INVALID and the exit code is 1', x.code === 1 && /verdicts file MISSING\/INVALID/.test(x.out));
+    x = go({ FAKE_PARTIAL: '1' }, 7);
+    check('a grader that wrote 1 of the 4 keys: MISSING/INVALID naming the missing verdict, exit 1 (the registered replace-ONCE case)', x.code === 1 && /MISSING\/INVALID \(no valid verdict for/.test(x.out));
+    x = go({ FAKE_SECOND_JSONL: '1' }, 8);
+    check('a second .jsonl in the attempt\'s slug folder: the line reads slugJsonl 2 and the exit code is 1', x.code === 1 && rec().at(-1).attempt === 8 && rec().at(-1).slugJsonl === 2);
+    x = go({ FAKE_MEMDIR: '1' }, 9);
+    check('a non-empty memory\\ left behind by the attempt: memoryDir non-empty, exit 1', x.code === 1 && rec().at(-1).memoryDir === 'non-empty');
+    x = go({ FAKE_EXIT: '1' }, 10);
+    check('claude exiting 1: the line records exit 1', rec().at(-1).attempt === 10 && rec().at(-1).exit === 1 && x.code === 1);
+    x = go({ FAKE_IS_ERROR: '1' }, 11);
+    check('claude exiting 0 with is_error true is never recorded as exit 0', rec().at(-1).attempt === 11 && rec().at(-1).exit === 1 && x.code === 1);
+    // a real slot: R/blind/launches.jsonl under the OUT dir; --rerun -> blind-rerun
+    fs.mkdirSync(path.join(outD, 'blind'), { recursive: true }); fs.mkdirSync(path.join(outD, 'blind-rerun'), { recursive: true });
+    fs.copyFileSync(path.join(pdir, 'pairs.blind-1.json'), path.join(outD, 'blind', 'pairs.blind-1.json')); fs.copyFileSync(path.join(pdir, 'pairs.blind-1.json'), path.join(outD, 'blind-rerun', 'pairs.blind-1.json'));
+    x = lg(['blind-1.g1']);
+    check('a real slot: the cwd is grading\\blind-1.g1-a1, the line goes to <R>/blind/launches.jsonl (slot blind-1.g1)', x.code === 0 && jl(path.join(outD, 'blind', 'launches.jsonl')).length === 1 && jl(path.join(outD, 'blind', 'launches.jsonl'))[0].slot === 'blind-1.g1' && fs.existsSync(path.join(gdir, 'blind-1.g1-a1')), x.out.slice(-160));
+    x = lg(['blind-1.g1', '--rerun']);
+    check('... --rerun uses <R>/blind-rerun (its own launches.jsonl, the same cwd name is a NEW attempt only with --attempt 2: here a1 exists -> REFUSED)', x.code === 2 && /already exists/.test(x.out));
+    x = lg(['blind-1.g1', '--rerun', '--attempt', '2']);
+    check('... --rerun --attempt 2 writes <R>/blind-rerun/launches.jsonl', x.code === 0 && jl(path.join(outD, 'blind-rerun', 'launches.jsonl')).length === 1 && jl(path.join(outD, 'blind-rerun', 'launches.jsonl'))[0].attempt === 2);
+    // the G1 calibration probes
+    const pl = path.join(outD, 'grader-cwd.launches.jsonl'), po = path.join(outD, 'grader-cwd.probes.out.txt');
+    x = lg(['cwdprobe-2', '--probe']);
+    check('probe 2 BEFORE probe 1: REFUSED (exit 2), nothing launched, no cwd', x.code === 2 && /REFUSED -- the second probe starts only after/.test(x.out) && !fs.existsSync(path.join(gdir, 'cwdprobe-2-a1')) && !fs.existsSync(pl));
+    x = lg(['cwdprobe-1']);
+    check('cwdprobe-1 without --probe (and --probe without a probe slot) are usage errors', x.code === 2 && lg(['--probe']).code === 2);
+    x = lg(['cwdprobe-1', '--probe', '--dry-run']);
+    check('probe --dry-run: prints the argv with the probe prompt and the rules, creates nothing, appends nothing', x.code === 0 && /DRY RUN cwdprobe-1: cwd .*cwdprobe-1-a1 \(fresh\)/.test(x.out) && !fs.existsSync(path.join(gdir, 'cwdprobe-1-a1')) && !fs.existsSync(po));
+    x = lg(['cwdprobe-1', '--probe']);
+    check('cwdprobe-1: one Read + one Write, memory ABSENT projectMemory=0 claudeMem=0, slugJsonl 1, out.txt written -> ok; the line is in grader-cwd.launches.jsonl', x.code === 0 && /cwdprobe-1 a1: session [0-9a-f-]{36} model claude-opus-5-5 exit 0 cwd cwdprobe-1-a1 slugJsonl 1 memoryDir absent memory ABSENT projectMemory=0 claudeMem=0 tools \{"Read":1,"Write":1\} out\.txt written -> ok/.test(x.out) && jl(pl).length === 1 && jl(pl)[0].slot === 'cwdprobe-1' && fs.existsSync(path.join(gdir, 'cwdprobe-1-a1', 'out.txt')), x.out.slice(-200));
+    check('... the probe\'s prompt is one Read of grading\\probe-input.txt and one Write of <own cwd>\\out.txt, with the grader\'s flags and the same rule kinds (Read, Edit, Bash x2)', (() => { const a = calls().at(-1).args; return /Read the file .*probe-input\.txt and then write/.test(a[1]) && a[1].includes('cwdprobe-1-a1') && a.includes('dontAsk') && a[a.indexOf('--tools') + 1] === 'Read,Write,Edit,Bash' && a.slice(a.indexOf('--allowed-tools') + 1).length === 4 && !a.some((q) => /dangerously/.test(q)); })() && fs.readFileSync(path.join(gdir, 'probe-input.txt'), 'utf8').split('\n').filter(Boolean).length === 3);
+    x = lg(['cwdprobe-1', '--probe']);
+    check('cwdprobe-1 again: REFUSED (its cwd exists), exit 2', x.code === 2 && /already exists/.test(x.out));
+    x = lg(['cwdprobe-2', '--probe']);
+    check('cwdprobe-2 after a clean probe 1: runs from its own fresh cwd cwdprobe-2-a1, ok, second line', x.code === 0 && /cwdprobe-2 a1: .*-> ok/.test(x.out) && jl(pl).length === 2 && fs.existsSync(path.join(gdir, 'cwdprobe-2-a1', 'out.txt')));
+    check('... every probe invocation (not the dry run) is appended with its command to grader-cwd.probes.out.txt', fs.existsSync(po) && (fs.readFileSync(po, 'utf8').match(/^\$ node launch-grader\.mjs /gm) ?? []).length === 4);
+    // the gate answers differently when the effect is present: a probe 1 whose transcript carries a memory marker fails, and one whose first probe made no tool call blocks probe 2
+    x = lg(['cwdprobe-1', '--probe'], { FAKE_MEMORY: '1', TURN_GRADING_DIR: path.join(tmp, 'grading-D2'), FQ_OUT_DIR: path.join(tmp, 'R-D2') });
+    check('a probe 1 whose transcript carries a memory marker -> FAILED (exit 1, memory LOADED printed, the transcript is kept)', x.code === 1 && /memory LOADED/.test(x.out) && /FAILED/.test(x.out));
+    x = lg(['cwdprobe-2', '--probe'], { TURN_GRADING_DIR: path.join(tmp, 'grading-D3'), FQ_OUT_DIR: path.join(tmp, 'R-D3') });
+    check('probe 2 where no probe 1 line exists in that output folder: REFUSED', x.code === 2);
+    check('the real folder F\\grading was not touched by any of this', !fs.existsSync(path.join(FT, 'grading', 'pilot-a1')) && !fs.existsSync(path.join(FT, 'grading', '.slots')) && !fs.existsSync(path.join(FT, 'grading', 'cwdprobe-1-a1')));
+}
+//@@END-SECTION-D@@

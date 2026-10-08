@@ -1,0 +1,66 @@
+== calib: {"marked":64}
+  
+== fixdet: {"ignored:dispatched":33,"declined":18,"marked":12,"ignored:stale-finals":4}
+  br1 S1Q01F 10:38:09.587 verdict=question -> ignored:dispatched
+  br1 S1Q05F 10:52:20.928 verdict=question -> ignored:dispatched
+  br1 S1Q06F 10:56:25.271 verdict=question -> ignored:dispatched
+  br1 S1Q08 11:01:45.960 verdict=not-a-question -> declined
+  br1 S2Q05 11:23:39.643 verdict=question -> ignored:dispatched
+  br1 S2Q07F 11:34:48.135 verdict=question -> ignored:dispatched
+  br1 S2Q08F 11:38:44.055 verdict=question -> ignored:dispatched
+  br1 S2Q09 11:40:02.867 verdict=question -> ignored:dispatched
+  br1: substituted 0 (re-armed 0)
+  cuesmoke S1Q02F 13:16:32.554 verdict=question -> ignored:dispatched
+  cuesmoke S1Q04F 13:23:18.253 verdict=question -> ignored:dispatched
+  cuesmoke S1Q07F 13:35:58.454 verdict=question -> ignored:dispatched
+  cuesmoke: substituted 0 (re-armed 0)
+  s50b S1Q04F 07:24:48.425 verdict=question -> ignored:dispatched
+  s50b S1Q07F 07:37:30.288 verdict=question -> ignored:dispatched
+  s50b S1Q08F 07:41:23.445 verdict=question -> ignored:dispatched
+  s50b S2Q06 08:04:39.735 verdict=not-a-question -> declined
+  s50b S2Q06F 08:07:50.197 verdict=question -> ignored:dispatched
+  s50b: substituted 0 (re-armed 0)
+  s50c S1Q08F 07:41:41.057 verdict=question -> ignored:dispatched
+  s50c S2Q05 08:00:58.636 verdict=not-a-question -> declined
+  s50c S2Q06F 08:08:07.535 verdict=question -> ignored:dispatched
+  s50c S2Q07F 08:12:07.245 verdict=question -> ignored:dispatched
+  s50c: substituted 0 (re-armed 0)
+  s50d S1Q04 07:22:16.219 verdict=unknown -> declined
+  s50d S1Q06 07:30:53.444 verdict=unknown -> declined
+  s50d S1Q08 07:38:51.350 verdict=unknown -> declined
+  s50d S1Q08F 07:41:27.266 verdict=question -> ignored:dispatched
+  s50d S1Q09 07:42:48.977 verdict=unknown -> declined
+  s50d S2Q04 07:56:41.883 verdict=unknown -> declined
+  s50d S2Q05 08:00:44.853 verdict=unknown -> declined
+  s50d S2Q05F 08:03:23.850 verdict=unknown -> declined
+  s50d S2Q06 08:04:43.390 verdict=unknown -> declined
+  s50d S2Q08 08:13:12.562 verdict=unknown -> declined
+  s50d S2Q09 08:17:07.434 verdict=unknown -> declined
+  s50d: substituted 0 (re-armed 0)
+  s50f S1Q04F 07:24:45.860 verdict=question -> ignored:dispatched
+  s50f S1Q07 07:34:49.095 verdict=question -> ignored:dispatched
+  s50f S1Q07F 07:37:27.655 verdict=question -> ignored:dispatched
+  s50f S1Q08F 07:41:21.300 verdict=question -> ignored:dispatched
+  s50f S2Q05 08:00:38.711 verdict=not-a-question -> declined
+  s50f S2Q09 08:17:01.521 verdict=question -> ignored:dispatched
+  s50f: substituted 0 (re-armed 0)
+  s50i S1Q01F 07:15:37.050 verdict=question -> ignored:dispatched
+  s50i S1Q02F 07:18:29.179 verdict=question -> ignored:dispatched
+  s50i S2Q03F 07:55:42.207 verdict=question -> ignored:stale-finals
+  s50i S2Q05 08:01:06.782 verdict=question -> ignored:stale-finals
+  s50i S2Q06F 08:08:16.647 verdict=question -> ignored:dispatched
+  s50i S2Q07F 08:12:15.066 verdict=unknown -> declined
+  s50i S2Q08 08:13:34.749 verdict=question -> ignored:dispatched
+  s50i S2Q09 08:17:29.545 verdict=not-a-question -> declined
+  s50i S2Q09 08:17:32.385 verdict=question -> ignored:dispatched
+  s50i: substituted 2 (re-armed 1)
+  s50j S1Q02F 07:18:12.078 verdict=question -> ignored:dispatched
+  s50j S1Q04F 07:24:57.576 verdict=question -> ignored:dispatched
+  s50j S1Q07F 07:37:38.374 verdict=not-a-question -> ignored:stale-finals
+  s50j S1Q08F 07:41:33.628 verdict=not-a-question -> ignored:stale-finals
+  s50j S1Q10F 07:47:34.870 verdict=not-a-question -> declined
+  s50j S1Q10F 07:47:37.577 verdict=unknown -> declined (again)
+  s50j S2Q01F 07:49:56.125 verdict=question -> ignored:dispatched
+  s50j S2Q07F 08:11:59.204 verdict=question -> ignored:dispatched
+  s50j S2Q09F 08:18:49.213 verdict=question -> ignored:dispatched
+  s50j: substituted 1 (re-armed 1)

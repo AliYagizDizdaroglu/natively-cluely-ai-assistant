@@ -1,0 +1,147 @@
+per sample, counted per ANSWER as the mean of its two graders (so halves are one grader each):
+sample        answered  acceptable   weak  wrong   holes
+app35-inapp         38        25.0   13.0    0.0       0
+app35-twin1         38        29.0    9.0    0.0       0
+app35-twin2         37        29.0    8.0    0.0       1
+app35-twin3         38        30.5    7.5    0.0       0
+br1-inapp           37        28.5    8.5    0.0       1
+live38-r1           35        21.0   14.0    0.0       3
+live38-r2           38        21.5   16.5    0.0       0
+live38-r3           38        26.0   11.0    1.0       0
+app, 4 samples  answered 151: acceptable 113.5 (75.2%), weak 37.5 (24.8%), wrong 0.0 (0.0%), holes 1
+Live, 3 reps    answered 111: acceptable 68.5 (61.7%), weak 41.5 (37.4%), wrong 1.0 (0.9%), holes 3
+
+why a grade is weak or wrong, per sample group (each grade counted once, by the FIRST axis that fails):
+  app, 4 samples  grades 302, not acceptable 75: correctness 0: 0, correctness 1: 59, correct but off the question: 14, correct and on topic but delivery 0: 2
+  Live, 3 reps    grades 222, not acceptable 85: correctness 0: 2, correctness 1: 83, correct but off the question: 0, correct and on topic but delivery 0: 0
+
+S2Q02
+  live38-r1    g1 1/2/2 weak  Units and gold sets named for all three, but denominators never stated and uncertainty given only for F1.
+  live38-r1    g2 1/2/2 weak  Units for all three metrics, but uncertainty only for F1 and no explicit denominators or dataset construction for hallucinations and multi-hop.
+  live38-r2    g1 1/2/1 weak  Covers all three metrics with uncertainty, but F1 denominator missing and hallucination "denominator" is really the numerator; 94 words.
+  live38-r2    g2 1/2/1 weak  All three metrics addressed, but the hallucination 'denominator' it names is the numerator and inter-annotator agreement is not variance; 94 words.
+  live38-r3    g1 1/2/2 weak  Touches all three metrics but vaguely: units and dataset construction undefined, hallucination denominator hand-waved.
+  live38-r3    g2 1/2/2 weak  Touches all three metrics but vaguely: no unit of evaluation, 'a verified denominator' left undefined, dataset construction barely described.
+
+S2Q02F
+  live38-r1    g1 1/2/2 weak  Prompting ablation omitted, and position-swap tests are wrongly tied to length preference; other swaps are sound.
+  live38-r1    g2 1/2/2 weak  Ablations for OCR, classification, retrieval and orchestration but none for prompting; position-swap tests are wrongly credited with detecting length bias.
+  live38-r2    g1 1/2/2 weak  Sound oracle substitutions for OCR, retrieval, orchestration plus position shuffle and kappa, but the prompting ablation is omitted.
+  live38-r2    g2 1/2/2 weak  Sound ground-truth substitution ablations and kappa plus position shuffling for the judge, but no ablation for prompting.
+
+S1Q08
+  live38-r1    g1 1/2/1 weak  Handles label maturity and point-in-time joins, but no experiment assignment design and ignores offers contaminating labels; 105 words.
+  live38-r1    g2 1/1/1 weak  Logging, matured-label join and point-in-time features are fine, but no assignment design and nothing on offers contaminating labels; 105 words.
+  live38-r2    g1 1/2/1 weak  Logging, join and filtering treated samples are fine, but assignment is only recorded, never designed or randomized; 92 words.
+  live38-r2    g2 1/2/1 weak  Assignment is only variant metadata attached to the record, with no randomisation or control; logging, join and filtering are fine; 92 words.
+  live38-r3    g1 1/2/1 weak  Good time-shifted join and exclusion of offer acceptors, but experiment assignment is logged rather than designed; 103 words.
+  live38-r3    g2 1/2/1 weak  No assignment design, and excluding only users who accepted offers selects on a post-treatment outcome; 103 words.
+
+S1Q08F
+  live38-r1    g1 1/2/2 weak  Right that labels reflect intervention response, but the claimed result, prioritising easily retained users, is backwards.
+  live38-r1    g2 1/2/2 weak  Right that labels reflect treatment response, but the consequence is reversed: retained users look low-risk, so they are deprioritised, not prioritised.
+
+S1Q05
+  live38-r2    g1 1/2/2 weak  Correct thirty-day gap and train-only preprocessing, but no classifier or evaluation metric, so training and evaluation are missing.
+  live38-r2    g2 1/2/2 weak  Gap and train-only preprocessing are right, but no estimator is ever named and evaluation stops at 'predictions on the test set'.
+
+S1Q05F
+  live38-r1    g1 1/1/2 weak  Explains customer-level splitting only; never says when repeated snapshots are legitimate.
+  live38-r1    g2 1/1/2 weak  Explains only why customer-level splitting is needed; never says when repeated snapshots are legitimate.
+  live38-r2    g1 1/2/2 weak  Legitimate case is fine, but the holdout condition is muddled: same user across test windows rather than train and test.
+  live38-r2    g2 1/2/2 weak  Legitimate case is right, but the holdout condition is muddled: 'multiple test windows' is not the train/test overlap that leaks.
+  live38-r3    g1 1/2/2 weak  Holdout for generalising to new customers is right, but "tracking evolution over time" never states what makes repeats legitimate.
+
+S1Q02
+  live38-r2    g1 1/2/2 weak  Arithmetic is right, but derives 4,750 flagged against the 5,000 band and calls it a perfect reconciliation.
+  live38-r2    g2 1/2/2 weak  Arithmetic is right, but it calls 4,750 implied flags against a 5,000 band a perfect reconciliation and never states the 57 percent precision.
+  live38-r3    g1 1/2/2 weak  Gets 2,850 true positives and recall, but asserts a perfect precision match without computing the 3,000 or 57 percent.
+  live38-r3    g2 1/2/2 weak  Gets 2,850 true positives but asserts a perfect match without computing the 57 percent precision or the 3,000 that 60 percent implies.
+
+S1Q10
+  live38-r3    g2 1/2/1 weak  Attributes PostgreSQL data access to Azure RBAC roles, which govern only the management plane; database roles are missing; 92 words.
+
+S2Q01
+  live38-r1    g2 1/2/2 weak  Context assembly is an unclear 'structure dependencies' phrase; embedding and reranking generic; no concrete experience mapping.
+  live38-r2    g2 1/2/1 weak  Puts query decomposition in context assembly and calls XLM-RoBERTa domain-specific; no concrete experience mapping; 133 words.
+  live38-r3    g1 1/2/2 weak  Puts query decomposition under context assembly, stays generic on embedding and reranking, and never ties stages to own experience.
+  live38-r3    g2 1/2/2 weak  Misplaces query decomposition as context assembly; embedding and reranking generic; no mapping to experience.
+
+S2Q09
+  live38-r2    g1 1/2/2 weak  Service choices are correct and concise, but telemetry, an explicitly asked component, is omitted.
+  live38-r2    g2 1/2/2 weak  Omits telemetry entirely and the managed-versus-custom rationale is thin; otherwise correct and concise.
+
+S2Q09F
+  live38-r1    g1 1/2/2 weak  Only restates provisioning storage, Kubernetes and search in-region; misses LLM processing location and replication.
+  live38-r1    g2 1/2/2 weak  Only restates region placement for storage, compute and search; never addresses LLM processing or replication.
+
+S1Q06F
+  live38-r2    g1 1/2/2 weak  Excellent index, but upserting and always reading the latest version leaks later corrections into past snapshots.
+  live38-r2    g2 1/2/2 weak  Best index choice, but upserting to always read the latest version breaks point-in-time correctness.
+
+S2Q08
+  live38-r1    g1 1/2/2 weak  Headline-level: tagging vectors does not handle a different dimensionality, and rollback never says the old index stays current.
+  live38-r1    g2 1/2/2 weak  Touches all six parts but vaguely; tagging vectors does not explain how a different dimension coexists.
+
+S2Q04
+  live38-r3    g1 0/2/1 wrong States a zero-based rank although one-based was required, so every contribution is off by one; also over 100 words.
+  live38-r3    g2 0/2/1 wrong Uses a zero-based index as the rank, contradicting the explicit one-based requirement and changing the scores; also 109 words.
+
+S1Q04
+  live38-r2    g1 1/2/1 weak  Implementation is correct but edge cases are lumped as return early or raise without saying which applies; over 100 words.
+  live38-r2    g2 1/2/1 weak  Metrics and tie-break are right, but the edge cases get a non-committal 'return early or raise'; 104 words.
+  live38-r3    g1 1/2/1 weak  Correct metrics and tie-break, but edge-case behaviour is only 'safely handles'; 100 words.
+  live38-r3    g2 1/2/1 weak  Implementation is right, but edge cases are only 'safely handled' with no stated behaviour; 100 words.
+
+S1Q09
+  live38-r2    g1 1/2/2 weak  Accurate mappings at a good length, but training compute and the operational reasons are missing.
+  live38-r2    g2 1/2/2 weak  Accurate services, but training compute is skipped and almost no operational reasons are given.
+  live38-r3    g1 1/2/1 weak  Omits training compute and wrongly describes managed online endpoints as backed by AKS; 110 words.
+  live38-r3    g2 1/2/1 weak  No training compute is named, and 'managed online endpoints backed by AKS' conflates two endpoint types; 110 words.
+
+S2Q07F
+  live38-r1    g1 1/2/2 weak  Only checks at retrieval; misses the re-check before generation that catches a mid-query revocation.
+  live38-r1    g2 1/2/2 weak  Only checks at retrieval, so a revocation after retrieval is missed; no recheck before generation.
+
+S1Q07
+  live38-r1    g1 1/2/2 weak  Sound shared feature store design, but ingestion is never covered and details stay generic.
+  live38-r1    g2 1/2/1 weak  Ingestion is never covered and monitoring is generic; 87 words.
+  live38-r2    g1 1/2/1 weak  Good batch and online split with a shared feature store, but ingestion is omitted; 122 words.
+  live38-r2    g2 1/2/1 weak  Good shared-infrastructure story, but ingestion is never covered; 122 words.
+
+S2Q10
+  live38-r1    g1 1/2/2 weak  Sound generic idempotency-key pattern, but names no Azure messaging service or mechanism and no concrete durable store.
+  live38-r1    g2 1/1/2 weak  Sound idempotency-key check but fully generic: no Azure messaging or store named, matching the misheard question.
+  live38-r2    g1 1/2/2 weak  Cosmos DB completion check is right, but no Azure messaging mechanism and no idempotent write if the crash precedes the state update.
+  live38-r2    g2 1/2/2 weak  Cosmos state check is right, but no Azure messaging named and the gap between embedding write and state update is unaddressed.
+  live38-r3    g1 1/2/2 weak  Generic check-then-ack flow with no Azure messaging named and no idempotent write for a crash before the state update.
+  live38-r3    g2 1/1/2 weak  Right check-then-mark pattern but no Azure messaging service named and the embedding write itself is not made idempotent.
+
+S2Q10F
+  live38-r1    g2 1/2/2 weak  Covers all three, but the race is framed from the delete side; never says the stale update is rejected afterwards.
+  live38-r2    g1 1/1/2 weak  Dead-letter queue after retries and a delete-flag check are fine, but dead-letter replay is never addressed.
+  live38-r2    g2 1/1/2 weak  Poison handling and delete flag are fine, but dead-letter replay is not addressed at all.
+
+S2Q05F
+  live38-r1    g1 1/2/2 weak  Redundancy penalty and query decomposition for multi-hop are sound, but the example is an abstract condition, not a constructed case.
+  live38-r1    g2 1/2/2 weak  Covers redundancy penalty and multi-hop decomposition, but the example is a generic description, not constructed.
+  live38-r2    g1 1/2/2 weak  MMR and an agent loop for multi-hop are right, but no example is constructed, only a general tendency.
+  live38-r2    g2 1/2/2 weak  MMR and an agent loop for multi-hop are right, but no concrete example is constructed.
+  live38-r3    g1 1/2/2 weak  Describes the failure condition abstractly instead of constructing an example; similarity filtering and query decomposition stay generic.
+  live38-r3    g2 1/2/2 weak  Names the failure mode and both remedies, but gives no constructed example, only a generic description.
+
+S2Q06F
+  live38-r1    g1 1/1/2 weak  Event-based active-count test is good, but cancellation relies on a real sleep and the retry extension is omitted.
+  live38-r1    g2 1/1/2 weak  Good event-gated active count; cancellation test relies on real sleeps; retry extension omitted.
+  live38-r2    g1 1/1/2 weak  Sleep-based concurrency test is not deterministic, and the retry-within-deadline extension is omitted.
+  live38-r2    g2 1/1/2 weak  Tracks active count and cancellation isolation, but sleep-based rather than deterministic and the retry extension is omitted.
+  live38-r3    g1 1/1/2 weak  Concrete event-gated concurrency test, but the retry-within-deadline extension is omitted.
+  live38-r3    g2 1/1/2 weak  Event-gated concurrency test is good, but the retry and overall deadline extension is omitted entirely.
+
+S2Q03F
+  live38-r1    g1 1/2/2 weak  Step cap and fallbacks are fine, but budgets are only tracked in LangSmith and nothing stops redundant tool calls.
+  live38-r1    g2 1/2/2 weak  Step cap and fallbacks are fine, but budgets are only tracked in LangSmith, not enforced; no loop detection.
+  live38-r2    g1 1/1/2 weak  Iteration and token budgets plus a convergence stop are right, but failure policies are omitted.
+  live38-r2    g2 1/1/2 weak  Iteration and token budgets plus convergence stop, but failure policies are not addressed.
+  live38-r3    g1 1/2/2 weak  Only hard caps and a vague fallback; no sufficiency or repeat-call check to prevent unnecessary tool calls.
+  live38-r3    g2 1/2/2 weak  Thin: step and token caps plus fallback, no real stopping condition or repeated-call detection.

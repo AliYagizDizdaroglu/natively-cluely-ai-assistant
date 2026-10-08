@@ -1,0 +1,46 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+ ❯ electron/llm/prompts.test.ts (31 tests | 1 failed) 32ms
+   × CUE_RULE — cue mode (spec 2026-09-20; limits and wording spec 2026-09-30) > names the sentinel and the limits the engine enforces at the display boundary 20ms
+     → expected '\n\n[CUES FIRST]\nBefore the spoken a…' to contain 'Rules for that block:\n- At most 3 li…'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/llm/prompts.test.ts > CUE_RULE — cue mode (spec 2026-09-20; limits and wording spec 2026-09-30) > names the sentinel and the limits the engine enforces at the display boundary
+AssertionError: expected '\n\n[CUES FIRST]\nBefore the spoken a…' to contain 'Rules for that block:\n- At most 3 li…'
+
+- Expected
++ Received
+
+- Rules for that block:
++
++
++ [CUES FIRST]
++ Before the spoken answer, output a cue block in this exact form, on its own lines:
++ __CUES__
++ 1| <key phrase for the first part the question names, at most 5 words>
++ 2| <the next part, in the order asked>
++ Rules for that block:
++ - Each line carries the specific thing you will say for that part: the number, the named service, the mechanism, the trade-off. Never a generic label.
++ - They are cues, not questions. Never address the listener.
++ - The spoken answer follows on the next line, in the same form as always.
+  - At most 3 lines, each at most 5 words. The first line is the answer itself in the fewest words that carry it: one or two words when that is enough (asked "Tabs or spaces?", the whole block is 1| Spaces). A one-part question gets exactly one line. Add a line only for another part the QUESTION names, never for a point you add on your own; when it names more than 3 parts, group related parts into themes so every part is still covered in 3 lines.
+- - Each line carries
+
+ ❯ electron/llm/prompts.test.ts:254:26
+    252|         expect(CUE_RULE.split(CUE_SHAPE_RULE).length - 1).toBe(1);
+    253|         // ...and where the old bullet stood: first under the block's …
+    254|         expect(CUE_RULE).toContain(`Rules for that block:\n${CUE_SHAPE…
+       |                          ^
+    255|         expect(CUE_RULE).not.toContain('Never more than');
+    256|         expect(CUE_RULE.startsWith('\n\n')).toBe(true);   // it is app…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 30 passed (31)
+   Start at  15:27:11
+   Duration  3.11s (transform 131ms, setup 0ms, collect 137ms, tests 32ms, environment 1.68s, prepare 162ms)
+

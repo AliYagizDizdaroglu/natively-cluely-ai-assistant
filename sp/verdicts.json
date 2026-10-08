@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Covers data fit, production constraints and a logistic-regression baseline; accurate and well-sized for speech."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "True positives and recall right, but invents a 4,750 denominator when the top-5 percent band fixes it at 5,000."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Difference-in-differences plus covariate control correctly separates model effect from seasonality; slightly over length."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Stable sort, correct precision, recall and lift definitions, and all three edge cases named; roughly twice the spoken length."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split, train-only ColumnTransformer fit, and a 30-day embargo before the test start; too long to speak."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Left join, window and ingestion filters are right but it never filters the event type to support calls."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All seven stages covered and the feature store named as the shared component; far over spoken length."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Prediction logging, assignment service, windowed outcome join and propensity correction for offer bias; too long."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure mapping across storage, AML, ACR, AKS, Data Factory, managed identity and Azure Monitor; over length."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "User-assigned identity, RBAC, Entra auth to PostgreSQL, Key Vault references and per-environment isolation all correct; too long."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every requested stage walked through accurately and tied to prior work; well over spoken length."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Claims token-level F1 yet gives an entity-count denominator, and offers run-to-run agreement instead of uncertainty for hallucinations."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Names the condition and contrasts all three approaches sensibly; a little over spoken length."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct one-over-c-plus-rank accumulation with id-based deterministic tie-break and top-k slice."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy relevance order with dedup set, per-document cap and skip-if-it-does-not-fit budget check; slightly long."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore of eight, per-case timeout, index-preserved results and isolated failure capture; slightly long."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant namespaces, relational metadata with ACL filter injection, async queue with soft deletes, and RAGAS evaluation; far too long."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioned indices, dual-write backfill, A/B quality check, config cutover and rollback to the still-synced old index; too long."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure placement for every component and a justified custom-parser exception; over spoken length."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Message-id keyed dedup in durable state with conditional upsert makes reprocessing safe after a crash; too long."
+  }
+}

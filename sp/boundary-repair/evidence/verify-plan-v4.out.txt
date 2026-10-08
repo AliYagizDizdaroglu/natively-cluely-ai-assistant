@@ -1,0 +1,106 @@
+PLAN-v4 fenced blocks: 22
+== anchors ==
+  anchor 4a import: old block found 1 time(s) in the current file
+  anchor 4b per-socket const: old block found 1 time(s) in the current file
+  anchor 4c Transcript handler: old block found 1 time(s) in the current file
+  anchor 4d UtteranceEnd: old block found 1 time(s) in the current file
+  anchor 4-3 keyterms: old block found 1 time(s) in the current file
+  anchor 4-1a keyterms test import: old block found 1 time(s) in the current file
+  anchor 4-1b results helper: old block found 1 time(s) in the current file
+Task 3 base: test 7691 bytes sha c57ef09964fce75a (plan time: 7691 / c57ef099); v3 module transpile v3-shaped
+  anchor 5-4 extractor lines 53-54: old block found 1 time(s) in the current file
+  anchor 5-4 extractor import: old block found 1 time(s) in the current file
+
+-- Task 3 Step 2 (v3 module, v4 tests appended) [electron/audio/deepgramBoundaryRepair.test.ts] exit 1 AS PLANNED
+   plan says: Tests 11 failed | 58 passed (69)
+   got: Test Files 1 failed (1) | Tests 11 failed | 58 passed (69)
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > negative #28 with the interim running on: a digit token at the c
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > "twenty five" -> "25": the same shape (v3 restored "five") 1ms
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > "all right" -> "Alright": a final token longer than the interim'
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > "break" -> "breaks": a longer final token is refused even when i
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > a re-spelling keeps its first letter: "put" for "cut" is no cut 
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > a digit in F1's last token is refused on its own: "version two" 
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > an interim with a non-ASCII letter that would even shift the spe
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > an interim with a non-ASCII letter is no cut: a lost "résumé" is
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > clear() between F1 and F2 (the adapter's empty final / Utterance
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > clear() also forgets the latest interim: a final after a pause i
+   × deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > speechFinal on F1 (Deepgram heard the utterance end there) leave
+   FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > negative #28
+   AssertionError: expected 'two percent For each of those metrics…' to be 'For each of those metrics, define the…' // Object.is equality
+   FAIL  electron/audio/deepgramBoundaryRepair.test.ts > deepgramBoundaryRepair v4 (spec review 2026-09-29): a re-spelling only at the tolerant cut, aligned interims only, pauses > "twenty five
+
+-- Task 3 Step 4 (v4 module) [electron/audio/deepgramBoundaryRepair.test.ts] exit 0 AS PLANNED
+   plan says: Tests 69 passed (69)
+   got: Test Files 1 passed (1) | Tests 69 passed (69)
+
+-- Task 4 Step 2a (keyterms RED) [electron/audio/deepgramKeyterms.test.ts] exit 1 AS PLANNED
+   plan says: Tests 1 failed | 6 passed (7)
+   got: Test Files 1 failed (1) | Tests 1 failed | 6 passed (7)
+   × isEnglishLanguage > is true for en and regional English, false for every other language and for multi 5ms
+   FAIL  electron/audio/deepgramKeyterms.test.ts > isEnglishLanguage > is true for en and regional English, false for every other language and for multi
+   TypeError: isEnglishLanguage is not a function
+
+-- Task 4 Step 2b (adapter RED, v3 wiring) [electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts] exit 1 AS PLANNED
+   plan says: Tests 4 failed | 2 passed (6)
+   got: Test Files 1 failed (1) | Tests 4 failed | 2 passed (6)
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections
+   FAIL  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget 
+   AssertionError: expected [ [ …(2) ], [ …(2) ], [ …(2) ] ] to deeply equal [ [ …(2) ], [ …(2) ], [ …(2) ] ]
+   FAIL  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget 
+   FAIL  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget 
+   FAIL  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget 
+   AssertionError: expected [ [ …(2) ], …(2) ] to deeply equal [ [ …(2) ], …(2) ]
+
+-- Task 4 Step 3 (keyterms GREEN) [electron/audio/deepgramKeyterms.test.ts] exit 0 AS PLANNED
+   plan says: Tests 7 passed (7)
+   got: Test Files 1 passed (1) | Tests 7 passed (7)
+
+-- Task 4 Step 5 (adapter GREEN) [electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts] exit 0 AS PLANNED
+   plan says: Tests 6 passed (6)
+   got: Test Files 1 passed (1) | Tests 6 passed (6)
+
+-- Task 4 Step 6 (gate removed: calibration) [electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts] exit 1 AS PLANNED
+   plan says: Tests 1 failed | 5 passed (6) (only the non-English test)
+   got: Test Files 1 failed (1) | Tests 1 failed | 5 passed (6)
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections
+   FAIL  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts > DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget 
+   AssertionError: expected [ [ …(2) ], …(2) ] to deeply equal [ [ …(2) ], …(2) ]
+
+-- Task 4 Step 7 (neighbours present in the mirror: 69 + 6 + 7 + 6 + 2 + 1 = 91) [electron/audio/] exit 0 AS PLANNED
+   plan says: every file passes
+   got: Test Files 6 passed (6) | Tests 91 passed (91)
+
+-- Task 5 Step 2 (module missing) [electron/test/golden/interview60.turns-finals.test.ts] exit 1 AS PLANNED
+   plan says: Failed to resolve import "./interview60.turns-finals.mjs"; Test Files 1 failed (1), Tests no tests
+   got: Test Files 1 failed (1) | Tests no tests
+   FAIL  electron/test/golden/interview60.turns-finals.test.ts [ electron/test/golden/interview60.turns-finals.test.ts ]
+   Error: Failed to resolve import "./interview60.turns-finals.mjs" from "claude/C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a/9c5886c7-
+
+-- Task 5 Step 3a (old parse) [electron/test/golden/interview60.turns-finals.test.ts] exit 1 AS PLANNED
+   plan says: Tests 2 failed | 3 passed (5)
+   got: Test Files 1 failed (1) | Tests 2 failed | 3 passed (5)
+   × finalsFrom: the interviewer finals as the turn tracker saw them > a final directly followed by a boundary-repair line replays as the restored words + the raw text 13ms
+   × finalsFrom: the interviewer finals as the turn tracker saw them > keeps interims and empty finals out, and drops finals before `since` 1ms
+   FAIL  electron/test/golden/interview60.turns-finals.test.ts > finalsFrom: the interviewer finals as the turn tracker saw them > a final directly followed by a boundary-repair line replays as
+   AssertionError: expected [ { at: 1790680767826, …(1) }, …(2) ] to deeply equal [ { at: 1790680767826, …(1) }, …(2) ]
+   FAIL  electron/test/golden/interview60.turns-finals.test.ts > finalsFrom: the interviewer finals as the turn tracker saw them > keeps interims and empty finals out, and drops finals before `
+   AssertionError: expected [ …(2) ] to deeply equal [ …(2) ]
+
+-- Task 5 Step 3b (v4 parse) [electron/test/golden/interview60.turns-finals.test.ts] exit 0 AS PLANNED
+   plan says: Tests 5 passed (5)
+   got: Test Files 1 passed (1) | Tests 5 passed (5)
+
+-- Task 5 Step 4 (extractor end to end on s50a) exit 0 AS PLANNED
+   printed: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\boundary
+   vs committed fixture: finals deep-equal, items deep-equal, actual deep-equal
+
+-- tsc over the finished mirror tree: exit 0 AS PLANNED
+   (no output)
+
+-- port check (plan module via esbuild -> check-v4-built.mjs): exit 0 AS PLANNED
+   EQUIVALENT: port-plan-v4.mjs == rule-v4.mjs on every recorded event, all 45 fixtures and all 23 probes [port-plan-v4.mjs 2082 bytes, mtime 2026-09-29T19:05:44.465Z]
+
+EVERY PLANNED COUNT REPRODUCED

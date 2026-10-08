@@ -1,0 +1,57 @@
+﻿
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ✓ electron/audio/deepgramKeyterms.test.ts (7 tests) 11ms
+ ✓ electron/audio/SttChannel.test.ts (9 tests) 12ms
+ ✓ electron/audio/deepgramBoundaryRepair.test.ts (68 tests) 26ms
+stdout | electron/audio/GeminiLiveRouter.test.ts > GeminiLiveRouter fragment suppression > does not emit a question for a contentless fragment, but still acks it
+[LiveRouter] ignored fragment (no subject matter): "What is?"
+
+stdout | electron/audio/DeepgramStreamingSTT.vadEvents.test.ts > DeepgramStreamingSTT VAD events > re-emits SpeechStarted and UtteranceEnd with a timestamp, on the live socket only
+[DeepgramStreaming] Connecting (rate=16000, ch=1, lang=en)...
+[DeepgramStreaming] keyterm prompting: 7 terms
+[DeepgramStreaming] Connected
+
+ ✓ electron/audio/DeepgramStreamingSTT.vadEvents.test.ts (1 test) 9ms
+ ✓ electron/audio/DeepgramStreamingSTT.socketSummary.test.ts (2 tests) 14ms
+stdout | electron/audio/GeminiLiveRouter.test.ts > GeminiLiveRouter audio write path > buffers audio while disconnected and replays it on open
+[LiveRouter] replaying 1 buffered gap chunk(s)
+
+ ✓ electron/audio/DeepgramStreamingSTT.staleSocket.test.ts (6 tests) 24ms
+stdout | electron/audio/GeminiLiveRouter.test.ts > GeminiLiveRouter audio write path > replays audio spoken during a goAway reconnect gap
+[LiveRouter] replaying 1 buffered gap chunk(s)
+
+ ✓ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts (6 tests) 26ms
+ ✓ electron/audio/energyVad.test.ts (7 tests) 69ms
+stdout | electron/audio/GeminiLiveRouter.test.ts > GeminiLiveRouter audio write path > caps the gap buffer at 20s, dropping the oldest audio
+[LiveRouter] replaying 20 buffered gap chunk(s)
+
+stdout | electron/audio/RestSTT.test.ts > RestSTT speechEndedAt stamping > stamps speechEndedAt with the VAD flush time on speech-ended flushes
+[RestSTT] Initialized for provider: groq, model: whisper-large-v3-turbo
+[RestSTT] Starting (groq)...
+[RestSTT] Speech ended detected by native VAD — flushing buffer immediately
+[RestSTT-timing] flush start id=989f
+[RestSTT-timing] upload start id=989f prep=0ms bytes=20044
+[RestSTT-timing] upload done id=989f +0ms
+[RestSTT] Transcript: "hello world from stt..." id=989f
+[RestSTT] Stopping (groq)...
+
+stdout | electron/audio/RestSTT.test.ts > RestSTT speechEndedAt stamping > does NOT stamp speechEndedAt on safety-net interval flushes (speech may be ongoing)
+[RestSTT] Initialized for provider: groq, model: whisper-large-v3-turbo
+[RestSTT] Starting (groq)...
+[RestSTT-timing] flush start id=9cwh
+[RestSTT-timing] upload start id=9cwh prep=0ms bytes=20044
+[RestSTT-timing] upload done id=9cwh +0ms
+[RestSTT] Transcript: "hello world from stt..." id=9cwh
+[RestSTT] Stopping (groq)...
+
+ ✓ electron/audio/RestSTT.test.ts (2 tests) 21ms
+ ✓ electron/audio/GeminiLiveRouter.test.ts (30 tests) 802ms
+   ✓ GeminiLiveRouter expired-resumption recovery > drops an expired resumption handle so the next connect starts fresh 369ms
+   ✓ GeminiLiveRouter expired-resumption recovery > still resumes with the handle for an ordinary (non-expiry) drop 372ms
+
+ Test Files  10 passed (10)
+      Tests  138 passed (138)
+   Start at  22:19:48
+   Duration  4.22s (transform 1.28s, setup 0ms, collect 2.44s, tests 1.01s, environment 20.52s, prepare 2.63s)
+

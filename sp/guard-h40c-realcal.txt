@@ -1,0 +1,6 @@
+ok   correct launcher env: exit 0 (pass, want pass) :: GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON (front gemini-3.5-flash-lite HIGH, back gemini-3.1-flash-lite LOW at 5000ms), follow-up parent OFF, R09 fix in the build | (this guard proves the 
+ok   hedge flag unset: exit 1 (fail, want fail) :: GUARD FAILED: NATIVELY_VERBAL_HEDGE did not arrive
+ok   follow-up flag on: exit 1 (fail, want fail) :: GUARD FAILED: the follow-up flag is set; h40c flies it OFF
+ok   trigger override 1 ms: exit 1 (fail, want fail) :: GUARD FAILED: the hedge trigger is 1ms, not the probed 5000ms - NATIVELY_VERBAL_HEDGE_TRIGGER_MS is set
+ok   primary model override: exit 1 (fail, want fail) :: GUARD FAILED: an answer-model override is set: gemini-3.1-flash-lite resolves to gemini-3.5-flash-lite
+REAL-DIST CALIBRATION OK 5/5

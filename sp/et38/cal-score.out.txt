@@ -1,0 +1,12 @@
+OK  anchor holds (br1 0.757), ET-low all acceptable, 111 answered, fast -> PROCEED; medium stopped after one run -> STOP on reliability
+OK  ET-low weak everywhere -> quality FAIL -> STOP
+OK  two ET-low answers wrong by both graders -> safety 2 > 1 -> STOP
+OK  one ET-low answer wrong by both graders -> safety at its edge -> PROCEED
+OK  two ET-low answers wrong by ONE grader only -> not consensus -> PROCEED
+OK  ET-low run 2 acceptable on 22 of 38 (0.579) -> the mean holds (0.860) but the band fails -> STOP
+OK  br1 all acceptable (1.000): the anchor does not hold; ET-low all acceptable -> NO VERDICT ON QUALITY
+OK  the anchor does not hold and ET-low is weak everywhere -> STOP (the br1 read needs no L20c bar)
+OK  quality holds, every first word at 20 s -> speed FAIL -> WAIT
+OK  quality holds, 109 answered -> reliability FAIL -> WAIT
+OK  ET-low has one run only -> not scorable yet, never a verdict
+ET38 SCORE CALIBRATION OK (11 cases)

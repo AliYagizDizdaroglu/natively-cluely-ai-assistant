@@ -1,0 +1,9 @@
+﻿row files: 9; rows: 624
+
+== OLD (HEAD eed4d7d) vs NEW (+ fix): 624 replies, sizes 1,2,3,7,90,whole
+whole-string output differs old vs new: 0
+cue or offers report differs: 0; new sentinel leaks: 0
+replies whose chunked output differs from their own whole-string output, by size:
+   OLD {"1":0,"2":0,"3":0,"7":0,"90":0,"1000000":0}
+   NEW {"1":0,"2":0,"3":0,"7":0,"90":0,"1000000":0}
+(reply, size) pairs where old output != new output: 0, over 0 replies

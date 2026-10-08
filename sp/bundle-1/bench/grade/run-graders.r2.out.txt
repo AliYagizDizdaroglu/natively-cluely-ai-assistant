@@ -1,0 +1,19 @@
+﻿--- blind-1.g1 exit 0
+blind-1.g1 a1: session b4031738-ae76-4836-b3a3-a6d7a17a5e6d model claude-opus-5-5 exit 0 slugJsonl 1 memoryDir empty memory ABSENT tools {"Read":3,"Write":1} verdicts file valid on its pairs (84 keys) PINNED
+the controller still runs check-grader-memory.mjs on this session and names the grader model in the result note
+--- blind-2.g1 exit 0
+blind-2.g1 a1: session 86547114-1c02-4a98-954b-96ad57b711a6 model claude-opus-5-5 exit 0 slugJsonl 1 memoryDir empty memory ABSENT tools {"Read":3,"Write":1} verdicts file valid on its pairs (84 keys) PINNED
+the controller still runs check-grader-memory.mjs on this session and names the grader model in the result note
+--- blind-1.g2 exit 0
+blind-1.g2 a1: session e0080b38-c345-40a0-8be5-2aea8cb175e9 model claude-opus-5-5 exit 0 slugJsonl 1 memoryDir empty memory ABSENT tools {"Read":3,"Write":1} verdicts file valid on its pairs (84 keys) PINNED
+the controller still runs check-grader-memory.mjs on this session and names the grader model in the result note
+--- blind-3.g1 exit 0
+blind-3.g1 a1: session 158c2e88-2dc4-48e4-8273-3eefe3ac157c model claude-opus-5-5 exit 0 slugJsonl 1 memoryDir empty memory ABSENT tools {"Read":3,"Write":1} verdicts file valid on its pairs (84 keys) PINNED
+the controller still runs check-grader-memory.mjs on this session and names the grader model in the result note
+--- blind-2.g2 exit 0
+blind-2.g2 a1: session 5fc5d47a-06b6-46ab-8768-6146de146178 model claude-opus-5-5 exit 0 slugJsonl 1 memoryDir empty memory ABSENT tools {"Read":3,"Write":1} verdicts file valid on its pairs (84 keys) PINNED
+the controller still runs check-grader-memory.mjs on this session and names the grader model in the result note
+--- blind-3.g2 exit 1
+blind-3.g2 a1: session e71f12a3-7c7a-4aa8-8cb7-c4b58d5c0505 model claude-opus-5-5 exit 0 slugJsonl 1 memoryDir empty memory ABSENT tools {"Read":3,"Bash":1,"Write":1} TOOL OUTSIDE Read/Write/Edit verdicts file valid on its pairs (84 keys) PINNED
+the controller still runs check-grader-memory.mjs on this session and names the grader model in the result note
+STOP: a grader failed; ask the user before anything else is launched

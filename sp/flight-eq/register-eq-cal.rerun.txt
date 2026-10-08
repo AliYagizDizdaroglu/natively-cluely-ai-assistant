@@ -1,0 +1,183 @@
+﻿register-eq.ps1 calibration (A2.10 P9; A5.2 I3; read-back asserted)
+
+script under test: C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\register-eq.ps1 sha256/12 3d3c89611ecc; BOM present (EF BB BF); ParseFile errors: 0
+dummy times: T1 2026-10-06 00:03 (precheck 2026-10-05 23:57), T2 2026-10-06 00:18 (precheck 2026-10-06 00:12); the cal launchers are in C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers
+
+ok   R1   dry: registered with NO trigger (triggers=0), Ready, StartWhenAvailable False, limit 1 h -> REGISTRATION OK, exit 0
+        registered Natively-flight-eqcal-dry  state=Ready  limit=PT1H  triggers=0
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal-dry.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: none
+        REGISTRATION OK: Natively-flight-eqcal-dry reads Ready, StartWhenAvailable False, no trigger
+ok   R2   flight at T1: the next run read back = T1 (2026-10-06 00:03), WakeToRun, StartWhenAvailable False, limit 5 h, workdir = MAIN, the action names launch-eqcal.cmd -> REGISTRATION OK
+        registered Natively-flight-eqcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:03
+        REGISTRATION OK: Natively-flight-eqcal reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-06 00:03
+ok   R3   precheck at T1 - 6: next run = 2026-10-05 23:57, limit 15 min, the action runs eq-precheck.ps1 with -At "2026-10-05 23:57" and -Label eqcal
+        registered Natively-flight-eqcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eq-precheck.ps1" -At "2026-10-05 23:57" -Label eqcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-05 23:57
+        REGISTRATION OK: Natively-flight-eqcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS precheck=2026-10-05 23:57
+ok   R4   armed (flight + precheck, step 13) at T2: BOTH next run times printed (NEXT RUNS flight=2026-10-06 00:18 precheck=2026-10-06 00:12)
+        registered Natively-flight-eqcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:18
+        REGISTRATION OK: Natively-flight-eqcal reads Ready, StartWhenAvailable False, next run as requested
+        registered Natively-flight-eqcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eq-precheck.ps1" -At "2026-10-06 00:12" -Label eqcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:12
+        REGISTRATION OK: Natively-flight-eqcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-06 00:18  precheck=2026-10-06 00:12
+ok   R5   verify at the same T2 (reads all three back, changes nothing) -> three REGISTRATION OK, exit 0
+        registered Natively-flight-eqcal-dry  state=Ready  limit=PT1H  triggers=0
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal-dry.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: none
+        REGISTRATION OK: Natively-flight-eqcal-dry reads Ready, StartWhenAvailable False, no trigger
+        registered Natively-flight-eqcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:18
+        REGISTRATION OK: Natively-flight-eqcal reads Ready, StartWhenAvailable False, next run as requested
+        registered Natively-flight-eqcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eq-precheck.ps1" -At "2026-10-06 00:12" -Label eqcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:12
+        REGISTRATION OK: Natively-flight-eqcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-06 00:18  precheck=2026-10-06 00:12
+ok   R6   verify with ANOTHER T (2026-10-06 00:03) -> REGISTRATION PROBLEM: the next run reads ..., not the requested ..., exit 1 (the flip of R5)
+        registered Natively-flight-eqcal-dry  state=Ready  limit=PT1H  triggers=0
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal-dry.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: none
+        REGISTRATION OK: Natively-flight-eqcal-dry reads Ready, StartWhenAvailable False, no trigger
+        registered Natively-flight-eqcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:18
+        REGISTRATION PROBLEM: the next run reads 10/06/2026 00:18:00, not the requested 10/06/2026 00:03:00
+        REGISTRATION FAILED: Natively-flight-eqcal does not read back as required
+        registered Natively-flight-eqcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eq-precheck.ps1" -At "2026-10-06 00:12" -Label eqcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:12
+        REGISTRATION PROBLEM: the next run reads 10/06/2026 00:12:00, not the requested 10/05/2026 23:57:00
+        REGISTRATION PROBLEM: the action does not run eq-precheck.ps1 with -At T - 6 and the label
+        REGISTRATION FAILED: Natively-flight-eqcal-precheck does not read back as required
+        NEXT RUNS flight=2026-10-06 00:18  precheck=2026-10-06 00:12
+ok   R7   StartWhenAvailable flipped to True on the registered flight task (Set-ScheduledTask) -> verify: REGISTRATION PROBLEM StartWhenAvailable reads True, REGISTRATION FAILED, exit 1
+        registered Natively-flight-eqcal-dry  state=Ready  limit=PT1H  triggers=0
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal-dry.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: none
+        REGISTRATION OK: Natively-flight-eqcal-dry reads Ready, StartWhenAvailable False, no trigger
+        registered Natively-flight-eqcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=True
+          next run: 2026-10-06 00:18
+        REGISTRATION PROBLEM: StartWhenAvailable reads True: a missed start would fire late, the registration requires False
+        REGISTRATION FAILED: Natively-flight-eqcal does not read back as required
+        registered Natively-flight-eqcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eq-precheck.ps1" -At "2026-10-06 00:12" -Label eqcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:12
+        REGISTRATION OK: Natively-flight-eqcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-06 00:18  precheck=2026-10-06 00:12
+ok   R7b  re-registering the flight task (-Force) restores StartWhenAvailable False -> REGISTRATION OK again (nothing sticky)
+        registered Natively-flight-eqcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:18
+        REGISTRATION OK: Natively-flight-eqcal reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-06 00:18
+ok   R8   the flight task Disabled -> verify: REGISTRATION PROBLEM the state reads 'Disabled', not Ready, exit 1
+        registered Natively-flight-eqcal-dry  state=Ready  limit=PT1H  triggers=0
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal-dry.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: none
+        REGISTRATION OK: Natively-flight-eqcal-dry reads Ready, StartWhenAvailable False, no trigger
+        registered Natively-flight-eqcal  state=Disabled  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:18
+        REGISTRATION PROBLEM: the state reads 'Disabled', not Ready
+        REGISTRATION FAILED: Natively-flight-eqcal does not read back as required
+        registered Natively-flight-eqcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eq-precheck.ps1" -At "2026-10-06 00:12" -Label eqcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:12
+        REGISTRATION OK: Natively-flight-eqcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-06 00:18  precheck=2026-10-06 00:12
+ok   R8b  re-registering a DISABLED task enables it again (Ready) -> REGISTRATION OK
+        registered Natively-flight-eqcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:18
+        REGISTRATION OK: Natively-flight-eqcal reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-06 00:18
+ok   F1   -T in the past -> REFUSED (a Once trigger in the past registers a task that never runs), no task registered
+        REFUSED: -T 2026-10-05 22:33 minus 6 min is not in the future: a Once trigger in the past registers a task that never runs, silently
+ok   F2   -T a bare time '21:00' -> REFUSED
+        REFUSED: -T must be a full date-time 'yyyy-MM-dd HH:mm' (got '21:00'): a bare time would resolve to today
+ok   F3   -Which bogus -> REFUSED
+        REFUSED: -Which must be dry, flight, precheck, armed, verify or supersede (got 'bogus')
+ok   F4   the launcher's NATIVELY_EQ_T differs from -T -> REFUSED naming both
+        REFUSED: C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal.cmd: the launcher's NATIVELY_EQ_T is '2026-01-01 00:00', not -T '2026-10-06 00:03'
+ok   F5   the launcher still holds a commit placeholder (@@) -> REFUSED
+        REFUSED: C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal.cmd: the launcher still holds a placeholder: node gen-launchers-eq.mjs --commit <registered HEAD> --t <T>
+ok   F6   Label eq, -T 2026-10-06 01:30 (after the window) -> REFUSED (A1.1), no real task registered
+        REFUSED: -T 2026-10-06 01:30 is outside 2026-10-05 19:30 .. 2026-10-06 01:00 (A1.1)
+ok   F7   Label eq, -T 2026-10-05 19:29 (before the window) -> REFUSED
+        REFUSED: -T 2026-10-05 19:29 is outside 2026-10-05 19:30 .. 2026-10-06 01:00 (A1.1)
+BAD  F8   Label eq, a valid T (2026-10-05 23:00) with -Plan against placeholder launchers (a copy: E's own may be the controller's real ones by now) -> REFUSED for the placeholder, nothing registered
+        REFUSED: -T 2026-10-05 23:00 minus 6 min is not in the future: a Once trigger in the past registers a task that never runs, silently
+      NOT AS EXPECTED: no line matches /^REFUSED: .*launch-eq\.cmd: the launcher still holds a placeholder/
+ok   F9   -Plan armed with the cal launchers: PLAN lines for both tasks, "PLAN only: nothing was registered", exit 0, and no task exists afterwards
+        PLAN Natively-flight-eqcal: cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal.cmd"  workdir=C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant  limit=05:00:00  trigger=Once at 2026-10-06 00 ...[3 more chars]
+        PLAN Natively-flight-eqcal-precheck: powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eq-precheck.ps1" -At "2026-10-05 23:57" -Label eqcal  workdir=C:\Users\sotka\OneDrive\Masaüstü\na ...[73 more chars]
+        PLAN only: nothing was registered
+ok   S1   supersede with both tasks registered and a record: BOTH read back Disabled, the record renamed to ARMING-super.superseded-<HHmm>.md (the old name gone), the old T printed and "not passed yet", exit 0
+        SUPERSEDE Natively-flight-eqcal disabled, read back: Disabled
+        SUPERSEDE Natively-flight-eqcal-precheck disabled, read back: Disabled
+        SUPERSEDE old T 2026-10-06 00:18; its precheck time (T - 6) has not passed yet; the superseded T goes into the new record as a Superseded: line
+        SUPERSEDE record renamed to ARMING-super.superseded-2304.md; present under the old name now: False
+        SUPERSEDE OK: regenerate from step 10 with a new T (still <= 01:00, else no flight tonight), then step 11 and 13 and 14
+ok   S2   after the supersede, re-registering (step 13 of the regenerated run) makes both tasks Ready again -> REGISTRATION OK x2
+        registered Natively-flight-eqcal  state=Ready  limit=PT5H  triggers=1
+          action=cmd.exe /c "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-launchers\launch-eqcal.cmd"
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:18
+        REGISTRATION OK: Natively-flight-eqcal reads Ready, StartWhenAvailable False, next run as requested
+        registered Natively-flight-eqcal-precheck  state=Ready  limit=PT15M  triggers=1
+          action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eq-precheck.ps1" -At "2026-10-06 00:12" -Label eqcal
+          settings: AllowStartIfOnBatteries=True  StopIfGoingOnBatteries=False  WakeToRun=True  StartWhenAvailable=False
+          next run: 2026-10-06 00:12
+        REGISTRATION OK: Natively-flight-eqcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+        NEXT RUNS flight=2026-10-06 00:18  precheck=2026-10-06 00:12
+ok   S3   supersede again with an OLD T (T - 6 already passed): "ALREADY PASSED: no flight at that T", a second renamed copy kept (never overwritten)
+        SUPERSEDE Natively-flight-eqcal disabled, read back: Disabled
+        SUPERSEDE Natively-flight-eqcal-precheck disabled, read back: Disabled
+        SUPERSEDE old T 2026-10-05 22:43; its precheck time (T - 6) has ALREADY PASSED: no flight at that T; the superseded T goes into the new record as a Superseded: line
+        SUPERSEDE record renamed to ARMING-super.superseded-2304-2.md; present under the old name now: False
+        SUPERSEDE OK: regenerate from step 10 with a new T (still <= 01:00, else no flight tonight), then step 11 and 13 and 14
+ok   S4   supersede with NO tasks registered and NO record: both tasks named NOT REGISTERED, no record to rename, exit 0 (not an error)
+        SUPERSEDE Natively-flight-eqcal is NOT REGISTERED, nothing to disable
+        SUPERSEDE Natively-flight-eqcal-precheck is NOT REGISTERED, nothing to disable
+        SUPERSEDE no arming record at C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-arming\ARMING-super.md, nothing to rename
+        SUPERSEDE OK: regenerate from step 10 with a new T (still <= 01:00, else no flight tonight), then step 11 and 13 and 14
+ok   S5   supersede -Plan: nothing disabled, nothing renamed (the dummy flight task still Ready, the record under its own name)
+        SUPERSEDE (plan) would disable Natively-flight-eqcal (now Ready)
+        SUPERSEDE (plan) would disable Natively-flight-eqcal-precheck (now Ready)
+        SUPERSEDE old T 2026-10-06 00:18; its precheck time (T - 6) has not passed yet; the superseded T goes into the new record as a Superseded: line
+        SUPERSEDE (plan) would rename the record to ARMING-super.superseded-2304.md
+        SUPERSEDE OK: regenerate from step 10 with a new T (still <= 01:00, else no flight tonight), then step 11 and 13 and 14
+
+CLEAN-UP: no eqcal task left; real eq tasks present: 0
+REGISTER CALIBRATION FAILED: F8 (26/27 ok)

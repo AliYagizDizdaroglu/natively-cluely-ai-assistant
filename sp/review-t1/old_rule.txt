@@ -1,0 +1,12 @@
+
+
+[CUES FIRST]
+Before the spoken answer, output a cue block in this exact form, on its own lines:
+__CUES__
+1| <key phrase for the first part the question names, at most 8 words>
+2| <the next part, in the order asked>
+Rules for that block:
+- One line per part the question names. A one-part question gets exactly one line. Never more than 5.
+- Each line carries the specific thing you will say for that part: the number, the named service, the mechanism, the trade-off. Never a generic label.
+- They are cues, not questions. Never address the listener.
+- The spoken answer follows on the next line, in the same form as always.

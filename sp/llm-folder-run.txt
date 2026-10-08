@@ -1,0 +1,409 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn[39m
+
+ [32m✓[39m electron/llm/prompts.test.ts [2m([22m[2m29 tests[22m[2m)[22m[90m 21[2mms[22m[39m
+ [32m✓[39m electron/llm/spokenNotation.test.ts [2m([22m[2m15 tests[22m[2m)[22m[90m 25[2mms[22m[39m
+ [32m✓[39m electron/llm/geminiThinking.test.ts [2m([22m[2m12 tests[22m[2m)[22m[90m 38[2mms[22m[39m
+ [32m✓[39m electron/llm/lastInterviewerTurn.test.ts [2m([22m[2m13 tests[22m[2m)[22m[90m 30[2mms[22m[39m
+ [32m✓[39m electron/llm/promptCapture.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 59[2mms[22m[39m
+[90mstderr[2m | electron/llm/verbalStreamFilter.test.ts[2m > [22m[2mfilterCodeFences — the app suppresses fenced blocks, and so must the arms[2m > [22m[2msuppresses a fenced block and keeps the prose around it
+[22m[39m[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+[90mstderr[2m | electron/llm/verbalStreamFilter.test.ts[2m > [22m[2mfilterCodeFences — the app suppresses fenced blocks, and so must the arms[2m > [22m[2msuppresses it when the text arrives one character at a time
+[22m[39m[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+ [32m✓[39m electron/llm/verbalStreamFilter.test.ts [2m([22m[2m72 tests[22m[2m)[22m[90m 220[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.geminiThinking.test.ts[2m > [22m[2mverbal Gemini call carries the thinking level, LOW by default, from NATIVELY_GEMINI_THINKING_LEVEL[2m > [22m[2munset → thinkingConfig.thinkingLevel LOW on the request (the shipped default)
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+[LLMHelper] gemini-3.1-flash-lite usage: thinking=LOW thoughts=143 out=160 in=5157
+
+[90mstdout[2m | electron/LLMHelper.geminiThinking.test.ts[2m > [22m[2mverbal Gemini call carries the thinking level, LOW by default, from NATIVELY_GEMINI_THINKING_LEVEL[2m > [22m[2mMINIMAL → thinkingConfig.thinkingLevel MINIMAL, the explicit way back to what flights through s50f sent
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+[LLMHelper] gemini-3.1-flash-lite usage: thinking=MINIMAL thoughts=143 out=160 in=5157
+
+[90mstdout[2m | electron/LLMHelper.geminiThinking.test.ts[2m > [22m[2mverbal Gemini call carries the thinking level, LOW by default, from NATIVELY_GEMINI_THINKING_LEVEL[2m > [22m[2mLOW → thinkingConfig.thinkingLevel LOW on the request, temperature and token cap unchanged
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+[LLMHelper] gemini-3.1-flash-lite usage: thinking=LOW thoughts=143 out=160 in=5157
+
+ [32m✓[39m electron/LLMHelper.geminiThinking.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 33[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2maborts the request when the consumer closes the stream early
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mat MINIMAL, primary silent for 4 s → the answer streams from gemini-3.5-flash-lite, announced by the fallback sentinel
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+
+[90mstdout[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2mdoes not abort when the stream completes naturally
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mat MINIMAL, primary silent for 4 s → the answer streams from gemini-3.5-flash-lite, announced by the fallback sentinel
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.abortOnClose.test.ts[2m > [22m[2mGemini stream aborts on early close[2m > [22m[2mpasses an AbortSignal to the SDK
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+ [32m✓[39m electron/LLMHelper.abortOnClose.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 31[2mms[22m[39m
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mat MINIMAL, primary silent for 4 s → the answer streams from gemini-3.5-flash-lite, announced by the fallback sentinel
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 4000ms — falling back to gemini-3.5-flash-lite
+
+[90mstderr[2m | electron/LLMHelper.streamChat.test.ts[2m > [22m[2mLLMHelper.streamChat — Gemma branch must honor caller system prompt overrides[2m > [22m[2msends CODE_HINT_PROMPT (not INTERVIEW_COPILOT_PROMPT) when CodeHintLLM calls streamChat on Gemma
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.streamChat.test.ts[2m > [22m[2mLLMHelper.streamChat — Gemma branch must honor caller system prompt overrides[2m > [22m[2mstill defaults to INTERVIEW_COPILOT_PROMPT on Gemma when the caller passes no override
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.streamChat.test.ts[2m > [22m[2mLLMHelper.streamChat — the coding style suffix must reach NON-Gemma Gemini models too[2m > [22m[2mappends the coding suffix for the coding caller on Flash Lite
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.streamChat.test.ts[2m > [22m[2mLLMHelper.streamChat — the coding style suffix must reach NON-Gemma Gemini models too[2m > [22m[2mdoes NOT append it for non-coding callers on Flash Lite
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.streamChat.test.ts[2m > [22m[2mLLMHelper.streamChat — the coding style suffix must reach NON-Gemma Gemini models too[2m > [22m[2mcarries the LFU guard and the must-run rule through to what Flash Lite actually receives
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mwith LOW shipped, the fallback leg is sent HIGH — the level 3.5-flash-lite actually spends
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mwith LOW shipped, the fallback leg is sent HIGH — the level 3.5-flash-lite actually spends
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mwith LOW shipped, the fallback leg is sent HIGH — the level 3.5-flash-lite actually spends
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 10000ms — falling back to gemini-3.5-flash-lite
+
+[90mstdout[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2munset: the technical route answers on the selected model, exactly as today
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2munset: the technical route answers on the selected model, exactly as today
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2mset: the technical route answers on the override
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2man explicit MINIMAL stays MINIMAL on both legs — it is the opt-out, not a level to raise
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+
+[90mstderr[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2mset: the technical route answers on the override
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2man explicit MINIMAL stays MINIMAL on both legs — it is the opt-out, not a level to raise
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2mset: the behavioral route answers on the override too
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+
+[90mstdout[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2mthe overridden primary carries the level that model honours, not the raw LOW
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.5-flash-lite (fallback=gemini-3.1-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.emptyStream.test.ts[2m > [22m[2mGemma empty-stream fallback[2m > [22m[2mfalls back to Flash when Gemma yields ZERO chunks (RECITATION / safety block)
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[LLMHelper] Gemma returned an empty stream (attempt 1) — likely RECITATION/safety block; falling back to Gemini Flash
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2man explicit MINIMAL stays MINIMAL on both legs — it is the opt-out, not a level to raise
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 4000ms — falling back to gemini-3.5-flash-lite
+
+[90mstderr[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2mthe overridden primary carries the level that model honours, not the raw LOW
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.emptyStream.test.ts[2m > [22m[2mGemma empty-stream fallback[2m > [22m[2mdoes not present a bare model-source sentinel as the answer
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[LLMHelper] Gemma returned an empty stream (attempt 1) — likely RECITATION/safety block; falling back to Gemini Flash
+
+[90mstderr[2m | electron/LLMHelper.verbalPrimary.test.ts[2m > [22m[2mNATIVELY_VERBAL_PRIMARY_MODEL overrides the verbal answer model only[2m > [22m[2mrefuses a model it will not answer with rather than silently using the selected one
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.emptyStream.test.ts[2m > [22m[2mGemma empty-stream fallback[2m > [22m[2mstill streams normally when Gemma DOES produce content (no over-correction)
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+ [32m✓[39m electron/LLMHelper.verbalPrimary.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 66[2mms[22m[39m
+[90mstderr[2m | electron/LLMHelper.emptyStream.test.ts[2m > [22m[2mGemma empty-stream fallback[2m > [22m[2mtreats a stream of only empty-string chunks as empty too
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[LLMHelper] Gemma returned an empty stream (attempt 1) — likely RECITATION/safety block; falling back to Gemini Flash
+
+ [32m✓[39m electron/LLMHelper.emptyStream.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 89[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mprimary answers in time → one call, no fallback
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mprimary answers in time → one call, no fallback
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mwith nothing set (LOW ships) the stall budget is 10 s: 4 s of silence is thinking, 10 s is a stall
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mwith nothing set (LOW ships) the stall budget is 10 s: 4 s of silence is thinking, 10 s is a stall
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mwith nothing set (LOW ships) the stall budget is 10 s: 4 s of silence is thinking, 10 s is a stall
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 10000ms — falling back to gemini-3.5-flash-lite
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mhonors NATIVELY_GEMMA_TTFT_MS and falls back to a Gemini model when Gemma stalls past it
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[LLMHelper] ⏱ Gemma produced no first token within the 50ms budget (attempt 1) — falling back to Gemini Flash
+
+ [32m✓[39m electron/LLMHelper.streamChat.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 50[2mms[22m[39m
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mretries Gemma on a transient 500 within the budget and keeps the answer on Gemma when a retry succeeds
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[LLMHelper] Gemma attempt 1/3 failed fast ({"error":{"code":500,"status":"INTERNAL","message":"Internal error encountered."}}) — retrying in 150ms
+
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mNATIVELY_FIRST_TOKEN_TIMEOUT_MS overrides the budget (the live smoke forces the race with 300)
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 300ms)
+
+[90mstdout[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mthe behavioral route runs the same race with the same budget (one implementation): 4 s at MINIMAL
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 4000ms)
+
+[90mstderr[2m | electron/LLMHelper.stallFallback.test.ts[2m > [22m[2ma stalled primary on the technical verbal route falls back to the other Flash Lite[2m > [22m[2mthe behavioral route runs the same race with the same budget (one implementation): 4 s at MINIMAL
+[22m[39m[LLMHelper] gemini-3.1-flash-lite stalled after 4000ms — falling back to gemini-3.5-flash-lite
+
+ [32m✓[39m electron/LLMHelper.stallFallback.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 128[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mretries Gemma on a transient 500 within the budget and keeps the answer on Gemma when a retry succeeds
+[22m[39m[LLMHelper] Gemma recovered on attempt 2/3
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mdoes NOT retry a non-retryable error (bad key) — falls straight to Flash
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[LLMHelper] Gemma failed (non-retryable: {"error":{"code":400,"status":"INVALID_ARGUMENT","message":"API key not valid. API_KEY_INVALID"}}) — falling back to Gemini Flash
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mcaps Gemma retries at NATIVELY_GEMMA_MAX_ATTEMPTS then falls back to Flash
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[LLMHelper] Gemma attempt 1/3 failed fast ({"error":{"code":503,"status":"UNAVAILABLE","message":"overloaded"}}) — retrying in 150ms
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mcaps Gemma retries at NATIVELY_GEMMA_MAX_ATTEMPTS then falls back to Flash
+[22m[39m[LLMHelper] Gemma attempt 2/3 failed fast ({"error":{"code":503,"status":"UNAVAILABLE","message":"overloaded"}}) — retrying in 150ms
+
+ [32m✓[39m electron/llm/WhatToAnswerLLM.budget.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 90[2mms[22m[39m
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mfalls back when the primary fails before any content
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mfalls back when the primary fails before any content
+[22m[39m[WhatToAnswerLLM] verbal primary failed before first token (HTTP 429 rate limit) — redirecting to gemini-3.5-flash-lite
+
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mannounces the redirect instead of swapping models silently
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mannounces the redirect instead of swapping models silently
+[22m[39m[WhatToAnswerLLM] verbal primary failed before first token (boom) — redirecting to gemini-3.5-flash-lite
+
+[90mstderr[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mdoes NOT restart after content has already shipped
+[22m[39m[WhatToAnswerLLM] Stream failed: Error: socket hang up
+    at failsAfter [90m(C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\[39melectron\llm\verbalFallback.test.ts:24:11[90m)[39m
+    at failsAfter.next (<anonymous>)
+    at WhatToAnswerLLM.stripModelSentinel [90m(C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\[39melectron\llm\WhatToAnswerLLM.ts:83:26[90m)[39m
+    at stripModelSentinel.next (<anonymous>)
+    at Module.filterCodeFences [90m(C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\[39melectron\llm\verbalStreamFilter.ts:188:22[90m)[39m
+    at filterCodeFences.next (<anonymous>)
+    at Module.filterVerbalLines [90m(C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\[39melectron\llm\verbalStreamFilter.ts:458:22[90m)[39m
+    at filterVerbalLines.next (<anonymous>)
+    at Module.stripSuggestionBlock [90m(C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\[39melectron\llm\verbalStreamFilter.ts:287:22[90m)[39m
+    at stripSuggestionBlock.next (<anonymous>)
+
+[90mstderr[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2msurfaces the real cause when the fallback ALSO fails
+[22m[39m[WhatToAnswerLLM] verbal primary failed before first token (primary died) — redirecting to gemini-3.5-flash-lite
+[WhatToAnswerLLM] Stream failed: Error: fallback died too
+    at failsImmediately [90m(C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\[39melectron\llm\verbalFallback.test.ts:18:11[90m)[39m
+    at failsImmediately.next (<anonymous>)
+    at WhatToAnswerLLM.stripModelSentinel [90m(C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\[39melectron\llm\WhatToAnswerLLM.ts:83:26[90m)[39m
+    at stripModelSentinel.next (<anonymous>)
+    at Module.filterCodeFences [90m(C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\[39melectron\llm\verbalStreamFilter.ts:188:22[90m)[39m
+    at filterCodeFences.next (<anonymous>)
+    at Module.filterVerbalLines [90m(C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\[39melectron\llm\verbalStreamFilter.ts:458:22[90m)[39m
+    at filterVerbalLines.next (<anonymous>)
+    at Module.stripSuggestionBlock [90m(C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\[39melectron\llm\verbalStreamFilter.ts:287:22[90m)[39m
+    at stripSuggestionBlock.next (<anonymous>)
+
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2memits onSuggestions exactly once even though two streams ran
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstderr[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2memits onSuggestions exactly once even though two streams ran
+[22m[39m[WhatToAnswerLLM] verbal primary failed before first token (boom) — redirecting to gemini-3.5-flash-lite
+
+[90mstdout[2m | electron/llm/verbalFallback.test.ts[2m > [22m[2mverbal fallback redirect[2m > [22m[2mleaves the healthy path untouched — no fallback redirect
+[22m[39m[Answer] budget: words=9 cut=no allowance=no
+
+ [32m✓[39m electron/llm/verbalFallback.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 103[2mms[22m[39m
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2mcaps Gemma retries at NATIVELY_GEMMA_MAX_ATTEMPTS then falls back to Flash
+[22m[39m[LLMHelper] Gemma failed 3x (last: {"error":{"code":503,"status":"UNAVAILABLE","message":"overloaded"}}) — falling back to Gemini Flash
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2ma multi-image request caps Gemma attempts at 2 then falls back to Flash
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[LLMHelper] Gemma attempt 1/2 failed fast ({"error":{"code":500,"status":"INTERNAL"}}) — retrying in 150ms
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper Gemma TTFT watchdog[2m > [22m[2ma multi-image request caps Gemma attempts at 2 then falls back to Flash
+[22m[39m[LLMHelper] Gemma failed 2x (last: {"error":{"code":500,"status":"INTERNAL"}}) — falling back to Gemini Flash
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat[2m > [22m[2mpings warmups (text, vision, flash) immediately and then on the interval, and stops cleanly
+[22m[39m[LLMHelper] Warmth heartbeat started (every 1000ms)
+[LLMHelper] Warmth heartbeat stopped
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat[2m > [22m[2mwarmupGemmaVision pings gemma-4-31b-it with an inline PNG image part (exercises the vision prefill)
+[22m[39m[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] gemma-4-31b-it vision warmed up in 1ms
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat[2m > [22m[2mstartWarmthHeartbeat is idempotent — a second call does not double the interval
+[22m[39m[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] Warmth heartbeat started (every 1000ms)
+[LLMHelper] Warmth heartbeat stopped
+[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] Warmth heartbeat started (every 1000ms)
+[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] Warmth heartbeat stopped
+[LLMHelper] gemma-4-31b-it vision warmed up in 1000ms
+[LLMHelper] gemma-4-31b-it vision warmed up in 1000ms
+[LLMHelper] gemma-4-31b-it vision warmed up in 0ms
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat — idle-aware (2026-09-03)[2m > [22m[2mdefaults to a five-minute cadence, not sixty seconds
+[22m[39m[LLMHelper] Warmth heartbeat started (every 300000ms)
+[LLMHelper] Warmth heartbeat stopped
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat — idle-aware (2026-09-03)[2m > [22m[2mskips a model the answers used inside the interval and still pings the idle ones
+[22m[39m[LLMHelper] Warmth heartbeat started (every 1000ms)
+[LLMHelper] Warmth heartbeat stopped
+
+[90mstderr[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat — idle-aware (2026-09-03)[2m > [22m[2mskips a model the answers used inside the interval and still pings the idle ones
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.reliability.test.ts[2m > [22m[2mLLMHelper keep-warm heartbeat — idle-aware (2026-09-03)[2m > [22m[2ma successful warmup counts as use, so back-to-back pings never double up
+[22m[39m[LLMHelper] Warming up gemma-4-31b-it VISION path (cold-start prevention)...
+[LLMHelper] gemma-4-31b-it vision warmed up in 0ms
+
+ [32m✓[39m electron/LLMHelper.reliability.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 842[2mms[22m[39m
+   [33m[2m✓[22m[39m LLMHelper Gemma TTFT watchdog[2m > [22mcaps Gemma retries at NATIVELY_GEMMA_MAX_ATTEMPTS then falls back to Flash [33m333[2mms[22m[39m
+ [32m✓[39m electron/llm/streamTaps.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 26[2mms[22m[39m
+ [32m✓[39m electron/llm/verbalPrimaryModel.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 39[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.knowledgeBudget.test.ts[2m > [22m[2mContext toggle on: the verbal path keeps its own prompt; the résumé arrives as context[2m > [22m[2mverbal answer → the verbal prompt itself + the custom notes; the knowledge rules stay out, the résumé block goes in the message
+[22m[39m[LLMHelper] KnowledgeOrchestrator attached
+[LLMHelper] <user_context> appended to the system prompt (36 chars)
+
+[90mstderr[2m | electron/LLMHelper.knowledgeBudget.test.ts[2m > [22m[2mContext toggle on: the verbal path keeps its own prompt; the résumé arrives as context[2m > [22m[2mverbal answer → the verbal prompt itself + the custom notes; the knowledge rules stay out, the résumé block goes in the message
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.knowledgeBudget.test.ts[2m > [22m[2mContext toggle on: the verbal path keeps its own prompt; the résumé arrives as context[2m > [22m[2mtyped chat (no verbal override) → knowledge prompt without the spoken budget block
+[22m[39m[LLMHelper] KnowledgeOrchestrator attached
+
+[90mstderr[2m | electron/LLMHelper.knowledgeBudget.test.ts[2m > [22m[2mContext toggle on: the verbal path keeps its own prompt; the résumé arrives as context[2m > [22m[2mtyped chat (no verbal override) → knowledge prompt without the spoken budget block
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+ [32m✓[39m electron/LLMHelper.knowledgeBudget.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 37[2mms[22m[39m
+ [32m✓[39m electron/llm/knowledgePromptBudget.test.ts [2m([22m[2m8 tests[22m[2m)[22m[90m 12[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mstreamChat with the verbal override (technical path) carries the <user_context> block
+[22m[39m[LLMHelper] <user_context> appended to the system prompt (66 chars)
+
+[90mstderr[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mstreamChat with the verbal override (technical path) carries the <user_context> block
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+ [32m✓[39m electron/llm/summaryContextLimits.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 15[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mstreamVerbalWithGeminiFlash (behavioral / fast path) carries the <user_context> block
+[22m[39m[LLMHelper] <user_context> appended to the system prompt (66 chars)
+[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstdout[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mno notes → no block on either path
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.customNotes.test.ts[2m > [22m[2mcustom notes reach the hands-free answer paths[2m > [22m[2mno notes → no block on either path
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+ [32m✓[39m electron/LLMHelper.customNotes.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 38[2mms[22m[39m
+ [32m✓[39m electron/llm/prompts/questionDetection.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 15[2mms[22m[39m
+ [32m✓[39m electron/llm/userContext.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 8[2mms[22m[39m
+ [32m✓[39m electron/llm/WhatToAnswerLLM.liveEars.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 24[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.geminiSystemInstruction.test.ts[2m > [22m[2mnon-Gemma Gemini models get the system prompt as systemInstruction, like Gemma does[2m > [22m[2mverbal answer on gemini-3.1-flash-lite → systemInstruction carries the prompt, the user turn carries only the question
+[22m[39m[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+
+[90mstderr[2m | electron/LLMHelper.geminiSystemInstruction.test.ts[2m > [22m[2mnon-Gemma Gemini models get the system prompt as systemInstruction, like Gemma does[2m > [22m[2mverbal answer on gemini-3.1-flash-lite → systemInstruction carries the prompt, the user turn carries only the question
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstderr[2m | electron/LLMHelper.geminiSystemInstruction.test.ts[2m > [22m[2mnon-Gemma Gemini models get the system prompt as systemInstruction, like Gemma does[2m > [22m[2mtyped chat (no verbal override) keeps the inlined form it was measured with
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+ [32m✓[39m electron/LLMHelper.geminiSystemInstruction.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 24[2mms[22m[39m
+ [32m✓[39m electron/llm/spokenNotation.json.test.ts [2m([22m[2m5 tests[22m[2m)[22m[90m 17[2mms[22m[39m
+[90mstdout[2m | electron/LLMHelper.groqSystemMessage.test.ts[2m > [22m[2mGroq models get the verbal prompt as a system message[2m > [22m[2mverbal answer on a Groq model → system + user messages
+[22m[39m[LLMHelper] Groq API Key updated.
+[LLMHelper] Switched to Cloud Model: qwen/qwen3.8-27b
+
+[90mstderr[2m | electron/LLMHelper.groqSystemMessage.test.ts[2m > [22m[2mGroq models get the verbal prompt as a system message[2m > [22m[2mverbal answer on a Groq model → system + user messages
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+[90mstdout[2m | electron/LLMHelper.groqSystemMessage.test.ts[2m > [22m[2mGroq models get the verbal prompt as a system message[2m > [22m[2mtyped chat (no verbal override) keeps the single inlined user message it was measured with
+[22m[39m[LLMHelper] Groq API Key updated.
+[LLMHelper] Switched to Cloud Model: qwen/qwen3.8-27b
+
+[90mstderr[2m | electron/LLMHelper.groqSystemMessage.test.ts[2m > [22m[2mGroq models get the verbal prompt as a system message[2m > [22m[2mtyped chat (no verbal override) keeps the single inlined user message it was measured with
+[22m[39m[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+ [32m✓[39m electron/LLMHelper.groqSystemMessage.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 27[2mms[22m[39m
+[90mstdout[2m | electron/llm/verbalSentinel.test.ts[2m > [22m[2mverbal stream model sentinel[2m > [22m[2mannounces the primary model at the head of the general (verbal-technical) route
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+[90mstdout[2m | electron/llm/verbalSentinel.test.ts[2m > [22m[2mverbal stream model sentinel[2m > [22m[2mannounces the fixed fast model at the head of the behavioral route
+[22m[39m[Answer] budget: words=2 cut=no allowance=no
+
+ [32m✓[39m electron/llm/verbalSentinel.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 31[2mms[22m[39m
+ [32m✓[39m electron/llm/WhatToAnswerLLM.leadingChars.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 38[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m29 passed[39m[22m[90m (29)[39m
+[2m      Tests [22m [1m[32m259 passed[39m[22m[90m (259)[39m
+[2m   Start at [22m 22:03:41
+[2m   Duration [22m 18.25s[2m (transform 6.22s, setup 0ms, collect 66.68s, tests 2.17s, environment 131.71s, prepare 12.60s)[22m
+

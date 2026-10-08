@@ -1,0 +1,35 @@
+===== br1 S2Q01 [fix]
+2026-09-30T11-45-30-br1 [fix jitter=50]: 40/40 once; doubles []; never []; drops 0; absorbed 6 (whisper 0); subs 0; unmatched 0; reorders 4; supersedes 0
+trace S2Q01: {"n":1,"lat":1200,"budget":1700,"path":"gate","finished":true,"fromLive":false,"finals":4,"cov":"1.00","closes":["continuation-expired"],"live":[],"logFirst":"11:11:38.629","logGate":null,"vadDev":null,"blips":0,"voiceOff":"11:11:37.445"}
+  11:11:21.965 voice ON
+  11:11:24.185 voice OFF
+  11:11:24.605 voice ON
+  11:11:25.079 final "Explain your rag pipeline precisely."
+  11:11:25.745 voice OFF
+  11:11:26.205 voice ON
+  11:11:26.725 voice OFF
+  11:11:27.145 voice ON
+  11:11:27.625 voice OFF
+  11:11:28.045 voice ON
+  11:11:28.565 voice OFF
+  11:11:29.005 voice ON
+  11:11:29.565 voice OFF
+  11:11:29.628 final "Walk through ingestion, parsing, chunking, embedding,"
+  11:11:29.965 voice ON
+  11:11:30.645 voice OFF
+  11:11:31.085 voice ON
+  11:11:32.305 voice OFF
+  11:11:32.725 voice ON
+  11:11:33.585 voice OFF
+  11:11:33.991 final "retrieval, reranking, context assembly,"
+  11:11:34.025 voice ON
+  11:11:37.445 voice OFF
+  11:11:37.699 final "and generation, and map those stages to your document intelligence exp"
+  11:11:38.645 dispatch finals=4 fromLive=false live=0 path=gate "Explain your rag pipeline precisely. Walk through ingestion,"
+  11:11:46.645 close continuation-expired
+  11:11:27.116 <whisper rv=match> {"kind":"marked"} q="Explain your rag pipeline precisely."
+  11:11:31.796 <whisper rv=match> {"kind":"marked"} q="Explain your rag pipeline precisely."
+  11:11:35.764 <whisper rv=match> {"kind":"marked"} q="Explain your rag pipeline precisely. Walk through "
+  11:11:39.772 <whisper rv=match> {"kind":"marked"} q="Explain your rag pipeline precisely. Walk through "
+  11:11:50.443 <live rv=match> {"kind":"absorbed","source":"live","of":"Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding, retrieval, reranking, context assembly, and generation, and map thos q="Briefly identify the key stages of an LLM-based RA"
+

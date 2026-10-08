@@ -1,0 +1,7 @@
+{
+  "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Arithmetic right (9500, 2850, 57%, recall 30%) but claims 57 rounds to 60; that gap is the point missed."},
+  "S1Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Left join, predicates in join condition, ingested-at leakage guard, count on event id for zeros; all key traps handled."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Logging, hashed assignment, 30-day maturity join, control-only or IPW retraining all sound; 122 words needs trimming."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Units, dataset, and uncertainties coherent; 12.5 to 2 percent matches the 84 percent claim. Too long to speak."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correctly names dependent next-step as the agent threshold, decomposition as sweet spot for three docs; 116 words, long."}
+}

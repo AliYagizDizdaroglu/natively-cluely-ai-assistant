@@ -1,0 +1,236 @@
+{
+  "S1Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct conditions for all three approaches: compliance/determinism, interpretable tabular, unstructured modalities; tight 56-word spoken answer."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic all correct (9500, 5000, 2850, 30% recall, 57% precision) but claims 57% 'rounds neatly' to the CV's 60%."
+  },
+  "S1Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly ties ROC inflation to true negatives and puts PR-AUC 0.38 at four times the 0.095 baseline; adds cost/LTV check."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout of scored-but-untreated high-risk customers is exactly the right control for seasonality and mix."
+  },
+  "S1Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Clean uplift argument isolating persuadables from lost causes and sure things; only the folk label 'sure things' is used loosely."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Code is correct — lexsort keeps original row order on ties, all three edge cases handled — but it is raw Python, unspeakable."
+  },
+  "S1Q04F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Breaks the stated tie rule by switching the secondary key to customer ID instead of original row order; no top-k partial selection."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split with a thirty-day embargo gap plus fit-on-train ColumnTransformer is right; 87 words is over length."
+  },
+  "S1Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly separates legitimate rolling-window repeats from random splits needing a customer-level holdout against correlated rows."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Describes the shape but never says the filters must sit in the ON clause, the trap that keeps the left join preserving zero-call customers."
+  },
+  "S1Q06F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Index omits ingested_at, the column the leakage filter depends on, and names a 'snapshot timestamp' the events table lacks."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All eight stages covered and correctly names the feature store as the shared piece against train-serving skew; about 115 words."
+  },
+  "S1Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Idempotent upserts on composite keys plus pinning model artifact and feature snapshot answers both duplicates and version mixing."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, deterministic hash assignment, delayed outcome join, and propensity weighting all covered; roughly 108 words."
+  },
+  "S1Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names the feedback loop precisely — treated churners relabelled as retained — and gives a defensible weighting remedy."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service mapped correctly across all eight areas with operational reasons; about 140 words, far over length."
+  },
+  "S1Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accurate split: managed endpoints for inference traffic splitting, App Service for simple web apps, AKS for multi-container control."
+  },
+  "S1Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Conflates Azure RBAC with table-level Postgres grants, which RBAC does not control; also about 111 words."
+  },
+  "S1Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Crisp triage by failure mode: token failure or 401 identity, 403 permissions, timeout with no auth code network."
+  },
+  "S2Q01": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Names XLM-RoBERTa as the embedding model when it is their classifier, not a retrieval encoder; also about 125 words."
+  },
+  "S2Q01F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Omits parsing/OCR and chunking, the stages that most directly turn a correct source document into wrong text."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Gives dataset construction only; no denominators and no uncertainty for any of the three metrics, both explicitly asked."
+  },
+  "S2Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "A real ablation per component plus multi-model consensus and human calibration for judge bias; about 120 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Nails the criterion — agents earn complexity when the next step depends on the last result — and ranks all three designs; about 120 words."
+  },
+  "S2Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Step cap, token and cost budgets, no-new-evidence detection, and a deterministic fallback chain all named concisely."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct RRF with one-based ranks, one over c plus rank, and deterministic doc-ID tie-break; about 95 words."
+  },
+  "S2Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Right reason (incompatible score scales) and the right weighting hook (coefficient on each source's reciprocal rank)."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every constraint honoured — greedy sort, seen-set, two-per-document cap, skip-if-not-fit, empty cases; about 114 words."
+  },
+  "S2Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Concrete redundant-liability-clause example plus MMR and query decomposition; 47 words, ideal spoken length."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, gather preserving order, per-case wrapper catching timeouts so failures do not cancel siblings."
+  },
+  "S2Q06F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Answers only the testing half; never designs the transient-error classification or the shrinking overall deadline that was asked for."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant namespaces, Postgres metadata with versioning, pre-filtered permission enforcement, and judge-based eval; about 97 words."
+  },
+  "S2Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly requires a second authorization check at prompt assembly, not just at retrieval, so revoked content never reaches context."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All six asked parts covered with CDC dual-write and shadow evals; 'immutable' old collection sits oddly with rollback; about 101 words."
+  },
+  "S2Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Count and content-hash diff against the source proves coverage and currency, then golden-set recall gates the router flip."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure chain from Blob through Event Grid, Service Bus, AKS, AI Search, Azure OpenAI, and Monitor; about 98 words."
+  },
+  "S2Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Region pinning with locally-redundant storage and private endpoints is right; says Container Apps where the design used AKS."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Full idempotency story: hash message ID dedup, peek-lock, Postgres unique-constraint state check, correct crash-after-write path; about 150 words."
+  },
+  "S2Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Max-delivery-count dead-lettering, fix-then-replay, and version-guarded writes so a stale update cannot resurrect a deleted doc."
+  }
+}

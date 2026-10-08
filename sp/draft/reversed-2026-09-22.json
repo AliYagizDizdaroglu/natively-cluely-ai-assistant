@@ -1,0 +1,703 @@
+[
+ {
+  "id": "S1Q01F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 3705,
+  "total": 4098,
+  "thoughts": 111,
+  "chars": 434
+ },
+ {
+  "id": "S1Q01F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3479,
+  "total": 3662,
+  "thoughts": 753,
+  "chars": 422
+ },
+ {
+  "id": "S1Q02",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 4094,
+  "total": 4296,
+  "thoughts": 1204,
+  "chars": 358
+ },
+ {
+  "id": "S1Q02",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 6513,
+  "total": 6771,
+  "thoughts": 832,
+  "chars": 345
+ },
+ {
+  "id": "S1Q02F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 7085,
+  "total": 7333,
+  "thoughts": 897,
+  "chars": 420
+ },
+ {
+  "id": "S1Q02F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3330,
+  "total": 3503,
+  "thoughts": 817,
+  "chars": 430
+ },
+ {
+  "id": "S1Q03",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 3141,
+  "total": 3272,
+  "thoughts": 765,
+  "chars": 405
+ },
+ {
+  "id": "S1Q03",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 7775,
+  "total": 7927,
+  "thoughts": 810,
+  "chars": 428
+ },
+ {
+  "id": "S1Q03F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 5214,
+  "total": 5823,
+  "thoughts": 109,
+  "chars": 440
+ },
+ {
+  "id": "S1Q03F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3570,
+  "total": 3725,
+  "thoughts": 859,
+  "chars": 398
+ },
+ {
+  "id": "S1Q04",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 3693,
+  "total": 3828,
+  "thoughts": 991,
+  "chars": 418
+ },
+ {
+  "id": "S1Q04",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 4760,
+  "total": 4932,
+  "thoughts": 1259,
+  "chars": 448
+ },
+ {
+  "id": "S1Q04F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 6731,
+  "total": 6902,
+  "thoughts": 679,
+  "chars": 350
+ },
+ {
+  "id": "S1Q04F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 2895,
+  "total": 3040,
+  "thoughts": 666,
+  "chars": 307
+ },
+ {
+  "id": "S1Q05",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 4025,
+  "total": 4191,
+  "thoughts": 972,
+  "chars": 451
+ },
+ {
+  "id": "S1Q05",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 2035,
+  "total": 2413,
+  "thoughts": 130,
+  "chars": 441
+ },
+ {
+  "id": "S1Q05F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 11658,
+  "total": 11892,
+  "thoughts": 787,
+  "chars": 396
+ },
+ {
+  "id": "S1Q05F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 4801,
+  "total": 4911,
+  "thoughts": 1125,
+  "chars": 438
+ },
+ {
+  "id": "S1Q06",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 3872,
+  "total": 4013,
+  "thoughts": 964,
+  "chars": 469
+ },
+ {
+  "id": "S1Q06",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 3662,
+  "total": 3892,
+  "thoughts": 646,
+  "chars": 460
+ },
+ {
+  "id": "S1Q06F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 6233,
+  "total": 6426,
+  "thoughts": 766,
+  "chars": 431
+ },
+ {
+  "id": "S1Q06F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3574,
+  "total": 3740,
+  "thoughts": 763,
+  "chars": 385
+ },
+ {
+  "id": "S1Q07",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 4928,
+  "total": 5148,
+  "thoughts": 1244,
+  "chars": 500
+ },
+ {
+  "id": "S1Q07",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 8047,
+  "total": 8196,
+  "thoughts": 847,
+  "chars": 443
+ },
+ {
+  "id": "S1Q07F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 5752,
+  "total": 5948,
+  "thoughts": 873,
+  "chars": 415
+ },
+ {
+  "id": "S1Q07F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3326,
+  "total": 3604,
+  "thoughts": 702,
+  "chars": 352
+ },
+ {
+  "id": "S1Q08",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 3840,
+  "total": 3939,
+  "thoughts": 864,
+  "chars": 423
+ },
+ {
+  "id": "S1Q08",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 7061,
+  "total": 7336,
+  "thoughts": 721,
+  "chars": 521
+ },
+ {
+  "id": "S1Q08F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 6359,
+  "total": 6466,
+  "thoughts": 783,
+  "chars": 439
+ },
+ {
+  "id": "S1Q08F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3782,
+  "total": 4042,
+  "thoughts": 865,
+  "chars": 480
+ },
+ {
+  "id": "S1Q09",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 3966,
+  "total": 4199,
+  "thoughts": 1077,
+  "chars": 516
+ },
+ {
+  "id": "S1Q09",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 6700,
+  "total": 6798,
+  "thoughts": 1047,
+  "chars": 519
+ },
+ {
+  "id": "S1Q09F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "error": "HTTP 503",
+  "ttft": null,
+  "total": 1289
+ },
+ {
+  "id": "S1Q09F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3598,
+  "total": 3901,
+  "thoughts": 896,
+  "chars": 488
+ },
+ {
+  "id": "S1Q10",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 3966,
+  "total": 4064,
+  "thoughts": 996,
+  "chars": 437
+ },
+ {
+  "id": "S1Q10",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 3851,
+  "total": 4056,
+  "thoughts": 540,
+  "chars": 430
+ },
+ {
+  "id": "S1Q10F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 8846,
+  "total": 9176,
+  "thoughts": 832,
+  "chars": 487
+ },
+ {
+  "id": "S1Q10F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3943,
+  "total": 4233,
+  "thoughts": 935,
+  "chars": 471
+ },
+ {
+  "id": "S2Q01",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 4039,
+  "total": 4199,
+  "thoughts": 1009,
+  "chars": 468
+ },
+ {
+  "id": "S2Q01",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 7102,
+  "total": 7253,
+  "thoughts": 816,
+  "chars": 454
+ },
+ {
+  "id": "S2Q01F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 7718,
+  "total": 7921,
+  "thoughts": 1135,
+  "chars": 479
+ },
+ {
+  "id": "S2Q01F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3613,
+  "total": 3809,
+  "thoughts": 811,
+  "chars": 485
+ },
+ {
+  "id": "S2Q02",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 5638,
+  "total": 5826,
+  "thoughts": 1392,
+  "chars": 534
+ },
+ {
+  "id": "S2Q02",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 6443,
+  "total": 6600,
+  "thoughts": 458,
+  "chars": 435
+ },
+ {
+  "id": "S2Q02F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 6484,
+  "total": 6675,
+  "thoughts": 1003,
+  "chars": 399
+ },
+ {
+  "id": "S2Q02F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3944,
+  "total": 4094,
+  "thoughts": 885,
+  "chars": 491
+ },
+ {
+  "id": "S2Q03",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 4327,
+  "total": 4423,
+  "thoughts": 1065,
+  "chars": 390
+ },
+ {
+  "id": "S2Q03",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 6508,
+  "total": 6688,
+  "thoughts": 1078,
+  "chars": 515
+ },
+ {
+  "id": "S2Q03F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 5610,
+  "total": 5756,
+  "thoughts": 809,
+  "chars": 413
+ },
+ {
+  "id": "S2Q03F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 4477,
+  "total": 4628,
+  "thoughts": 934,
+  "chars": 415
+ },
+ {
+  "id": "S2Q04",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 4266,
+  "total": 4432,
+  "thoughts": 1042,
+  "chars": 478
+ },
+ {
+  "id": "S2Q04",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 7675,
+  "total": 7871,
+  "thoughts": 898,
+  "chars": 502
+ },
+ {
+  "id": "S2Q04F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 7767,
+  "total": 7900,
+  "thoughts": 738,
+  "chars": 489
+ },
+ {
+  "id": "S2Q04F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 4025,
+  "total": 4228,
+  "thoughts": 959,
+  "chars": 473
+ },
+ {
+  "id": "S2Q05",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 4030,
+  "total": 4173,
+  "thoughts": 1011,
+  "chars": 417
+ },
+ {
+  "id": "S2Q05",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 4197,
+  "total": 4367,
+  "thoughts": 640,
+  "chars": 435
+ },
+ {
+  "id": "S2Q05F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 2720,
+  "total": 3197,
+  "thoughts": 111,
+  "chars": 537
+ },
+ {
+  "id": "S2Q05F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 4160,
+  "total": 4311,
+  "thoughts": 938,
+  "chars": 463
+ },
+ {
+  "id": "S2Q06",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 3586,
+  "total": 3747,
+  "thoughts": 878,
+  "chars": 508
+ },
+ {
+  "id": "S2Q06",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 4724,
+  "total": 5161,
+  "thoughts": 107,
+  "chars": 494
+ },
+ {
+  "id": "S2Q06F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 5127,
+  "total": 5281,
+  "thoughts": 619,
+  "chars": 402
+ },
+ {
+  "id": "S2Q06F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3948,
+  "total": 4061,
+  "thoughts": 857,
+  "chars": 392
+ },
+ {
+  "id": "S2Q07",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 3687,
+  "total": 3779,
+  "thoughts": 835,
+  "chars": 459
+ },
+ {
+  "id": "S2Q07",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 6769,
+  "total": 6979,
+  "thoughts": 1093,
+  "chars": 448
+ },
+ {
+  "id": "S2Q07F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 4848,
+  "total": 5016,
+  "thoughts": 629,
+  "chars": 352
+ },
+ {
+  "id": "S2Q07F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 4034,
+  "total": 4161,
+  "thoughts": 944,
+  "chars": 412
+ },
+ {
+  "id": "S2Q08",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 4549,
+  "total": 4679,
+  "thoughts": 1096,
+  "chars": 405
+ },
+ {
+  "id": "S2Q08",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 6822,
+  "total": 7085,
+  "thoughts": 1116,
+  "chars": 537
+ },
+ {
+  "id": "S2Q08F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 4536,
+  "total": 4597,
+  "thoughts": 690,
+  "chars": 471
+ },
+ {
+  "id": "S2Q08F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3360,
+  "total": 3504,
+  "thoughts": 757,
+  "chars": 341
+ },
+ {
+  "id": "S2Q09",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 4181,
+  "total": 4356,
+  "thoughts": 1002,
+  "chars": 401
+ },
+ {
+  "id": "S2Q09",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 5859,
+  "total": 6051,
+  "thoughts": 1158,
+  "chars": 504
+ },
+ {
+  "id": "S2Q09F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 9689,
+  "total": 9932,
+  "thoughts": 628,
+  "chars": 529
+ },
+ {
+  "id": "S2Q09F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 3027,
+  "total": 3170,
+  "thoughts": 660,
+  "chars": 478
+ },
+ {
+  "id": "S2Q10",
+  "arm": "3.1-lite LOW",
+  "first": true,
+  "ttft": 3388,
+  "total": 3586,
+  "thoughts": 810,
+  "chars": 464
+ },
+ {
+  "id": "S2Q10",
+  "arm": "3.5-lite HIGH",
+  "first": false,
+  "ttft": 6246,
+  "total": 6365,
+  "thoughts": 1015,
+  "chars": 421
+ },
+ {
+  "id": "S2Q10F",
+  "arm": "3.5-lite HIGH",
+  "first": true,
+  "ttft": 7759,
+  "total": 7917,
+  "thoughts": 876,
+  "chars": 404
+ },
+ {
+  "id": "S2Q10F",
+  "arm": "3.1-lite LOW",
+  "first": false,
+  "ttft": 4234,
+  "total": 4387,
+  "thoughts": 886,
+  "chars": 341
+ }
+]

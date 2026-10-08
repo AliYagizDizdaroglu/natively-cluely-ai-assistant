@@ -1,0 +1,1 @@
+What's the average time complexity of a lookup in a hash map?

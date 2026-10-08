@@ -1,0 +1,20 @@
+docs(passes): the follow-up replay's evidence, and its pre-registration's registered bytes
+
+PREREGISTER-followup-replay.md as committed in 51e349d was a double-encoded
+copy (UTF-8 read as Windows-1252 and written again) of the file registered
+at 18:28:12 local, before any model call: 14 characters were damaged (3 em
+dashes, 5 arrows, 2 minus signs, 3 >= and 1 <=, including the rule's own
+operators), not the three em dashes 18242df said. Mapping the committed
+text back through Windows-1252 reproduces the registered original byte for
+byte; this restores those bytes. No word of the rule changes.
+
+passes/2026-09-26-followup-replay/ holds what the result note rests on, so
+the one wrong answer that decided "FAIL by rule step 1" (S2Q07F, arm B,
+rep 2) can be re-read: the six answers files (10 follow-ups, arms A and B,
+three reps each, gemini-3.1-flash-lite LOW), the three blind grading files
+with their keys and the claude-opus-5-5 graders' verdicts and reasons,
+RESULT.txt, and the scripts that built, graded and decided it (as run,
+with their session paths). The captured prompts are left out: they carry
+the app's full system prompt with the candidate's resume-derived context.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

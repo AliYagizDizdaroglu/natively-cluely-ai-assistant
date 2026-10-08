@@ -1,0 +1,20 @@
+{
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic right in both directions, but calling 57 percent versus the claimed 60 percent entirely consistent within rounding overstates the reconciliation."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every requested layer with sound shared feature store and skew reasoning; roughly 115 words, well over a spoken length."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Stops mid-sentence after prediction logging; experiment assignment, outcome joins and retraining selection are never given."
+  }
+}

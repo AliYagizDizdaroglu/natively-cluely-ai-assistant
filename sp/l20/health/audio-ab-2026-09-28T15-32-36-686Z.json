@@ -1,0 +1,166 @@
+{
+ "model": "gemini-3.8-live",
+ "t0Iso": "2026-09-28T15:32:36.686Z",
+ "results": [
+  {
+   "id": "S2Q08",
+   "arm": "n24",
+   "openedAt": 3,
+   "setupMs": 762,
+   "clipSeconds": 19.3,
+   "clipEndMs": 21521,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "usage": []
+  },
+  {
+   "id": "S2Q08",
+   "arm": "d16",
+   "openedAt": 26496,
+   "setupMs": 631,
+   "clipSeconds": 19.3,
+   "clipEndMs": 48384,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the roll back.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "usage": []
+  },
+  {
+   "id": "S1Q04",
+   "arm": "d16",
+   "openedAt": 51879,
+   "setupMs": 640,
+   "clipSeconds": 30.4,
+   "clipEndMs": 85368,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return precision at K, recall at K, and lift over the population prevalence. Assume binary labels and finite scores. And break score ties by original row order. Tell me what it does. Invalid K for empty inputs. And when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "usage": []
+  },
+  {
+   "id": "S1Q04",
+   "arm": "n24",
+   "openedAt": 89242,
+   "setupMs": 587,
+   "clipSeconds": 30.4,
+   "clipEndMs": 122755,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that returns precision at K, recall at K, and lift over the population prevalence. Assume binary labels. And finite scores and break score ties by original row order. Tell me what it does for an invalid K, for empty inputs, and when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": null,
+   "lastWordMs": null,
+   "text": "",
+   "closed": {
+    "code": 1011,
+    "reason": "Internal error encountered."
+   },
+   "abnormal": true,
+   "usage": []
+  },
+  {
+   "id": "S1Q02",
+   "arm": "n24",
+   "openedAt": 138532,
+   "setupMs": 719,
+   "clipSeconds": 26.2,
+   "clipEndMs": 167758,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners, and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": 2144,
+   "lastWordMs": 7523,
+   "text": "With a hundred thousand subscribers and a nine point five percent churn rate, there are ninety-five hundred actual churners. Catching thirty percent of those gives us twenty-eight hundred and fifty true positives. At sixty percent precision, that implies forty-seven hundred and fifty predicted churners, which is four point seven five percent of the population and aligns perfectly with the observed five percent band within rounding.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "usage": [
+    {
+     "promptTokenCount": 6049,
+     "responseTokenCount": 550,
+     "totalTokenCount": 6599,
+     "promptTokensDetails": [
+      {
+       "modality": "TEXT",
+       "tokenCount": 5135
+      },
+      {
+       "modality": "AUDIO",
+       "tokenCount": 887
+      }
+     ],
+     "responseTokensDetails": [
+      {
+       "modality": "AUDIO",
+       "tokenCount": 550
+      }
+     ],
+     "thoughtsTokenCount": 663
+    }
+   ]
+  },
+  {
+   "id": "S1Q02",
+   "arm": "d16",
+   "openedAt": 199163,
+   "setupMs": 626,
+   "clipSeconds": 26.2,
+   "clipEndMs": 228820,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1879,
+   "lastWordMs": 7781,
+   "text": "With a hundred thousand subscribers and a nine point five percent churn rate, we have nine thousand five hundred total churners. Targeting the top five percent means hitting five thousand subscribers, and at sixty percent precision, that gives us three thousand true positives. This captures approximately thirty-one point six percent of all churners, which aligns perfectly with my reported recall and demonstrates tight consistency within rounding.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "usage": [
+    {
+     "promptTokenCount": 6043,
+     "responseTokenCount": 564,
+     "totalTokenCount": 6607,
+     "promptTokensDetails": [
+      {
+       "modality": "TEXT",
+       "tokenCount": 5135
+      },
+      {
+       "modality": "AUDIO",
+       "tokenCount": 879
+      }
+     ],
+     "responseTokensDetails": [
+      {
+       "modality": "AUDIO",
+       "tokenCount": 564
+      }
+     ],
+     "thoughtsTokenCount": 786
+    }
+   ]
+  }
+ ]
+}

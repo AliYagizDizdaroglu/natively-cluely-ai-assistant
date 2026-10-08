@@ -1,0 +1,51 @@
+You are grading answers produced for a simulated MLOps job interview. Work only from the
+files named here.
+
+1. Read this file in full: `C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\l20d\blind\packet-C.json`
+
+It has three top-level fields: `model`, `rubric`, and `items`. The `rubric` field states
+exactly how to score. Follow that rubric literally; do not invent your own criteria.
+
+2. Grade EVERY entry in `items`. Each item has a `key`, the `question` asked, and the
+`answer` given. Judge the answer as a spoken reply a candidate would say out loud in a live
+interview.
+
+A `question` may carry a bracketed suffix giving the coding problem that was on screen, or
+the parent question of a follow-up. Treat that suffix as context the candidate could see or
+had just discussed, and grade the answer against the whole thing.
+
+The file may contain the SAME question answered several times, each repetition with its own
+`key`. Grade every repetition independently and on its own merits. Do not let your score for
+one repetition influence another, and do not try to be consistent across repetitions: if one
+attempt is correct and another is wrong, they must get different scores.
+
+For each item produce three integer scores from 0 to 2, exactly as the rubric defines them:
+`correctness`, `on_topic`, `delivery`. Add a `reason` of one short sentence naming the
+specific defect or strength.
+
+Apply these three calibrations literally, because they are where graders drift apart:
+
+- **correctness 0** only when a named technology or mechanism is factually mischaracterised,
+  or the answer would embarrass the candidate. **correctness 1** when the answer is right in
+  substance but misplaces a product name, misses the key mechanism the question is about, or
+  omits an explicitly asked sub-part. Vague-but-not-wrong is 1, never 0.
+- **on_topic 0** only when the answer addresses a different question than the one asked.
+  Answering the question but drifting or covering only part of it is 1.
+- **delivery 0** only for text that cannot be spoken as-is: markdown, bullet lists, code,
+  complexity lines such as "Time: O(n)", raw URIs or paths read aloud, or questions back to
+  the interviewer. **delivery 1** for register or length problems, including anything over
+  about 85 words. Length alone is never below 1.
+
+Judge the advice on its technical merits, not on whether you would have phrased it that way.
+A defensible engineering choice you disagree with is not a correctness error.
+
+3. Write your verdicts as a single JSON object to: `C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\l20d\blind\verdicts-C-g1.json`
+
+Shape: `{"<key>": {"correctness": 0-2, "on_topic": 0-2, "delivery": 0-2, "reason": "..."}, ...}`
+with one entry per item, using each item's `key` verbatim. Write valid JSON with no trailing
+commas and no commentary outside the JSON.
+
+4. Verify your output: re-read the file you wrote, confirm it parses as JSON and that its key
+count equals the number of items you were given. Report back only: the number of items
+graded, the count where correctness is 2 and on_topic is 2, the count where correctness is 0
+or on_topic is 0, and the five keys you scored lowest with a few words each.

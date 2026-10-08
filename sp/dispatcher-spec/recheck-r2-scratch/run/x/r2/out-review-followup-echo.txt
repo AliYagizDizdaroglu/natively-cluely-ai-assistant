@@ -1,0 +1,20 @@
+claims 751, attributed 689
+
+WOULD BE ABSORBED as another item's echo if it arrived while its own turn was open (best-other >= 0.5 and >= own): 0
+  
+
+near (best-other 0.40-0.50, below own or under the bar): 14
+  08T08-44-56-after9 07:18:36 W08     own 1.00 best-other 0.50 (W07)  q="What is the difference between data drift and concept drift?"
+  11T08-22-32-s50b   07:45:34 S1Q10   own 0.95 best-other 0.42 (S1Q09)  q="Secure the churn platform without embedded credentials. How would your inference service a"
+  11T08-22-32-s50b   07:59:17 S2Q04F  own 1.00 best-other 0.42 (S2Q04)  q="Why might you use rank fusion instead of adding the raw scores, and how would you add a co"
+  12T08-22-49-s50c   07:59:34 S2Q04F  own 1.00 best-other 0.42 (S2Q04)  q="Why might you use rank fusion instead of adding the raw scores, and how would you add a co"
+  14T08-22-28-s50e   07:49:52 S2Q01   own 0.58 best-other 0.53 (S2Q01F)  q="Which of those stages (ingestion, parsing, chunking, embedding, retrieval, reranking, cont"
+  14T08-22-28-s50e   07:59:12 S2Q04F  own 1.00 best-other 0.45 (S2Q04)  q="Why might you use rank fusion instead of adding the raw scores? And how would you add a co"
+  16T08-42-43-s50g   08:09:57 S2Q01   own 0.63 best-other 0.47 (S2Q01F)  q="Of the RAG pipeline stages (ingestion, parsing, chunking, embedding, retrieval, re-ranking"
+  16T08-42-43-s50g   08:19:28 S2Q04F  own 1.00 best-other 0.42 (S2Q04)  q="Why might you use rank fusion instead of adding the raw scores, and how would you add a co"
+  16T11-41-44-s50h   11:18:29 S2Q04F  own 1.00 best-other 0.42 (S2Q04)  q="Why might you use rank fusion instead of adding the raw scores, and how would you add a co"
+  18T08-22-57-s50i   07:59:43 S2Q04F  own 1.00 best-other 0.42 (S2Q04)  q="Why might you use rank fusion instead of adding the raw scores, and how would you add a co"
+  19T08-22-41-s50j   07:59:26 S2Q04F  own 0.92 best-other 0.42 (S2Q04)  q="Why might you use rank fusion instead of adding the raw scores? And how would you add a co"
+  20T11-22-43-s50k   10:59:28 S2Q04F  own 1.00 best-other 0.42 (S2Q04)  q="Why might you use rank fusion instead of adding the raw scores, and how would you add a co"
+  22T08-22-50-s50m   07:59:35 S2Q04F  own 1.00 best-other 0.42 (S2Q04)  q="Why might you use rank fusion instead of adding the raw scores, and how would you add a co"
+  30T11-45-30-br1    11:22:15 S2Q04F  own 0.58 best-other 0.50 (S2Q04)  q="Modify your Reciprocal Rank Fusion implementation to accept a configurable weight for each"

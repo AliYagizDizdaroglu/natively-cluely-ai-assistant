@@ -1,0 +1,82 @@
+﻿adapter (MAIN) 16036 B 2af5409f94f0f3e5; test (STAGE) 11766 B e80e5373b7d7b291
+
+[as expected] control: the adapter as it stands in MAIN
+   Tests 8 passed (8)
+   (no test failed)
+
+[as expected] MUTANT A: bare clear() at the empty-FINAL branch (`?.` dropped)
+   Tests 1 failed | 7 passed (8)
+   failed: an empty FINAL on a non-English or multi connection is harmless: F2 is emitted as received, no error is logged
+   ---- vitest failure block ----
+   | FAIL ... > an empty FINAL on a non-English or multi connection is harmless: F2 is emitted as received, no error is logged
+   | AssertionError: expected "error" to not be called at all, but actually been called 2 times
+   | Received: 
+   |   1st error call:
+   |     Array [
+   |       "[DeepgramStreaming] Parse error:",
+   |       [TypeError: Cannot read properties of null (reading 'clear')],
+   |     ]
+   |   2nd error call:
+   |     Array [
+   |       "[DeepgramStreaming] Parse error:",
+   |       [TypeError: Cannot read properties of null (reading 'clear')],
+   |     ]
+   | Number of calls: 2
+   |  ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:198:32
+   |     196|                 expect(seen, language).toEqual(unchanged);
+
+[as expected] MUTANT B: bare clear() at the UtteranceEnd handler (`?.` dropped)
+   Tests 1 failed | 7 passed (8)
+   failed: an UtteranceEnd on a non-English or multi connection is harmless and still re-emitted
+   ---- vitest failure block ----
+   | FAIL ... > an UtteranceEnd on a non-English or multi connection is harmless and still re-emitted
+   | TypeError: Cannot read properties of null (reading 'clear')
+   |  ❯ electron/audio/DeepgramStreamingSTT.ts:260:86
+   |     258|                 live.on(LiveTranscriptionEvents.SpeechStarted, () => {…
+   |     259|                 // An UtteranceEnd is a pause for the boundary repair …
+   |     260|                 live.on(LiveTranscriptionEvents.UtteranceEnd, () => { …
+   |        |                                                                                      ^
+   |     261| 
+   |     262|                 // Flush buffered audio
+   |  ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:27:79
+   |  ❯ Object.fire electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:27:55
+   |  ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:208:41
+   |  ❯ playSeam electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:126:13
+   |  ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts:208:17
+
+[as expected] gate removed
+   Tests 1 failed | 7 passed (8)
+   failed: a non-English connection passes every transcript through untouched, with no repair line
+
+[as expected] empty-final clear dropped
+   Tests 1 failed | 7 passed (8)
+   failed: an empty FINAL between F1 and F2 is a pause: F2 is emitted as received, no repair line
+
+[as expected] UtteranceEnd clear dropped
+   Tests 1 failed | 7 passed (8)
+   failed: an UtteranceEnd between F1 and F2 is a pause too, and is still re-emitted
+
+[as expected] speech_final not passed
+   Tests 1 failed | 7 passed (8)
+   failed: speech_final on F1 reaches the module: Deepgram heard the utterance end there, so nothing is restored
+
+[as expected] clear on ANY empty transcript
+   Tests 1 failed | 7 passed (8)
+   failed: an empty INTERIM is not a pause: the repair still happens (the control for the three above)
+
+[as expected] ?. dropped on onTranscript
+   Tests 3 failed | 5 passed (8)
+   failed: a non-English connection passes every transcript through untouched, with no repair line
+   failed: an empty FINAL on a non-English or multi connection is harmless: F2 is emitted as received, no error is logged
+   failed: an UtteranceEnd on a non-English or multi connection is harmless and still re-emitted
+
+[as expected] non-English text fallback -> empty string
+   Tests 3 failed | 5 passed (8)
+   failed: a non-English connection passes every transcript through untouched, with no repair line
+   failed: an empty FINAL on a non-English or multi connection is harmless: F2 is emitted as received, no error is logged
+   failed: an UtteranceEnd on a non-English or multi connection is harmless and still re-emitted
+
+junction to MAIN's node_modules removed: true; MAIN's vitest still present: true
+scratch tree deleted: true
+
+variants whose failing set differed from the expectation: 0

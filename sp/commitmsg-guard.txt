@@ -1,0 +1,38 @@
+fix(verbal): the 200-word guard ends on a finished sentence instead of slicing one
+
+Flight s50i (2026-09-18) cut S2Q07 at exactly 200 words, mid-clause, on "measuring both
+retrieval accuracy—using metrics". The same prompt answered offline ran to 218 words, and the
+grader marked the in-app answer weak for the ending it never reached. Of the seven questions the
+live hour lost against its own offline twin — same bytes, same model, same thinking level — this
+was the ONLY one with an identifiable mechanical cause; the rest are sampling.
+
+The guard had limit, floor and ceiling all at 200, so the stream never left stream mode and was
+sliced wherever word 200 fell. Moving the floor alone is not enough: the switch to sentence
+buffering can only happen AT a sentence boundary, so a long sentence that STARTS below the floor
+is still streamed and still sliced at the ceiling. The gap between floor and limit is the budget
+the next whole sentence must fit in, so the floor goes to 120, leaving 80 words — comfortably
+more than any sentence these answers produce, and above the p50 of 105 words, so the answers the
+prompt actually asks for stream exactly as before.
+
+Buffering has to read a sentence before it can know whether it fits, which would have drained
+the provider stream that the stream-mode ceiling used to abandon early. So buffer mode now stops
+as soon as the unterminated tail cannot fit under the ceiling: the sentence is already too long
+to keep, and reading the rest of it only pays for text nobody will hear. The early IteratorClose
+is preserved (WhatToAnswerLLM.budget: consumed < total).
+
+Two cases still stop mid-sentence, both correctly — a single sentence longer than the
+floor-to-limit budget, and an answer with no terminator anywhere. Neither has a boundary to keep.
+The gate row still reports every cut as a finding.
+
+Verified against the original symptom, not just synthetic text: replaying s50i's own 218-word
+S2Q07 through the shipped filter gives 200 words ending "…using metrics" before, and 173 words
+ending "…via a retrieval-augmented generation framework." after. Swept over all 79 real answers
+that flight (39 offline, 40 live): answers cut 1 before and 1 after, cut mid-sentence 1 before
+and 0 after, and exactly one answer's text changed — the defective one.
+
+Tests: guard constant, a runaway stopping on its last finished sentence at every chunk size, a
+crossing sentence dropped whole rather than truncated, the no-terminator case still stopping at
+the ceiling, and the caller-level runaway. All watched failing first. Suite 692, tsc at the
+6-error baseline.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,38 @@
+﻿v3 original 5940 B 4653b898dadc0885; final module 10743 B d5ba4da0650e7531; test 13947 B 6956aea35dfef746
+
+[v3 original (the RED state)] exit 1: Tests 10 failed | 58 passed (68)
+   failed: negative #28 with the interim running on: a digit token at the cut ("ninety two percent" -> "92%.") is no cut
+   failed: "twenty five" -> "25": the same shape (v3 restored "five")
+   failed: "all right" -> "Alright": a final token longer than the interim's is a merge, not a re-spelling (v3 restored "right")
+   failed: "break" -> "breaks": a longer final token is refused even when it is only an inflection, so a word lost right after it stays lost (v3 restored "even")
+   failed: a re-spelling keeps its first letter: "put" for "cut" is no cut ("cat" for "cut" still is — the edge above)
+   failed: an interim with a non-ASCII letter that splits the tokenisers ("İ") is no cut
+   failed: an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+   failed: clear() between F1 and F2 (the adapter's empty final / UtteranceEnd) forgets the cut
+   failed: clear() also forgets the latest interim: a final after a pause is not a cut of it
+   failed: speechFinal on F1 (Deepgram heard the utterance end there) leaves no cut; on F2 it does not stop the repair
+
+[final] exit 0: Tests 68 passed (68)
+
+[MUTANT digit rule removed] exit 1: Tests 1 failed | 67 passed (68)
+   failed: "twenty five" -> "25": the same shape (v3 restored "five")
+   Expected: "last week, then rolled it back."  |  Received: "two last week, then rolled it back."
+
+[MUTANT \p{L}-only guard (no \p{M})] exit 1: Tests 1 failed | 67 passed (68)
+   failed: an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+   Expected: "and your last role."  |  Received: "re sume and your last role."
+
+[MUTANT no non-ASCII guard] exit 1: Tests 2 failed | 66 passed (68)
+   failed: an interim with a non-ASCII letter that splits the tokenisers ("İ") is no cut
+   failed: an interim with a non-ASCII letter is no cut: a lost "résumé" is not restored as "r sum"
+   Expected: "projesinde hangi veritabanını seçtiniz?"  |  Received: "zmir projesinde projesinde hangi veritabanını seçtiniz?"
+   Expected: "and your last role."  |  Received: "r sum and your last role."
+
+junction to MAIN's node_modules removed: true; MAIN's vitest still present: true
+scratch tree deleted: true
+
+The two NEW expects run directly (want = the test's expected value):
+   [v3 original] digit pin ("version two" -> "v2"): FAILS — got "two last week, then rolled it back."
+   [v3 original] decomposed resume (e + U+0301): FAILS — got "re sume and your last role."
+   [final] digit pin ("version two" -> "v2"): passes — got "last week, then rolled it back."
+   [final] decomposed resume (e + U+0301): passes — got "and your last role."

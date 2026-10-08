@@ -1,0 +1,263 @@
+{
+ "schema": "cues-export-eq/1",
+ "runDir": "C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-10-01T02-37-41-cuesmoke",
+ "registeredHead": "56bda9eb64b65a190c73788b5f86a550f6809f6a",
+ "window": {
+  "startedAt": "2026-10-01T02:03:07.554Z",
+  "endedAt": "2026-10-01T02:37:41.241Z"
+ },
+ "entries": [
+  {
+   "id": "S1Q01",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "XGBoost for tabular churn data",
+    "Fast inference and low latency",
+    "Simple logistic regression baseline"
+   ],
+   "empty": null,
+   "logLine": 448
+  },
+  {
+   "id": "S1Q01F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Logistic regression for linear baselines",
+    "Neural networks for unstructured data",
+    "Rules for deterministic safety checks"
+   ],
+   "empty": null,
+   "logLine": 574
+  },
+  {
+   "id": "S1Q02",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "True positives calculation",
+    "Capture rate check",
+    "Consistency within rounding"
+   ],
+   "empty": null,
+   "logLine": 831
+  },
+  {
+   "id": "S1Q02F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "PR-AUC 0.38 lift over baseline",
+    "ROC-AUC 0.88 ranking ability",
+    "Business ROI and intervention cost"
+   ],
+   "empty": null,
+   "logLine": 982
+  },
+  {
+   "id": "S1Q03",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Randomized holdout control groups",
+    "Controlling for cohort mix and"
+   ],
+   "empty": null,
+   "logLine": 1154
+  },
+  {
+   "id": "S1Q03F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Lost causes vs persuadables",
+    "Uplift modeling and ROI"
+   ],
+   "empty": null,
+   "logLine": 1290
+  },
+  {
+   "id": "S1Q04",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Sort, slice, compute metrics",
+    "Handle edge cases and ties"
+   ],
+   "empty": null,
+   "logLine": 1571
+  },
+  {
+   "id": "S1Q04F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Partial selection with index tie-breaking"
+   ],
+   "empty": null,
+   "logLine": 1775
+  },
+  {
+   "id": "S1Q05",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Chronological split with buffer",
+    "Scikit-learn ColumnTransformer pipeline",
+    "Fit transformers on train only"
+   ],
+   "empty": null,
+   "logLine": 2003
+  },
+  {
+   "id": "S1Q05F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Legitimate for recurring time-series panels",
+    "Required when customer features cause"
+   ],
+   "empty": null,
+   "logLine": 2245
+  },
+  {
+   "id": "S1Q06",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Left join snapshots table",
+    "Thirty day window and ingestion",
+    "Group by snapshot and count"
+   ],
+   "empty": null,
+   "logLine": 2491
+  },
+  {
+   "id": "S1Q06F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Composite index on snapshot date",
+    "Append-only event sourcing for historical"
+   ],
+   "empty": null,
+   "logLine": 2699
+  },
+  {
+   "id": "S1Q07",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Ingestion and feature store",
+    "Airflow training and Model Registry",
+    "FastAPI serving and drift monitoring"
+   ],
+   "empty": null,
+   "logLine": 2932
+  },
+  {
+   "id": "S1Q07F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Idempotent state tracking",
+    "Pinned model version hashes"
+   ],
+   "empty": null,
+   "logLine": 3150
+  },
+  {
+   "id": "S1Q08",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Prediction logging with model hash",
+    "Deterministic experiment assignment",
+    "30-day delayed outcome joins"
+   ],
+   "empty": null,
+   "logLine": 3339
+  },
+  {
+   "id": "S1Q08F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Feedback loop creation",
+    "Intervention label distortion",
+    "Control group mitigation"
+   ],
+   "empty": null,
+   "logLine": 3533
+  },
+  {
+   "id": "S1Q09",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Blob storage and Azure ML",
+    "ACR, AKS, and Airflow scheduling",
+    "Entra ID and Azure Monitor"
+   ],
+   "empty": null,
+   "logLine": 3750
+  },
+  {
+   "id": "S1Q09F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Azure ML Managed Endpoints for",
+    "Azure App Service for lightweight",
+    "AKS for complex multi-container platforms"
+   ],
+   "empty": null,
+   "logLine": 3923
+  },
+  {
+   "id": "S1Q10",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Managed identities authenticate services",
+    "RBAC and database roles authorize",
+    "Key Vault isolates environments securely"
+   ],
+   "empty": null,
+   "logLine": 4132
+  },
+  {
+   "id": "S1Q10F",
+   "arm": "inapp",
+   "rep": null,
+   "dispatchedAt": null,
+   "cues": [
+    "Check token and Entra ID",
+    "Verify Azure RBAC and database",
+    "Inspect VNet rules and Private"
+   ],
+   "empty": null,
+   "logLine": 4290
+  }
+ ]
+}

@@ -1,0 +1,7 @@
+feat(flight): a same-bytes no-cue twin, three reps, only on a cue hour
+
+The captured prompts with the exact CUE_RULE stripped give a cue hour its own
+no-cue band within the hour; on a pre-cue hour the arms are skipped with one
+log line rather than duplicating the control or failing in answers.mjs.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

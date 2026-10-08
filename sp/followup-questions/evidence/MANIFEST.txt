@@ -1,0 +1,41 @@
+evidence assembled 2026-10-01T12:15:21.294Z
+024190675c7553e8472f9d6f055ab26b6bcc531d111b3fcdf43ec02abf5f512e    342768  prompts.A.json  (derived from s50m-gated.json: system + userA)
+063d463aae2e210e01127f532ec695a52732ef51c394983bc755c14d561c7971    350753  prompts.B.json  (derived from s50m-gated.json: system + userB)
+1aa4b3a57eea2062357b4e80b57a914ffb2303772ec2a3273390f2b2382b70b5    440661  s50m-gated.json
+f61c4607697743a1058d9fc8be38fbec0783c459a1968a8972f343b6de505302    312424  parity-fixture.json
+6e1def2c981672269158131f5dc7bb44c4512af73bb63a59b72fc00388f9a5f6     22427  interview60.answers.gemini-3.5-flash-lite_fquestions-A-r1.json
+388b4d37afc3c7b4329d58260c1428abd510750a8680a07a6457b048e0904b89     24250  interview60.answers.gemini-3.5-flash-lite_fquestions-A-r2.json
+fa88fbfd5823c498c0df9b6c17dd0182e71f673c224d7f59a68ff614516ddc15     24072  interview60.answers.gemini-3.5-flash-lite_fquestions-A-r3.json
+c71ad31984b48adab2752ad430d609b0167718fcd1d8e4d69ae79cc68564149d     21947  interview60.answers.gemini-3.5-flash-lite_fquestions-B-r1.json
+8bfb0d3ef4821fd05943b37406b3db214af53d62d39a05b7c54028cd4898dde5     24128  interview60.answers.gemini-3.5-flash-lite_fquestions-B-r2.json
+c3fc5dc6280fcefafa01cd35349d382671bf3f97d6e837bd5c40aa59f6717a66     23081  interview60.answers.gemini-3.5-flash-lite_fquestions-B-r3.json
+40bbce29f8dfa444dbdda7b39410711838af46e2af1a20eb252928bc2c2c0e9c      1043  blind/graders.json
+c748964c4f475fd1fb9a3869530503d690d3a6f3fb350834da35fac93067aef9      1478  blind/key.blind-1.json
+0aaf1be099e93a7fac74de2117744598c14d6c268f186f00613a6db185f21cac      1430  blind/key.blind-2.json
+8228a8f79d7794bdea3b98b296f35867bb32fc07e3577c6c065e894ed537f62b      1244  blind/key.blind-3.json
+dacf836fa11baaaac90b18ffe2861a2db442b8900124bfa4bbadd8d4f87b09b3      1298  blind/key.blind-4.json
+f2b7ac9cbd62e4aeeee68a0d7d8c7fd84884d7e7a22ce5a44ba729c89dfa58ce     33247  blind/pairs.blind-1.json
+1ebbd4aa70f04087bbf417322b59eb70940f214828f73fdb450ca88b698d0f12     31689  blind/pairs.blind-2.json
+2f4a5e53a489cb584d78982392f71fbe1f54e2386dce89dfb11a28d093380455     27340  blind/pairs.blind-3.json
+baec475c5ef07d24d79b69f4b80258c6c8f38cb4fc4a2e613fddf9e09bd551cd     29880  blind/pairs.blind-4.json
+f771b7566bb335a23150112ce6e909dcf88f43ab77e0540770e4570ec712bf27      4907  blind/verdicts.blind-1.g1.json
+1b9b8047dc84eeeb81a2062e2a8d3e83c1b8c43dc213bd226e2193c08da764f8      4640  blind/verdicts.blind-1.g2.json
+e7c2b320cd69abd0f0f2e1d69c07517179fb43dc15ac0926ae78252684af960e      5275  blind/verdicts.blind-2.g1.json
+a1fd374fa0cbc459d6e695d7c89dc1e9477901ffc22c3413e8a351fda95c45ac      5346  blind/verdicts.blind-2.g2.json
+75d41b2115d568680c590da58255f579dfd90b3b750b1558d8faa5754eebc743      4633  blind/verdicts.blind-3.g1.json
+0d17fee211684f818c811b00cb4e7cdcb478cbf36f5b08d4237fd5b1492541fa      4627  blind/verdicts.blind-3.g2.json
+edef514011389235cb679fb97fac5de2cf739bac7dc46f9951206e0e5eafbf90      4876  blind/verdicts.blind-4.g1.json
+80623910285910c4410b93187a3bf2a8e0e66103afea10ef91ddcb1bf92d9383      4731  blind/verdicts.blind-4.g2.json
+c2db0af87beae8c3a5192ad4df362e69bd8f61e7b1b8f38059586512a68b46e2      1364  RESULT.txt
+e2cbbb61ece56ecf3aecba27ad5cc31ccef02d4d1ddf4fb90719bb75016db729     21819  run.log
+bf6f99e367d9b7de573b79a6ff318efb775325dfd950e04c6cceb54c5fc692a7       316  grader-models.out.txt
+0d131df538b85ef261111f5cce3edde67cda59455e660440303672d03a1f1f4b       474  grader-agents.txt
+f0aa7f8118bb22ff9528dfcf6aaa4e98cdc059c2d61ec040e4b0f8321c07207f      6334  dry-run.out.txt
+6423c44fdee50af468c7b32aa3e8d8beb54390a330cae0bdf0c5be18992f7816       386  blind.out.txt
+4f85f3560bf350e5b2fd18122f6914ac7be829fa1505f40ea5171069cefe89e2       526  quota.out.txt
+0b1ee0477145075a436e03be65a6a17cd3c3c59d3f2a5a259f5321210ca83944        21  cal-ok.out.txt
+a3958d2b283dcac7e9d14e1afe47ef34e40b7a38ab1e704bdc1f2b18f4ef9750       320  cal-break.out.txt
+897af7af7bbdd7e35394f6709fc094e4484038ddc405e629a5241f28da04db35      2009  stamp.out.txt
+1da46c69cfada8911c8e78779b3d03cc95c7071d728a0084106f2408e2ba0962      4495  decide-calibrate.out.txt
+ee16ccff4c4b3ea9c4f743355738b79e2940f14f6ac6d434af69f05dc1308707      5900  2026-10-01-followup-questions-result.md
+cc127dab401a45aa9002a5423853312564e55e190c76ea8d4796e8a70ffa8ca1     22704  PREREGISTER-followup-questions.md  (mtime 2026-09-28T18:36:02.781Z)

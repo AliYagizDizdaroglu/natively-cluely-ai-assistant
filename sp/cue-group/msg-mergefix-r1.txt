@@ -1,0 +1,13 @@
+test(cues): the seam tests say only what they pin
+
+Review round on 1901ab6/721c6fa (4 Minor findings):
+- hedgeCues case C's title no longer claims the redirect re-enters the
+  hedge; no assertion pins that.
+- The engine case's comment names the right stage: the hedge's head
+  sentinel is stripped earlier; the chunk after onCues is nameStallSwitch's
+  re-announce.
+- The hedgeCues header explains the by-design ModesManager stderr line.
+- The no-cue twins' pairing is also derived from captured-high's own entry
+  (same model, its args plus --no-cues); a twin at LOW fails it.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

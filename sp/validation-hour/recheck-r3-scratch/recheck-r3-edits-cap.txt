@@ -1,0 +1,5 @@
+=== OLD M8-cap §5 item 5 (only if the user chooses the cap)
+**3a NOISE** — a 3a miss read as noise (rule 3a).
+=== NEW
+**3a NOISE** — a 3a miss read as noise (rule 3a); a second 3a NOISE under this pre-registration reads as an other FAIL (item 3).
+=== END

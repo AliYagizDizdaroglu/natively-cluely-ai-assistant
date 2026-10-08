@@ -1,0 +1,1 @@
+When a CloudFormation stack is deleted, what happens to its resources by default?

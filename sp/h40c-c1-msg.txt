@@ -1,0 +1,18 @@
+fix(harness): credit an answer the app dispatched on a Live paraphrase
+
+On h40b the app answered R07F on the Live ear's paraphrase, but both
+attribution sites (judge.mjs pairAnswers, metrics.mjs claimOf) scored only
+the dispatch anchor - the paraphrase's first 80 characters, which share no
+content word with the played question - so the answer went "to nobody",
+was never graded, and failed two gate rows.
+
+A dispatch with verdict=paraphrase now also scores the question= it
+carries. Only paraphrases: scoring question= for every verdict let the
+after8 Live fabrication be claimed by M11 (found by the task review).
+questionForGrader is exported for the blind-pairs builders.
+
+Proof on scratchpad copies of the 20 past runs that log question=: only
+h40b R07F moves (unclaimed -> R07F, to nobody 1 -> 0); h40a and the other
+18 are identical item by item. Committed pass records are not regenerated.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

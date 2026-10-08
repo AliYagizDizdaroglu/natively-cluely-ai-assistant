@@ -1,0 +1,12 @@
+PRECHECK start 2026-10-06T22:48:01+03 label=rdcal at=2026-10-06 22:48 tz-offset=03:00:00
+PRECHECK flight-task: OK state=Ready next=2026-10-06 22:54 expected=2026-10-06 22:54
+PRECHECK arming-record: OK T 2026-10-06 22:54 = At + 6 = NextRunTime, complete 2026-10-06T22:43:00
+PRECHECK arming-record sha256=feb2f630f6ba46a241330b8185b16ce6eb6c08ec0684e71031ebc93eb135803f
+PRECHECK other-tasks: OK Running other than Natively-flight-rdcal and Natively-flight-rdcal-precheck: 0
+PRECHECK electron: OK electron.exe processes: 0
+PRECHECK port: OK port 5180 held: False
+PRECHECK tail: OK tail.exe watchers: 0
+PRECHECK error-log: OK natively-rdcal-launcher-error.log present: False
+PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+PRECHECK audio-state INFO: default playback device: volume=93% muted=False
+PRECHECK OK 2026-10-06T22:48:11+03

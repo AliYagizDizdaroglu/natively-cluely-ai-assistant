@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+const f = 'R/audit-graders.mjs';
+const L = fs.readFileSync(f, 'utf8').split('\n');
+const a = L.findIndex((l) => l.startsWith('// A2.1 + the 22:55 addendum G2'));
+const fn = L.findIndex((l) => l.startsWith('export function bashProblem'));
+const end = L.findIndex((l, i) => i > fn && l === '}');
+if (a < 0 || fn < 0 || end < 0) throw new Error(`anchors ${a} ${fn} ${end}`);
+L.splice(a, end - a + 1, ...fs.readFileSync('work/g2-block.txt', 'utf8').trimEnd().split('\n'));
+fs.writeFileSync(f, L.join('\n'));
+console.log('spliced', a, end);

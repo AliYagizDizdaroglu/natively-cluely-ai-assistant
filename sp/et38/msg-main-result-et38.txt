@@ -1,0 +1,9 @@
+docs(passes): ET38's result: 3.8 Live Extended Thinking STOPS at low and at medium
+
+By its pre-registered rule (fed4b07). ET-low (three runs) passes quality and speed but fails safety (2
+consensus-wrong, the bar is 1) and reliability (89 of 114 answered, the bar is 110: system-error apologies on 8 to
+9 items per run). ET-medium stops early on reliability (29 of 38 after its first run) and is slower than the app
+(first word p50 9.5 s against br1's 6.6 s). The L20c anchor did not hold (br1 regraded 0.649 against 0.770), so
+the L20c-relative lines stay unread as pre-registered. Eight claude-opus-5-5 graders, agreement 147 of 155.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

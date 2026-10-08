@@ -1,0 +1,23 @@
+﻿{
+ "rows": 624,
+ "@1": {
+  "firstChunkBlank": 1,
+  "firstChunkLoneBrace": 0,
+  "outputStartsWithBraceQuote": 0,
+  "oldNewDiffer": 0
+ },
+ "@3": {
+  "firstChunkBlank": 1,
+  "firstChunkLoneBrace": 0,
+  "outputStartsWithBraceQuote": 0,
+  "oldNewDiffer": 0
+ },
+ "@whole": {
+  "firstChunkBlank": 1,
+  "firstChunkLoneBrace": 0,
+  "outputStartsWithBraceQuote": 0,
+  "oldNewDiffer": 0
+ },
+ "blankLedRawAfterChain": "\"\\n\\n Hello the\",\"re. Mo\",\"re.\"",
+ "braceQuoteSpokenAfterChain_startsWith": "\"{\\\"a\\\"\""
+}

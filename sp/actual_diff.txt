@@ -1,0 +1,116 @@
+diff --git a/electron/audio/DeepgramStreamingSTT.ts b/electron/audio/DeepgramStreamingSTT.ts
+index e668b6c..5bfaf09 100644
+--- a/electron/audio/DeepgramStreamingSTT.ts
++++ b/electron/audio/DeepgramStreamingSTT.ts
+@@ -1,16 +1,17 @@
+ /**
+  * DeepgramStreamingSTT - SDK-based streaming Speech-to-Text using Deepgram Nova-3
+  *
+  * Uses @deepgram/sdk v3 (listen.live) instead of raw WebSocket.
+  * Implements the same EventEmitter interface as GoogleSTT:
+- *   Events: 'transcript' ({ text, isFinal, confidence }), 'error' (Error)
++ *   Events: 'transcript' ({ text, isFinal, confidence }), 'error' (Error),
++ *     'speech-started' ({ at }), 'utterance-end' ({ at })
+  *   Methods: start(), stop(), write(chunk), setSampleRate(), setAudioChannelCount()
+  */
+ 
+ import { EventEmitter } from 'events';
+ import { RECOGNITION_LANGUAGES } from '../config/languages';
+ 
+ const RECONNECT_BASE_DELAY_MS = 1000;
+ const RECONNECT_MAX_DELAY_MS = 30000;
+ const RECONNECT_MAX_ATTEMPTS = 10;
+ const KEEPALIVE_INTERVAL_MS = 8000;
+@@ -214,20 +215,26 @@ export class DeepgramStreamingSTT extends EventEmitter {
+                         this.emit('transcript', {
+                             text: transcript,
+                             isFinal,
+                             confidence: alt?.confidence ?? 1.0,
+                         });
+                     } catch (err) {
+                         console.error('[DeepgramStreaming] Parse error:', err);
+                     }
+                 });
+ 
++                // vad_events / utterance_end_ms are requested in the connect options
++                // above; until 2026-09-09 nobody listened. The interviewer turn logs
++                // them beside its own VAD (a calibration signal, not a decision input).
++                live.on(LiveTranscriptionEvents.SpeechStarted, () => { if (!stale()) this.emit('speech-started', { at: Date.now() }); });
++                live.on(LiveTranscriptionEvents.UtteranceEnd, () => { if (!stale()) this.emit('utterance-end', { at: Date.now() }); });
++
+                 // Flush buffered audio
+                 const buffered = this.buffer.splice(0);
+                 for (const chunk of buffered) {
+                     try { live.send(chunk); } catch { }
+                 }
+                 if (buffered.length > 0) {
+                     console.log(`[DeepgramStreaming] Flushed ${buffered.length} buffered chunks`);
+                 }
+ 
+                 // SDK keepAlive() every 8s prevents idle timeout (per Deepgram docs)
+diff --git a/electron/audio/DeepgramStreamingSTT.vadEvents.test.ts b/electron/audio/DeepgramStreamingSTT.vadEvents.test.ts
+new file mode 100644
+index 0000000..5fbb808
+--- /dev/null
++++ b/electron/audio/DeepgramStreamingSTT.vadEvents.test.ts
+@@ -0,0 +1,60 @@
++import { describe, it, expect, vi, beforeEach, afterEach, afterAll } from 'vitest';
++
++// The class requires '@deepgram/sdk' inside connect(); replace it with a fake
++// whose live object records sends and lets the test fire Open / Close.
++type Handler = (...a: any[]) => void;
++const handlers: Record<string, Handler[]> = {};
++const sent: any[] = [];
++let keepAlives = 0;
++let readyState = 1;
++const fakeLive = {
++    on: (ev: string, cb: Handler) => { (handlers[ev] ??= []).push(cb); },
++    send: (d: any) => { sent.push(d); },
++    keepAlive: () => { keepAlives++; },
++    requestClose: () => {},
++    getReadyState: () => readyState,
++};
++const fire = (ev: string, ...args: any[]) => (handlers[ev] ?? []).forEach((h) => h(...args));
++
++vi.mock('@deepgram/sdk', () => ({
++    createClient: () => ({ listen: { live: () => fakeLive } }),
++    LiveTranscriptionEvents: { Open: 'open', Close: 'close', Error: 'error', Transcript: 'Results', SpeechStarted: 'SpeechStarted', UtteranceEnd: 'UtteranceEnd' },
++}));
++
++// vi.mock() only intercepts the `import` keyword — Vitest's runner does not mock a
++// CommonJS require() call ("Vitest does not support mocking modules imported via
++// require", https://vitest.dev/guide/common-errors); require() "bypass[es] the
++// module runner directly to Node.js". connect() loads the SDK with
++// require('@deepgram/sdk'), so the vi.mock above never reaches it — confirmed by
++// running this test against the real @deepgram/sdk package (it logged the real
++// LiveTranscriptionEvents enum, not the 4-key fake). Seed Node's own require cache
++// for the resolved path instead, so the class's own require() call returns the fake.
++const deepgramPath = require.resolve('@deepgram/sdk');
++const priorDeepgramCacheEntry = require.cache[deepgramPath];
++require.cache[deepgramPath] = {
++    id: deepgramPath,
++    filename: deepgramPath,
++    loaded: true,
++    exports: {
++        createClient: () => ({ listen: { live: () => fakeLive } }),
++        LiveTranscriptionEvents: { Open: 'open', Close: 'close', Error: 'error', Transcript: 'Results', SpeechStarted: 'SpeechStarted', UtteranceEnd: 'UtteranceEnd' },
++    },
++    children: [],
++    paths: [],
++} as any;
++
++import { DeepgramStreamingSTT } from './DeepgramStreamingSTT';
++
++describe('DeepgramStreamingSTT VAD events', () => {
++    it('re-emits SpeechStarted and UtteranceEnd with a timestamp, on the live socket only', () => {
++        const stt = new DeepgramStreamingSTT('key');
++        const seen: string[] = [];
++        stt.on('speech-started', (e: { at: number }) => seen.push(`start@${typeof e.at}`));
++        stt.on('utterance-end', (e: { at: number }) => seen.push(`end@${typeof e.at}`));
++        stt.start();
++        fire('open');
++        fire('SpeechStarted', { type: 'SpeechStarted', timestamp: 1.2 });
++        fire('UtteranceEnd', { type: 'UtteranceEnd', last_word_end: 2.9 });
++        expect(seen).toEqual(['start@number', 'end@number']);
++    });
++});

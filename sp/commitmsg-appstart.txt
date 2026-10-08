@@ -1,0 +1,19 @@
+fix(golden): let a failed app start say why, and give it room to start
+
+The 19:50 model-override smoke died with an exit code and two absent logs and
+nothing else. appStart spawned the app with stdio 'ignore', so the one message
+that could have named the cause — the single-instance-lock line at main.ts:3391,
+a native-module load failure, a modal dialog — went nowhere. Both streams now
+land in interview60.runs/app-start.log, and both failure paths name that file.
+
+The budget goes from 90s to 180s in the same breath. The s50k start that worked
+this morning reached whenReady 55s into the old 90s; the smoke tonight was still
+short of it when the budget expired, having got past Vite and a clean
+build:electron. Three times the known-good time turns a slow start into a pass
+and still leaves a genuine hang plainly over budget.
+
+Calibrated rather than assumed: a detached child with this exact stdio shape
+writes stdout AND stderr to the file, with our copy of the fd closed straight
+after the spawn.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

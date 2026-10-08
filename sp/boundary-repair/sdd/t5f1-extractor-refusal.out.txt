@@ -1,0 +1,5 @@
+﻿[ok] MODIFIED extractor refuses the broken run: exit code non-zero, names the line, writes no fixture: exit 1, "finalsFrom: line 6 is a boundary repair for another final than line 5
+", fixture written: false
+[ok] the line named is R22's repair line (1-based 6 in the broken log = 7 in the intact one): finalsFrom: line 6 is a boundary repair for another final than line 5
+[ok] calibration: the ROUND-0 extractor (no refusals) accepts the same broken run silently and glues the word onto the wrong final: exit 0; the fixture holds "hallucinations How do you cut"
+RESULT: the extractor now refuses a log whose repair line is not under its own final; the round-0 build silently produced a wrong final

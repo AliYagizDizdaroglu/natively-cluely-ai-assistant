@@ -1,0 +1,102 @@
+{
+ "model": "gemini-3.8-live",
+ "compression": "on",
+ "t0Iso": "2026-09-29T01:30:04.215Z",
+ "results": [
+  {
+   "id": "S1Q02",
+   "comp": "on",
+   "openedAt": 16,
+   "setupMs": 808,
+   "clipSeconds": 26.2,
+   "clipEndMs": 28175,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1671,
+   "lastWordMs": 8079,
+   "text": "With a hundred thousand subscribers and a nine point five percent churn rate, we have nine thousand five hundred actual churners. The top five percent risk band contains five thousand individuals, and capturing thirty percent of churners gives us two thousand eight hundred fifty true positives. Given the sixty percent precision, those true positives mean we predicted four thousand seven hundred fifty churners, which sits safely within our five thousand limit, making the figures mathematically consistent.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q08",
+   "comp": "on",
+   "openedAt": 63218,
+   "setupMs": 608,
+   "clipSeconds": 19.3,
+   "clipEndMs": 83875,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the roll back.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 902,
+   "lastWordMs": 8308,
+   "text": "To handle versioning, I store embeddings with explicit model tags in my vector database. For the backfill, I run a background worker to generate the new dimensional embeddings and write them to a separate collection. To keep updates synchronized during the migration, I dual-write incoming changes to both collections. I validate quality by running side-by-side retrieval evaluations between the new and old embeddings. Once satisfied, I cut over by updating the routing logic to serve queries exclusively from the new collection, keeping the old one live as a rollback target if we face any issues.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q01",
+   "comp": "on",
+   "openedAt": 123044,
+   "setupMs": 605,
+   "clipSeconds": 16.3,
+   "clipEndMs": 140728,
+   "heard": "Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those stages. To your document intelligence experience.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1335,
+   "lastWordMs": 14958,
+   "text": "For ingestion and parsing, I use AWS Textract to accurately extract text and layout metadata from complex documents, turning native or scanned PDFs into highly structured, machine-readable formats. I apply semantic chunking to maintain topic continuity across segments, ensuring each piece retains sufficient context for accurate embedding and retrieval. I embed these chunks using XLM-RoBERTa, mapping the semantic meaning into high-dimensional vector representations optimized for multilingual and domain-specific document intelligence. For retrieval, I employ a hybrid approach combining dense vector search with sparse BM twenty-five retrieval to capture both contextual similarity and exact keyword matches. I then apply a re-ranking model to score the retrieved candidate chunks based on relevance to the prompt, filtering out noise and promoting critical excerpts. During context assembly, I use agentic query decomposition to pull multi-hop evidence and apply human-in-the-loop checkpoints to verify accuracy. Finally, GPT-five synthesizes the assembled context into a precise, hallucination-free response, guided by deterministic tool checks.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q06",
+   "comp": "on",
+   "openedAt": 205269,
+   "setupMs": 617,
+   "clipSeconds": 27.7,
+   "clipEndMs": 234651,
+   "heard": "Now is sequel one. Construct a point in time feature. You have a snapshots table with a customer ID and a snapshot time and an events table with a customer ID, an event time, an ingested at time. And an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot. Includes only events ingested by the snapshot time and preserves customers with zero calls.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1477,
+   "lastWordMs": 7204,
+   "text": "I'd start with a left join from the snapshots table to the events table on the customer ID. In the join condition, I would filter for events where the event type is a support call, the event occurred within thirty days before the snapshot time, and the ingested time is before or equal to the snapshot time. Finally, I’d group by the customer ID and snapshot time, and use a count of the event ID to ensure customers with zero calls in that window still appear with a zero.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q04",
+   "comp": "on",
+   "openedAt": 268751,
+   "setupMs": 610,
+   "clipSeconds": 30.4,
+   "clipEndMs": 300996,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return precision at K, recall at K, and lift over the population prevalence. Assume binary labels and finite scores. And break score ties by original row order. Tell me what it does. Invalid K for empty inputs. And when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1028,
+   "lastWordMs": 9915,
+   "text": "I'll implement the function to first validate the inputs by checking for invalid k values, empty arrays, or a total positive count of zero, returning zeroes if those edge cases are met. For the sorting, I pair each score with its original index and sort them in descending order of scores, using the original indices to break ties consistently. Then, I slice the top k records from this sorted list to count the true positives. Finally, I calculate Precision at K as true positives divided by k, Recall at K as true positives divided by total positives, and Lift as Precision at K divided by the overall population prevalence, which measures the effectiveness of targeting the top fraction of customers.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  }
+ ]
+}

@@ -1,0 +1,123 @@
+// A2 point 14 (controller 23:45; PREP-REVIEW-3 I-1): the `node -e` code is judged by an ALLOWLIST, not a banned-word list. Point 10's word list missed a loader
+// reached through a name built at run time on a global object (globalThis['req'+'uire']). Now every token of the code must be admitted:
+//   identifiers    only CODE_IDENTS = the identifiers of the 8 real design-2 s50l validation commands and the pilot's (sha12 b271cca9e127), FROZEN here before
+//                  any data, plus the declared validation vocabulary; none of the BANNED_WORDS anywhere (identifiers or inside string literals);
+//   punctuation    a fixed set; `/` (a regex literal, a comment, a division) and `~ ^ # @ \` are not in it; no template literal, backtick or `$` (SHAPE);
+//   string literals the own verdicts / pairs file name, 'fs', 'utf8', 'utf-8', or a message of at most 40 characters with none of . / \ :  (no + next to one);
+//   computed access  x[...] only with a numeric literal or ONE allowlisted identifier as the index, and never on process / require / fs / a global name or
+//                  on a call result (process.argv[<digit>], the one allowed use of process, is checked with `process`);
+//   require        require('fs') or require(process.argv[<digit>]) only; `fs` / a direct require('fs') only as the one binding `const|let|var fs=require('fs')`
+//                  or immediately followed by .readFileSync( / .existsSync( whose FIRST argument is an own-file literal or process.argv[<digit>];
+//   process        only process.exit / process.stdout / process.stderr / process.argv[<digit>] (the digit naming an existing trailing <arg>, 1..n).
+// Beyond the brief (it can only flag MORE): `](` and `)(` (calling a computed or called result), `new` only of Set / Error / Array.
+// Known ceiling: an index identifier holding a string built at run time from variables (const k=a+b) is not tracked; see the report.
+const DECLARED_VOCABULARY = 'JSON parse stringify Object keys values entries length every some filter map forEach reduce includes indexOf push join split trim Array isArray Number isInteger isFinite String Set size has add console log error typeof undefined null true false const let var function return if else for of in new throw Error process argv exit stdout stderr write require readFileSync existsSync fs o v k x i n e r ok bad missing err'.split(' ');
+const REAL_COMMAND_IDENTIFIERS = 'a b c correctness f items key ks on_topic p s'.split(' ');   // in the 8 real s50l commands + the pilot's, beyond the vocabulary above
+export const CODE_IDENTS = new Set([...DECLARED_VOCABULARY, ...REAL_COMMAND_IDENTIFIERS]);
+const BANNED_WORDS = ['this', 'globalThis', 'global', 'window', 'self', 'constructor', 'prototype', '__proto__', 'Reflect', 'Proxy', 'Function', 'eval', 'import', 'module', 'exports', 'Buffer', 'fromCharCode'];
+const KEYWORDS = new Set(['const', 'let', 'var', 'function', 'return', 'if', 'else', 'for', 'of', 'in', 'new', 'throw', 'typeof']);
+const GLOBAL_NAMES = new Set(['process', 'require', 'fs', 'JSON', 'Object', 'Array', 'Number', 'String', 'Set', 'Error', 'console', 'undefined']);
+const PUNCT = ['===', '!==', '=>', '==', '!=', '<=', '>=', '&&', '||', '??', '++', '--', '+=', '-=', '*=', '%='];
+const PUNCT1 = '{}()[];,.=<>+-*%!?:&|';
+
+/** Tokens { t: 'i' | 's' | 'n' | 'p', v } of the code, or a reason string. */
+function lexCode(code) {
+    const T = [];
+    for (let i = 0; i < code.length;) {
+        const ch = code[i];
+        if (ch === ' ' || ch === '\t' || ch === '\r' || ch === '\n') { i++; continue; }
+        if (ch === "'") {
+            const j = code.indexOf("'", i + 1), nl = code.indexOf('\n', i + 1);
+            if (j < 0 || (nl >= 0 && nl < j)) return 'an unterminated string literal';
+            T.push({ t: 's', v: code.slice(i + 1, j) }); i = j + 1; continue;
+        }
+        const num = /^\d+(?:\.\d+)?/.exec(code.slice(i, i + 40));
+        if (num) { T.push({ t: 'n', v: num[0] }); i += num[0].length; continue; }
+        const id = /^[A-Za-z_][A-Za-z0-9_]*/.exec(code.slice(i, i + 80));
+        if (id) { T.push({ t: 'i', v: id[0] }); i += id[0].length; continue; }
+        const p = PUNCT.find((q) => code.startsWith(q, i)) ?? (PUNCT1.includes(ch) ? ch : null);
+        if (!p) return `the character ${JSON.stringify(ch)} (a regex literal, a comment, a template literal, a division and ~ ^ # @ are not admitted)`;
+        T.push({ t: 'p', v: p }); i += p.length;
+    }
+    return T;
+}
+
+/** null when the `node -e` code is admitted by the A2 point 14 allowlist (+ the point 10 structure it keeps), else the reason. argvMax = the number of trailing <arg>s. */
+export function codeProblem(code, { files, argvMax }) {
+    const T = lexCode(code);
+    if (typeof T === 'string') return T;
+    const own = new Set([files.verdicts, files.pairs]);
+    const isP = (t, v) => t?.t === 'p' && t.v === v;
+    const isI = (t, v) => t?.t === 'i' && (v === undefined || t.v === v);
+    const valueEnd = (t) => !!t && (((t.t === 'i') && !KEYWORDS.has(t.v)) || t.t === 'n' || t.t === 's' || isP(t, ')') || isP(t, ']'));
+    const open = new Map(), stack = [];
+    for (let j = 0; j < T.length; j++) {
+        if (isP(T[j], '[')) stack.push(j);
+        else if (isP(T[j], ']')) { if (!stack.length) return 'an unbalanced ]'; open.set(j, stack.pop()); }
+    }
+    if (stack.length) return 'an unbalanced [';
+    const argvDigit = (j) => isP(T[j], '[') && T[j + 1]?.t === 'n' && /^\d$/.test(T[j + 1].v) && isP(T[j + 2], ']') && Number(T[j + 1].v) >= 1 && Number(T[j + 1].v) <= argvMax;
+    for (let j = 0; j < T.length; j++) {
+        const t = T[j], prev = T[j - 1], next = T[j + 1];
+        if (t.t === 'i') {
+            if (BANNED_WORDS.includes(t.v)) return `the word ${t.v} is banned (A2 point 14)`;
+            if (!CODE_IDENTS.has(t.v)) return `the identifier ${t.v} is not in the frozen allowlist (A2 point 14)`;
+            if (t.v === 'new' && !(isI(next) && ['Set', 'Error', 'Array'].includes(next.v))) return 'new of something other than Set / Error / Array';
+            if (t.v === 'process') {
+                if (isP(prev, '.')) return 'process reached as a property';
+                if (!isP(next, '.') || T[j + 2]?.t !== 'i') return 'process used other than as process.exit / .stdout / .stderr / .argv[<digit>]';
+                const m = T[j + 2].v;
+                if (m === 'argv') { if (!argvDigit(j + 3)) return `process.argv[<digit>] must index an existing trailing argument (1..${argvMax}); process.argv[0] is the node binary`; }
+                else if (m !== 'exit' && m !== 'stdout' && m !== 'stderr') return `process.${m} (only exit / stdout / stderr / argv[<digit>])`;
+            } else if (t.v === 'require') {
+                if (isP(prev, '.')) return 'require reached as a property';
+                if (!isP(next, '(')) return 'require used as a value';
+                const lit = T[j + 2]?.t === 's' && T[j + 2].v === 'fs' && isP(T[j + 3], ')');
+                const viaArgv = isI(T[j + 2], 'process') && isP(T[j + 3], '.') && isI(T[j + 4], 'argv') && argvDigit(j + 5) && isP(T[j + 8], ')');
+                if (!lit && !viaArgv) return "require(...) of something other than require('fs') or require(process.argv[<digit>]) naming an own file";
+                if (lit) {
+                    const binding = ['const', 'let', 'var'].includes(T[j - 3]?.v) && isI(T[j - 2], 'fs') && isP(prev, '=');
+                    const call = isP(T[j + 4], '.') && (isI(T[j + 5], 'readFileSync') || isI(T[j + 5], 'existsSync')) && isP(T[j + 6], '(');
+                    if (!binding && !call) return "require('fs') other than as the binding const fs=require('fs') or directly dereferenced as .readFileSync( / .existsSync(";
+                }
+            } else if (t.v === 'fs') {
+                if (isP(prev, '.')) return 'fs reached as a property';
+                const binding = ['const', 'let', 'var'].includes(prev?.v) && isP(next, '=') && isI(T[j + 2], 'require') && isP(T[j + 3], '(') && T[j + 4]?.v === 'fs' && isP(T[j + 5], ')');
+                const call = isP(next, '.') && (isI(T[j + 2], 'readFileSync') || isI(T[j + 2], 'existsSync')) && isP(T[j + 3], '(');
+                if (!binding && !call) return 'fs used other than as the binding const fs=require(\'fs\') or fs.readFileSync( / fs.existsSync(  (no alias, no argument, no computed access)';
+            } else if (t.v === 'readFileSync' || t.v === 'existsSync') {
+                const viaFs = isP(prev, '.') && (isI(T[j - 2], 'fs') || (isP(T[j - 2], ')') && T[j - 3]?.t === 's' && T[j - 3].v === 'fs' && isP(T[j - 4], '(') && isI(T[j - 5], 'require')));
+                if (!viaFs || !isP(next, '(')) return `${t.v} other than as a call on fs / require('fs')`;
+                const a = T[j + 2];
+                const argOk = (a?.t === 's' && own.has(a.v) && (isP(T[j + 3], ',') || isP(T[j + 3], ')'))) || (isI(a, 'process') && isP(T[j + 3], '.') && isI(T[j + 4], 'argv') && argvDigit(j + 5) && (isP(T[j + 8], ',') || isP(T[j + 8], ')')));
+                if (!argOk) return `${t.v}'s first argument is not an own-file literal or process.argv[<digit>] naming a trailing argument`;
+            }
+        } else if (t.t === 's') {
+            const bw = BANNED_WORDS.find((w) => t.v.includes(w));
+            if (bw) return `the word ${bw} inside the string literal '${t.v.slice(0, 40)}'`;
+            if (!own.has(t.v) && t.v !== 'fs' && t.v !== 'utf8' && t.v !== 'utf-8' && (t.v.length > 40 || /[./\\:]/.test(t.v))) return `the string literal '${t.v.slice(0, 40)}' is not an own-file name, fs, utf8 or a short message without . / \\ :`;
+            if (isP(prev, '+') || isP(next, '+')) return 'a + adjacent to a string literal (string building)';
+        } else if (t.t === 'p') {
+            if (t.v === '.' && !(isI(next) && valueEnd(prev))) return 'a . that is not a member access by name';
+            if ((t.v === '(' && (isP(prev, ')') || isP(prev, ']'))) ) return 'a call of a called / computed result: )( or ]( ';
+            if (t.v === '[' && valueEnd(prev)) {                          // computed member access
+                const idx = T.slice(j + 1, [...open].find(([c, o]) => o === j)[0]);
+                const isArgv = isI(prev, 'argv') && isP(T[j - 2], '.') && isI(T[j - 3], 'process');
+                if (!isArgv) {
+                    if (!(idx.length === 1 && (idx[0].t === 'n' || (idx[0].t === 'i' && CODE_IDENTS.has(idx[0].v) && !KEYWORDS.has(idx[0].v) && !GLOBAL_NAMES.has(idx[0].v))))) return 'computed access x[...] only with a numeric literal or ONE allowlisted identifier as the index';
+                    let p = j - 1, root = null;
+                    for (;;) {
+                        const q = T[p];
+                        if (!q) break;
+                        if (isP(q, ']')) { p = open.get(p) - 1; continue; }
+                        if (isP(q, ')')) return 'computed access on a call result';
+                        if (q.t === 'i') { if (isP(T[p - 1], '.')) { p -= 2; continue; } root = q.v; }
+                        break;
+                    }
+                    if (root !== null && GLOBAL_NAMES.has(root)) return `computed access on ${root} (never on process / require / fs / a global name)`;
+                }
+            }
+        }
+    }
+    return null;
+}

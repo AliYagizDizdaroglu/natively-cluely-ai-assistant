@@ -1,0 +1,1 @@
+Which sampling temperature makes an LLM's output most deterministic?

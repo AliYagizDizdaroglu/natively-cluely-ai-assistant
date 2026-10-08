@@ -1,0 +1,1 @@
+Is XGBoost a bagging or a boosting method?

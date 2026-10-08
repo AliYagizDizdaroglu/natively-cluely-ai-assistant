@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Right on tabular/imbalanced fit, latency and logistic-regression baseline, but about 92 words."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic all correct: 9,500 churners, 5,000 scored, 3,000 TPs, 31.6 percent recall, consistent."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names holdout control, difference-in-differences, mix covariates and seasonal decomposition; well-sized spoken answer."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Stable tie-break, correct precision, recall and lift formulas, all three edge cases; roughly 170 words."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Chronological split, train-only ColumnTransformer fit and a thirty-day embargo buffer; over 100 words."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Never filters event type to support calls, and COUNT over a left join already yields zero, not null."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Feature store as the shared batch/online layer with every requested stage named; about 140 words."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Request-ID prediction log, assignment tagged at inference, delayed outcome join, propensity reweighting; roughly 120 words."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Accurate Azure mapping across all eight components with operational rationale, but near 110 words."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC, Entra ID for PostgreSQL, Key Vault fallback and network isolation; over 100 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every requested stage including hybrid retrieval and cross-encoder reranking; roughly 105 words."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Defines unit, denominator, dataset and uncertainty for all three metrics, but about 175 words."
+  },
+  "S2Q03": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Argues only for the agent; never says decomposition already suffices for a fixed three-document question."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct one-over-c-plus-rank accumulation and score-then-id tie-break; runs past 100 words."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Greedy relevance sort with dedup set, per-document cap of two and budget check; about 95 words."
+  },
+  "S2Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Calls the timeout a race condition with a sleep timer instead of naming wait_for or return_exceptions."
+  },
+  "S2Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Omits citations entirely and calls tenant namespaces physical separation when they are logical."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write versioning, backfill with live sync, side-by-side quality, read cutover and instant rollback; over 100 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure placement for every component plus a clear managed-versus-custom line; near 110 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Idempotency key committed with the embedding in one durable write, checked before reprocessing."
+  }
+}

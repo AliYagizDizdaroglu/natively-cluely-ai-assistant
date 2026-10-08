@@ -1,0 +1,85 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/eq-build
+
+ ❯ electron/llm/earlierQuestion.test.ts (52 tests | 2 failed) 41ms
+   × buildEarlierQuestion — spec §3.6 rows > supersede after an answer-now re-ran the head (turnId null entry newer than the head): remove + push newest 12ms
+     → expected [ { …(3) }, { …(3) } ] to deeply equal [ { …(3) }, { …(3) } ]
+   × recordAsked — spec §3.1 ledger table > the 8 s supersede (turnId held) removes the head and pushes the merged text newest (remove-and-push, not replace in place) 2ms
+     → expected [ …(3) ] to deeply equal [ …(3) ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/llm/earlierQuestion.test.ts > buildEarlierQuestion — spec §3.6 rows > supersede after an answer-now re-ran the head (turnId null entry newer than the head): remove + push newest
+AssertionError: expected [ { …(3) }, { …(3) } ] to deeply equal [ { …(3) }, { …(3) } ]
+
+- Expected
++ Received
+
+  Array [
+    Object {
+-     "seq": 5,
+-     "text": "How would you size the worker pool that drains the invoice queue during month end?",
+-     "turnId": null,
+-   },
+-   Object {
+      "seq": 6,
+      "text": "How would you size the worker pool that drains the invoice queue during month end? Include the retry policy.",
+      "turnId": 4,
++   },
++   Object {
++     "seq": 5,
++     "text": "How would you size the worker pool that drains the invoice queue during month end?",
++     "turnId": null,
+    },
+  ]
+
+ ❯ electron/llm/earlierQuestion.test.ts:89:95
+     87|             if (c.ledgerWrite) {
+     88|                 const w = c.ledgerWrite;
+     89|                 expect(recordAsked(w.before, { text: w.text, turnId: w…
+       |                                                                                               ^
+     90|             }
+     91|         });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  electron/llm/earlierQuestion.test.ts > recordAsked — spec §3.1 ledger table > the 8 s supersede (turnId held) removes the head and pushes the merged text newest (remove-and-push, not replace in place)
+AssertionError: expected [ …(3) ] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+  Array [
+    Object {
+      "seq": 1,
+      "text": "old",
+      "turnId": 1,
+    },
+    Object {
+-     "seq": 3,
+-     "text": "other",
+-     "turnId": 3,
+-   },
+-   Object {
+      "seq": 4,
+      "text": "head tail",
+      "turnId": 2,
++   },
++   Object {
++     "seq": 3,
++     "text": "other",
++     "turnId": 3,
+    },
+  ]
+
+ ❯ electron/llm/earlierQuestion.test.ts:99:79
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 50 passed (52)
+   Start at  16:23:53
+   Duration  2.33s (transform 111ms, setup 0ms, collect 124ms, tests 41ms, environment 1.27s, prepare 155ms)
+

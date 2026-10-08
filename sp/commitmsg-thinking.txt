@@ -1,0 +1,25 @@
+feat(verbal): thinking level for the Gemini answer from NATIVELY_GEMINI_THINKING_LEVEL
+
+Every flight through s50f sent no thinkingConfig on the verbal request, which on
+gemini-3.1-flash-lite is MINIMAL: probes on the app's own captured S1Q02 call
+(2026-09-15) reported no thought tokens and the CV-numbers derivation wrong,
+matching the flights (0 of 10 across five hours). thinkingLevel LOW on the same
+bytes spent 143 and 782 thought tokens and derived the 57 percent precision and
+30 percent recall both times. Flights s50g (LOW) and s50h (MEDIUM) fly the same
+hour with the level as the only variable.
+
+The level comes from the environment like the turn constants: unset sends
+nothing (what every earlier flight sent), one of MINIMAL/LOW/MEDIUM/HIGH is put
+on the request for non-Gemma Gemini models (primary and fallback alike), and
+anything else is refused at startup with the allowed values named, so an hour
+never runs at a level nobody asked for. The last stream chunk's usage is logged
+per answer ("usage: thinking=LOW thoughts=143 out=160 in=5157"), which is the
+per-answer proof of what the model actually spent; thoughtsTokenCount is absent
+when it did not think, so the line shows 0.
+
+Tests: env helper (unset, four levels case-insensitively, refusal) and the
+verbal call (no thinkingConfig when unset; LOW on the request with temperature
+and cap unchanged; the usage line). Watched fail first. tsc at the 6-error
+baseline; 673 tests green.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

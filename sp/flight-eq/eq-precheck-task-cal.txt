@@ -1,0 +1,35 @@
+eq-precheck.ps1 as a SCHEDULED TASK (registered by register-eq.ps1 -Which precheck -Label eqcal; fired by the Task Scheduler)
+
+now 2026-10-05T23:04:58; the precheck task is registered for At 2026-10-05 23:06; T (the dummy flight task) 2026-10-05 23:12; stub record ARMING-task-cal.md
+dummy flight + dry tasks: SETUP Natively-flight-eqcal state=Ready next=10/05/2026 23:12:00 StartWhenAvailable=False dry=ok
+   registered Natively-flight-eqcal-precheck  state=Ready  limit=PT15M  triggers=1
+     action=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eq-precheck.ps1" -At "2026-10-05 23:06" -Label eqcal -ArmingPath "C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq\eqcal-arming\ARMING-task-cal.md" -DryLog "C:\Users
+     next run: 2026-10-05 23:06
+   REGISTRATION OK: Natively-flight-eqcal-precheck reads Ready, StartWhenAvailable False, next run as requested
+   NEXT RUNS precheck=2026-10-05 23:06
+ok   register-eq.ps1 -Which precheck registered the task (REGISTRATION OK, exit 0)
+the precheck task read back: STATE Natively-flight-eqcal-precheck Ready next=none StartWhenAvailable=False result=0x0 lastrun=2026-10-05 23:06:00
+the dummy flight task read back: STATE Natively-flight-eqcal Ready next=2026-10-05 23:12 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+   PRECHECK start 2026-10-05T23:06:01+03 label=eqcal at=2026-10-05 23:06 tz-offset=03:00:00
+   PRECHECK flight-task: OK state=Ready next=2026-10-05 23:12 expected=2026-10-05 23:12
+   PRECHECK arming-record: OK T 2026-10-05 23:12 = At + 6 = NextRunTime, complete 2026-10-05T23:01:00
+   PRECHECK arming-record sha256=0eeb9786f0a29c6c844126cf9dc9e5ac356357cede80185cd12fd8fcc5e7257d
+   PRECHECK other-tasks: OK Running other than Natively-flight-eqcal and Natively-flight-eqcal-precheck: 0
+   PRECHECK electron: OK electron.exe processes: 0
+   PRECHECK port: OK port 5180 held: False
+   PRECHECK tail: OK tail.exe watchers: 0
+   PRECHECK error-log: OK natively-eqcal-launcher-error.log present: False
+   PRECHECK dry-twin: OK result=0x0 in 4 s; new log bytes 44 chars; GUARD OK line: True; NIGHT GATES OK line: True
+   PRECHECK audio-state INFO: default playback device: volume=93% muted=False
+   PRECHECK OK 2026-10-05T23:06:09+03
+ok   the task wrote an output file with a verdict within 6 min of registration
+ok   the verdict is PRECHECK OK <stamp>, the LAST line of the output file, and the first line is stamped >= At (the task did not run early)
+ok   every gate read OK inside the task (flight-task, arming-record, other-tasks, electron, port, tail, error-log, dry-twin)
+ok   the Task Scheduler recorded result 0x0 for the precheck task
+      STATE Natively-flight-eqcal-precheck Ready next=none StartWhenAvailable=False result=0x0 lastrun=2026-10-05 23:06:00
+ok   the dummy flight task is still Ready (a clean precheck disables nothing)
+      STATE Natively-flight-eqcal Ready next=2026-10-05 23:12 StartWhenAvailable=False result=0x41303 lastrun=1999-11-30 00:00:00
+ok   clean-up: no eqcal task left, no real eq task present
+      no eqcal task left; real eq tasks present: 0
+
+PRECHECK TASK CALIBRATION OK

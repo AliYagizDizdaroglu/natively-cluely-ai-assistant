@@ -1,0 +1,102 @@
+{
+ "model": "gemini-3.8-live",
+ "compression": "on",
+ "t0Iso": "2026-10-01T07:00:01.351Z",
+ "results": [
+  {
+   "id": "S1Q02",
+   "comp": "on",
+   "openedAt": 3,
+   "setupMs": 858,
+   "clipSeconds": 26.2,
+   "clipEndMs": 28258,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1752,
+   "lastWordMs": 6417,
+   "text": "With one hundred thousand subscribers and a nine point five percent churn rate, you have nine thousand five hundred churners. The top five percent risk band targets five thousand people, and capturing thirty percent of churners yields two thousand eight hundred and fifty true positives. This results in fifty-seven percent precision, which is consistent with the sixty percent figure allowing for typical model rounding.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q08",
+   "comp": "on",
+   "openedAt": 59391,
+   "setupMs": 645,
+   "clipSeconds": 19.3,
+   "clipEndMs": 80715,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the roll back.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1553,
+   "lastWordMs": 8115,
+   "text": "I namespace embeddings by version in the vector database and use dual-writes in the application to keep live updates synchronized. A background backfill process processes historical documents for the new dimensions, storing them side-by-side with old vectors. I validate the new model's quality through offline evaluation and shadow retrieval metrics before routing live traffic. Finally, I cut over by updating the API gateway's version pointer, allowing an instant rollback by reverting the configuration if incidents rise.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q01",
+   "comp": "on",
+   "openedAt": 117471,
+   "setupMs": 671,
+   "clipSeconds": 16.3,
+   "clipEndMs": 135150,
+   "heard": "Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those stages. To your document intelligence experience.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 943,
+   "lastWordMs": 15023,
+   "text": "I start by ingesting documents using AWS Textract, which extracts raw text and complex table structures with high fidelity. I break this parsed text into semantic, overlapping chunks to preserve local context without losing the document's global structure. These chunks are converted into dense vector embeddings using a model like XLM-RoBERTa, mapping the semantic meaning into a high-dimensional space. For retrieval, I use a hybrid approach that combines dense vector search with sparse keyword matching to capture both semantic intent and exact terminology. The retrieved chunks are then passed through a re-ranker to precisely score and order them based on their relevance to the specific query. I assemble the top-ranked chunks into a unified prompt, adding metadata and query decomposition results to give the model exactly what it needs. Finally, GPT-5 synthesizes the final answer, while a deterministic tool layer and LLM-as-judge evals ensure strict factual accuracy and anti-hallucination guardrails.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q06",
+   "comp": "on",
+   "openedAt": 198196,
+   "setupMs": 834,
+   "clipSeconds": 27.7,
+   "clipEndMs": 227835,
+   "heard": "Now is sequel one. Construct a point in time feature. You have a snapshots table with a customer ID and a snapshot time and an events table with a customer ID, an event time, an ingested at time. And an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot. Includes only events ingested by the snapshot time and preserves customers with zero calls.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 2434,
+   "lastWordMs": 2434,
+   "text": "```sql\nSELECT\n  s.customer_id,\n  s.snapshot_time,\n  COUNT(e.event_time) AS support_calls_30d\nFROM snapshots s\nLEFT JOIN events e\n  ON s.customer_id = e.customer_id\n  AND e.event_type = 'support_call'\n  AND e.event_time BETWEEN s.snapshot_time - INTERVAL '30 days' AND s.snapshot_time\n  AND e.ingested_at <= s.snapshot_time\nGROUP BY\n  s.customer_id,\n  s.snapshot_time;\n```",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q04",
+   "comp": "on",
+   "openedAt": 237795,
+   "setupMs": 637,
+   "clipSeconds": 30.4,
+   "clipEndMs": 269982,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return precision at K, recall at K, and lift over the population prevalence. Assume binary labels and finite scores. And break score ties by original row order. Tell me what it does. Invalid K for empty inputs. And when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1013,
+   "lastWordMs": 7248,
+   "text": "To implement this, I'd first validate that inputs aren't empty, the dataset has positive labels, and $K$ is within the valid range relative to the dataset size. Then I'd zip the scores with their original indices and sort them in descending order, leveraging the index for stable tie-breaking. From these top $K$ items, I'd count the number of true positives, compute Precision as that count over $K$, Recall as the count over total positives, and Lift by dividing the precision by the overall population prevalence.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  }
+ ]
+}

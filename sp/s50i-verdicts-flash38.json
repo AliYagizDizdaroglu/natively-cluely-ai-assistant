@@ -1,0 +1,8 @@
+{
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All seven Azure components named correctly with a sound managed-versus-custom rationale, but about 103 words, over the spoken length target."
+  }
+}

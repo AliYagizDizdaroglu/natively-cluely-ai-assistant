@@ -1,0 +1,5 @@
+r1: answered 17/18; holes S1Q09F; abnormal sessions 0 of 9; answered first word p50 1.3 s, max 58.0 s; window 2026-09-29T18:00:09.186Z
+r2: answered 18/18; holes none; abnormal sessions 0 of 9; answered first word p50 1.3 s, max 2.0 s; window 2026-09-29T18:15:32.609Z
+r3: answered 18/18; holes none; abnormal sessions 0 of 9; answered first word p50 1.9 s, max 5.4 s; window 2026-09-29T18:29:18.654Z
+pooled 54: first word p50 1.4 s, p90 2.4 s (reported, not a condition)
+condition 4 (reliability tonight): answered 53/54, need >= 52 -> PASS

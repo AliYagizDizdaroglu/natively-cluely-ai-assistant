@@ -1,0 +1,8 @@
+docs(passes): L20d result, 3.8 Live with a short instruction: STOP
+
+The short instruction did not close the gap: new Live 0.568 against the app's 0.696 (bar 0.646), worst rep
+0.539 against 0.553. Safety, reliability (111/114) and speed (first word p50 1.0 s, p90 1.7 s) pass. Within the
+batch new Live is 0.036 below 29 Sep's Live with the long prompt; its thinking fell to p50 20 tokens.
+Eight claude-opus-5-5 graders, agreement 333/373.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

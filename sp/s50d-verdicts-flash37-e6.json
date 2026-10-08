@@ -1,0 +1,7 @@
+{
+  "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "All three quantities computed correctly, but calls 57 percent entirely consistent with 60; the discrepancy is the asked-for point."},
+  "S1Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Left join with type, window and ingested-at predicates in the join, count of event ids so zeros stay zero."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers logging, salted hash assignment, matured 30-day join, control-group or IPW retraining; 105 words, needs cutting."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sound units, datasets and uncertainty per metric; denominators only implied. Too long for a spoken turn."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Compares all three, agent justified when branching is not statically mappable; costs acknowledged. 99 words, slightly long."}
+}

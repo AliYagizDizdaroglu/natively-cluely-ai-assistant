@@ -1,0 +1,767 @@
+{
+ "pairs": [
+  {
+   "id": "R01",
+   "heard": "What would you reach for to get constant time lookups with insertion order prese",
+   "dispatchedAt": "2026-09-26T10:34:07.717Z"
+  },
+  {
+   "id": "R02",
+   "heard": "Okay. A quick one out loud. How would you implement an l r u cache? Just talk me",
+   "dispatchedAt": "2026-09-26T10:35:15.648Z"
+  },
+  {
+   "id": "R02F",
+   "heard": "What changes if it has to be safe multiple threads?",
+   "dispatchedAt": "2026-09-26T10:37:50.550Z"
+  },
+  {
+   "id": "R03",
+   "heard": "You've got a stream of a billion events and you need the top 100 most frequent k",
+   "dispatchedAt": "2026-09-26T10:38:57.812Z"
+  },
+  {
+   "id": "R04",
+   "heard": "Write me a function that finds the first duplicate in an array, Say it in words.",
+   "dispatchedAt": "2026-09-26T10:40:21.027Z"
+  },
+  {
+   "id": "R04F",
+   "heard": "And if the array is already sorted, what changes?",
+   "dispatchedAt": "2026-09-26T10:42:54.977Z"
+  },
+  {
+   "id": "R06",
+   "heard": "How do you make a payment endpoint idempotent?",
+   "dispatchedAt": "2026-09-26T10:45:01.794Z"
+  },
+  {
+   "id": "R07",
+   "heard": "Two workers pick up the same job from a queue. How do you stop that happening?",
+   "dispatchedAt": "2026-09-26T10:46:08.077Z"
+  },
+  {
+   "id": "?",
+   "heard": "In the scenario where two workers are picking up jobs from a queue, what happens",
+   "dispatchedAt": "2026-09-26T10:47:31.603Z"
+  },
+  {
+   "id": "R08",
+   "heard": "Since Kafka guarantees a exactly once delivery out of the box, how do you lean o",
+   "dispatchedAt": "2026-09-26T10:48:32.586Z"
+  },
+  {
+   "id": "R09",
+   "heard": "Give me the sequel for the second highest salary in each department. Say it out ",
+   "dispatchedAt": "2026-09-26T10:49:53.099Z"
+  },
+  {
+   "id": "R09F",
+   "heard": "Now without a subquery. Can you do it with a window function?",
+   "dispatchedAt": "2026-09-26T10:52:28.030Z"
+  },
+  {
+   "id": "R10",
+   "heard": "How would you shard a Postgres table by tenant, Actually, scrap that. How would ",
+   "dispatchedAt": "2026-09-26T10:53:37.815Z"
+  },
+  {
+   "id": "R11",
+   "heard": "Say the API sees 10,000 requests a second at peak. Walk me through your backgrou",
+   "dispatchedAt": "2026-09-26T10:55:02.510Z"
+  },
+  {
+   "id": "R11F",
+   "heard": "How does it behave when there are 10 instances of the service?",
+   "dispatchedAt": "2026-09-26T10:57:35.781Z"
+  },
+  {
+   "id": "R12",
+   "heard": "Design notification fan out for a million followers. Where does it get expensive",
+   "dispatchedAt": "2026-09-26T10:58:42.488Z"
+  },
+  {
+   "id": "R13",
+   "heard": "Take a few minutes on this one. Design a feature store end to end, ingestion, st",
+   "dispatchedAt": "2026-09-26T11:01:22.316Z"
+  },
+  {
+   "id": "R13F",
+   "heard": "What do you do when an upstream table lands late?",
+   "dispatchedAt": "2026-09-26T11:03:56.530Z"
+  },
+  {
+   "id": "R14",
+   "heard": "How would you serve a model behind an endpoint that has to answer in under fifty",
+   "dispatchedAt": "2026-09-26T11:05:01.548Z"
+  },
+  {
+   "id": "R15",
+   "heard": "Can you explain that in one breath?",
+   "dispatchedAt": "2026-09-26T11:07:41.017Z"
+  },
+  {
+   "id": "R16",
+   "heard": "Your fraud model trains on data that's sorry. Let me put that differently. The p",
+   "dispatchedAt": "2026-09-26T11:08:46.673Z"
+  },
+  {
+   "id": "R17",
+   "heard": "How does target leakage sneak into a feature pipeline?",
+   "dispatchedAt": "2026-09-26T11:10:05.716Z"
+  },
+  {
+   "id": "R17F",
+   "heard": "Give me one leak that a time based split wouldn't catch.",
+   "dispatchedAt": "2026-09-26T11:11:24.729Z"
+  },
+  {
+   "id": "R18",
+   "heard": "When is PRAUC better?",
+   "dispatchedAt": "2026-09-26T11:12:26.931Z"
+  },
+  {
+   "id": "R19",
+   "heard": "A model says 70%. What does it take for that number to actually mean 70%?",
+   "dispatchedAt": "2026-09-26T11:13:34.303Z"
+  },
+  {
+   "id": "R20",
+   "heard": "Attention, in one breath. What is it actually computing?",
+   "dispatchedAt": "2026-09-26T11:14:53.769Z"
+  },
+  {
+   "id": "R21",
+   "heard": "So, like, fine tune or retrieval, how do you decide for a support bot?",
+   "dispatchedAt": "2026-09-26T11:15:59.728Z"
+  },
+  {
+   "id": "R22",
+   "heard": "How do you cut hallucinations in a rag answer without just making it refuse?",
+   "dispatchedAt": "2026-09-26T11:17:20.338Z"
+  },
+  {
+   "id": "R22F",
+   "heard": "And how do you measure that you did?",
+   "dispatchedAt": "2026-09-26T11:18:38.014Z"
+  },
+  {
+   "id": "R22F2",
+   "heard": "What breaks in that measurement when the questions drift?",
+   "dispatchedAt": "2026-09-26T11:19:41.074Z"
+  },
+  {
+   "id": "R23",
+   "heard": "Roughly how much memory for 10,000,000 embeddings at 768 dimensions in flow 32, ",
+   "dispatchedAt": "2026-09-26T11:20:49.519Z"
+  },
+  {
+   "id": "R24",
+   "heard": "How would you evaluate an LLM feature before launch when there's no ground truth",
+   "dispatchedAt": "2026-09-26T11:22:10.115Z"
+  },
+  {
+   "id": "R25",
+   "heard": "How do you monitor drift on a SageMaker endpoint?",
+   "dispatchedAt": "2026-09-26T11:23:29.052Z"
+  },
+  {
+   "id": "R26",
+   "heard": "So how would you backfill a Delta Lake feature table on Databricks jobs for the ",
+   "dispatchedAt": "2026-09-26T11:25:07.148Z"
+  },
+  {
+   "id": "R26F",
+   "heard": "How do you know the backfill matched what the daily job would have produced?",
+   "dispatchedAt": "2026-09-26T11:26:27.383Z"
+  },
+  {
+   "id": "R27",
+   "heard": "Shadow deployment or canary a new model version on SageMaker, which and why?",
+   "dispatchedAt": "2026-09-26T11:27:33.294Z"
+  },
+  {
+   "id": "R28",
+   "heard": "What does MEL flow's model registry give you that a versioned s three path doesn",
+   "dispatchedAt": "2026-09-26T11:29:08.135Z"
+  },
+  {
+   "id": "R28F",
+   "heard": "Where does reproducibility still break?",
+   "dispatchedAt": "2026-09-26T11:30:26.489Z"
+  },
+  {
+   "id": "R29",
+   "heard": "What would you use Unity catalog for that you couldn't do with plain workspace p",
+   "dispatchedAt": "2026-09-26T11:31:31.522Z"
+  },
+  {
+   "id": "R30",
+   "heard": "Bedrock or self hosted, how do you think about inference cost and latency for a ",
+   "dispatchedAt": "2026-09-26T11:33:08.978Z"
+  },
+  {
+   "id": "R31",
+   "heard": "Here's one from a CV I read last week. It says a model lifted checkout conversio",
+   "dispatchedAt": "2026-09-26T11:34:40.323Z"
+  },
+  {
+   "id": "R31F",
+   "heard": "What else would you need to know before calling that lift real?",
+   "dispatchedAt": "2026-09-26T11:35:58.977Z"
+  },
+  {
+   "id": "R32",
+   "heard": "Say a CV claims a 40% cut in p 95 latency. What do you ask before you believe it",
+   "dispatchedAt": "2026-09-26T11:37:06.569Z"
+  },
+  {
+   "id": "R33",
+   "heard": "A vendor says their new spam filter cut false positive by 60%, and the support t",
+   "dispatchedAt": "2026-09-26T11:38:36.815Z"
+  }
+ ],
+ "answersToNobody": 1,
+ "items": [
+  {
+   "id": "R01",
+   "answered": true,
+   "answeredAt": 1790418847717,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R02",
+   "answered": true,
+   "answeredAt": 1790418915648,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R02F",
+   "answered": true,
+   "answeredAt": 1790419070550,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0.8333333333333334,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R03",
+   "answered": true,
+   "answeredAt": 1790419137812,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0.9166666666666666,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R04",
+   "answered": true,
+   "answeredAt": 1790419221027,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R04F",
+   "answered": true,
+   "answeredAt": 1790419374977,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "paraphrase"
+  },
+  {
+   "id": "R05",
+   "answered": false,
+   "answeredAt": null,
+   "dispatches": 0,
+   "heardBy": "live",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0,
+   "raceLoss": false,
+   "verdict": "fragment"
+  },
+  {
+   "id": "R06",
+   "answered": true,
+   "answeredAt": 1790419501794,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R07",
+   "answered": true,
+   "answeredAt": 1790419568077,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R07F",
+   "answered": false,
+   "answeredAt": null,
+   "dispatches": 0,
+   "heardBy": "live",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0,
+   "raceLoss": false,
+   "verdict": "paraphrase"
+  },
+  {
+   "id": "R08",
+   "answered": true,
+   "answeredAt": 1790419712586,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R09",
+   "answered": true,
+   "answeredAt": 1790419793099,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R09F",
+   "answered": true,
+   "answeredAt": 1790419948030,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R10",
+   "answered": true,
+   "answeredAt": 1790420017815,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R11",
+   "answered": true,
+   "answeredAt": 1790420102510,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R11F",
+   "answered": true,
+   "answeredAt": 1790420255781,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R12",
+   "answered": true,
+   "answeredAt": 1790420322488,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R13",
+   "answered": true,
+   "answeredAt": 1790420482316,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R13F",
+   "answered": true,
+   "answeredAt": 1790420636530,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R14",
+   "answered": true,
+   "answeredAt": 1790420701548,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R15",
+   "answered": true,
+   "answeredAt": 1790420861017,
+   "dispatches": 1,
+   "heardBy": "live",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0.25,
+   "raceLoss": false,
+   "verdict": "paraphrase"
+  },
+  {
+   "id": "R16",
+   "answered": true,
+   "answeredAt": 1790420926673,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0.9333333333333333,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R17",
+   "answered": true,
+   "answeredAt": 1790421005716,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R17F",
+   "answered": true,
+   "answeredAt": 1790421084729,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R18",
+   "answered": true,
+   "answeredAt": 1790421146931,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R19",
+   "answered": true,
+   "answeredAt": 1790421214303,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0.9,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R20",
+   "answered": true,
+   "answeredAt": 1790421293769,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R21",
+   "answered": true,
+   "answeredAt": 1790421359728,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R22",
+   "answered": true,
+   "answeredAt": 1790421440338,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R22F",
+   "answered": true,
+   "answeredAt": 1790421518014,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R22F2",
+   "answered": true,
+   "answeredAt": 1790421581074,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R23",
+   "answered": true,
+   "answeredAt": 1790421649519,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0.8,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R24",
+   "answered": true,
+   "answeredAt": 1790421730115,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R25",
+   "answered": true,
+   "answeredAt": 1790421809052,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R26",
+   "answered": true,
+   "answeredAt": 1790421907148,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R26F",
+   "answered": true,
+   "answeredAt": 1790421987383,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R27",
+   "answered": true,
+   "answeredAt": 1790422053294,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R28",
+   "answered": true,
+   "answeredAt": 1790422148135,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0.9,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R28F",
+   "answered": true,
+   "answeredAt": 1790422226489,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R29",
+   "answered": true,
+   "answeredAt": 1790422291522,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R30",
+   "answered": true,
+   "answeredAt": 1790422388978,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0.9090909090909091,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R31",
+   "answered": true,
+   "answeredAt": 1790422480323,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0.95,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R31F",
+   "answered": true,
+   "answeredAt": 1790422558977,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 1,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R32",
+   "answered": true,
+   "answeredAt": 1790422626569,
+   "dispatches": 1,
+   "heardBy": "whisper",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0.8333333333333334,
+   "raceLoss": false,
+   "verdict": "match"
+  },
+  {
+   "id": "R33",
+   "answered": true,
+   "answeredAt": 1790422716815,
+   "dispatches": 1,
+   "heardBy": "both",
+   "extended": 0,
+   "supersedes": 0,
+   "coverage": 0.9130434782608695,
+   "raceLoss": false,
+   "verdict": "match"
+  }
+ ]
+}

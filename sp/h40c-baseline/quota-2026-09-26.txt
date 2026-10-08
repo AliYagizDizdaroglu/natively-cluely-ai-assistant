@@ -1,0 +1,87 @@
+Quota ledger — 2026-09-26 (day starts 07:00Z / 10:00 local)
+Generated: 2026-09-26T16:30:24.609Z
+Run folder: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.runs\2026-09-26T11-39-51-h40b
+
+=== 1. Offline replay arms (interview60.answers.*.json, h40b run folder) ===
+  gemini-3.1-flash-lite    +  44  interview60.answers.gemini-3.1-flash-lite_captured-low.json
+  gemini-3.1-flash-lite    +  44  interview60.answers.gemini-3.1-flash-lite_captured-low-r2.json
+  gemini-3.1-flash-lite    +  44  interview60.answers.gemini-3.1-flash-lite_captured-low-r3.json
+  gemini-3.1-flash-lite    +  44  interview60.answers.gemini-3.1-flash-lite_captured-minimal.json
+  gemini-3.1-flash-lite    +  33  interview60.answers.gemini-3.1-flash-lite_low.json
+  gemini-3.1-flash-lite    +  33  interview60.answers.json
+  gemini-3.5-flash-lite    +  33  interview60.answers.gemini-3.5-flash-lite.json
+  gemini-3.5-flash-lite    +  44  interview60.answers.gemini-3.5-flash-lite_captured-high.json
+  gemini-3.5-flash-lite    +  44  interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json
+  gemini-3.5-flash-lite    +  44  interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json
+  gemini-3.5-flash-lite    +  33  interview60.answers.gemini-3.5-flash-lite_high.json
+
+  Other interview60.answers.*.json present but NOT counted (non-Gemini providers, expected):
+    interview60.answers.openai_gpt-oss-120b.json
+    interview60.answers.qwen_qwen3.8-27b.json
+
+=== 2. In-app requests (h40b run folder natively_debug.log, the real app session) ===
+  CALIBRATION sub-count (compare against the controller's expectation of "near 44 answers
+  on 3.1-lite: 46 stall-race attempts, 1 fallback after a 503, 5 after stalls"):
+    "verbal stall race: trying gemini-3.1-flash-lite" lines (requests attempted on 3.1-lite): 46
+    "verbal stall race: trying gemini-3.5-flash-lite" lines (explicit 503 fallback attempt):  1
+    "<model> stalled after 10000ms - falling back" WARN lines:                      5
+    "verbal primary failed before first token" WARN lines (503s etc.):              1
+    Completed with a logged usage response, in>500, on gemini-3.1-flash-lite:                 40
+    Completed with a logged usage response, in>500, on gemini-3.5-flash-lite:                 6
+    Reconciliation: 46 attempted - 1 (503) - 5 (stalled) = 40; landed-on-3.1 measured = 40 (MATCHES)
+    landed-on-3.5 measured (6) vs (503-fallback + stall-fallback) = 6 (MATCHES)
+
+  ASSUMPTION: this ledger counts every "trying <model>" line as one request against that
+  model's quota, even when it later failed/stalled — see the file header for why (the
+  conservative, headroom-under-stating reading). Under this assumption:
+  gemini-3.1-flash-lite    +  46  in-app requests attempted (conservative: includes the 503 + 5 stalled)
+  gemini-3.5-flash-lite    +   6  in-app requests (all confirmed landed via a usage response — fallback calls)
+
+  (For reference, the non-conservative alternative would count only the 40
+  completed-with-response 3.1-lite requests, i.e. 6 fewer than above.)
+
+=== 3. Warm-up calls ("<model> warmed up in Nms", h40b run folder log) ===
+  gemini-3.1-flash-lite    +   1  warm-up pings
+  gemini-3.5-flash-lite    +   6  warm-up pings
+  gemma-4-31b-it vision    +   4  warm-up pings (NOT a lite Gemini text model, excluded)
+
+=== 4. Chains pass (interview60.chains.json — hardcoded to gemini-3.1-flash-lite) ===
+  gemini-3.1-flash-lite    +  25  interview60.chains.json (5 chains, contextual + standalone turns)
+
+=== 5. SP\flash-h40b (expected full-Flash + judge only — scanned, not assumed) ===
+  Distinct "model" values found under SP\flash-h40b: claude-opus-5, gemini-3.5-flash, gemini-3.5-flash_def, gemini-3.6-flash, gemini-3.6-flash_def, gemini-3.7-flash, gemini-3.7-flash_def, gemini-3.8-flash, gemini-3.8-flash_def, gemini-3.8-flash_def-r2, gemini-3.8-flash_def-r3
+  Of those, entries naming a lite model (gemini-3.1/3.5-flash-lite*): 0
+  Confirmed 0 — none of these files touch the lite-model quota. Not added to totals.
+
+=== 6. MAIN repo-root natively_debug.log (only entries >= 2026-09-26T11:40:00Z counted) ===
+  (The h40b run folder's natively_debug.log is a copy of this same session; counting the
+  whole file again would double-count 10:32Z-11:39Z. Only requests after the copy was
+  taken are new.)
+  gemini-3.1-flash-lite    +   0  requests after 11:40Z (root natively_debug.log)
+  gemini-3.5-flash-lite    +   0  requests after 11:40Z (root natively_debug.log)
+  gemini-3.1-flash-lite    +   0  warm-ups after 11:40Z (root natively_debug.log)
+  gemini-3.5-flash-lite    +   0  warm-ups after 11:40Z (root natively_debug.log)
+  Confirmed 0, as the controller expected ("none expected"). The root log's last line is
+  timestamped 2026-09-26T11:39:53.430Z, i.e. nothing of any kind exists past the cutoff.
+
+=== Sources present but NOT counted, and why ===
+  - verbal-diag.log / verbal-prompts.log (h40b run folder): per-request dumps of the SAME
+    in-app requests already counted from natively_debug.log above; counting them too would
+    double the in-app figure.
+  - interview60.judge*.json / *.pairs.*.json / *.verdicts.*.json: grader is claude-opus-5(-5),
+    not Gemini — out of scope for a Gemini quota ledger.
+  - interview60.answers.openai_gpt-oss-120b.json, interview60.answers.qwen_qwen3.8-27b.json:
+    other providers, not Gemini (listed above under "not counted" arm files too).
+  - "gemma-4-31b-it vision" warm-ups: different model family, not a lite Gemini text model.
+  - Any Gemini lite usage before 2026-09-26T10:32:03.254Z (the natively_debug.log session
+    start): no source in scope reaches earlier than this; ASSUMED zero, not measured — the
+    h40b session is the only interview60.runs folder dated 2026-09-26.
+
+=== TOTALS (2026-09-26, since 07:00Z) ===
+  gemini-3.1-flash-lite    total =  314   headroom = 500 - 314 = 186
+  gemini-3.5-flash-lite    total =  210   headroom = 500 - 210 = 290
+
+Day-start filter used: 2026-09-26T07:00:00.000Z (07:00Z / 10:00 local). All
+counted sources above (the h40b run, its warm-ups, its chains pass, and the root-log tail)
+fall entirely after this timestamp, so no entries needed to be dropped for being from a
+prior quota day.

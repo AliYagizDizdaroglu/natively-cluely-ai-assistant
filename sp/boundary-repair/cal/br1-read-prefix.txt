@@ -1,0 +1,9 @@
+app repair lines 0; reference repairs on the same raw events 4
+MISMATCH app - | ref "cause" before "a correct source document to produce an " @14:28:09.194
+MISMATCH app - | ref "and" before "failure policies would prevent loops and" @14:33:38.172
+MISMATCH app - | ref "to" before "a document while a query is running." @14:50:09.361
+MISMATCH app - | ref "and" before "a delete event racing with an older upda" @14:59:55.794
+
+HEDGE (the default flip, live): startup line(s) NONE FOUND; answers won by none logged
+
+SUMMARY app 0 / reference 4, mismatches 4; repairs reaching a dispatched question 0/0

@@ -1,0 +1,35 @@
+You are one of two independent classifiers for an interview-question set. The other classifier gets this same text; you never see its output. Do not read any other file in this folder or its parents (no SET-draft.md, no keyhold/, no runs/); your only input is the one file named below. Work alone, make no model or network call, write nothing except your output.
+
+INPUT: <folder>\turns-for-classifiers.json. It lists 47 interviewer turns in the order they are spoken, each with a neutral id (T01..T47) and the spoken text. A follow-up turn carries "parent": the earlier question it follows, exactly as a listener in the same session would have heard it. The candidate's answers are never shown.
+
+TASK: give every turn two independent labels and a reason.
+
+A. ROUTE: EASY or HARD. This decides whether a voice model may answer the turn on its own. Apply the definition below literally; when in doubt, HARD.
+
+EASY = all four:
+1. One named concept. The interviewer names a thing and asks what it is, what it does, what it is for, or how it differs from ONE other named thing. The correct answer is general knowledge in about 30-60 spoken words.
+2. Stands alone. No reference to anything earlier (that / this / it / the one / your design / earlier), nothing about the candidate (your project, your CV, have you, tell me about a time).
+3. No multi-part structure. No second question ("and why", "and how would you"), no list to cover ("the three probe types", "ingestion, training, serving"), no "walk me through / design / compare / explain the trade-offs".
+4. No situation. No numbers, constraints or story to reason over ("your image is eight gigabytes", "two thousand calls a day with a two-second SLA", "pods are being evicted").
+
+Boundary rules, fixed:
+- "Difference between X and Y" -> EASY when both are single named concepts.
+- "When would you use X" / "X or Y?" / "when would you choose X over Y" -> EASY when no situation is named. The same choice with numbers or constraints -> HARD.
+- "Why X?" about one concept ("why do Docker layers matter for build times") -> EASY. "Why that one?" / "why did you choose" -> HARD.
+- "How do you X" where X is ONE routine action with one canonical tool or command -> EASY. "How would you [detect / handle / approach / debug / shrink / monitor] ..." -> HARD, even when short.
+- A second clause about the SAME concept ("what is X, and what does it host") -> EASY. "..., and why?" -> HARD, always.
+- EVERY follow-up that refers back to an earlier question or to the candidate's answer -> HARD, even when it would be easy on its own.
+
+HARD = everything else: multi-part questions; design and "how would you" questions; debugging scenarios; anything about the candidate's experience or projects; code; every follow-up.
+
+B. DIFFICULTY: EASY, MEDIUM or HARD. Independent of A; it describes how much a strong small language model can be trusted with the turn. A follow-up is graded on its own text with its parent in view.
+- EASY = exactly the ROUTE definition above: one named concept, standalone, general knowledge in 30-60 words. Anchors from this set: "What is a Docker image?"; "What is the difference between precision and recall?".
+- MEDIUM = needs more than one concept, but a strong small model handles it: a one-part design or how-to with a standard answer, a routine trade-off, a procedure with few branches. Anchors: "How would you detect data drift in a model that is already running in production?"; "Your training image is eight gigabytes. How would you approach shrinking it?".
+- HARD = a small model likely leaves a part out or errs: multi-part designs, quantitative reasoning, subtle trade-offs or edge cases, anything that must reconcile several constraints in one answer. Anchors: the nightly-retrained recommender question (training pipeline, validation and rollout in one answer); the three probe types for a model server that needs 90 seconds to load.
+
+OUTPUT: one JSON object, nothing else, exactly this shape, every one of the 47 ids present:
+{
+  "T01": { "route": "EASY" | "HARD", "difficulty": "EASY" | "MEDIUM" | "HARD", "reason": "<= 12 words" },
+  ...
+}
+The reason names the clause that decided the route (for example "follow-up, refers to parent" or "one concept, standalone"). Write the object to <folder>\blind\verdicts.<your-agent-name>.json and also return it as your final message. Report the model you are running as the first line of your final message, before the JSON.

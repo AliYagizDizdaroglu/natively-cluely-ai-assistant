@@ -1,0 +1,16 @@
+fix(flight): point the captured paired arm at the items the hour actually captured
+
+answers.mjs --captured refuses any id without a replayable prompt rather than inventing its
+framing (one experiment, not two). An hour rarely captures every item — s50e 39 of 40, s50f
+38 of 40 (S1Q01 and S2Q02 missing) — so the captured-minimal arm as committed in b18b8fa
+would have refused the whole hour and produced no pairs at all; the spike against the s50f
+capture showed exactly that.
+
+capturedOnly(captured, items) names the spoken roster items with a system + user turn in the
+capture; the flight passes them as --only, logs the count, and skips the arm loudly when it
+is empty. Dry runs keep the bare --captured form (there is no capture to read).
+
+Test: capturedOnly on a capture with a missing user turn and a screenshot cue (watched fail
+first). Suite 687.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

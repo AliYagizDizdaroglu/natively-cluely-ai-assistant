@@ -1,0 +1,10 @@
+docs(passes): spike 6 — the cue wording, pre-registered rule and result
+
+The shipped CUE_SHAPE_RULE (4c07ae9) is spike 6's winner under a rule written
+before its calls. The rule and its times-only corrections are verbatim in
+PREREGISTER-spike6.md; the result, with the measures, the decision (one-first:
+3.5-lite HIGH one-line answers 15/24 vs 11 and 10, no arm disqualified, 0
+empty blocks on 3.5-lite) and the exploratory spikes 1-5 for the record, is
+2026-09-30-spike6-result.md. An offline test: no INDEX row.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

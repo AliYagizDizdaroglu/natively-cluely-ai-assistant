@@ -1,0 +1,6 @@
+OK  pass         exit 0 (want 0) MATCH rows 4: SUMMARY app 4 / reference 4, app-only 0, ref-only 0; repairs reaching a dispatched question 4/4
+OK  break        exit 1 (want 1) MATCH rows 4: SUMMARY app 4 / reference 4, app-only 0, ref-only 0; repairs reaching a dispatched question 0/4
+OK  prefix-s50a  exit 1 (want 1) MATCH rows 0: SUMMARY app 0 / reference 4, app-only 0, ref-only 4; repairs reaching a dispatched question 0/0
+OK  app-only     exit 1 (want 1) MATCH rows 4: SUMMARY app 5 / reference 4, app-only 1, ref-only 0; repairs reaching a dispatched question 4/5
+OK  ref-only     exit 4 (want 4) MATCH rows 3: SUMMARY app 3 / reference 4, app-only 0, ref-only 1; repairs reaching a dispatched question 3/3
+CALIBRATION OK: br1-read tells pass, unreached, pre-fix, app-only and a mid-hour reference-only apart

@@ -1,0 +1,18 @@
+﻿
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ❯ electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts (6 tests | 4 failed) 30ms
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > an empty FINAL between F1 and F2 is a pause: F2 is emitted as received, no repair line 12ms
+     → expected [ [ …(2) ], [ …(2) ], [ …(2) ] ] to deeply equal [ [ …(2) ], [ …(2) ], [ …(2) ] ]
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > an UtteranceEnd between F1 and F2 is a pause too, and is still re-emitted 2ms
+     → expected [ [ …(2) ], [ …(2) ], [ …(2) ] ] to deeply equal [ [ …(2) ], [ …(2) ], [ …(2) ] ]
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > speech_final on F1 reaches the module: Deepgram heard the utterance end there, so nothing is restored 2ms
+     → expected [ [ …(2) ], [ …(2) ], [ …(2) ] ] to deeply equal [ [ …(2) ], [ …(2) ], [ …(2) ] ]
+   × DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3, the tolerant "RAC" -> "Rag" cut) > v4: pauses forget the cut, speech_final reaches the module, non-English connections pass through (spec review 2026-09-29) > a non-English connection passes every transcript through untouched, with no repair line 1ms
+     → expected [ [ …(2) ], …(2) ] to deeply equal [ [ …(2) ], …(2) ]
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 2 passed (6)
+   Start at  22:17:34
+   Duration  2.48s (transform 128ms, setup 0ms, collect 157ms, tests 30ms, environment 1.32s, prepare 199ms)
+

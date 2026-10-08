@@ -1,0 +1,58 @@
+=== A. h40d-grader-models.mjs: top-level sessions ===
+
+=== B. check-grader-memory.mjs ===
+
+=== E. audit-graders.mjs: A2 point 13 (own-file argument in any of C:\.. / C:/.. / /c/.., with or without the cd) ===
+     blind-1.g1 (6441d4bf-d00c-4007): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash[len=360,sha12=b271cca9e127] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>...] (no shell metacharacters, nothing after the node -e): node -e "const o=JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'));console.log(Object.keys(o).len; bash=[]; dispatch=match
+     AUDIT: FLAGGED (see lines above)
+BAD  THE REAL PILOT TRANSCRIPT 6441d4bf (its one Bash: absolute own-verdicts path, no cd) reads CLEAN, bash=[360:b271cca9e127], dispatch=match, exit 0  [blind-1.g1 (6441d4bf-d00c-4007): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash[len=360,sha1]
+OK   point 13 NEGATIVE: (a) another grader's verdicts file in the same blind folder: FLAGGED  [Bash[len=153,sha12=c1e02e1f282b] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: (b) a keyhold\key file: FLAGGED  [Bash[len=147,sha12=0dc62a3c57e9] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: (c) an R\interview60.answers.* file: FLAGGED  [Bash[len=187,sha12=c036ff6abfab] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: (d) MAIN\.env: FLAGGED  [Bash[len=184,sha12=6daed06cf728] argument "C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-a" is no]
+OK   point 13 NEGATIVE: (e) a .. path that resolves to its OWN file: FLAGGED  [Bash[len=162,sha12=5d83eddafec7] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: (f) a glob verdicts.*.json (quoted, absolute): FLAGGED  [Bash[len=144,sha12=123c217593a7] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: (f) the same glob, bare and relative: FLAGGED  [Bash[len=131,sha12=dd9263bacae6] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: (f) verdicts.blind-1.g?.json: FLAGGED  [Bash[len=153,sha12=58fb8e30b209] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: (f) verdicts.blind-1.g[12].json: FLAGGED  [Bash[len=156,sha12=cc8b3e04757a] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: the wrong cd: cd "<another folder>" && ... "<own verdicts>": FLAGGED  [Bash[len=172,sha12=3d939be4dd87] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: a cd with a .. that resolves to the own folder: FLAGGED  [Bash[len=181,sha12=99de9a01f1ae] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: the own file name in ANOTHER folder (C:\x\blind2\verdicts.blind-1.g1.json): FLAGGED  [Bash[len=154,sha12=339c2ef404b7] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: the own file name on ANOTHER drive (D:\x\blind\...): FLAGGED  [Bash[len=153,sha12=c1ce2050745e] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: the rubric (a Read-allowed file, but not an argument-allowed one): FLAGGED  [Bash[len=132,sha12=16b34f8cdf27] argument "C:/x/rubric.md" is not the own verdicts / pairs file: nod]
+OK   point 13 NEGATIVE: a ~ path: FLAGGED  [Bash[len=144,sha12=6986f90f67cc] argument "~/verdicts.blind-1.g1.json" is not the own verdicts / pai]
+OK   point 13 NEGATIVE: /c/.. form with a .. segment: FLAGGED  [Bash[len=162,sha12=95e5510d1889] argument "/c/x/blind/../blind/verdicts.blind-1.g1.json" is not the ]
+OK   point 13 NEGATIVE: a bare argument with a backslash (the shell eats it; `.\.` would become `..`): FLAGGED  [Bash[len=155,sha12=aadeef39edb6] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: a bare absolute C:\ path (the shell would eat the backslashes): FLAGGED  [Bash[len=151,sha12=4277e31f3b16] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: a $ in the argument: FLAGGED  [Bash[len=134,sha12=8c8db9193584] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: a backtick in the argument: FLAGGED  [Bash[len=133,sha12=f6e38c71bdcb] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: a second argument that is not an own file: FLAGGED  [Bash[len=191,sha12=e22f57e89ed3] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: the own file followed by ; cat ../run.log: FLAGGED  [Bash[len=170,sha12=b2ae4d911601] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: the own file followed by && cat: FLAGGED  [Bash[len=171,sha12=0901b198db31] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 NEGATIVE: the own file as the argument but a banned token in the code (point 10 unchanged): FLAGGED  [Bash[len=82,sha12=e4c33597d1c7] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>.]
+OK   point 13 NEGATIVE: process.argv[2] with a single argument (point 10 unchanged): FLAGGED  [Bash[len=118,sha12=e1ad13426e4f] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+BAD  point 13 POSITIVE: quoted C:\ path, no cd (the pilot's shape): clean  [Bash[len=153,sha12=21b7198127d0] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+OK   point 13 POSITIVE: quoted C:/ path, no cd: clean  [blind-1.g1 (C:\Users\sotka\App): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[153:0d18ed5e194]
+BAD  point 13 POSITIVE: quoted /c/ path, no cd: clean  [Bash[len=153,sha12=9e2856949b59] argument "/c/x/blind/verdicts.blind-1.g1.json" is not the own verdi]
+BAD  point 13 POSITIVE: bare /c/ path: clean  [Bash[len=151,sha12=614eacde3e42] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+BAD  point 13 POSITIVE: bare C:/ path: clean  [Bash[len=151,sha12=8238cd84ca17] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+BAD  point 13 POSITIVE: upper-case /C/X/BLIND/VERDICTS.blind-1.g1.JSON (case-insensitive): clean  [Bash[len=153,sha12=bfaf8801e08c] argument "/C/X/BLIND/VERDICTS.blind-1.g1.JSON" is not the own verdi]
+OK   point 13 POSITIVE: quoted relative name (the cd form of the 8 design-2 graders): clean  [blind-1.g1 (C:\Users\sotka\App): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[142:128a8ed521c]
+BAD  point 13 POSITIVE: bare relative ./verdicts.blind-1.g1.json: clean  [Bash[len=142,sha12=b35a0ea2458e] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+BAD  point 13 POSITIVE: the own PAIRS file by absolute C:\ path: clean  [Bash[len=147,sha12=2defe5c383bd] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+BAD  point 13 POSITIVE: cd "<own folder, C:\ spelling>" && ... "<own verdicts, C:\ spelling>": clean  [Bash[len=172,sha12=0de01435815e] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+BAD  point 13 POSITIVE: cd "<own folder, /c/ spelling>" && ... bare relative: clean  [Bash[len=159,sha12=0b15903a7e5d] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+BAD  point 13 POSITIVE: two own arguments (verdicts and pairs) with process.argv[1] and [2]: clean  [Bash[len=271,sha12=fed75822d056] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>]
+BAD  ... the clean line records <length>:<sha12> of the command
+     blind-1.g1 (addb84e6bd55778d5): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[641:233bded98703]; dispatch=match
+     blind-1.g2 (a681f259dff0dae30): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[785:f5bc2ca9d993]; dispatch=match
+     blind-2.g1 (a5eb230f8d7cb101a): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[462:877c7165fece]; dispatch=match
+     blind-2.g2 (ab34ebe95114932db): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[625:ef42ad47bf3c]; dispatch=match
+     blind-3.g1 (a83e3007ff2d0bc45): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[480:00fbde002009]; dispatch=match
+     blind-3.g2 (ab605c210a849d667): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[625:87bc67565259]; dispatch=match
+     blind-4.g1 (aa08ae8c058eb8aa9): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[474:0a7037b47da9]; dispatch=match
+     blind-4.g2 (aa85ea6faa528f27c): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[482:803c67d3644b]; dispatch=match
+     AUDIT: all graders clean
+BAD  the 8 real design-2 s50l transcripts still read clean (8 of 8, dispatch=match 8/8, exit 0)
+
+GRADER-SESSION CALIBRATION FAILED

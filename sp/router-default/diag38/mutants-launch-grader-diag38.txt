@@ -1,0 +1,23 @@
+CAUGHT   pin not exact (any model id)
+CAUGHT   real launch without --model-id allowed
+CAUGHT   setting-sources dropped
+CAUGHT   probe gate bypassed
+CAUGHT   rd record accepted without checking the writer sha
+CAUGHT   rd launcher sha not required to be the accepted one
+CAUGHT   accepted rd sha is a different one
+CAUGHT   pairs folder content not checked
+CAUGHT   blind tags of the registered run accepted
+CAUGHT   tag range not checked
+CAUGHT   transcript model not compared to the pin
+CAUGHT   pin match tolerant of a suffix
+CAUGHT   exit ignores memory
+CAUGHT   exit ignores tools
+CAUGHT   gate tools unchecked
+CAUGHT   gate memory unchecked
+CAUGHT   gate model unchecked
+CAUGHT   test seam allowed in a real run
+CAUGHT   existing verdicts overwritten
+CAUGHT   launch record loses the pairs sha
+CAUGHT   own probe 2 allowed before probe 1
+CAUGHT   gate needs neither source (either side open)
+MUTANTS 22 of 22 caught

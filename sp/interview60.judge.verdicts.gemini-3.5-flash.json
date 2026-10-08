@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic is right (9,500 churners, 2,850 TP, 30% recall, 57% precision) but claiming 57% rounds cleanly to 60% overstates the consistency."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Nails the key mechanisms: predicates in the LEFT JOIN ON clause, ingested-at cutoff for leakage, and counting a column so zeros survive."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers index layout, metadata store, permission enforcement, citations and evaluation accurately, but about 100 words is past spoken length."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct real Azure service for every requested slot plus a defensible managed-versus-custom split, but roughly 125 words is far too long to say."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-Lock plus a durable dedup record and idempotent vector upsert is exactly the right crash-before-ack answer, tightly delivered."
+  }
+}

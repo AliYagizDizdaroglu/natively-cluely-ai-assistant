@@ -1,0 +1,24 @@
+feat(flight): two paired arms per hour — the captured prompts at MINIMAL, the bare prompt at LOW
+
+The 2026-09-17 bench found the thinking-level effect (+21 acceptable on 117 pairs) and
+the app-context tax (+6 on 57) only in paired grading on the same bytes; arms compared
+across hours sit inside the +/-4 noise. Every flight now produces its own pairs on the
+app's answer model:
+
+  captured-minimal  the hour's captured prompts (system + user turn, follow-ups included)
+                    replayed with no thinkingConfig, the provider default the app sent
+                    through s50f. In-app vs this = the level, same bytes.
+  low               the bare verbal prompt at LOW, the shipped level. In-app vs this = the
+                    app context at the shipped level; low vs the plain bare arm = the level
+                    on bare bytes.
+
+answers.mjs gains --thinking <MINIMAL|LOW|MEDIUM|HIGH> (needs --tag; Gemini only; a bad
+level is refused before any call) and keeps each answer's reported thoughtsTokenCount so an
+arm proves the level it actually got. flight.mjs lists the arms as PAIRED_ARMS, files them as
+<model>_<tag> the way answers.mjs and the judge already name tagged arms, moves their old
+files aside, skips the captured arm loudly when the hour left no capture, and adds their
+pairs files to the done marker's grading list. ~60 lite calls per flight.
+
+Tests: answersFileFor with a tag, PAIRED_ARMS shape (watched fail first). Suite green.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

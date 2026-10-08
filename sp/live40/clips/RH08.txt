@@ -1,0 +1,1 @@
+When would you use asynchronous I/O, a thread pool, separate processes, or an external worker?

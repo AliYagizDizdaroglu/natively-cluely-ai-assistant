@@ -1,0 +1,191 @@
+﻿JUDGE  2026-10-02T11-39-41-h40d  44 dispatched answers merged from electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.verdicts.json  model=claude-opus-5-5
+
+JUDGE SUMMARY  spoken 44: acceptable 36, weak 6, wrong 2, errors 0   gate: FAIL (needs ≥ 47 acceptable and 0 wrong)
+
+Not acceptable:
+  R02F   weak        Mutex is right, but a reader-writer lock does not help since LRU gets mutate recency order.
+  R07F   weak        Lease expiry returning the job is right, but half the answer re-answers the parent question.
+  R08    weak        Never challenges the false out-of-the-box exactly-once premise; outbox-with-offsets pairing is muddled.
+  R11F   wrong       Talks about load balancing a stateless service, never how the rate limiter's counters behave across instances.
+  R12    weak        Misses write amplification of per-follower fan-out as the main cost; APNs/FCM are not per-message billed.
+  R13    weak        Covers stores, but consistency hinges on shared feature definitions, not only point-in-time joins; thin for the scope.
+  R22F   weak        Judge against a gold set is fine but omits tracking refusal or answer rate, the point of the parent.
+  R33    wrong       Confuses metrics: legitimate mail blocked is false positives, not false negatives or recall.
+
+written electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.json
+PASS-RECORD  graded record written: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\2026-10-02T11-39-41-h40d.md
+PASS-RECORD  index refreshed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\INDEX.md
+JUDGE  2026-10-02T11-39-41-h40d  44 dispatched answers merged from electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.verdicts.gemini-3.1-flash-lite_captured-low.json  model=claude-opus-5-5
+
+JUDGE SUMMARY  spoken 44: acceptable 38, weak 5, wrong 1, errors 0   gate: FAIL (needs ≥ 47 acceptable and 0 wrong)
+
+Not acceptable:
+  R02F   wrong       Recommends read-write lock for concurrent reads, but LRU gets mutate recency order, so that is wrong.
+  R03    weak        Count-Min Sketch plus size-100 heap is right, but claims sketch needs pruning for bounded memory and drifts to recency.
+  R07    weak        SKIP LOCKED is right, but claims SQS visibility timeout inherently prevents duplicate consumption; SQS is at-least-once.
+  R11F   weak        Talks generic load balancing; misses that independent per-instance limiters let ten times the traffic through.
+  R27    weak        Right shadow-then-canary reasoning, but misnames the SageMaker feature: shadow uses shadow variants, not Production Variants.
+  R33    weak        Rate-versus-count idea is right, but the aggressive-filter explanation is internally inconsistent; also long.
+
+written electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.gemini-3.1-flash-lite_captured-low.json
+PASS-RECORD  graded record written: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\2026-10-02T11-39-41-h40d.md
+PASS-RECORD  index refreshed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\INDEX.md
+JUDGE  2026-10-02T11-39-41-h40d  44 dispatched answers merged from electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.verdicts.gemini-3.1-flash-lite_captured-low-r2.json  model=claude-opus-5-5
+
+JUDGE SUMMARY  spoken 44: acceptable 34, weak 10, wrong 0, errors 0   gate: FAIL (needs ≥ 47 acceptable and 0 wrong)
+
+Not acceptable:
+  R02F   weak        Mutex is right, but a reader-writer lock fails for LRU since every get mutates the list.
+  R04F   weak        Adjacent comparison is right, but says space complexity drops to 'constant time', a slip.
+  R07F   weak        Redelivery via visibility timeout and DLQ covered, but re-answers prior question and ignores partial-work idempotency.
+  R08    weak        Never challenges the false 'out of the box' premise; transactional detail right; over 85 words.
+  R09F   weak        A CTE is still effectively a subquery and the department partition is omitted; QUALIFY not mentioned.
+  R11F   weak        Generic scaling and RAG talk; misses that per-instance limits multiply without a shared counter.
+  R12    weak        Applies feed push/pull hybrid to notifications, which must be pushed; cost points are reasonable.
+  R14    weak        Calls ONNX a quantization technique; otherwise caching, warm pools and lean serving are fine.
+  R23    weak        30 GB and int8 quantization are right, but a raw __CUES__ marker leads the text.
+  R26    weak        Separate job and chunked MERGE fine, but Delta has no transaction locks; misses concurrent-write conflicts.
+
+written electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.gemini-3.1-flash-lite_captured-low-r2.json
+PASS-RECORD  graded record written: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\2026-10-02T11-39-41-h40d.md
+PASS-RECORD  index refreshed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\INDEX.md
+JUDGE  2026-10-02T11-39-41-h40d  44 dispatched answers merged from electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.verdicts.gemini-3.1-flash-lite_captured-low-r3.json  model=claude-opus-5-5
+
+JUDGE SUMMARY  spoken 44: acceptable 35, weak 8, wrong 1, errors 0   gate: FAIL (needs ≥ 47 acceptable and 0 wrong)
+
+Not acceptable:
+  R01    wrong       Claims Python dict keeps order via an underlying doubly linked list; CPython dict uses a compact insertion-ordered array, mischaracterising the mechanism.
+  R02F   weak        Mutex and sharding are right, but a read-write lock barely helps an LRU since every get mutates recency order.
+  R07F   weak        Mostly restates the parent answer; covers timeout redelivery and DLQ but not stuck DB claims or partial side effects; long.
+  R08    weak        Never corrects the false premise that Kafka gives exactly-once out of the box, and blurs Kafka transactions with external DB writes.
+  R11F   weak        Generic scaling talk about load balancers and vector DBs; never addresses per-instance versus shared rate-limit counters.
+  R16    weak        Covers what to change but omits the explicitly asked part about what to leave alone.
+  R22    weak        Verification and citation layers are valid but ignores retrieval quality and the explicit without-refusing constraint; long.
+  R23    weak        30 GB and quantization are right, but HNSW does not avoid holding vectors in RAM.
+  R27    weak        Reasonable shadow-versus-canary trade-off, but a leaked __ANSWER__ marker cannot be spoken as-is.
+
+written electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.gemini-3.1-flash-lite_captured-low-r3.json
+PASS-RECORD  graded record written: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\2026-10-02T11-39-41-h40d.md
+PASS-RECORD  index refreshed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\INDEX.md
+SKIPPED-MISSING captured-minimal
+JUDGE  2026-10-02T11-39-41-h40d  33 dispatched answers merged from electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.verdicts.gemini-3.1-flash-lite_low.json  model=claude-opus-5-5
+
+JUDGE SUMMARY  spoken 33: acceptable 30, weak 3, wrong 0, errors 0   gate: FAIL (needs ≥ 47 acceptable and 0 wrong)
+
+Not acceptable:
+  R23    weak        Memory math and int8 quantization are right, but it wrongly claims HNSW avoids holding full vectors in memory; HNSW adds overhead.
+  R30    weak        Sensible cost reasoning for Bedrock versus self-hosting, but it never addresses latency, an explicitly asked part.
+  R33    weak        Yes is right, but its trade-off story implies more false positives, contradicting the vendor claim; the definition check is apt; 86 words.
+
+written electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.gemini-3.1-flash-lite_low.json
+PASS-RECORD  graded record written: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\2026-10-02T11-39-41-h40d.md
+PASS-RECORD  index refreshed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\INDEX.md
+JUDGE  2026-10-02T11-39-41-h40d  43 dispatched answers merged from electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.verdicts.gemini-3.5-flash-lite_captured-high.json  model=claude-opus-5-5
+
+JUDGE SUMMARY  spoken 43: acceptable 36, weak 7, wrong 0, errors 0   gate: FAIL (needs ≥ 47 acceptable and 0 wrong)
+
+Not acceptable:
+  R02F   weak        Mutex is right, but a reader-writer lock misses that LRU gets mutate recency order, so reads are writes.
+  R07F   weak        Redelivery after timeout is right, but omits idempotent handling of half-done side effects, the key crash concern.
+  R08    weak        Describes EOS mechanics correctly but never challenges the false premise that it is out of the box.
+  R09F   weak        QUALIFY works only in some warehouses, uncaveated, and the answer reads a SQL clause aloud as code.
+  R11    weak        Vague on sizing assumptions; omits client counts, limit granularity, burst and window choice, offers design choices instead.
+  R11F   weak        Talks generic horizontal scaling and DB pools, never how the rate limiter counts across ten instances.
+  R22    weak        Judge-and-repair loop is valid, but schemas do not ground claims and retrieval-side levers are missing.
+
+written electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.gemini-3.5-flash-lite_captured-high.json
+PASS-RECORD  graded record written: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\2026-10-02T11-39-41-h40d.md
+PASS-RECORD  index refreshed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\INDEX.md
+JUDGE  2026-10-02T11-39-41-h40d  44 dispatched answers merged from electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.verdicts.gemini-3.5-flash-lite_captured-high-r2.json  model=claude-opus-5-5
+
+JUDGE SUMMARY  spoken 44: acceptable 39, weak 3, wrong 2, errors 0   gate: FAIL (needs ≥ 47 acceptable and 0 wrong)
+
+Not acceptable:
+  R02F   wrong       Recommends a read-write lock for concurrent reads, but LRU reads mutate recency order, so that design is wrong.
+  R07F   weak        Half re-answers the parent; lease timeout is right but ignores idempotent re-execution of partial work.
+  R11    wrong       Multiplies the stated peak by a peak-to-average ratio to get 30k rps, a reasoning error that would embarrass.
+  R11F   weak        Drifts to generic stateless scaling; never addresses per-instance limits versus a shared rate-limit counter.
+  R22    weak        Buzzword-heavy and vague; misses concrete retrieval-quality and citation-grounding levers.
+
+written electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.gemini-3.5-flash-lite_captured-high-r2.json
+PASS-RECORD  graded record written: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\2026-10-02T11-39-41-h40d.md
+PASS-RECORD  index refreshed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\INDEX.md
+JUDGE  2026-10-02T11-39-41-h40d  44 dispatched answers merged from electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.verdicts.gemini-3.5-flash-lite_captured-high-r3.json  model=claude-opus-5-5
+
+JUDGE SUMMARY  spoken 44: acceptable 39, weak 5, wrong 0, errors 0   gate: FAIL (needs ≥ 47 acceptable and 0 wrong)
+
+Not acceptable:
+  R04F   weak        Adjacent comparison with O(1) space is right; binary-search tangent drifts off the question.
+  R11F   weak        Generic load-balancing talk; misses how limits behave across instances, health checks don't spawn replicas.
+  R22    weak        Claim verification is valid but buzzword-heavy; omits retrieval quality and grounding mechanics.
+  R25    weak        Model Monitor baseline and schedules right, but PSI is not its built-in check and data capture omitted.
+  R33    weak        Unspeakable __COULD BE TRUE__ label, overlong; threshold-lowering mechanism muddled though volume point is right.
+
+written electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.gemini-3.5-flash-lite_captured-high-r3.json
+PASS-RECORD  graded record written: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\2026-10-02T11-39-41-h40d.md
+PASS-RECORD  index refreshed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\INDEX.md
+JUDGE  2026-10-02T11-39-41-h40d  44 dispatched answers merged from electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.verdicts.gemini-3.5-flash-lite_captured-no-cues-high.json  model=claude-opus-5-5
+
+JUDGE SUMMARY  spoken 44: acceptable 38, weak 6, wrong 0, errors 0   gate: FAIL (needs ≥ 47 acceptable and 0 wrong)
+
+Not acceptable:
+  R02F   weak        Single lock and sharding are right, but the claim a reentrant lock is necessary is a non sequitur.
+  R07F   weak        Visibility timeout and DLQ are right, but omits idempotency for half-done side effects and repeats prior answer.
+  R08    weak        Right about external side effects, but never challenges the false 'out of the box' exactly-once premise.
+  R11F   weak        Talks about load balancing and PgBouncer, missing the rate limiter's shared versus per-instance counters.
+  R22    weak        Citation checks are valid but vague, and it skips retrieval quality, the main hallucination lever.
+  R26    weak        Plan is sound, but Delta uses optimistic concurrency, not partition-level locking.
+
+written electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.gemini-3.5-flash-lite_captured-no-cues-high.json
+PASS-RECORD  graded record written: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\2026-10-02T11-39-41-h40d.md
+PASS-RECORD  index refreshed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\INDEX.md
+JUDGE  2026-10-02T11-39-41-h40d  44 dispatched answers merged from electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.verdicts.gemini-3.5-flash-lite_captured-no-cues-high-r2.json  model=claude-opus-5-5
+
+JUDGE SUMMARY  spoken 44: acceptable 36, weak 7, wrong 1, errors 0   gate: FAIL (needs ≥ 47 acceptable and 0 wrong)
+
+Not acceptable:
+  R02F   weak        Mutex and lock striping are right, but read-write locks misfit an LRU since every get mutates recency.
+  R07F   weak        Visibility timeout plus idempotent retries is right, but opens by re-answering the parent question.
+  R11F   wrong       Talks about load balancing and Kubernetes, never how the rate limiter's counters behave across ten instances.
+  R22    weak        Claim verification against context is valid but narrow; skips retrieval quality, citations and handling failed claims.
+  R23    weak        30.7 GB and int8 or PQ are correct, but stray LaTeX dollar signs and 10^7 cannot be read aloud.
+  R25    weak        Model Monitor baseline and CloudWatch are right, but PSI is not its built-in metric and data capture is omitted.
+  R26    weak        Chunked MERGE on a separate cluster is good, but overclaims Delta concurrency; disjoint partitions needed to avoid conflicts.
+  R30    weak        Cost reasoning is defensible but latency, an explicitly asked part, is never addressed.
+
+written electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.gemini-3.5-flash-lite_captured-no-cues-high-r2.json
+PASS-RECORD  graded record written: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\2026-10-02T11-39-41-h40d.md
+PASS-RECORD  index refreshed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\INDEX.md
+JUDGE  2026-10-02T11-39-41-h40d  44 dispatched answers merged from electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.verdicts.gemini-3.5-flash-lite_captured-no-cues-high-r3.json  model=claude-opus-5-5
+
+JUDGE SUMMARY  spoken 44: acceptable 38, weak 5, wrong 1, errors 0   gate: FAIL (needs ≥ 47 acceptable and 0 wrong)
+
+Not acceptable:
+  R01    weak        Right answer (dict since 3.7), but calls the compact-dict layout a 'split-table design', which is a different mechanism.
+  R08    weak        Recommends idempotent consumers but never corrects the false 'exactly once out of the box' premise.
+  R11    weak        Applies a 5x burst on top of a stated peak (50k ops), a muddled assumption; also long.
+  R11F   weak        Drifts to database connection limits; misses that limiter counters must be shared or divided across instances.
+  R12    wrong       Claims APNs and FCM bill heavily per million requests, which is false; also over length.
+  R27    weak        Picks canary but never weighs shadow's zero-user-risk tradeoff the question asks about.
+
+written electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.gemini-3.5-flash-lite_captured-no-cues-high-r3.json
+PASS-RECORD  graded record written: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\2026-10-02T11-39-41-h40d.md
+PASS-RECORD  index refreshed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\INDEX.md
+JUDGE  2026-10-02T11-39-41-h40d  33 dispatched answers merged from electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.verdicts.gemini-3.5-flash-lite_high.json  model=claude-opus-5-5
+
+JUDGE SUMMARY  spoken 33: acceptable 27, weak 6, wrong 0, errors 0   gate: FAIL (needs ≥ 47 acceptable and 0 wrong)
+
+Not acceptable:
+  R07    weak        Row locking and conditional claims are right, but says SQS handles duplicates automatically; it is at-least-once and idempotency goes unmentioned.
+  R08    weak        read_committed plus idempotent sink writes is sound, but it never challenges the false premise that Kafka gives exactly-once out of the box.
+  R17    weak        Future information and timestamp-unsafe joins are right, but its main example, scaling before splitting, is train-test contamination, not target leakage.
+  R26    weak        Chunked parameterized backfill is sound, but partition filters don't isolate compute and no separate cluster is proposed; 86 words, slightly long.
+  R28    weak        Content is correct (stages, governance, run lineage), but a leaked '__SLUG__' token line makes it unspeakable as-is.
+  R33    weak        Valid rate-versus-volume explanation, but it needs an unacknowledged 2.5x mail surge and never questions how the vendor measured 60 percent.
+
+written electron\test\golden\interview60.runs\2026-10-02T11-39-41-h40d\interview60.judge.gemini-3.5-flash-lite_high.json
+PASS-RECORD  graded record written: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\2026-10-02T11-39-41-h40d.md
+PASS-RECORD  index refreshed: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\passes\INDEX.md
+SKIPPED-MISSING bare35
+SKIPPED-MISSING bare31
+ALL MERGES RAN

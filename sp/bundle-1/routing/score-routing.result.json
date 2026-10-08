@@ -1,0 +1,85 @@
+{
+ "at": "2026-10-07T23:46:38.587Z",
+ "gate": {
+  "pass": true,
+  "routedEasy": [
+   "RH04",
+   "RH05",
+   "RH07"
+  ],
+  "n": 4
+ },
+ "bars": [
+  {
+   "id": "R1",
+   "pass": false,
+   "detail": "HARD routed EASY per rep [10,7] of 27 (max 1 in each rep); ids [RH01,EF01,RH03,EF02,EF03,RH07,RH10,RH19,RH13,EF06] [RH01,EF01,EF02,EF03,RH04,EF04,EF06]"
+  },
+  {
+   "id": "R2",
+   "pass": true,
+   "detail": "EASY routed EASY within the deadline per rep [18,20] of 20 (need >= 15 and >= B0 18 - 3 = 15)"
+  },
+  {
+   "id": "R2t",
+   "pass": true,
+   "detail": "first-word p50 ms from Q: B0 605, B1 reps [564,549] (each <= B0 + 300); p90 B0 1602, B1 [1446,1560] (reported)"
+  },
+  {
+   "id": "R3",
+   "pass": false,
+   "detail": "scenario50 S1+S2 routed EASY 8 of 40 (max 2); ids [S1Q01,S1Q05,S1Q06,S1Q10,S2Q04F,S2Q05,S2Q06,S2Q07F]"
+  },
+  {
+   "id": "R4",
+   "pass": true,
+   "detail": "garbled routing tokens: B1 reps [0,0] V 0; B0 0 (reported); garbled on LATE (never shown, not counted) B1 [0,0] V 0 B0 0; ids -"
+  },
+  {
+   "id": "info",
+   "pass": true,
+   "detail": "reported only: B0 LATE 2 NONE 0; B1r1 LATE 0 NONE 0; B1r2 LATE 0 NONE 0; V LATE 1 NONE 0; row-4 failures among on-time EASY B1 [0,0]"
+  }
+ ],
+ "guard": {
+  "ship": false,
+  "reasons": [
+   "B1 + guard still fails R1 (HARD routed EASY after the guard per rep [6,7])"
+  ],
+  "perRep": [
+   {
+    "alone": 10,
+    "afterGuard": 6,
+    "blockedEasy": 1,
+    "blockedIds": [
+     "RE03"
+    ],
+    "stillMisrouted": [
+     "RH01",
+     "EF01",
+     "EF02",
+     "EF03",
+     "RH13",
+     "EF06"
+    ]
+   },
+   {
+    "alone": 7,
+    "afterGuard": 7,
+    "blockedEasy": 1,
+    "blockedIds": [
+     "RE03"
+    ],
+    "stillMisrouted": [
+     "RH01",
+     "EF01",
+     "EF02",
+     "EF03",
+     "RH04",
+     "EF04",
+     "EF06"
+    ]
+   }
+  ]
+ }
+}

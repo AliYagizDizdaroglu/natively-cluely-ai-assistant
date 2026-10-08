@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+let L = fs.readFileSync('R/launch-grader.mjs', 'utf8');
+const a = "        fs.mkdirSync(GRADING, { recursive: true });\n        const inFile = path.join(GRADING, 'probe-input.txt');\n        if (!fs.existsSync(inFile)) fs.writeFileSync(inFile, 'synthetic line one\nsynthetic line two\nsynthetic line three\n');\n";
+if (!L.includes(a)) throw new Error('a');
+L = L.replace(a, "        const inFile = path.join(GRADING, 'probe-input.txt');\n        if (!dry) { fs.mkdirSync(GRADING, { recursive: true }); if (!fs.existsSync(inFile)) fs.writeFileSync(inFile, 'synthetic line one\nsynthetic line two\nsynthetic line three\n'); }\n");
+fs.writeFileSync('R/launch-grader.mjs', L);
+let s = fs.readFileSync('R/scripts/grader-session-calibrate.mjs', 'utf8');
+const b = "&& !fs.existsSync(path.join(gdir, 'cwdprobe-1-a1')) && !fs.existsSync(po));";
+if (!s.includes(b)) throw new Error('b');
+s = s.replace(b, "&& !fs.existsSync(path.join(gdir, 'cwdprobe-1-a1')) && !/--dry-run/.test(fs.readFileSync(po, 'utf8')) && !fs.existsSync(path.join(gdir, 'probe-input.txt')));");
+fs.writeFileSync('R/scripts/grader-session-calibrate.mjs', s);
+console.log('ok');

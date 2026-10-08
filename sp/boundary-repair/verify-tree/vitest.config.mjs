@@ -1,0 +1,1 @@
+export default { cacheDir: "C:/Users/sotka/OneDrive/Masaüstü/natively-lab/sp/boundary-repair/.vitecache", test: { environment: 'jsdom', include: ['electron/**/*.test.ts'], globals: true, cache: false } };

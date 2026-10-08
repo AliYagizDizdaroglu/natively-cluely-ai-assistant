@@ -1,0 +1,188 @@
+=== m5: the ledger rebuild refuses a corrupted replaces= (synthetic dispatch lines) ===
+OK   valid replaces= is removed-and-pushed (4 lines, 3 turns: alpha, merged bravo, charlie; the head entry is gone)
+OK   corrupted replaces= (0 matches) refused
+OK   replaces= matching 2 earlier entries refused
+OK   replaces= naming a skipped dispatch refused
+
+=== S50M (2026-09-22T08-22-50-s50m): 42 dispatch lines (42 answer / 0 supersede), 39 captured ids ===
+id | own dispatch | cue | why | block chars | sha12 | parent age s
+S1Q01F | answer | none | no-cue | 0 | - | -
+S1Q02 | answer | none | no-cue | 0 | - | -
+S1Q02F | answer | none | no-cue | 0 | - | -
+S1Q03 | answer | none | no-cue | 0 | - | -
+S1Q03F | answer | none | no-cue | 0 | - | -
+S1Q04 | answer | none | no-cue | 0 | - | -
+S1Q04F | answer | constraint | BLOCK | 537 | 1517a406f91a | 156
+S1Q05 | answer | none | no-cue | 0 | - | -
+S1Q05F | answer | none | no-cue | 0 | - | -
+S1Q06 | answer | none | no-cue | 0 | - | -
+S1Q06F | answer | pronoun | BLOCK | 517 | 7b56db720d4a | 157
+S1Q07 | answer | none | no-cue | 0 | - | -
+S1Q07F | answer | none | no-cue | 0 | - | -
+S1Q08 | answer | reference | parent-in-prompt | 0 | - | -
+S1Q08F | answer | none | no-cue | 0 | - | -
+S1Q09 | answer | none | no-cue | 0 | - | -
+S1Q09F | answer | none | no-cue | 0 | - | -
+S1Q10 | answer | none | no-cue | 0 | - | -
+S1Q10F | answer | none | no-cue | 0 | - | -
+S2Q01 | answer | none | no-cue | 0 | - | -
+S2Q01F | answer | pronoun | parent-in-prompt | 0 | - | -
+S2Q02 | answer | none | no-cue | 0 | - | -
+S2Q02F | answer | none | no-cue | 0 | - | -
+S2Q03 | answer | none | no-cue | 0 | - | -
+S2Q03F | answer | none | no-cue | 0 | - | -
+S2Q04 | answer | none | no-cue | 0 | - | -
+S2Q04F | answer | none | no-cue | 0 | - | -
+S2Q05 | answer | none | no-cue | 0 | - | -
+S2Q05F | answer | pronoun | BLOCK | 461 | 14f0bdf3225d | 161
+S2Q06 | answer | none | no-cue | 0 | - | -
+S2Q06F | answer | none | no-cue | 0 | - | -
+S2Q07 | answer | none | no-cue | 0 | - | -
+S2Q07F | answer | none | no-cue | 0 | - | -
+S2Q08 | answer | reference | parent-in-prompt | 0 | - | -
+S2Q08F | answer | pronoun | BLOCK | 432 | 1023c0fe5a55 | 157
+S2Q09 | answer | none | no-cue | 0 | - | -
+S2Q09F | answer | reference | parent-in-prompt | 0 | - | -
+S2Q10 | answer | none | no-cue | 0 | - | -
+S2Q10F | answer | none | no-cue | 0 | - | -
+
+GATED IDS WITH A BLOCK (4): S1Q04F S1Q06F S2Q05F S2Q08F
+cue fired, block '' (id:why): S1Q08:parent-in-prompt S2Q01F:parent-in-prompt S2Q08:parent-in-prompt S2Q09F:parent-in-prompt
+ids with no cue: 31; ids where the own dispatch is a supersede: none
+registration section 3 expectation (gated S1Q04F S1Q06F S2Q05F S2Q08F; '' with cue S1Q08 S2Q08 S2Q09F S2Q01F): gated set MATCHES; cue-silent set MATCHES (all four are cue-silent)
+D-cases:
+  s50m:D1 = S1Q06F, stand-in S1Q05F (245 s earlier), cue pronoun, block 250 chars sha12 f6ad3669b3ff, userA 4205 -> 3956 chars
+  s50m:D2 = S2Q05F, stand-in S2Q04F (246 s earlier), cue pronoun, block 262 chars sha12 6ea69e3d2ba2, userA 4532 -> 4283 chars
+  s50m:D3 = S2Q08F, stand-in S2Q07F (236 s earlier), cue pronoun, block 233 chars sha12 08567b93635d, userA 4146 -> 3897 chars
+wrote R/s50m-gated-turn.json (7 items) and R/turn-parity-s50m.json (42 entries: 7 with a block, 35 empty)
+
+=== S50L (2026-09-21T08-22-34-s50l): 43 dispatch lines (42 answer / 1 supersede), 39 captured ids ===
+OK   s50l: the real supersede line 5 with a corrupted replaces= is refused
+id | own dispatch | cue | why | block chars | sha12 | parent age s
+S1Q01F | answer | none | no-cue | 0 | - | -
+S1Q02 | supersede | none | supersede | 0 | - | -
+S1Q02F | answer | none | no-cue | 0 | - | -
+S1Q03 | answer | none | no-cue | 0 | - | -
+S1Q03F | answer | none | no-cue | 0 | - | -
+S1Q04 | answer | none | no-cue | 0 | - | -
+S1Q04F | answer | constraint | BLOCK | 537 | 1517a406f91a | 156
+S1Q05 | answer | none | no-cue | 0 | - | -
+S1Q05F | answer | none | no-cue | 0 | - | -
+S1Q06 | answer | none | no-cue | 0 | - | -
+S1Q06F | answer | pronoun | BLOCK | 517 | 7b56db720d4a | 157
+S1Q07 | answer | none | no-cue | 0 | - | -
+S1Q07F | answer | none | no-cue | 0 | - | -
+S1Q08 | answer | reference | parent-in-prompt | 0 | - | -
+S1Q08F | answer | none | no-cue | 0 | - | -
+S1Q09 | answer | none | no-cue | 0 | - | -
+S1Q09F | answer | none | no-cue | 0 | - | -
+S1Q10 | answer | none | no-cue | 0 | - | -
+S1Q10F | answer | none | no-cue | 0 | - | -
+S2Q01 | answer | none | no-cue | 0 | - | -
+S2Q01F | answer | pronoun | parent-in-prompt | 0 | - | -
+S2Q02 | answer | none | no-cue | 0 | - | -
+S2Q02F | answer | none | no-cue | 0 | - | -
+S2Q03 | answer | none | no-cue | 0 | - | -
+S2Q03F | answer | none | no-cue | 0 | - | -
+S2Q04 | answer | none | no-cue | 0 | - | -
+S2Q04F | answer | none | no-cue | 0 | - | -
+S2Q05 | answer | none | no-cue | 0 | - | -
+S2Q05F | answer | pronoun | BLOCK | 461 | 14f0bdf3225d | 159
+S2Q06 | answer | none | no-cue | 0 | - | -
+S2Q06F | answer | none | no-cue | 0 | - | -
+S2Q07 | answer | none | no-cue | 0 | - | -
+S2Q07F | answer | none | no-cue | 0 | - | -
+S2Q08 | answer | reference | parent-in-prompt | 0 | - | -
+S2Q08F | answer | pronoun | BLOCK | 432 | 6e6f2f50ae27 | 157
+S2Q09 | answer | none | no-cue | 0 | - | -
+S2Q09F | answer | reference | parent-in-prompt | 0 | - | -
+S2Q10 | answer | none | no-cue | 0 | - | -
+S2Q10F | answer | none | no-cue | 0 | - | -
+
+GATED IDS WITH A BLOCK (4): S1Q04F S1Q06F S2Q05F S2Q08F
+cue fired, block '' (id:why): S1Q08:parent-in-prompt S2Q01F:parent-in-prompt S2Q08:parent-in-prompt S2Q09F:parent-in-prompt
+ids with no cue: 31; ids where the own dispatch is a supersede: S1Q02
+registration section 3 expectation (gated S1Q04F S1Q06F S2Q05F S2Q08F; '' with cue S1Q08 S2Q08 S2Q09F S2Q01F): gated set MATCHES; cue-silent set MATCHES (all four are cue-silent)
+D-cases:
+  s50l:D1 = S1Q06F, stand-in S1Q05F (245 s earlier), cue pronoun, block 250 chars sha12 f6ad3669b3ff, userA 4205 -> 3956 chars
+  s50l:D2 = S2Q05F, stand-in S2Q04F (244 s earlier), cue pronoun, block 257 chars sha12 0dc1568434da, userA 4508 -> 4259 chars
+  s50l:D3 = S2Q08F, stand-in S2Q07F (236 s earlier), cue pronoun, block 233 chars sha12 08567b93635d, userA 4146 -> 3897 chars
+wrote R/s50l-gated-turn.json (7 items) and R/turn-parity-s50l.json (42 entries: 7 with a block, 35 empty)
+
+=== S50K (2026-09-20T11-22-43-s50k): 42 dispatch lines (42 answer / 0 supersede), 39 captured ids ===
+id | own dispatch | cue | why | block chars | sha12 | parent age s
+S1Q01F | answer | none | no-cue | 0 | - | -
+S1Q02 | answer | none | no-cue | 0 | - | -
+S1Q02F | answer | none | no-cue | 0 | - | -
+S1Q03 | answer | none | no-cue | 0 | - | -
+S1Q03F | answer | none | no-cue | 0 | - | -
+S1Q04 | answer | none | no-cue | 0 | - | -
+S1Q04F | answer | constraint | BLOCK | 535 | 7beee26f9f8f | 156
+S1Q05 | answer | none | no-cue | 0 | - | -
+S1Q05F | answer | none | no-cue | 0 | - | -
+S1Q06 | answer | none | no-cue | 0 | - | -
+S1Q06F | answer | pronoun | BLOCK | 518 | 907c4fd34ca1 | 157
+S1Q07 | answer | none | no-cue | 0 | - | -
+S1Q07F | answer | none | no-cue | 0 | - | -
+S1Q08 | answer | reference | parent-in-prompt | 0 | - | -
+S1Q08F | answer | none | no-cue | 0 | - | -
+S1Q09 | answer | none | no-cue | 0 | - | -
+S1Q09F | answer | none | no-cue | 0 | - | -
+S1Q10 | answer | none | no-cue | 0 | - | -
+S1Q10F | answer | none | no-cue | 0 | - | -
+S2Q01 | answer | none | no-cue | 0 | - | -
+S2Q01F | answer | pronoun | parent-in-prompt | 0 | - | -
+S2Q02 | answer | none | no-cue | 0 | - | -
+S2Q02F | answer | none | no-cue | 0 | - | -
+S2Q03 | answer | none | no-cue | 0 | - | -
+S2Q03F | answer | none | no-cue | 0 | - | -
+S2Q04 | answer | none | no-cue | 0 | - | -
+S2Q04F | answer | none | no-cue | 0 | - | -
+S2Q05 | answer | none | no-cue | 0 | - | -
+S2Q05F | answer | pronoun | BLOCK | 461 | 14f0bdf3225d | 158
+S2Q06 | answer | none | no-cue | 0 | - | -
+S2Q06F | answer | none | no-cue | 0 | - | -
+S2Q07 | answer | none | no-cue | 0 | - | -
+S2Q07F | answer | none | no-cue | 0 | - | -
+S2Q08 | answer | reference | parent-in-prompt | 0 | - | -
+S2Q08F | answer | pronoun | BLOCK | 432 | 1023c0fe5a55 | 156
+S2Q09 | answer | none | no-cue | 0 | - | -
+S2Q09F | answer | reference | parent-in-prompt | 0 | - | -
+S2Q10 | answer | none | no-cue | 0 | - | -
+S2Q10F | answer | none | no-cue | 0 | - | -
+
+GATED IDS WITH A BLOCK (4): S1Q04F S1Q06F S2Q05F S2Q08F
+cue fired, block '' (id:why): S1Q08:parent-in-prompt S2Q01F:parent-in-prompt S2Q08:parent-in-prompt S2Q09F:parent-in-prompt
+ids with no cue: 31; ids where the own dispatch is a supersede: none
+D-cases:
+  s50k:D1 = S1Q06F, stand-in S1Q05F (245 s earlier), cue pronoun, block 250 chars sha12 f6ad3669b3ff, userA 4205 -> 3956 chars
+  s50k:D2 = S2Q05F, stand-in S2Q04F (244 s earlier), cue pronoun, block 262 chars sha12 6ea69e3d2ba2, userA 4496 -> 4247 chars
+  s50k:D3 = S2Q08F, stand-in S2Q07F (236 s earlier), cue pronoun, block 233 chars sha12 08567b93635d, userA 4146 -> 3897 chars
+wrote R/s50k-gated-turn.json (7 items) and R/turn-parity-s50k.json (42 entries: 7 with a block, 35 empty)
+
+=== s50k userA overlap with s50m / s50l (ids; identical = byte-identical captured user prompt; same pinned = same pinned question text) ===
+vs s50m: userA byte-identical 1/39 [S2Q06F]; same pinned text 32/39; s50k gated ids: S1Q04F{userA identical: false, same pinned: true} S1Q06F{userA identical: false, same pinned: true} S2Q05F{userA identical: false, same pinned: false} S2Q08F{userA identical: false, same pinned: true}
+vs s50l: userA byte-identical 1/39 [S1Q05F]; same pinned text 23/39; s50k gated ids: S1Q04F{userA identical: false, same pinned: true} S1Q06F{userA identical: false, same pinned: true} S2Q05F{userA identical: false, same pinned: false} S2Q08F{userA identical: false, same pinned: true}
+
+=== GATED LIST (key, kind, cue, sha12, block chars, added chars incl. separator) ===
+s50m:S1Q04F	roster	constraint	1517a406f91a	537	539
+s50m:S1Q06F	roster	pronoun	7b56db720d4a	517	519
+s50m:S2Q05F	roster	pronoun	14f0bdf3225d	461	463
+s50m:S2Q08F	roster	pronoun	1023c0fe5a55	432	434
+s50m:D1	dropped	pronoun	f6ad3669b3ff	250	252
+s50m:D2	dropped	pronoun	6ea69e3d2ba2	262	264
+s50m:D3	dropped	pronoun	08567b93635d	233	235
+s50l:S1Q04F	roster	constraint	1517a406f91a	537	539
+s50l:S1Q06F	roster	pronoun	7b56db720d4a	517	519
+s50l:S2Q05F	roster	pronoun	14f0bdf3225d	461	463
+s50l:S2Q08F	roster	pronoun	6e6f2f50ae27	432	434
+s50l:D1	dropped	pronoun	f6ad3669b3ff	250	252
+s50l:D2	dropped	pronoun	0dc1568434da	257	259
+s50l:D3	dropped	pronoun	08567b93635d	233	235
+s50k:S1Q04F	roster	constraint	7beee26f9f8f	535	537
+s50k:S1Q06F	roster	pronoun	907c4fd34ca1	518	520
+s50k:S2Q05F	roster	pronoun	14f0bdf3225d	461	463
+s50k:S2Q08F	roster	pronoun	1023c0fe5a55	432	434
+s50k:D1	dropped	pronoun	f6ad3669b3ff	250	252
+s50k:D2	dropped	pronoun	6ea69e3d2ba2	262	264
+s50k:D3	dropped	pronoun	08567b93635d	233	235

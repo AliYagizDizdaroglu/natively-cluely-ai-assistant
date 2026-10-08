@@ -1,0 +1,4 @@
+today           metrics.mjs question="Of the RAG pipeline stages, which can cause it?" | turns-fixture.mjs question="Of the RAG pipeline stages, which can cause it?"
+proposed        metrics.mjs question=null | turns-fixture.mjs question="Of the RAG pipeline stages, which can cause it?"
+proposedRevive  metrics.mjs question=null | turns-fixture.mjs question="Now add delayed outcomes and experimentation"
+outcomeLast     metrics.mjs question="Of the RAG pipeline stages, which can cause it?" | turns-fixture.mjs question="Of the RAG pipeline stages, which can cause it?"

@@ -1,0 +1,61 @@
+OK  C1 PROCEED: apps weak 8 each, new all acceptable, 111 answered, p50 1.8 s / p90 6.4 s over 114 (= L20c's old-arm numbers)
+OK  C2 clause 1 FAIL only: app mean 0.875 (one weak sample), new mean 0.811 < 0.825; the band (0.8 >= 0.5) holds -> STOP
+OK  C2b clause 1: mean 0.819 is below 0.825 -> FAIL (a margin of 0.06 would pass it)
+OK  C3 clause 1 PASS: mean 0.838 >= 0.825 -> PROCEED
+OK  C3b clause 1 PASS: mean 0.828 >= 0.825 (a margin of 0.04 would fail it) -> PROCEED
+OK  C4 clause 2 FAIL only: apps all acceptable, new rep 1 one weak (mean 0.990 passes, worst 0.971 < 1.000) -> STOP
+OK  C5 clause 2 at its edge: new worst rep equals the app's worst sample (37/38 both) -> PASS (>=) -> PROCEED
+OK  C6a clause 3 FAIL only: app consensus-wrong 5 (bar 1 + floor(3.75) = 4), new 5 -> STOP (floor, not round)
+OK  C6b clause 3 at its edge: same apps, new 4 <= 4 -> PASS -> PROCEED
+OK  C6c clause 3: apps 0 wrong (bar 1), new 2 wrong by both graders -> FAIL -> STOP
+OK  C6d clause 3 at its edge: apps 0 wrong, new 1 -> PASS
+OK  C6e clause 3: six new answers wrong by ONE grader only are not consensus-wrong -> 0 -> PASS
+OK  C7a clause 4 FAIL only: 109 answered (the two slowest items turn into spoken apologies) -> WAIT
+OK  C7b clause 4 at its edge: 110 answered -> PASS -> PROCEED (the apology is graded and counted in clause 1-3, a hole for clause 4)
+OK  C8a clause 5 p50: every first word 3.2 s -> FAIL -> WAIT
+OK  C8b clause 5 p50: every first word 2.8 s -> PASS -> PROCEED
+OK  C8c clause 5 p90: the nine slowest at 7.0 s (with the 3 holes: 12 above 6.6 s) -> FAIL -> WAIT
+OK  C8d clause 5 p90 at its edge: the eight slowest at 7.0 s (11 above 6.6 s with the holes) -> p90 stays 6.4 s -> PASS
+OK  C8e clause 5: a hole is no first word: 12 holes (and 102 answered) -> p90 has no first word -> clause 5 FAIL and clause 4 FAIL -> WAIT
+OK  C9a slow feed counted: 30 answered items at 20 s with a normal feed -> clause 5 FAIL -> WAIT
+OK  C9b slow feed left out: the SAME 30 items at 20 s but sent at 1.5x their length are left out (n 84, 30 slow-feed answered items) -> clause 5 reads the rest
+OK  C9c a slow-feed HOLE stays in as no first word, a slow-feed ANSWERED item is left out: n 113 (not 112, not 114)
+OK  C9d slow feed at exactly 1.30x is NOT slow: the 20 s item stays in (n 114, 0 left out)
+OK  C10 the anchor is reported only: the old Live all weak (rate 0.000) changes no clause and no verdict
+OK  C11 the holes-as-not read is reported beside the rule: new mean 0.974, app mean 0.783 (and moves no verdict)
+OK  C12 STOP outranks WAIT: clause 1 fails and clause 4 fails -> STOP
+OK  refuses: a verdict file with a key missing
+OK  refuses: a verdict file with an extra key
+OK  refuses: a score of 3
+OK  refuses: a verdict file that is absent
+OK  refuses: two reps only
+OK  refuses: a pair retried more than once (clause 4 cannot be read)
+OK  refuses: a key with nine arms
+OK  the PROCEED sentence in score.mjs is verbatim in PREREGISTER-l20d.md
+OK  the STOP sentence in score.mjs is verbatim in PREREGISTER-l20d.md
+OK  the WAIT sentence in score.mjs is verbatim in PREREGISTER-l20d.md
+OK  ge(): 0.1+0.2 >= 0.3 true (float noise), 0.29999 >= 0.3 false, equal true
+OK  mutation "score: band strict (>) instead of >=": a state or verdict went wrong in C5; a printed number went wrong in none
+OK  mutation "score: margin 0.04 instead of 0.05": a state or verdict went wrong in C3b; a printed number went wrong in C1 C2 C2b C3 C4 C5 C6a C6b C6c C6d C6e C7a C7b C8a C8b C8c C8d C8e C9a C9b C9c C9d C10 C11 C12
+OK  mutation "score: margin 0.06 instead of 0.05": a state or verdict went wrong in C2b; a printed number went wrong in C1 C2 C3 C3b C4 C5 C6a C6b C6c C6d C6e C7a C7b C8a C8b C8c C8d C8e C9a C9b C9c C9d C10 C11 C12
+OK  mutation "score: round instead of floor in the safety bar": a state or verdict went wrong in C6a; a printed number went wrong in C6b
+OK  mutation "score: consensus-wrong needs ONE grader instead of both": a state or verdict went wrong in C6e; a printed number went wrong in none
+OK  mutation "score: the rate divides by 38 instead of the graded items": a state or verdict went wrong in C3 C3b C5 C6a C6b; a printed number went wrong in C1 C2 C2b C4 C6c C6d C6e C7a C7b C8a C8b C8c C8d C8e C9a C9b C9c C9d C10 C11 C12
+OK  mutation "score: WAIT needs clause 4 OR 5 to hold instead of both": a state or verdict went wrong in C7a C8a C8c C9a; a printed number went wrong in none
+OK  mutation "score: the safety clause left out of STOP": a state or verdict went wrong in C6a C6c; a printed number went wrong in none
+OK  mutation "score: STOP and WAIT swapped in priority (clause 4 and 5 first)": a state or verdict went wrong in C12; a printed number went wrong in none
+OK  mutation "score: the worst app sample replaced by the best": a state or verdict went wrong in C2 C2b C3 C3b C5 C6a C6b C12; a printed number went wrong in C1 C6c C6d C6e C7a C7b C8a C8b C8c C8d C8e C9a C9b C9c C9d C10 C11
+OK  mutation "mechanics: reliability bar 111 instead of 110": a state or verdict went wrong in C7b; a printed number went wrong in none
+OK  mutation "mechanics: p50 bar 2500 ms instead of 3000": a state or verdict went wrong in C8b; a printed number went wrong in none
+OK  mutation "mechanics: p50 bar 3500 ms instead of 3000": a state or verdict went wrong in C8a; a printed number went wrong in none
+OK  mutation "mechanics: p90 bar 7000 ms instead of 6600": a state or verdict went wrong in C8c; a printed number went wrong in none
+OK  mutation "mechanics: p90 bar 6000 ms instead of 6600": a state or verdict went wrong in C1 C2 C2b C3 C3b C4 C5 C6a C6b C6c C6d C6e C7a C7b C8d C9c C9d C10 C11 C12; a printed number went wrong in none
+OK  mutation "mechanics: slow-feed threshold so high nothing is slow": a state or verdict went wrong in C9b; a printed number went wrong in C9c
+OK  mutation "mechanics: slow-feed threshold 1.25 instead of 1.30": a state or verdict went wrong in none; a printed number went wrong in C1 C2 C2b C3 C3b C4 C5 C6a C6b C6c C6d C6e C7a C7b C8a C8b C8c C8d C8e C9a C9b C9c C9d C10 C11 C12
+OK  mutation "mechanics: a hole is a fast first word instead of no first word": a state or verdict went wrong in C8c C8e; a printed number went wrong in C1 C2 C2b C3 C3b C4 C5 C6a C6b C6c C6d C6e C7a C7b C8a C8b C8d C9a C9b C9c C9d C10 C11 C12
+OK  mutation "mechanics: ALL slow-feed items left out, holes too": a state or verdict went wrong in none; a printed number went wrong in C9c
+OK  mutation "mechanics: no slow-feed item left out": a state or verdict went wrong in C9b; a printed number went wrong in C9c
+OK  mutation "mechanics: percentile index rounded up": a state or verdict went wrong in C1 C2 C2b C3 C3b C4 C5 C6a C6b C6c C6d C6e C7a C7b C8d C9c C9d C10 C11 C12; a printed number went wrong in none
+OK  mutation "mechanics: an apology counts as answered": a state or verdict went wrong in C7a C8e C12; a printed number went wrong in C7b
+mutations caught: 22 of 22
+L20D SCORE CALIBRATION OK (26 cases, 22 mutations)

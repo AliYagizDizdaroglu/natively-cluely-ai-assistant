@@ -1,0 +1,190 @@
+write-arming-rd.mjs calibration (plan Task 18 step 5)
+script under test: C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\write-arming-rd.mjs sha256/12 5259379f5c24; the gate pattern is read from C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\rd-precheck.ps1 sha256/12 e08d100108a0
+every case: --out a case folder under LAB\flight\cal\arming-out, --now a fixed instant, --body a stub; the real record path is never written
+
+ok   W1    the expected fallback: T 2026-10-07 23:00, now 22:30:00 -> written, last line = the stamp of now, one T: line, the seal kept
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 23:00, last line: ARMING COMPLETE 2026-10-07T22:30:00+03
+ok   W2    the morning T: T 2026-10-07 08:00, now 07:40 -> written (the quota day is the 10-06 one: the body's ledger reset differs from W1's)
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 08:00, last line: ARMING COMPLETE 2026-10-07T07:40:00+03
+ok   B1    T 2026-10-07 08:44 (the last T whose run ends before the reset), now 2026-10-07 08:20 -> written (the bound is inclusive)
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 08:44, last line: ARMING COMPLETE 2026-10-07T08:20:00+03
+ok   B2    T 2026-10-07 10:00 (T exactly at the reset), now 2026-10-07 09:30 -> written (the bound is inclusive)
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 10:00, last line: ARMING COMPLETE 2026-10-07T09:30:00+03
+ok   B3    T 2026-10-08 00:00 (exactly now + 24 h), now 2026-10-07 00:00 -> written (the bound is inclusive)
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-08 00:00, last line: ARMING COMPLETE 2026-10-07T00:00:00+03
+ok   B4    T 2026-10-08 08:44 (the next day, the last T before the reset), now 2026-10-08 08:00 -> written (the bound is inclusive)
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-08 08:44, last line: ARMING COMPLETE 2026-10-08T08:00:00+03
+ok   O1    T 2026-10-07 08:45 (T + 75 min is exactly the reset), now 2026-10-07 08:10 -> REFUSED (crosses the quota day reset), nothing written
+      exit 2 :: REFUSED: --t 2026-10-07 08:45 + 75 min (the run's expected end) crosses the quota day reset at 10:00 local (07:00Z): the run must stay inside one quota day
+ok   O2    T 2026-10-07 09:59 (one minute before the reset: the run crosses it), now 2026-10-07 09:00 -> REFUSED (crosses the quota day reset), nothing written
+      exit 2 :: REFUSED: --t 2026-10-07 09:59 + 75 min (the run's expected end) crosses the quota day reset at 10:00 local (07:00Z): the run must stay inside one quota day
+ok   O3    T 2026-10-08 08:45 (the next day reset), now 2026-10-08 08:00 -> REFUSED (crosses the quota day reset), nothing written
+      exit 2 :: REFUSED: --t 2026-10-08 08:45 + 75 min (the run's expected end) crosses the quota day reset at 10:00 local (07:00Z): the run must stay inside one quota day
+ok   O4    T 2026-10-08 00:01 (one minute past now + 24 h), now 2026-10-07 00:00 -> REFUSED (more than 24 h after now), nothing written
+      exit 2 :: REFUSED: --t 2026-10-08 00:01 is more than 24 h after now
+ok   O5    T 2026-10-09 03:00 (two days ahead), now 2026-10-07 22:30 -> REFUSED (more than 24 h after now), nothing written
+      exit 2 :: REFUSED: --t 2026-10-09 03:00 is more than 24 h after now
+ok   O6    T 2026-10-06 23:00 (a T in the past), now 2026-10-07 01:00 -> REFUSED (past T - 10 min), nothing written
+      exit 2 :: REFUSED: past T - 10 min (T 2026-10-06 23:00): the precheck would refuse a record stamped now
+ok   O7    T 2026-10-05 21:00 (the eq hour T), now 2026-10-07 00:30 -> REFUSED (past T - 10 min), nothing written
+      exit 2 :: REFUSED: past T - 10 min (T 2026-10-05 21:00): the precheck would refuse a record stamped now
+ok   O8    --t with a trailing space
+      exit 2 :: REFUSED: --t must be "yyyy-MM-dd HH:mm" (got "2026-10-07 23:00 ")
+ok   O9    --t an impossible time (25:00)
+      exit 2 :: REFUSED: --t 2026-10-07 25:00 is not a real calendar time
+ok   O10   --t an impossible date (2026-02-30 23:00)
+      exit 2 :: REFUSED: --t 2026-02-30 23:00 is not a real calendar time
+ok   O11   --t missing altogether
+      exit 2 :: REFUSED: --t must be "yyyy-MM-dd HH:mm" (got undefined)
+
+ok   P1    now exactly T - 10 min (22:50:00 for T 23:00) -> written (the precheck accepts a stamp up to At - 4 = T - 10)
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 23:00, last line: ARMING COMPLETE 2026-10-07T22:50:00+03
+ok   P2    now T - 10 min + 1 s (22:50:01) -> REFUSED: past T - 10 min, nothing written
+      exit 2 :: REFUSED: past T - 10 min (T 2026-10-07 23:00): the precheck would refuse a record stamped now
+ok   P3    now one second before T - 10 min (22:49:59) -> written
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 23:00, last line: ARMING COMPLETE 2026-10-07T22:49:59+03
+ok   P4    now after T itself
+      exit 2 :: REFUSED: past T - 10 min (T 2026-10-07 23:00): the precheck would refuse a record stamped now
+ok   P5    --now junk
+      exit 2 :: REFUSED: --now junk is not an ISO instant
+
+ok   Y1    the body names ANOTHER T
+      exit 2 :: REFUSED: body T: line is not 2026-10-07 23:00
+ok   Y2    the body has NO T: line
+      exit 2 :: REFUSED: body must hold exactly one T: line
+ok   Y3    the body has TWO T: lines
+      exit 2 :: REFUSED: body must hold exactly one T: line
+ok   Y4    the body lacks the registration seal (it quotes another sha)
+      exit 2 :: REFUSED: body lacks the registration seal 0fd47e1b4041...
+ok   Y5    --seal malformed (63 characters)
+      exit 2 :: REFUSED: --seal must be the registration's sha256: 64 lowercase hex characters
+ok   Y6    --seal missing altogether
+      exit 2 :: REFUSED: --seal must be the registration's sha256: 64 lowercase hex characters
+ok   Y7    the body already holds an ARMING COMPLETE line (only the tool writes it)
+      exit 2 :: REFUSED: body already holds an ARMING COMPLETE line: only this tool writes it
+ok   Y8    the body has NO LEDGER-SUMMARY line (no fresh read)
+      exit 2 :: REFUSED: body must hold exactly one LEDGER-SUMMARY line in the ledger's own shape (found 0): paste the output of a fresh quota-ledger-today.mjs read taken with --extra-requests <n>
+ok   Y9    the body has TWO LEDGER-SUMMARY lines
+      exit 2 :: REFUSED: body must hold exactly one LEDGER-SUMMARY line in the ledger's own shape (found 2): paste the output of a fresh quota-ledger-today.mjs read taken with --extra-requests <n>
+ok   Y10   the ledger read is STALE: it is for the 2026-10-06 quota day, now is in the 2026-10-07 one
+      exit 2 :: REFUSED: the body's ledger read is for the quota day starting 2026-10-06T07:00:00.000Z, but now is in the day starting 2026-10-07T07:00:00.000Z: a stale read
+ok   Y11   headroom 223 on 3.5-lite (one below 224)
+      exit 2 :: REFUSED: the body's ledger read has headroom 223 on 3.5-lite and 450 on 3.1-lite, below 224 and 90 (1.5 x the need): the run moves to the fallback
+ok   Y12   headroom 224 on 3.5-lite -> written (the bound is inclusive)
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 23:00, last line: ARMING COMPLETE 2026-10-07T22:30:00+03
+ok   Y13   headroom 89 on 3.1-lite (one below 90)
+      exit 2 :: REFUSED: the body's ledger read has headroom 400 on 3.5-lite and 89 on 3.1-lite, below 224 and 90 (1.5 x the need): the run moves to the fallback
+ok   Y14   headroom 90 on 3.1-lite -> written
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 23:00, last line: ARMING COMPLETE 2026-10-07T22:30:00+03
+ok   Y15   the body file missing
+      exit 2 :: REFUSED: cannot read the body C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\cal\arming-out\case-37-Y15\body.md: ENOENT
+ok   Y16   CRLF body line ends -> written, normalised, one T: line
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 23:00, last line: ARMING COMPLETE 2026-10-07T22:30:00+03
+ok   Y17   M2: --seal is a valid sha256 and the body quotes it, but it is NOT the sha256 of the registration committed at HEAD
+      exit 2 :: REFUSED: --seal aaaaaaaaaaaa... is not the sha256 of the registration committed at HEAD (0fd47e1b4041...)
+ok   Y18   M2: the registration committed at HEAD is a DIFFERENT text from the one the seal hashes (the repo holds another version)
+      exit 2 :: REFUSED: --seal 0fd47e1b4041... is not the sha256 of the registration committed at HEAD (4006ccd3ae1f...)
+ok   Y19   M2: the registration is not committed at all in the repo
+      exit 2 :: REFUSED: PREREGISTER-router-default.md is not committed at HEAD in C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\cal\arming-out\repo-empty: commit the registration first
+ok   Y20   M3: the ledger read is 31 minutes old at arming
+      exit 2 :: REFUSED: the body's ledger read was taken at 2026-10-07T18:59:00.000Z, more than 30 minutes before now: take a fresh one
+ok   Y21   M3: the ledger read is exactly 30 minutes old -> written (the bound is inclusive)
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 23:00, last line: ARMING COMPLETE 2026-10-07T22:30:00+03
+ok   Y22   M3: the ledger read is dated 2 minutes in the future of now
+      exit 2 :: REFUSED: the body's ledger read is dated 2026-10-07T19:32:00.000Z, in the future of now
+ok   Y23   I1: the ledger read was taken without --extra-requests (extra=unset)
+      exit 2 :: REFUSED: the body's ledger read was taken without --extra-requests (extra=unset): the requests made by scripts (probes, bare arms) are in no app log and must be counted from the smoke and probe records
+ok   Y24   I1: the ledger read says complete=no (the app logs do not cover the quota day)
+      exit 2 :: REFUSED: the body's ledger read has complete=no oldest=2026-10-06T01:00:00.000Z: the app logs do not cover the quota day
+ok   Y25   I1: the ledger read found no app log (oldest=none)
+      exit 2 :: REFUSED: the body's ledger read has complete=yes oldest=none: the app logs do not cover the quota day
+ok   Y26   fix4 H1 backstop: the launcher error log EXISTS -> REFUSED, nothing written (a dry twin failed for a real reason)
+      exit 2 :: REFUSED: the launcher error log C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\cal\arming-out\launcher-error-present.log exists: a launcher run failed for a real reason (a window-only dry failure writes none). Read it, fix the cause, de ...[17 more chars]
+ok   Y27   fix4 H1 backstop: the launcher error log is ABSENT (a window-only dry failure writes none) -> written
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 23:00, last line: ARMING COMPLETE 2026-10-07T22:30:00+03
+
+ok   G1    the REAL rd-precheck.ps1: its pattern, read by the tool, passes both known answers -> written
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 23:00, last line: ARMING COMPLETE 2026-10-07T22:30:00+03
+ok   G2    a precheck whose pattern ACCEPTS a fractional second with a :00 offset (the 23:08 failure shape) -> REFUSED on the known answers
+      exit 2 :: REFUSED: precheck pattern known answers: a fractional second with a :00 offset must FAIL and a whole second with +03 must PASS
+ok   G3    a precheck whose pattern demands a +0300 offset (rejects the whole-second +03 form) -> REFUSED on the known answers
+      exit 2 :: REFUSED: precheck pattern known answers: a fractional second with a :00 offset must FAIL and a whole second with +03 must PASS
+ok   G4    a precheck file with no ARMING COMPLETE pattern at all
+      exit 2 :: REFUSED: gate pattern not found in rd-precheck.ps1
+ok   G5    a precheck file that does not exist
+      exit 2 :: REFUSED: cannot read C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\cal\arming-out\no-such.ps1: ENOENT
+ok   G6    the real record path is not written by any case (--out is always a case folder)
+      exit 0 :: WROTE ARMING-flight-rd.md (369 bytes), T 2026-10-07 23:00, last line: ARMING COMPLETE 2026-10-07T22:30:00+03
+
+ok   U1    an unknown option is refused (REFUSED: unknown option --bogus)
+ok   U2    the written last line "ARMING COMPLETE 2026-10-07T22:30:00+03" matches the precheck's OWN [regex]::Match pattern evaluated by PowerShell (.NET), and the 23:08 shape does not (GATE True | KNOWN-BAD False)
+
+MUTATION SUITE (rule 8): a copy of the script with ONE rule switched off, run over the cases that must notice it. "caught" = every listed case turned BAD and W1 stayed ok (for the two mutants that break the WRITTEN record itself, W1 is the case that must turn BAD).
+ok   CONTROL: all 42 table rows read as expected against the REAL script
+ok   quota-day-not-checked
+      cases that turned BAD: [O1, O2, O3] (must be [O1, O2, O3]); W1 stayed ok
+ok   run-length-75-to-60
+      cases that turned BAD: [O1, O3] (must be [O1, O3]); W1 stayed ok
+ok   run-length-75-to-90
+      cases that turned BAD: [B1, B4] (must be [B1, B4]); W1 stayed ok
+ok   quota-reset-hour-moved (07Z -> 06Z)
+      cases that turned BAD: [B1, O2] (must be [B1, O2]); W1 stayed ok
+ok   horizon-not-checked
+      cases that turned BAD: [O4, O5] (must be [O4, O5]); W1 stayed ok
+ok   horizon-bound-exclusive
+      cases that turned BAD: [B3] (must be [B3]); W1 stayed ok
+ok   horizon-23-h
+      cases that turned BAD: [B3] (must be [B3]); W1 stayed ok
+ok   past-T-minus-10-not-checked
+      cases that turned BAD: [P2, P4] (must be [P2, P4]); W1 stayed ok
+ok   T-minus-10-boundary-exclusive
+      cases that turned BAD: [P1] (must be [P1]); W1 stayed ok
+ok   T-minus-5-instead (the bound moved)
+      cases that turned BAD: [P2] (must be [P2]); W1 stayed ok
+ok   known-answers-not-proved
+      cases that turned BAD: [G2, G3] (must be [G2, G3]); W1 stayed ok
+ok   gate-pattern-not-found-ignored
+      cases that turned BAD: [G4] (must be [G4]); W1 stayed ok
+ok   T-line-not-checked
+      cases that turned BAD: [Y1] (must be [Y1]); W1 stayed ok
+ok   T-line-count-not-checked
+      cases that turned BAD: [Y2, Y3] (must be [Y2, Y3]); W1 stayed ok
+ok   seal-not-checked
+      cases that turned BAD: [Y4] (must be [Y4]); W1 stayed ok
+ok   seal-format-not-checked
+      cases that turned BAD: [Y5, Y6] (must be [Y5, Y6]); W1 stayed ok
+ok   existing-ARMING-COMPLETE-allowed
+      cases that turned BAD: [Y7] (must be [Y7]); W1 stayed ok
+ok   ledger-line-not-required
+      cases that turned BAD: [Y8, Y9] (must be [Y8, Y9]); W1 stayed ok
+ok   ledger-staleness-not-checked
+      cases that turned BAD: [Y10] (must be [Y10]); W1 stayed ok
+ok   seal-not-compared-with-the-commit (M2)
+      cases that turned BAD: [Y17, Y18] (must be [Y17, Y18]); W1 stayed ok
+ok   uncommitted-registration-ignored (M2)
+      cases that turned BAD: [Y19] (must be [Y19]); W1 stayed ok
+ok   ledger-age-not-checked (M3)
+      cases that turned BAD: [Y20] (must be [Y20]); W1 stayed ok
+ok   ledger-age-bound-exclusive (M3)
+      cases that turned BAD: [Y21] (must be [Y21]); W1 stayed ok
+ok   ledger-future-not-checked (M3)
+      cases that turned BAD: [Y22] (must be [Y22]); W1 stayed ok
+ok   extra-unset-allowed (I1)
+      cases that turned BAD: [Y23] (must be [Y23]); W1 stayed ok
+ok   error-log-not-checked (H1 backstop)
+      cases that turned BAD: [Y26] (must be [Y26]); W1 stayed ok
+ok   incomplete-logs-allowed (I1)
+      cases that turned BAD: [Y24, Y25] (must be [Y24, Y25]); W1 stayed ok
+ok   ledger-headroom-not-checked
+      cases that turned BAD: [Y11, Y13] (must be [Y11, Y13]); W1 stayed ok
+ok   ledger-35-bound-exclusive
+      cases that turned BAD: [Y12] (must be [Y12]); W1 stayed ok
+ok   ledger-31-bound-exclusive
+      cases that turned BAD: [Y14] (must be [Y14]); W1 stayed ok
+ok   stamp-with-fraction (the 23:08 failure)
+      cases that turned BAD: [W1] (must be [W1]); W1 turned BAD
+ok   tmp-left-behind
+      cases that turned BAD: [W1] (must be [W1]); W1 turned BAD
+
+CLEAN-UP: the real record C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\router-default\flight\ARMING-flight-rd.md: untouched (absent before and after)
+WRITE-ARMING CALIBRATION OK 91/91 (32 mutants, 32 caught)

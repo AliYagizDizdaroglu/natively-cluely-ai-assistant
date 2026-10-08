@@ -1,0 +1,32 @@
+docs(passes): s50i — the shipped LOW default in flight, in-app 14/20, and the hour's own five paired arms
+
+First flight on the shipped default (commit d2a6c72: thinking level LOW with no environment
+override). The hour was mechanically clean: 40/40 heard and answered, 0 doubles, 6 supersedes,
+15/15 long questions whole, 40/40 prompts pinned, 0 coaching-path answers. Every one of the 50
+verbal requests logged thinking=LOW and 48 of them actually spent thought tokens (p50 791,
+max 1181), so the shipped default is proven in flight. TTFT p90 9.1 s passes the 10 s gate bar
+this change also moved, and would have failed the old 5 s bar.
+
+Grades, mains of 20 / follow-ups of 20: in-app 14/15. Zero wrong answers on either axis, the
+same as s50g at LOW; every miss is a weak, and 28 of the 40 answers run past ~85 words.
+
+The five paired arms (b18b8fa, bd2bea3, bfefef0) ran minutes after the hour, so every read
+below is same-window and on shared question ids:
+
+  level, app bytes, offline       captured-minimal 28/39 -> captured-low 33/39   net +5, 7 up 2 down
+  level, bare bytes               bare 3.1 16/20 -> bare 3.1 LOW 19/20           net +3, 4 up 1 down
+  app context at LOW              bare LOW 19/20 -> in-app 14/20                 net -5, 0 up 5 down
+  app pipeline over a raw call    captured-low 33/39 -> in-app 28/39             net -5, 2 up 7 down
+  3.1 LOW vs 3.5 HIGH, app bytes  33/39 vs 34/39                                 net +1, 4 up 3 down
+  3.1 LOW vs 3.5 HIGH, bare bytes 19/20 vs 18/20                                 net -1, 1 up 2 down
+
+The level result reproduces the 2026-09-17 bench in a live hour. The two 3.5 reads reproduce the
+2026-09-18 bench: a tie, now measured in the same window rather than across times of day, which
+was that bench's one unresolved confound. Same-window latency on app bytes: 3.1 LOW p50 4.6 s /
+p90 7.0 s / max 12.6 s against 3.5 HIGH 4.2 / 5.0 / 6.7 s; words p50 99 against 74.
+
+The two negative reads are the finding worth acting on. The app's own context and pipeline each
+cost about as much as the thinking level buys, and they cost it on the same handful of questions
+(S1Q02, S1Q06, S1Q08, S2Q05, S2Q07). That is now measured rather than inferred.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

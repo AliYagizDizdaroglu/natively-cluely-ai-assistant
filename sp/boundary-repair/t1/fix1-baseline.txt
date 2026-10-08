@@ -1,0 +1,11 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ✓ electron/audio/deepgramBoundaryRepair.test.ts (58 tests) 18ms
+
+ Test Files  1 passed (1)
+      Tests  58 passed (58)
+   Start at  17:46:37
+   Duration  2.79s (transform 101ms, setup 0ms, collect 101ms, tests 18ms, environment 1.54s, prepare 218ms)
+

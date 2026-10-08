@@ -1,0 +1,24 @@
+docs(passes): amend the s50m rule before the flight, not after
+
+Two changes, both made while the runs folder still holds no 2026-09-22
+entry, so neither can be a reaction to the result.
+
+Condition 4 demanded zero wrong verdicts and zero stall-budget overruns in
+every arm, the 3.1 twins included. Since failing the rule keeps 3.1, a wrong
+answer from a 3.1 twin would have decided the question in that twin's own
+favour. The safety condition now covers the live hour and the three 3.5 HIGH
+captured arms, which is what the candidate actually flies; failures in the
+3.1 arms are reported and decide nothing. Conditions 1 to 3 are untouched
+and all four are still required.
+
+The second change declares a diagnostic rather than a criterion. The paired
+arms run in a fixed order, all five 3.1 arms before all four 3.5 arms, so
+batch position is confounded with model and no cross-model latency figure
+from this hour stands alone. Grading compares the three reps within each
+model separately: flat inside both means batch drift is small, a trend
+inside either discounts every cross-model latency read from the hour.
+Latency stays outside the rule for the same reason length does. The clean
+measurement is a same-window probe alternating the two models request by
+request, which costs no flight and has never been run.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

@@ -1,0 +1,25 @@
+run 2026-10-02T11-39-41-h40d
+log window 2026-10-02T10:32:01.026Z .. 2026-10-02T11:39:40.483Z; timeline items 45
+cue blocks: 47
+shape: empty 0, one line 2, two lines 25, three lines 20, more than three 0
+words per cue line: n 112, median 3, max 5, lines over 5 words 0; words per block: median 8
+items with more than one block: ? x2, R29 x2; items with no block: R05
+cues trimmed lines: 4
+answers: full lines 46 (failed 0), superseded streams 1
+hedge: gemini-3.5-flash-lite won 41 (at median 3855 ms, max 11112 ms); gemini-3.1-flash-lite won 6 (at median 9095.5 ms, max 10895 ms)
+lines with "Knowledge mode (stream): returning generated intro response": 0
+lines with "__negotiationCoaching": 0
+lines with "turn: close reason=not-a-question": 16
+lines with "boundary repair: restored": 0
+first token (diag, this run): n 46, median 4865 ms, p90 9834 ms, max 11664 ms
+- PASS  Answered hands-free: 44/44 dispatched, 0 to nobody   (before: 26/52)
+- PASS  Heard by either detector: 44/45   (before: 51/52)
+- PASS  Surfaced detections per question: 0 doubles, 0 extended, 1 superseded, 1 caught, 0 unclaimed   (before: 12 doubles, 1 invented)
+- FAIL  Long questions answered whole: 0 of 1 (dispatched text covers ≥ 80% of the question)   (before: not in the roster)
+- PASS  Answer TTFT p90 · detect p50: 9.8 s · 2.1 s   (before: 3.7 s (answer-only pass) · 4.1 s)
+- PASS  Cue block above every spoken answer: 45/45 present, 45 well-formed, 4 trimmed   (before: not logged (before cue mode))
+dist now: main.js written 2026-09-30T21:03:29.295Z; limits 3 x 5; CUE_RULE sha256/12 8e15e4e7dd41
+block ids (id:lines:words): ?:2:3/3 ?:3:3/4/5 R01:2:3/4 R02:3:5/4/5 R02F:3:2/3/3 R03:2:3/4 R04:2:4/5 R04F:1:4 R06:3:3/3/2 R07:2:3/3 R07F:2:4/4 R08:2:4/3 R09:2:4/3 R09F:1:4 R10:2:4/4 R11:3:4/4/5 R11F:2:4/3 R12:2:3/5 R13:3:5/5/5 R13F:3:4/4/2 R14:3:3/2/3 R15:2:4/4 R16:2:5/5 R17:2:4/3 R17F:2:3/4 R18:3:2/3/3 R19:2:2/4 R20:3:3/2/3 R21:2:4/5 R22:2:2/3 R22F:3:2/3/3 R22F2:3:3/3/3 R23:2:4/4 R24:3:1/3/2 R25:3:3/4/2 R26:3:4/2/3 R26F:2:3/4 R27:2:4/4 R28:2:3/3 R28F:2:4/4 R29:3:3/3/3 R29:3:2/2/2 R30:3:3/4/3 R31:2:4/3 R31F:3:4/4/3 R32:3:5/5/5 R33:2:3/4
+UNPARSABLE blocks: 0
+trimmed ids (id [kinds]): R04F [cleaned 1]; R12 [cut 1]; R13 [cut 1]; R32 [cut 1]
+failed answer ids: none; superseded stream ids: R29

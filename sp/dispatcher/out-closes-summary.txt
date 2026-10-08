@@ -1,0 +1,98 @@
+11T08-22-32-s50b         S2Q06    end=08:04:38.264 classify=08:04:39.317 f=5 close+1.5s
+    classify-said: model detected=false conf=0.95 difficulty=easy
+    detector-next: 08:04:42.025 detected=false conf=0.95 q.len=0
+    answers: answer/live/f0l1 +6.4s cov=0.97
+12T08-22-49-s50c         S2Q05    end=08:00:56.478 classify=08:00:58.192 f=7 close+2.2s
+    classify-said: model detected=false conf=0.95 difficulty=easy
+    detector-next: 08:00:59.746 detected=true conf=0.95 q.len=294
+    answers: answer/whisper/f0l1 +7.3s cov=0.97
+13T08-22-36-s50d         S1Q04    end=07:22:15.056 classify=07:22:16.139 f=9 close+1.1s
+    classify-said: null->degraded(no)
+    detector-next: 07:22:17.159 null
+    answers: answer/live/f0l1 +5.8s cov=0.92
+13T08-22-36-s50d         S1Q06    end=07:30:52.274 classify=07:30:53.359 f=8 close+1.2s
+    classify-said: null->degraded(no)
+    detector-next: 07:30:54.520 null
+    answers: answer/live/f0l1 +6.9s cov=0.97
+13T08-22-36-s50d         S1Q08    end=07:38:50.187 classify=07:38:51.259 f=5 close+1.2s
+    classify-said: null->degraded(no)
+    detector-next: 07:38:52.315 null
+    answers: answer/live/f0l1 +6.1s cov=1.00
+13T08-22-36-s50d         S1Q09    end=07:42:47.811 classify=07:42:48.898 f=5 close+1.2s
+    classify-said: null->degraded(no)
+    detector-next: 07:42:49.904 null
+    answers: answer/live/f0l1 +7.0s cov=1.00
+13T08-22-36-s50d         S2Q04    end=07:56:40.746 classify=07:56:41.817 f=6 close+1.1s
+    classify-said: null->degraded(no)
+    detector-next: 07:56:42.897 null
+    answers: answer/live/f0l1 +5.9s cov=0.92
+13T08-22-36-s50d         S2Q05    end=08:00:43.675 classify=08:00:44.764 f=6 close+1.2s
+    classify-said: null->degraded(no)
+    detector-next: 08:00:45.834 null
+    answers: answer/live/f0l1 +6.8s cov=0.97
+13T08-22-36-s50d         S2Q05F   end=08:03:22.555 classify=08:03:23.661 f=2 close+1.3s
+    classify-said: null->degraded(no)
+    detector-next: 08:03:24.221 null
+    answers: answer/live/f0l1 +5.9s cov=0.92
+13T08-22-36-s50d         S2Q06    end=08:04:42.229 classify=08:04:43.319 f=5 close+1.2s
+    classify-said: null->degraded(no)
+    detector-next: 08:04:44.340 null
+    answers: answer/live/f0l1 +6.3s cov=0.83
+13T08-22-36-s50d         S2Q08    end=08:13:11.427 classify=08:13:12.518 f=5 close+1.2s
+    classify-said: null->degraded(no)
+    detector-next: 08:13:13.566 null
+    answers: answer/whisper/f0l1 +6.7s cov=0.81
+13T08-22-36-s50d         S2Q09    end=08:17:06.301 classify=08:17:07.379 f=5 close+1.1s
+    classify-said: null->degraded(no)
+    detector-next: 08:17:08.446 null
+    answers: NONE
+15T08-22-29-s50f         S2Q05    end=08:00:37.362 classify=08:00:38.385 f=7 close+1.3s
+    classify-said: model detected=false conf=0.95 difficulty=easy
+    detector-next: 08:00:39.800 detected=false conf=0.95 q.len=0
+    answers: answer/live/f0l1 +6.9s cov=1.00
+18T08-22-57-s50i         S2Q09    end=08:17:27.611 classify=08:17:28.857 f=3 close+2.0s
+    classify-said: model detected=false conf=0.90 difficulty=easy
+    detector-next: 08:17:29.937 detected=false conf=0.95 q.len=0
+    answers: answer/live/f2l1 +6.0s cov=0.46
+19T08-22-41-s50j         S1Q07F   end=07:37:36.606 classify=07:37:38.000 f=1 close+1.8s
+    classify-said: model detected=false conf=0.95 difficulty=easy
+    detector-next: 07:37:38.909 detected=true conf=0.95 q.len=117
+    answers: answer/live/f0l1 +5.7s cov=1.00
+19T08-22-41-s50j         S1Q08F   end=07:41:30.765 classify=07:41:32.180 f=1 close+2.9s
+    classify-said: model detected=false conf=0.90 difficulty=easy
+    detector-next: 07:41:34.052 detected=true conf=0.95 q.len=89
+    answers: answer/whisper/f0l1 +7.2s cov=1.00
+19T08-22-41-s50j         S1Q10F   end=07:47:31.663 classify=07:47:34.157 f=1 close+3.2s
+    classify-said: model detected=false conf=0.90 difficulty=easy
+    detector-next: 07:47:35.644 detected=false conf=0.95 q.len=0
+    answers: answer/live/f2l1 +7.7s cov=0.45
+24T08-20-12-h40a         (probe)  end=- classify=07:12:44.613 f=1 close-
+    classify-said: model detected=false conf=0.90 difficulty=easy
+    detector-next: 07:12:46.053 detected=false conf=0.90 q.len=0
+    answers: NONE
+24T08-20-12-h40a         R05      end=07:24:18.594 classify=07:24:20.211 f=1 close+2.1s
+    classify-said: model detected=false conf=0.95 difficulty=easy
+    detector-next: 07:24:21.433 detected=false conf=0.90 q.len=0
+    answers: answer/live/f0l1 +6.8s cov=1.00
+26T11-39-51-h40b         R05      end=10:43:56.233 classify=10:43:57.687 f=1 close+1.8s
+    classify-said: model detected=false conf=0.95 difficulty=easy
+    detector-next: 10:43:59.136 detected=false conf=0.95 q.len=0
+    answers: NONE
+26T11-39-51-h40b         R07F     end=10:47:23.872 classify=10:47:25.207 f=1 close+2.2s
+    classify-said: model detected=false conf=0.90 difficulty=easy
+    detector-next: 10:47:26.620 detected=false conf=0.90 q.len=0
+    answers: answer/live/f0l1 +7.7s cov=1.00
+26T11-39-51-h40b         R15      end=11:07:33.551 classify=11:07:34.869 f=2 close+2.4s
+    classify-said: model detected=false conf=0.95 difficulty=easy
+    detector-next: 11:07:36.371 detected=false conf=0.90 q.len=0
+    answers: answer/live/f0l1 +7.5s cov=0.40
+29T11-42-00-h40c         R05      end=10:46:06.031 classify=10:46:07.084 f=1 close+1.5s
+    classify-said: model detected=false conf=0.95 difficulty=easy
+    detector-next: 10:46:08.444 detected=false conf=0.95 q.len=0
+    answers: NONE
+30T11-45-30-br1          S1Q08    end=11:01:43.773 classify=11:01:45.586 f=5 close+2.2s
+    classify-said: model detected=false conf=0.95 difficulty=medium
+    detector-next: 11:01:47.372 detected=true conf=0.95 q.len=277
+    answers: answer/live/f0l1 +62.2s cov=0.96
+
+24 not-a-question closes

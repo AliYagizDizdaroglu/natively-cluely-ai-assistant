@@ -1,0 +1,72 @@
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+ ✓ electron/llm/verbalStreamFilter.test.ts (143 tests) 421ms
+stdout | electron/llm/WhatToAnswerLLM.cues.test.ts > WhatToAnswerLLM cue block > verbal, no block: the answer is unchanged and the callback still fires once, empty
+[Answer] budget: words=19 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.cues.test.ts > WhatToAnswerLLM cue block > offers block BEFORE the spoken answer (spec 2026-09-30 offers-before-answer): the cues once, the answer shown, the offers once, neither block in the output
+[Answer] budget: words=19 cut=no allowance=no
+
+ ✓ electron/llm/WhatToAnswerLLM.cues.test.ts (4 tests) 67ms
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > A. the front wins with a chunked cue block: cues once, block gone, prose intact, winner named (hedge)
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 3ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > A0. control: the same answer with NO block reports [] once, so the assertion above is not vacuous
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > B. the back wins after the trigger: cues once, the front is aborted, winner named 3.1-lite (hedge)
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > B. the back wins after the trigger: cues once, the front is aborted, winner named 3.1-lite (hedge)
+[LLMHelper] verbal hedge: back started at 5000ms reason=trigger
+[LLMHelper] verbal hedge: won by gemini-3.1-flash-lite at 5000ms; other=aborted
+[Answer] budget: words=19 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > C. both legs 503, the redirected answer carries the block: cues once
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: back started at 4ms reason=front-error
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D. the once-guard holds across the fallback: the first stream reports, dies with no prose, the redirect must not report again
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D2. a stream that dies after its first prose chunk was shown is not redirected: one report with its own cue, its words, then the error
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D3. a stream that dies after the early close but before its first words clear the filters is redirected: its cue over the redirect's prose
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D4. a stream that dies inside a leading offers block is redirected: its cue over the redirect's prose, the redirect's block dropped by the once-guard
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > E. hedge OFF (NATIVELY_VERBAL_HEDGE=0), the old stall race: cues once, so both policies feed the same chain
+[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+[Answer] budget: words=19 cut=no allowance=no
+
+ ✓ electron/llm/WhatToAnswerLLM.hedgeCues.test.ts (9 tests) 225ms
+
+ Test Files  3 passed (3)
+      Tests  156 passed (156)
+   Start at  21:35:19
+   Duration  25.98s (transform 4.98s, setup 0ms, collect 21.68s, tests 713ms, environment 29.80s, prepare 4.49s)
+

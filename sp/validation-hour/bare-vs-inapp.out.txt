@@ -1,0 +1,25 @@
+mains graded by the bare arms: 33
+  id    inapp bareH bareL capH1 capH2 capH3    (rows where any arm is not acceptable)
+  R05   -     A     A     -     -     -     
+  R07   A     w     A     A     A     A     
+  R08   w     w     A     w     A     A     
+  R09   A     A     A     -     A     A     
+  R11   A     A     A     w     X     A     
+  R12   w     A     A     A     A     A     
+  R13   w     A     A     A     A     A     
+  R17   A     w     A     A     A     A     
+  R22   A     A     A     w     w     w     
+  R23   A     A     w     A     A     A     
+  R25   A     A     A     A     A     w     
+  R26   A     w     A     A     A     A     
+  R28   A     w     A     A     A     A     
+  R30   A     A     w     A     A     A     
+  R33   X     w     w     A     A     w     
+totals on these mains (A acceptable / w weak / X wrong / - none):
+  inapp  A 28  w 3  X 1  - 1
+  bareH  A 27  w 6  X 0  - 0
+  bareL  A 30  w 3  X 0  - 0
+  capH1  A 28  w 3  X 0  - 2
+  capH2  A 30  w 1  X 1  - 1
+  capH3  A 29  w 3  X 0  - 1
+in-app vs bare 3.5-lite HIGH on the 32 mains both answered: in-app acceptable where bare is not: R07 R17 R26 R28; bare acceptable where in-app is not: R12 R13

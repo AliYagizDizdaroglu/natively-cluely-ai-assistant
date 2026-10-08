@@ -1,0 +1,17 @@
+﻿2026-09-25-hedge-H1.json
+  today    n= 39  median 6.3 s   p90 9.3 s   none  0  extra  18  by 3.5-lite 18, 3.1-lite 21
+  hedge    n= 39  median 4.2 s   p90 5.0 s   none  0  extra   3  by 3.5-lite 39
+2026-09-25-hedge-H2.json
+  today    n= 39  median 6.1 s   p90 20.3 s  none  0  extra  12  by 3.5-lite 12, 3.1-lite 27
+  hedge    n= 39  median 10.2 s  p90 18.9 s  none  0  extra  32  by 3.5-lite 17, 3.1-lite 22
+2026-09-25-hedge-H3.json
+  today    n= 39  median 6.1 s   p90 10.0 s  none  0  extra   5  by 3.1-lite 34, 3.5-lite 5
+  hedge    n= 39  median 4.1 s   p90 5.1 s   none  0  extra   4  by 3.5-lite 39
+pooled (3 windows)
+  today    n=117  median 6.1 s   p90 13.3 s  none  0  extra  35  by 3.5-lite 35, 3.1-lite 82
+  hedge    n=117  median 4.4 s   p90 11.5 s  none  0  extra  39  by 3.5-lite 95, 3.1-lite 22
+independence (failures over non-aborted requests):
+  3.1-lite as today's first request 30/110 failed   vs as the hedge's second 6/28 failed
+  3.5-lite as the hedge's first request 0/95 failed   vs as today's second 0/35 failed
+RULE: hedge none <= today none (0 <= 0: true); hedge p90 <= today p90 (11.5 s <= 13.3 s: true); hedge median <= today median + 1 s (4.4 s <= 7.1 s: true)
+VERDICT: PROCEED to the env-flagged build

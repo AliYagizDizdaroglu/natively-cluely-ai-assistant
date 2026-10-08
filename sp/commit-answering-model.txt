@@ -1,0 +1,30 @@
+fix(verbal): name the model that answered, and fall back from the one that failed
+
+Flights s50l and s50m answered on gemini-3.5-flash-lite through the verbal
+override, and three things about that model's name were wrong, all silently:
+
+- The bar under every answer said gemini-3.1-flash-lite. generateStream
+  named the selected model while LLMHelper answered on the override.
+- The stall race's switch never reached the bar. LLMHelper announces it as
+  the head sentinel of the stream it hands back, and stripModelSentinel
+  strips head sentinels: s50m's verbal-diag.log shows all four of the
+  hour's switches stripped within 2 ms of the stall.
+- A 503 before the first token was "redirected" to 3.5-lite again. The
+  error fallback named a constant, and streamVerbalWithGeminiFlash
+  re-resolved it through the override, which ignores what it is given.
+  A second 503 meant no answer at all.
+
+The label is now resolved the way the call is, the switch is read off the
+raw stream and named again outside the chain, and the error fallback picks
+the Flash Lite that did not just fail, at the moment it fails. The override
+picks the primary only: a caller that names its model gets that model,
+which also keeps typed chat on its selected model, as the override's own
+header already promised.
+
+Live, on the built modules with the real SDK (one 503 injected at fetch,
+one stall forced with a 50 ms budget): before, 3.5-lite answered under a
+3.1-lite label, a 503 retried 3.5-lite, and the stall switch was eaten.
+After, each names and reaches the right model, and the shipped pairing
+(3.1-lite failing over to 3.5-lite) is unchanged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

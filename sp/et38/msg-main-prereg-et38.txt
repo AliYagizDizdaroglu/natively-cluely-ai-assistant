@@ -1,0 +1,9 @@
+docs(passes): pre-register ET38, 3.8 Live Extended Thinking low and medium against br1's 3.5-lite HIGH
+
+Written before any ET38 audio. The user asked for low and medium against the latest flight. 38 items (L20c's),
+three runs per level on L20c's harness with only the model and its thinking level changed, blind grading mixed
+with br1's answers as the anchor, a spoken system error counted as a missing answer, per-arm conditions on
+quality, band, safety, reliability and speed, and an early stop for medium once it can no longer meet the
+reliability bar.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

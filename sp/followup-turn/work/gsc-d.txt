@@ -1,0 +1,33 @@
+=== A. h40d-grader-models.mjs: top-level sessions ===
+
+=== B. check-grader-memory.mjs ===
+
+=== D. launch-grader.mjs: fresh cwd per attempt, memory pre-check, permissions, at most 2 at once (a stand-in for the claude binary; NO model call) ===
+OK   projectSlug reproduces the REAL project folder name of F\grading (200 characters + "-" + the base-36 hash: ...-followup-7potx7)
+OK   ... a short cwd keeps its full slug (non-alphanumerics -> "-")
+OK   absRule: C:\Users\x\y.json -> Read(//c/Users/x/y.json) (Windows paths are normalized to /c/... in permission rules)
+OK   memoryEntries: an EMPTY memory\ folder (as the real 22:19 probe left) reads [] ...
+OK   ... and a memory\ folder holding one file reads one entry (the pre-launch refusal)
+OK   buildPrompt: the registered dispatch text with ONLY the pairs path, the verdicts path and the tag substituted passes the audit's own dispatch check
+OK   ... and the same prompt audited as another slot does not
+OK   claude argv: -p <prompt> --model opus --output-format json, dontAsk, tools Read/Write/Edit/Bash, strict MCP, no --dangerously-skip-permissions
+OK   permission rules: Read own pairs + the grader-instruction file, Edit own verdicts, Bash(node -e *) and Bash(cd *); nothing for another file
+OK   at most 2 graders at once: slots 1 and 2 are granted, the third launcher is refused
+OK   ... a released slot is granted again; a dead launcher's slot (stale pid) is reclaimed
+OK   --make-pilot writes a synthetic pairs.blind-1.json (4 items) and nothing else
+OK   ... and refuses to overwrite it
+OK   --dry-run: prints cwd, argv (prompt as length + sha12) and the rules; creates no cwd, calls nothing
+OK   a launch: exit 0, ids printed (session, model, cwd name, memory ABSENT, verdict keys), one record in launches.jsonl  [blind-1.g1 a1: session ca2c0f7c-5edc-4310-9726-7b3e6bc0cd64 model claude-opus-5-5 exit 0 cwd pilot-blind-1.g1-a1 memory ABSENT projectMemory=0 claudeMem=0 verdi]
+OK   ... the cwd is a fresh, EMPTY folder grading\pilot-blind-1.g1-a1 under the grading dir, and claude ran INSIDE it
+OK   ... the prompt it was given passes the audit's dispatch check for that slot (dispatch text, only paths and tag substituted)
+OK   a second launch of the same slot is refused while its verdicts exist (move the earlier attempt away before a re-grade): exit 2, no call
+OK   ... with the verdicts moved away the SAME attempt number still cannot reuse its cwd: REFUSED, exit 2, no call
+OK   --attempt 2 gets its own fresh cwd (a2) and a second record
+OK   G1: a non-empty memory\ in the attempt's projects folder -> REFUSED before the launch (exit 2, claude not called)
+OK   a slot whose pairs file does not exist is a usage error (exit 2), nothing created
+OK   a grader that exits 0 but wrote no verdicts file: the launch line says MISSING/INVALID and the exit code is 1
+OK   --probe-pair (stand-in claude): two fresh cwds, each Read x1 + Write x1, both memory ABSENT -> PROBE PAIR OK  [PROBE PAIR OK: two fresh cwds in a row, both memory ABSENT (projectMemory=0 claudeMem=0), each one Read + one Write | ]
+OK   --probe-pair where the first probe's transcript carries a memory marker -> PROBE PAIR FAILED, exit 1 (the helper answers differently when the effect is present)
+OK   the real folder F\grading was not touched by any of this
+
+GRADER-SESSION CALIBRATION OK

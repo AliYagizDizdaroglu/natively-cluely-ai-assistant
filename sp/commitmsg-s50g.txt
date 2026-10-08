@@ -1,0 +1,22 @@
+docs(passes): s50g — flash-lite at thinking LOW, in-app 16/20 mains and 16/20 follow-ups
+
+The first flight with NATIVELY_GEMINI_THINKING_LEVEL=LOW (42d82c5). Compliance
+from the per-answer usage lines: 43 requests in the hour, 42 with thought tokens,
+mean 755 (range 91–1271), zero at the default. Every mechanical gate row passed
+(40/40 heard and answered, 15/15 long questions whole, 0 doubles, 0 supersedes,
+0 cut by the word guard); the TTFT row failed at p90 7.8 s against 3.4 s on s50f
+and 1.6 s on s50e — the price of LOW is about 2.7 s at the median and 4.4 s at
+p90 on the same hour.
+
+Quality: 16/20 mains (s50e 15, s50f 14) and 16/20 follow-ups (13, 18), inside the
+single-flight noise band. S1Q06 and S2Q10 passed in-app for the first time (S2Q10
+had failed three flights running on the same atomic-write claim); S1Q02 now
+derives the 57 percent precision it had missed ten times but still omits recall.
+Every miss is an omitted sub-part or one overstated claim; 0 wrong, 0 unspeakable.
+
+Arms on the same hour: bare 3.1-lite 17/20, 3.5-lite 16/20, qwen 16/20, gpt-oss
+13/20; the Flash arms on the app's captured bytes 4/4, 4/5, 4/5 (3.7-flash all
+503). Graded by Opus agents on the frozen prompt 8564ba96369a; record and index
+generated in this checkout.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

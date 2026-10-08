@@ -1,0 +1,16 @@
+merge: cue mode (feat/whole-turn-answers at c2fff1e) into fix/coding-style-suffix-all-gemini at 73d7f01
+
+The refreshed prep merge (the first, 1852d89, was made at fed4b07 and 8a13abb). It reaches MAIN's branch by a
+fast-forward only after the user's live look on the worktree build (merge review I1).
+
+What licenses it, by the pre-registered rules:
+- The 05:00 cue re-smoke passes all three conditions (c75bc41).
+- The cue bench passes every row (c2fff1e). Reported beside it: the cue arm was rated lower in all three reps.
+- The simple-question probe, reported and never gating, shows block-only 0 on both models.
+- The Opus merge review read READY WITH FIXES, with no code change asked (`SP\merge-review\MERGE-REVIEW.md`).
+
+The merge is textually clean. Since 1852d89 both sides gained only docs under electron/test/golden/passes/: MAIN
+73d7f01 (ET38's result), and the cue branch c75bc41 and c2fff1e. So the merged tree equals the cue head everywhere
+outside passes/, and the code that lands is the code the re-smoke flew.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

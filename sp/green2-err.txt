@@ -1,0 +1,40 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+stderr | electron/llm/verbalFallback.test.ts > verbal fallback redirect > falls back when the primary fails before any content
+[WhatToAnswerLLM] verbal primary failed before first token (HTTP 429 rate limit) — redirecting to gemini-3.5-flash-lite
+
+stderr | electron/llm/verbalFallback.test.ts > verbal fallback redirect > announces the redirect instead of swapping models silently
+[WhatToAnswerLLM] verbal primary failed before first token (boom) — redirecting to gemini-3.5-flash-lite
+
+stderr | electron/llm/verbalFallback.test.ts > verbal fallback redirect > does NOT restart after content has already shipped
+[WhatToAnswerLLM] Stream failed: Error: socket hang up
+    at failsAfter (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\verbalFallback.test.ts:24:11)
+    at failsAfter.next (<anonymous>)
+    at watch (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\WhatToAnswerLLM.ts:110:30)
+    at watch.next (<anonymous>)
+    at WhatToAnswerLLM.stripModelSentinel (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\WhatToAnswerLLM.ts:139:26)
+    at stripModelSentinel.next (<anonymous>)
+    at Module.stripCueBlock (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\verbalStreamFilter.ts:484:22)
+    at stripCueBlock.next (<anonymous>)
+    at Module.filterCodeFences (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\verbalStreamFilter.ts:190:22)
+    at filterCodeFences.next (<anonymous>)
+
+stderr | electron/llm/verbalFallback.test.ts > verbal fallback redirect > surfaces the real cause when the fallback ALSO fails
+[WhatToAnswerLLM] verbal primary failed before first token (primary died) — redirecting to gemini-3.5-flash-lite
+[WhatToAnswerLLM] Stream failed: Error: fallback died too
+    at failsImmediately (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\verbalFallback.test.ts:18:11)
+    at failsImmediately.next (<anonymous>)
+    at watch (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\WhatToAnswerLLM.ts:110:30)
+    at watch.next (<anonymous>)
+    at WhatToAnswerLLM.stripModelSentinel (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\WhatToAnswerLLM.ts:139:26)
+    at stripModelSentinel.next (<anonymous>)
+    at Module.stripCueBlock (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\verbalStreamFilter.ts:484:22)
+    at stripCueBlock.next (<anonymous>)
+    at Module.filterCodeFences (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\verbalStreamFilter.ts:190:22)
+    at filterCodeFences.next (<anonymous>)
+
+stderr | electron/llm/verbalFallback.test.ts > verbal fallback redirect > emits onSuggestions exactly once even though two streams ran
+[WhatToAnswerLLM] verbal primary failed before first token (boom) — redirecting to gemini-3.5-flash-lite
+
+stderr | electron/llm/verbalFallback.test.ts > verbal fallback redirect > cue mode: when the primary dies before its first token, the fallback stream supplies the cues, once
+[WhatToAnswerLLM] verbal primary failed before first token (boom) — redirecting to gemini-3.5-flash-lite
+

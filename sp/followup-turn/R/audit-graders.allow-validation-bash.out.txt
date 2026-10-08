@@ -1,0 +1,10 @@
+# command: node R/audit-graders.mjs --allow-validation-bash --blind-dir <SP>/followup-questions-s50l/blind --session 9c5886c7-... (the same 8 graders; WITHDRAWN mode, kept as the historical record only -- point 15)
+blind-1.g1 (addb84e6bd55778d5): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[641:233bded98703]; dispatch=match
+blind-1.g2 (a681f259dff0dae30): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[785:f5bc2ca9d993]; dispatch=match
+blind-2.g1 (a5eb230f8d7cb101a): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[462:877c7165fece]; dispatch=match
+blind-2.g2 (ab34ebe95114932db): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[625:ef42ad47bf3c]; dispatch=match
+blind-3.g1 (a83e3007ff2d0bc45): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[480:00fbde002009]; dispatch=match
+blind-3.g2 (ab605c210a849d667): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[625:87bc67565259]; dispatch=match
+blind-4.g1 (aa08ae8c058eb8aa9): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[474:0a7037b47da9]; dispatch=match
+blind-4.g2 (aa85ea6faa528f27c): 4 tool inputs [Readx2 Writex1 Bashx1]; clean; bash=[482:803c67d3644b]; dispatch=match
+AUDIT: all graders clean

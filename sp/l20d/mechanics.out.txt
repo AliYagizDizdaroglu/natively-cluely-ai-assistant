@@ -1,0 +1,10 @@
+l20d r1: answered 36/38; holes S1Q07F S1Q09F; abnormal sessions 0 of 19; retried pairs none; quota closes 0; window 2026-10-02T21:45:01.499Z
+        first word of the real answer (a hole = none; slow-feed answered items left out) p50 1.1 s, p90 2.0 s; answered only: p50 1.1 s, max 2.3 s; last word p50 5.3 s, p90 9.0 s; a holding line on 0/36; premature output on 3; words p50 58; thought tokens p50 218; slow feed none
+l20d r2: answered 37/38; holes S2Q09F; abnormal sessions 0 of 19; retried pairs none; quota closes 0; window 2026-10-02T22:13:46.268Z
+        first word of the real answer (a hole = none; slow-feed answered items left out) p50 1.0 s, p90 1.8 s; answered only: p50 0.9 s, max 2.1 s; last word p50 6.2 s, p90 10.6 s; a holding line on 0/37; premature output on 4; words p50 65; thought tokens p50 223; slow feed none
+l20d r3: answered 38/38; holes none; abnormal sessions 0 of 19; retried pairs none; quota closes 0; window 2026-10-02T22:43:35.394Z
+        first word of the real answer (a hole = none; slow-feed answered items left out) p50 0.9 s, p90 1.6 s; answered only: p50 0.9 s, max 1.9 s; last word p50 5.5 s, p90 8.5 s; a holding line on 0/38; premature output on 2; words p50 61; thought tokens p50 176; slow feed none
+l20d pooled over 3 rep(s): 114 slots in the latency numbers (0 slow-feed answered items left out), 3 without a first word: first word p50 1.0 s, p90 1.7 s; last word p50 5.7 s, p90 9.1 s; words of the answer arrived by 6.6 s: p50 55 (n 111)
+clause 4 (reliability): answered 111/114, need >= 110 -> PASS
+clause 5 (speed): first word p50 1.0 s <= 3.0 s and p90 1.7 s <= 6.6 s over 114 slots -> PASS
+ARM l20d: reps 3, answered 111/114, holes 3, last run answered 38 -> DONE

@@ -1,0 +1,4 @@
+medium r1: answered 29/38; holes S1Q04 S1Q04F S1Q08F S2Q03 S2Q03F S2Q05 S2Q05F S2Q06F S2Q10F (system-error apologies: S1Q04 S1Q04F S1Q08F S2Q03 S2Q03F S2Q05 S2Q05F S2Q06F S2Q10F); abnormal sessions 1 of 20; window 2026-09-30T22:55:49.193Z
+        first word of the real answer p50 9.5 s, p90 16.7 s, max 20.6 s; last word p50 33.0 s, p90 61.9 s; a holding line on 17/29; words p50 72; thought tokens p50 3206; slow feed none
+medium pooled over 1 rep(s), answered items with a normal feed (29): first word p50 9.5 s, p90 16.7 s; last word p50 33.0 s, p90 61.9 s
+ARM medium: reps 1, answered 29/38, holes 9, last run answered 29 -> STOP

@@ -1,0 +1,181 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must the arms > suppresses a fenced block and keeps the prose around it
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must the arms > suppresses it when the text arrives one character at a time
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+ ✓ electron/llm/verbalStreamFilter.test.ts (105 tests) 316ms
+stdout | electron/llm/WhatToAnswerLLM.cues.test.ts > WhatToAnswerLLM cue block > verbal, no block: the answer is unchanged and the callback still fires once, empty
+[Answer] budget: words=19 cut=no allowance=no
+
+ ✓ electron/llm/WhatToAnswerLLM.cues.test.ts (3 tests) 34ms
+stdout | electron/llm/verbalFallback.test.ts > verbal fallback redirect > falls back when the primary fails before any content
+[Answer] budget: words=2 cut=no allowance=no
+
+stderr | electron/llm/verbalFallback.test.ts > verbal fallback redirect > falls back when the primary fails before any content
+[WhatToAnswerLLM] verbal primary failed before first token (HTTP 429 rate limit) — redirecting to gemini-3.5-flash-lite
+
+stdout | electron/llm/verbalFallback.test.ts > verbal fallback redirect > announces the redirect instead of swapping models silently
+[Answer] budget: words=2 cut=no allowance=no
+
+stderr | electron/llm/verbalFallback.test.ts > verbal fallback redirect > announces the redirect instead of swapping models silently
+[WhatToAnswerLLM] verbal primary failed before first token (boom) — redirecting to gemini-3.5-flash-lite
+
+stderr | electron/llm/verbalFallback.test.ts > verbal fallback redirect > does NOT restart after content has already shipped
+[WhatToAnswerLLM] Stream failed: Error: socket hang up
+    at failsAfter (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\verbalFallback.test.ts:24:11)
+    at failsAfter.next (<anonymous>)
+    at watch (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\WhatToAnswerLLM.ts:110:30)
+    at watch.next (<anonymous>)
+    at WhatToAnswerLLM.stripModelSentinel (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\WhatToAnswerLLM.ts:139:26)
+    at stripModelSentinel.next (<anonymous>)
+    at Module.stripCueBlock (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\verbalStreamFilter.ts:404:22)
+    at stripCueBlock.next (<anonymous>)
+    at Module.filterCodeFences (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\verbalStreamFilter.ts:190:22)
+    at filterCodeFences.next (<anonymous>)
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > A. the front wins with a chunked cue block: cues once, block gone, prose intact, winner named (hedge)
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 4ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/verbalFallback.test.ts > verbal fallback redirect > surfaces the real cause when the fallback ALSO fails
+[WhatToAnswerLLM] verbal primary failed before first token (primary died) — redirecting to gemini-3.5-flash-lite
+[WhatToAnswerLLM] Stream failed: Error: fallback died too
+    at failsImmediately (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\verbalFallback.test.ts:18:11)
+    at failsImmediately.next (<anonymous>)
+    at watch (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\WhatToAnswerLLM.ts:110:30)
+    at watch.next (<anonymous>)
+    at WhatToAnswerLLM.stripModelSentinel (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\WhatToAnswerLLM.ts:139:26)
+    at stripModelSentinel.next (<anonymous>)
+    at Module.stripCueBlock (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\verbalStreamFilter.ts:404:22)
+    at stripCueBlock.next (<anonymous>)
+    at Module.filterCodeFences (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\verbalStreamFilter.ts:190:22)
+    at filterCodeFences.next (<anonymous>)
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > A. the front wins with a chunked cue block: cues once, block gone, prose intact, winner named (hedge)
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+stdout | electron/llm/verbalFallback.test.ts > verbal fallback redirect > emits onSuggestions exactly once even though two streams ran
+[Answer] budget: words=2 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > A0. control: the same answer with NO block reports [] once, so the assertion above is not vacuous
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/verbalFallback.test.ts > verbal fallback redirect > emits onSuggestions exactly once even though two streams ran
+[WhatToAnswerLLM] verbal primary failed before first token (boom) — redirecting to gemini-3.5-flash-lite
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > A0. control: the same answer with NO block reports [] once, so the assertion above is not vacuous
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+stdout | electron/llm/verbalFallback.test.ts > verbal fallback redirect > leaves the healthy path untouched — no fallback redirect
+[Answer] budget: words=9 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > B. the back wins after the trigger: cues once, the front is aborted, winner named 3.1-lite (hedge)
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+
+stdout | electron/llm/verbalFallback.test.ts > verbal fallback redirect > cue mode: when the primary dies before its first token, the fallback stream supplies the cues, once
+[Answer] budget: words=2 cut=no allowance=no
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > B. the back wins after the trigger: cues once, the front is aborted, winner named 3.1-lite (hedge)
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+stderr | electron/llm/verbalFallback.test.ts > verbal fallback redirect > cue mode: when the primary dies before its first token, the fallback stream supplies the cues, once
+[WhatToAnswerLLM] verbal primary failed before first token (boom) — redirecting to gemini-3.5-flash-lite
+
+ ✓ electron/llm/verbalFallback.test.ts (7 tests) 55ms
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > B. the back wins after the trigger: cues once, the front is aborted, winner named 3.1-lite (hedge)
+[LLMHelper] verbal hedge: back started at 5000ms reason=trigger
+[LLMHelper] verbal hedge: won by gemini-3.1-flash-lite at 5000ms; other=aborted
+[Answer] budget: words=19 cut=no allowance=no
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > C. both legs 503, the redirected answer carries the block: cues once
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: back started at 1ms reason=front-error
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > C. both legs 503, the redirected answer carries the block: cues once
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[LLMHelper] verbal hedge: gemini-3.5-flash-lite failed before its first token: got status: 503 Service Unavailable
+[LLMHelper] verbal hedge: no answer - front error, back error
+[WhatToAnswerLLM] verbal primary failed before first token (got status: 503 Service Unavailable) — redirecting to gemini-3.5-flash-lite
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D. the once-guard holds across the fallback: the first stream reports, dies with no prose, the redirect must not report again
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 1ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D. the once-guard holds across the fallback: the first stream reports, dies with no prose, the redirect must not report again
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[WhatToAnswerLLM] verbal primary failed before first token (socket hang up) — redirecting to gemini-3.1-flash-lite
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D2. a stream that dies after its first prose chunk was shown is not redirected: one report with its own cue, its words, then the error
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D2. a stream that dies after its first prose chunk was shown is not redirected: one report with its own cue, its words, then the error
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[WhatToAnswerLLM] Stream failed: Error: socket hang up
+    at stream (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\llm\WhatToAnswerLLM.hedgeCues.test.ts:25:19)
+    at stream.next (<anonymous>)
+    at rawChunks (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts:3292:24)
+    at rawChunks.next (<anonymous>)
+    at LLMHelper.streamWithGeminiModel (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts:3324:22)
+    at streamWithGeminiModel.next (<anonymous>)
+    at deliver (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts:3505:18)
+    at deliver.next (<anonymous>)
+    at LLMHelper.streamGeminiWithHedge (C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts:3514:14)
+    at streamGeminiWithHedge.next (<anonymous>)
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D3. a stream that dies after the early close but before its first words clear the filters is redirected: its cue over the redirect's prose
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[LLMHelper] verbal hedge: front=gemini-3.5-flash-lite back=gemini-3.1-flash-lite trigger=5000ms
+[LLMHelper] verbal hedge: won by gemini-3.5-flash-lite at 0ms; other=not-started
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > D3. a stream that dies after the early close but before its first words clear the filters is redirected: its cue over the redirect's prose
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+[WhatToAnswerLLM] verbal primary failed before first token (socket hang up) — redirecting to gemini-3.1-flash-lite
+
+stdout | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > E. hedge OFF (NATIVELY_VERBAL_HEDGE=0), the old stall race: cues once, so both policies feed the same chain
+[LLMHelper] verbal stall race: trying gemini-3.1-flash-lite (fallback=gemini-3.5-flash-lite after 10000ms)
+[Answer] budget: words=19 cut=no allowance=no
+
+stderr | electron/llm/WhatToAnswerLLM.hedgeCues.test.ts > hedge x cue mode > E. hedge OFF (NATIVELY_VERBAL_HEDGE=0), the old stall race: cues once, so both policies feed the same chain
+[LLMHelper] ModesManager injection failed (non-fatal): Cannot find module './services/ModesManager'
+Require stack:
+- C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\.claude\worktrees\whole-turn\electron\LLMHelper.ts
+
+ ✓ electron/llm/WhatToAnswerLLM.hedgeCues.test.ts (8 tests) 140ms
+ ✓ electron/IntelligenceEngine.cues.test.ts (8 tests) 52ms
+
+ Test Files  5 passed (5)
+      Tests  131 passed (131)
+   Start at  20:34:16
+   Duration  9.82s (transform 3.02s, setup 0ms, collect 15.91s, tests 597ms, environment 18.99s, prepare 1.64s)
+

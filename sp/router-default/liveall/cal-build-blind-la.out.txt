@@ -1,0 +1,4 @@
+built 1 packet: 6 items (3 ids x 2 arms); holes 0 (-); not played 0; items without arm field 0
+decode, true key: 0 problems over 6 items
+decode, two keys swapped: 2 problems (must be > 0)
+packet items mentioning an arm: 0 (must be 0)

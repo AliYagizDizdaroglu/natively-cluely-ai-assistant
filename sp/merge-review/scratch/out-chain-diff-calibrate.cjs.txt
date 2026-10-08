@@ -1,0 +1,20 @@
+plain answer (expect same)
+   1:same new="Ten million vectors take about thirty gigabytes." cues=[]
+   4:same new="Ten million vectors take about thirty gigabytes." cues=[]
+   1000:same new="Ten million vectors take about thirty gigabytes." cues=[]
+cue block at the head (expect DIFF)
+   1:DIFF new="Ten million vectors take about thirty gigabytes." cues=["thirty gigabytes"]
+   4:DIFF new="Ten million vectors take about thirty gigabytes." cues=["thirty gigabytes"]
+   1000:DIFF new="Ten million vectors take about thirty gigabytes." cues=["thirty gigabytes"]
+offers before the answer (expect DIFF)
+   1:DIFF new="Ten million vectors take about thirty gigabytes." cues=[]
+   4:DIFF new="Ten million vectors take about thirty gigabytes." cues=[]
+   1000:DIFF new="Ten million vectors take about thirty gigabytes." cues=[]
+only prose dropped by the line filter before the offers (expect DIFF: now shown)
+   1:DIFF new="More text after it." cues=[]
+   4:DIFF new="More text after it." cues=[]
+   1000:DIFF new="More text after it." cues=[]
+a second __CUES__ line closing the block (known edge: shown)
+   1:DIFF new="__CUES__\nTen million." cues=["a"]
+   4:DIFF new="__CUES__\nTen million." cues=["a"]
+   1000:DIFF new="__CUES__\nTen million." cues=["a"]

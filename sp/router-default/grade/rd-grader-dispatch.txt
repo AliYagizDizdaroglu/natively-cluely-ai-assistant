@@ -1,0 +1,36 @@
+router-default-r1 grading-agent dispatch text. Written 2026-10-07 (the grading tools build, before any datum of the run). The dispatch text below the marker
+line is h40d's text BYTE-IDENTICAL (proven by cal-launch-grader-rd.mjs, which compares its bytes with the template region of validation-hour\h40d-grader-dispatch.txt),
+with only the pairs path, the verdicts path and the tag substituted per launch. This preamble is the tag/file table of router-default-r1; the launcher reads only what
+follows the marker line.
+
+RUN   = MAIN\electron\test\golden\interview60.runs\<stamp>-router-default-r1   (a folder with any other name is refused by the launcher)
+GRADE = natively-lab\sp\router-default\grade   (verdicts in GRADE\verdicts, launch records in GRADE\launches.jsonl)
+
+Rulings, from the registration (section 7.1, 7.2):
+- Grader: --model-id claude-opus-5-5 (pinned), --setting-sources project,local (memory ABSENT), tools Read,Write,Edit, dontAsk, strict MCP, no add-dir, a fresh cwd
+  outside the project per attempt (GRADE\grading\<tag>-a<k>). Dispatch ONLY by launch-grader-rd.mjs, never by a subagent. At most 2 graders at once.
+- Before any grader: cwdprobe-1, cwdprobe-2 (pinned) and cwdprobe-3 (the alias read, reported only). The launcher refuses a grader until the probe gate passes.
+- Graders per file: blind files 2 each, the in-app export 2, high / low / captured-high 1 each.
+
+Tags and files (PAIRS mode; verdicts in GRADE\verdicts\verdicts.<tag>.json):
+  blind-N.g1 / blind-N.g2   PAIRS RUN\router-blind\pairs.blind-N.json   (N = 1..4, as many as the export wrote)
+  inapp.g1 / inapp.g2       PAIRS RUN\interview60.judge.pairs.json
+  high                      PAIRS RUN\interview60.judge.pairs.gemini-3.5-flash-lite_high.json
+  low                       PAIRS RUN\interview60.judge.pairs.gemini-3.1-flash-lite_low.json
+  captured-high             PAIRS RUN\interview60.judge.pairs.gemini-3.5-flash-lite_captured-high.json
+
+----- dispatch text (substitute RUN, VERDICTS and TAG) -----
+You are grading one arm of an interview-answer flight, using a frozen grading instrument.
+
+FIRST, read this file IN FULL: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.grader-prompt.md
+
+It is a frozen instrument. Follow everything after the `---` line in that file VERBATIM. Do not paraphrase it, do not add or drop strictness language, do not "improve" it for this run, and do not apply any rubric of your own. Its wording is the measurement.
+
+Substitute these two values wherever the file says `<PAIRS_FILE>` and `<VERDICTS_FILE>`:
+
+<PAIRS_FILE> = RUN\<pairs file>
+<VERDICTS_FILE> = VERDICTS
+
+Constraints: do NOT dispatch subagents of any kind. Do not read other flight files, do not read any other arm's pairs or verdicts, and do not compare against any other arm — grading must be independent. Never print, read or copy an API key or any .env file. Do not modify anything in the run folder.
+
+When finished, reply with ONLY: the tag `TAG`, the number of items graded, and the count of each verdict class you assigned.

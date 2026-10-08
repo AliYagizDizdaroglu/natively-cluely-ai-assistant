@@ -1,0 +1,52 @@
+
+2026-10-07T00-22-47-router-default-r1 (live40) dispatched ids 47
+  EASY/E       n  20 dispatched  20 noCue roster 13 heard 13  RE02,RE04,RE05,RE06,RE07,RE09,RE10,RE11,RE14,RE16,RE18,RE19,RE20
+  HARD/QF      n   9 dispatched   9 noCue roster  5 heard  5  RH01,EF03,EF04,EF05,EF06
+  HARD/H       n  11 dispatched  11 noCue roster  1 heard  1  RH18
+  HARD/AF      n   7 dispatched   7 noCue roster  3 heard  4  EF02,RH13,RH02,RH16
+  roster no-cue -> heard cue (punctuation/fillers): 0 
+  roster cue -> heard no-cue: 1 RH16
+
+2026-10-06T23-01-59-router-smoke (live40) dispatched ids 47
+  EASY/E       n  20 dispatched  20 noCue roster 13 heard 13  RE02,RE04,RE05,RE06,RE07,RE09,RE10,RE11,RE14,RE16,RE18,RE19,RE20
+  HARD/QF      n   9 dispatched   9 noCue roster  5 heard  5  RH01,EF03,EF04,EF05,EF06
+  HARD/H       n  11 dispatched  11 noCue roster  1 heard  1  RH18
+  HARD/AF      n   7 dispatched   7 noCue roster  3 heard  4  EF02,RH13,RH02,RH16
+  roster no-cue -> heard cue (punctuation/fillers): 0 
+  roster cue -> heard no-cue: 1 RH16
+
+2026-10-06T22-25-42-router-smoke (live40) dispatched ids 47
+  EASY/E       n  20 dispatched  20 noCue roster 13 heard 13  RE02,RE04,RE05,RE06,RE07,RE09,RE10,RE11,RE14,RE16,RE18,RE19,RE20
+  HARD/QF      n   9 dispatched   9 noCue roster  5 heard  5  RH01,EF03,EF04,EF05,EF06
+  HARD/H       n  11 dispatched  11 noCue roster  1 heard  1  RH18
+  HARD/AF      n   7 dispatched   7 noCue roster  3 heard  4  EF02,RH13,RH02,RH16
+  roster no-cue -> heard cue (punctuation/fillers): 0 
+  roster cue -> heard no-cue: 1 RH16
+
+2026-09-22T08-22-50-s50m (s50) dispatched ids 40
+  verbal       n   5 dispatched   2 noCue roster  0 heard  0  
+  followup     n  50 dispatched  20 noCue roster  1 heard  1  S1Q08F
+  reasoning    n  10 dispatched   4 noCue roster  0 heard  0  
+  coding       n   8 dispatched   3 noCue roster  0 heard  0  
+  codingHeavy  n   5 dispatched   2 noCue roster  0 heard  0  
+  sql          n   2 dispatched   1 noCue roster  0 heard  0  
+  design       n   9 dispatched   4 noCue roster  0 heard  0  
+  cloud        n   7 dispatched   4 noCue roster  0 heard  0  
+  cloudHeavy   n   3 dispatched   0 noCue roster  0 heard  0  
+  incident     n   1 dispatched   0 noCue roster  0 heard  0  
+  roster no-cue -> heard cue (punctuation/fillers): 0 
+  roster cue -> heard no-cue: 0 
+
+2026-10-06T01-12-56-eq (s50) dispatched ids 40
+  verbal       n   5 dispatched   2 noCue roster  0 heard  0  
+  followup     n  50 dispatched  20 noCue roster  1 heard  1  S1Q08F
+  reasoning    n  10 dispatched   4 noCue roster  0 heard  0  
+  coding       n   8 dispatched   3 noCue roster  0 heard  0  
+  codingHeavy  n   5 dispatched   2 noCue roster  0 heard  0  
+  sql          n   2 dispatched   1 noCue roster  0 heard  0  
+  design       n   9 dispatched   4 noCue roster  0 heard  0  
+  cloud        n   7 dispatched   4 noCue roster  0 heard  0  
+  cloudHeavy   n   3 dispatched   0 noCue roster  0 heard  0  
+  incident     n   1 dispatched   0 noCue roster  0 heard  0  
+  roster no-cue -> heard cue (punctuation/fillers): 0 
+  roster cue -> heard no-cue: 0 

@@ -1,0 +1,23 @@
+// Amendment 15:42 (before any data): add 4 real scenario50 pairs as a reported control.
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+process.chdir(path.dirname(fileURLToPath(import.meta.url)));
+const I = JSON.parse(fs.readFileSync('items.json', 'utf8'));
+if (I.roster) throw new Error('already amended');
+const R = [['S1Q03', 'S1Q03F'], ['S2Q04', 'S2Q04F'], ['S1Q10', 'S1Q10F'], ['S2Q09', 'S2Q09F']];
+const c = I.chains; I.chains = [c[0], c[1], c[2], R[0], c[3], c[4], c[5], R[1], c[6], c[7], c[8], R[2], c[9], c[10], c[11], R[3]];
+I.roster = R; I.note += ' Amendment 15:42 (before data): 4 real scenario50 pairs as a reported control (clips from scenario50-tts-local).';
+fs.writeFileSync('items.json', JSON.stringify(I, null, 2) + '\n');
+let r = fs.readFileSync('run.mjs', 'utf8');
+const a = 'const wav = fs.readFileSync(`${HERE}/clips/${id}.wav`);';
+if (!r.includes(a)) throw new Error('clip line not found');
+r = r.replace(a, 'const wav = fs.readFileSync(/^S[12]Q/.test(id) ? `${MAIN}/electron/test/golden/scenario50-tts-local/${id}.wav` : `${HERE}/clips/${id}.wav`);');
+fs.writeFileSync('run.mjs', r);
+let d = fs.readFileSync('read.mjs', 'utf8');
+const s = "const set = (p) => ITEMS.chains.map((c) => c.flat()).flat().filter((id) => id.startsWith(p));";
+if (!d.includes(s)) throw new Error('set line not found');
+d = d.replace(s, "const set = (p) => p === 'RP' ? ITEMS.roster.map((c) => c[0]) : p === 'RF' ? ITEMS.roster.map((c) => c[1]) : ITEMS.chains.flat().filter((id) => id.startsWith(p));");
+d = d.replaceAll("['QP', 'QF', 'AP', 'AF']", "['QP', 'QF', 'AP', 'AF', 'RP', 'RF']");
+fs.writeFileSync('read.mjs', d);
+console.log('chains', I.chains.length, 'clip and set lines patched');

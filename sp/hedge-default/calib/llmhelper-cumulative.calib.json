@@ -1,0 +1,16 @@
+{
+  "negatives": {
+    "N1 code operator: && -> ||": ["verbalHedgeEnabled() && (primaryModel", "verbalHedgeEnabled() || (primaryModel"],
+    "N2 code: `return;` -> `return 0;`": ["return;   // both empty: nothing to say, as today", "return 0;   // both empty: nothing to say, as today"],
+    "N3 template text inside a log call": ["verbal hedge: won by ${FRONT} at", "verbal hedge: WON by ${FRONT} at"],
+    "N4 identifier renamed": ["const triggerMs = verbalHedgeTriggerMs();", "const triggerMs2 = verbalHedgeTriggerMs();"],
+    "N5 code line right under a comment this change edited": ["const verbalModel = verbalPrimaryModel(activeModelId, VERBAL_PRIMARY_MODELS);", "const verbalModel = verbalPrimaryModel(activeModelId, []);"]
+  },
+  "positives": {
+    "P1 a // comment elsewhere edited": ["// Custom notes ride along on the fast path too (this path never enters streamChat).", "// Custom notes ride along on the fast path too (this path never enters streamChat). (calibration)"],
+    "P2 a docblock line edited": ["* The verbal hedge — docs/superpowers/specs/2026-09-24-verbal-hedge-proposal.md, the policy of", "* The verbal hedge — docs/superpowers/specs/2026-09-24-verbal-hedge-proposal.md (calibration), the policy of"],
+    "P3 whitespace inside a code line": ["if (verbalHedgeEnabled() && (primaryModel", "if (verbalHedgeEnabled()   &&   (primaryModel"],
+    "P4 a comment this change edits (round 2 site)": ["// A flight may point the VERBAL answer at the other Flash Lite without changing", "// A flight may point the VERBAL answer at the other Flash Lite without changing (calibration)"],
+    "P5 a trailing comment this change edits (round 1 site)": ["// both empty: nothing to say, as today", "// both empty: nothing to say, as today (calibration)"]
+  }
+}

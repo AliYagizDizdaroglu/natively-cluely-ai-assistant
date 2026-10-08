@@ -1,0 +1,26 @@
+{
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic all correct but wrongly declares 57 percent and 60 percent precision consistent within rounding, missing the discrepancy the question probes."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Filters placed in the left join and count on the event column correctly preserve zero-call customers and block lookahead leakage."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All four sub-parts covered soundly, including holdout-only retraining and propensity weighting, but at about 88 words it runs long for speech."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 2,
+    "reason": "Covers only extraction F1, skips hallucinations and multi-hop accuracy entirely, omits uncertainty, and drifts into methodology instead of evaluation definitions."
+  }
+}

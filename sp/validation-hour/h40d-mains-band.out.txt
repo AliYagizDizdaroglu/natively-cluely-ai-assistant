@@ -1,0 +1,9 @@
+2026-10-02T11-39-41-h40d: mains captured 32; in-app acceptable on them 28
+  gemini-3.1-flash-lite_captured-low-r2    27
+  gemini-3.1-flash-lite_captured-low-r3    26
+  gemini-3.1-flash-lite_captured-low       28
+  gemini-3.5-flash-lite_captured-high-r2   30
+  gemini-3.5-flash-lite_captured-high-r3   29
+  gemini-3.5-flash-lite_captured-high      28
+
+[exit 0]

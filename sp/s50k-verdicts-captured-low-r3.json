@@ -1,0 +1,236 @@
+{
+  "S1Q01F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Gives a clear, correct condition for each of the three approaches and grounds them in real projects."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic is right but recall is never stated, and the 57 versus 60 gap is waved off as fluctuation."
+  },
+  "S1Q02F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly reads PR-AUC under imbalance and names cost of errors and campaign ROI as the deciding evidence."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Randomized holdout with uplift measurement is the right answer; about ninety words, slightly long."
+  },
+  "S1Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Clean propensity-versus-uplift contrast with self-defined persuadables; explains why high risk wastes budget."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct metrics, tie rule and all three edge cases, but roughly 150 words is far too long to say."
+  },
+  "S1Q04F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Heap and quickselect are right, but tie-breaking by user ID abandons the original-row-order rule it was asked to preserve."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Embargo buffer plus ColumnTransformer fitted only on train is exactly right; about 125 words."
+  },
+  "S1Q05F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Holdout rationale is right, but 'longitudinal analysis' misses why repeated snapshots mirror the production decision."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Left join with predicates in the ON clause and count of event id preserves zeros correctly; over 100 words."
+  },
+  "S1Q06F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Composite index plus valid-from/valid-to bitemporal versioning answers both halves; long and reads identifiers aloud."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers all seven stages and names the shared feature store, but about 140 words."
+  },
+  "S1Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Idempotency keys for actions and a pinned model artifact for version consistency answer both risks precisely."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, joins and retraining windows are solid, but experiment assignment is only logged, never designed; very long."
+  },
+  "S1Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct feedback-loop and distribution-shift explanation, but stray markdown asterisks around a word need editing out."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service named is the right one for its slot, with reasons; about 135 words."
+  },
+  "S1Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Crisp, accurate split of the three hosting options with a defensible reason for each."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC role, Entra auth for Postgres, Key Vault and private endpoints are all correct; about 90 words."
+  },
+  "S1Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Network-first triage and the 401 versus 403 split correctly separate the three causes; about 130 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Walks every stage with real tooling and maps it to the document intelligence work in 78 words."
+  },
+  "S2Q01F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Retrieval and lost-in-the-middle are valid, but it omits OCR and chunk-boundary failures, the classic causes; over 120 words."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Units and denominators are good, but uncertainty is fudged as inter-annotator agreement and cross-validation on a static gold set."
+  },
+  "S2Q02F": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Ablates OCR, classification, retrieval and orchestration and handles judge bias well, but skips the prompting ablation asked for."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names the conditional-reasoning criterion and contrasts all three approaches concisely."
+  },
+  "S2Q03F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Recursion cap, token budget with cheap fallback, and a retry budget with partial-result node cover all three asks."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Accurate RRF accumulation with deterministic id tie-break, stated compactly and spoken naturally."
+  },
+  "S2Q04F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Right scale-incompatibility reason and a correct weighting scheme applied to the reciprocal-rank term."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Honors greedy order, dedup set, per-document cap and skip-on-overflow correctly; about 100 words."
+  },
+  "S2Q05F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Concrete redundancy example plus MMR and agentic decomposition; just under 90 words, slightly long."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore, wait_for timeout, in-wrapper exception capture and gather ordering are all correct; about 115 words."
+  },
+  "S2Q06F": {
+    "correctness": 1,
+    "on_topic": 1,
+    "delivery": 1,
+    "reason": "Answers only the deterministic-testing half; never says how transient errors are classified or retried within the deadline."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Index, metadata, permission filtering and evaluation all covered accurately, but near 200 words and deletions go unmentioned."
+  },
+  "S2Q07F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Identifies both checkpoints, including the just-in-time recheck before generation, which is the point of the question."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers versioning, backfill, dual-write, shadow comparison, flag cutover and rollback; about 115 words."
+  },
+  "S2Q08F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Shadow traffic, judge evaluation and a hard count-parity check are a credible completeness proof."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure service for each component plus a sensible managed-versus-custom boundary; about 115 words."
+  },
+  "S2Q09F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Region pinning, locally redundant storage, private links and regional model availability are the right levers; about 95 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct idempotency-key pattern with state written before the acknowledgement; about 87 words, marginally long."
+  },
+  "S2Q10F": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dead-letter threshold, manual replay and version comparison so a late update cannot resurrect a delete; over 110 words."
+  }
+}

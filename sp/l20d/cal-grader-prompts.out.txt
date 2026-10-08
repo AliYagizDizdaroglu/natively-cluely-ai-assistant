@@ -1,0 +1,10 @@
+OK  make-grader-prompts: exit 0, eight prompts written
+OK  check-grader-prompts on the real folder: ONE TEXT, exit 0
+OK  L20d prompts = ET38's prompts with the folder name changed, byte for byte, for all eight seats
+OK  each L20d prompt has the length of its L20c text (nothing but the same-length folder name changed)
+OK  no prompt names l20c or et38; each names exactly its own packet and its own verdicts file under l20d\blind
+OK  one word changed in D-g2 -> "DIFFER: 2 distinct texts", exit 1
+OK  A-g1 pointing at packet B -> "MISSING its own packet or verdicts path", exit 1
+OK  C-g2 told to write C-g1's file -> MISSING, exit 1
+OK  a prompt file missing -> the checker fails (nonzero exit)
+GRADER PROMPTS CALIBRATION OK

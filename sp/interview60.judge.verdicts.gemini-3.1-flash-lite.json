@@ -1,0 +1,22 @@
+{
+ "S1Q01": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct on missing-value handling, regularization, inference speed and a logistic-regression baseline; runs near 100 words." },
+ "S1Q02": { "correctness": 1, "on_topic": 2, "delivery": 2, "reason": "True positives and recall right, but the band is 5,000 so precision is 57 percent; declares consistency without flagging the gap." },
+ "S1Q03": { "correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Names difference-in-differences against a control group with tenure and mix controls; only mildly overclaims the full 1.4 point drop." },
+ "S1Q04": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct precision, recall, lift and all three edge cases, but stray 'k$' markup artifacts and about 170 words." },
+ "S1Q05": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Chronological split with a 30-day gap, ColumnTransformer fit on train only, wrapped in one Pipeline; past 110 words." },
+ "S1Q06": { "correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Left join with ingestion and 30-day predicates preserves zero-call customers, but never filters event type for support calls." },
+ "S1Q07": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers every requested stage and names the feature store as the shared batch-online layer; over 100 words." },
+ "S1Q08": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Logs variant and model version, temporal join once the window closes, matured-rows-only retraining; over 110 words." },
+ "S1Q09": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Accurate Azure mapping across all eight components with operational reasoning; about 100 words." },
+ "S1Q10": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Managed identity, Entra for PostgreSQL, Key Vault references and private endpoints per environment all accurate; roughly 140 words." },
+ "S2Q01": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Walks every named stage including hybrid retrieval and cross-encoder reranking; about 118 words." },
+ "S2Q02": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Gives unit, denominator, dataset and uncertainty per metric; held-out set plus five-fold variance is loose; very long." },
+ "S2Q03": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Compares fixed workflow, decomposition and agent, naming the latency and non-determinism trade-off; about 140 words." },
+ "S2Q04": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct reciprocal rank fusion with deterministic id tie-break, but stray 'c$' and 'k$' markup artifacts." },
+ "S2Q05": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Greedy sort, dedup set, two-per-document cap and budget check all handled; spoken underscore name and over 100 words." },
+ "S2Q06": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Semaphore, per-case timeout race, ordered mapping and per-case try/catch are right; 'race condition' is loose phrasing; 97 words." },
+ "S2Q07": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Per-tenant namespaces, Postgres ACL filter injection, queue-driven updates and RAGAS evaluation; citations untouched and about 160 words." },
+ "S2Q08": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Dual-write, flagged backfill, shadow comparison, read-path cutover and rollback all covered; about 150 words." },
+ "S2Q09": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct service placement for all seven components plus a sensible managed-versus-custom line; about 117 words." },
+ "S2Q10": { "correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Textbook idempotency with the message id in durable state and an atomic commit; about 111 words." }
+}

@@ -1,0 +1,72 @@
+READER 2026-10-06T01-12-56-eq: window = the timeline's startedAt..endedAt
+READ startup (before the run window, last match each): earlier question: on; verbal hedge: on trigger=5000ms; follow-up parent: off
+1(a) startup lines as registered
+READ run window 2026-10-06T00:04:13.437Z .. 2026-10-06T01:12:55.930Z; dispatch windows 40; diag lines in window 40; captures 708 (in window 40, LABEL outside window ignored 2); verbal-diag route lines in window 40 (fast/behavioral 0); ignored out-of-window: fast/behavioral 24 (all routes 1812)
+WINDOW line 440 item S1Q01 roster:S1Q01 gate=no-cue cue=none chars=0 turn=3 ms=0 sig=- capture=no-label
+WINDOW line 567 item S1Q01F roster:S1Q01F gate=no-cue cue=none chars=0 turn=4 ms=0 sig=- capture=no-label
+WINDOW line 801 item S1Q02 roster:S1Q02 gate=no-cue cue=none chars=0 turn=5 ms=0 sig=- capture=no-label
+WINDOW line 946 item S1Q02F roster:S1Q02F gate=no-cue cue=none chars=0 turn=6 ms=0 sig=- capture=no-label
+WINDOW line 1094 item S1Q03 roster:S1Q03 gate=no-cue cue=none chars=0 turn=7 ms=0 sig=- capture=no-label
+WINDOW line 1242 item S1Q03F roster:S1Q03F gate=no-cue cue=none chars=0 turn=8 ms=0 sig=- capture=no-label
+WINDOW line 1515 item S1Q04 roster:S1Q04 gate=no-cue cue=none chars=0 turn=9 ms=1 sig=- capture=no-label
+WINDOW line 1713 item S1Q04F roster:S1Q04F gate=block cue=constraint chars=536 turn=10 ms=1 sig=- capture=label-ok
+WINDOW line 1956 item S1Q05 roster:S1Q05 gate=no-cue cue=none chars=0 turn=11 ms=1 sig=- capture=no-label
+WINDOW line 2190 item S1Q05F roster:S1Q05F gate=no-cue cue=none chars=0 turn=12 ms=0 sig=- capture=no-label
+WINDOW line 2419 item S1Q06 roster:S1Q06 gate=no-cue cue=none chars=0 turn=13 ms=1 sig=- capture=no-label
+WINDOW line 2624 item S1Q06F roster:S1Q06F gate=block cue=pronoun chars=517 turn=14 ms=0 sig=- capture=label-ok
+WINDOW line 2837 item S1Q07 roster:S1Q07 gate=no-cue cue=none chars=0 turn=15 ms=0 sig=- capture=no-label
+WINDOW line 3043 item S1Q07F roster:S1Q07F gate=no-cue cue=none chars=0 turn=16 ms=0 sig=- capture=no-label
+WINDOW line 3234 item S1Q08 roster:S1Q08 gate=parent-in-prompt cue=reference chars=0 turn=17 ms=0 sig=- capture=no-label
+WINDOW line 3434 item S1Q08F roster:S1Q08F gate=no-cue cue=none chars=0 turn=18 ms=0 sig=- capture=no-label
+WINDOW line 3632 item S1Q09 roster:S1Q09 gate=no-cue cue=none chars=0 turn=19 ms=1 sig=- capture=no-label
+WINDOW line 3781 item S1Q09F roster:S1Q09F gate=no-cue cue=none chars=0 turn=20 ms=0 sig=- capture=no-label
+WINDOW line 3948 item S1Q10 roster:S1Q10 gate=no-cue cue=none chars=0 turn=21 ms=0 sig=- capture=no-label
+WINDOW line 4110 item S1Q10F roster:S1Q10F gate=no-cue cue=none chars=0 turn=22 ms=0 sig=- capture=no-label
+WINDOW line 4280 item S2Q01 roster:S2Q01 gate=no-cue cue=none chars=0 turn=23 ms=0 sig=- capture=no-label
+WINDOW line 4408 item S2Q01F roster:S2Q01F gate=parent-in-prompt cue=pronoun chars=0 turn=24 ms=0 sig=- capture=no-label
+WINDOW line 4602 item S2Q02 roster:S2Q02 gate=no-cue cue=none chars=0 turn=25 ms=0 sig=- capture=no-label
+WINDOW line 4791 item S2Q02F roster:S2Q02F gate=no-cue cue=none chars=0 turn=26 ms=0 sig=- capture=no-label
+WINDOW line 4954 item S2Q03 roster:S2Q03 gate=no-cue cue=none chars=0 turn=27 ms=0 sig=- capture=no-label
+WINDOW line 5101 item S2Q03F roster:S2Q03F gate=no-cue cue=none chars=0 turn=28 ms=0 sig=- capture=no-label
+WINDOW line 5269 item S2Q04 roster:S2Q04 gate=no-cue cue=none chars=0 turn=29 ms=0 sig=- capture=no-label
+WINDOW line 5492 item S2Q04F roster:S2Q04F gate=no-cue cue=none chars=0 turn=30 ms=0 sig=- capture=no-label
+WINDOW line 5720 item S2Q05 roster:S2Q05 gate=no-cue cue=none chars=0 turn=31 ms=1 sig=- capture=no-label
+WINDOW line 5929 item S2Q05F roster:S2Q05F gate=block cue=pronoun chars=462 turn=32 ms=1 sig=- capture=label-ok
+WINDOW line 6147 item S2Q06 roster:S2Q06 gate=no-cue cue=none chars=0 turn=33 ms=1 sig=- capture=no-label
+WINDOW line 6407 item S2Q06F roster:S2Q06F gate=no-cue cue=none chars=0 turn=34 ms=0 sig=- capture=no-label
+WINDOW line 6632 item S2Q07 roster:S2Q07 gate=no-cue cue=none chars=0 turn=35 ms=0 sig=- capture=no-label
+WINDOW line 6840 item S2Q07F roster:S2Q07F gate=no-cue cue=none chars=0 turn=36 ms=0 sig=- capture=no-label
+WINDOW line 7036 item S2Q08 roster:S2Q08 gate=parent-in-prompt cue=reference chars=0 turn=37 ms=1 sig=- capture=no-label
+WINDOW line 7240 item S2Q08F roster:S2Q08F gate=block cue=pronoun chars=432 turn=38 ms=1 sig=- capture=label-ok
+WINDOW line 7419 item S2Q09 roster:S2Q09 gate=no-cue cue=none chars=0 turn=39 ms=0 sig=- capture=no-label
+WINDOW line 7554 item S2Q09F roster:S2Q09F gate=parent-in-prompt cue=reference chars=0 turn=40 ms=1 sig=- capture=no-label
+WINDOW line 7721 item S2Q10 roster:S2Q10 gate=no-cue cue=none chars=0 turn=41 ms=0 sig=- capture=no-label
+WINDOW line 7873 item S2Q10F roster:S2Q10F gate=no-cue cue=none chars=0 turn=42 ms=0 sig=- capture=no-label
+READ roster windows 40, short 0, STRAY 0
+READ gate= histogram: block=4 no-cue=32 parent-in-prompt=4 parent-in-pinned=0 supersede=0 no-parent=0 error=0 no-turn=0
+READ ms= p50 0 p90 1 max 1 (n 40)
+2a PASS ms p90 <= 50
+READ turn ids increasing (40 numeric)
+1(b) 40 of 40 windows carry a numeric turn= (100.0%)
+5a PASS gate=error 0
+BLOCK line 1713 item S1Q04F cause=inserted
+BLOCK line 2624 item S1Q06F cause=inserted
+BLOCK line 5929 item S2Q05F cause=inserted
+BLOCK line 7240 item S2Q08F cause=inserted
+READ LABEL captures in the run window 4 (in gate=block windows 4); LABEL captures outside the window ignored 2
+PROMPTS LABEL count: per-dispatch captures in window 4; gate=block windows that have a captured prompt carrying the LABEL 4; EQUAL
+PROMPTS interview60.prompts.json: 4 entries carry the LABEL (ids S1Q04F,S1Q06F,S2Q05F,S2Q08F)
+READ G = {S1Q04F, S1Q06F, S2Q05F, S2Q08F} (4)
+READ G* = {S1Q04F, S1Q06F, S2Q05F, S2Q08F}; G*∩G = {S1Q04F, S1Q06F, S2Q05F, S2Q08F} (4 of 4); G not in G* = {-}
+1(c) 4 of 4 G* ids read gate=block (>= 3)
+READ G_twin = {S1Q04F, S1Q06F, S2Q05F, S2Q08F} (4); in G but out of G_twin: -
+READ items with no dispatch window 0 of 40
+4d mains: 0 with gate=block
+5c gate rows reached: block, no-cue, parent-in-prompt; NOT EXERCISED: parent-in-pinned, supersede, no-parent, error, no-turn
+5c cue-fired-parent-present ids: S1Q08=parent-in-prompt S2Q08=parent-in-prompt S2Q09F=parent-in-prompt S2Q01F=parent-in-prompt
+REFERENT S1Q04F RIGHT -> S1Q04 expected S1Q04
+REFERENT S1Q06F RIGHT -> S1Q06 expected S1Q06
+REFERENT S2Q05F RIGHT -> S2Q05 expected S2Q05
+REFERENT S2Q08F RIGHT -> S2Q08 expected S2Q08
+READ signatures: debug-log override→behavioral lines in window 0; verbal-diag fast route lines in window 0
+READER no VOID/FAIL/INCOMPLETE clause named

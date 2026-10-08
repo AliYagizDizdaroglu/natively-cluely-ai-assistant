@@ -1,0 +1,1 @@
+A FastAPI service's p99 latency doubles under load while CPU stays at thirty percent. What do you check, and in what order?

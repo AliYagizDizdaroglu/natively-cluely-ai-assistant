@@ -1,0 +1,102 @@
+{
+ "model": "gemini-3.8-live",
+ "compression": "on",
+ "t0Iso": "2026-10-02T21:40:01.868Z",
+ "results": [
+  {
+   "id": "S1Q02",
+   "comp": "on",
+   "openedAt": 4,
+   "setupMs": 843,
+   "clipSeconds": 26.2,
+   "clipEndMs": 29410,
+   "heard": "Can you reconcile the metrics on your CV? Your CV reports a 9.5% churn rate, a top 5% risk band capturing 30% of churners. and 60% precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1553,
+   "lastWordMs": 7356,
+   "text": "With one hundred thousand subscribers and a nine point five percent churn rate, we start with nine thousand five hundred churners. Targeting the top five percent of subscribers means contacting five thousand people. Capturing thirty percent of those churners gives us two thousand eight hundred fifty true positives, leading to a precision of fifty-seven percent, which aligns closely with the reported sixty percent when accounting for standard rounding.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q08",
+   "comp": "on",
+   "openedAt": 61619,
+   "setupMs": 785,
+   "clipSeconds": 19.3,
+   "clipEndMs": 82509,
+   "heard": "Migrate the embedding model without an outage. Extend that service to introduce embeddings with a different dimensionality. While documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the roll back.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1545,
+   "lastWordMs": 9174,
+   "text": "I use unique version tags or namespace prefixes to distinguish dimensions within the same vector database. For the backfill, I run an asynchronous background process that reads existing documents, embeds them with the new model, and writes them to the new index. To handle concurrent changes, I use a dual-write pattern where all new updates are sent to both embedding pipelines simultaneously. Quality is validated through shadow evaluations comparing the new vectors against established benchmarks. The cutover is executed by atomically updating the alias pointer to the new index, and a rollback simply reverts that pointer back to the old one.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S2Q01",
+   "comp": "on",
+   "openedAt": 124157,
+   "setupMs": 635,
+   "clipSeconds": 16.3,
+   "clipEndMs": 141934,
+   "heard": "Explain your rag pipeline precisely. Walk through ingestion, parsing, chunking, embedding. Retrieval, re-ranking, context assembly, and generation and map those stages. To your document intelligence experience.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1193,
+   "lastWordMs": 11855,
+   "text": "We ingest complex documents using AWS Textract to precisely parse layout elements like tables and forms, raising our extraction F-1 from seventy-two to over ninety-five percent. We use semantic chunking driven by agentic query decomposition, breaking large documents into meaning-based segments that maintain context across complex, multi-hop queries. We vectorize these chunks using advanced models like XLM-RoBERTa, ensuring highly accurate semantic representations for our Pinecone vector database. I architected a hybrid retrieval system combining dense vector search and sparse keyword search, followed by a re-ranking stage to elevate the most relevant passages. Finally, I assemble the optimal context into a strict prompt, directing GPT-five to generate the final response while maintaining deterministic tool-based anti-hallucination checks.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q06",
+   "comp": "on",
+   "openedAt": 195899,
+   "setupMs": 946,
+   "clipSeconds": 27.7,
+   "clipEndMs": 225719,
+   "heard": "Now is sequel one. Construct a point in time feature. You have a snapshots table with a customer ID and a snapshot time and an events table with a customer ID, an event time, an ingested at time. And an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot. Includes only events ingested by the snapshot time and preserves customers with zero calls.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1777,
+   "lastWordMs": 2402,
+   "text": "```sql\nSELECT \n    s.customer_id, \n    s.snapshot_time, \n    COUNT(e.event_time) AS support_call_count\nFROM \n    snapshots s\nLEFT JOIN \n    events e ON s.customer_id = e.customer_id \n    AND e.event_type = 'support call'\n    AND e.event_time <= s.snapshot_time\n    AND e.event_time > s.snapshot_time - INTERVAL '30 days'\n    AND e.ingested_at <= s.snapshot_time\nGROUP BY \n    s.customer_id, \n    s.snapshot_time;\n```",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  },
+  {
+   "id": "S1Q04",
+   "comp": "on",
+   "openedAt": 236799,
+   "setupMs": 596,
+   "clipSeconds": 30.4,
+   "clipEndMs": 269157,
+   "heard": "Let's do some code. Implement evaluation for a fixed campaign budget. Write a function called evaluate top K taking true labels, scores, and K that return precision at K, recall at K, and lift over the population prevalence. Assume binary labels and finite scores. And break score ties by original row order. Tell me what it does. Invalid K for empty inputs. And when there are no positive labels.",
+   "outputBeforeEnd": false,
+   "firstWordMs": 1556,
+   "lastWordMs": 5988,
+   "text": "```python\nimport numpy as np\n\n\ndef evaluate_top_k(y_true, y_scores, k):\n    y_true = np.asarray(y_true)\n    y_scores = np.asarray(y_scores)\n    n = len(y_true)\n\n    if n == 0 or k <= 0 or k > n:\n        return 0.0, 0.0, 1.0\n\n    total_positives = np.sum(y_true)\n    if total_positives == 0:\n        return 0.0, 0.0, 1.0\n\n    indices = np.arange(n)\n    sort_keys = np.lexsort((indices, -y_scores))\n    sorted_labels = y_true[sort_keys]\n\n    top_k_labels = sorted_labels[:k]\n    true_positives = np.sum(top_k_labels)\n\n    precision_at_k = true_positives / k\n    recall_at_k = true_positives / total_positives\n    prevalence = total_positives / n\n    lift = precision_at_k / prevalence\n\n    return float(precision_at_k), float(recall_at_k), float(lift)\n```\n\nThis function measures how effective a model is at ranking positive cases at the very top of the list, which directly mirrors how we deploy churn models for targeted retention campaigns. By sorting by scores and breaking ties with the original row order, it extracts the top K predictions to calculate precision, recall, and how much better we're doing compared to a random baseline.",
+   "closed": {
+    "code": 1000,
+    "reason": ""
+   },
+   "abnormal": false,
+   "generationComplete": true
+  }
+ ]
+}

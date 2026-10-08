@@ -1,0 +1,9 @@
+// Inserts the temperature item after the 18:07 follow-up entry of AGENDA.md.
+import fs from 'node:fs';
+const F = new URL('./AGENDA.md', import.meta.url);
+const lines = fs.readFileSync(F, 'utf8').split('\n');
+const i = lines.findIndex((l) => l.startsWith('- 18:07 Fri **USER: "lets dive deep'));
+if (i < 0 || lines.some((l) => l.startsWith('- 18:3x Fri **TEMPERATURE'))) { console.log('REFUSED'); process.exit(2); }
+lines.splice(i + 1, 0, '- 18:3x Fri **TEMPERATURE (user: "0.4 temp is good call for this app? Lets make sure we use the right temp")**: the verbal answer path sends temperature 0.4 to every Gemini answer model (LLMHelper.ts:3268 stream config; also :723 :1410 :1431 :1546 :2875 :3741); Gemma 0.3. Google\'s current docs (context7, ai.google.dev whats-new-gemini-3.5 + gemini-3 migration): for ALL Gemini 3.x models do not set temperature/top_p/top_k; keep the default 1.0, low values risk looping or degraded reasoning; use system instructions for determinism. Every baseline since s50a was measured AT 0.4, so this is a claim until benched (rule 2). PLAN: a pre-registered A/B on NON-holdout captured prompts (s50m, 39 ids; s50l as the replication): arm A 0.4 (shipped) vs arm B temperature unset (default), 3 reps each, 3.5-lite HIGH (the hedge front) and 3.1-lite LOW (the back leg): 234 calls per model; blind Opus graders; reads: acceptable, wrong, PER-ITEM CONSISTENCY across reps (the bad-draw question), TTFT, thinking tokens, words, loops/malformed/empty. Fable writes the pre-registration, Opus reviews, Sonnet nothing (no app code until a PASS; then a one-line config change + its own smoke). DAY: Sun 4 Oct after 10:00 (Saturday is the follow-up replay\'s 3.5-lite day; its §8 forbids another pre-registered 3.5-lite replay that day). Registered replays keep 0.4 (the follow-up re-run is unchanged).');
+fs.writeFileSync(F, lines.join('\n'));
+console.log('inserted after line', i + 1);

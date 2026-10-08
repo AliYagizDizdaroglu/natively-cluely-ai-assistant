@@ -1,0 +1,23 @@
+﻿Task 4 files in MAIN:
+  electron/audio/deepgramKeyterms.ts
+    5801 B  sha256 b4431b9138d9688fa9bbed56ec0762b82a4125dcf487b1e4c363444bd9a95207
+    sha prefix b4431b9138d9688f | CR=0 | BOM=false | valid UTF-8=true | stage == MAIN
+  electron/audio/deepgramKeyterms.test.ts
+    3429 B  sha256 bfdd8a5d91f48da7734a2fe591cfb0bebd0d87116dd65ac93dfefb3e714a5c92
+    sha prefix bfdd8a5d91f48da7 | CR=0 | BOM=false | valid UTF-8=true | stage == MAIN
+  electron/audio/DeepgramStreamingSTT.ts   (changed in fix round 2)
+    16236 B  sha256 57292516fc495df179829bd309e1a949e665ef800764443d0ee988d8366f9d1a
+    sha prefix 57292516fc495df1 | CR=0 | BOM=false | valid UTF-8=true | stage == MAIN
+  electron/audio/DeepgramStreamingSTT.boundaryRepair.test.ts   (changed in fix round 2)
+    13838 B  sha256 2f3eb860c6142415ca5e9c4517f930f477ff25ad6ecf968508f28be3fab0eab8
+    sha prefix 2f3eb860c6142415 | CR=0 | BOM=false | valid UTF-8=true | stage == MAIN
+  round-1 snapshot DeepgramStreamingSTT.ts: 16037 B is the round-1 file
+  round-1 snapshot DeepgramStreamingSTT.boundaryRepair.test.ts: 11766 B is the round-1 file
+Task 3 files (must be exactly as before Task 4):
+  electron/audio/deepgramBoundaryRepair.ts: 10743 B sha256 d5ba4da0650e7531  unchanged
+  electron/audio/deepgramBoundaryRepair.test.ts: 13947 B sha256 6956aea35dfef746  unchanged
+Leftovers under sdd\ (mirror trees, vite caches): none
+Task 5's extractor (not ours, not touched): interview60.turns-finals.mjs 1592 B
+Branch file: "ref: refs/heads/fix/coding-style-suffix-all-gemini\n"
+
+all checks pass

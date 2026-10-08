@@ -1,0 +1,13 @@
+fix(router): pad the router's input with silence up to real time (only in silence)
+
+The smoke (2026-10-07 01:03) decided 43 of 47 turns "late": the 3.8 router's first word came 3.0-3.8 s after the
+question ended, against 0.6-1.3 s in the standalone probe. The native SilenceSuppressor sends one zero-filled 20 ms
+keepalive frame per 100 ms after its hangover, and the router was fed that thinned stream, so Gemini Live's
+server-side end of turn (counted in audio time) arrived seconds late in wall time. LiveRouterSession now pads zero
+PCM up to wall-clock time, but only around all-zero chunks, so a main-thread stall during speech never injects
+silence mid-question. The ear is unchanged.
+
+Integration commits bf26b08 + 7408aac; Opus-reviewed (APPROVE after one round). LiveRouterSession 27/27,
+routerWiring 24/24; tsc root 0, electron 6 (pre-existing).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

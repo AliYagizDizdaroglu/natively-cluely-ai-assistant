@@ -1,0 +1,107 @@
+=================== node knowledge-mode-read.mjs (the real file through the admin share; the direct path is the sandbox's shadow)
+direct path (a shadow from a Claude session): C:/Users/sotka/AppData/Roaming/natively/settings.json
+  size 323, mtime 2026-07-02T00:43:36.993Z, 10 keys; knowledgeMode = ON
+ADMIN SHARE (the real file): //localhost/C$/Users/sotka/AppData/Roaming/natively/settings.json
+  size 151, mtime 2026-09-12T00:09:43.918Z, 5 keys; knowledgeMode = ON
+knowledge mode (rule 1(g)): ON
+
+=================== node knowledge-mode-read.mjs --file kmode-stubs/settings-on.json
+given file: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour/kmode-stubs/settings-on.json
+  size 55, mtime 2026-10-01T06:12:53.670Z, 2 keys; knowledgeMode = ON
+knowledge mode (rule 1(g)): ON
+
+=================== node knowledge-mode-read.mjs --file kmode-stubs/settings-off.json
+given file: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour/kmode-stubs/settings-off.json
+  size 29, mtime 2026-10-01T06:12:53.672Z, 1 keys; knowledgeMode = OFF
+knowledge mode (rule 1(g)): NOT ON
+[exit 1]
+
+=================== node knowledge-mode-read.mjs --file kmode-stubs/settings-absent.json
+given file: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour/kmode-stubs/settings-absent.json
+  size 30, mtime 2026-10-01T06:12:53.674Z, 1 keys; knowledgeMode = ABSENT (the app restores nothing: OFF)
+knowledge mode (rule 1(g)): NOT ON
+[exit 1]
+
+=================== node knowledge-mode-read.mjs --file kmode-stubs/settings-broken.json
+given file: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour/kmode-stubs/settings-broken.json
+  UNREADABLE: Unexpected token 'o', "not json" is not valid JSON
+knowledge mode (rule 1(g)): UNREADABLE
+[exit 2]
+
+=================== node knowledge-mode-read.mjs --file kmode-stubs/settings-missing.json
+given file: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\validation-hour/kmode-stubs/settings-missing.json
+  UNREADABLE: ENOENT
+knowledge mode (rule 1(g)): UNREADABLE
+[exit 2]
+
+=================== node h40d-knowledge-lines.mjs 2026-09-29T11-42-00-h40c
+run: 2026-09-29T11-42-00-h40c  (run window: interview60.timeline.json bytes 37528..710490)
+knowledge-mode lines: restored-from-settings 1; ENABLED before/inside/after the run window 1/0/0; DISABLED 0/0/0
+  ENABLED  2026-09-29T10:34:08.744Z  before the run window
+dispatch windows (whole log): 47 (2 before the run window, 45 inside, 0 after); with an Intent classified line 47 (100.0%)
+rule 1(g) reading: OK (last toggle before the run window ENABLED, no DISABLED inside, Intent classified on 47 of 47 windows)
+
+=================== node h40d-knowledge-lines.mjs 2026-09-30T11-45-30-br1
+run: 2026-09-30T11-45-30-br1  (run window: interview60.timeline.json bytes 65151..913648)
+knowledge-mode lines: restored-from-settings 1; ENABLED before/inside/after the run window 1/0/0; DISABLED 0/0/0
+  ENABLED  2026-09-30T10:31:57.137Z  before the run window
+dispatch windows (whole log): 42 (2 before the run window, 40 inside, 0 after); with an Intent classified line 42 (100.0%)
+rule 1(g) reading: OK (last toggle before the run window ENABLED, no DISABLED inside, Intent classified on 42 of 42 windows)
+
+=================== node h40d-knowledge-lines.mjs 2026-09-30T13-46-52-cuesmoke
+run: 2026-09-30T13-46-52-cuesmoke  (run window: interview60.timeline.json bytes 69086..488104)
+knowledge-mode lines: restored-from-settings 1; ENABLED before/inside/after the run window 1/0/0; DISABLED 0/0/0
+  ENABLED  2026-09-30T12:56:45.988Z  before the run window
+dispatch windows (whole log): 24 (2 before the run window, 22 inside, 0 after); with an Intent classified line 23 (95.8%)
+  window #3 answer dispatched 2026-09-30T13:12:32.086Z (inside the run window): NO Intent classified line — read its G in h40d-clocks.mjs --list
+rule 1(g) reading: OK (last toggle before the run window ENABLED, no DISABLED inside, Intent classified on 23 of 24 windows)
+
+=================== node h40d-knowledge-lines.mjs 2026-10-01T02-37-41-cuesmoke
+run: 2026-10-01T02-37-41-cuesmoke  (run window: interview60.timeline.json bytes 36799..463800)
+knowledge-mode lines: restored-from-settings 1; ENABLED before/inside/after the run window 1/0/0; DISABLED 0/0/0
+  ENABLED  2026-10-01T02:01:13.739Z  before the run window
+dispatch windows (whole log): 22 (2 before the run window, 20 inside, 0 after); with an Intent classified line 21 (95.5%)
+  window #3 answer dispatched 2026-10-01T02:03:21.006Z (inside the run window): NO Intent classified line — read its G in h40d-clocks.mjs --list
+rule 1(g) reading: OK (last toggle before the run window ENABLED, no DISABLED inside, Intent classified on 21 of 22 windows)
+
+=================== node h40d-knowledge-lines.mjs --log kmode-fixtures/ok-20.log
+run: ok-20.log  (run window: the whole file)
+knowledge-mode lines: restored-from-settings 1; ENABLED before/inside/after the run window 0/1/0; DISABLED 0/0/0
+  ENABLED  2026-10-02T10:30:00.010Z  inside the run window
+dispatch windows (whole log): 20 (0 before the run window, 20 inside, 0 after); with an Intent classified line 20 (100.0%)
+rule 1(g) reading: OK (last toggle before the run window ENABLED, no DISABLED inside, Intent classified on 20 of 20 windows)
+
+=================== node h40d-knowledge-lines.mjs --log kmode-fixtures/missing-1-of-20.log
+run: missing-1-of-20.log  (run window: the whole file)
+knowledge-mode lines: restored-from-settings 1; ENABLED before/inside/after the run window 0/1/0; DISABLED 0/0/0
+  ENABLED  2026-10-02T10:30:00.010Z  inside the run window
+dispatch windows (whole log): 20 (0 before the run window, 20 inside, 0 after); with an Intent classified line 19 (95.0%)
+  window #1 answer dispatched 2026-10-02T10:31:00.000Z (inside the run window): NO Intent classified line — read its G in h40d-clocks.mjs --list
+rule 1(g) reading: OK (last toggle before the run window ENABLED, no DISABLED inside, Intent classified on 19 of 20 windows)
+
+=================== node h40d-knowledge-lines.mjs --log kmode-fixtures/missing-3-of-20.log
+run: missing-3-of-20.log  (run window: the whole file)
+knowledge-mode lines: restored-from-settings 1; ENABLED before/inside/after the run window 0/1/0; DISABLED 0/0/0
+  ENABLED  2026-10-02T10:30:00.010Z  inside the run window
+dispatch windows (whole log): 20 (0 before the run window, 20 inside, 0 after); with an Intent classified line 17 (85.0%)
+  window #1 answer dispatched 2026-10-02T10:31:00.000Z (inside the run window): NO Intent classified line — read its G in h40d-clocks.mjs --list
+  window #7 answer dispatched 2026-10-02T10:37:00.000Z (inside the run window): NO Intent classified line — read its G in h40d-clocks.mjs --list
+  window #13 answer dispatched 2026-10-02T10:43:00.000Z (inside the run window): NO Intent classified line — read its G in h40d-clocks.mjs --list
+rule 1(g) reading: VOID (Intent classified on 17 of 20 windows (85.0% < 95%))
+[exit 1]
+
+=================== node h40d-knowledge-lines.mjs --log kmode-fixtures/disabled-inside.log
+run: disabled-inside.log  (run window: the whole file)
+knowledge-mode lines: restored-from-settings 1; ENABLED before/inside/after the run window 0/1/0; DISABLED 0/1/0
+  ENABLED  2026-10-02T10:30:00.010Z  inside the run window
+  DISABLED 2026-10-02T10:35:00.005Z  inside the run window
+dispatch windows (whole log): 20 (0 before the run window, 20 inside, 0 after); with an Intent classified line 20 (100.0%)
+rule 1(g) reading: VOID (1 DISABLED line(s) inside the run window)
+[exit 1]
+
+=================== node h40d-knowledge-lines.mjs --log kmode-fixtures/no-enabled.log
+run: no-enabled.log  (run window: the whole file)
+knowledge-mode lines: restored-from-settings 0; ENABLED before/inside/after the run window 0/0/0; DISABLED 0/0/0
+dispatch windows (whole log): 20 (0 before the run window, 20 inside, 0 after); with an Intent classified line 20 (100.0%)
+rule 1(g) reading: VOID (the last ENABLED/DISABLED line before the run window is none)
+[exit 1]

@@ -1,0 +1,34 @@
+feat(llm): custom notes reach the hands-free answers; the knowledge prompt keeps the spoken budget
+
+Two prompt-side findings of the 2026-09-06 weak-answer spike (52 questions,
+gemini-3.1-flash-lite, uncut, Opus-judged), both wired into LLMHelper:
+
+1. Custom notes. The Profile Intelligence notes box ("context the AI should
+   know about you", "works with all modes and providers") only ever reached
+   generateSuggestion, whose IPC handler nothing in the current UI calls — a
+   pasted job description or prep notes never touched a hands-free answer.
+   userContextBlock (llm/userContext.ts) is the one builder of the
+   <user_context> block generateSuggestion already used. streamChat appends
+   it to the caller's system prompt after the knowledge/mode injection (so a
+   swapped-in knowledge prompt keeps it; providers without an override keep
+   their own prompts), and streamVerbalWithGeminiFlash — the behavioral/fast
+   path that never enters streamChat — appends it too. Each append logs
+   "[LLMHelper] <user_context> appended to the system prompt (N chars)".
+   Measured: a page of prep notes lifted the answer arm from 46 to 51 of 52
+   acceptable and fixed the three recurrent knowledge gaps. Verified live on
+   the dev build with the detector chain test: both hands-free answers logged
+   the append with the user's 2285-char notes.
+
+2. Spoken budget under the Context toggle. The knowledge engine's system
+   prompt replaced the verbal prompt wholesale, dropping its counted
+   "AT MOST 60 words" block for "~20-30 seconds", which a model cannot count:
+   knowledge prompt alone p50 100 words, 48 of 52 over 80 (the flat
+   87/89/90-word after7 hour); knowledge prompt + the block p50 57, none over
+   80, 51 of 52 acceptable. keepSpokenBudget (llm/knowledgePromptBudget.ts)
+   re-appends SPOKEN_LENGTH_AND_DEPTH when the caller's prompt carried it;
+   typed chat and code hints are unchanged.
+
+Tests: userContext, knowledgePromptBudget, LLMHelper.customNotes,
+LLMHelper.knowledgeBudget (wiring through a fake orchestrator).
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

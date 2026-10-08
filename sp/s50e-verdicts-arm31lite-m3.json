@@ -1,0 +1,22 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Non-linear tabular fit, missing values, latency and a logistic-regression baseline all addressed; natural 80-word spoken answer."},
+  "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "True positives and recall right, but invents 4,750 flags contradicting its own 5,000 band and calls it consistent."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Difference-in-differences against a control group plus covariate regression directly addresses seasonality and customer mix."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Precision, recall, lift and stable tie-break correct, edge cases covered, but 145 words needs trimming for speech."},
+  "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Chronological split, observation-window buffer and train-only ColumnTransformer are correct; 120 words runs past spoken length."},
+  "S1Q06": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Left join with window and ingestion predicate preserves zeros, but never filters event type to support calls."},
+  "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Shared feature store across batch and online, all stages including skew monitoring; 133 words longer than spoken target."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Logging, hashed assignment, delayed join and offer-aware retraining selection all correct; 120 words runs long."},
+  "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Accurate Azure mapping across storage, AML, ACR, AKS, Data Factory, Entra and Monitor, with operational rationale."},
+  "S1Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Managed identity, RBAC, private endpoints, Key Vault and environment isolation correct; 160 words well past spoken length."},
+  "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Every stage covered accurately and mapped to experience, but 122 words is beyond a comfortable spoken answer."},
+  "S2Q02": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Held-out set with five-fold cross-validation, and token-level unit with entity denominator, contradict; also 149 words."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct trade-off across all three approaches and names latency and cost; 127 words longer than spoken target."},
+  "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Accumulates one over c plus rank across both lists, sorts descending, breaks ties by id. Correct."},
+  "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Greedy by score with dedup set, per-document counter and budget check: exactly the requested policy, crisply spoken."},
+  "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Semaphore caps eight, race-based per-case timeout, mapped promises preserve order, per-task catch isolates failures."},
+  "S2Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Tenant-partitioned index, metadata ACL filtering, queued ingestion and RAGAS evaluation all sound; 160 words is long."},
+  "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Dual-write with change data capture, backfill, shadow evaluation, config-flag cutover and rollback cover every part asked."},
+  "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct Azure placement for every component plus a real justification for custom workers over managed parsing."},
+  "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Dedup key in durable store with check-then-process is right, but the closing transaction sentence is muddled; 126 words."}
+}

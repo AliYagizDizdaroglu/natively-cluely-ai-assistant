@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Covers data fit, production constraints and a logistic-regression baseline; natural spoken length."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic is right (9,500 churners, 3,000 true positives, 31.6 percent recall) and it names the inconsistency."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct holdout plus difference-in-differences, but the stray dollar sign in the 1.4 percentage point figure needs an edit."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Stable tie order, correct lift definition and all three edge cases; runs near a hundred words."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Fold-internal preprocessing plus a thirty-day gap between train and validation is exactly the leakage fix; slightly long."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Window, ingestion cutoff and left join are right, but it never filters event type to support calls."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All seven stages plus shared transformation code against training-serving skew; far over spoken length."
+  },
+  "S1Q08": {
+    "correctness": 0,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Inverts the retraining selection: it excludes the control group yet calls the result uninfluenced baseline behaviour."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Azure service mapping is accurate throughout, but it is a very long recited list of paragraphs."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC, Key Vault fallback and per-environment VNets cover all four sub-parts; over length."
+  },
+  "S2Q01": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every stage is named correctly, but claiming zero hallucination is an overclaim an interviewer would challenge."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Unit, denominator, construction and uncertainty given for all three metrics; roughly 240 words is far too long."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sharp contrast of fixed workflow, decomposition and agent, with the latency cost named; slightly long."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct one over c plus rank accumulation, deterministic id tie-break, top k; concise and speakable."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Dedup, relevance-first greedy, skip-on-no-fit and the two-per-document cap all handled in natural prose."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Bounded worker pool, index-preserving results, per-case timeout race and isolated failures; a little over length."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant namespaces, Postgres metadata, filter-time permission enforcement and RAG-triad evaluation; deletion path left thin and answer is long."
+  },
+  "S2Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write and rollback are sound, but dynamically projecting dimensions is hand-waving across incompatible embedding spaces."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure choices for every component plus a justified custom chunker; well over spoken length."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Peek-lock plus an idempotency key checked on redelivery is the right mechanism; session IDs give ordering, not reliability."
+  }
+}

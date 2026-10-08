@@ -1,0 +1,9 @@
+OK  incomplete pair named
+OK  empty answer named and scored
+OK  R = 20 roster pairs
+OK  clause 1 FAIL on the emptied answer
+OK  clause 5 gain +4 of 20 reads PASS
+OK  decision FAIL
+OK  82 of 84 answers sent to graders (not the transient, not the empty one; s50l: 14 ids)
+OK  a grader file missing one key stops the merge (exit 2)
+E2E OK

@@ -1,0 +1,25 @@
+{
+ "R02F": {
+  "id": "R02F",
+  "level": "followup",
+  "chain": "R02",
+  "scenario": "A1",
+  "topic": "Algorithms & data structures, spoken",
+  "gapMs": 60000,
+  "q": "What changes if it has to be safe across multiple threads?",
+  "long": false,
+  "model": "gemini-3.8-flash_def-r3",
+  "transientError": "HTTP 429"
+ },
+ "R08": {
+  "id": "R08",
+  "level": "reasoning",
+  "scenario": "A2",
+  "topic": "Backend & systems",
+  "gapMs": 75000,
+  "q": "Since Kafka guarantees exactly once delivery out of the box, how do you lean on that in a consumer?",
+  "long": false,
+  "model": "gemini-3.8-flash_def-r3",
+  "transientError": "HTTP 429"
+ }
+}

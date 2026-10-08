@@ -1,0 +1,20 @@
+﻿[ok] FINAL as the very last line, no trailing newline (lines[i + 1] is undefined)
+[ok] FINAL then repair as the very last two lines, no trailing newline
+[ok] CRLF line endings, with a repair
+[ok] CRLF line endings, no repair
+[ok] an orphan repair line before any final changes nothing
+[ok] an interim followed by a repair line: no final, nothing restored
+[ok] the repair line may carry a later millisecond than its final (the real handler logs two calls)
+[ok] an apostrophe in the restored word survives ('don't' is a rawTok token)
+[ok] a two-word restore
+[ok] escaped quotes in the raw text decode as before
+[ok] escaped quotes in the raw text, with a repair
+[ok] only the first repair line after a final is used; a second one is ignored
+[ok] a [WARN]-prefixed repair-looking line is not a repair (the adapter writes console.log = [LOG])
+[ok] a final AT since is kept (>=)
+[ok] a final 1 ms BEFORE since is dropped
+[ok] an empty log
+[ok] an unparsable timestamp is dropped (NaN >= since is false), as before
+[ok] two finals, only the second followed by a repair: only the second is restored
+[ok] a repair line two lines after its final (one other line between) is not applied
+RESULT: all 19 states behave as expected on the new module; the old parse differs on exactly the restored-word cases

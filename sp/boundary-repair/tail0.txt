@@ -1,0 +1,240 @@
+  TAIL0     UNKNOWN 2026-09-06T08-14-21-af +2066ms ev=0 strict
+      I : "How would you handle auto scaling"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-06T08-14-21-af +1123ms ev=0 strict
+      I : "Walk me through how you would structure a SageMaker pipeline for a schedule"
+      F1: "Walk me through how you would structure a SageMaker pipeline for a"
+      F2: "scheduled retraining."
+      Q : M02: Walk me through how you would structure a SageMaker pipeline for a scheduled retraining.
+  TAIL0     TRUE    2026-09-06T08-14-21-af +440ms ev=0 strict
+      I : "How do you keep feature engineering consistent between"
+      F1: "How do you keep feature engineering consistent"
+      F2: "training and serving?"
+      Q : M28: How do you keep feature engineering consistent between training and serving?
+  TAIL0     FALSE   2026-09-06T08-14-21-af +2980ms ev=0 strict
+      I : "Your model accuracy dropped fifteen"
+      F1: "Your model accuracy dropped"
+      F2: "15% overnight, but the input schema is unchanged."
+      Q : H01: Your model accuracy dropped fifteen percent overnight, but the input schema is unchanged. How do you debug tha
+  TAIL0     UNKNOWN 2026-09-07T08-14-12-af +2075ms ev=0 strict
+      I : "How would you handle auto scaling"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     TRUE    2026-09-07T08-14-12-af +1113ms ev=0 strict
+      I : "What problem does infrastructure"
+      F1: "What problem does"
+      F2: "as code actually solve?"
+      Q : W09: What problem does infrastructure as code actually solve?
+  TAIL0     TRUE    2026-09-07T08-14-12-af +441ms ev=0 strict
+      I : "How do you keep feature engineering consistent between"
+      F1: "How do you keep feature engineering consistent"
+      F2: "training and serving?"
+      Q : M28: How do you keep feature engineering consistent between training and serving?
+  TAIL0     FALSE   2026-09-07T08-14-12-af +2980ms ev=0 strict
+      I : "Your model accuracy dropped fifteen"
+      F1: "Your model accuracy dropped"
+      F2: "15% overnight, but the input schema is unchanged."
+      Q : H01: Your model accuracy dropped fifteen percent overnight, but the input schema is unchanged. How do you debug tha
+  TAIL0     UNKNOWN 2026-09-08T08-44-56-af +2130ms ev=0 strict
+      I : "How would you handle auto scale"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     TRUE    2026-09-08T08-44-56-af +1120ms ev=0 strict
+      I : "What problem does infrastructure"
+      F1: "What problem does"
+      F2: "as code actually solve?"
+      Q : W09: What problem does infrastructure as code actually solve?
+  TAIL0     FALSE   2026-09-08T08-44-56-af +539ms ev=0 strict
+      I : "How would you structure stacks for development, stage"
+      F1: "How would you structure stacks for development,"
+      F2: "staging, and production?"
+      Q : M21: How would you structure stacks for development, staging, and production?
+  TAIL0     TRUE    2026-09-09T15-00-55-s5 +2721ms ev=0 strict
+      I : "Why might targeting the highest risk customers be less profitable than targeting the customers with"
+      F1: "Why might targeting the highest risk customers be less profitable than targeting the customers"
+      F2: "the largest estimated treatment effect?"
+      Q : S1Q03F: Why might targeting the highest-risk customers be less profitable than targeting the customers with the larges
+  TAIL0     FALSE   2026-09-09T15-00-55-s5 +3928ms ev=0 strict
+      I : "You are given customer snapshots containing a customer ID, a snapshot date, numeric features, category"
+      F1: "You are given customer snapshots containing a customer ID, a snapshot date, numeric features,"
+      F2: "categorical features, and a label, churn in the next thirty days."
+      Q : S1Q05: Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a sna
+  TAIL0     UNKNOWN 2026-09-11T08-22-32-s5 +2076ms ev=0 strict
+      I : "How would you handle auto scaling"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-11T08-22-32-s5 +3326ms ev=0 tolerant
+      I : "Using your churn project, explain why XGBoost was"
+      F1: "Using your churn project, explain why XG"
+      F2: "XGBoost was suitable for the data and the production constraints,"
+      Q : S1Q01: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the pr
+  TAIL0     FALSE   2026-09-11T08-22-32-s5 +4701ms ev=0 strict
+      I : "Which workload would you put on Azure Machine Learning managed end"
+      F1: "Which workload would you put on Azure Machine Learning managed"
+      F2: "endpoints, which on Azure App Service, and which on axe,"
+      Q : S1Q09F: Which workload would you put on Azure Machine Learning managed endpoints, which on Azure App Service, and whic
+  TAIL0     TRUE    2026-09-11T08-22-32-s5 +3695ms ev=0 strict
+      I : "Design a multi tenant Rag service"
+      F1: "Design a multi tenant rag"
+      F2: "over 10,000,000 documents. It has to support document updates"
+      Q : S2Q07: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions,
+  TAIL0     UNKNOWN 2026-09-12T08-22-49-s5 +2107ms ev=0 strict
+      I : "How would you handle auto scale"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-12T08-22-49-s5 +3051ms ev=0 tolerant
+      I : "Using your churn project, explain why XGBoost was"
+      F1: "Using your churn project, explain why XG"
+      F2: "XGBoost was suitable for the data and the production constraints,"
+      Q : S1Q01: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the pr
+  TAIL0     FALSE   2026-09-12T08-22-49-s5 +4803ms ev=0 strict
+      I : "Which workload would you put on Azure Machine Learning managed end"
+      F1: "Which workload would you put on Azure Machine Learning managed"
+      F2: "endpoints, which on Azure app service, and which on axe, and why?"
+      Q : S1Q09F: Which workload would you put on Azure Machine Learning managed endpoints, which on Azure App Service, and whic
+  TAIL0     TRUE    2026-09-12T08-22-49-s5 +3583ms ev=0 strict
+      I : "Design a multi tenant Rag service"
+      F1: "Design a multi tenant rag"
+      F2: "over 10,000,000 documents. It has to support document updates"
+      Q : S2Q07: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions,
+  TAIL0     UNKNOWN 2026-09-13T08-22-36-s5 +2098ms ev=0 strict
+      I : "How would you handle auto scale"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-13T08-22-36-s5 +3028ms ev=0 tolerant
+      I : "Using your churn project, explain why XGBoost was"
+      F1: "Using your churn project, explain why XG"
+      F2: "XGBoost was suitable for the data and the production constraints,"
+      Q : S1Q01: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the pr
+  TAIL0     FALSE   2026-09-13T08-22-36-s5 +690ms ev=0 tolerant
+      I : "How could repeatedly training on customers affected by previous campaigns introduced by"
+      F1: "How could repeatedly training on customers affected by previous campaigns introduce"
+      F2: "bias."
+      Q : S1Q08F: How could repeatedly training on customers affected by previous campaigns introduce bias?
+  TAIL0     FALSE   2026-09-13T08-22-36-s5 +4419ms ev=0 strict
+      I : "Which workload would you put on Azure Machine Learning managed endpoint"
+      F1: "Which workload would you put on Azure Machine Learning managed"
+      F2: "endpoints, which on Azure app service, and which on axe, and why?"
+      Q : S1Q09F: Which workload would you put on Azure Machine Learning managed endpoints, which on Azure App Service, and whic
+  TAIL0     TRUE    2026-09-13T08-22-36-s5 +3587ms ev=0 strict
+      I : "Design a multi tenant Rag service"
+      F1: "Design a multi tenant rag"
+      F2: "over 10,000,000 documents. It has to support document updates"
+      Q : S2Q07: Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions,
+  TAIL0     UNKNOWN 2026-09-14T08-22-28-s5 +2075ms ev=0 strict
+      I : "How would you handle auto scaling"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-14T08-22-28-s5 +3024ms ev=0 tolerant
+      I : "Using your churn project, explain why XGBoost was"
+      F1: "Using your churn project, explain why XG"
+      F2: "XGBoost was suitable for the data and the production constraints,"
+      Q : S1Q01: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the pr
+  TAIL0     FALSE   2026-09-14T08-22-28-s5 +4499ms ev=0 strict
+      I : "Which workload would you put on Azure Machine Learning managed endpoint"
+      F1: "Which workload would you put on Azure Machine Learning managed"
+      F2: "endpoints, which on Azure App Service, and which on axe,"
+      Q : S1Q09F: Which workload would you put on Azure Machine Learning managed endpoints, which on Azure App Service, and whic
+  TAIL0     UNKNOWN 2026-09-15T08-22-29-s5 +2117ms ev=0 strict
+      I : "How would you handle auto scale"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-15T08-22-29-s5 +3070ms ev=0 tolerant
+      I : "Using your churn project, explain why XGBoost was"
+      F1: "Using your churn project, explain why XG"
+      F2: "XGBoost was suitable for the data and the production constraints,"
+      Q : S1Q01: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the pr
+  TAIL0     UNKNOWN 2026-09-16T08-42-43-s5 +2131ms ev=0 strict
+      I : "How would you handle auto scale"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-16T08-42-43-s5 +3033ms ev=0 tolerant
+      I : "Using your churn project, explain why XGBoost was"
+      F1: "Using your churn project, explain why XG"
+      F2: "XGBoost was suitable for the data and the production constraints,"
+      Q : S1Q01: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the pr
+  TAIL0     FALSE   2026-09-16T08-42-43-s5 +661ms ev=0 tolerant
+      I : "How could repeatedly training on customers affected by previous campaigns introduced by"
+      F1: "How could repeatedly training on customers affected by previous campaigns introduce"
+      F2: "bias."
+      Q : S1Q08F: How could repeatedly training on customers affected by previous campaigns introduce bias?
+  TAIL0     FALSE   2026-09-16T08-42-43-s5 +4512ms ev=0 strict
+      I : "Which workload would you put on Azure Machine Learning managed endpoint"
+      F1: "Which workload would you put on Azure Machine Learning managed"
+      F2: "endpoints, which on Azure app service, and which on axe, and why?"
+      Q : S1Q09F: Which workload would you put on Azure Machine Learning managed endpoints, which on Azure App Service, and whic
+  TAIL0     UNKNOWN 2026-09-16T11-41-44-s5 +2095ms ev=0 strict
+      I : "How would you handle auto scaling"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-16T11-41-44-s5 +3048ms ev=0 tolerant
+      I : "Using your churn project, explain why XGBoost was"
+      F1: "Using your churn project, explain why XG"
+      F2: "XGBoost was suitable for the data and the production constraints,"
+      Q : S1Q01: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the pr
+  TAIL0     FALSE   2026-09-16T11-41-44-s5 +752ms ev=0 tolerant
+      I : "How could repeatedly training on customers affected by previous campaigns introduced by"
+      F1: "How could repeatedly training on customers affected by previous campaigns introduce"
+      F2: "bias."
+      Q : S1Q08F: How could repeatedly training on customers affected by previous campaigns introduce bias?
+  TAIL0     FALSE   2026-09-16T11-41-44-s5 +4561ms ev=0 strict
+      I : "Which workload would you put on Azure Machine Learning managed end"
+      F1: "Which workload would you put on Azure Machine Learning managed"
+      F2: "endpoints, which on Azure app service, and which on axe, and why?"
+      Q : S1Q09F: Which workload would you put on Azure Machine Learning managed endpoints, which on Azure App Service, and whic
+  TAIL0     UNKNOWN 2026-09-18T08-22-57-s5 +1808ms ev=0 strict
+      I : "How would you handle auto scaling"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-18T08-22-57-s5 +2067ms ev=0 tolerant
+      I : "Using your churn project, explain why XGBoost was"
+      F1: "Using your churn project, explain why XG"
+      F2: "XGBoost was suitable for the data and the production constraints,"
+      Q : S1Q01: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the pr
+  TAIL0     UNKNOWN 2026-09-19T08-22-41-s5 +2020ms ev=0 strict
+      I : "How would you handle auto scaling"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-19T08-22-41-s5 +3013ms ev=0 tolerant
+      I : "Using your churn project, explain why XGBoost was"
+      F1: "Using your churn project, explain why XG"
+      F2: "XGBoost was suitable for the data and the production constraints,"
+      Q : S1Q01: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the pr
+  TAIL0     UNKNOWN 2026-09-20T11-22-43-s5 +1992ms ev=0 strict
+      I : "How would you handle auto scaling"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-20T11-22-43-s5 +3019ms ev=0 tolerant
+      I : "Using your churn project, explain why XGBoost was"
+      F1: "Using your churn project, explain why XG"
+      F2: "XGBoost was suitable for the data and the production constraints,"
+      Q : S1Q01: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the pr
+  TAIL0     UNKNOWN 2026-09-21T08-22-34-s5 +1638ms ev=0 strict
+      I : "How would you handle auto scaling"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-21T08-22-34-s5 +2967ms ev=0 tolerant
+      I : "Using your churn project, explain why XGBoost was"
+      F1: "Using your churn project, explain why XG"
+      F2: "XGBoost was suitable for the data and the production constraints,"
+      Q : S1Q01: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the pr
+  TAIL0     UNKNOWN 2026-09-22T08-22-50-s5 +1971ms ev=0 strict
+      I : "How would you handle auto scaling"
+      F1: "How would you handle auto"
+      F2: "for a model inference service on Kubernetes?"
+  TAIL0     FALSE   2026-09-22T08-22-50-s5 +3031ms ev=0 tolerant
+      I : "Using your churn project, explain why XGBoost was"
+      F1: "Using your churn project, explain why XG"
+      F2: "XGBoost was suitable for the data and the production constraints,"
+      Q : S1Q01: Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the pr
+holdout NORMAL         n   29 (strict 28, tolerant 1) TRUE 0 FALSE 0 UNKNOWN 0
+holdout OTHER          n    3 (strict 1, tolerant 2) TRUE 0 FALSE 0 UNKNOWN 0
+holdout SKIP1_E2+      n    4 (strict 4, tolerant 0) TRUE 4 FALSE 0 UNKNOWN 0 gap ms min 1547 med 2650 max 3115
+holdout TAIL0          n    8 (strict 8, tolerant 0) TRUE 0 FALSE 6 UNKNOWN 2 gap ms min 1995 med 3823 max 4646
+other NORMAL           n  527 (strict 508, tolerant 19) TRUE 0 FALSE 0 UNKNOWN 0
+other OTHER            n    4 (strict 3, tolerant 1) TRUE 0 FALSE 0 UNKNOWN 0
+other SKIP1_E1         n    7 (strict 7, tolerant 0) TRUE 7 FALSE 0 UNKNOWN 0 gap ms min 806 med 1459 max 4441
+other SKIP1_E2+        n   18 (strict 18, tolerant 0) TRUE 18 FALSE 0 UNKNOWN 0 gap ms min 751 med 2959 max 3715
+other SKIPN            n    1 (strict 1, tolerant 0) TRUE 1 FALSE 0 UNKNOWN 0 gap ms min 794 med 794 max 794
+other TAIL0            n   49 (strict 34, tolerant 15) TRUE 8 FALSE 26 UNKNOWN 15 gap ms min 440 med 2131 max 4803

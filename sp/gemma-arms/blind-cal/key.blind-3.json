@@ -1,0 +1,262 @@
+{
+ "S2Q10F#1": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#2": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#3": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#4": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 2,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#5": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 3,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#6": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#7": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#8": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#9": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#10": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#11": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 3,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#12": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 3,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#13": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 2,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#14": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 2,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#15": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 3,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#16": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#17": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 2,
+  "id": "S2Q10F"
+ },
+ "S2Q10F#18": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q10F"
+ },
+ "S1Q04#1": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 3,
+  "id": "S1Q04"
+ },
+ "S1Q04#2": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "S1Q04"
+ },
+ "S1Q04#3": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S1Q04"
+ },
+ "S1Q04#4": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 3,
+  "id": "S1Q04"
+ },
+ "S1Q04#5": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 2,
+  "id": "S1Q04"
+ },
+ "S1Q04#6": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S1Q04"
+ },
+ "S1Q04#7": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "S1Q04"
+ },
+ "S1Q04#8": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "S1Q04"
+ },
+ "S1Q04#9": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S1Q04"
+ },
+ "S1Q04#10": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 2,
+  "id": "S1Q04"
+ },
+ "S1Q04#11": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "S1Q04"
+ },
+ "S1Q04#12": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 2,
+  "id": "S1Q04"
+ },
+ "S1Q04#13": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 3,
+  "id": "S1Q04"
+ },
+ "S1Q04#14": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 2,
+  "id": "S1Q04"
+ },
+ "S1Q04#15": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S1Q04"
+ },
+ "S1Q04#16": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S1Q04"
+ },
+ "S1Q06#1": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 3,
+  "id": "S1Q06"
+ },
+ "S1Q06#2": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 2,
+  "id": "S1Q06"
+ },
+ "S1Q06#3": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S1Q06"
+ },
+ "S1Q06#4": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 3,
+  "id": "S1Q06"
+ },
+ "S1Q06#5": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S1Q06"
+ },
+ "S1Q06#6": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 2,
+  "id": "S1Q06"
+ },
+ "S1Q06#7": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "S1Q06"
+ },
+ "S1Q06#8": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S1Q06"
+ },
+ "S1Q06#9": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "S1Q06"
+ },
+ "S1Q06#10": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S1Q06"
+ },
+ "S1Q06#11": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "S1Q06"
+ },
+ "S1Q06#12": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 3,
+  "id": "S1Q06"
+ },
+ "S1Q06#13": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 2,
+  "id": "S1Q06"
+ },
+ "S1Q06#14": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S1Q06"
+ },
+ "S1Q06#15": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "S1Q06"
+ },
+ "S1Q06#16": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 2,
+  "id": "S1Q06"
+ },
+ "S1Q06#17": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 3,
+  "id": "S1Q06"
+ },
+ "S1Q06#18": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S1Q06"
+ }
+}

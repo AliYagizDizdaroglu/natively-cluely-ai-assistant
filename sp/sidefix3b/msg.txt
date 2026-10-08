@@ -1,0 +1,17 @@
+fix(filter): a coaching card over 200 words passes the word guard whole instead of being cut into broken JSON
+
+Re-applied from worktree charming-lehmann-ea0bf0 (base fed4b07), then tightened after review. cutAtWordBudget cut a
+JSON coaching card (JSON.stringify output) at 200 words, so the renderer got JSON that does not parse. The guard now
+holds text while it is blank or a lone "{", and passes the stream through uncounted only when it starts with {"
+(an object's JSON.stringify output always does); anything else is speech and is clamped as before, so spoken answers
+that open with {} or {x} are still cut (the first version decided on a bare "{" and let them run; Opus review caught
+it). Accepted limit: a spoken answer that opens with {" is not clamped (0 of 624 saved replies do). Latent today:
+main.ts passes the advisor only its system prefix, so the card is a fixed ~31-word fallback; this lands before that
+is fixed.
+
+Tests: new cases fail on the earlier code and pass after (brace-opener clamp at chunk sizes 1-3 and whole, lone "{",
+card at sizes 1-3 and blank-led); WhatToAnswerLLM.negotiationCard.test.ts runs a card through the real chain. Files
+153/153; suite 1097 passed, 0 failed, 4 skipped; tsc electron 6 (pre-existing), root 0. 624 saved replies through
+the old and new BUILT filter at 6 chunk sizes: 0 changed. Opus re-review: APPROVE.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

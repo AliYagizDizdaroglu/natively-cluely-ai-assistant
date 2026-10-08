@@ -1,0 +1,96 @@
+R02F (parent R02; gap ~155 s; in-app 0/4; twins 7/27; parent absent 4/4; preview chars ~209)
+   PARENT  : Okay, a quick one out loud: how would you implement an LRU cache? Just talk me through the structure.
+   FOLLOWUP: What changes if it has to be safe across multiple threads?
+R04F (parent R04; gap ~154 s; in-app 3/4; twins 24/27; parent absent 4/4; preview chars ~209)
+   PARENT  : Write me a function that finds the first duplicate in an array, say it in words. What does it do for an empty input?
+   FOLLOWUP: And if the array is already sorted, what changes?
+R07F (parent R07; gap ~81 s; in-app 2/3; twins 21/27; parent absent 0/3; preview chars ~418)
+   PARENT  : Two workers pick up the same job from a queue. How do you stop that happening?
+   FOLLOWUP: And if the worker that claimed it crashes halfway?
+R09F (parent R09; gap ~155 s; in-app 1/4; twins 13/27; parent absent 4/4; preview chars ~209)
+   PARENT  : Give me the SQL for the second highest salary in each department. Say it out loud.
+   FOLLOWUP: Now without a subquery. Can you do it with a window function?
+R11F (parent R11; gap ~153 s; in-app 1/4; twins 5/27; parent absent 4/4; preview chars ~209)
+   PARENT  : Say the API sees 10,000 requests a second at peak. Walk me through your background assumptions before you size a rate limiter.
+   FOLLOWUP: How does it behave when there are ten instances of the service?
+R13F (parent R13; gap ~154 s; in-app 4/4; twins 26/27; parent absent 4/4; preview chars ~209)
+   PARENT  : Take a few minutes on this one: design a feature store end to end, ingestion, storage, serving, and how training and serving stay consistent.
+   FOLLOWUP: What do you do when an upstream table lands late?
+R17F (parent R17; gap ~80 s; in-app 4/4; twins 25/27; parent absent 0/4; preview chars ~418)
+   PARENT  : How does target leakage sneak into a feature pipeline?
+   FOLLOWUP: Give me one leak that a time based split wouldn't catch.
+R22F (parent R22; gap ~78 s; in-app 2/4; twins 23/27; parent absent 0/4; preview chars ~418)
+   PARENT  : How do you cut hallucinations in a RAG answer without just making it refuse?
+   FOLLOWUP: And how do you measure that you did?
+R22F2 (parent R22F; gap ~65 s; in-app 4/4; twins 27/27; parent absent 0/4; preview chars ~418)
+   PARENT  : And how do you measure that you did?
+   FOLLOWUP: What breaks in that measurement when the questions drift?
+R26F (parent R26; gap ~80 s; in-app 4/4; twins 27/27; parent absent 0/4; preview chars ~418)
+   PARENT  : Um, so, how would you backfill a Delta Lake feature table on Databricks Jobs for the last two years without stalling the daily run?
+   FOLLOWUP: How do you know the backfill matched what the daily job would have produced?
+R28F (parent R28; gap ~79 s; in-app 4/4; twins 26/27; parent absent 0/4; preview chars ~418)
+   PARENT  : What does MLflow's model registry give you that a versioned S3 path doesn't?
+   FOLLOWUP: Where does reproducibility still break?
+R31F (parent R31; gap ~79 s; in-app 4/4; twins 27/27; parent absent 0/4; preview chars ~418)
+   PARENT  : Here's one from a CV I read last week: it says a model lifted checkout conversion from 3.2 to 4.1 percent on roughly 400,000 sessions a month, and later claims 5,000 extra orders a month. Does that add up?
+   FOLLOWUP: What else would you need to know before calling that lift real?
+S1Q01F (parent S1Q01; gap ~67 s; in-app 9/9; twins 24/24; parent absent 0/9; preview chars ~627)
+   PARENT  : Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the production constraints, and what baseline you would compare it against.
+   FOLLOWUP: Under what conditions would you prefer logistic regression, a neural network, or a rules-based approach?
+S1Q02F (parent S1Q02; gap ~86 s; in-app 9/9; twins 22/24; parent absent 0/9; preview chars ~418)
+   PARENT  : Can you reconcile the metrics on your CV? Your CV reports a 9.5 percent churn rate, a top 5 percent risk band capturing 30 percent of churners, and 60 percent precision. Assuming the same population and observation period, use 100,000 subscribers to estimate true positives, precision, and recall. Are those figures consistent within rounding?
+   FOLLOWUP: What can you conclude from a PR AUC of 0.38 and an ROC AUC of 0.88, and what else would you need before deciding the model is useful?
+S1Q03F (parent S1Q03; gap ~83 s; in-app 8/9; twins 24/24; parent absent 0/9; preview chars ~418)
+   PARENT  : Did the model actually reduce churn? Your CV reports churn decreasing from 9.5 percent to 8.1 percent. How would you distinguish the effect of the model and the retention campaign from seasonality, customer mix, and other business changes?
+   FOLLOWUP: Why might targeting the highest-risk customers be less profitable than targeting the customers with the largest estimated treatment effect?
+S1Q04F (parent S1Q04; gap ~156 s; in-app 1/9; twins 9/24; parent absent 9/9; preview chars ~209)
+   PARENT  : Let's do some code: implement evaluation for a fixed campaign budget. Write a function called evaluate top k, taking true labels, scores, and k, that returns precision at k, recall at k, and lift over the population prevalence. Assume binary labels and finite scores, and break score ties by original row order. Tell me what it does for an invalid k, for empty inputs, and when there are no positive labels.
+   FOLLOWUP: How would you reduce the sorting cost for millions of customers while preserving the tie rule?
+S1Q05F (parent S1Q05; gap ~189 s; in-app 9/9; twins 22/24; parent absent 9/9; preview chars ~0)
+   PARENT  : Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.
+   FOLLOWUP: Customers appear in multiple snapshots. When is that legitimate, and when would you also require a customer-level holdout?
+S1Q06F (parent S1Q06; gap ~157 s; in-app 8/9; twins 17/24; parent absent 9/9; preview chars ~209)
+   PARENT  : Now a SQL one: construct a point-in-time feature. You have a snapshots table with a customer id and a snapshot time, and an events table with a customer id, an event time, an ingested at time, and an event type. Write PostgreSQL that counts support calls in the 30 days before each snapshot, includes only events ingested by the snapshot time, and preserves customers with zero calls.
+   FOLLOWUP: How would you index those tables, and what changes if historical records can be corrected after ingestion?
+S1Q07F (parent S1Q07; gap ~158 s; in-app 8/9; twins 24/24; parent absent 9/9; preview chars ~209)
+   PARENT  : Design the next version of the churn platform: it has to support nightly scoring for 400,000 customers, and on-demand scoring for customer service agents. Cover ingestion, feature computation, training, model registration, serving, prediction storage, and monitoring, and identify what should be shared between the batch and the online paths.
+   FOLLOWUP: A nightly job fails halfway through. How do you resume it without duplicate campaign actions or mixed model versions?
+S1Q08F (parent S1Q08; gap ~156 s; in-app 9/9; twins 22/24; parent absent 9/9; preview chars ~209)
+   PARENT  : Now add delayed outcomes and experimentation: extend that design so churn outcomes arrive 30 days later, and retention offers affect the labels you observe. Design the prediction logging, the experiment assignment, the outcome joins, and how you select data for retraining.
+   FOLLOWUP: How could repeatedly training on customers affected by previous campaigns introduce bias?
+S1Q09F (parent S1Q09; gap ~99 s; in-app 9/9; twins 24/24; parent absent 0/9; preview chars ~418)
+   PARENT  : Translate your AWS experience into an Azure deployment: describe an Azure implementation of that churn platform, covering object storage, training, model artifacts, container images, online inference, scheduling, identity, and monitoring, and explain the operational reasons for your choices.
+   FOLLOWUP: Which workload would you put on Azure Machine Learning managed endpoints, which on Azure App Service, and which on AKS, and why?
+S1Q10F (parent S1Q10; gap ~101 s; in-app 9/9; twins 23/24; parent absent 0/9; preview chars ~418)
+   PARENT  : Secure the churn platform without embedded credentials: how would your inference service access the model artifacts and PostgreSQL using Azure identity and networking controls? Explain the authentication, the authorization, how you handle secrets where that is unavoidable, and how you separate environments.
+   FOLLOWUP: The application receives an authorization error after deployment. How would you distinguish an identity problem from a permissions problem or a network problem?
+S2Q01F (parent S2Q01; gap ~65 s; in-app 6/9; twins 18/24; parent absent 0/9; preview chars ~418)
+   PARENT  : Explain your RAG pipeline precisely: walk through ingestion, parsing, chunking, embedding, retrieval, reranking, context assembly, and generation, and map those stages to your document intelligence experience.
+   FOLLOWUP: Which of those stages can cause a correct source document to produce an incorrect answer?
+S2Q02F (parent S2Q02; gap ~87 s; in-app 4/9; twins 11/24; parent absent 0/9; preview chars ~418)
+   PARENT  : Defend the improvements reported on your CV: you report extraction F1 increasing from 72.4 percent to 95.4 percent, hallucinations decreasing by 84 percent, and multi-hop accuracy reaching 92 percent. For each of those metrics, define the unit of evaluation, the denominator, how the dataset was constructed, and the uncertainty.
+   FOLLOWUP: What ablations would separate the contributions of OCR, classification, retrieval, prompting, and agent orchestration, and how would you check for LLM judge bias?
+S2Q03F (parent S2Q03; gap ~82 s; in-app 9/9; twins 24/24; parent absent 0/9; preview chars ~418)
+   PARENT  : When does an agent justify its complexity? Consider a question that requires evidence from three documents, and compare a fixed retrieval workflow, query decomposition, and an agent that chooses tools dynamically.
+   FOLLOWUP: What stopping conditions, budgets, and failure policies would prevent loops and unnecessary tool calls?
+S2Q04F (parent S2Q04; gap ~158 s; in-app 9/9; twins 23/24; parent absent 9/9; preview chars ~209)
+   PARENT  : Merge two retrieval result lists: implement reciprocal rank fusion for a keyword list and a vector list. Each list contains unique document ids ordered from best to worst. Use one-based ranks and a configurable positive constant c, with each contribution being one over c plus rank, and return the top k unique ids with deterministic tie-breaking.
+   FOLLOWUP: Why might you use rank fusion instead of adding the raw scores, and how would you add a configurable weight for each retrieval source?
+S2Q05F (parent S2Q05; gap ~158 s; in-app 6/9; twins 24/24; parent absent 9/9; preview chars ~209)
+   PARENT  : Pack retrieved evidence into a context budget: implement a function called select context, taking chunks and a budget. Each chunk has an id, a document id, a relevance score, and a positive token count. Use a greedy relevance-first policy, skip chunks that do not fit, deduplicate chunk ids, and allow at most two chunks per document.
+   FOLLOWUP: Construct an example where that greedy policy gives poor coverage, and tell me how you would incorporate redundancy or multi-hop dependencies.
+S2Q06F (parent S2Q06; gap ~190 s; in-app 1/9; twins 3/24; parent absent 9/9; preview chars ~0)
+   PARENT  : Implement an asynchronous evaluation runner: you are given test cases, and an async evaluate function that takes one case. Process them with at most eight active evaluations, apply a per-case timeout, preserve the input order, and record failures without cancelling unrelated cases.
+   FOLLOWUP: Extend it to retry explicitly transient errors within an overall deadline for the case. How would you test the concurrency and the cancellation deterministically?
+S2Q07F (parent S2Q07; gap ~157 s; in-app 5/9; twins 17/24; parent absent 9/9; preview chars ~209)
+   PARENT  : Design a multi-tenant RAG service over 10 million documents: it has to support document updates and deletions, access-controlled retrieval, citations, asynchronous ingestion, and interactive queries. Explain the index organization, the metadata storage, how permissions are enforced, and how you evaluate it.
+   FOLLOWUP: A user loses access to a document while a query is running. Where and when must authorization be checked?
+S2Q08F (parent S2Q08; gap ~157 s; in-app 4/9; twins 18/24; parent absent 9/9; preview chars ~209)
+   PARENT  : Migrate the embedding model without an outage: extend that service to introduce embeddings with a different dimensionality, while documents keep changing throughout the migration. Describe the versioning, the backfill, how updates stay synchronized, the quality comparison, the cutover, and the rollback.
+   FOLLOWUP: How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?
+S2Q09F (parent S2Q09; gap ~96 s; in-app 9/9; twins 24/24; parent absent 0/9; preview chars ~418)
+   PARENT  : Place the RAG components on Azure: choose Azure services for document storage, ingestion events, work queues, workers, search, LLM access, and telemetry, and explain where managed services help and where a custom component may be justified.
+   FOLLOWUP: How would your design change if the documents and their processing had to remain within an approved region?
+S2Q10F (parent S2Q10; gap ~97 s; in-app 5/9; twins 18/24; parent absent 0/9; preview chars ~418)
+   PARENT  : Make ingestion recoverable under duplicate delivery: suppose queue messages may arrive more than once, and workers may crash after writing embeddings but before acknowledging a message. How would you use Azure messaging and durable state to make the processing safe to repeat?
+   FOLLOWUP: How would you handle poison documents, dead-letter replay, and a delete event racing with an older update?

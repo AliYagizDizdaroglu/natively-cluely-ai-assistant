@@ -1,0 +1,20 @@
+fix(cues): an offers block before the spoken answer no longer swallows the answer
+
+The model sometimes writes its __MORE__ offers right after the cue block and
+before the spoken answer (9 of 366 saved 3.5-lite replies lead with the
+block, 8 of them with an answer after it, and 1 of 247 on 3.1-lite; the
+16:12 re-smoke's block-only answer). stripSuggestionBlock treated everything after
+the sentinel as the block, so the answer was thrown away and the candidate
+read "Could you repeat that?" with no cues. When the sentinel arrives before
+any spoken text the block is now only the run of offer lines and blank lines
+after it; the answer is released at its first character that cannot start an
+offer line (CUE_LINE_PREFIX, the early close's expression) and the normal
+path resumes, so a later sentinel still ends it. extractSuggestions gets the
+same leading branch. Answer-first streams are byte-identical, offers-only
+stays empty, the callback fires once, and one console.warn line per stream
+names a leading block so a run can show the branch fired. Pinned on 40 cases:
+every partial state after the offers, the release chunk at four sizes, the
+whole-vs-streaming matrix, the chain from the cue block to the word budget,
+and the redirect window a leading block opens.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

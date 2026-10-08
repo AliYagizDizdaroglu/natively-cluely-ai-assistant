@@ -1,0 +1,7 @@
+lines in window: 7465
+Live quota closes: 42; first 2026-10-02T11:17:16.037Z; last 2026-10-02T11:39:37.103Z
+  by 10 minutes (Z): {"11:10":6,"11:20":16,"11:30":20}
+  other LiveRouter line kinds: {"reconnecting":15}
+dispatch lines by kind/source: {"mark/live":38,"answer/live":12,"mark/whisper":56,"answer/whisper":34,"drop/live":3,"supersede/whisper":1}
+turn closes not-a-question: 16
+Live ear model line(s): (none in window)

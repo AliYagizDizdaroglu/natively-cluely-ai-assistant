@@ -1,0 +1,14 @@
+control  exit 0
+  PAUSE RULE: 0 repair(s) the reference makes only without clear()
+  EXTRACTOR finalsFrom: 135 finals parsed, no refusal; app repairs replayed as "<restored> <raw>": 4/4
+  SUMMARY app 4 / reference 4, app-only 0, ref-only 0; repairs reaching a dispatched question 4/4
+stray    exit 1
+  PAUSE RULE: 0 repair(s) the reference makes only without clear()
+  EXTRACTOR finalsFrom REFUSED or failed: finalsFrom: line 3626 is a boundary repair with no final directly above it
+  SUMMARY app 4 / reference 4, app-only 0, ref-only 0; repairs reaching a dispatched question 4/4
+pause    exit 1
+  APP-ONLY app "cause" before "a correct source document to produce an " @14:28:09.194 | ref - (DEFECT: the app restored what rule v4 would not)
+  PAUSE RULE: 1 repair(s) the reference makes only without clear():
+     "cause" before "a correct source document to produce an " @14:28:09.194 — the last pause before it: empty final
+  EXTRACTOR finalsFrom: 135 finals parsed, no refusal; app repairs replayed as "<restored> <raw>": 4/4
+  SUMMARY app 4 / reference 3, app-only 1, ref-only 0; repairs reaching a dispatched question 4/4

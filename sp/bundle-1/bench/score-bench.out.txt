@@ -1,0 +1,13 @@
+﻿PASS Q1   acceptable C [38,40,40] T [41,40,40] (of 42); mean C 39.33 T 40.33; need T max >= C min and mean T >= mean C - 2
+PASS Q2   new wrong ids []; total wrong C 0 T 0; (instrument-style wrong incl. on_topic 0: C 0 T 0, reported only)
+PASS Q3   weak-drop ids (acceptable in 3/3 C, 0/3 T) [] (max 1); named SH/MP among them []
+PASS L1a  NS ids over 1.25x [] (max 2); pooled NS median C 57.5 T 53 (T <= 1.05 x C = 60.4)
+PASS L1b  pooled MP median C 62 T 56 (T >= 0.9 x C = 55.8); MP ids with T median < 0.75 x C []
+PASS L2   pooled median thoughts C 824 T 707 (tolerance 50; C rep medians [825,812,842.5]); no-cue C 802.5 T 577; cue C 851 T 853 (subsets reported only)
+PASS L3   pooled TTFT p50 C 3425 T 3164 ms (tolerance 200; C rep p50s [3374,3535,3425]); p90 C 5835 T 4666 (reported)
+FAIL S1   first-5-words key: C 16/18, T 13/18 (need T >= 15 and T >= C)
+FAIL S2   SH1 spoken words in 10-35: T 5/12 (need >= 9; C 3/12); SH1 ids over 35 in all 3 T reps [RH16]
+PASS C1   MP ids meeting the frozen cue-line count per rep (of 9): C [9,9,9] T [9,9,8]; mean T 8.67 >= mean C 9.00 - 1
+PASS C2   no-cue ids with a cue block in T, per rep [0,0,0] (need 0 of 22); cue ids with a block in T [20,20,20] of 20 (need >= 18)
+BENCH FAIL: S1, S2 -- the chain stops (spec 8): root cause, fix, re-check
+info: delivery 0 grades 13 (the spec's acceptable ignores delivery)

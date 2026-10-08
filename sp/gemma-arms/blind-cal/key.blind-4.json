@@ -1,0 +1,267 @@
+{
+ "S1Q06F#1": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 2,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#2": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 2,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#3": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 3,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#4": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#5": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 2,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#6": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#7": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#8": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#9": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 3,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#10": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#11": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 3,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#12": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#13": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#14": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#15": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 2,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#16": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 3,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#17": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S1Q06F"
+ },
+ "S1Q06F#18": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "S1Q06F"
+ },
+ "S1Q10#1": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 3,
+  "id": "S1Q10"
+ },
+ "S1Q10#2": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "S1Q10"
+ },
+ "S1Q10#3": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 2,
+  "id": "S1Q10"
+ },
+ "S1Q10#4": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S1Q10"
+ },
+ "S1Q10#5": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "S1Q10"
+ },
+ "S1Q10#6": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S1Q10"
+ },
+ "S1Q10#7": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 2,
+  "id": "S1Q10"
+ },
+ "S1Q10#8": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S1Q10"
+ },
+ "S1Q10#9": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S1Q10"
+ },
+ "S1Q10#10": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 3,
+  "id": "S1Q10"
+ },
+ "S1Q10#11": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 2,
+  "id": "S1Q10"
+ },
+ "S1Q10#12": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S1Q10"
+ },
+ "S1Q10#13": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "S1Q10"
+ },
+ "S1Q10#14": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 3,
+  "id": "S1Q10"
+ },
+ "S1Q10#15": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 3,
+  "id": "S1Q10"
+ },
+ "S1Q10#16": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "S1Q10"
+ },
+ "S1Q10#17": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 2,
+  "id": "S1Q10"
+ },
+ "S2Q08F#1": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 1,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#2": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 1,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#3": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 3,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#4": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 1,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#5": {
+  "arm": "3.1-lite LOW",
+  "rep": 2,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#6": {
+  "arm": "3.5-lite HIGH",
+  "rep": 1,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#7": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 2,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#8": {
+  "arm": "3.1-lite LOW",
+  "rep": 3,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#9": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 1,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#10": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 3,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#11": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 2,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#12": {
+  "arm": "Gemma 31B MINIMAL",
+  "rep": 2,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#13": {
+  "arm": "Gemma 31B HIGH",
+  "rep": 3,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#14": {
+  "arm": "3.5-lite HIGH",
+  "rep": 3,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#15": {
+  "arm": "3.5-lite HIGH",
+  "rep": 2,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#16": {
+  "arm": "Gemma 26B HIGH",
+  "rep": 3,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#17": {
+  "arm": "Gemma 26B MINIMAL",
+  "rep": 2,
+  "id": "S2Q08F"
+ },
+ "S2Q08F#18": {
+  "arm": "3.1-lite LOW",
+  "rep": 1,
+  "id": "S2Q08F"
+ }
+}

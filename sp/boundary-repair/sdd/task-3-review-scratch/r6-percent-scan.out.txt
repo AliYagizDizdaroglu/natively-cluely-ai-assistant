@@ -1,0 +1,1 @@
+{"interims":10732,"finals":3160,"interimDigitPercent":0,"interimDigitUnitWord":0,"finalPercentSign":107,"interimPercentSign":275}

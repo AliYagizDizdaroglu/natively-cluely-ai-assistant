@@ -1,0 +1,2 @@
+blind-1.g1 (6441d4bf-d00c-4007): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash[len=360,sha12=b271cca9e127] not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>...] (no shell metacharacters, nothing after the node -e): node -e "const o=JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'));console.log(Object.keys(o).len; bash=[]; dispatch=match
+AUDIT: FLAGGED (see lines above)

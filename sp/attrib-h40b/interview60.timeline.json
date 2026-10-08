@@ -1,0 +1,476 @@
+{
+ "startedAt": "2026-09-26T10:34:00.402Z",
+ "startedMs": 1790418840402,
+ "clock": "playsync",
+ "startDebug": 36194,
+ "startDiag": 2804208,
+ "items": [
+  {
+   "id": "R01",
+   "level": "verbal",
+   "topic": "Algorithms & data structures, spoken",
+   "kind": "spoken",
+   "q": "What would you reach for to get constant time lookups with insertion order preserved, and why?",
+   "startSec": 0,
+   "clipSecs": 5.9645,
+   "playedAt": 1790418840402
+  },
+  {
+   "id": "R02",
+   "level": "coding",
+   "topic": "Algorithms & data structures, spoken",
+   "kind": "spoken",
+   "q": "Okay, a quick one out loud: how would you implement an LRU cache? Just talk me through the structure.",
+   "startSec": 65.9645,
+   "clipSecs": 7.9495,
+   "playedAt": 1790418906367
+  },
+  {
+   "id": "R02F",
+   "level": "followup",
+   "topic": "Algorithms & data structures, spoken",
+   "kind": "spoken",
+   "q": "What changes if it has to be safe across multiple threads?",
+   "startSec": 223.914,
+   "clipSecs": 4.1195,
+   "chain": "R02",
+   "playedAt": 1790419064316
+  },
+  {
+   "id": "R03",
+   "level": "reasoning",
+   "topic": "Algorithms & data structures, spoken",
+   "kind": "spoken",
+   "q": "You've got a stream of a billion events and you need the top hundred most frequent keys. How would you do that in bounded memory?",
+   "startSec": 288.0335,
+   "clipSecs": 8.0445,
+   "playedAt": 1790419128436
+  },
+  {
+   "id": "R04",
+   "level": "coding",
+   "topic": "Algorithms & data structures, spoken",
+   "kind": "spoken",
+   "q": "Write me a function that finds the first duplicate in an array, say it in words. What does it do for an empty input?",
+   "startSec": 371.078,
+   "clipSecs": 8.2295,
+   "playedAt": 1790419211480
+  },
+  {
+   "id": "R04F",
+   "level": "followup",
+   "topic": "Algorithms & data structures, spoken",
+   "kind": "spoken",
+   "q": "And if the array is already sorted, what changes?",
+   "startSec": 529.3075,
+   "clipSecs": 3.9295,
+   "chain": "R04",
+   "playedAt": 1790419369710
+  },
+  {
+   "id": "R05",
+   "level": "verbal",
+   "topic": "Algorithms & data structures, spoken",
+   "kind": "spoken",
+   "q": "Redis or Memcached?",
+   "startSec": 593.237,
+   "clipSecs": 2.5945,
+   "playedAt": 1790419433639
+  },
+  {
+   "id": "R06",
+   "level": "verbal",
+   "topic": "Backend & systems",
+   "kind": "spoken",
+   "q": "How do you make a payment endpoint idempotent?",
+   "startSec": 655.8315,
+   "clipSecs": 3.4195,
+   "playedAt": 1790419496234
+  },
+  {
+   "id": "R07",
+   "level": "reasoning",
+   "topic": "Backend & systems",
+   "kind": "spoken",
+   "q": "Two workers pick up the same job from a queue. How do you stop that happening?",
+   "startSec": 719.251,
+   "clipSecs": 5.8045,
+   "playedAt": 1790419559653
+  },
+  {
+   "id": "R07F",
+   "level": "followup",
+   "topic": "Backend & systems",
+   "kind": "spoken",
+   "q": "And if the worker that claimed it crashes halfway?",
+   "startSec": 800.0554999999999,
+   "clipSecs": 3.4145,
+   "chain": "R07",
+   "playedAt": 1790419640457
+  },
+  {
+   "id": "R08",
+   "level": "reasoning",
+   "topic": "Backend & systems",
+   "kind": "spoken",
+   "q": "Since Kafka guarantees exactly once delivery out of the box, how do you lean on that in a consumer?",
+   "startSec": 863.4699999999999,
+   "clipSecs": 6.6795,
+   "playedAt": 1790419703872
+  },
+  {
+   "id": "R09",
+   "level": "sql",
+   "topic": "Backend & systems",
+   "kind": "spoken",
+   "q": "Give me the SQL for the second highest salary in each department. Say it out loud.",
+   "startSec": 945.1494999999999,
+   "clipSecs": 6.2245,
+   "playedAt": 1790419785551
+  },
+  {
+   "id": "R09F",
+   "level": "followup",
+   "topic": "Backend & systems",
+   "kind": "spoken",
+   "q": "Now without a subquery. Can you do it with a window function?",
+   "startSec": 1101.3739999999998,
+   "clipSecs": 4.9195,
+   "chain": "R09",
+   "playedAt": 1790419941776
+  },
+  {
+   "id": "R10",
+   "level": "reasoning",
+   "topic": "Backend & systems",
+   "kind": "spoken",
+   "q": "How would you shard a Postgres table by tenant, actually, scrap that, how would you choose between sharding and read replicas in the first place?",
+   "startSec": 1166.2934999999998,
+   "clipSecs": 9.7645,
+   "playedAt": 1790420006695
+  },
+  {
+   "id": "R11",
+   "level": "design",
+   "topic": "System design, short",
+   "kind": "spoken",
+   "q": "Say the API sees 10,000 requests a second at peak. Walk me through your background assumptions before you size a rate limiter.",
+   "startSec": 1251.0579999999998,
+   "clipSecs": 9.0045,
+   "playedAt": 1790420091460
+  },
+  {
+   "id": "R11F",
+   "level": "followup",
+   "topic": "System design, short",
+   "kind": "spoken",
+   "q": "How does it behave when there are ten instances of the service?",
+   "startSec": 1410.0624999999998,
+   "clipSecs": 3.9045,
+   "chain": "R11",
+   "playedAt": 1790420250464
+  },
+  {
+   "id": "R12",
+   "level": "design",
+   "topic": "System design, short",
+   "kind": "spoken",
+   "q": "Design notification fan out for a million followers. Where does it get expensive?",
+   "startSec": 1473.9669999999999,
+   "clipSecs": 6.2245,
+   "playedAt": 1790420314369
+  },
+  {
+   "id": "R13",
+   "level": "design",
+   "topic": "System design, short",
+   "kind": "spoken",
+   "q": "Take a few minutes on this one: design a feature store end to end, ingestion, storage, serving, and how training and serving stay consistent.",
+   "startSec": 1630.1915,
+   "clipSecs": 10.3995,
+   "playedAt": 1790420470594
+  },
+  {
+   "id": "R13F",
+   "level": "followup",
+   "topic": "System design, short",
+   "kind": "spoken",
+   "q": "What do you do when an upstream table lands late?",
+   "startSec": 1790.591,
+   "clipSecs": 3.4545,
+   "chain": "R13",
+   "playedAt": 1790420630993
+  },
+  {
+   "id": "R14",
+   "level": "design",
+   "topic": "System design, short",
+   "kind": "spoken",
+   "q": "How would you serve a model behind an endpoint that has to answer in under 50 milliseconds?",
+   "startSec": 1854.0455,
+   "clipSecs": 5.7645,
+   "playedAt": 1790420694448
+  },
+  {
+   "id": "R15",
+   "level": "verbal",
+   "topic": "Classical ML & statistics",
+   "kind": "spoken",
+   "q": "Bias versus variance, one breath.",
+   "startSec": 2009.81,
+   "clipSecs": 3.3395,
+   "playedAt": 1790420850212
+  },
+  {
+   "id": "R16",
+   "level": "reasoning",
+   "topic": "Classical ML & statistics",
+   "kind": "spoken",
+   "q": "Your fraud model trains on data that's, sorry, let me put that differently: the positives are 1 percent of rows. What do you change, and what do you leave alone?",
+   "startSec": 2073.1495,
+   "clipSecs": 11.8045,
+   "playedAt": 1790420913552
+  },
+  {
+   "id": "R17",
+   "level": "reasoning",
+   "topic": "Classical ML & statistics",
+   "kind": "spoken",
+   "q": "How does target leakage sneak into a feature pipeline?",
+   "startSec": 2159.954,
+   "clipSecs": 3.8545,
+   "playedAt": 1790421000356
+  },
+  {
+   "id": "R17F",
+   "level": "followup",
+   "topic": "Classical ML & statistics",
+   "kind": "spoken",
+   "q": "Give me one leak that a time based split wouldn't catch.",
+   "startSec": 2238.8085,
+   "clipSecs": 3.6945,
+   "chain": "R17",
+   "playedAt": 1790421079211
+  },
+  {
+   "id": "R18",
+   "level": "verbal",
+   "topic": "Classical ML & statistics",
+   "kind": "spoken",
+   "q": "When is PR AUC better?",
+   "startSec": 2302.503,
+   "clipSecs": 2.5945,
+   "playedAt": 1790421142905
+  },
+  {
+   "id": "R19",
+   "level": "reasoning",
+   "topic": "Classical ML & statistics",
+   "kind": "spoken",
+   "q": "A model says 70 percent. What does it take for that number to actually mean 70 percent?",
+   "startSec": 2365.0975000000003,
+   "clipSecs": 7.1745,
+   "playedAt": 1790421205500
+  },
+  {
+   "id": "R20",
+   "level": "verbal",
+   "topic": "Deep learning & LLMs",
+   "kind": "spoken",
+   "q": "Attention, in one breath: what is it actually computing?",
+   "startSec": 2447.2720000000004,
+   "clipSecs": 4.6795,
+   "playedAt": 1790421287674
+  },
+  {
+   "id": "R21",
+   "level": "reasoning",
+   "topic": "Deep learning & LLMs",
+   "kind": "spoken",
+   "q": "So, like, fine tune or retrieval, how do you decide for a support bot?",
+   "startSec": 2511.9515000000006,
+   "clipSecs": 6.0445,
+   "playedAt": 1790421352354
+  },
+  {
+   "id": "R22",
+   "level": "reasoning",
+   "topic": "Deep learning & LLMs",
+   "kind": "spoken",
+   "q": "How do you cut hallucinations in a RAG answer without just making it refuse?",
+   "startSec": 2592.9960000000005,
+   "clipSecs": 5.0945,
+   "playedAt": 1790421433398
+  },
+  {
+   "id": "R22F",
+   "level": "followup",
+   "topic": "Deep learning & LLMs",
+   "kind": "spoken",
+   "q": "And how do you measure that you did?",
+   "startSec": 2673.0905000000007,
+   "clipSecs": 2.5395,
+   "chain": "R22",
+   "playedAt": 1790421513493
+  },
+  {
+   "id": "R22F2",
+   "level": "followup",
+   "topic": "Deep learning & LLMs",
+   "kind": "spoken",
+   "q": "What breaks in that measurement when the questions drift?",
+   "startSec": 2735.6300000000006,
+   "clipSecs": 3.5545,
+   "chain": "R22F",
+   "playedAt": 1790421576032
+  },
+  {
+   "id": "R23",
+   "level": "reasoning",
+   "topic": "Deep learning & LLMs",
+   "kind": "spoken",
+   "q": "Roughly how much memory for 10 million embeddings at 768 dimensions in float 32, and what would you do about it?",
+   "startSec": 2799.1845000000008,
+   "clipSecs": 8.6695,
+   "playedAt": 1790421639587
+  },
+  {
+   "id": "R24",
+   "level": "reasoning",
+   "topic": "Deep learning & LLMs",
+   "kind": "spoken",
+   "q": "How would you evaluate an LLM feature before launch when there's no ground truth?",
+   "startSec": 2882.8540000000007,
+   "clipSecs": 5.2345,
+   "playedAt": 1790421723256
+  },
+  {
+   "id": "R25",
+   "level": "cloud",
+   "topic": "MLOps, data engineering & cloud platforms",
+   "kind": "spoken",
+   "q": "How do you monitor drift on a SageMaker endpoint?",
+   "startSec": 2963.0885000000007,
+   "clipSecs": 3.6745,
+   "playedAt": 1790421803491
+  },
+  {
+   "id": "R26",
+   "level": "reasoning",
+   "topic": "MLOps, data engineering & cloud platforms",
+   "kind": "spoken",
+   "q": "Um, so, how would you backfill a Delta Lake feature table on Databricks Jobs for the last two years without stalling the daily run?",
+   "startSec": 3056.763000000001,
+   "clipSecs": 8.6545,
+   "playedAt": 1790421897165
+  },
+  {
+   "id": "R26F",
+   "level": "followup",
+   "topic": "MLOps, data engineering & cloud platforms",
+   "kind": "spoken",
+   "q": "How do you know the backfill matched what the daily job would have produced?",
+   "startSec": 3140.417500000001,
+   "clipSecs": 4.4945,
+   "chain": "R26",
+   "playedAt": 1790421980820
+  },
+  {
+   "id": "R27",
+   "level": "cloud",
+   "topic": "MLOps, data engineering & cloud platforms",
+   "kind": "spoken",
+   "q": "Shadow deployment or canary for a new model version on SageMaker: which, and why?",
+   "startSec": 3204.9120000000007,
+   "clipSecs": 6.1895,
+   "playedAt": 1790422045314
+  },
+  {
+   "id": "R28",
+   "level": "reasoning",
+   "topic": "MLOps, data engineering & cloud platforms",
+   "kind": "spoken",
+   "q": "What does MLflow's model registry give you that a versioned S3 path doesn't?",
+   "startSec": 3301.1015000000007,
+   "clipSecs": 5.1745,
+   "playedAt": 1790422141504
+  },
+  {
+   "id": "R28F",
+   "level": "followup",
+   "topic": "MLOps, data engineering & cloud platforms",
+   "kind": "spoken",
+   "q": "Where does reproducibility still break?",
+   "startSec": 3381.2760000000007,
+   "clipSecs": 3.0095,
+   "chain": "R28",
+   "playedAt": 1790422221678
+  },
+  {
+   "id": "R29",
+   "level": "cloud",
+   "topic": "MLOps, data engineering & cloud platforms",
+   "kind": "spoken",
+   "q": "What would you use Unity Catalog for that you couldn't do with plain workspace permissions?",
+   "startSec": 3444.285500000001,
+   "clipSecs": 5.3995,
+   "playedAt": 1790422284688
+  },
+  {
+   "id": "R30",
+   "level": "reasoning",
+   "topic": "MLOps, data engineering & cloud platforms",
+   "kind": "spoken",
+   "q": "Bedrock or self hosted: how do you think about inference cost and latency for a nightly batch summarisation job?",
+   "startSec": 3539.685000000001,
+   "clipSecs": 7.5645,
+   "playedAt": 1790422380087
+  },
+  {
+   "id": "R31",
+   "level": "reasoning",
+   "topic": "Claim reconciliation",
+   "kind": "spoken",
+   "q": "Here's one from a CV I read last week: it says a model lifted checkout conversion from 3.2 to 4.1 percent on roughly 400,000 sessions a month, and later claims 5,000 extra orders a month. Does that add up?",
+   "startSec": 3622.249500000001,
+   "clipSecs": 16.0595,
+   "long": true,
+   "playedAt": 1790422462652
+  },
+  {
+   "id": "R31F",
+   "level": "followup",
+   "topic": "Claim reconciliation",
+   "kind": "spoken",
+   "q": "What else would you need to know before calling that lift real?",
+   "startSec": 3713.3090000000007,
+   "clipSecs": 3.7945,
+   "chain": "R31",
+   "playedAt": 1790422553711
+  },
+  {
+   "id": "R32",
+   "level": "reasoning",
+   "topic": "Claim reconciliation",
+   "kind": "spoken",
+   "q": "Say a CV claims a 40 percent cut in p95 latency. What do you ask before you believe it?",
+   "startSec": 3777.1035000000006,
+   "clipSecs": 7.6995,
+   "playedAt": 1790422617506
+  },
+  {
+   "id": "R33",
+   "level": "reasoning",
+   "topic": "Claim reconciliation",
+   "kind": "spoken",
+   "q": "A vendor says their new spam filter cut false positives by 60 percent, and the support team says complaints about blocked mail went up after the rollout. Can both be true, and what would you check first?",
+   "startSec": 3859.803000000001,
+   "clipSecs": 13.4545,
+   "playedAt": 1790422700205
+  }
+ ],
+ "endedAt": "2026-09-26T11:39:51.308Z",
+ "endedMs": 1790422791248,
+ "endDebug": 669967,
+ "endDiag": 2848774
+}

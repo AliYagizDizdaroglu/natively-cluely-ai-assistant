@@ -1,0 +1,120 @@
+PASS  REAL clean run exits 0 (the stub exits 9 unless the launcher's env block crossed)  [exit 0 ]
+PASS  REAL clean: 16 steps, numbered 1..16 in order, tag order = A3.4 counterbalanced  [captured-g-high captured-no-block-high captured-no-block-hig]
+PASS  REAL clean: every STEP line parses back; all exit=0; none unclosed
+PASS  REAL clean: the CONSUMER eq-twins parseSitting reads the log with 0 problems and 16 tags
+PASS  REAL clean: steps strictly sequential (each start >= the previous end)
+PASS  REAL clean: non-STEP lines all start GSITTING, no BOM  [2 lines]
+PASS  REAL clean: args per step = model, thinking, --no-block only on no-block tags, captured path, --only = the reader's ids
+PASS  REAL clean: children run with cwd = MAIN  [ü\natively-cluely-ai-assistant]
+PASS  REAL clean: 16 output files copied into the run folder and the copy is logged
+PASS  REAL clean: the ledger got the quota-day start of 04:20 (10:00 the day before, as UTC Z)  [2026-10-05T07:00:00.000Z]
+PASS  REAL B1: launcher file missing refuses  [exit 2]
+PASS  REAL B1: launcher yielding 0 names refuses  [exit 2]
+PASS  REAL B1: launcher without NATIVELY_ROSTER refuses  [exit 2]
+PASS  REAL B1: -WhatIf names the env counts (set 4, cleared 2)  [GSITTING whatif mode=normal: |G_twin| = 4 [S1Q04F,S1Q06F,S2Q05F,S2Q08F]; bars 52/32 met by 478/439; env set 4 cleared 2; 16 command line(s) follow, no]
+PASS  REAL stop: non-zero step exit stops the runner with exit 1  [exit 1]
+PASS  REAL stop: steps 1..4 logged, step 4 ends exit=7, no step 5 started, stub saw 4 calls
+PASS  REAL stop: the stop line names step 4 and its tag; stdout says so too
+PASS  REAL stop: no outputs were copied
+PASS  REAL stop: a second plain call refuses (stale tags), makes no call  [exit 2]
+PASS  REAL stop: a log that already holds a STEP line refuses a plain call (no outputs present, so only this check can fire), no call  [exit 2]
+PASS  REAL resume: -WhatIf prints only steps 4..16 (13 lines), first CMD 4 captured-g-high-r2  [exit 0]
+PASS  REAL resume: exits 0 and re-runs only steps 4..16 (stub calls 4 + 13 = 17)  [exit 0 calls 17]
+PASS  REAL resume: the partial output (existed: true) and step-4 out/err were MOVED to failed-4-<stamp>, with the pre-resume log copy  [gsitting.log.before-resume,interview60.answers.gemini-3.5-flash-lite_captured-g-high-r2.json,step-4.err.txt,step-4.out.txt]
+PASS  REAL resume: the moved partial is the failed attempt's ({"partial":true}), the canonical file now holds the new answer ({})
+PASS  REAL resume: the saved log copy equals the log before the resume
+PASS  REAL resume: a GSITTING resume line and 2 GSITTING failed-attempt lines for step 4 (start, end exit=7)
+PASS  REAL resume: eq-twins parseSitting reads the resumed log with 0 problems, 16 tags, all exit=0, numbers increasing
+PASS  REAL resume: ends with 16 STEP-clean steps for the tiny reader too, 13 of 13 copied  [16]
+PASS  REAL resume: a second -Resume on a complete sitting refuses  [exit 2]
+PASS  REAL resume: no STEP line in the log refuses  [exit 2]
+PASS  REAL resume: a step with a start line and no end resumes from that step (CMD 1..16)  [exit 0]
+PASS  REAL resume: an output file for a step that never ran refuses (tags never reused)  [exit 2]
+PASS  REAL resume: -Resume with -Holes refuses  [exit 2]
+PASS  REAL holes: the clean sitting underneath ran (exit 0)  [exit 0]
+PASS  REAL holes: "3:S1Q04F" exits 0, runs exactly 2 steps, numbered 17, 18  [exit 0 ]
+PASS  REAL holes: tags are eq-twins' tagOf(front, blk/nob, 3, b=true), block first (rep 3 odd), --only = the hole id, --no-block only on the no-block step  [captured-g-high-r3-b captured-no-block-high-r3-b]
+PASS  REAL holes: eq-twins parseSitting reads the log with 18 tags and 0 problems; the first 16 lines are untouched
+PASS  REAL holes: the -b outputs were copied (2 of 2) and logged
+PASS  REAL holes: the same rep again refuses (tags never reused)  [exit 2]
+PASS  REAL holes: a rep without a hole refuses, naming it  [exit 2]
+PASS  REAL holes: a rep whose files hold no hole at all (front rep 2) refuses  [exit 2]
+PASS  REAL holes: an id that is no hole in a rep that has other holes refuses  [exit 2]
+PASS  REAL holes: an id outside G_twin refuses  [exit 2]
+PASS  REAL holes: a malformed spec refuses  [exit 2]
+PASS  REAL holes: a rep that does not exist refuses  [exit 2]
+PASS  REAL holes: "b2:S1Q06F" (back rep 2) runs no-block first, tags from tagOf(back,...,2,b), numbered 19, 20, 3.1-lite LOW  [exit 0]
+PASS  REAL holes: cutoff counts 2 steps per rep (09:50 + 2 reps x 2 x 3 min = 10:02 refuses)  [exit 2]
+PASS  REAL holes: before 16 clean steps it refuses and points at -Resume  [exit 2]
+PASS  REAL holes: m6 bars use the hole-id count (1 id: 3.5-lite bar 22; 21 refuses)  [exit 2]
+PASS  REAL cutoff: simulated 09:13 refuses, exit 2, names A7 I3, no STEP line  [exit 2]
+PASS  REAL cutoff: 09:12 (projected end exactly 10:00, not before) refuses  [exit 2]
+PASS  REAL cutoff: 09:11 (ends 09:59) accepted  [exit 0]
+PASS  REAL cutoff: 10:00 accepted (after 10:00 on a fresh ledger read)  [exit 0]
+PASS  REAL cutoff: 10:40 accepted, ledger asked for the NEW quota day (2026-10-06T07:00:00.000Z)
+PASS  REAL quiet: a Natively-* task Running refuses, naming it  [exit 2]
+PASS  REAL quiet: electron.exe running refuses  [exit 2]
+PASS  REAL ledger: unreadable (exit 1) refuses  [exit 2]
+PASS  REAL ledger: exit 0 but no first line refuses  [exit 2]
+PASS  REAL G: no READ G_twin line refuses  [exit 2]
+PASS  REAL G: |G_twin| = 2 refuses (A2.4)  [exit 2]
+PASS  REAL G: count disagreeing with the ids refuses  [exit 2]
+PASS  REAL G: 5 ids are carried through to every command line (bars 62/38 met by 62/38)  [exit 0]
+PASS  REAL m6: |G|=5 bar is 10*5+12 = 62; 61 refuses  [exit 2]
+PASS  REAL I1: a reader file for another run refuses, naming both  [exit 2]
+PASS  REAL I1: a reader file with no READER line refuses  [exit 2]
+PASS  REAL I1: a b4cal file for another run refuses  [exit 2]
+PASS  REAL I1: a b4cal file with no B4CAL line refuses  [exit 2]
+PASS  REAL I1: -Run with a trailing backslash still matches  [exit 0]
+PASS  REAL I1: LABEL OUTSIDE --g S2Q09F refuses, naming A5.5 B-I1  [exit 2]
+PASS  REAL I1: an absent LABEL OUTSIDE line refuses  [exit 2]
+PASS  REAL b4cal: DIFF refuses  [exit 2]
+PASS  REAL b4cal: BLOCK FAIL refuses  [exit 2]
+PASS  REAL b4cal: BLOCK FAIL marker-first only is accepted  [exit 0]
+PASS  REAL b4cal: two marker-first ids accepted  [exit 0]
+PASS  REAL b4cal: marker-first plus a plain failing id refuses  [exit 2]
+PASS  REAL b4cal: UNCALIBRATED accepted  [exit 0]
+PASS  REAL b4cal: empty file refuses  [exit 2]
+PASS  REAL m6: 3.5-lite 51 < 52 (10*4+12) refuses  [exit 2]
+PASS  REAL m6: 3.1-lite 31 < 32 (6*4+8) refuses  [exit 2]
+PASS  REAL m6: exactly 52/32 accepted  [exit 0]
+PASS  REAL m6: claimed 3.5-lite headroom 490 > 500 - 22 (ledger mentions) refuses  [exit 2]
+PASS  REAL stale: an existing output for a tag refuses, naming it  [exit 2]
+PASS  REAL whatif: prints 16 command lines in order, makes no call, writes no log  [exit 0]
+PASS  REAL whatif: the 16 lines carry --no-block exactly 8 times and never print a prompt
+PASS  REAL notes: exit 0; the gap note fires for the 5 FRONT reps only, worded "2c is reported", never for the back reps  [exit 0 gaps 5]
+PASS  REAL notes: "GSITTING note slow step <n> <min>" fires for each of the 16 steps over the threshold  [slow 16]
+PASS  REAL notes: at the real thresholds (15 / 10 min) a 1.5 s step logs neither note
+PASS  REAL notes: the sitting itself still logged 16 clean steps
+PASS  MUTANT cutoff -ge -> -gt: the cal FAILS on it (killed)
+PASS  MUTANT cutoff removed: the cal FAILS on it (killed)
+PASS  MUTANT exit-code stop removed: the cal FAILS on it (killed)
+PASS  MUTANT counterbalance flipped: the cal FAILS on it (killed)
+PASS  MUTANT --no-block dropped: the cal FAILS on it (killed)
+PASS  MUTANT G ids hand-typed: the cal FAILS on it (killed)
+PASS  MUTANT B1: launcher SET values dropped (empties only): the cal FAILS on it (killed)
+PASS  MUTANT B1: launcher EMPTY names not cleared: the cal FAILS on it (killed)
+PASS  MUTANT B1: 0-names refusal removed: the cal FAILS on it (killed)
+PASS  MUTANT B1: launcher-missing refusal removed: the cal FAILS on it (killed)
+PASS  MUTANT b4cal DIFF check removed: the cal FAILS on it (killed)
+PASS  MUTANT marker-first exception removed: the cal FAILS on it (killed)
+PASS  MUTANT I1: reader run-name check removed: the cal FAILS on it (killed)
+PASS  MUTANT I1: b4cal run-name check removed: the cal FAILS on it (killed)
+PASS  MUTANT I1: LABEL OUTSIDE check removed: the cal FAILS on it (killed)
+PASS  MUTANT I2: resume does not move the partial output: the cal FAILS on it (killed)
+PASS  MUTANT I2: resume keeps the failed attempt as STEP lines: the cal FAILS on it (killed)
+PASS  MUTANT I2: resume re-runs from step 1: the cal FAILS on it (killed)
+PASS  MUTANT I3: holes no-hole check removed: the cal FAILS on it (killed)
+PASS  MUTANT I3: holes tag lacks -b: the cal FAILS on it (killed)
+PASS  MUTANT I3: holes --only = all of G_twin: the cal FAILS on it (killed)
+PASS  MUTANT I3: holes before 16 clean steps allowed: the cal FAILS on it (killed)
+PASS  MUTANT I4: slow-step note removed: the cal FAILS on it (killed)
+PASS  MUTANT m1: gap note also for the back leg: the cal FAILS on it (killed)
+PASS  MUTANT m6 3.5 bar removed: the cal FAILS on it (killed)
+PASS  MUTANT task-running refusal removed: the cal FAILS on it (killed)
+PASS  MUTANT ledger-unreadable refusal removed: the cal FAILS on it (killed)
+PASS  MUTANT stale-output refusal removed: the cal FAILS on it (killed)
+PASS  MUTANT existing-STEP-log refusal removed: the cal FAILS on it (killed)
+PASS  MUTANT BOM-writing log (Add-Content UTF8): the cal FAILS on it (killed)
+PASS  MUTANT |G_twin|<3 refusal removed: the cal FAILS on it (killed)
+TOTAL 119 PASS 0 FAIL  (real-script checks failing: 0; mutants killed 31 of 31)

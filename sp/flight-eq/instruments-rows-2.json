@@ -1,0 +1,3 @@
+[
+  {"tool": "eq-gsitting.ps1", "cal": "eq-gsitting.cal.txt", "review": "gsitting-review.md", "verdict": "Re-review READY (B1, I1-I4 closed)"}
+]

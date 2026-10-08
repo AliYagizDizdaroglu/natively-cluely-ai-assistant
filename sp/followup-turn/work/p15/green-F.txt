@@ -1,0 +1,55 @@
+=== A. h40d-grader-models.mjs: top-level sessions ===
+
+=== B. check-grader-memory.mjs ===
+
+=== F. audit-graders.mjs DEFAULT mode: A2 point 15 (no Bash, no --add-dir; denials flag) ===
+OK   point 15 POSITIVE: Read rubric + own pairs, Write own verdicts, Read own verdicts (the spike shape): clean, exit 0  [blind-1.g1 (C:\Users\sotka\App): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=off]
+OK   point 15 POSITIVE: Edit of the own verdicts file counts as Write: clean  [blind-1.g1 (C:\Users\sotka\App): 3 tool inputs [Readx2 Editx1]; clean; bash=[]; dispatch=off]
+OK   point 15 POSITIVE: a Read of the OWN verdicts file alone: clean  [blind-1.g1 (C:\Users\sotka\App): 1 tool inputs [Readx1]; clean; bash=[]; dispatch=off]
+OK   point 15 POSITIVE: the same own pairs file spelled with backslashes: clean  [blind-1.g1 (C:\Users\sotka\App): 1 tool inputs [Readx1]; clean; bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: the exact shape of the old allowed validation Bash (cd + node -e, own file only): FLAGGED  [Bash call (point 15: graders have no Bash); bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: Bash `ls`: FLAGGED  [Bash call (point 15: graders have no Bash); bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: Bash `cat <own verdicts>`: FLAGGED (any Bash, whatever it names)  [Bash call (point 15: graders have no Bash); bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: Read of ANOTHER grader's verdicts file: FLAGGED  [Read outside the allowlist: C:/x/blind/verdicts.blind-1.g2.json; bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: Read of a keyhold file: FLAGGED  [Read outside the allowlist: C:/x/keyhold/key.blind-1.json; bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: Read of an answers file: FLAGGED  [Read outside the allowlist: C:/x/R/interview60.answers.gemini-3.5-flash-lite_front.json; bash=[]; di]
+OK   point 15 NEGATIVE: Read of MAIN\.env: FLAGGED  [Read outside the allowlist: C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.env; bash]
+OK   point 15 NEGATIVE: Read of another blind file's pairs: FLAGGED  [Read outside the allowlist: C:/x/blind/pairs.blind-2.json; bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: Read through a .. path to a keyhold file: FLAGGED  [Read outside the allowlist: C:/x/blind/../blind/../keyhold/k.json; bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: Write of another grader's verdicts: FLAGGED  [Write outside the own verdicts file: C:/x/blind/verdicts.blind-1.g2.json; bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: Edit of the own PAIRS file: FLAGGED (Edit is Write: the own verdicts file only)  [Edit outside the own verdicts file: C:/x/blind/pairs.blind-1.json; bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: Write of the rubric: FLAGGED  [Write outside the own verdicts file: C:/x/rubric.md; bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: Grep: FLAGGED  [TOOL OTHER THAN Read/Write/Edit: Grep; bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: Glob: FLAGGED  [TOOL OTHER THAN Read/Write/Edit: Glob; bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: an mcp__ call: FLAGGED  [MCP CALL mcp__x__y; bash=[]; dispatch=off]
+OK   point 15 NEGATIVE: the clean blind-1.g1 shape audited AS blind-1.g2 (it wrote the other grader's file): FLAGGED  [Write outside the own verdicts file: C:/x/blind/verdicts.blind-1.g1.json | Read outside the allowlis]
+OK   point 15 DENIAL: a tool_result is_error "Permission to use Read has been denied ..." with toolDenialKind on an ALLOWED file: FLAGGED as a denial  [1 call(s) DENIED by Claude Code (permission_denials / an is_error permission result); bash=[]; dispa]
+OK   point 15 DENIAL: the same error text without toolDenialKind: FLAGGED  [1 call(s) DENIED by Claude Code (permission_denials / an is_error permission result); bash=[]; dispa]
+OK   point 15 DENIAL: toolDenialKind on an is_error result with unrelated text: FLAGGED  [1 call(s) DENIED by Claude Code (permission_denials / an is_error permission result); bash=[]; dispa]
+OK   point 15 DENIAL: the message as a text-block array: FLAGGED  [1 call(s) DENIED by Claude Code (permission_denials / an is_error permission result); bash=[]; dispa]
+OK   point 15 DENIAL: a non-empty permission_denials list in the transcript: FLAGGED  [1 call(s) DENIED by Claude Code (permission_denials / an is_error permission result); bash=[]; dispa]
+OK   discrimination: an is_error result that is NOT a permission message (file does not exist) is NOT a denial: clean  [blind-1.g1 (C:\Users\sotka\App): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=off]
+OK   discrimination: the words permission / denied in a result that is NOT an error (is_error false) do not flag: clean  [blind-1.g1 (C:\Users\sotka\App): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=off]
+OK   discrimination: an EMPTY permission_denials list: clean  [blind-1.g1 (C:\Users\sotka\App): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=off]
+     blind-1.g1 (8a49290e-d30e-4087): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match
+     AUDIT: all graders clean
+OK   THE REAL POINT-15 SPIKE 8a49290e (--tools Read,Write,Edit, no --add-dir: Read x3, Write x1) reads CLEAN under the default mode, exit 0, bash=[], dispatch=match  [blind-1.g1 (8a49290e-d30e-4087): 4 tool inputs [Readx3 Writex1]; clean; bash=[]; dispatch=match]
+     blind-1.g1 (f8d13b32-2a08-4f05): 1 tool inputs [Readx1]; FLAGGED 2: Read outside the allowlist: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude | 1 call(s) DENIED by Claude Code (permission_denials / an is_error permission result); bash=[]; dispatch=off
+     AUDIT: FLAGGED (see lines above)
+OK   THE REAL NEGATIVE PROBE f8d13b32 (a Read outside the cwd that no allow rule names, DENIED by Claude Code) reads FLAGGED: the Read is outside the allowlist AND the denial is seen  [Read outside the allowlist: C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st]
+OK   ... and with that Read's path rewritten to the ALLOWED own pairs file the real transcript still reads FLAGGED, by the denial alone (the denial rule is independent of the path rule)  [blind-1.g1 (C:\Users\sotka\App): 1 tool inputs [Readx1]; FLAGGED 1: 1 call(s) DENIED by Claude Code (permission_denials / an is_error permission resul]
+     blind-1.g1 (addb84e6bd55778d5): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+     blind-1.g2 (a681f259dff0dae30): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+     blind-2.g1 (a5eb230f8d7cb101a): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+     blind-2.g2 (ab34ebe95114932db): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+     blind-3.g1 (a83e3007ff2d0bc45): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+     blind-3.g2 (ab605c210a849d667): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+     blind-4.g1 (aa08ae8c058eb8aa9): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+     blind-4.g2 (aa85ea6faa528f27c): 4 tool inputs [Readx2 Writex1 Bashx1]; FLAGGED 1: Bash call (point 15: graders have no Bash); bash=[]; dispatch=match
+     AUDIT: FLAGGED (see lines above)
+OK   the 8 real design-2 s50l transcripts (historical shape: each ran one Bash) read FLAGGED under the default mode, 8 of 8, by design under point 15 (dispatch=match 8/8, exit 1)  [8 of 8]
+OK   the pre-point-15 pilot transcript 6441d4bf (one Bash) reads FLAGGED under the default mode (historical shape, flagged by design)
+OK   no day-path file (day-pre, day-steps, legs-decide, launch-grader, e2e-synthetic, runner-selftest, mutate-decide, legs-decide-calibrate, followup-turn-run/-blind, common) mentions --allow-validation-bash
+BAD  ... and none carries a Bash shape (a Bashx1 audit line, a Bash(...) rule, a Bash tool in --tools)  [launch-grader.mjs,scripts/legs-decide-calibrate.mjs]
+
+GRADER-SESSION CALIBRATION FAILED

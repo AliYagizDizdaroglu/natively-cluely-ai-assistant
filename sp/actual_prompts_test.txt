@@ -1,0 +1,8 @@
+    it('carries the structured multi-part rule (bare arms: 8→13 and 10→14 acceptable of 20, 0 wrong, 2026-09-09)', () => {
+        expect(SPOKEN_WORD_CEILING).toBe(150);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain('[ANSWER THE QUESTION\'S STRUCTURE — THIS OVERRIDES THE LENGTH RULE ABOVE WHEN THE QUESTION HAS SEVERAL PARTS]');
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain(`never more than ${SPOKEN_WORD_CEILING} words in total`);
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain('Never output code, SQL text, formulas, LaTeX, markdown or numbered lists');
+        // the suggestions block still follows it
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT.indexOf('[ANSWER THE QUESTION\'S STRUCTURE')).toBeLessThan(VERBAL_WHAT_TO_ANSWER_PROMPT.indexOf('Rules for that block:'));
+    });

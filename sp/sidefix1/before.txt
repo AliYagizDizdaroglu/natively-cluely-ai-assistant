@@ -1,0 +1,34 @@
+﻿node : [33mThe CJS build of Vite's Node API is deprecated. See 
+https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+At line:1 char:691
++ ... efix1\cwd"; node "$m\node_modules\vitest\vitest.mjs" run electron/ser ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([33mThe CJS bu...e details.[39m:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant
+
+ ❯ electron/services/interviewerTurn.replay.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/services/interviewerTurn.replay.test.ts [ electron/services/interviewerTurn.replay.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-s
+t--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpa
+d\sidefix1\cwd\electron\test\golden\fixtures\2026-09-09T15-00-55-s50a-turns.json'
+ ❯ electron/services/interviewerTurn.replay.test.ts:117:42
+    115|     const file = path.join(FIXTURES, `${name}-turns.json`);
+    116|     describe(`replay of ${name}`, () => {
+    117|         const f: Fixture = JSON.parse(fs.readFileSync(file, 'utf8'));
+       |                                          ^
+    118|         const { decisions, drops } = replay(f);
+    119|         const rows = score(f, decisions);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  18:38:35
+   Duration  31.76s (transform 159ms, setup 0ms, collect 0ms, tests 0ms, environment 29.45s, prepare 943ms)
+

@@ -1,0 +1,15 @@
+﻿PRECHECK 21:26:33 label=h40d
+flight task: Ready next=2026-10-02 13:30
+other Natively-* tasks Running: 0
+electron processes: 0
+processes named like natively: 0
+port 5180 held: False
+tail.exe watchers: 0
+power: BatteryStatus=2 (2 = AC) charge=57%
+default playback device: volume=93% muted=False
+dry-twin guard chain: result=0x0
+holdout40.wav matches holdout40  45 items
+DIST PROOF: filter sha256/16 42d9bc42dbd17870
+DIST PROOF: THE COMBINED BUILD, every marker as expected
+GUARD OK: roster holdout40 (45 items), no model or thinking override, gemini-3.1-flash-lite LOW with the gemini-3.5-flash-lite fallback at HIGH, hedge ON by default (NATIVELY_VERBAL_HEDGE unset; front gemini-3.5-flash-li
+(this guard proves the launcher environment as ITS OWN node child resolves it, and that dist-electron plus its source carry the hedge and the cue build and pin HEAD; the app PROCESS itself is proven by the pre-hour MAIN 

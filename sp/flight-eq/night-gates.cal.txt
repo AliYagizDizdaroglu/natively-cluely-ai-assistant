@@ -1,0 +1,746 @@
+night-gates calibration  2026-10-05T15:09:44.369Z
+script sha256 5e6cd2acaed4f98a0cfec1fd57fa0465e8294dec96866792f9a925cc5b172137
+driver sha256 ef08f1bf4ae471a6afa663ac2d9604d595f810ee9c1f235678d8d7b01268ee5c
+UTF-8 BOM present; ParseFile errors 0 (expected 0); non-ASCII bytes after the BOM 0
+read-only scan: mutating-verb matches 0 (expected 0); every powercfg call's first argument: /q (expected only /q)
+parameter names: At, FakeJson, PowercfgTextFile; names starting with "At" (case-insensitively): At (expected exactly "At", N-m4)  => PASS
+machine zone for At: Europe/Istanbul, offset 3 h (the pause boundary cases derive their instants from it)
+
+1 all-good fake (+ both INFO lines)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0) | lines present: 2
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+2 standby 0x384 (900 s) -> FAIL standby-ac   [At 2026-10-05 21:00]
+   expected: standby-ac=FAIL hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES FAILED (1): standby-ac (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: FAIL AC sleep timeout 0x00000384 (900 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): standby-ac
+   exit 1 => PASS
+3 hibernate nonzero (7200 s) -> FAIL hibernate-ac   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=FAIL power=OK reboot=OK updates=OK | NIGHT GATES FAILED (1): hibernate-ac (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: FAIL AC hibernate timeout 0x00001c20 (7200 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): hibernate-ac
+   exit 1 => PASS
+4 BatteryStatus 1 (discharging), AC line offline -> FAIL power   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=FAIL reboot=OK updates=OK | NIGHT GATES FAILED (1): power (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: FAIL AC line offline, battery status 1, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): power
+   exit 1 => PASS
+4a NO battery (Win32_Battery empty) + BatteryFlag 128 + AC online -> OK power (the deliberate desktop signal)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, no Win32_Battery instance, BatteryFlag 128 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+4a1 no Win32_Battery instance but BatteryFlag 1 (OS reports a battery), AC online -> FAIL power (empty query is not "no battery")   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=FAIL reboot=OK updates=OK | NIGHT GATES FAILED (1): power (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: FAIL AC line online, no Win32_Battery instance, BatteryFlag 1 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): power
+   exit 1 => PASS
+4a2 no Win32_Battery instance, BatteryFlag unknown (null), AC online -> FAIL power   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=FAIL reboot=OK updates=OK | NIGHT GATES FAILED (1): power (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: FAIL AC line online, no Win32_Battery instance, BatteryFlag unknown (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): power
+   exit 1 => PASS
+4a3 no battery (flag 128) with AC line OFFLINE -> FAIL power (N-I1 C1)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=FAIL reboot=OK updates=OK | NIGHT GATES FAILED (1): power (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: FAIL AC line offline, no Win32_Battery instance, BatteryFlag 128 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): power
+   exit 1 => PASS
+4a4 no battery (flag 128) with AC line UNKNOWN -> FAIL power   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=FAIL reboot=OK updates=OK | NIGHT GATES FAILED (1): power (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: FAIL AC line unknown, no Win32_Battery instance, BatteryFlag 128 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): power
+   exit 1 => PASS
+4b BatteryStatus 6 (charging) with AC line online -> OK power   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 6, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+4c BatteryStatus 6 with AC line offline -> FAIL power   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=FAIL reboot=OK updates=OK | NIGHT GATES FAILED (1): power (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: FAIL AC line offline, battery status 6, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): power
+   exit 1 => PASS
+4d BatteryStatus 3 (fully charged) with AC line online -> OK power   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 3, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+4e BatteryStatus 5 (low) even with AC line online -> FAIL power   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=FAIL reboot=OK updates=OK | NIGHT GATES FAILED (1): power (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: FAIL AC line online, battery status 5, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): power
+   exit 1 => PASS
+4f BatteryStatus 1 even with AC line online -> FAIL power (only 2 / charge states)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=FAIL reboot=OK updates=OK | NIGHT GATES FAILED (1): power (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: FAIL AC line online, battery status 1, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): power
+   exit 1 => PASS
+4g Win32_Battery query FAILED (battery "error"), BatteryFlag 128, AC online -> FAIL power (A4-RECHECK m2)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=FAIL reboot=OK updates=OK | NIGHT GATES FAILED (1): power (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: FAIL AC line online, Win32_Battery query FAILED, BatteryFlag 128 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): power
+   exit 1 => PASS
+4h BatteryStatus 2 with AC line OFFLINE -> FAIL power (A4.3b; N-I1 C2; flips the old build)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=FAIL reboot=OK updates=OK | NIGHT GATES FAILED (1): power (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: FAIL AC line offline, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): power
+   exit 1 => PASS
+4i BatteryStatus 2 with AC line UNKNOWN -> FAIL power   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=FAIL reboot=OK updates=OK | NIGHT GATES FAILED (1): power (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: FAIL AC line unknown, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): power
+   exit 1 => PASS
+4j two batteries [6,1], AC online -> FAIL power (every status must be acceptable)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=FAIL reboot=OK updates=OK | NIGHT GATES FAILED (1): power (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: FAIL AC line online, battery status 6,1, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): power
+   exit 1 => PASS
+4k two batteries [2,6], AC online -> OK power   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2,6, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+5 CBS RebootPending -> FAIL reboot   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=FAIL updates=OK | NIGHT GATES FAILED (1): reboot (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: FAIL CBS RebootPending PRESENT, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): reboot
+   exit 1 => PASS
+5a CBS parent key missing -> FAIL reboot (N-m1: a path typo must not read as "absent")   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=FAIL updates=OK | NIGHT GATES FAILED (1): reboot (exit 1) | lines present: 1
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: FAIL parent registry key missing: Component Based Servicing (the pending-reboot flags cannot be read)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): reboot
+   exit 1 => PASS
+5b WU Auto Update parent key missing -> FAIL reboot   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=FAIL updates=OK | NIGHT GATES FAILED (1): reboot (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: FAIL parent registry key missing: WindowsUpdate\Auto Update (the pending-reboot flags cannot be read)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): reboot
+   exit 1 => PASS
+6 WU RebootRequired ONLY (A3 m13) -> FAIL reboot   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=FAIL updates=OK | NIGHT GATES FAILED (1): reboot (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: FAIL CBS RebootPending absent, WU RebootRequired PRESENT (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): reboot
+   exit 1 => PASS
+6a PendingFileRenameOperations only -> OK (printed, not gated)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations present, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+7 active 8->17, no pause, At 21:00 -> FAIL updates   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 8->17 do NOT cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+8 active 8->17 + pause to 2026-10-07 (PauseUpdatesExpiryTime only) -> OK updates   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 8->17 do NOT cover; pause to 2026-10-07T00:00:00Z > At+5h (2026-10-05T23:00:00Z) [earliest of 1 value(s)]; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+9 active 18->6, At 2026-10-06 01:00 -> OK (06:00 inclusive)   [At 2026-10-06 01:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-06 00:30 .. 2026-10-06 06:00] active hours 18->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+10 active 18->5, same At -> FAIL updates   [At 2026-10-06 01:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-06 00:30 .. 2026-10-06 06:00] active hours 18->5 do NOT cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+11 no ActiveHours values, no pause (A3 m13) -> FAIL updates   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 20:30 .. 2026-10-06 02:00] active hours missing; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+12 no ActiveHours values + pause past At+5h (A3 m13) -> OK updates   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours missing; pause to 2026-10-07T00:00:00Z > At+5h (2026-10-05T23:00:00Z) [earliest of 1 value(s)]; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+12a only ActiveHoursStart missing, no pause -> FAIL updates   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 20:30 .. 2026-10-06 02:00] active hours missing; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+13 pause expiry == At+5h exactly (2026-10-05T23:00:00Z), active 8->17 -> FAIL (must be strictly greater)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 8->17 do NOT cover; pause to 2026-10-05T23:00:00Z <= At+5h (2026-10-05T23:00:00Z) [earliest of 1 value(s)]; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+13a pause expiry At+5h+1 s (2026-10-05T23:00:01Z), active 8->17 -> OK   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 8->17 do NOT cover; pause to 2026-10-05T23:00:01Z > At+5h (2026-10-05T23:00:00Z) [earliest of 1 value(s)]; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+13b PauseUpdatesExpiryTime far, PauseQualityUpdatesEndTime == At+5h exactly, active 8->17 -> FAIL (N-m2: the EARLIEST of the three counts)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 8->17 do NOT cover; pause to 2026-10-05T23:00:00Z <= At+5h (2026-10-05T23:00:00Z) [earliest of 3 value(s)]; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+13c Expiry far, PauseFeatureUpdatesEndTime At+1h, active 8->17 -> FAIL   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 8->17 do NOT cover; pause to 2026-10-05T19:00:00Z <= At+5h (2026-10-05T23:00:00Z) [earliest of 3 value(s)]; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+13d all three far, active 8->17 -> OK   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 8->17 do NOT cover; pause to 2026-10-14T13:41:25Z > At+5h (2026-10-05T23:00:00Z) [earliest of 3 value(s)]; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+13e only PauseQualityUpdatesEndTime present (At+5h+1 s), active 8->17 -> OK (whichever are present)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 8->17 do NOT cover; pause to 2026-10-05T23:00:01Z > At+5h (2026-10-05T23:00:00Z) [earliest of 1 value(s)]; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+13f Expiry far but PauseFeatureUpdatesEndTime unparseable, active 8->17 -> FAIL   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 8->17 do NOT cover; pause value unparseable: PauseFeatureUpdatesEndTime; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+14 active 19->6, At 19:30 (window starts 19:00 = active start) -> OK (inclusive)   [At 2026-10-05 19:30]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 19:00 .. 2026-10-06 00:30] active hours 19->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+14a active 20->6, At 19:30 -> FAIL updates   [At 2026-10-05 19:30]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 19:00 .. 2026-10-06 00:30] active hours 20->6 do NOT cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+15 active 15->1, At 20:00 (window ends 01:00 = active end) -> OK (inclusive)   [At 2026-10-05 20:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 19:30 .. 2026-10-06 01:00] active hours 15->1 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+15a active 15->0, At 20:00 -> FAIL updates   [At 2026-10-05 20:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 19:30 .. 2026-10-06 01:00] active hours 15->0 do NOT cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+16 two failures: standby + CBS reboot   [At 2026-10-05 21:00]
+   expected: standby-ac=FAIL hibernate-ac=OK power=OK reboot=FAIL updates=OK | NIGHT GATES FAILED (2): standby-ac, reboot (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: FAIL AC sleep timeout 0x00000384 (900 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: FAIL CBS RebootPending PRESENT, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (2): standby-ac, reboot
+   exit 1 => PASS
+17 all five failing   [At 2026-10-05 21:00]
+   expected: standby-ac=FAIL hibernate-ac=FAIL power=FAIL reboot=FAIL updates=FAIL | NIGHT GATES FAILED (5): standby-ac, hibernate-ac, power, reboot, updates (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: FAIL AC sleep timeout 0x00000384 (900 s)
+   actual  : NIGHT hibernate-ac: FAIL AC hibernate timeout 0x00001c20 (7200 s)
+   actual  : NIGHT power: FAIL AC line offline, battery status 1, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: FAIL CBS RebootPending PRESENT, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 8->17 do NOT cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (5): standby-ac, hibernate-ac, power, reboot, updates
+   exit 1 => PASS
+i1 policy override values present (SetActiveHours, SetDisablePauseUXAccess), hours cover -> FAIL updates (A5.5 N-m3 / A5 item 7: a policy value = FAIL); the INFO lines still say so   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1) | lines present: 2
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: SetActiveHours,SetDisablePauseUXAccess
+   actual  : NIGHT policy: INFO NoAutoUpdate=absent AUOptions=absent; override values present: SetActiveHours,SetDisablePauseUXAccess (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=0 PausedFeatureStatus=absent (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+i2 ConfigureDeadlineForQualityUpdates alone (a policy deadline value), hours cover -> FAIL updates (A5 item 7 known answer)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1) | lines present: 1
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: ConfigureDeadlineForQualityUpdates
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: ConfigureDeadlineForQualityUpdates (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+i2a a policy override value present, hours do NOT cover but a pause covers -> still FAIL updates (the override is an AND, not an alternative)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=FAIL | NIGHT GATES FAILED (1): updates (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: FAIL [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 8->17 do NOT cover; pause to 2026-10-14T13:41:25Z > At+5h (2026-10-05T23:00:00Z) [earliest of 1 value(s)]; policy override values: AlwaysAutoRebootAtScheduledTime
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: AlwaysAutoRebootAtScheduledTime (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (1): updates
+   exit 1 => PASS
+i3 clean: NoAutoUpdate=0 AUOptions=4 present (not override values), no override value -> OK all five; the INFO line prints them   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0) | lines present: 1
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=0 AUOptions=4; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+tx1 saved powercfg text, AC 0 / DC 0 -> OK both sleep gates   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0) | lines present: 1
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT note: the sleep timeouts are parsed from -PowercfgTextFile (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+tx2 saved text with AC edited to 0x00000384 -> FAIL standby-ac and hibernate-ac (the AC value, the 4th hex)   [At 2026-10-05 21:00]
+   expected: standby-ac=FAIL hibernate-ac=FAIL power=OK reboot=OK updates=OK | NIGHT GATES FAILED (2): standby-ac, hibernate-ac (exit 1) | lines present: 1
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT note: the sleep timeouts are parsed from -PowercfgTextFile (calibration only)
+   actual  : NIGHT standby-ac: FAIL AC sleep timeout 0x00000384 (900 s)
+   actual  : NIGHT hibernate-ac: FAIL AC hibernate timeout 0x00000384 (900 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (2): standby-ac, hibernate-ac
+   exit 1 => PASS
+tx3 saved text with AC 0 and DC edited to 0x00000384 -> OK (DC is not AC)   [At 2026-10-05 21:00]
+   expected: standby-ac=OK hibernate-ac=OK power=OK reboot=OK updates=OK | NIGHT GATES OK (exit 0)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT note: the sleep timeouts are parsed from -PowercfgTextFile (calibration only)
+   actual  : NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+   actual  : NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES OK
+   exit 0 => PASS
+tx4 saved text with the "increment" line missing (4 hex values) -> FAIL both (not exactly five = unreadable)   [At 2026-10-05 21:00]
+   expected: standby-ac=FAIL hibernate-ac=FAIL power=OK reboot=OK updates=OK | NIGHT GATES FAILED (2): standby-ac, hibernate-ac (exit 1) | lines present: 1
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT note: the sleep timeouts are parsed from -PowercfgTextFile (calibration only)
+   actual  : NIGHT standby-ac: FAIL AC sleep timeout unreadable
+   actual  : NIGHT hibernate-ac: FAIL AC hibernate timeout unreadable
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (2): standby-ac, hibernate-ac
+   exit 1 => PASS
+tx5 saved text with a 6th hex value (an extra Minimum line) -> FAIL both   [At 2026-10-05 21:00]
+   expected: standby-ac=FAIL hibernate-ac=FAIL power=OK reboot=OK updates=OK | NIGHT GATES FAILED (2): standby-ac, hibernate-ac (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT note: the sleep timeouts are parsed from -PowercfgTextFile (calibration only)
+   actual  : NIGHT standby-ac: FAIL AC sleep timeout unreadable
+   actual  : NIGHT hibernate-ac: FAIL AC hibernate timeout unreadable
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (2): standby-ac, hibernate-ac
+   exit 1 => PASS
+tx6 Turkish-labelled text (localised), AC 0x00000384 -> FAIL both (the parse is label-independent)   [At 2026-10-05 21:00]
+   expected: standby-ac=FAIL hibernate-ac=FAIL power=OK reboot=OK updates=OK | NIGHT GATES FAILED (2): standby-ac, hibernate-ac (exit 1) | lines present: 1
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT note: the sleep timeouts are parsed from -PowercfgTextFile (calibration only)
+   actual  : NIGHT standby-ac: FAIL AC sleep timeout 0x00000384 (900 s)
+   actual  : NIGHT hibernate-ac: FAIL AC hibernate timeout 0x00000384 (900 s)
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (2): standby-ac, hibernate-ac
+   exit 1 => PASS
+tx7 empty text -> FAIL both (unreadable)   [At 2026-10-05 21:00]
+   expected: standby-ac=FAIL hibernate-ac=FAIL power=OK reboot=OK updates=OK | NIGHT GATES FAILED (2): standby-ac, hibernate-ac (exit 1)
+   actual  : NIGHT note: readings are FAKED by -FakeJson (calibration only)
+   actual  : NIGHT note: the sleep timeouts are parsed from -PowercfgTextFile (calibration only)
+   actual  : NIGHT standby-ac: FAIL AC sleep timeout unreadable
+   actual  : NIGHT hibernate-ac: FAIL AC hibernate timeout unreadable
+   actual  : NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+   actual  : NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations absent, not gated)
+   actual  : NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; no pause; policy override values: none
+   actual  : NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+   actual  : NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+   actual  : NIGHT GATES FAILED (2): standby-ac, hibernate-ac
+   exit 1 => PASS
+
+Refusals (exit 2, no gate lines):
+  bad -At "garbage": exit 2, first line "NIGHT usage error: -At must be a valid 'yyyy-MM-dd HH:mm' (got 'garbage')" => PASS
+  bad -At "2026-10-05 25:00": exit 2, first line "NIGHT usage error: -At must be a valid 'yyyy-MM-dd HH:mm' (got '2026-10-05 25:00')" => PASS
+  bad -At "2026-10-5 21:00" (not zero padded): exit 2, first line "NIGHT usage error: -At must be a valid 'yyyy-MM-dd HH:mm' (got '2026-10-5 21:00')" => PASS
+  bad -At "2026-02-30 21:00": exit 2, first line "NIGHT usage error: -At must be a valid 'yyyy-MM-dd HH:mm' (got '2026-02-30 21:00')" => PASS
+  no -At at all: exit 2, first line "NIGHT usage error: -At must be a valid 'yyyy-MM-dd HH:mm' (got '')" => PASS
+  -FakeJson file missing: exit 2, first line "NIGHT usage error: -FakeJson file not found" => PASS
+  -PowercfgTextFile missing: exit 2, first line "NIGHT usage error: -PowercfgTextFile not found" => PASS
+  -FakeJson lacks key rebootRequiredWu: exit 2, first line "NIGHT usage error: -FakeJson lacks key 'rebootRequiredWu' (a fake replaces every reading)" => PASS
+  -FakeJson lacks key batteryFlag: exit 2, first line "NIGHT usage error: -FakeJson lacks key 'batteryFlag' (a fake replaces every reading)" => PASS
+  -FakeJson lacks key rebootParentMissing: exit 2, first line "NIGHT usage error: -FakeJson lacks key 'rebootParentMissing' (a fake replaces every reading)" => PASS
+  -FakeJson lacks key pauseQualityUpdatesEnd: exit 2, first line "NIGHT usage error: -FakeJson lacks key 'pauseQualityUpdatesEnd' (a fake replaces every reading)" => PASS
+  -FakeJson lacks key policyOverrides: exit 2, first line "NIGHT usage error: -FakeJson lacks key 'policyOverrides' (a fake replaces every reading)" => PASS
+  -FakeJson is not JSON: exit 2, first line "NIGHT usage error: -FakeJson is not valid JSON" => PASS
+  -FakeJson battery is a string other than none/error: exit 2, first line "NIGHT usage error: -FakeJson battery must be 'none', 'error', an int or an int array" => PASS
+
+Mutants (a copy of the script with one edit; the targeted case must NOT pass, i.e. the case can see the branch):
+  standby test -eq 0 -> -ge 0: case "2 standby 0x384 (900 s) -> FAIL standby-ac" now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  hibernate test -eq 0 -> -ge 0: case "3 hibernate nonzero (7200 s) -> FAIL hibernate-ac" now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  reboot ignores WU RebootRequired: case "6 WU RebootRequired ONLY (A3 m13) -> FAIL reboot" now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  reboot ignores a missing parent key (N-m1): case "5a CBS parent key missing -> FAIL reboot (N-m1: a path typo " now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  active-hours end exclusive ($to -lt $winEnd): case "9 active 18->6, At 2026-10-06 01:00 -> OK (06:00 inclusive)" now reads NIGHT GATES FAILED (1): updates (exit 1) => FLIPPED (calibrated)
+  active-hours start exclusive ($winStart -lt $from): case "14 active 19->6, At 19:30 (window starts 19:00 = active star" now reads NIGHT GATES FAILED (1): updates (exit 1) => FLIPPED (calibrated)
+  pause test -gt -> -ge: case "13 pause expiry == At+5h exactly (2026-10-05T23:00:00Z), act" now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  pause reads PauseUpdatesExpiryTime only, not the earliest of the three (N-m2): case "13b PauseUpdatesExpiryTime far, PauseQualityUpdatesEndTime =" now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  power: any status accepted when AC line online: case "4f BatteryStatus 1 even with AC line online -> FAIL power (o" now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  power: the AC-online requirement removed (the A2-literal status-2 path, N-I1 C2): case "4h BatteryStatus 2 with AC line OFFLINE -> FAIL power (A4.3b" now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  power: a failed Win32_Battery query read as "no battery" (N-I1 C1 / A4-RECHECK m2): case "4g Win32_Battery query FAILED (battery "error"), BatteryFlag" now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  power: an empty query accepted without BatteryFlag 128: case "4a1 no Win32_Battery instance but BatteryFlag 1 (OS reports " now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  powercfg: "exactly five hex values" relaxed to "at least four": case "tx4 saved text with the "increment" line missing (4 hex valu" now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  powercfg: the AC value taken from the Minimum hex ($hexes[0]): case "tx2 saved text with AC edited to 0x00000384 -> FAIL standby-" now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  powercfg: the AC value taken from the DC hex ($hexes[4]): case "tx3 saved text with AC 0 and DC edited to 0x00000384 -> OK (" now reads NIGHT GATES FAILED (2): standby-ac, hibernate-ac (exit 1) => FLIPPED (calibrated)
+  updates ignores the policy override values (NG-I1; the old build): case "i1 policy override values present (SetActiveHours, SetDisabl" now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  updates ignores the policy override values (NG-I1; the old build), single-value case: case "i2 ConfigureDeadlineForQualityUpdates alone (a policy deadli" now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  updates ignores the policy override values (NG-I1), override as an alternative to the hours/pause (OR instead of AND): case "i2a a policy override value present, hours do NOT cover but " now reads NIGHT GATES OK (exit 0) => FLIPPED (calibrated)
+  the policy INFO line removed (N-m3): case "i1 policy override values present (SetActiveHours, SetDisabl" now reads NIGHT GATES FAILED (1): updates (exit 1) => FLIPPED (calibrated)
+  the pause-status INFO line removed (N-m3): case "i1 policy override values present (SetActiveHours, SetDisabl" now reads NIGHT GATES FAILED (1): updates (exit 1) => FLIPPED (calibrated)
+  parameter renamed back to $AtText: parameter names AtText, FakeJson, PowercfgTextFile => the scan reads FAIL (FLIPPED, calibrated)
+
+REAL MACHINE reading (read-only; informative, this is the arming reading, not a calibration case):
+  powershell -File night-gates.ps1 -At '2026-10-05 19:30'   (exit 0)
+    NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+    NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+    NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+    NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations present, not gated)
+    NIGHT updates: OK [2026-10-05 19:00 .. 2026-10-06 00:30] active hours 15->6 cover; pause to 2026-10-14T13:41:25Z > At+5h (2026-10-05T21:30:00Z) [earliest of 3 value(s)]; policy override values: none
+    NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+    NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+    NIGHT GATES OK
+  powershell -File night-gates.ps1 -At '2026-10-05 21:00'   (exit 0)
+    NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+    NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+    NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+    NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations present, not gated)
+    NIGHT updates: OK [2026-10-05 20:30 .. 2026-10-06 02:00] active hours 15->6 cover; pause to 2026-10-14T13:41:25Z > At+5h (2026-10-05T23:00:00Z) [earliest of 3 value(s)]; policy override values: none
+    NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+    NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+    NIGHT GATES OK
+  powershell -File night-gates.ps1 -At '2026-10-06 01:00'   (exit 0)
+    NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s)
+    NIGHT hibernate-ac: OK AC hibernate timeout 0x00000000 (0 s)
+    NIGHT power: OK AC line online, battery status 2, BatteryFlag 0 (OK needs AC online and every status in 2,3,6,7,8,9,11, or no battery with BatteryFlag 128)
+    NIGHT reboot: OK CBS RebootPending absent, WU RebootRequired absent (PendingFileRenameOperations present, not gated)
+    NIGHT updates: OK [2026-10-06 00:30 .. 2026-10-06 06:00] active hours 15->6 cover; pause to 2026-10-14T13:41:25Z > At+5h (2026-10-06T03:00:00Z) [earliest of 3 value(s)]; policy override values: none
+    NIGHT policy: INFO NoAutoUpdate=1 AUOptions=2; override values present: none (also gate updates)
+    NIGHT pause-status: INFO PausedQualityStatus=1 PausedFeatureStatus=1 (informational, not gated)
+    NIGHT GATES OK
+LIVE powercfg text (5 hex values) through -PowercfgTextFile vs the live script, standby-ac line: NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s) | NIGHT standby-ac: OK AC sleep timeout 0x00000000 (0 s) => PASS (identical)
+
+CALIBRATION PASSED

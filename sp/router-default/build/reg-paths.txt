@@ -1,0 +1,11 @@
+electron/test/golden/passes/PREREGISTER-router-default.md
+electron/test/golden/passes/router-default/RESULT-smoke.md
+electron/test/golden/passes/router-default/router-hour-read.mjs
+electron/test/golden/passes/router-default/build-blind-rd.mjs
+electron/test/golden/passes/router-default/score-rd.mjs
+electron/test/golden/passes/router-default/launch-grader-rd.mjs
+electron/test/golden/passes/router-default/rd-grader-dispatch.txt
+electron/test/golden/passes/router-default/launch-rd-src.txt
+electron/test/golden/passes/router-default/guard-rd.mjs
+electron/test/golden/passes/router-default/rd-precheck.ps1
+electron/test/golden/passes/router-default/quota-ledger-today.mjs

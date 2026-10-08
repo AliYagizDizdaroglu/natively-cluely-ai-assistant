@@ -1,0 +1,49 @@
+ok  probe 5/5 clean: true
+ok  probe 4/5: false
+ok  probe with an abnormal close: false
+ok  probe: no final line: false
+ok  arm line: continue: {"reps":1,"answered":36,"of":38,"holes":2,"last":36,"state":"CONTINUE"}
+ok  arm line: done: "DONE"
+ok  arm line: ET38's level-named line is not read: null
+ok  arm line: a line without the last-run count is not read: null
+ok  arm line: absent: null
+ok  guard: 3 Oct 00:10 may start: true
+ok  guard: 3 Oct 07:44 may start: true
+ok  guard: 3 Oct 07:44:59 may start: true
+ok  guard: 3 Oct 07:45:00 may NOT (at or after): false
+ok  guard: 3 Oct 07:46 may not: false
+ok  guard: 3 Oct 23:00 may not: false
+ok  guard: 4 Oct 00:10 may not (a later day never starts a rep either): false
+ok  guard: 2 Oct 23:59 may start: true
+ok  guard: the real clock reads the machine's local time (offset +180 min expected): 180
+ok  timeout: 00:30 -> 80 min: 80
+ok  timeout: 07:44 -> 80 min (106 min left): 80
+ok  timeout: 08:10 -> 80 min (exactly 80 left): 80
+ok  timeout: 08:30 -> 60 min: 60
+ok  timeout: 09:29:30 -> 0.5 min: 0.5
+ok  timeout: 09:31 -> 0 (never negative): 0
+ok  broken window: 18 of 38 stops: true
+ok  broken window: 19 of 38 does not: false
+ok  broken window: 0 of 38 stops: true
+ok  chain: a healthy night: probe once, run1 extract1 run2 extract2 run3 extract3, exit 0: [0,"probe run1 extract1 run2 extract2 run3 extract3"]
+ok  chain: the filter hash is recorded for every extraction: ["r1:42d9bc42dbd17870","r2:42d9bc42dbd17870","r3:42d9bc42dbd17870"]
+ok  chain: each rep was handed its timeout (80 min at 00:30; the clock moves 35 min a rep): [80,80,80]
+ok  chain: r2 answers 18 of 38 -> broken window, exit 7, r3 never started: [7,"probe run1 extract1 run2 extract2"]
+ok  chain: 19 of 38 is not broken: all three reps run, exit 0: [0,"probe run1 extract1 run2 extract2 run3 extract3"]
+ok  chain: r1 answers 10 -> stops after r1 (exit 7): [7,"probe run1 extract1"]
+ok  pre-flight fails -> nothing runs, exit 4: [4,"probe"]
+ok  guard at 07:45 -> not even the probe, exit 6: [6,""]
+ok  guard at 07:46 -> exit 6, nothing runs: [6,""]
+ok  guard at 07:44 but the probe takes 5 min -> the probe runs, no rep starts (exit 6): [6,"probe"]
+ok  guard: r1 starts 07:05 (after the probe) and ends 07:45; r2 is refused, exit 6, r2 never started: [6,"probe run1 extract1"]
+ok  timeout: r1 starts 07:05 -> 80 min: [80]
+ok  resume after a finished r1 (07:30): r1 skipped, the probe runs, r2 starts 07:35 and ends 07:47, then the guard refuses r3: [6,"probe run2 extract2"]
+ok  resume at 00:30: r1 finished -> skipped; the probe still runs before the first rep this invocation starts: [0,"probe run2 extract2 run3 extract3"]
+ok  a run file without its answers file -> REFUSED exit 3, nothing runs: [3,""]
+ok  everything done -> exit 0, no probe, no run: [0,""]
+ok  run.mjs exits 2 with no run file (e.g. the instruction hash refused) -> STOPPED, exit 5, no extraction: [5,"probe run1"]
+ok  a rep cut short by the timeout (run file written, signal exit) counts as played: extracted, read, never re-run; the chain goes on: [0,"probe run1 extract1 run2 extract2 run3 extract3",true]
+ok  a rep cut short that answered 12 of 38 -> played, extracted, then the broken-window stop (exit 7): [7,"probe run1 extract1"]
+ok  a different filter hash that reproduces the stored answers -> the chain runs; the check was run (before each rep and each extraction): [0,true,"probe run1 extract1 run2 extract2 run3 extract3"]
+ok  a different filter hash that does NOT reproduce them -> nothing runs, exit 2: [2,""]
+ok  the registered filter hash -> check-extract is never run: 0

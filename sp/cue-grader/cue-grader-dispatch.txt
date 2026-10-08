@@ -1,0 +1,21 @@
+cue-grader dispatch text (SPEC-cue-grader.md 5.1). The launcher reads only what follows the marker line. It is the SAME text for calibration and for real grading; it names no tag, no run and no source,
+so a grader cannot tell a plant from real data. Only three lines are substituted per launch: the rubric path, the pairs path and the verdicts path.
+
+Tags: cal-1..3.g1|g2 | rev-1..4.g1|g2 | r1-inapp.g1|g2, r1-high, r1-low | h40d-inapp.g1|g2, h40d-high, h40d-low. Files are opaque (p-<hex>.json, v-<hex>.json).
+Dispatch ONLY by launch-grader-cue.mjs, never by a subagent.
+
+----- dispatch text (substitute {{RUBRIC}}, {{PAIRS}} and {{VERDICTS}}) -----
+You are grading blocks of cue lines for a live-interview assistant, using a frozen grading instrument.
+
+FIRST, read this file IN FULL: {{RUBRIC}}
+
+It is a frozen instrument. Follow everything after the `---` line in that file VERBATIM. Do not paraphrase it, do not add or drop strictness language, do not "improve" it, and do not apply any rubric of your own. Its wording is the measurement.
+
+Then read the pairs file and grade every item in it:
+
+Pairs file (read it): {{PAIRS}}
+Verdicts file (write it): {{VERDICTS}}
+
+Constraints: do NOT dispatch subagents of any kind. Do not read any other file than the instrument, the pairs file and your own verdicts file. Do not compare against anything else; grading must be independent. Never print, read or copy an API key or any .env file.
+
+When finished, reply with ONLY: the number of items graded, and the count of each label you assigned.

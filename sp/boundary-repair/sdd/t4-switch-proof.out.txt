@@ -1,0 +1,24 @@
+﻿final adapter 16036 B 2af5409f94f0f3e5
+
+[as expected] control: the final adapter: Tests 1 passed (1)
+
+[as expected] gate removed: Tests 1 failed (1)
+   AssertionError: expected 2 to be 1 // Object.is equality
+   
+   - Expected
+   + Received
+   
+   - 1
+
+[as expected] gate inverted: Tests 1 failed (1)
+   AssertionError: expected +0 to be 1 // Object.is equality
+   
+   - Expected
+   + Received
+   
+   - 1
+
+junction removed: true; MAIN's vitest still present: true
+scratch tree deleted: true
+
+variants that differed from the expectation: 0

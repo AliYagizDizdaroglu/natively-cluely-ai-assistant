@@ -1,0 +1,28 @@
+feat(verbal): the hedge is the default answer policy
+
+Flight h40c (holdout40, 2026-09-29, passes/PREREGISTER-h40c.md) passed
+with the hedge on: first token median 4.1 s, p90 6.5 s, 0 failures,
+35/45 acceptable (rule 1 not void, rules 2-3 PASS). That pass licenses
+exactly this change: 3.5-flash-lite HIGH answers first and 3.1-flash-lite
+LOW is raced in after 5 s without a first token; the first token wins.
+
+NATIVELY_VERBAL_HEDGE unset, empty or '1' is on; '0' restores the stall
+race (3.1-flash-lite LOW first, 3.5-flash-lite raced in at 10 s); any
+other value refuses at startup, as before. A junk
+NATIVELY_VERBAL_HEDGE_TRIGGER_MS now refuses too unless the flag is '0'.
+
+Tests that pin the stall race set '0' instead of deleting the variable;
+the default-on and opt-out paths and padded values are pinned (mutants
+killed). Comments that described the old default are corrected
+(LLMHelper, verbalPrimaryModel, the flight harness, the pass record's
+line reference); NATIVELY_VERBAL_PRIMARY_MODEL only changes which model
+answers when the flag is '0'. Behaviour outside verbalHedge.ts is
+unchanged (comment-only proofs for LLMHelper.ts and the golden modules).
+
+Reviewed: Opus task review (spec compliant, quality approved) and a
+scoped re-review of fix rounds 2-3 (approved). Suites: llm + LLMHelper
+35 files / 315 tests; golden pass-record 27/27, flight 18/18; root tsc
+clean, electron tsc at the 6 baseline errors. The built app's startup
+line is checked after the rebuild, and live on the next app hour.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

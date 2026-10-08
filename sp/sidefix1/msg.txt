@@ -1,0 +1,8 @@
+test(turns): the replay test finds its fixtures from any working directory
+
+Re-applied from 2585dff (worktree gifted-goldstine-133146, base fed4b07); byte-identical blob pair. The fixture path
+was resolved from process.cwd(), so running vitest from a temp cwd with --root failed at collection (ENOENT);
+it now resolves from __dirname. Before: ENOENT, no tests; after: 12/12 (s50a 40/40, after9 76/76). Full suite
+1087 passed, 0 failed, 4 skipped; tsc electron 6 (pre-existing), root 0. Opus review: APPROVE.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

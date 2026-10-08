@@ -1,0 +1,61 @@
+eq grading-agent dispatch text. Written 2026-10-06 (the build of b8, before any flight datum). The dispatch text below the marker is h40d's text
+BYTE-IDENTICAL (proven by launch-grader-eq-cal.mjs, which compares its sha256 with the template region of validation-hour\h40d-grader-dispatch.txt),
+with only the pairs path, the verdicts path and the tag substituted per launch. This preamble is the tag/file table of flight eq and its rulings; the
+launcher reads only what follows the marker line.
+
+RUN = MAIN\electron\test\golden\interview60.runs\<stamp>-eq
+E   = C:\Users\sotka\OneDrive\Masaüstü\natively-lab\sp\flight-eq   (the verdicts of the per-arm graders and the blind G files live here)
+
+Rulings, from the registration (section 2, 6), A2.7, A3.5, A4.5 and A7:
+- Graders: 14 per-arm files (one grader each) + 3 blind G files (2 front + 1 back for |G_twin| <= 7) x 2 graders = 6, so 20 graders; plus the pilot
+  (--make-pilot, graded through the --pairs mode first) and the probes (cwdprobe-1 and cwdprobe-2 pinned to claude-opus-5-5, cwdprobe-3 the alias read,
+  without --model-id). At most 2 graders at once (the launcher's slot lock). Dispatch ONLY by E\launch-grader-eq.mjs, never by a subagent.
+- Model: every grader and probe 1-2 is launched with --model-id claude-opus-5-5 (the user's pin). If that id is refused, grading WAITS; no other model grades.
+  The model of every transcript is read afterwards (h40d-grader-models.mjs) and must read claude-opus-5-5, else that file is re-graded once by a fresh grader.
+- Fresh cwd per attempt outside the project (E\grading\<tag>-a<k>), tools Read/Write/Edit only, --strict-mcp-config, no --add-dir; memory ABSENT per transcript
+  (check-grader-memory.mjs); audit in the default mode: blind slots by audit-graders.mjs (--blind-dir E\blind --dispatch E\eq-grader-dispatch.txt), per-arm
+  files by E\eq-audit.mjs; clean 100 percent or the file is re-graded once.
+- Per-arm files: PAIRS mode (--pairs <RUN>\<pairs file> --verdicts E\eq-verdicts-<tag>.json). The four bare and high/low arms are graded this hour (the user,
+  2026-10-02 rule); captured-minimal and the chains are not graded.
+- Blind G files: SLOT mode (blind-N.gX; pairs E\blind\pairs.blind-N.json, verdicts E\blind\verdicts.blind-N.gX.json), built by eq-twins.mjs --build-blind
+  AFTER the G sitting; keys in E\R-keyhold (never read by a grader). Both arms of each item are in the same file; the graders never see an arm.
+- Merge: cwd MAIN, E\eq-merge.cmd <exact grader model id> <run dir>, only after the flight task has ended. The G files are NOT merged: eq-twins.mjs reads them.
+- GRADER DRIFT: the alias is read once by cwdprobe-3 (reported, decides nothing); every clause is computed within the hour under one pinned grader.
+- Counting rulings: the registration section 4 "Counting rulings, before any verdict", and h40d's, stand; grades are the graders'; nothing is re-graded by hand.
+
+Per-arm tags and files (fourteen rows). Each PAIRS file is in RUN (exported by interview60.judge.mjs --export on the run folder), each VERDICTS file in E:
+  inapp                      PAIRS interview60.judge.pairs.json                                             VERDICTS eq-verdicts-inapp.json
+  captured-high              PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_captured-high.json         VERDICTS eq-verdicts-captured-high.json
+  captured-high-r2           PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r2.json      VERDICTS eq-verdicts-captured-high-r2.json
+  captured-high-r3           PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_captured-high-r3.json      VERDICTS eq-verdicts-captured-high-r3.json
+  captured-no-cues-high      PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high.json VERDICTS eq-verdicts-captured-no-cues-high.json
+  captured-no-cues-high-r2   PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high-r2.json VERDICTS eq-verdicts-captured-no-cues-high-r2.json
+  captured-no-cues-high-r3   PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_captured-no-cues-high-r3.json VERDICTS eq-verdicts-captured-no-cues-high-r3.json
+  captured-low               PAIRS interview60.judge.pairs.gemini-3.1-flash-lite_captured-low.json          VERDICTS eq-verdicts-captured-low.json
+  captured-low-r2            PAIRS interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r2.json       VERDICTS eq-verdicts-captured-low-r2.json
+  captured-low-r3            PAIRS interview60.judge.pairs.gemini-3.1-flash-lite_captured-low-r3.json       VERDICTS eq-verdicts-captured-low-r3.json
+  high                       PAIRS interview60.judge.pairs.gemini-3.5-flash-lite_high.json                  VERDICTS eq-verdicts-high.json
+  low                        PAIRS interview60.judge.pairs.gemini-3.1-flash-lite_low.json                   VERDICTS eq-verdicts-low.json
+  bare35                     PAIRS interview60.judge.pairs.gemini-3.5-flash-lite.json                       VERDICTS eq-verdicts-bare35.json
+  bare31                     PAIRS interview60.judge.pairs.gemini-3.1-flash-lite.json                       VERDICTS eq-verdicts-bare31.json
+
+Blind rows (three files, the slot mode):
+  blind-1.g1 / blind-1.g2    PAIRS E\blind\pairs.blind-1.json   (front, the first half of G_twin's ids, 10 answers an id)   VERDICTS E\blind\verdicts.blind-1.gX.json
+  blind-2.g1 / blind-2.g2    PAIRS E\blind\pairs.blind-2.json   (front, the second half)                                   VERDICTS E\blind\verdicts.blind-2.gX.json
+  blind-3.g1 / blind-3.g2    PAIRS E\blind\pairs.blind-3.json   (back, every id, 6 answers an id)                           VERDICTS E\blind\verdicts.blind-3.gX.json
+
+----- dispatch text (substitute RUN, VERDICTS and TAG) -----
+You are grading one arm of an interview-answer flight, using a frozen grading instrument.
+
+FIRST, read this file IN FULL: C:\Users\sotka\OneDrive\Masaüstü\natively-cluely-ai-assistant\electron\test\golden\interview60.grader-prompt.md
+
+It is a frozen instrument. Follow everything after the `---` line in that file VERBATIM. Do not paraphrase it, do not add or drop strictness language, do not "improve" it for this run, and do not apply any rubric of your own. Its wording is the measurement.
+
+Substitute these two values wherever the file says `<PAIRS_FILE>` and `<VERDICTS_FILE>`:
+
+<PAIRS_FILE> = RUN\<pairs file>
+<VERDICTS_FILE> = VERDICTS
+
+Constraints: do NOT dispatch subagents of any kind. Do not read other flight files, do not read any other arm's pairs or verdicts, and do not compare against any other arm — grading must be independent. Never print, read or copy an API key or any .env file. Do not modify anything in the run folder.
+
+When finished, reply with ONLY: the tag `TAG`, the number of items graded, and the count of each verdict class you assigned.

@@ -1,0 +1,11 @@
+CURRENT  M0_real                              exit 0  [PPPSS]  no failure
+CURRENT  M1_refuse_only_repair_under_repair   exit 0  [PPPSS]  no failure
+CURRENT  M2_orphan_throw_removed              exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its o :: AssertionError: expected [Function] to throw an error
+CURRENT  M3_wrong_final_throw_removed         exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its o :: AssertionError: expected [Function] to throw an error
+CURRENT  M4_gt_instead_of_ge                  exit 1  [PFPSS]  FAILED: keeps interims and empty finals out, and drops finals before :: AssertionError: expected [ 'Okay.' ] to deeply equal [ …(2) ]
+PROPOSED M0_real                              exit 0  [PPPSS]  no failure
+PROPOSED M1_refuse_only_repair_under_repair   exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its o :: AssertionError: expected [Function] to throw an error
+PROPOSED M2_orphan_throw_removed              exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its o :: AssertionError: expected [Function] to throw an error
+PROPOSED M3_wrong_final_throw_removed         exit 1  [PPFSS]  FAILED: refuses a boundary-repair line that is not right under its o :: AssertionError: expected [Function] to throw an error
+PROPOSED M4_gt_instead_of_ge                  exit 1  [PFPSS]  FAILED: keeps interims and empty finals out, drops finals before `si :: AssertionError: expected [ 'Okay.' ] to deeply equal [ …(2) ]
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true

@@ -1,0 +1,21 @@
+OK  dry run: exit 0, writes nothing (no key folder, no packets)
+OK  dry run: holes are exactly the registered four (app captured-high-r2 S2Q06; old Live r1 S1Q02, S1Q02F, S1Q09F) + the three planted (new r1's stand-in three, r3 S1Q03 not played, r3 S1Q04 empty); the r2 apology is NOT a hole (got: app35-twin2 S2Q06, l20d-r1 S1Q02, l20d-r1 S1Q02F, l20d-r1 S1Q09F, l20d-r3 S1Q03, l20d-r3 S1Q04, live38-r1 S1Q02, live38-r1 S1Q02F, live38-r1 S1Q09F)
+OK  dry run: per arm 35 36 38 | apps 38 38 37 38 | old 35 38 38; answers 371
+OK  four packets of 10, 10, 10 and 8 items (5, 5, 5, 4 pairs), answers summing to 371 (got [[95,10],[99,10],[99,10],[78,8]])
+OK  two reps, --dry: allowed, says which rep is missing
+OK  two reps, real build: REFUSED (exit 2), no key, no packets
+OK  three reps, real build: exit 0, key written
+OK  key.json: seed 20261003, ten arms, 371 keys, the registered rubric travels in every packet
+OK  every arm in the key is one of the ten; every arm has keys
+OK  every pair sits in ONE packet (a question and its follow-up go to the same two graders), 5/5/5/4 pairs
+OK  every packet entry sits in the packet its item belongs to, and the packet holds exactly its keys
+OK  the key maps every one of the 371 packet answers to the arm whose text it is (no mismatch)
+OK  the spoken apology (rep 2 S2Q10) is sent and graded, not a hole
+OK  blinding: no arm name, no "twin", no "inapp" anywhere in the packets
+OK  blinding: entries carry only key, id, kind, level, topic, question, heard, answer (got key,id,kind,level,topic,question,heard,answer)
+OK  the shuffle moves an arm around (new r1 takes 10 different positions over its 35 items)
+OK  a second build into the same key folder -> REFUSED (exit 3); key.json and the four packets are byte-identical afterwards
+OK  determinism: the same inputs in another folder give a byte-identical key.json (the seed is fixed)
+OK  a registered hole the data does not have -> the batch is refused (nonzero exit, "not the registered ones")
+OK  items.json with 37 ids -> refused (nonzero exit)
+L20D BLIND CALIBRATION OK

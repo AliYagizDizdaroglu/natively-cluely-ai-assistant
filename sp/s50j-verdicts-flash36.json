@@ -1,0 +1,32 @@
+{
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic correct in both directions (2,850 TP, 57% precision, 31.5% recall); calling 57% a round-up to 60% is loose but defensible."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Gets the point-in-time key point (ingested_at <= snapshot), the 30-day window and zero preservation via left join and count."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All four sub-parts covered with sound mechanisms (namespaces, tombstones, pre-filtering, LLM-judge), but about 135 words across four paragraphs."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure mapping end to end plus the managed-versus-custom judgment, but roughly 100 words is past a spoken length."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-Lock plus deterministic chunk-ID upserts is exactly the at-least-once fix, and the crash path is walked through concretely."
+  }
+}

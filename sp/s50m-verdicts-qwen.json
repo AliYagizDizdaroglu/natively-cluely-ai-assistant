@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly ties tabular mixed features and the latency budget to XGBoost and names a logistic regression baseline; natural spoken length."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic is exact: 2,850 true positives, 57 percent precision, 30 percent recall, and it correctly flags the 60 percent claim as inconsistent."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout correctly nets out seasonality and mix; the opening claim that the drop is already a net lift is unsupported."
+  },
+  "S1Q04": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Core formulas right, but the zero-prevalence lift contract contradicts itself, 1.0 for empty inputs versus 0.0 for no positives; 89 words."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Names the 30-day embargo and fits preprocessing only on train; spoken register broken by the handle_unknown='ignore' code fragment."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Puts the ingested_at and window filters in the join condition and counts a nullable column, so zero-call customers survive; inline SQL tokens."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers all seven stages and names feature store, registry and monitoring as shared; 103 words, and overclaims identical scores."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Immutable prediction log, stable hash assignment, delayed join, and control-only or IPW retraining are all correct; 108 words."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Service mapping is accurate across all eight components, but the operational rationale is one generic closing sentence; 101 words."
+  },
+  "S1Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Managed Identity, Key Vault and Entra auth are right, but model-artifact access is never covered and networking controls get one clause."
+  },
+  "S2Q01": {
+    "correctness": 0,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Ends with an unfilled [Company] placeholder plus an invented legal-discovery project and forty percent figure that would embarrass the candidate."
+  },
+  "S2Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Defines units and denominators, but never says how datasets were built, and a 2 percent margin on 100 chains is statistically wrong."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correctly names unpredictable reasoning paths as the justification and contrasts all three approaches; 105 words with a paragraph break."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Formula, one-based ranks, accumulation and lexicographic tie-break all correct; a stray LaTeX dollar sign leaks into 'one over c plus r'."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dedupe, relevance sort, skip-not-break, and the two-per-document cap are all correct; 88 words, just over spoken length."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore, wait_for, positional slots and per-case exception capture satisfy every requirement; 90 words with dotted API names."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant sharding, relational metadata, query-time filters and evaluation all sound, though update and delete handling is only version history; 130 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Content covers all six sub-parts correctly, but it is a written outline of labelled sections that cannot be spoken as-is."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure component is placed accurately and the managed-versus-custom line is well argued; 108 words."
+  },
+  "S2Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dedup store plus ack-last is standard, but a crash between writing embeddings and marking complete still repeats work, so the guarantee overclaims."
+  }
+}

@@ -1,0 +1,14 @@
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/whole-turn
+
+ ❯ electron/llm/verbalStreamFilter.test.ts (143 tests | 2 failed) 179ms
+   × the offers block BEFORE the spoken answer (spec 2026-09-30 offers-before-answer): the answer is shown, the offers are kept > the partial line after the offers — digits, the bar, a CR, then the label (CRLF after the bar): held — the same expression as the cue block 22ms
+     → expected 2 to be 3 // Object.is equality
+   × stripCueBlock — early close (spec 2026-09-30 cue-early-close): the block closes on the first prose character, not the first prose line > partial state — digits, the bar, a stray CR, then the phrase: held (CUE_LINE takes whitespace after the bar, and CR is whitespace) 2ms
+     → expected 2 to be 3 // Object.is equality
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 141 passed (143)
+   Start at  21:36:37
+   Duration  4.05s (transform 318ms, setup 0ms, collect 349ms, tests 179ms, environment 1.88s, prepare 409ms)
+

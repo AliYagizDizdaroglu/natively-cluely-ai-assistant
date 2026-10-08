@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Ties XGBoost's missing-value handling and regularization to the data and the SLA, and names a logistic-regression baseline."
+  },
+  "S1Q02": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Arithmetic is right but it calls the computed 57 percent higher than the reported 60 percent, and reads as equations."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names a randomized holdout plus difference-in-differences controlling for seasonality and customer mix, at natural spoken length."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Formulas and all three edge cases are correct, but the chained equations and symbols need translating before speaking."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correctly embargoes the thirty-day label window and fits the ColumnTransformer only on the training slice."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Left join with the ingested-at cutoff and COUNT of a column correctly preserves customers with zero calls."
+  },
+  "S1Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 0,
+    "reason": "Covers every component and the shared pieces, but miscasts EventBridge as the batch pipeline and is a labelled two-hundred-word list."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, joins and inverse-propensity retraining are sound, but hashing the request ID reassigns a user's arm on every call."
+  },
+  "S1Q09": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Maps every component sensibly but schedules with the retired Azure Scheduler, and runs well past spoken length."
+  },
+  "S1Q10": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, Key Vault and per-environment isolation are right, but there is no Azure PostgreSQL Reader role, and it is long."
+  },
+  "S2Q01": {
+    "correctness": 0,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every stage is correct, but it says the pipeline I built at XYZ with an invented 40 percent latency claim."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives unit, denominator, dataset and interval for all three metrics with apt bootstrap and Wilson methods, but far too long."
+  },
+  "S2Q03": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Compares all three approaches only in outline and never names the cost the agent's complexity has to justify."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Reciprocal rank fusion, one-based ranks, deterministic ID tie-break and top-k are all stated correctly and spoken naturally."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Greedy relevance order with budget check, id set and two-per-document cap, all in natural spoken form."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, per-case timeout, order-preserving indexed results and isolated failure recording answer every requirement."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant namespaces, ACL metadata, query-time filtering and isolation tests are all sound, but the answer runs long."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioning, backfill, dual-write sync, quality comparison, cutover and rollback all covered, at nearly twice the spoken length."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service is the right choice and the custom-component caveat lands, but it is a long service-by-service recital."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Duplicate detection plus a durable idempotency key and completing only after the write correctly survives the crash window."
+  }
+}

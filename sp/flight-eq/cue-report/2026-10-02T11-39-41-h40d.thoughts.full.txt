@@ -1,0 +1,22 @@
+run: 2026-10-02T11-39-41-h40d
+cue twins (gemini-3.5-flash-lite_captured-high)
+  -r1 interview60.answers.gemini-3.5-flash-lite_captured-high.json: answered 43, holes 0, empty prose 1 [R09], no thoughts 0; thoughts p50 902 p90 1139; ttft p50 10891 p90 30446 ms
+  -r2 interview60.answers.gemini-3.5-flash-lite_captured-high-r2.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 891 p90 1093; ttft p50 3863 p90 9844 ms
+  -r3 interview60.answers.gemini-3.5-flash-lite_captured-high-r3.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 910 p90 1093; ttft p50 3816 p90 4587 ms
+  pooled: n 131, thoughts p50 899 p90 1094; ttft p50 3973 p90 12223 ms; rep medians [902, 891, 910] spread 19; one rep against the other two pooled: [3, 11, 19] max 19
+  theil-sen ms per thought token, pooled reps: all 3.47 (n 131), stalls over 10000 ms excluded 3.49 (n 104)
+no-cue twins (control) (gemini-3.5-flash-lite_captured-no-cues-high)
+  -r1 interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 715 p90 973; ttft p50 3208 p90 5974 ms
+  -r2 interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r2.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 736 p90 982; ttft p50 3414 p90 4341 ms
+  -r3 interview60.answers.gemini-3.5-flash-lite_captured-no-cues-high-r3.json: answered 44, holes 0, empty prose 0, no thoughts 0; thoughts p50 792 p90 978; ttft p50 3512 p90 4308 ms
+  pooled: n 132, thoughts p50 738 p90 978; ttft p50 3414 p90 4374 ms; rep medians [715, 736, 792] spread 77; one rep against the other two pooled: [38, 11, 65] max 65
+  theil-sen ms per thought token, pooled reps: all 3.37 (n 132), stalls over 10000 ms excluded 3.35 (n 131)
+rule 2c: thoughts coverage cue 131/131 control 132/132 -> thinking tokens decide
+rule 2c: cue pooled median thoughts - control pooled median thoughts = 161 tokens (threshold +150); p90 difference 116 (reported)
+rule 2c: cue pooled median ttft - control pooled median ttft = 559 ms (fallback threshold +1000; the 0.5 s line is reported: beyond); p90 difference 7849 ms (reported)
+rule 2c reading: FAIL
+rule 2c holes: cue 0, control 0 (a rep with more than 3 true holes makes 2c and 3c INCOMPLETE; otherwise 2c is read on the ids answered); empty prose: cue 1, control 0 (each counts wrong in 3c)
+
+--- stderr ---
+
+--- exit 0

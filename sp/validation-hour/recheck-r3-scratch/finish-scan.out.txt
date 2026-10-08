@@ -1,0 +1,4 @@
+﻿files 206
+gemini-3.5-flash-lite no-cue     records  1701  no-text 0  finish {"STOP":1701}
+gemini-3.1-flash-lite no-cue     records  2304  no-text 0  finish {"STOP":2304}
+gemini-3.5-flash-lite cue        records   117  no-text 1  finish {"STOP":116,"MALFORMED_RESPONSE":1}

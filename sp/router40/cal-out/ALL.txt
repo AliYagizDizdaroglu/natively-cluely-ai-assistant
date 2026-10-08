@@ -1,0 +1,10 @@
+PASS  P9  cal-pre-run-r40.mjs                pre-run-r40: 104/104 cases PASS (1 SKIPPED: real-clock cases not run inside the window)  (9.7 s)
+PASS  P2  cal-run-r.mjs                      run-r: 33/33 cases PASS  (9.9 s)
+PASS  P3  cal-read-r.mjs                     read-r: 34/34 cases PASS  (0.1 s)
+PASS  P4  cal-lite-l.mjs                     lite-l: 45/45 cases PASS  (9.9 s)
+PASS  P5  grade/cal-build-blind-r40.mjs      build-blind-r40: 20/20 cases PASS  (1.7 s)
+PASS  P6  grade/cal-launch-grader-r40.mjs    launch-grader-r40: 35/35 cases PASS (1 SKIPPED: real-clock cases not run inside the window)  (5.8 s)
+PASS  P7  grade/cal-audit-r40.mjs            audit-r40: 22/22 cases PASS  (2.1 s)
+PASS  P8  grade/cal-score-r40.mjs            score-r40: 56/56 cases PASS  (2.6 s)
+PASS  P1  cal-p1.mjs                         p1: 13/13 cases PASS  (0.1 s)
+ALL PIECES PASS

@@ -1,0 +1,1 @@
+CAL OK: 218 checks passed, 0 failed (module diag38.mjs)

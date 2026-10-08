@@ -1,0 +1,80 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+stderr | electron/llm/verbalStreamFilter.test.ts > stripSuggestionBlock — the block must never flash on screen mid-stream > suppresses the block at chunk size 1
+[verbalStreamFilter] stripSuggestionBlock: offers block before the spoken answer (shown after it)
+
+stderr | electron/llm/verbalStreamFilter.test.ts > stripSuggestionBlock — the block must never flash on screen mid-stream > suppresses the block at chunk size 3
+[verbalStreamFilter] stripSuggestionBlock: offers block before the spoken answer (shown after it)
+
+stderr | electron/llm/verbalStreamFilter.test.ts > stripSuggestionBlock — the block must never flash on screen mid-stream > suppresses the block at chunk size 4
+[verbalStreamFilter] stripSuggestionBlock: offers block before the spoken answer (shown after it)
+
+stderr | electron/llm/verbalStreamFilter.test.ts > stripSuggestionBlock — the block must never flash on screen mid-stream > suppresses the block at chunk size 7
+[verbalStreamFilter] stripSuggestionBlock: offers block before the spoken answer (shown after it)
+
+stderr | electron/llm/verbalStreamFilter.test.ts > stripSuggestionBlock — the block must never flash on screen mid-stream > suppresses the block at chunk size 500
+[verbalStreamFilter] stripSuggestionBlock: offers block before the spoken answer (shown after it)
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must the arms > suppresses a fenced block and keeps the prose around it
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+stderr | electron/llm/verbalStreamFilter.test.ts > filterCodeFences — the app suppresses fenced blocks, and so must the arms > suppresses it when the text arrives one character at a time
+[verbalStreamFilter] filterCodeFences: code fence suppressed on verbal path — check intent classifier
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > the offers block BEFORE the spoken answer (spec 2026-09-30 offers-before-answer): the answer is shown, the offers are kept > a trailing block with a stray line, streamed: the stray line is dropped, not shown (today's rule; the block does not lead)
+AssertionError: expected { …(4) } to deeply equal { out: 'Answer first.\n', …(3) }
+
+- Expected
++ Received
+
+  Object {
+    "calls": 1,
+    "out": "Answer first.
++ Here is more:
++ 1| a b
+  ",
+    "shownAfter": 1,
+-   "sugg": Array [
+-     Object {
+-       "label": "a b",
+-       "n": 1,
+-     },
+-   ],
++   "sugg": Array [],
+  }
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:382:95
+    380|     });
+    381|     it('a trailing block with a stray line, streamed: the stray line i…
+    382|         expect(await runStripTimed(['Answer first.\n', '__MORE__\nHere…
+       |                                                                                               ^
+    383|     });
+    384|     it('offers only, streamed: nothing is shown, the offers arrive onc…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  electron/llm/verbalStreamFilter.test.ts > the offers block BEFORE the spoken answer (spec 2026-09-30 offers-before-answer): the answer is shown, the offers are kept > logs one fixed line per stream when the block leads (the live proof that the branch fired; the build marker), and none when the answer comes first
+AssertionError: expected "warn" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st warn call:
+
+    Array [
+      "[verbalStreamFilter] stripSuggestionBlock: offers block before the spoken answer (shown after it)",
+    ]
+
+
+Number of calls: 1
+
+ ❯ electron/llm/verbalStreamFilter.test.ts:405:26
+    403|         warn.mockClear();
+    404|         await runStripTimed(cut('Answer first.\n__MORE__\n1| a b\n', 5…
+    405|         expect(warn).not.toHaveBeenCalled();
+       |                          ^
+    406|     });
+    407| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

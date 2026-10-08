@@ -1,0 +1,136 @@
+OK   verdictOf equals the judge module on all 27 score triples  [27/27]
+OK   replay: 4 roster ids x (10 front + 6 back) = 64 graded answers
+OK   replay: identical texts never carry conflicting verdicts (oracle is a function)  [conflicts 0]
+OK   replay direct: 3a = +8 (block 10 - no-block 2) on 20 pairs, PASS  [3a  gain front: consensus-acceptable block 10 - no-block 2 = +8 on 20 pairs (PASS >= +ceil(0.20*20) = +4; FAIL <= +max(f]
+OK   replay direct: back leg +7 on 12 pairs (block 9 - no-block 2)
+OK   replay direct: 4b holds (0 wrong both legs under eq's wrong definition)
+OK   replay direct: all 8 per-item rows (4 front + 4 back, replay symbols) equal RESULT-front-back.txt  [8/8]
+OK   replay direct: eq rows print per item with acceptable counts
+OK   pipeline (build blind -> oracle verdicts -> eval): same +8 as the replay
+OK   pipeline: split 2 + 2 front by whole items, back 1 file of 4 ids
+OK   mutated copy (two block records set to the no-block text): delta falls +8 -> +6  [3a  gain front: consensus-acceptable block 8 - no-block 2 = +6 on 20 pairs (PASS >= +ceil(0.20*20) =]
+OK   integrity: a changed answer text is refused (sha12 differs), naming ids only
+OK   integrity: an answered record with no graded key is refused
+OK   a grader file missing one verdict is refused
+OK   3a n=20 delta +4 -> PASS
+OK   3a n=20 delta +5 -> PASS
+OK   3a n=20 delta +3 -> INCONCLUSIVE
+OK   3a n=20 delta +2 -> INCONCLUSIVE
+OK   3a n=20 delta +1 -> FAIL
+OK   3a n=20 delta +0 -> FAIL
+OK   3a n=20 delta -3 -> FAIL
+OK   3a n=19 delta +1 -> FAIL (A2 m1: FAIL <= max(floor(.95), ceil(19/21)) = 1)
+OK   3a n=19 delta +2 -> INCONCLUSIVE; delta +4 -> PASS (ceil(0.20*19) = 4)
+OK   3a bars as formulas: n=15 +3 / +1; n=21 +5 / +1; n=40 +8 / +2
+OK   4b: front block wrong 1 > no-block 0 -> FAIL
+OK   4b: a back-leg wrong ALONE (front clean) -> FAIL
+OK   4b: wrong only on the no-block side -> PASS
+OK   4b: block wrong 1 <= no-block wrong 1 (a Z = on_topic 0 counts wrong) -> PASS
+OK   4c: off-topic block - no-block = +2 -> FAIL
+OK   4c: = +1 -> PASS, reported with its rows (U1)
+OK   4c: = 0 and = -2 -> PASS; +3 vs 1 (= +2 net) -> FAIL
+OK   4c: two on_topic-0 answers on the block side count off-topic (+2 -> FAIL) and wrong (4b FAIL)
+OK   2d median words +5 -> PASS
+OK   2d median words +6 -> INCONCLUSIVE
+OK   2d median words +10 -> INCONCLUSIVE
+OK   2d median words +11 -> FAIL
+OK   2d median words -20 -> PASS
+OK   2b median thoughts +150 -> PASS; +151 -> FAIL
+OK   2b: 2 nulls of 20 -> excluded, coverage 18/20 (90 %) printed, decided on thoughts
+OK   2b: 3 nulls of 20 -> 85 % < 90 %: TTFT fallback (the RULE wins over the registration cal sentence)
+OK   2b: 4 nulls on one side -> TTFT fallback; median TTFT +1100 -> FAIL via the fallback
+OK   2b: fallback with median TTFT +1000 -> PASS (FAIL only > +1000)
+OK   I2: coverage under 90 % and 2c ungated -> 2b INCOMPLETE (undecided, section 5 item 3), the ungated TTFT median printed
+OK   I2: coverage >= 90 % and 2c ungated -> 2b still decided on thoughts
+OK   2c median TTFT +500 -> PASS
+OK   2c median TTFT +501 -> INCONCLUSIVE
+OK   2c median TTFT +700 -> INCONCLUSIVE
+OK   2c median TTFT +1000 -> INCONCLUSIVE
+OK   2c median TTFT +1001 -> FAIL
+OK   2c stalls: block 3 > no-block 0 + ceil(2*20/39) = 2 -> FAIL
+OK   2c stalls: block 2 <= 0 + 2 -> the stall bar holds
+OK   2c p90 block 9000 > no-block 3000 + 2000 (median fine) -> INCONCLUSIVE
+OK   sitting: a clean 16-step log (reps 20+ min apart in a long sitting) -> no problem, 2c gates
+OK   sitting: rep 2 starts 16 min apart -> no problem, ONLY that rep ungates 2c, naming r2
+OK   sitting: exactly 15.0 min gates; 15.1 min does not
+OK   I3: a step with no log line is a PROBLEM (refuses), never an ungated rep
+OK   I3: an empty log, a log with no STEP line and an unparsable STEP line are problems
+OK   M4: a non-zero exit code on a step is a problem
+OK   M4: an end line without exit=<code> is a problem
+OK   M4: a duplicate start line is a problem (a later line must not overwrite)
+OK   M4: a rep in the wrong counterbalanced order (A3.4) is a problem; a -b re-run is not order-checked
+OK   M4: step numbers that do not increase are a problem
+OK   2c with a broken sitting: median +1100 is REPORTED (would read FAIL), not a gate
+OK   the tag of a step: rep 1 no suffix, rep k -rk, -b re-runs -rk-b
+OK   one hole (transientError): its pair is out (19 pairs), named; 3a still computed (1 incomplete pair of a rep is allowed)
+OK   I1: a rep missing 2 of 4 pairs -> 3a INCOMPLETE
+OK   B1: ... and 4b FAIL (a block wrong in the remaining pairs) survives those front holes; 4c, 2b, 2c, 2d are still computed (not INCOMPLETE)  [{"3a":"INCOMPLETE","4b":"FAIL","4c":"PASS","2c":"PASS","2b":"PASS","2d":"PASS"}]
+OK   I1: one incomplete pair in each of two reps (not 2 in one rep) -> 3a not INCOMPLETE
+OK   B1: ZERO back pairs and a front block wrong -> 4b FAIL (a back-leg hole never hides a front FAIL)
+OK   B1: zero back pairs with a clean front -> 4b INCOMPLETE (nothing to compare), 3a unaffected
+OK   B1: back-leg holes (10 of 12 pairs left) + a front block wrong -> 4b FAIL; back holes alone (clean) -> 4b PASS, not INCOMPLETE
+OK   B1: a back wrong in the remaining back pairs, with back holes -> 4b FAIL
+OK   M2: an empty answer is consensus wrong (4b FAIL) but NOT off-topic (4c unchanged, +0)
+OK   |G_twin| 2 -> INCOMPLETE everywhere (A2.4)
+OK   assemble: a transientError record = a hole (pair out, named); empty prose without it = scored wrong on its side
+OK   build: the hole pair AND its graded partner are left out; the empty answer is not sent
+OK   a missing record in an existing file is a hole
+OK   thoughts null -> null in the pair (excluded from 2b only)
+OK   resolveSteps: all 16 files present, no -b -> 16 steps, nothing substituted
+OK   resolveSteps: both -b files of rep 3 replace that rep on BOTH sides and are printed
+OK   resolveSteps: only one side's -b file -> refused (never mixed)
+OK   resolveSteps: rep 1 accepts -r1-b or -b on either side
+OK   resolveSteps: a missing answer file is an instrument failure, not a hole
+OK   loadStores: no -b -> the 16 original stores, no notes
+OK   B1: a -b re-run of a rep with NO hole is refused, naming why (it would resample a wrong answer away)
+OK   B1: with one hole, only the hole's PAIR (both sides) comes from -b; complete original pairs A and C are kept
+OK   blind split by whole items: 3 -> 2+1+3, 4 -> 2+2+4, 5 -> 3+2+5, 7 -> 4+3+7, 8 -> 4+4 (back refused)
+OK   blind: 2 ids refused (< 3), 8 ids refused (back > 7), 9 refused (front > 4 a file)
+OK   blind: seeded and deterministic (same input twice = identical files)
+OK   blind: arms are shuffled within an item (not blk-first for every item), keys carry no arm
+OK   blind: every item carries 10 front answers (5 reps x 2 arms), the back file 6 per item
+OK   blind: a pairs file never carries an arm label or a tag word
+OK   CLI build-blind: exit 0, writes 3 pairs + 3 key files, prints no question/answer text  [exit 0 3 files (2 front + 1 back); heard from the timeline question (no --inapp-pairs);]
+OK   CLI: the grader sees the follow-up WITH its parent
+OK   CLI eval: exit 0; 3a = +15 on 15 pairs PASS; no leak  [3a  gain front: consensus-acceptable block 15 - no-block 0 = +15 on 15 pairs (PASS >= +ceil(0.20*15)]
+OK   CLI eval: a clean sitting log -> 2c gated (sitting condition holds)
+OK   I3: an EMPTY gsitting.log REFUSES (exit 2) naming the file; it never ungates 2c
+OK   I3: a MISSING gsitting.log REFUSES (exit 2) naming the file
+OK   A3.4: one rep 16 min apart -> exit 0 and 2c REPORTED naming r2 (only the broken rep ungates)
+OK   I4: --g must equal the ids in the key files: a subset and a superset both REFUSE (exit 2) naming the difference
+OK   B1 CLI: a -b re-run of a hole-free rep REFUSES (exit 2), "may only FILL holes"
+OK   CLI eval: a verdicts file missing -> exit 3 INCOMPLETE naming the file
+OK   CLI eval: an answer file changed after the blind build -> exit 2 REFUSED, ids only
+OK   CLI eval: a missing answer file -> exit 2 REFUSED
+OK   CLI eval: a corrupt answer file -> exit 4 CRASH (never read as a result)
+OK   CLI usage errors -> exit 2 (no --g; both modes; unknown option)
+OK   CLI build-blind refuses to rebuild keys under existing verdicts
+OK   CLI build-blind with |G_twin| 2 -> exit 2 INCOMPLETE reason
+MUTANT CAUGHT  4c margin removed (FAIL at +1)  (first failing check: 4c: = +1 -> PASS, reported with its rows (U1))
+MUTANT CAUGHT  3a PASS bar ceil(n/5) -> ceil(n/6)  (first failing check: 3a bars as formulas: n=15 +3 / +1; n=21 +5 / +1; n=40 +8 / +2)
+MUTANT CAUGHT  3a FAIL bar loses the ceil(n/21) arm (the m1 formula undone)  (first failing check: 3a n=19 delta +1 -> FAIL (A2 m1: FAIL <= max(floor(.95), ceil(19/21)) = 1))
+MUTANT CAUGHT  3a arms swapped  (first failing check: replay direct: 3a = +8 (block 10 - no-block 2) on 20 pairs, PASS)
+MUTANT CAUGHT  2c stall allowance +5  (first failing check: 2c stalls: block 3 > no-block 0 + ceil(2*20/39) = 2 -> FAIL)
+MUTANT CAUGHT  2b bar +150 -> +151  (first failing check: 2b median thoughts +150 -> PASS; +151 -> FAIL)
+MUTANT CAUGHT  2b coverage 90 % -> 80 %  (first failing check: 2b: 3 nulls of 20 -> 85 % < 90 %: TTFT fallback (the RULE wins over the registration cal s)
+MUTANT CAUGHT  sitting gap 15 -> 16 min  (first failing check: sitting: rep 2 starts 16 min apart -> no problem, ONLY that rep ungates 2c, naming r2)
+MUTANT CAUGHT  empty prose treated as ok  (first failing check: assemble: a transientError record = a hole (pair out, named); empty prose without it = sco)
+MUTANT CAUGHT  wrong = correctness 0 only (the replay's older definition)  (first failing check: 4b: block wrong 1 <= no-block wrong 1 (a Z = on_topic 0 counts wrong) -> PASS)
+MUTANT CAUGHT  stale-text integrity check removed  (first failing check: integrity: a changed answer text is refused (sha12 differs), naming ids only)
+MUTANT CAUGHT  hole partner left in the blind files (R7 undone)  (first failing check: build: the hole pair AND its graded partner are left out; the empty answer is not sent)
+MUTANT CAUGHT  4b checks the front leg only  (first failing check: 4b: a back-leg wrong ALONE (front clean) -> FAIL)
+MUTANT CAUGHT  2d FAIL line +10 -> +12  (first failing check: 2d median words +11 -> FAIL)
+MUTANT CAUGHT  -b may replace complete pairs (fill-only removed)  (first failing check: B1: a -b re-run of a rep with NO hole is refused, naming why (it would resample a wrong an)
+MUTANT CAUGHT  I1 per-rep threshold >= 2 -> >= 3  (first failing check: I1: a rep missing 2 of 4 pairs -> 3a INCOMPLETE)
+MUTANT CAUGHT  B1 zero back pairs hides a front FAIL  (first failing check: B1: ZERO back pairs and a front block wrong -> 4b FAIL (a back-leg hole never hides a fron)
+MUTANT CAUGHT  B1 holes gate 4c (INCOMPLETE spreads)  (first failing check: B1: ... and 4b FAIL (a block wrong in the remaining pairs) survives those front holes; 4c,)
+MUTANT CAUGHT  I2 the TTFT fallback decides with 2c ungated  (first failing check: I2: coverage under 90 % and 2c ungated -> 2b INCOMPLETE (undecided, section 5 item 3), the)
+MUTANT CAUGHT  I3 exit code of a step not checked  (first failing check: M4: a non-zero exit code on a step is a problem)
+MUTANT CAUGHT  M4 duplicate start line tolerated  (first failing check: M4: a duplicate start line is a problem (a later line must not overwrite))
+MUTANT CAUGHT  M4 counterbalanced order not checked  (first failing check: M4: a rep in the wrong counterbalanced order (A3.4) is a problem; a -b re-run is not order)
+MUTANT CAUGHT  I4 --g vs key ids not checked  (first failing check: I4: --g must equal the ids in the key files: a subset and a superset both REFUSE (exit 2) )
+MUTANT CAUGHT  M2 empty answer scored off-topic  (first failing check: M2: an empty answer is consensus wrong (4b FAIL) but NOT off-topic (4c unchanged, +0))
+MUTANT CAUGHT  I3 a missing sitting log ungates instead of refusing  (first failing check: I3: a MISSING gsitting.log REFUSES (exit 2) naming the file)
+MUTANT CAUGHT  -b substitution reads the original tag  (first failing check: resolveSteps: both -b files of rep 3 replace that rep on BOTH sides and are printed)
+
+EQ-TWINS CALIBRATION: 108/108 checks OK; mutants caught 26/26

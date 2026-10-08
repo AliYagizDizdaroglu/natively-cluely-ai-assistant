@@ -1,0 +1,4 @@
+check-smoke-cues v4 on 2026-10-02T11-39-41-h40d: CLEAN
+  answers 46 (real 46, failed 0), superseded 1, cue lines 47 (expected 47); classes: malformed 0, block-only 0, trimmed 4
+  malformed lines 0, unparsable lines 0, absent-block-before-failed hints 0
+hedge won by: gemini-3.5-flash-lite 41, gemini-3.1-flash-lite 6

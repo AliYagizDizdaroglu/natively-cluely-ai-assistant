@@ -1,0 +1,6 @@
+﻿../../../electron/audio/GeminiLiveRouter.ts(125,44): error TS2339: Property 'length' does not exist on type 'never'.
+../../../electron/ipcHandlers.ts(3436,18): error TS2339: Property 'canceled' does not exist on type 'string[]'.
+../../../electron/ipcHandlers.ts(3436,38): error TS2339: Property 'filePaths' does not exist on type 'string[]'.
+../../../electron/ipcHandlers.ts(3439,31): error TS2339: Property 'filePaths' does not exist on type 'string[]'.
+../../../electron/knowledge/KnowledgeOrchestrator.ts(349,35): error TS2322: Type 'CompanyDossier' is not assignable to type 'null'.
+../../../electron/knowledge/KnowledgeOrchestrator.ts(351,25): error TS2322: Type 'CompanyDossier' is not assignable to type 'null'.

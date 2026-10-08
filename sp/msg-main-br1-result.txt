@@ -1,0 +1,13 @@
+docs(passes): br1's result note: the boundary repair ran live as its rule says
+
+One repair in the hour ("require", S1Q05F), matched one for one by the
+reference rule replayed over the same raw Deepgram lines, and present in the
+question the app then answered. The hour's gate failed on five rows that the
+log does not tie to the repair: no grading (expected for a probe), one
+question answered 61 s late (S1Q08: the turn closed as not-a-question 1.4 s
+before the detector's own call marked it; such closes are in earlier hours
+too), and four answers that started after 10 s. The note records the
+dispatcher event with its evidence and two unproven candidate causes; no fix
+is proposed here.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

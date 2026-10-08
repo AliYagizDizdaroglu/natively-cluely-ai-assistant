@@ -1,0 +1,3 @@
+﻿h40a: in-app ids graded 45, acceptable 39; shared ids 44; in-app on shared 39; cue twins on shared 37 / 42 / 38; lowest 37; gap -2 -> within 1 (noise condition holds); in-app ids not shared: R09
+h40b: in-app ids graded 43, acceptable 35; shared ids 44; in-app on shared 35; cue twins on shared 38 / 36 / 39; lowest 36; gap 1 -> within 1 (noise condition holds); in-app ids not shared: -
+h40c: in-app ids graded 44, acceptable 35; shared ids 44; in-app on shared 35; cue twins on shared 36 / 37 / 38; lowest 36; gap 1 -> within 1 (noise condition holds); in-app ids not shared: -

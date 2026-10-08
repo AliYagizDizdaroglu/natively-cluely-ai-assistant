@@ -1,0 +1,84 @@
+# L20d result: 3.8 Live with a short instruction, against the app (s50m: in-app and captured-high r1-r3), 38 scenario50 items
+
+Rule: PREREGISTER-l20d.md. Graders: eight claude-opus-5-5 agents, two per packet, blind, frozen s50k rubric; agreement on acceptable 333/373. Every rate is from this one batch.
+
+| sample | rate, graded items | acceptable of 38 (holes = not) | rate, holes = not (/38) | hard 10 | normal 28 | consensus-wrong | graded | holes |
+|---|---|---|---|---|---|---|---|---|
+| l20d-r1 | 0.542 | 19.5 | 0.513 | 0.500 | 0.556 | 0 | 36 | 2 |
+| l20d-r2 | 0.622 | 23.0 | 0.605 | 0.400 | 0.704 | 0 | 37 | 1 |
+| l20d-r3 | 0.539 | 20.5 | 0.539 | 0.450 | 0.571 | 0 | 38 | 0 |
+| app35-inapp | 0.553 | 21.0 | 0.553 | 0.600 | 0.536 | 0 | 38 | 0 |
+| app35-twin1 | 0.737 | 28.0 | 0.737 | 0.750 | 0.732 | 0 | 38 | 0 |
+| app35-twin2 | 0.743 | 27.5 | 0.724 | 0.550 | 0.815 | 0 | 37 | 1 |
+| app35-twin3 | 0.750 | 28.5 | 0.750 | 0.700 | 0.768 | 0 | 38 | 0 |
+| live38-r1 (anchor, reported only) | 0.586 | 20.5 | 0.539 | 0.438 | 0.630 | 0 | 35 | 3 |
+| live38-r2 (anchor, reported only) | 0.579 | 22.0 | 0.579 | 0.350 | 0.661 | 2 | 38 | 0 |
+| live38-r3 (anchor, reported only) | 0.645 | 24.5 | 0.645 | 0.600 | 0.661 | 1 | 38 | 0 |
+
+Means (graded-items rate): new Live 0.568; app 0.696; anchor (29 Sep's Live, long prompt) 0.603.
+
+## Decision (pre-registered)
+
+1. quality: new Live mean rate 0.568 >= app mean rate 0.696 - 0.05 = 0.646 -> FAIL
+2. band: new Live worst rep 0.539 >= app worst sample 0.553 -> FAIL
+3. safety: new Live consensus-wrong 0 (111 graded answers) <= 1 + floor(0 x 0.75) = 1 (app: 151 graded answers of 152 slots) -> PASS
+4. reliability: answered 111/114, need >= 110 -> PASS
+5. speed: first word p50 1.0 s <= 3.0 s and p90 1.7 s <= 6.6 s over 114 slots (3 without a first word; 0 slow-feed answered items left out) -> PASS
+
+**Verdict: STOP (clauses 1, 2 fail): this instruction did not close the gap; the answerer is closed again, and reopening is the user's decision with a new registration.**
+
+## Reported outside the rule
+
+- holes-as-not-acceptable read (no verdict comes from it): new Live mean 0.553, app mean 0.691; clause 1 would read FAIL; worst rep 0.513 vs app worst 0.553: clause 2 would read FAIL.
+- the anchor: new Live - old Live = -0.036 (tonight's short instruction vs 29 Sep's long prompt, graded in one session); old Live - app = -0.093. L20c's old Live holes: live38-r1 S1Q02, live38-r1 S1Q02F, live38-r1 S1Q09F.
+- holes (not graded): live38-r1 S1Q02, live38-r1 S1Q02F, app35-twin2 S2Q06, l20d-r1 S1Q07F, l20d-r2 S2Q09F, l20d-r1 S1Q09F, live38-r1 S1Q09F
+- app in-app answers served by the 3.1-lite stall fallback in s50m: S1Q03F, S1Q04, S1Q05, S1Q05F (kept, as the app ran).
+- rep l20d-r1: window 2026-10-02T21:45:01.499Z; answered 36/38; holes S1Q07F S1Q09F; abnormal sessions 0 of 19; retried pairs none; quota closes 0; slow feed none
+- rep l20d-r2: window 2026-10-02T22:13:46.268Z; answered 37/38; holes S2Q09F; abnormal sessions 0 of 19; retried pairs none; quota closes 0; slow feed none
+- rep l20d-r3: window 2026-10-02T22:43:35.394Z; answered 38/38; holes none; abnormal sessions 0 of 19; retried pairs none; quota closes 0; slow feed none
+- starter reads (event timestamps, no grader): words of each answer arrived by 6.6 s after the question: p50 55 (n 111); last word p50 5.7 s, p90 9.1 s; words per answer p50 60 (L20c: 63-67 Live, 74-82 app); thought tokens per answer p50 206 (L20c: 91-952; the one-sentence probe 310); holding lines on 0 answers; premature output on 9 answers.
+- words per graded answer, by arm (median): l20d-r1 58; l20d-r2 65; l20d-r3 61; app35-inapp 79; app35-twin1 83; app35-twin2 79; app35-twin3 76; live38-r1 67; live38-r2 63; live38-r3 66.
+- grader agreement on acceptable, per packet: A 92/98 (disagree: S1Q03 l20d-r2, S1Q06 l20d-r3, S1Q06 app35-twin2, S1Q06F live38-r3, S2Q03 l20d-r3, S2Q03F live38-r3); B 89/98 (disagree: S2Q02 l20d-r1, S2Q02F l20d-r3, S2Q02F app35-twin2, S2Q02F app35-twin3, S2Q02F app35-twin1, S2Q01F app35-twin2, S2Q01F app35-twin1, S2Q01F app35-twin3, S2Q01F app35-inapp); C 86/100 (disagree: S1Q05 l20d-r1, S2Q08 l20d-r3, S2Q08F l20d-r3, S2Q08F l20d-r2, S2Q08F live38-r2, S2Q08F app35-twin1, S1Q04 app35-twin3, S1Q04 live38-r2, S1Q04 l20d-r1, S1Q04F live38-r1, S1Q08 app35-inapp, S1Q08 app35-twin1, S1Q08F l20d-r3, S1Q08F live38-r3); D 66/77 (disagree: S2Q09F live38-r3, S2Q07 live38-r1, S2Q07 app35-twin2, S1Q09 live38-r2, S1Q09 l20d-r2, S1Q09 l20d-r3, S2Q05F l20d-r2, S2Q05F live38-r3, S2Q05F app35-twin2, S2Q05F live38-r2, S2Q05F live38-r1).
+
+## Per question (acceptable grades of 2 per sample)
+
+| id | group | l20d-r1 | l20d-r2 | l20d-r3 | app35-inapp | app35-twin1 | app35-twin2 | app35-twin3 | live38-r1 | live38-r2 | live38-r3 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| S1Q02 | hard | 0 | 0 | 0 | 0 | 2 | 2 | 2 | hole | 0 | 0 |
+| S1Q02F | hard | 2 | 2 | 2 | 2 | 2 | 2 | 2 | hole | 2 | 2 |
+| S1Q04 | hard | 1 | 2 | 2 | 2 | 2 | 0 | 1 | 2 | 1 | 0 |
+| S1Q04F | hard | 2 | 2 | 2 | 0 | 0 | 0 | 0 | 1 | 2 | 2 |
+| S1Q05 | hard | 1 | 0 | 0 | 2 | 2 | 2 | 2 | 2 | 2 | 2 |
+| S1Q05F | hard | 0 | 0 | 0 | 2 | 2 | 0 | 2 | 0 | 0 | 2 |
+| S1Q07 | hard | 0 | 0 | 0 | 2 | 2 | 2 | 2 | 0 | 0 | 2 |
+| S1Q07F | hard | hole | 0 | 2 | 2 | 2 | 2 | 2 | 2 | 0 | 0 |
+| S2Q02 | hard | 1 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| S2Q02F | hard | 2 | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 2 |
+| S1Q03 | normal | 0 | 1 | 2 | 2 | 2 | 0 | 2 | 2 | 2 | 2 |
+| S1Q03F | normal | 2 | 2 | 2 | 0 | 2 | 2 | 2 | 2 | 2 | 2 |
+| S1Q06 | normal | 2 | 2 | 1 | 0 | 0 | 1 | 0 | 2 | 2 | 2 |
+| S1Q06F | normal | 0 | 2 | 0 | 0 | 0 | 2 | 0 | 2 | 0 | 1 |
+| S2Q01 | normal | 0 | 0 | 0 | 0 | 2 | 2 | 2 | 2 | 2 | 0 |
+| S2Q01F | normal | 2 | 2 | 2 | 1 | 1 | 1 | 1 | 2 | 2 | 2 |
+| S2Q08 | normal | 0 | 2 | 1 | 0 | 2 | 2 | 2 | 0 | 2 | 2 |
+| S2Q08F | normal | 0 | 1 | 1 | 0 | 1 | 2 | 2 | 2 | 1 | 2 |
+| S2Q09 | normal | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 0 | 2 |
+| S2Q09F | normal | 2 | hole | 2 | 0 | 2 | 2 | 2 | 0 | 2 | 1 |
+| S1Q08 | normal | 0 | 2 | 0 | 1 | 1 | 2 | 2 | 0 | 0 | 0 |
+| S1Q08F | normal | 2 | 2 | 1 | 2 | 2 | 2 | 2 | 0 | 2 | 1 |
+| S1Q09 | normal | 0 | 1 | 1 | 2 | 2 | 2 | 2 | 2 | 1 | 0 |
+| S1Q09F | normal | hole | 2 | 2 | 0 | 2 | 2 | 2 | hole | 2 | 2 |
+| S1Q10 | normal | 0 | 0 | 0 | 2 | 0 | 2 | 2 | 2 | 0 | 0 |
+| S1Q10F | normal | 2 | 0 | 0 | 2 | 2 | 2 | 0 | 2 | 2 | 2 |
+| S2Q03 | normal | 2 | 2 | 1 | 2 | 2 | 2 | 2 | 2 | 2 | 2 |
+| S2Q03F | normal | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 0 | 0 | 1 |
+| S2Q04 | normal | 2 | 2 | 0 | 2 | 2 | 2 | 2 | 2 | 2 | 0 |
+| S2Q04F | normal | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 |
+| S2Q05 | normal | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 |
+| S2Q05F | normal | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 1 |
+| S2Q06 | normal | 2 | 2 | 2 | 2 | 2 | hole | 2 | 2 | 2 | 2 |
+| S2Q06F | normal | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| S2Q07 | normal | 0 | 2 | 2 | 2 | 2 | 1 | 2 | 1 | 2 | 2 |
+| S2Q07F | normal | 0 | 2 | 2 | 0 | 0 | 0 | 0 | 0 | 2 | 2 |
+| S2Q10 | normal | 2 | 0 | 0 | 2 | 2 | 2 | 2 | 0 | 0 | 0 |
+| S2Q10F | normal | 2 | 0 | 2 | 0 | 2 | 2 | 2 | 0 | 0 | 2 |

@@ -1,0 +1,21 @@
+OK  cue band equal to control: PASS
+OK  cue band overlaps at its top edge (cue max = control min): PASS
+OK  cue band entirely below by half a point: STOP (prose band: cue [26, 27.5] sits entirely below control [28, 32])
+OK  cue band exceeds control: PASS
+OK  cue wrong equal to the worst control rep: PASS
+OK  one cue rep with one more wrong than the worst control rep: STOP (wrong: cue rep(s) 1 exceed the worst control rep's 2)
+OK  present and shape exactly 90% (35.1 of 39 needs 36): PASS
+OK  lines-only overrun: shape 35 of 39 in one rep: STOP (cue blocks present + shaped under 90% in rep(s) 1)
+OK  present 35 of 39 in one rep: STOP (cue blocks present + shaped under 90% in rep(s) 2)
+OK  words-only overrun (long lines are not part of the gate): PASS
+OK  refuses a bench without 3 reps
+OK  blockShape one line of one word: {"present":true,"shape":true,"lines":1,"longLines":0}
+OK  blockShape exactly 3 lines of 5 words (the boundary): {"present":true,"shape":true,"lines":3,"longLines":0}
+OK  blockShape 4 short lines (over the line limit): {"present":true,"shape":false,"lines":4,"longLines":0}
+OK  blockShape a 6-word line: shaped, word overrun reported: {"present":true,"shape":true,"lines":1,"longLines":1}
+OK  blockShape a question: {"present":true,"shape":false,"lines":1,"longLines":0}
+OK  blockShape addresses the listener: {"present":true,"shape":false,"lines":1,"longLines":0}
+OK  blockShape an empty line: {"present":true,"shape":false,"lines":2,"longLines":0}
+OK  blockShape absent block: {"present":false,"shape":false,"lines":0,"longLines":0}
+OK  blockShape no cues field at all: {"present":false,"shape":false,"lines":0,"longLines":0}
+CUEBENCH CALIBRATION OK

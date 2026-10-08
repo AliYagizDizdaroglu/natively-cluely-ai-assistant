@@ -1,0 +1,14 @@
+﻿[f1-red] test interview60.turns-finals.test.ts (3793 B) + module interview60.turns-finals.mjs (1592 B), WITHOUT interview60.runs/
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+  ✓ a final directly followed by a boundary-repair line replays as the restored words + the raw text
+  ✓ keeps interims and empty finals out, and drops finals before `since`
+  ✓ a repair line that is not the very next line after a final is not applied (one synchronous handler writes both lines)
+  × reproduces the committed 2026-09-09T15-00-55-s50a fixture's finals from its run log
+  × reproduces the committed 2026-09-08T08-44-56-after9 fixture's finals from its run log
+  failure: Error: ENOENT: no such file or directory, open 'C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\boundary-repair\sdd\t5f1-m-f1-red\electron\test\golden\interview60.runs\2026-09-09T15-00-55-s50a\interview60.timeline.json'
+  failure: Error: ENOENT: no such file or directory, open 'C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\boundary-repair\sdd\t5f1-m-f1-red\electron\test\golden\interview60.runs\2026-09-08T08-44-56-after9\interview60.timeline.json'
+  at: electron/test/golden/interview60.turns-finals.test.ts:48:38
+  at: electron/test/golden/interview60.turns-finals.test.ts:48:38
+as expected: the Tests line contains "2 failed | 3 passed (5)"
+junction removed: true; MAIN's vitest still present: true; scratch tree deleted: true

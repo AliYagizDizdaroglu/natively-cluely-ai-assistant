@@ -1,0 +1,125 @@
+per sample, counted per ANSWER as the mean of its two graders (so halves are one grader each):
+sample        answered  acceptable   weak  wrong   holes
+app35-inapp         38        25.0   13.0    0.0       0
+app35-twin1         38        29.0    9.0    0.0       0
+app35-twin2         37        29.0    8.0    0.0       1
+app35-twin3         38        30.5    7.5    0.0       0
+br1-inapp           37        28.5    8.5    0.0       1
+live38-r1           35        21.0   14.0    0.0       3
+live38-r2           38        21.5   16.5    0.0       0
+live38-r3           38        26.0   11.0    1.0       0
+app, 4 samples  answered 151: acceptable 113.5 (75.2%), weak 37.5 (24.8%), wrong 0.0 (0.0%), holes 1
+Live, 3 reps    answered 111: acceptable 68.5 (61.7%), weak 41.5 (37.4%), wrong 1.0 (0.9%), holes 3
+
+why a grade is weak or wrong, per sample group (each grade counted once, by the FIRST axis that fails):
+  app, 4 samples  grades 302, not acceptable 75: correctness 0: 0, correctness 1: 59, correct but off the question: 14, correct and on topic but delivery 0: 2
+  Live, 3 reps    grades 222, not acceptable 85: correctness 0: 2, correctness 1: 83, correct but off the question: 0, correct and on topic but delivery 0: 0
+
+S2Q02
+  app35-inapp  g1 1/1/2 weak  Only extraction F1 defined and without uncertainty; the other two metrics are omitted in favour of pipeline description.
+  app35-inapp  g2 1/1/2 weak  Covers extraction F1 only and gives no uncertainty; hallucination and multi-hop metrics are omitted and it drifts into how the gain was achieved.
+  app35-twin1  g1 1/2/1 weak  Unit, denominator and dataset for all three metrics, but uncertainty given only for F1; 89 words.
+  app35-twin1  g2 1/2/1 weak  Unit, denominator and dataset for all three metrics, but uncertainty only for F1, none for hallucinations or multi-hop; 89 words.
+  app35-twin2  g1 1/1/1 weak  Defines only extraction F1; hallucination and multi-hop metrics omitted, drifts into architecture; stray "pm 1.2%" artifact.
+  app35-twin2  g2 1/1/1 weak  Defends only extraction F1; hallucination and multi-hop metrics never addressed, drifts into architecture, and 'pm 1.2%' is an unspeakable LaTeX remnant.
+  app35-twin3  g1 1/1/1 weak  Thorough on extraction F1 including bootstrap intervals, but hallucination and multi-hop metrics are omitted entirely; 94 words.
+  app35-twin3  g2 1/1/1 weak  Only extraction F1 is defended; hallucination and multi-hop metrics are omitted and it drifts into architecture; 94 words.
+
+S2Q02F
+  app35-inapp  g1 1/2/2 weak  OCR and classification swapped together so not separated, and prompting is never ablated; judge-bias audit is sound.
+  app35-inapp  g2 1/2/2 weak  OCR and classification are swapped together so stay confounded, and prompting has no ablation; judge-bias checks are sound.
+  app35-twin1  g1 1/2/1 weak  OCR and classification swapped together, prompting merged with orchestration, so contributions are not separated; judge check sound; 105 words.
+  app35-twin1  g2 1/2/1 weak  Claims one-at-a-time swaps but ablates OCR with classification and prompting with orchestration together, leaving them confounded; 105 words.
+
+S1Q03F
+  app35-inapp  g1 2/2/0 weak  Correct uplift explanation, but contains markdown asterisk emphasis and a paragraph break, and runs 114 words.
+  app35-inapp  g2 2/2/0 weak  Correct uplift explanation, but the text has markdown asterisks and a paragraph break, and runs 115 words.
+
+S1Q05F
+  app35-twin2  g1 1/2/2 weak  Lagged features make repeats legitimate, but the holdout condition is circular: any user in both train and test.
+  app35-twin2  g2 1/2/2 weak  Requires a holdout for any train/test overlap, so it never separates legitimate temporal overlap from the case that needs grouping.
+
+S1Q10F
+  app35-twin3  g1 1/2/1 weak  Triage logic is right, but the status codes come out as 'forty-one' and 'forty-three', which is wrong when spoken.
+  app35-twin3  g2 1/2/1 weak  Right triage, but the status codes are written 'forty-one' and 'forty-three', which would be spoken wrongly.
+
+S2Q01
+  app35-inapp  g2 1/2/1 weak  Reranking is named but never described, and 'LangGraph checkpoints' is misused as a snippet filter; 99 words.
+
+S1Q06
+  app35-inapp  g1 1/2/2 weak  'Then I'd filter' after the left join reads as a WHERE clause, which would drop zero-call customers.
+  app35-inapp  g2 1/2/2 weak  'Then I'd filter' reads as a WHERE clause after the left join, which would drop zero-call customers.
+  app35-twin1  g1 1/2/1 weak  Subquery filtering on snapshot time needs LATERAL, which goes unstated, and coalesce around a count is redundant; 97 words.
+  app35-twin1  g2 1/2/1 weak  A plain subquery cannot see the snapshot time without LATERAL, and COALESCE around COUNT is unnecessary; 97 words.
+  app35-twin2  g1 1/2/2 weak  Right ingredients, but never says the filters belong in the join condition, which is what preserves zero-call customers.
+  app35-twin2  g2 1/2/2 weak  Says 'join on customer ID and filter' without putting the filters in the join condition that zero preservation depends on.
+  app35-twin3  g1 1/2/2 weak  Never places filters in the join condition, and 'count the matching rows' would return one for empty snapshots.
+  app35-twin3  g2 1/2/2 weak  Leaves filter placement, join condition versus WHERE, ambiguous, so zero-call preservation is not established.
+
+S1Q06F
+  app35-inapp  g2 1/2/2 weak  A primary key on customer ID alone is wrong for a many-snapshot table; the corrections handling is right.
+  app35-twin1  g1 1/2/2 weak  Treats corrections as an index-bloat problem and misses the point-in-time correctness and versioning issue.
+  app35-twin1  g2 1/2/2 weak  Treats corrections as an index-bloat problem and misses point-in-time correctness, though it lands on append-only.
+
+S2Q08
+  app35-inapp  g1 1/2/1 weak  Pattern is right, but Pinecone namespaces share one index dimension, so a new dimensionality needs a separate index; 95 words.
+  app35-inapp  g2 1/2/1 weak  Pinecone namespaces share one index dimension, so they cannot hold the new dimensionality; otherwise complete; 95 words.
+
+S2Q08F
+  app35-inapp  g1 1/1/2 weak  Proves completeness by count parity but never addresses currency, and spends half the answer on quality regression.
+  app35-inapp  g2 1/1/2 weak  Shows completeness by count parity but never addresses currency; drifts into retrieval quality instead.
+
+S1Q04
+  app35-twin1  g1 1/2/1 weak  Metrics and stable tie-break are right, but it never says what happens for an invalid k or empty inputs; 120 words.
+  app35-twin1  g2 1/2/1 weak  Sort, metrics and the no-positives case are right, but it never says what happens on invalid k or empty inputs; 120 words.
+  app35-twin2  g1 1/1/2 weak  Covers only the edge cases; the sort, tie-break and metric computation are never described.
+  app35-twin2  g2 1/1/2 weak  Covers only the edge cases; the sort, tie-break and metric computation the question asks for are missing.
+  app35-twin3  g2 1/2/1 weak  No-positives outcome is left as an unspecified lift guard, and zero or negative k is silently clamped; 125 words.
+
+S1Q04F
+  app35-inapp  g1 1/2/2 weak  Argpartition then sorting the slice by user ID neither keeps original row order nor handles ties at the cut-off.
+  app35-inapp  g2 1/2/2 weak  argpartition then sorting by user ID changes the tie rule and leaves boundary ties arbitrary.
+  app35-twin1  g1 1/2/2 weak  Partial selection is right, but ties are broken only after selection and by customer ID, not original row order.
+  app35-twin1  g2 1/2/2 weak  Partial selection is fine, but ties are broken by customer ID after selection, not by original row order.
+  app35-twin2  g1 1/2/2 weak  Size-k heap is right, but the tie key is customer ID rather than original row order.
+  app35-twin2  g2 1/2/2 weak  Heap approach is right, but ties break on customer ID instead of the original row order.
+  app35-twin3  g1 1/2/2 weak  Composite key during selection is right, but it uses customer ID instead of original row order.
+  app35-twin3  g2 1/2/2 weak  Composite-key selection is sound, but the key is customer ID rather than the original row order.
+
+S1Q09F
+  app35-inapp  g1 1/2/2 weak  Sound three-way split, but managed online endpoints do not scale to zero as claimed.
+  app35-inapp  g2 1/2/1 weak  Placements are sound, but managed online endpoints do not scale to zero as claimed; 87 words.
+
+S2Q07F
+  app35-inapp  g1 2/1/2 weak  Correct retrieval filter plus pre-generation re-check, then drifts into unasked ingestion metadata handling.
+  app35-inapp  g2 2/1/2 weak  Correct retrieval filter plus pre-generation recheck, then drifts into unasked ingestion metadata handling.
+  app35-twin1  g1 2/1/1 weak  Correct two-point check, then drifts into ingestion metadata validation nobody asked about; 95 words.
+  app35-twin1  g2 2/1/1 weak  The two-point check is right, but it drifts into an unasked ingestion-metadata topic; 95 words.
+  app35-twin2  g1 2/1/1 weak  Correct two-point check, then drifts into ingestion metadata validation; over 100 words.
+  app35-twin2  g2 2/1/1 weak  Correct two-point check, but a third of the answer covers unasked ingestion metadata; 103 words.
+  app35-twin3  g1 2/1/2 weak  Correct two-point check, then an unasked sentence on ingestion metadata validation.
+  app35-twin3  g2 2/1/2 weak  Right on the two checks, then drifts into ingestion validation that was not asked.
+
+S2Q10F
+  app35-inapp  g1 1/1/2 weak  Max delivery count and version-based rejection of stale updates are right, but dead-letter replay is omitted.
+  app35-inapp  g2 1/1/2 weak  Max delivery count and version-based rejection are right; dead-letter replay omitted and no tombstone for the deleted item.
+
+S2Q05F
+  app35-inapp  g1 2/1/1 weak  Clear two-clause example and MMR, but multi-hop dependencies are misread as hyperparameter and budget dependencies; 103 words.
+  app35-inapp  g2 2/1/1 weak  Concrete penalty-versus-termination example and MMR; drifts by misreading dependencies as hyperparameters; about 103 words.
+  app35-twin1  g1 2/1/2 weak  Concrete example and MMR are right, but multi-hop dependencies are misread as MMR tuning dependencies, and the example ignores the two-per-document cap.
+  app35-twin1  g2 1/1/2 weak  Example takes five chunks from one document despite the two-per-document cap; misreads multi-hop dependencies as tuning dependencies.
+  app35-twin2  g1 2/1/1 weak  Concrete example and well-described MMR, but it drifts into MMR tuning dependencies instead of multi-hop; 101 words.
+  app35-twin2  g2 2/1/1 weak  Workable example and MMR with cosine similarity; drifts into tuning dependencies instead of multi-hop; about 101 words.
+  app35-twin3  g1 2/1/1 weak  Good two-aspect example and accurate MMR, but multi-hop dependencies are misread as lambda and embedding dependencies; 102 words.
+  app35-twin3  g2 1/1/1 weak  Five chunks from one section contradicts the two-per-document cap; misreads dependencies as lambda tuning; about 102 words.
+
+S2Q06F
+  app35-inapp  g1 1/1/2 weak  Virtual clock and event-driven tests are sound, but the retry extension itself is never described, only tested.
+  app35-inapp  g2 1/1/2 weak  Virtual clock testing is sound, but the retry-within-deadline design is never described and the eight-limit is not asserted.
+  app35-twin1  g1 1/1/2 weak  Virtual clock and controlled futures give deterministic tests, but how retries and the case deadline are implemented is not described.
+  app35-twin1  g2 1/1/2 weak  Virtual clock and controlled futures are sound; retry policy only asserted as a test outcome, never designed.
+  app35-twin2  g1 1/1/2 weak  Generic mock-clock testing phrased in threads and contexts, with no retry design and no check of the concurrency cap.
+  app35-twin2  g2 1/1/2 weak  Testing only and vague; no retry or deadline design; speaks of contexts and threads, not asyncio tasks.
+  app35-twin3  g1 1/1/2 weak  Mock clock for backoffs is right, but there is no retry design and no test of the concurrency limit.
+  app35-twin3  g2 1/1/2 weak  Mock clock for backoffs is right, but no retry design and no concurrency-limit test described.

@@ -1,0 +1,34 @@
+PASS  R1 | --dry --variant B --dry-fail C05: 47 turns in section 5 order, 16 gaps of 10 s, C05 retried once, hard items end 6 s after their turn, silent items at 30 s (dry-check-r) | expected: run exit 0, dry-check ALL PASS | actual: run exit 0; DRY CHECK: ALL PASS
+PASS  R2 | negative control: dry-check-r on a run with two items relabelled (--scramble) | expected: dry-check FAILS (exit 1) | actual: exit 1; DRY CHECK: 2 FAILED
+PASS  R3 | a second run into the same name/dir | expected: exit 2 (never overwritten) | actual: exit 2
+PASS  R4 | --variant A with variant B's expected sha | expected: exit 2, nothing written | actual: exit 2; files 0
+PASS  R5 | --variant Z | expected: exit 2 | actual: exit 2
+PASS  R6 | a one-space-longer block (any sha mismatch) | expected: exit 2, nothing written | actual: exit 2; files 0
+PASS  R7 | no --variant | expected: exit 2 | actual: exit 2
+PASS  R8 | negative control: --expect-sha equal to the built sha | expected: exit 0 | actual: exit 0
+PASS  R9 | session model asserted before connect: a stub gemini-3.1-flash-live-preview | expected: exit 2, no chain finished | actual: exit 2; output files 0
+PASS  R10 | A3.1 re-based (A5): the remaining est fits at start; after chain 1 a Natively-flight-eq task (NextRunTime 22:55, deadline 22:25) puts chain 2's now + remaining est past the recomputed deadline | expected: exactly 1 chain runs, saved, INCOMPLETE, guard "now + est < deadline" | actual: chains run 1; complete false; exit 3; failed [now + est < deadline (]
+PASS  R11 | negative control: the same task appearing but with a far NextRunTime (00:30 next day: the 23:15 cap is the deadline) | expected: all 31 chains run, COMPLETE | actual: chains run 31; complete true
+PASS  R12 | a stub task list turning a Natively-* task Running after chain 1 | expected: exactly 1 chain runs; guard "no Natively-* task Running" | actual: chains run 1; failed [no Natively-* task Running]
+PASS  R13 | a stub that turns Running before C05's retry (after attempt 1) | expected: C05 attempt 1 only, no retry, run INCOMPLETE | actual: C05 attempts 1; chains run 5; stop "guard before the retry of C05: no Native"
+PASS  R14 | remaining est above the deadline at start (a flight task at 22:20, deadline 21:50, now 22:00) | expected: exit 3, no chain starts, nothing written | actual: exit 3; files 0; REFUSED line true
+PASS  R15 | a stub clock before 21:45 (the window start): no chain starts | expected: exit 3, no chain starts, nothing written | actual: exit 3; files 0
+PASS  R16 | a stub process list with electron.exe | expected: exit 3, no chain starts | actual: exit 3; files 0
+PASS  R17 | tail.exe appearing after chain 2 | expected: exactly 2 chains run | actual: chains run 2
+PASS  R15b | A5: --now 22:45:30 (the start check just fits 23:15); the virtual clock reaches the cap before a later chain | expected: some chains 1..k-1 run (1 <= k-1 < 31), saved, INCOMPLETE, the guard row is the 23:15 deadline row only | actual: chains run 3; complete false; exit 3; failed [now + est < deadline (min(23:1]
+PASS  R15c | A5: --now 22:50 (the remaining est cannot fit before 23:15) | expected: exit 3, no chain starts, nothing written | actual: exit 3; files 0
+PASS  R15d | A5: --now 23:15 (the window end is exclusive) | expected: exit 3, no chain starts, nothing written, the date gate named | actual: exit 3; files 0; date gate true
+PASS  R15e | A5: --now 2026-10-06T10:01 (tomorrow is not the R window) | expected: exit 3, no chain starts, nothing written | actual: exit 3; files 0
+PASS  R15f | A7 m4: a lite-l.mjs process running (sequential, never concurrent) | expected: exit 3, no chain starts | actual: exit 3; files 0
+PASS  R18 | 3 consecutive abnormal mock chains (still abnormal after their retry); note: each such chain has 2 abnormal attempts, so the registered ">= 6 attempts" rule fires at the same moment (the "3 consecutive" rule cannot fire first) | expected: health STOP after C06, INCOMPLETE, 9 sessions (C01-C03 once, C04-C06 twice) | actual: stop "health STOP: 6 abnormal chain attempts ("; chains run 6; sessions 9
+PASS  R19 | negative control: only 2 consecutive abnormal chains (4 abnormal attempts) | expected: no health STOP, all 31 chains run | actual: stop null; chains run 31
+PASS  R20 | negative control: 2 abnormal chains, not consecutive | expected: no health STOP | actual: stop null
+PASS  R20b | 3 abnormal chains, not consecutive: 6 abnormal attempts | expected: health STOP by the >= 6 rule after C10 | actual: stop "health STOP: 6 abnormal chain attempts ("; chains run 10
+PASS  R21 | >= 6 abnormal chain attempts in total (each retry succeeds) | expected: health STOP at the 6th abnormal attempt | actual: stop "health STOP: 6 abnormal chain attempts (>= 6)"; abnormalAttempts 6
+PASS  R22 | negative control: 5 abnormal attempts, retries succeed | expected: no health STOP, COMPLETE | actual: stop null; complete true
+PASS  R23 | m4: a stopped run started as router40-R | expected: files router40-R-<hhmm>.json(+answers) only, none named router40-R | actual: files router40-R-2200.answers.json router40-R-2200.json
+PASS  R24 | m4: a complete run started as router40-R | expected: files router40-R.json + router40-R.answers.json, complete true | actual: files router40-R.answers.json router40-R.json; complete true
+PASS  R25 | real mode with --now 2026-10-05T22:00 | expected: exit 2, REFUSED | actual: exit 2; true
+PASS  R26 | real mode with --variant A (A1.1: the real run is B) | expected: exit 2 before any guard or key | actual: exit 2
+PASS  R27 | a genuine real invocation (real clock OUTSIDE the window): the date gate must refuse (no chain, no key read, nothing written to R40/runs) | expected: exit 3, REFUSED, date gate named, runs/ unchanged | actual: exit 3; REFUSED true; date gate named true; runs/ 6 -> 6; key/connect lines false
+run-r: 33/33 cases PASS

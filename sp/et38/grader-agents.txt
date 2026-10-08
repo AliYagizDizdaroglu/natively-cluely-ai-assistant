@@ -1,0 +1,10 @@
+ET38 graders, dispatched 2026-10-01 02:35 local, model alias opus (verify claude-opus-5-5 from each transcript's model field)
+A-g1 accf4d0e332500c66
+A-g2 a10ccc0235aa0a220
+B-g1 a0d0f88c986f7cd06
+B-g2 a7c186ef645773327
+C-g1 a80e20e5946645016
+C-g2 ae6eb8d64ee5bf39d
+D-g1 a75888f03272417bd
+D-g2 af762636cda16be78
+C-g2 (re-run 2026-10-01 09:08, the first C-g2 stopped at the session limit before writing) a08f90b7f0db125f8

@@ -1,0 +1,5 @@
+--- identity lines outside a repo 
+fatal: not a git repository (or any of the parent directories): .git
+dirty-lines=0
+dist-electron main.js mtime=
+existing-file mtime=09/26/2026 08:16 PM

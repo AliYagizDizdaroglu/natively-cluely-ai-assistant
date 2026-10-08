@@ -1,0 +1,92 @@
+﻿OK   tripwire: with this PATH no real `claude` is reachable (a stray real launch is impossible)  [where exit 1]
+OK   dispatch: the marker appears exactly once in rd-grader-dispatch.txt
+OK   dispatch: the template region is BYTE-IDENTICAL to h40d's (sha256)  [3dd507745e98]
+OK   dispatch: the template carries the three substitution anchors
+OK   dispatch: a one-character change in the template changes the sha (the byte check can fail)
+OK   dispatch: the preamble names the registered folder pattern and the grader counts (blind 2, in-app 2, high/low/captured-high 1)
+OK   source: grep -c add-dir over the FLAGS and args lines = 0
+OK   source: the check can fail (an add-dir injected into FLAGS counts 1)
+OK   source: the launcher contains no `Bash` allowance and no dangerously-skip flag
+OK   folder name accepted: <stamp>-router-default-r1: --plan proceeds (exit 0)  [exit 0]
+OK   folder name refused: a smoke folder <stamp>-router-smoke: --plan REFUSES (exit 2)  [exit 2]
+OK   folder name refused: a suffixed (retried) folder <stamp>-router-default-r1-1002: --plan REFUSES (exit 2)  [exit 2]
+OK   folder name refused: the re-fly label <stamp>-router-default-r2: --plan REFUSES (exit 2)  [exit 2]
+OK   folder name refused: a label prefix <stamp>-router-default: --plan REFUSES (exit 2)  [exit 2]
+OK   folder name refused: the bare label router-default-r1: --plan REFUSES (exit 2)  [exit 2]
+OK   folder name refused: junk before the stamp: --plan REFUSES (exit 2)  [exit 2]
+OK   folder name refused: a date-only stamp: --plan REFUSES (exit 2)  [exit 2]
+OK   folder name refused: another suffix on the label (r1x): --plan REFUSES (exit 2)  [exit 2]
+OK   folder name: a grader dry run and a REAL launch on a smoke folder are both refused (exit 2) before anything else
+OK   folder name: a run folder argument that does not exist is refused; a missing --run-dir is refused
+OK   folder name: no model stand-in was invoked and nothing was written by any of the above (plan and refusals are read-only)  [invoked 0]
+OK   plan: 4 blind files x 2 graders + in-app x 2 + high + low + captured-high = 13 launches, exit 0 (the probe gate still blocks real launches)  [PLAN 13 grader launches over 8 pairs files (blind files and the in-app file: 2 graders each; high, low, captured-high: 1 each), at most 2 at once, one fresh cwd each | PLAN probe gate: BLOCKED (cwdpro]
+OK   plan: every blind tag g1 and g2, inapp g1 and g2, and the three single-grader arms are listed with their grader counts (2,2,2,2,2,2,2,2,2,2,1,1,1)
+OK   plan: the probe gate is reported BLOCKED before any probe, naming the three probes still to run
+OK   plan: with two blind files the plan lists 2x2 + 2 + 3 = 9 launches (the export decides the blind count)
+OK   plan: no blind file at all blocks the plan (exit 3)
+OK   plan: a missing high / captured-high export blocks the plan (exit 3) and names them
+OK   plan: an existing verdicts file blocks the plan (exit 3), never overwritten
+OK   plan: no model stand-in was invoked and nothing was written (the same snapshot of grading, verdicts, logs)
+OK   tags: blind-5/0, a third grader, a bare blind or in-app tag, a grader suffix on a single-grader arm and an unknown tag are each refused (exit 2)
+OK   tags: every valid tag dry-runs (exit 0)
+OK   options: an unknown option and an option missing its value are refused (exit 2)
+OK   dry run (pinned): argv carries --model claude-opus-5-5, Read,Write,Edit, dontAsk, strict MCP, no add-dir, no bare opus, no Bash
+OK   USER settings never loaded: the argv of a grader dry run and of a probe dry run carries exactly one --setting-sources project,local, right before --allowed-tools
+OK   dry run: 3 permission rules (Read pairs, Read rubric, Edit verdicts) and the dispatch passes the audit's own check
+OK   dry run of a single-grader arm reports 1 grader; of the in-app file 2
+OK   dry run without --model-id shows --model opus and says NOT pinned
+OK   --model-id must be EXACTLY claude-opus-5-5: opus, a shell-metacharacter id, ANOTHER valid claude id (claude-sonnet-5, claude-opus-5) and a suffixed pin all exit 2, for a grader dry run, a real grader launch and a pinned probe (I-1)
+OK   a REAL launch without --model-id is refused (exit 2), nothing created, the stand-in not invoked
+OK   an existing verdicts file is refused (exit 2): a re-grade needs the earlier verdicts moved away
+OK   a missing pairs file is refused (exit 2)
+OK   duplicate keys, an empty items list and an unparsable pairs file are each refused (exit 2)
+OK   a test seam (TURN_FAKE_CLAUDE) without RD_CAL_FAKE=1 is refused (exit 2): a stand-in grader can never produce a real grade
+OK   none of the refusals and dry runs invoked the stand-in
+OK   probe sequencing: cwdprobe-2 before cwdprobe-1 is refused (exit 2), the stand-in not invoked
+OK   probe sequencing: cwdprobe-3 before cwdprobe-2 is refused (exit 2)
+OK   probe pin: a real cwdprobe-1 without --model-id is refused; cwdprobe-3 WITH --model-id is refused
+OK   a probe whose transcript carries a claude-mem context reads memory LOADED: exit 1, and cwdprobe-2 is then refused
+OK   a probe that reports a model other than the pin fails (exit 1)
+OK   a probe with one Read too many fails (exit 1)
+OK   the three clean probes run in order and each exits 0 (cwdprobe-3 reports the alias)  [000]
+OK   probe records carry the launcher sha12, the memory status and the transcript models; the probe-1 model is the pin
+OK   after the three probes the dry run reports the gate OK and names the alias model
+OK   gate BLOCKS on a claude-mem context in the probe-1 transcript (memory LOADED): the dry run says BLOCKED (/memory LOADED/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-1: memory LOADED (project 0, claude-mem 2)); a real launch would be refused]
+OK   gate BLOCKS on a project-memory marker in the probe-2 transcript: the dry run says BLOCKED (/cwdprobe-2: memory LOADED/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-2: memory LOADED (project 1, claude-mem 0)); a real launch would be refused]
+OK   gate BLOCKS on a claude-mem context in the ALIAS probe transcript: the dry run says BLOCKED (/cwdprobe-3: memory LOADED/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-3: memory LOADED (project 0, claude-mem 1)); a real launch would be refused]
+OK   gate BLOCKS on an extra Read in probe 1: the dry run says BLOCKED (/cwdprobe-1: tools/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-1: tools {"Read":2,"Write":1} (need exactly one Read and one Write)); a real launch would be refused]
+OK   gate BLOCKS on a Bash call in probe 2: the dry run says BLOCKED (/cwdprobe-2: tools/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-2: tools {"Read":1,"Write":1,"Bash":1} (need exactly one Read and one Write)); a real launch would be refused]
+OK   gate BLOCKS on an assistant message of another model in probe 1: the dry run says BLOCKED (/cwdprobe-1: transcript models/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-1: transcript models ["claude-opus-5-5","claude-opus-5"] are not the pin); a real launch would be refused]
+OK   gate BLOCKS on a probe-1 transcript with no model field at all: the dry run says BLOCKED (/cwdprobe-1: transcript models/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-1: transcript models [] are not the pin); a real launch would be refused]
+OK   gate BLOCKS on a missing probe-1 transcript: the dry run says BLOCKED (/cwdprobe-1: its transcript was not found/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-1: its transcript was not found); a real launch would be refused]
+OK   gate BLOCKS on a probe-1 record written by another launcher version: the dry run says BLOCKED (/cwdprobe-1: written by another launcher version/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-1: written by another launcher version (deadbeefdead, this one is edfef2aa8a98): probe again); a real launch would be refused]
+OK   gate BLOCKS on a probe-2 record with exit 1: the dry run says BLOCKED (/cwdprobe-2: exit 1/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-2: exit 1); a real launch would be refused]
+OK   gate BLOCKS on no alias probe record (cwdprobe-3 never ran): the dry run says BLOCKED (/cwdprobe-3: no record/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-3: no record); a real launch would be refused]
+OK   gate BLOCKS on a probe-1 record whose CLI model is not the pin: the dry run says BLOCKED (/cwdprobe-1: the CLI reports model/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-1: the CLI reports model claude-opus-5, not the pin); a real launch would be refused]
+OK   gate BLOCKS on a probe-1 record with a non-empty memory folder: the dry run says BLOCKED (/cwdprobe-1: the projects folder holds a non-empty memory/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-1: the projects folder holds a non-empty memory); a real launch would be refused]
+OK   gate BLOCKS on no launch records at all: the dry run says BLOCKED (/cwdprobe-1: no record/) and a REAL launch is refused (exit 2) without invoking the stand-in  [probe gate: BLOCKED (cwdprobe-1: no record; cwdprobe-2: no record; cwdprobe-3: no record); a real launch would be refused]
+OK   gate control: the untouched copy of the clean state is OK (the BLOCKED cases above are caused by the break, not by the copy)
+OK   a clean grader launch: exit 0, "PINNED", "valid on its pairs (3 keys)", the verdicts file written in the verdicts folder  [blind-1.g1 a1: session 1925a984-d428-46ba-8390-d84078416128 model claude-opus-5-5 exit 0 cwd blind-1.g1-a1 slugJsonl 1 memoryDir absent memory ABSENT tools {"Read":3,"Write":1} verdicts file valid on ]
+OK   its launch record: slot, launcher sha12, memory ABSENT, pinned true, models = the pin, tools Read/Write only, slugJsonl 1
+OK   the stdout of a launch carries no question or answer text (ids, counts, hashes only)
+OK   launching the same tag again is refused (exit 2) while its verdicts file exists
+OK   another tag with --attempt 2 uses its own fresh cwd (blind-1.g2-a2)
+OK   failure mode: a transcript with a claude-mem context (memory LOADED): exit 1 and the line says so  [exit 1 memory LOADED]
+OK   failure mode: a transcript with a project-memory marker: exit 1 and the line says so  [exit 1 memory LOADED]
+OK   failure mode: a CLI that reports claude-opus-5: exit 1 and the line says so  [exit 1 MODEL IS NOT THE PIN]
+OK   failure mode: a transcript whose assistant messages are another model (CLI says the pin): exit 1 and the line says so  [exit 1 MODEL IS NOT THE PIN]
+OK   failure mode: a transcript with no model field (the model cannot be read): exit 1 and the line says so  [exit 1 MODEL IS NOT THE PIN]
+OK   failure mode: a verdicts file missing a key: exit 1 and the line says so  [exit 1 MISSING/INVALID]
+OK   failure mode: a Bash call in the transcript: exit 1 and the line says so  [exit 1 TOOL OUTSIDE]
+OK   failure mode: a CLI exit code 1: exit 1 and the line says so  [exit 1 exit 1]
+OK   failure mode: a CLI that reports the pin with a suffix (claude-opus-5-5[1m]); pinned means EQUAL to claude-opus-5-5: exit 1 and the line says so  [exit 1 MODEL IS NOT THE PIN]
+OK   failure mode: a rate-limit refusal (no model, no tool call): exit 1 and the line says so  [exit 1 RATE-LIMIT-REFUSAL]
+OK   the failed launches are recorded as they were (memory LOADED / pinned false), so the scorer refuses them
+OK   single-grader arm low: launches clean (exit 0) and writes verdicts.low.json
+OK   single-grader arm captured-high: launches clean (exit 0) and writes verdicts.captured-high.json
+OK   scorer <-> launcher: the scorer accepts the launcher's clean records (blind-1.g1, blind-1.g2, low, captured-high)  [||]
+OK   scorer <-> launcher: the record binds the files: sha12 of the verdicts file and of the pairs file are recorded, and a different verdicts file (another slot's), a changed pairs file or another launcher version is refused (I-4, m-3)
+OK   scorer <-> launcher: the scorer REFUSES the launcher's failed records (memory LOADED, not the pin, model unreadable, Bash used, exit 1) -- each slot gets a reason  [blind-2.g1:memory LOADED (not ABSEN blind-3.g1:the CLI model claude-opu blind-3.g2:the transcript models [" blind-4.g1:the transcript models [] inapp.g2:the last launch exited 1]
+OK   scorer <-> launcher: the verdict files the launcher wrote sit where the scorer reads them (verdicts.<tag>.json for a slot, verdicts.<arm>.json for a single-grader arm)
+OK   scorer <-> launcher: a verdicts file the launcher accepted passes the scorer's own verdict check on the same pairs keys
+CAL LAUNCH-GRADER-RD: 91/91 PASS

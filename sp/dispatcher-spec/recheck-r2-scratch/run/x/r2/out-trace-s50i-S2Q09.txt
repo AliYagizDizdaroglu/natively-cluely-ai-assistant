@@ -1,0 +1,74 @@
+===== s50i S2Q09 [fix]
+2026-09-18T08-22-57-s50i [fix jitter=50]: 40/40 once; doubles []; never []; drops 0; absorbed 1 (whisper 0); subs 3; unmatched 0; reorders 1; supersedes 7
+trace S2Q09: {"n":1,"lat":3700,"budget":4200,"path":"unfinished","finished":false,"fromLive":false,"finals":4,"cov":"0.96","closes":["continuation-expired"],"live":["Describe the architecture across queues, workers, "],"logFirst":"08:17:33.654","logGate":6011,"vadDev":28,"blips":0,"voiceOff":"08:17:27.629"}
+  08:17:10.629 voice ON
+  08:17:12.389 voice OFF
+  08:17:12.829 voice ON
+  08:17:15.249 voice OFF
+  08:17:15.669 voice ON
+  08:17:16.709 voice OFF
+  08:17:17.169 voice ON
+  08:17:17.929 voice OFF
+  08:17:18.286 final "Place the RAD components on Azure,"
+  08:17:18.349 voice ON
+  08:17:18.889 voice OFF
+  08:17:19.309 voice ON
+  08:17:19.769 voice OFF
+  08:17:20.189 voice ON
+  08:17:21.309 voice OFF
+  08:17:21.729 voice ON
+  08:17:22.609 voice OFF
+  08:17:23.049 voice ON
+  08:17:23.240 final "Choose Azure services for document storage, ingestion events,"
+  08:17:27.629 voice OFF
+  08:17:27.725 final "work queues, workers, search,"
+  08:17:30.239 final "LLM access, and telemetry, and explain where managed"
+  08:17:32.441 final "services help and where a custom component may be justified."
+  08:17:28.829 classify finals=3
+  08:17:30.639 classify finals=4 REARMED
+  08:17:31.329 dispatch finals=4 fromLive=false live=1 path=unfinished "Place the RAD components on Azure, Choose Azure services for"
+  08:17:32.841 supersede finals=5 fromLive=undefined live=1 "Place the RAD components on Azure, Choose Azure services for"
+  08:17:40.841 close continuation-expired
+  08:17:29.545 <verdict not-a-question> {"kind":"declined","verdict":"not-a-question","again":false}
+  08:17:30.745 <live rv=match> {"kind":"revived","by":"live","rule":"forward","how":"residual","score":0.5625,"remScore":0.125,"residual":16,"hits":9,"finals":4} q="Describe the architecture across queues, workers, "
+  08:17:32.385 <verdict question SUBSTITUTED> {"kind":"ignored","why":"dispatched"}
+  08:17:32.388 <whisper rv=match> {"kind":"marked"} q="Place the RAD components on Azure, Choose Azure se"
+  08:17:34.701 <whisper rv=match> {"kind":"marked"} q="Place the RAD components on Azure, Choose Azure se"
+
+===== s50i S2Q09 [fixunk]
+2026-09-18T08-22-57-s50i [fixunk jitter=50]: 40/40 once; doubles []; never []; drops 0; absorbed 1 (whisper 0); subs 3; unmatched 0; reorders 1; supersedes 7
+trace S2Q09: {"n":1,"lat":3700,"budget":4200,"path":"unfinished","finished":false,"fromLive":false,"finals":4,"cov":"0.96","closes":["continuation-expired"],"live":["Describe the architecture across queues, workers, "],"logFirst":"08:17:33.654","logGate":6011,"vadDev":28,"blips":0,"voiceOff":"08:17:27.629"}
+  08:17:10.629 voice ON
+  08:17:12.389 voice OFF
+  08:17:12.829 voice ON
+  08:17:15.249 voice OFF
+  08:17:15.669 voice ON
+  08:17:16.709 voice OFF
+  08:17:17.169 voice ON
+  08:17:17.929 voice OFF
+  08:17:18.286 final "Place the RAD components on Azure,"
+  08:17:18.349 voice ON
+  08:17:18.889 voice OFF
+  08:17:19.309 voice ON
+  08:17:19.769 voice OFF
+  08:17:20.189 voice ON
+  08:17:21.309 voice OFF
+  08:17:21.729 voice ON
+  08:17:22.609 voice OFF
+  08:17:23.049 voice ON
+  08:17:23.240 final "Choose Azure services for document storage, ingestion events,"
+  08:17:27.629 voice OFF
+  08:17:27.725 final "work queues, workers, search,"
+  08:17:30.239 final "LLM access, and telemetry, and explain where managed"
+  08:17:32.441 final "services help and where a custom component may be justified."
+  08:17:28.829 classify finals=3
+  08:17:30.639 classify finals=4 REARMED
+  08:17:31.329 dispatch finals=4 fromLive=false live=1 path=unfinished "Place the RAD components on Azure, Choose Azure services for"
+  08:17:32.841 supersede finals=5 fromLive=undefined live=1 "Place the RAD components on Azure, Choose Azure services for"
+  08:17:40.841 close continuation-expired
+  08:17:29.545 <verdict not-a-question> {"kind":"declined","verdict":"not-a-question","again":false}
+  08:17:30.745 <live rv=match> {"kind":"revived","by":"live","rule":"forward","how":"residual","score":0.5625,"remScore":0.125,"residual":16,"hits":9,"finals":4} q="Describe the architecture across queues, workers, "
+  08:17:31.039 <verdict unknown SUBSTITUTED> {"kind":"ignored","why":"marked"}
+  08:17:32.388 <whisper rv=match> {"kind":"marked"} q="Place the RAD components on Azure, Choose Azure se"
+  08:17:34.701 <whisper rv=match> {"kind":"marked"} q="Place the RAD components on Azure, Choose Azure se"
+

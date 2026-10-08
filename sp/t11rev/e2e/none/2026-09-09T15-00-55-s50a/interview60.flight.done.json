@@ -1,0 +1,25 @@
+{
+ "label": "s50a",
+ "roster": "scenario50",
+ "rosterLabel": "scenario50 [S1, S2]  40 items",
+ "startedAt": "2026-09-09T13:47:05.973Z",
+ "finishedAt": "2026-09-09T15:36:15.850Z",
+ "liveModel": "gemini-3.1-flash-live-preview",
+ "autoExit": 1,
+ "runDir": "C:\\Users\\sotka\\OneDrive\\Masaüstü\\natively-cluely-ai-assistant\\electron\\test\\golden\\interview60.runs\\2026-09-09T15-00-55-s50a",
+ "answersFiles": [
+  "C:\\Users\\sotka\\OneDrive\\Masaüstü\\natively-cluely-ai-assistant\\electron\\test\\golden\\interview60.runs\\2026-09-09T15-00-55-s50a\\interview60.answers.json",
+  "C:\\Users\\sotka\\OneDrive\\Masaüstü\\natively-cluely-ai-assistant\\electron\\test\\golden\\interview60.runs\\2026-09-09T15-00-55-s50a\\interview60.answers.gemini-3.5-flash-lite.json",
+  "C:\\Users\\sotka\\OneDrive\\Masaüstü\\natively-cluely-ai-assistant\\electron\\test\\golden\\interview60.runs\\2026-09-09T15-00-55-s50a\\interview60.answers.qwen_qwen3.8-27b.json",
+  "C:\\Users\\sotka\\OneDrive\\Masaüstü\\natively-cluely-ai-assistant\\electron\\test\\golden\\interview60.runs\\2026-09-09T15-00-55-s50a\\interview60.answers.openai_gpt-oss-120b.json"
+ ],
+ "toGrade": [
+  "interview60.judge.pairs.json",
+  "interview60.judge.pairs.gemini-3.1-flash-lite.json",
+  "interview60.judge.pairs.gemini-3.5-flash-lite.json",
+  "interview60.judge.pairs.qwen/qwen3.8-27b.json",
+  "interview60.judge.pairs.openai/gpt-oss-120b.json"
+ ],
+ "next": "grade each pairs file with its rubric into interview60.judge.verdicts[.<model>].json, then interview60.judge.mjs <run> [--answers <file>] --verdicts <that file>",
+ "commit": "249e643ea62019c79513a038f78415269f1859b3"
+}

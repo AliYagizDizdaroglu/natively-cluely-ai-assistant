@@ -1,0 +1,23 @@
+// Recount in-app cue blocks per item (ids, times, counts only; never cue text, answers or prompts).
+import fs from 'node:fs'; import path from 'node:path';
+const RUN = 'C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/electron/test/golden/interview60.runs/2026-10-02T11-39-41-h40d';
+const lines = fs.readFileSync(path.join(RUN, 'natively_debug.log'), 'utf8').split(/\r?\n/);
+const ts = (l) => Date.parse(l.slice(0, 24));
+const tl = JSON.parse(fs.readFileSync(path.join(RUN, 'interview60.timeline.json'), 'utf8'));
+const items = tl.items.filter((i) => i.playedAt != null).sort((a, b) => a.playedAt - b.playedAt);
+const playing = (t) => [...items].reverse().find((i) => i.playedAt <= t)?.id ?? 'PRE';
+const pairs = JSON.parse(fs.readFileSync(path.join(RUN, 'interview60.judge.pairs.json'), 'utf8')).items;
+const disp = pairs.map((p) => ({ id: p.id, t: Date.parse(p.dispatchedAt) })).sort((a, b) => a.t - b.t);
+const byDispatch = (t) => [...disp].reverse().find((d) => d.t <= t)?.id ?? 'PRE';
+const cue = lines.filter((l) => l.includes('[Answer] cues:')).map((l) => { const t = ts(l); let n = null; try { n = JSON.parse(l.slice(l.indexOf('[Answer] cues:') + 14)).length; } catch { } return { t, play: playing(t), disp: byDispatch(t), n }; });
+console.log('cue lines', cue.length, '; first item played at', new Date(items[0].playedAt).toISOString());
+const cnt = {}; for (const c of cue) cnt[c.play] = (cnt[c.play] || 0) + 1;
+for (const c of cue) if (c.play !== c.disp || cnt[c.play] > 1 || c.play === 'PRE') console.log(' ', new Date(c.t).toISOString().slice(11, 23), 'play', c.play, 'dispatchJoin', c.disp, 'lines', c.n);
+const ids = new Set(cue.filter((c) => c.play !== 'PRE').map((c) => c.play));
+console.log('distinct items with a block', ids.size, '; roster items without one:', items.map((i) => i.id).filter((i) => !ids.has(i)).join(','));
+console.log('pairs items', pairs.length, '; pairs ids without a block:', pairs.map((p) => p.id).filter((i) => !ids.has(i)).join(',') || 'none');
+console.log('play-join vs dispatch-join disagreements', cue.filter((c) => c.play !== c.disp).length);
+console.log('superseded streams', lines.filter((l) => l.includes('stream aborted by new generation')).map((l) => l.slice(11, 23) + ' play ' + playing(ts(l))));
+console.log('trim lines', lines.filter((l) => l.includes('[Answer] cues trimmed:')).map((l) => l.slice(11, 23) + ' ' + playing(ts(l))));
+const pairsWithEmpty = pairs.filter((p) => !p.answer || !String(p.answer).trim()).map((p) => p.id);
+console.log('pairs with empty answer', pairsWithEmpty);

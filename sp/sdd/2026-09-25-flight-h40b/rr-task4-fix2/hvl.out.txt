@@ -1,0 +1,48 @@
+﻿
+=== harness runOld  vs literal pre-Task-4 loop: 165 vs 203 tokens; 24 differing runs ===
+  literal only | after "= await pacedAnswer (": item . q , CAPTURED ? . [ item . id ] ? ? null
+  literal only | after "; await sleep (": 5000
+  literal only | after "; await sleep (": Math . max ( r . retryAfterMs ? ? 0 , 8000 * ( a + 1
+  literal only | after ")": ) )
+  harness only | after ") { lastErr =": `no answer within X s: ${e.message}`
+  literal only | after "": `no answer within ${CALL_TIMEOUT_MS / 1000} s: ${e.message}`
+  literal only | after "} await sleep (": 4000 * ( a + 1
+  literal only | after ")": )
+  harness only | after "; } }": const record =
+  literal only | after "": if
+  harness only | after "r . transient )": ?
+  harness only | after "{": transientError : lastErr } :
+  literal only | after "": store [ item . id ] =
+  harness only | after "{": spoken : r
+  harness only | after ".": spoken
+  literal only | after "": . . item
+  harness only | after ",": finish
+  literal only | after "": model
+  harness only | after ":": r . finish
+  literal only | after "": ARM
+  harness only | after ",": cutRetried
+  literal only | after "": transientError
+  harness only | after ":": dropRetried
+  literal only | after "": lastErr
+
+=== harness runNew  vs current runner loop: 202 vs 232 tokens; 20 differing runs ===
+  literal only | after "= await pacedAnswer (": item . q , CAPTURED ? . [ item . id ] ? ? null
+  literal only | after "; await sleep (": 5000
+  literal only | after "; await sleep (": Math . max ( r . retryAfterMs ? ? 0 , 8000 * attempts
+  literal only | after ")": )
+  harness only | after ") { lastErr =": `no answer within X s: ${e.message}`
+  literal only | after "": `no answer within ${CALL_TIMEOUT_MS / 1000} s: ${e.message}`
+  literal only | after "; await sleep (": 4000 * attempts
+  harness only | after ") ; } }": const record =
+  literal only | after "": if
+  harness only | after "r . transient )": ?
+  harness only | after "{": transientError : lastErr , cutRetried : dropRetried } :
+  literal only | after "": store [ item . id ] =
+  harness only | after "{": spoken : r
+  harness only | after ".": spoken
+  literal only | after "": . . item
+  harness only | after ",": finish
+  literal only | after "": model
+  harness only | after ":": r . finish
+  literal only | after "": ARM
+  literal only | after ",": transientError : lastErr ,

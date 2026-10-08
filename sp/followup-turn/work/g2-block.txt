@@ -1,0 +1,66 @@
+// A2 point 1(c) + point 10 (23:02; S3: `process.chdir(path.dirname(process.cwd()))` + a dot-free literal like 'keyhold' + a read by variable passed the
+// token rule). In an allowed Bash's `node -e` code, in addition to point 1(c):
+//   (i)  none of the tokens below may appear ANYWHERE in the code -- case-sensitive SUBSTRINGS, string literals included;
+//   (ii) every `fs.<method>(` / `require('fs').<method>(` call is readFileSync or existsSync and its FIRST argument is a string literal equal to the own
+//        verdicts / own pairs file name, or `process.argv[<digit>]` where that slot is a TRAILING argument of the same command normalizing to the own file;
+//   (iii) `process.` only as process.exit / process.stdout / process.stderr / process.argv[<digit>]; require( only of 'fs' 'node:fs' 'path' 'node:path' or
+//        process.argv[<digit>] (again an own file).
+// Beyond the registered text (it can only flag MORE, never less): `fs` / require('fs') must be a directly dereferenced readFileSync / existsSync call (an alias
+// `const q=require('fs');q.readFileSync(v)` would slip past (ii)); a few more code-loading / network modules reachable as globals of `node -e`; .replace/.concat.
+const G2_TOKENS = ['chdir', 'readdir', 'opendir', 'Dir', 'fs/promises', 'promises', 'dirname', 'resolve', 'join', 'relative', 'normalize', 'process.cwd', '__dirname', 'glob', 'require.resolve', 'eval', 'Function(', 'fromCharCode', 'Buffer', 'atob', 'import('];
+const EXTRA_BANNED = [
+    [/\b(?:http|https|net|child_process|fetch|curl|wget)\b/, 'http / https / net / child_process / fetch / curl / wget'],
+    [/\b(?:vm|worker_threads|cluster|dgram|dns|tls|repl|module|inspector)\b/, 'a code-loading / network module'], [/\bimport\b/, 'import'],
+    [/\.(?:replace|replaceAll|concat)\(/, 'string building (.replace/.concat)'],
+];
+const FS_CALL = /(?:\bfs|\brequire\s*\(\s*'(?:node:)?fs'\s*\))\s*\.\s*(\w+)\s*\(\s*([^,)]*)/g;
+
+/**
+ * null when `command` is an allowed validation Bash (A2 point 1(c) + point 10), else the reason it is not.
+ * ctx: { blindDir, files: { verdicts, pairs } }.
+ */
+export function bashProblem(command, { blindDir, files }) {
+    const m = SHAPE.exec(command.trim());
+    if (!m) return 'not of the shape cd "<own blind folder>" && node -e "<code>" [<arg>...] (no shell metacharacters, nothing after the node -e)';
+    const [, cd, code, args] = m;
+    const allowed = new Set([norm(files.verdicts, blindDir), norm(files.pairs, blindDir)]);
+    if (cd !== undefined && norm(cd, blindDir) !== norm('.', blindDir)) return 'cd target is not the own blind folder';
+    const trailing = [...args.matchAll(/"([^"]*)"/g)].map((a) => a[1]);
+    for (const a of trailing) if (!allowed.has(norm(a, blindDir))) return `argument "${a.slice(0, 50)}" is not the own verdicts / pairs file`;
+    const lits = [...code.matchAll(/'([^'\n]*)'/g)].map((x) => x[1]);
+    for (const L of lits) if (/[\/\\.~*?[\]]/.test(L) && L !== files.verdicts && L !== files.pairs) return `string literal '${L.slice(0, 40)}' is a path / glob outside the own pair`;
+    if (/'\s*\+|\+\s*'/.test(code)) return 'a + adjacent to a string literal (string building)';
+    if (/~/.test(code)) return 'a ~ in the code';
+    for (const t of G2_TOKENS) if (code.includes(t)) return `point 10 (i): the token ${t} is not allowed`;
+    for (const [rx, what] of EXTRA_BANNED) if (rx.test(code)) return `forbidden: ${what}`;
+    if (/\bprocess\b(?!\.(?:exit|stdout|stderr)\b|\.argv\[\d\])/.test(code)) return 'point 10 (iii): process. may appear only as process.exit / process.stdout / process.stderr / process.argv[<digit>]';
+    // process.argv[d] is the d-th element of [node, ...trailing arguments]: valid only for a trailing argument that is an own file (checked above)
+    const argvOk = (expr) => { const a = /^process\.argv\[(\d)\]$/.exec(expr.trim()); return !!a && Number(a[1]) >= 1 && Number(a[1]) <= trailing.length; };
+    // require(): 'fs' / 'node:fs' directly dereferenced as a read call; 'path' / 'node:path' bare; process.argv[d] (an own file)
+    const bare = code.replace(/'[^'\n]*'/g, "''");
+    const fsWords = (bare.match(/\bfs\b/g) ?? []).length;
+    const calls = [...code.matchAll(FS_CALL)];
+    const viaBare = calls.filter((c) => /^\s*fs\b/.test(c[0])).length;
+    if (fsWords !== viaBare) return 'point 10 (ii): `fs` used other than as fs.readFileSync(...) / fs.existsSync(...)';
+    let nRequire = 0;
+    for (const rq of code.matchAll(/\brequire\b\s*(\()?([^)]*)/g)) {
+        nRequire++;
+        const arg = (rq[2] ?? '').trim();
+        if (!rq[1]) return 'point 10 (iii): require used as a value';
+        if (/^'(?:node:)?path'$/.test(arg)) continue;
+        if (/^'(?:node:)?fs'$/.test(arg)) continue;                     // its dereference is checked with the fs calls below
+        if (/^process\.argv\[\d\]$/.test(arg)) { if (!argvOk(arg)) return `point 10 (iii): ${arg} is not a trailing argument naming an own file`; continue; }
+        return `point 10 (iii): require(${arg.slice(0, 30)}) of something other than fs / path / process.argv[<digit>]`;
+    }
+    const fsRequires = [...code.matchAll(/\brequire\s*\(\s*'(?:node:)?fs'\s*\)/g)].length;
+    if (fsRequires !== calls.length - viaBare) return "point 10 (ii): require('fs') other than directly dereferenced as .readFileSync(...) / .existsSync(...)";
+    void nRequire;
+    for (const c of calls) {
+        if (c[1] !== 'readFileSync' && c[1] !== 'existsSync') return `point 10 (ii): fs.${c[1]} (only readFileSync / existsSync)`;
+        const first = c[2].trim();
+        const lit = /^'([^']*)'$/.exec(first);
+        if (lit) { if (lit[1] !== files.verdicts && lit[1] !== files.pairs) return `point 10 (ii): fs.${c[1]}'s first argument names '${lit[1].slice(0, 40)}', not the own verdicts / pairs file`; }
+        else if (!argvOk(first)) return `point 10 (ii): fs.${c[1]}'s first argument is not a literal own-file name or a trailing process.argv[<digit>] (${first.slice(0, 40)})`;
+    }
+    return null;
+}

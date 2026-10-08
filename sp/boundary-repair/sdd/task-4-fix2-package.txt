@@ -1,0 +1,101 @@
+# Task 4 fix round 2: round 1 (reviewed) -> round 2 (MAIN now)
+
+STAT DeepgramStreamingSTT.ts  before 16037 B sha256 70683d814ac6a27f -> after 16236 B sha256 57292516fc495df1
+STAT DeepgramStreamingSTT.boundaryRepair.test.ts  before 11766 B sha256 e80e5373b7d7b291 -> after 13838 B sha256 2f3eb860c6142415
+
+===== DeepgramStreamingSTT.ts =====
+diff --git a/a/DeepgramStreamingSTT.ts b/b/DeepgramStreamingSTT.ts
+index be88e8a..5d133e6 100644
+--- a/a/DeepgramStreamingSTT.ts
++++ b/b/DeepgramStreamingSTT.ts
+@@ -221,32 +221,34 @@ export class DeepgramStreamingSTT extends EventEmitter {
+                 // Register Transcript inside Open per SDK README pattern
+                 live.on(LiveTranscriptionEvents.Transcript, (data: any) => {
+                     try {
+                         const alt = data.channel?.alternatives?.[0];
+                         const transcript = alt?.transcript;
+                         const isFinal = data.is_final ?? false;
+                         console.log(`[DeepgramStreaming] Transcript event — isFinal=${isFinal}, text="${transcript ?? '(empty)'}"`);
+                         if (!transcript) {
+                             // An empty FINAL is a pause (median 187 per flight hour): a cut remembered
+                             // before it must not be glued onto the next utterance. Empty interims are
+-                            // not (they precede the words of every segment).
++                            // not (they are frequent and can precede a segment's words).
+                             if (isFinal) boundaryRepair?.clear();
+                             return;
+                         }
+                         // Deepgram sometimes finalizes short of its own interim and resumes one word
+                         // later; the word is in no final. Measured 2026-09-29: 25 repaired losses in
+                         // the non-holdout logs, all 25 true to the script (the measured precision; 25
+-                        // is a floor on the losses), 6 of 20 seam plays; the rule lives in
+-                        // deepgramBoundaryRepair. speech_final = Deepgram heard the utterance end at
+-                        // this final, so it leaves no cut (never logged: its in-app effect is unmeasured).
++                        // is a floor on the losses), Deepgram lost a word in 6 of 20 seam1 plays;
++                        // the rule lives in deepgramBoundaryRepair. speech_final = Deepgram heard the
++                        // utterance end at this final, so it leaves no cut (never logged: its in-app
++                        // effect is unmeasured).
+                         const repaired = boundaryRepair?.onTranscript(transcript, isFinal, Date.now(), data.speech_final === true);
+                         if (repaired?.restored) {
++                            // interview60.turns-finals.mjs pairs this line with the final logged just above it: keep the two adjacent
+                             console.log(`[DeepgramStreaming] boundary repair: restored "${repaired.restored.join(' ')}" before "${transcript.slice(0, 40)}"`);
+                         }
+                         this.emit('transcript', {
+                             text: repaired?.text ?? transcript,
+                             isFinal,
+                             confidence: alt?.confidence ?? 1.0,
+                         });
+                     } catch (err) {
+                         console.error('[DeepgramStreaming] Parse error:', err);
+                     }
+
+
+===== DeepgramStreamingSTT.boundaryRepair.test.ts =====
+diff --git a/a/DeepgramStreamingSTT.boundaryRepair.test.ts b/b/DeepgramStreamingSTT.boundaryRepair.test.ts
+index cac0b41..f36a73b 100644
+--- a/a/DeepgramStreamingSTT.boundaryRepair.test.ts
++++ b/b/DeepgramStreamingSTT.boundaryRepair.test.ts
+@@ -206,12 +206,43 @@ describe('DeepgramStreamingSTT boundary repair (the seam fixture: S2Q07 play 3,
+                 const ends: number[] = [];
+                 stt.on('utterance-end', (e: { at: number }) => ends.push(e.at));
+                 playSeam(() => lives[0].fire('UtteranceEnd', { type: 'UtteranceEnd', last_word_end: 1.2 }));   // a bare clear() throws here, outside any try/catch
+                 stt.stop();
+                 expect(log.some((l) => l.includes(`lang=${code})`)), language).toBe(true);
+                 expect(seen, language).toEqual(unchanged);
+                 expect(ends, language).toHaveLength(1);
+             }
+             expect(repairs()).toEqual([]);
+         });
++
++        // interview60.turns-finals.mjs pairs each `boundary repair:` line with the `Transcript event` line directly above it, so the
++        // repair is logged before the emit and nothing is logged in between. A logging listener makes that observable: a repair line
++        // logged after the emit, or any other log line before it, would put a different line first.
++        it('the repair line is the very next log line after its final\'s Transcript event line, before any listener runs', () => {
++            const { stt } = start();
++            stt.on('transcript', (t: any) => console.log(`[listener] ${t.text}`));   // the app's own listener logs synchronously
++            playSeam();
++            stt.stop();
++            const k = log.findIndex((l) => l.includes('boundary repair:'));
++            expect(k).toBeGreaterThan(0);
++            expect(log[k - 1]).toBe(`[DeepgramStreaming] Transcript event — isFinal=true, text="${F2.text}"`);
++        });
++
++        // Each socket owns its repair. The restart test above covers stop() + start(); this covers the other way a socket is replaced:
++        // the server closes it (1011) and scheduleReconnect() opens a new one 1000 ms later (RECONNECT_BASE_DELAY_MS).
++        it('a socket the server closed (1011) and replaced does not share its cut: F2 on the reconnected socket is emitted as received', () => {
++            const { stt, seen } = start();
++            lives[0].fire('Results', results(I.text, false));
++            vi.advanceTimersByTime(F1.atMs);
++            lives[0].fire('Results', results(F1.text, true));
++            lives[0].fire('close', { code: 1011, reason: 'timeout' });
++            vi.advanceTimersByTime(1000);
++            expect(lives).toHaveLength(2);
++            lives[1].fire('open');
++            vi.advanceTimersByTime(F2.atMs - F1.atMs - 1000);     // still inside the 5 s window: only the socket differs
++            lives[1].fire('Results', results(F2.text, true));
++            stt.stop();
++            expect(seen).toEqual(unchanged);
++            expect(repairs()).toEqual([]);
++        });
+     });
+ });
+

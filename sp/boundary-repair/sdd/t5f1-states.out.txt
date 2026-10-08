@@ -1,0 +1,25 @@
+﻿[ok] FINAL as the very last line, no trailing newline (lines[i + 1] undefined)
+[ok] FINAL then repair as the very last two lines, no trailing newline
+[ok] CRLF line endings, with a repair
+[ok] CRLF line endings, a short final whose whole text is the `before` text (the CR follows the closing quote)
+[ok] CRLF line endings, no repair
+[ok] a repair line before any final (the log starts with one: e.g. rotated between the two lines) | round-0 module (no refusals) returns ["hello"]
+[ok] an interim followed by a repair line | round-0 module (no refusals) returns []
+[ok] the repair line may carry a later millisecond than its final (the real handler logs two calls)
+[ok] an apostrophe in the restored word survives ('don't' is a rawTok token)
+[ok] a two-word restore
+[ok] a final longer than 40 chars: the repair line carries only its first 40, and that is what is checked
+[ok] escaped quotes in the raw text (both lines carry the same text)
+[ok] escaped quotes in the raw text, with a repair
+[ok] an UNESCAPED quote inside the first 40 chars (how the adapter really writes it): the FINAL regex stops at the quote, the check still finds the prefix, no false refusal
+[ok] two repair lines in a row: the second has no final directly above it | round-0 module (no refusals) returns ["a b"]
+[ok] a [WARN]-prefixed look-alike is not a repair line (the adapter writes console.log = [LOG])
+[ok] a final AT since is kept (>=)
+[ok] a final 1 ms BEFORE since is dropped
+[ok] an empty log
+[ok] an unparsable timestamp is dropped (NaN >= since is false), as before
+[ok] two finals, only the second followed by a repair: only the second is restored
+[ok] a repair line two lines after its final (one other line between) | round-0 module (no refusals) returns ["first"]
+[ok] a repair under a final its `before` text does not name (a dropped event line) | round-0 module (no refusals) returns ["hallucinations How do you cut"]
+[ok] the refusal names the line of a repair deep in the log | round-0 module (no refusals) returns ["one","two","zzz three"]
+RESULT: all 24 states behave as expected on the final module; the round-0 module differs on exactly the 6 refusal cases

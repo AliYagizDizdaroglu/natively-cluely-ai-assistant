@@ -1,0 +1,1 @@
+judge electron\test\golden\interview60.runs\RUNDIR-h40d --verdicts electron\test\golden\interview60.runs\RUNDIR-h40d\interview60.judge.verdicts.json --model claude-opus-5-5

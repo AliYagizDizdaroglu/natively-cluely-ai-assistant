@@ -1,0 +1,22 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Tabular fit, native missing-value handling, latency, and a logistic-regression baseline all covered in 55 spoken words."},
+  "S1Q02": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "True positives and precision computed correctly but recall is never stated, and 57 versus 60 is called rounding."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Randomized holdout plus difference-in-differences directly separates model effect from seasonality and mix."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Index-stable tie-break, correct precision, recall and lift formulas, and explicit zero returns for all three degenerate cases."},
+  "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct 30-day gap for the label window and fit-on-train-only ColumnTransformer, but 88 words is over length."},
+  "S1Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Left join with ingestion and window predicates in the join, counting event rows so zero-call customers survive."},
+  "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "All seven stages plus the shared feature store named, but 131 words is far too long to say."},
+  "S1Q08": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Logging, bucketing and retraining selection are sound, but joining churn outcomes on the prediction request id does not work."},
+  "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Every Azure service mapped correctly with operational reasons; 91 words is slightly over length."},
+  "S1Q10": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Managed identity, correct RBAC role, Key Vault CSI, and subscription plus private-endpoint separation; 116 words is long."},
+  "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "All eight RAG stages walked through with hybrid search and cross-encoder reranking; 97 words is over length."},
+  "S2Q02": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Claims a token-level unit with an entity denominator and quotes variance as a percent; 171 words is unspeakable length."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Compares all three approaches and pins the agent's justification to non-linear reasoning paths."},
+  "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Reciprocal rank fusion scoring, id tie-break and top-k slice are all right, but 115 words is long."},
+  "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Greedy policy, dedupe, per-document cap and skip-on-overflow correct, but the opening clause is truncated mid-sentence."},
+  "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Semaphore of eight, per-case timeout, isolated failures and order-preserving gather all correct; 102 words is long."},
+  "S2Q07": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Attributes Pinecone-style namespaces to Milvus and never covers citations, which the question explicitly required."},
+  "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Versioning, backfill, dual-write, shadow eval, flag cutover and rollback all covered, but 152 words is far too long."},
+  "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Correct Azure service choices throughout with a clear managed-versus-custom split; 111 words is over length."},
+  "S2Q10": {"correctness": 1, "on_topic": 2, "delivery": 1, "reason": "Discarding on any claim-record conflict loses work after a mid-write crash, and the cross-store operation is not atomic."}
+}

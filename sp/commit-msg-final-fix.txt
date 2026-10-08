@@ -1,0 +1,8 @@
+test(stt): pin stale-error and late-transcript behaviour; fix budget comment
+
+A replaced socket's error must not surface as the instance error; its late
+final transcript must still reach the listener (audio the new socket never
+gets). The cutAtWordBudget comment no longer claims the floor exists to keep
+answers above 40 words.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

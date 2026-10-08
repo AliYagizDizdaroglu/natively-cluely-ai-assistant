@@ -1,0 +1,37 @@
+﻿final adapter 16036 B 2af5409f94f0f3e5; brief test 9520 B a2f0015faa7a30bf
+proposal snippet written to C:\Users\sotka\AppData\Local\Temp\claude\C--Users-sotka-OneDrive-Masa-st--natively-cluely-ai-assistant--claude-worktrees-nifty-lederberg-49681a\9c5886c7-cdbd-48af-b8bc-e9275012ec64\scratchpad\boundary-repair\sdd\t4-proposal-snippet.txt
+
+[as expected] control: the final adapter
+   Tests 8 passed (8)
+   (no test failed)
+
+[as expected] ?. dropped on the UtteranceEnd clear
+   Tests 2 failed | 6 passed (8)
+   failed: indonesian: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final are harmless
+   failed: auto: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final are harmless
+
+[as expected] ?. dropped on the empty-final clear
+   Tests 2 failed | 6 passed (8)
+   failed: indonesian: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final are harmless
+   failed: auto: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final are harmless
+
+[as expected] ?. dropped on onTranscript
+   Tests 3 failed | 5 passed (8)
+   failed: a non-English connection passes every transcript through untouched, with no repair line
+   failed: indonesian: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final are harmless
+   failed: auto: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final are harmless
+
+[as expected] ?. dropped on the repaired?. read (restored)
+   Tests 3 failed | 5 passed (8)
+   failed: a non-English connection passes every transcript through untouched, with no repair line
+   failed: indonesian: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final are harmless
+   failed: auto: an empty FINAL, an empty INTERIM, an UtteranceEnd and a speech_final are harmless
+
+[as expected] gate removed
+   Tests 1 failed | 7 passed (8)
+   failed: a non-English connection passes every transcript through untouched, with no repair line
+
+junction to MAIN's node_modules removed: true; MAIN's vitest still present: true
+scratch tree deleted: true
+
+variants whose failing set differed from the expectation: 0

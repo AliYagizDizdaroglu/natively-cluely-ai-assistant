@@ -1,0 +1,404 @@
+[
+ [
+  "turkish",
+  [
+   {
+    "name": "Kardelen - Warm Turkish Narration",
+    "id": "WN6vSvkPbV9z2UoBJRYW",
+    "pub": "bef9d92a48c85ba9530a3cd4ead0ebff60ab19a71eeafe4a1b6a5b6881ff9307",
+    "free": true
+   },
+   {
+    "name": "Seyfi",
+    "id": "KmfXvKGCgN7Lk3Xy5xZt",
+    "pub": "fad0c8e7d8a0a0bd5c38dfaa532887fadd0b45819f69bcc63cc4b37bb67ea750",
+    "free": false
+   },
+   {
+    "name": "Harun",
+    "id": "ouo8WiFpmtatHR07JhXm",
+    "pub": "51c553dd318712fa15eafec3957731d383f966f86bd723a222b9a7dcfd56d310",
+    "free": false
+   }
+  ]
+ ],
+ [
+  "indian",
+  [
+   {
+    "name": "Ramesh - Indian Professional",
+    "id": "Eprt7XYIrZKqBpPVgsgK",
+    "pub": "382bc5fe65a47e5bedbb9f43bd7520496bbf668bc9e1bf2955b244420803f6e3",
+    "free": false
+   },
+   {
+    "name": "Tridev - Warm Indian Narrator",
+    "id": "irQC5HHaVrA6WY7BbPGZ",
+    "pub": "71d9ff9deb9c669a22970922d7223f22154022f474d7ac6492645220ead0ff26",
+    "free": false
+   },
+   {
+    "name": "Jatinder - Indian-Australia",
+    "id": "ezIbD9ybu8mqGYLLcd4U",
+    "pub": "5e09a6428b35edb56a7c7980bb99527114edc84fedce6dea84e0858261511365",
+    "free": false
+   }
+  ]
+ ],
+ [
+  "italian",
+  [
+   {
+    "name": "Rocco G. - Italian accent",
+    "id": "UEw8Jol3Z7Kb3TdaL0BQ",
+    "pub": "16e2e857f9b330c6bdd243d1e3ab1f31ae84c851a22b093d88bed60038c2d503",
+    "free": false
+   },
+   {
+    "name": "Silvia - Italian Accent English",
+    "id": "NeTWyxKL7qMefrZEowed",
+    "pub": "b9659df47c7cd0278ab8ebbefc2bef8e1f150298f6bb1f3ae407995d63cda2b4",
+    "free": false
+   },
+   {
+    "name": "Valentino - English with italian accent",
+    "id": "vsxj8mTkgBSaMoGnPGc9",
+    "pub": "00655bfc6da1f1ea7a0cf794ba1a6898f1c2bbd1fb1d5be853a79305704b606e",
+    "free": true
+   }
+  ]
+ ],
+ [
+  "german",
+  [
+   {
+    "name": "Gerrit - Friendly German Accent",
+    "id": "k9IoIFgHU1p8OEu6LGem",
+    "pub": "84170eba2e50e0df575fca41c02e69d51200016cc292e0f433bb2b37cea28126",
+    "free": true
+   },
+   {
+    "name": "Michael - Amateur with German Accent",
+    "id": "IsC5x9dr2Ii3Qcxbkusu",
+    "pub": "318fb221e91b4b4e76fb85c76bb323a10604aa63fde2bef05c61cbca4a4aeea6",
+    "free": false
+   },
+   {
+    "name": "Otto - German Accent",
+    "id": "vIERrrzU4FdRcAQVRMYE",
+    "pub": "80d9191368f6824d0aacf4080a0894aecb0c4bdd82928eb623e585caf54a84b7",
+    "free": false
+   }
+  ]
+ ],
+ [
+  "french",
+  [
+   {
+    "name": "Fara - Friendly, French Caribbean Accent",
+    "id": "y2b9DGVjU8YIDErGsc5F",
+    "pub": "31673fa3990796f2f53f2bccbd961407f657e6c356906f5a4651b7e1b4d4534c",
+    "free": false
+   },
+   {
+    "name": "Nicolas - French English Male",
+    "id": "1a6onbE6zC5AwIN3pEp0",
+    "pub": "c326d815ae4911b66f363ae55e5d23a94cc287812473b423cb84b177caf3bda7",
+    "free": true
+   },
+   {
+    "name": "Nicolas - French accent & cozy whisper",
+    "id": "mN8UWPJNnmcExNpfrkd2",
+    "pub": "d8af1ba05554a805f077248f35e47098e9e6ec933845d7c2742b9d039f4da4ff",
+    "free": false
+   }
+  ]
+ ],
+ [
+  "spanish",
+  [
+   {
+    "name": "Magali",
+    "id": "2YkewHHymv4uiavo7UKx",
+    "pub": "94e5cfe60fbad72feef77da30c33d0066a502a07a2668b65a1eff19eb07cba2e",
+    "free": false
+   },
+   {
+    "name": "Cesar ",
+    "id": "hmqTc336vfoNF6BO822U",
+    "pub": "7e336cb4c6763325ffd9408884017e2bdca0f28e531e3410dda319c2a0c90cc0",
+    "free": true
+   },
+   {
+    "name": "Kitorimatsu",
+    "id": "GgMNbwMsOI1mIBUkirnu",
+    "pub": "8e6b678ce24611eb86fb6ca6a896c46460bab0e32f37c17bb03fcb5fabda21b7",
+    "free": false
+   }
+  ]
+ ],
+ [
+  "dutch",
+  [
+   {
+    "name": "Linda - Dutch Tech professional",
+    "id": "Urzzrj6GPqPfS6icfZ9j",
+    "pub": "7b0c82afc77f26d7baea8fb3fc1bbff41aa4a662d99af84dc1dbd5152041add1",
+    "free": false
+   },
+   {
+    "name": "Ben Steenstra - Dutch",
+    "id": "0lWo2y2fie88Lsb3AwUo",
+    "pub": "4148800644e48f0c8cc35ac20056f418f34134264d15dc83e236aae59e7c637f",
+    "free": false
+   },
+   {
+    "name": "Sir Pieter - Dutch-Filipino",
+    "id": "3T9MoEO77NQAD05l9TVO",
+    "pub": "18b6f038186ba974fe33d7f281cb40fd9146c95a452425bd6a582689ad9c585e",
+    "free": false
+   }
+  ]
+ ],
+ [
+  "swedish",
+  [
+   {
+    "name": "Hansi - Kind Swedish grandpa",
+    "id": "RcEmXcISaHUgHOU4uNTz",
+    "pub": "4d558654544071fcfeaba0aa7b7014f69faa40c4d9d5c2cb8aebfd331a0721ac",
+    "free": true
+   },
+   {
+    "name": "CJ - Young Swedish Male",
+    "id": "9n6dGtreZHvmNb14Y1VO",
+    "pub": "e9c3dfa4deca28ad41a59113c510ca27442e43e8ee079c7744668e18c5cf0c2c",
+    "free": true
+   },
+   {
+    "name": "Signe",
+    "id": "sThuSDqAfn6WLdvvfyFT",
+    "pub": "68c258d53ec9bec4d31bf90b99eadbc4d7ff3ba426f60f05eb51d7437528bf61",
+    "free": false
+   }
+  ]
+ ],
+ [
+  "russian",
+  [
+   {
+    "name": "Oksana - Russian Accented English",
+    "id": "Re06WujjJplgPJjn7M6s",
+    "pub": "9a69e7d9337fb8215eacdd4ca5f46c266e185a1ea11174938c578279cbf271d8",
+    "free": false
+   },
+   {
+    "name": "Alexey's English With Russian Accent Professional Male Voice",
+    "id": "XaEUesE01wKIKaa0xI0h",
+    "pub": "68f69e3d6fbb0dfe5b9723a05e85aaf7469d73ffb109b6b19f17130a889cb9de",
+    "free": true
+   },
+   {
+    "name": "Svetlana – the Russian Murmur (ASMR/Whisper)",
+    "id": "uCHtuBDOZxwmpHsKz7ii",
+    "pub": "c6aec328ffe0945deba9ee6245824aed597ae72e25204d3df1e181765855ad72",
+    "free": true
+   }
+  ]
+ ],
+ [
+  "nigerian",
+  [
+   {
+    "name": "Olu - Nigerian English Storyteller",
+    "id": "ytMkkl3KqcF3nhlFgtys",
+    "pub": "32d1aaeb96e601c8951f8117f89a648661d7f0ec29ed2c7b770d709899249d9e",
+    "free": false
+   },
+   {
+    "name": "Ifeoma Odumodu - Nigerian Narrator",
+    "id": "reGkImJki7uJOve2F4A0",
+    "pub": "5a17dbda113fe553671dabda17eeb2b8013c9efdd3d8c07d861ad65f0c8d3740",
+    "free": false
+   },
+   {
+    "name": "Uyi - Nigerian American Male ",
+    "id": "NwBN5lRnglDs8TBVmser",
+    "pub": "e7740d084ac9767effb23ea3a6f0c9166821532e5a89080642ac94fca1cb9b44",
+    "free": false
+   }
+  ]
+ ],
+ [
+  "portuguese",
+  [
+   {
+    "name": "Carlos - Warm European Storyteller",
+    "id": "I9DPHUWoXtNFYbtp0Fps",
+    "pub": "70258a3950c3807506f2385a7ee5e2fb047b71e4caf8c4d63b49cd598325eaaf",
+    "free": false
+   },
+   {
+    "name": "Chuck",
+    "id": "HTkRYYYQ1aQ912fcrD6J",
+    "pub": "af50918fecebfb45fc07577ae489248069d323b63438b880b956f538bf07012f",
+    "free": false
+   },
+   {
+    "name": "Enzo - European",
+    "id": "k6IuB4FJUDVbwY3ZlJ6G",
+    "pub": "7fdcbb8e0ddd64e1565f5be4fc9776c8b9c7d29b0e39879d45f4e13f3d7920fa",
+    "free": false
+   }
+  ]
+ ],
+ [
+  "arabic",
+  [
+   {
+    "name": "Max - Expressive Male",
+    "id": "asXNQX91Bv6BNGpU9ZGP",
+    "pub": "c0ff371ee49d1202cd928014fcbf140f9bc28e3be221c6f7c537b6ddf8db7bd2",
+    "free": false
+   },
+   {
+    "name": "Mekawy - calm, clear Middle easterner",
+    "id": "uEs4hyGRdNLLJMFsxCkz",
+    "pub": "6415d2030c6382e59df1d3ea5cbcbeebf174605d5f8834392458763f20c02d2a",
+    "free": true
+   },
+   {
+    "name": "Joe",
+    "id": "v2RWNgVv9gtykEEKQHLN",
+    "pub": "e589957834cf43a3e226ffc99bcfddcc71d02204d4212c6e905a5ded59a5269f",
+    "free": false
+   }
+  ]
+ ],
+ [
+  "chinese",
+  [
+   {
+    "name": "June - Chinese Accent English Narrator",
+    "id": "c3xntgIY160tGkH7rVz2",
+    "pub": "bcedcd621c8d4d7af852c9c43ff85a3c294769424c93a05f249913bdc642d9dd",
+    "free": false
+   },
+   {
+    "name": "Wenchang - Chinese accent",
+    "id": "NxUQ5SgevJvRsX9HsM0O",
+    "pub": "e1d06efcba032150b9876ba8ad2d05876901f9a8e6db2927e6693cf46333699d",
+    "free": false
+   },
+   {
+    "name": "Deep Bass - Malaysian Soul, Bilingual, English, Chinese",
+    "id": "NIkIuJZ8oQMuKZqwKtnm",
+    "pub": "1e5353aceda10ce42c0b97f0b2d5f7b1442230bf3f7dda6634283fb025491dba",
+    "free": true
+   }
+  ]
+ ],
+ [
+  "japanese",
+  [
+   {
+    "name": "Masaki - Calm Japanese Narrator",
+    "id": "2Jg786yPJ6zSdiI0EAAH",
+    "pub": "b1d4fb1ba5df083265adb874561b399cfd02ae06eb1c6e882c5d2c834283e327",
+    "free": false
+   },
+   {
+    "name": "Lia - Japanese Accented English",
+    "id": "u6a6bRv82Zfi9NzoIqvt",
+    "pub": "c175136d2654486b92e9a2c2e83bc31dee510255df7d5e5d6c7e729234851d99",
+    "free": false
+   },
+   {
+    "name": "Tahm - Deep & Calm",
+    "id": "1MPZGta71qtdTm2BpYUl",
+    "pub": "312bfc2e66f6711f84e73261acdf4d303cb46b7d8aee3fef15442510752acdbc",
+    "free": false
+   }
+  ]
+ ],
+ [
+  "korean",
+  [
+   {
+    "name": "Hanna - Calm & Natural Korean Female",
+    "id": "Zjb2Dbq5IbWDKpVOllIo",
+    "pub": "988cd622023c78560addf4644ac8d340ebc51a7e82e7cc0ea066e24e1bcc926d",
+    "free": true
+   },
+   {
+    "name": "Dev - English Speaking Korean Male Streamer",
+    "id": "5J8HNhWkTAhN2YWsd9Ta",
+    "pub": "533f956cf2444e80b69c8f48cd7ba487892379c6754f9019db544a3e1fffae74",
+    "free": true
+   },
+   {
+    "name": "Celebrity Instructor",
+    "id": "n8B20JwuvlbTyCI2z0jL",
+    "pub": "2a183bc8339a0d1ad0a810560238677893313fdc3fce4235c05feec5070b8c59",
+    "free": false
+   }
+  ]
+ ],
+ [
+  "filipino",
+  [
+   {
+    "name": "Joseph B - Filipino Boring Accent",
+    "id": "Mm4wIaOL1POTPtmua1Vx",
+    "pub": "66a6c861280367edaae7b7ccd35ebdbc07c4c14ba5163655ce4412535973f519",
+    "free": false
+   },
+   {
+    "name": "Amara - English FIlipino Calm Narrator",
+    "id": "7IA6NDxeqmtXCKLKb5nf",
+    "pub": "758e72a720c52fda1ca8dd58d36f1f05d40cd03baed577ee0ed4f9565be38408",
+    "free": false
+   },
+   {
+    "name": "Amaya - English Filipino Narrator",
+    "id": "3YMJvGH8HlrOcHJkHNKl",
+    "pub": "68f1e817b94966c40298ee507358257678e99ee35756d7c95b059ad08e6deaf0",
+    "free": true
+   }
+  ]
+ ],
+ [
+  "greek",
+  [
+   {
+    "name": "Eleni SoulVoice  - GR+EN",
+    "id": "1gkXJMvrzBWAwt0XqBaa",
+    "pub": "c5ca7076f35510fbc8e91536d99cef65262cb83fce787dba9db505d4dc319039",
+    "free": true
+   }
+  ]
+ ],
+ [
+  "romanian",
+  [
+   {
+    "name": "Emese",
+    "id": "85xci5bgwOrimRmBcbA1",
+    "pub": "4fbf3e820fa33f0b6f9c0eb97c7cdf643ba7e0853ea302a706ce32498d222eca",
+    "free": false
+   },
+   {
+    "name": "Robert - Calm & Friendly",
+    "id": "Z76aq31VtDvi0YvwzLbf",
+    "pub": "be0217bfa2f61537b9e9edaee2df57b56ddec2af4f67a7c2e319703193509361",
+    "free": false
+   },
+   {
+    "name": "MRV - Conversational",
+    "id": "CAzSgVvpn06m5gG36jRW",
+    "pub": "e1ac5a4c91a9a1398bd7f71697b53289c6af82b82dfdb36289041acdd2591fca",
+    "free": false
+   }
+  ]
+ ]
+]

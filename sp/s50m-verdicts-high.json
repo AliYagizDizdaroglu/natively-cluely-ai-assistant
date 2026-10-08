@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Covers tabular fit, native missing-value handling, latency and regularization, and names logistic regression as the baseline."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic exact at 2,850 true positives, 30 percent recall, 57 percent precision, and it flags the gap with the CV."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized holdout plus difference-in-differences and matching correctly separates model effect from seasonality and customer mix."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct stable-sort tie-break and all three edge cases, but about 120 words and it opens on a verbless fragment."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Thirty-day buffer for the label window plus ColumnTransformer inside a Pipeline fit only on training data."
+  },
+  "S1Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct left join with ingestion cutoff and event-column count preserving zero-call customers; 87 words is past the spoken length."
+  },
+  "S1Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "All seven stages plus shared feature store and registry, but roughly 146 words to say out loud."
+  },
+  "S1Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, hashed assignment, delayed outcome join and control-only or weighted retraining all covered, but about 127 words."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Every Azure service is the right one with operational reasoning, but roughly 142 words runs well long."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity, RBAC, Key Vault fallback and private-endpoint separation all present; about 106 words."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks all eight stages with concrete technique choices, but 89 words is over the spoken budget."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Unit, denominator, dataset and uncertainty given for all three metrics with plausible intervals; about 100 words."
+  },
+  "S2Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sharp contrast of fixed workflow, decomposition and dynamic agent on conditional dependence; about 97 words."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct one-over-c-plus-rank accumulation, summed across lists, with id-ascending tie-break; 89 words is slightly long."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Greedy sort, dedupe set, two-per-document cap and budget fit check all stated in a speakable 85 words."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Semaphore of eight, per-case timeout race, index-preserved order and isolated catch are right, but about 103 words."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Tenant namespaces, relational metadata, ACL pre-filtering and Ragas evaluation all answered, but about 108 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Versioning, backfill, dual write, NDCG comparison, flag cutover and rollback all covered, but roughly 134 words."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Right Azure service for each component plus a sensible managed-versus-custom line; about 115 words."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Content-hash idempotent upsert correctly covers the crash-before-ack case beyond duplicate detection; about 97 words."
+  }
+}

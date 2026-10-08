@@ -1,0 +1,22 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Missing values, regularization, imbalance, logistic-regression baseline with AUC lift. Sound reasoning, 58 words, natural spoken first person."},
+  "S1Q02": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Arithmetic exact: 9500 churners, 2850 TPs, 57 percent precision, 30 percent recall, correctly flags the inconsistency. 70 spoken words."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Randomized holdout plus propensity matching nets out seasonality and mix; directly answers attribution. 76 words, natural to say aloud."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Stable tie-break, precision, recall, lift, and all three edge cases correct. 127 words needs trimming but is speakable prose."},
+  "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Cutoff subtracts the 30-day window; transformer fit only on train. Correct leakage control, but 114 words needs trimming."},
+  "S1Q06": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Window, ingested_at guard, LEFT JOIN and COALESCE right, but never filters event_type to support calls. 84 words, clean prose."},
+  "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers every requested stage and names shared feature definitions, registry, schema. 103 words, slightly long for speaking."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Deterministic hashing, delayed join, exclusion or IPW all correct, but written as four labelled sections, unusable when read aloud."},
+  "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Accurate AWS-to-Azure mapping across all eight areas with brief operational rationale. 74 words, natural spoken delivery."},
+  "S1Q10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Managed identity, Key Vault, least privilege, per-environment resource groups and NSGs. Answers authn, authz, secrets, separation. 94 words."},
+  "S2Q01": {"correctness": 2, "on_topic": 1, "delivery": 2, "reason": "Stages described correctly but generically; never maps them to the candidate's document intelligence work as asked. 85 speakable words."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Unit, denominator, construction and interval given for all three metrics, but 155 words is far too long to speak."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correctly says fixed retrieval wins when steps are known and agents earn overhead only under branching evidence. 92 words."},
+  "S2Q04": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "One-based ranks, 1/(c+rank) summed, descending sort, ascending id tie-break, top k. Complete and correct. 53 spoken words."},
+  "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Dedupe, relevance sort, budget skip and two-per-document cap all handled. 96 words, prose, no code read aloud."},
+  "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Semaphore of eight, wait_for timeout, exceptions recorded per case, index mapping preserves order. 57 words, natural."},
+  "S2Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Hybrid tenant-partitioned index, relational metadata, query-time permission filtering, citations, offline and online evaluation. 130 words, needs trimming."},
+  "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Dual-write, backfill, shadow comparison, flag cutover and rollback all correct, but markdown headings and 198 words are unspeakable."},
+  "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Sensible Azure service per component plus a real managed-versus-custom argument. 108 words, a little long to speak."},
+  "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Service Bus redelivery, Cosmos state check, acknowledge only after the state write. Genuinely idempotent. 64 natural words."}
+}

@@ -1,0 +1,24 @@
+docs(passes): pre-register the spoken-answer latency test, before any window runs
+
+s50m's condition 4 failed on four stall fallbacks. With a 10 s budget, every
+fallback that fires puts its answer past 10 s, so the condition could not
+tell the model from the safety net. The same-window probe s50m asked for,
+run on 2026-09-22, pointed the other way and generated this hypothesis. It
+does not count toward the verdict.
+
+The rule, approved today:
+- Three windows on 2026-09-23, at 10:15, 15:00 and 21:00.
+- Both models on s50m's 39 captured prompts, back to back and alternating.
+- Each prompt is charged what the user would wait, by the app's own
+  mechanics.
+
+3.5-lite HIGH passes only if its median wait is within 750 ms of 3.1-lite
+LOW's, its p90 wait is within 1000 ms, and it forces the fallback on at most
+6 more of the 117 prompts. On a pass, 3.5-lite HIGH becomes the spoken
+answer's default. On a fail, 3.1-lite LOW stays and the question closes.
+
+The margins were set from the null alone, and the rule's reach is stated in
+advance: equal models pass 97.6 %, reversed data fails 100 %, a 15 % stall
+rate fails 94.5 %, and s50m's 10 % is a coin flip.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

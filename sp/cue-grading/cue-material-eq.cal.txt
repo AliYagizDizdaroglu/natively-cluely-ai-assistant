@@ -1,0 +1,114 @@
+PASS  leak checker: a text holding one cue string -> 1
+PASS  leak checker: clean text -> 0
+PASS  fixture: b10 builds the clean run COMPLETE (exit 0)  -- twin captured-low-r3 entries 3 asked 3 (prompts.json keys)
+PASS  fixture: b10 builds tonight's probe shape COMPLETE with probe 1 (exit 0)  -- probe 5|full lines exempt (probe) 1|cueBlocks present 4 = non-empty entries 3 + non-empty superseded 0 + non-empty probe lines 1: OK|EXPORT COMPLETE|WROTE C:\Us
+PASS  REG: a good HASHES.txt (relative rows + absolute INPUT rows) -> accepted; first printed line is `REG <sha16>` of the registration
+PASS  REG: an amendment whose sha differs from its line -> refuse  -- HASHES.txt: AMENDMENT-rev7-A1.md (AMENDMENT) hashes to 6992393e7d6d, the line says 000000000000
+PASS  A4.3: HASHES.txt saved with a BOM -> refuse  -- HASHES.txt starts with a BOM
+PASS  A4.3: the same absolute line with `Masaüstü` in a legacy code page (not UTF-8) -> refuse  -- HASHES.txt is not valid UTF-8
+PASS  A4.3: an absolute-path INPUT line whose file was edited after hashing -> refuse  -- HASHES.txt: interview60.judge.pairs.json (INPUT) hashes to 0f95f190e061, the line says 44b795bec751
+PASS  A3.7: the run's pairs/timeline missing from HASHES.txt as INPUT rows -> refuse  -- the run's interview60.judge.pairs.json is not an INPUT row of HASHES.txt (A3.7)
+PASS  A4.3: HASHES.txt with CR line ends -> refuse  -- HASHES.txt has CR bytes (LF line ends required)
+PASS  A4.3: a line that does not split into <64 hex>  <path>  <role> -> refuse  -- HASHES.txt line 10 does not split into <64 hex>  <path>  <role>
+PASS  REG: a HASHES.txt with no row for AMENDMENT-rev7-A4.md -> refuse  -- HASHES.txt has no AMENDMENT row for AMENDMENT-rev7-A4.md
+PASS  F4: a complete export -> accepted; in-app 3 on 3 ids, probe 0, superseded 0, turn lines 3  -- REG b1a412257cc8edc7
+b10 tool sha256/12 c64fc4fa8b8d matches instruments.sha256.txt
+ARMING sha256/12 3916b7c02807 head aaaaaaa matches the launcher log
+LOG sha2
+PASS  F4: twins: six reps of 3 entries = records, cues equal
+PASS  T1: the b10 line missing from instruments.sha256.txt -> refuse  -- the b10 line (eq-cues-export.mjs) is missing from instruments.sha256.txt
+PASS  T1: that line's sha != the tool file's -> refuse  -- the b10 line sha256 111111111111 is not the tool file's c64fc4fa8b8d
+PASS  T1: registeredHead != the ARMING record's HEAD -> refuse  -- registeredHead is not the ARMING record's HEAD
+PASS  T1: the ARMING file's sha != the launcher log's ARMING line -> refuse  -- the last ARMING line before the run start does not equal the record sha256
+PASS  U2: two ARMING lines, only the later (pre-start) one matches -> accept
+PASS  U2: only the earlier ARMING line matches -> refuse  -- the last ARMING line before the run start does not equal the record sha256
+PASS  U2: a record with two 40-hex HEAD values -> refuse  -- the registered-HEAD line carries 2 40-hex values, want exactly 1
+PASS  U2: `ARMING absent` -> refuse  -- the last ARMING line before the run start reads "ARMING absent"
+PASS  T2: the LOG sha != the log's -> refuse  -- the LOG sha256 is not the debug log's
+PASS  F4: a forbidden field (`spoken`) -> refuse  -- entry 3 carries forbidden field spoken
+PASS  F4: an id outside S1+S2 -> refuse  -- entry 0 id S3Q01 is outside the roster id set
+PASS  F4: a twin entry whose cues differ from its answer record -> refuse  -- twin captured-high-r1 S1Q01: cues differ from the record's
+PASS  T1: a twin entry with src = ...captured-high-r4.json -> refuse  -- entry 3 (S1Q01) src is not one of the six answer files
+PASS  T2: an in-app entry whose cues differ from its log line -> refuse  -- S1Q01 logLine 5 parses to different cues than the entry
+PASS  F4: an entry whose logLine points at a `cues trimmed:` line -> refuse  -- S1Q01 logLine 6 is not an in-window [Answer] cues: line
+PASS  T2: a cues line timestamped outside window addressed by an entry -> refuse  -- S1Q01 logLine 1 is not an in-window [Answer] cues: line
+PASS  T2: `empty: "missing"` with a non-null logLine -> refuse  -- entry 0 (S1Q01) empty "missing" <=> logLine null violated
+PASS  T2: an in-window cues line neither addressed nor named -> refuse  -- in-window cues line 10 is neither addressed nor named
+PASS  T2: one log line addressed by two entries -> refuse  -- S1Q02: its pairs entry belongs to another id
+PASS  A1.1: an id with two in-app entries, one dispatchedAt null (a superseded stream exported as an entry) -> refuse  -- id S1Q01 has 2 in-app entries and one is not joined to the pairs (two-entry rule)
+PASS  F4: `EXPORT INCOMPLETE: a,b` -> 2 named exclusions (not FLT VOID)
+PASS  F4: `EXPORT INCOMPLETE: a,b,c` -> FLT VOID (export)
+PASS  an INCOMPLETE token that is not an id, a twin id or a file (L12) -> refuse (unexplained)  -- the completeness file is INCOMPLETE on an unexplained token (L12)
+PASS  fixture: b10 names one `superseded` line for the S1Q02 stream (exit 0)  -- superseded 10|cueBlocks present 4 = non-empty entries 3 + non-empty superseded 1 + non-empty probe lines 0: OK|EXPORT COMPLETE
+PASS  F4: an in-window non-empty cues line named `superseded <n>` -> counts reconcile (present 4 = 3 + 1 + 0), no refusal  -- REG b1a412257cc8edc7
+b10 tool sha256/12 c64fc4fa8b8d matches instruments.sha256.txt
+ARMING sha256/12 3916b7c02807 head aaaaaaa matches the launcher log
+LOG sha2
+PASS  F4: the same line neither addressed nor named -> refuse  -- in-window cues line 10 is neither addressed nor named
+PASS  rev 7 §1F: a `superseded <n>` naming a line outside the window (not an in-window cues line) -> refuse  -- superseded 1 is not an in-window [Answer] cues: line
+PASS  U3: a delivered line named `superseded` with no later addressed line for that id -> refuse  -- superseded 8: no later addressed line for its id before the next item's play start (U3)
+PASS  A3.2 (case 12): tonight's shape named `superseded` -> refuse (its turn started before window.startedAt), U3 alone would accept  -- superseded 5: its turn started before window.startedAt (A3.2)
+PASS  A4.1 (case 13): a log with turn lines and no turn line before the `superseded <n>` line -> refuse  -- superseded 4: the log carries turn lines but none lies before it (A3.2)
+PASS  A4.1 (case 14): an h40d-shaped log (0 turn lines) with a valid U3 `superseded` line -> accept, "turn lines 0: A3.2 not applied"  -- REG b1a412257cc8edc7
+b10 tool sha256/12 c64fc4fa8b8d matches instruments.sha256.txt
+ARMING sha256/12 3916b7c02807 head aaaaaaa matches the launcher log
+LOG sha2
+PASS  A3.2: a `superseded` line whose turn starts inside the window with turn lines present -> accepted
+PASS  A2.3 case 1: tonight's shape (turn before startedAt, N 2 < N_first 3, non-empty unaddressed line named `probe`) -> accept, probe 1, present 4 = 3 + 0 + 1  -- REG b1a412257cc8edc7
+b10 tool sha256/12 c64fc4fa8b8d matches instruments.sha256.txt
+ARMING sha256/12 3916b7c02807 head aaaaaaa matches the launcher log
+LOG sha2
+PASS  A2.3 case 2: a line named `probe` whose turn starts inside the window -> refuse  -- probe 5: its turn started inside the window (criterion 2)
+PASS  A2.3 case 3: a `probe` line that an entry addresses -> refuse  -- line 5 is named and also addressed by an entry
+PASS  A2.3 case 4 (M3): a `probe <n>` whose line is the paired `full:` line -> refuse  -- probe 7 is not an in-window [Answer] cues: line (a full:/trimmed line or outside the window)
+PASS  A2.3 case 4 (M3): a `probe <n>` whose line is a `cues trimmed:` line -> refuse  -- probe 6 is not an in-window [Answer] cues: line (a full:/trimmed line or outside the window)
+PASS  A2.3 case 5 (M1): case 1 plus one judge pair dispatchedAt before startedAt -> refuse  -- a judge pair was dispatched before window.startedAt: every probe line refuses (criterion 5)
+PASS  A2.3 case 6 (M2): N equal to N_first (derived from the fixture log) -> refuse  -- probe 5: its turn 3 is not lower than N_first 3 (criterion 4)
+PASS  A2.3 case 6 (M2): a fixture log with no turn line at or after the earliest pairs dispatchedAt -> refuse  -- no turn line at or after the earliest pairs dispatchedAt (N_first underivable)
+PASS  A2.3 case 7: the probe line neither addressed nor named -> refuse  -- in-window cues line 5 is neither addressed nor named
+PASS  A3.5 case 9: a `probe <n>` naming a cues line timestamped outside window -> refuse  -- probe 1 is not an in-window [Answer] cues: line (a full:/trimmed line or outside the window)
+PASS  A3.5 case 10: a `probe <n>` with no turn line before n -> refuse (criterion 2)  -- probe 4: no turn line before it (criterion 2)
+PASS  A3.5 case 11: the same n as both `superseded n` and `probe n` -> refuse  -- line 10 is named both superseded and probe
+PASS  A3.5 case 11: `probe n` named twice -> refuse  -- probe names a line twice
+PASS  A2.1 M3: a probe line without the exempt-full-line count -> refuse  -- the completeness file exempts null probe full lines for 1 probe lines
+PASS  A4.1: with no probe line, N_first and criterion 5 are not evaluated (a run with turn lines after every pair still accepts; no "N_first" printed)
+PASS  A4.1: criterion 5 is run-level only when a probe line exists: a pre-window pair with probe 0 -> not a refusal on this ground
+PASS  h40d: b10 rebuilds its calibration export COMPLETE (exit 0)
+PASS  A2.3 case 8 / A4.1: h40d -> in-app 44, ids 44, superseded 1, outside window 2, probe 0, `turn lines 0: A3.2 not applied`  -- turn lines 0: A3.2 not applied | in-app entries 44 ids 44; superseded 1 (6541); outside window cues 2 full 2 | probe 0 | cueBlocks present 45 = entries 44 + sup
+--- evidence: h40d consumer output (counts only) ---
+REG b1a412257cc8edc7
+b10 tool sha256/12 c64fc4fa8b8d matches instruments.sha256.txt
+ARMING sha256/12 78f0197c572d head aaaaaaa matches the launcher log
+LOG sha256/12 feec720cca2d verified
+turn lines 0: A3.2 not applied
+in-app entries 44 ids 44; superseded 1 (6541); outside window cues 2 full 2
+probe 0
+cueBlocks present 45 = entries 44 + superseded 1 + probe 0: OK
+twin captured-high-r1 entries 44 = records, cues equal
+twin captured-high-r2 entries 44 = records, cues equal
+twin captured-high-r3 entries 44 = records, cues equal
+twin captured-low-r1 entries 44 = records, cues equal
+twin captured-low-r2 entries 44 = records, cues equal
+twin captured-low-r3 entries 44 = records, cues equal
+export COMPLETE
+--- end ---
+PASS  F4: a complete export assembles (no refusal)
+PASS  F4: exactly the 14 files cues.blind-11 ... cues.blind-24  -- cues.blind-11.json,cues.blind-12.json,cues.blind-13.json,cues.blind-14.json,cues.blind-15.json,cues.blind-16.json,cues.blind-17.json,cues.blind-18.json,cues.bli
+PASS  F4: FLT-INAPP A 3 / B 3; FLT-TWINS-H 3 files per condition of 3 blocks; FLT-TWINS-L likewise  -- ["FLT-TWINS-L1A","FLT-TWINS-L2A","FLT-TWINS-H1A","FLT-TWINS-L1B","FLT-TWINS-H3A","FLT-TWINS-H3B","FLT-TWINS-L3A","FLT-TWINS-H2A","FLT-INAPPB","FLT-TWINS-H2B","F
+PASS  F4: A files carry no `answer`; B files carry one on every block; ids are neutral (b01..) and no roster id appears in any blind file
+PASS  F4: twin blocks pass through trimCues (the `$x$` notation is gone) and an empty `spoken` reads `no answer` in B
+PASS  F4: the manifest holds 28 slots blind-N.g1/g2, each with blind, verdicts and instruction, no set name
+PASS  F4: 14 key files in keyhold, none in blind
+PASS  F4: the printed counts carry no cue, answer or question text
+PASS  F4: classes printed: FLT-INAPP pipeline 1, inherited 1 (S1Q02), partly-correct 1 (S1Q03)  -- classes FLT-INAPP: pipeline 1 inherited 1 partly-correct 1|classes FLT-TWINS-H-r1: pipeline 1 inherited 0 partly-correct 0|classes FLT-TWINS-H-r2: pipeline 1 in
+PASS  F4: re-running into a fresh root gives byte-identical blind files (seeded, deterministic)
+PASS  F4: assembling again into the same root -> refuse (a blind file / manifest slot already exists)  -- cues.blind-23.json already exists
+PASS  §3: a manifest that already holds a slot name the tool would write -> refuse, nothing written  -- manifest slot blind-23.g1 already exists
+PASS  F4: a missing judge file -> refuse  -- captured-high-r2 judge file missing
+PASS  F4: a judge file merged under another model -> refuse  -- captured-high-r1 judge file was merged under another model than claude-opus-5-5
+PASS  F4: a twin pairs file that disagrees on an id's question -> refuse  -- a twin pairs file disagrees with the main pairs on the question of S1Q01
+PASS  F4: no display pin (trim module + sha) -> refuse  -- the display pin is missing: --trim-module and --trim-sha (the snapshot's sha256, recorded by amendment) are required to assemble twin blocks
+PASS  F4: a trim module whose sha is not the recorded pin -> refuse  -- the trim module's sha256 is not the recorded pin
+PASS  F4: INCOMPLETE naming 1 in-app id, 1 twin id and 1 twin file -> assembled with those excluded (A 2 for FLT-INAPP; r2 2 blocks; low r3 0)  -- set FLT-INAPP: A 2 B 2|set FLT-TWINS-H r1: A 3 B 3 trimCues changed 3|set FLT-TWINS-H r2: A 2 B 2 trimCues changed 2|set FLT-TWINS-H r3: A 3 B 3 trimCues change
+
+F4 CALIBRATION: 83 PASS, 0 FAIL of 83

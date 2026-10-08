@@ -1,0 +1,76 @@
+@echo off
+rem scenario50 S1+S2 flight s50m (task Natively-flight-s50m, 2026-09-22 10:10 local, after the
+rem 07:00 UTC Gemini reset). THE REPLICATION FLIGHT. Rule pre-registered on MAINS in passes/PREREGISTER-s50m.md.
+rem
+rem s50k put 3.5 ahead of the 3.1 band on the same captured bytes, but only just: bands 26-31
+rem against 29-34, mean +4.0 and per-question wins 12 to 6, which meets the pre-registered rule
+rem at exactly both thresholds while still overlapping. So the swap rides an environment
+rem variable and the SHIPPED DEFAULT DOES NOT MOVE. One variable this hour: the answer model.
+rem
+rem NOTE ON STYLE: no parentheses inside any echo in an if-block. On 2026-09-20 a guard message
+rem citing a commit as "(78b0671)" closed its own if-block early, so "exit /b 4" ran
+rem unconditionally and the 10:10 flight died before takeoff with no log of any kind.
+if not exist "electron\test\golden\interview60.flight.mjs" (
+  echo wrong working directory: %CD% >> "%TEMP%\natively-s50m-launcher-error.log"
+  exit /b 9
+)
+if not exist "electron\test\golden\scenario50.wav" (
+  echo scenario50.wav missing - build audio first >> "%TEMP%\natively-s50m-launcher-error.log"
+  exit /b 8
+)
+rem Guard: this checkout AND its build must carry the shipped LOW default.
+findstr /C:"DEFAULT_GEMINI_THINKING_LEVEL" "electron\llm\geminiThinking.ts" >nul 2>&1
+if errorlevel 1 (
+  echo shipped LOW default missing from this checkout - fast-forward main first >> "%TEMP%\natively-s50m-launcher-error.log"
+  exit /b 7
+)
+findstr /C:"DEFAULT_GEMINI_THINKING_LEVEL" "dist-electron\electron\llm\geminiThinking.js" >nul 2>&1
+if errorlevel 1 (
+  echo dist-electron not rebuilt with the shipped LOW default - run npm run build:electron >> "%TEMP%\natively-s50m-launcher-error.log"
+  exit /b 6
+)
+rem Guard: the sentence-boundary word guard must be in the BUILD.
+findstr /C:"floor: 120" "dist-electron\electron\llm\verbalStreamFilter.js" >nul 2>&1
+if errorlevel 1 (
+  echo dist-electron does not carry the sentence-boundary word guard >> "%TEMP%\natively-s50m-launcher-error.log"
+  exit /b 5
+)
+rem Guard: the keyterm list must be in the BUILD and wired into the Deepgram socket.
+if not exist "dist-electron\electron\audio\deepgramKeyterms.js" (
+  echo dist-electron does not carry deepgramKeyterms.js 3624367 >> "%TEMP%\natively-s50m-launcher-error.log"
+  exit /b 3
+)
+findstr /C:"keyterm" "dist-electron\electron\audio\DeepgramStreamingSTT.js" >nul 2>&1
+if errorlevel 1 (
+  echo dist-electron DeepgramStreamingSTT is not wired for keyterm >> "%TEMP%\natively-s50m-launcher-error.log"
+  exit /b 3
+)
+rem Guard: both three-rep twins and the length row must be in the harness, which runs from source.
+findstr /C:"captured-high-r3" "electron\test\golden\interview60.flight.mjs" >nul 2>&1
+if errorlevel 1 (
+  echo three-rep 3.5 HIGH twin missing from this checkout >> "%TEMP%\natively-s50m-launcher-error.log"
+  exit /b 2
+)
+findstr /C:"key: 'length'" "electron\test\golden\interview60.metrics.mjs" >nul 2>&1
+if errorlevel 1 (
+  echo length gate row missing from this checkout >> "%TEMP%\natively-s50m-launcher-error.log"
+  exit /b 2
+)
+rem BEHAVIOURAL guard: the three s50m fixes are checked by running the built code, not by
+rem matching a string. It asserts the shared code-fence filter exists, that the LaTeX numbers
+rem 3.5-lite writes no longer reach the spoken text, that currency still survives, that the
+rem verbal override both resolves and refuses an unknown model, and that 3.5 gets HIGH while
+rem the 3.1 fallback leg gets LOW. Calibrated against s50k's own recorded output, which it fails.
+"C:\Program Files\nodejs\node.exe" "%~dp0guard-s50m.mjs"
+if errorlevel 1 (
+  echo behavioural guard failed - see the line above >> "%TEMP%\natively-s50m-launcher-error.log"
+  exit /b 4
+)
+set NATIVELY_STT_PROVIDER=deepgram
+set NATIVELY_ROSTER=scenario50
+set NATIVELY_SCENARIOS=S1,S2
+set NATIVELY_GEMINI_THINKING_LEVEL=
+rem THE ONE VARIABLE THIS HOUR. The per-model table turns the shipped LOW into HIGH for this
+rem model, and the stall fallback pairs back to gemini-3.1-flash-lite at LOW automatically.
+set NATIVELY_VERBAL_PRIMARY_MODEL=gemini-3.5-flash-lite
+"C:\Program Files\nodejs\node.exe" electron\test\golden\interview60.flight.mjs s50m >> electron\test\golden\interview60.runs\flight-s50m.launcher.log 2>&1

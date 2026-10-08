@@ -1,0 +1,1 @@
+Design a Python AI gateway that fronts three LLM providers, with failover, per-tenant rate limits and cost tracking.

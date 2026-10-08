@@ -1,0 +1,22 @@
+{
+  "S1Q01": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Tabular non-linearity, latency and a logistic-regression baseline judged on AUC lift: correct and a tight 65-word spoken answer."},
+  "S1Q02": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correctly derives 9,500 churners, 2,850 true positives, 57 percent precision, 30 percent recall, and judges rounding consistency."},
+  "S1Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Randomised holdout in the same seasonal window plus tenure and channel segmentation isolates incremental lift directly."},
+  "S1Q04": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Metrics, stable tie-break and edge cases correct, but the answer opens mid-sentence with no verb; small edit needed."},
+  "S1Q05": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Chronological holdout with thirty-day buffer, transformer fitted on training folds only, time-series split: correct and well sized."},
+  "S1Q06": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Window and ingestion predicate right, but no event type filter for support calls and the count explanation is backwards."},
+  "S1Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Covers every stage with a shared feature store and names the shared layer, but 155 words is far too long spoken."},
+  "S1Q08": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Logging with variant id, deterministic hash assignment, buffered delayed join and offer-aware retraining weighting all correct."},
+  "S1Q09": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Complete accurate Azure mapping with rationale; compute instances rather than clusters is minor, but 135 words runs long."},
+  "S1Q10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Managed identity, RBAC, Entra database auth, Key Vault over private endpoint, subscription and VNet separation all correct."},
+  "S2Q01": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "All eight stages covered accurately and grounded in experience, but 147 words is long for a spoken reply."},
+  "S2Q02": {"correctness": 2, "on_topic": 2, "delivery": 0, "reason": "Unit, denominator, construction and uncertainty sound for all three metrics, but 240 words is far too long to speak."},
+  "S2Q03": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Names the real criterion, an execution path unknown in advance, and correctly separates fixed, decomposed and dynamic."},
+  "S2Q04": {"correctness": 1, "on_topic": 2, "delivery": 2, "reason": "Takes each document's best reciprocal score instead of summing contributions across lists, which is not reciprocal rank fusion."},
+  "S2Q05": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Sorted greedy pass with budget total, dedup set and per-document counter enforcing two: exactly the requested policy."},
+  "S2Q06": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Semaphore or batches cap eight, Promise.race timeout, mapped Promise.all preserves order, per-case catch records failures."},
+  "S2Q07": {"correctness": 2, "on_topic": 2, "delivery": 1, "reason": "Tenant-partitioned index, ACL pre-filtering, async queue, citations and dual evaluation all covered; 119 words slightly long."},
+  "S2Q08": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Versioning, backfill with streamed writes, dual-dimension sync, shadow eval, flag cutover and instant rollback: every part answered."},
+  "S2Q09": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Correct service for each component and a clear line on when custom workers beat managed pipelines."},
+  "S2Q10": {"correctness": 2, "on_topic": 2, "delivery": 2, "reason": "Peek-lock with duplicate detection, lock expiry redelivery and idempotent upserts keyed by document hash: the right pattern."}
+}

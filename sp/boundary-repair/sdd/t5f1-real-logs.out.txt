@@ -1,0 +1,10 @@
+﻿[ok] non-holdout logs: 25 logs, 194760 lines, 0 'boundary repair:' lines, 2675 finals parsed, throws 0, differs from the old inline parse on 0
+[ok] holdout logs: 3 logs, 22333 lines, 0 'boundary repair:' lines, throws 0 (2026-09-24T08-20-12-h40a, 2026-09-26T11-39-51-h40b, 2026-09-29T11-42-00-h40c)
+[ok] smoke-*.natively_debug.log (extra): 4 logs, 1810 lines, throws 0
+[ok] the real adapter's log (t5-seam): 201 lines, 17 repair lines, throws 0, parsed finals == the finals the adapter emitted: true
+[ok] calibration (a) the event line above a repair dropped (the review's case): throws "finalsFrom: line 21 is a boundary repair for another final than line 20"; the round-0 module (no refusals) silently returns 89 finals
+[ok] calibration (b) a stray line between a final and its repair: throws "finalsFrom: line 23 is a boundary repair with no final directly above it"; the round-0 module (no refusals) silently returns 90 finals
+[ok] calibration (c) a repair under a final its `before` text does not name: throws "finalsFrom: line 22 is a boundary repair for another final than line 21"; the round-0 module (no refusals) silently returns 90 finals
+[ok] calibration (d) a repair as the very first line: throws "finalsFrom: line 1 is a boundary repair with no final directly above it"; the round-0 module (no refusals) silently returns 90 finals
+[ok] calibration (e) two repair lines in a row: throws "finalsFrom: line 23 is a boundary repair with no final directly above it"; the round-0 module (no refusals) silently returns 90 finals
+RESULT: the refusals throw 0 times on every real log and on the real adapter log, and every deliberate breakage is refused with the right line

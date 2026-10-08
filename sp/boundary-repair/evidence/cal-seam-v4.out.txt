@@ -1,0 +1,3 @@
+1. --v4 spy: clear() 105 (want 105), speechFinal=true 61 (want 61) -> OK
+2. rule-v4 --v4: plays made more complete 2; speech_final: on 63 of 186 finals; on 0 of 38 strict cut finals; on the cut final of 0 of 5 losses (v4 repairs none of those); utterance-ends 56; empty finals 49
+3. without --v4 the spy sees clear() 0, speechFinal=true 0 (want 0, 0) -> OK

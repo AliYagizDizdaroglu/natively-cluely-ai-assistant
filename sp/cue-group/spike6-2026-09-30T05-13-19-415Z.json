@@ -1,0 +1,370 @@
+[
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap3-min",
+  "rep": 1,
+  "n": 2,
+  "total": 5,
+  "cues": [
+   "Boosting method",
+   "Sequential error correction"
+  ],
+  "spec": null,
+  "proseWords": 39,
+  "raw": "__CUES__\n1| Boosting method\n2| Sequential error correction\n\nXGBoost is a boosting method, specifically an optimized gradient boosting framework. Unlike bagging algorithms that build trees independently in parallel, boosting builds trees sequentially, with each new tree explicitly trained to correct the residual errors of the previous ones."
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap3-min",
+  "rep": 2,
+  "n": 1,
+  "total": 4,
+  "cues": [
+   "Boosting method, sequential trees"
+  ],
+  "spec": null,
+  "proseWords": 28,
+  "raw": "__CUES__\n1| Boosting method, sequential trees\n\nXGBoost is a boosting method. It builds trees sequentially, where each new tree explicitly targets and corrects the residual errors of the previous ones using gradient descent optimization."
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap3-min",
+  "rep": 3,
+  "n": 2,
+  "total": 5,
+  "cues": [
+   "Boosting method",
+   "Sequential error correction"
+  ],
+  "spec": null,
+  "proseWords": 65,
+  "raw": "__CUES__\n1| Boosting method\n2| Sequential error correction\n\nXGBoost is a boosting method, meaning it builds decision trees sequentially rather than in parallel like bagging algorithms. Each new tree is trained specifically to correct the residual errors made by the previous ensemble. While bagging focuses on reducing variance through independent models, boosting systematically drives down bias by heavily weighting hard-to-predict instances.\n\n__MORE__\n1| L1 and L2 regularization terms\n2| Second-order Taylor expansion optimization"
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap3-min",
+  "rep": 4,
+  "n": 2,
+  "total": 5,
+  "cues": [
+   "Boosting method",
+   "Sequential residual correction"
+  ],
+  "spec": null,
+  "proseWords": 63,
+  "raw": "__CUES__\n1| Boosting method\n2| Sequential residual correction\n\nXGBoost is a boosting method, specifically an optimized implementation of gradient boosting. Unlike bagging algorithms that train trees independently in parallel, boosting builds trees sequentially where each new tree targets and corrects the residual errors of the previous ones. It uses a regularized objective function and gradient descent to optimize the loss, which is why it performs so reliably on structured tabular data."
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "strict-ex",
+  "rep": 1,
+  "n": 1,
+  "total": 2,
+  "cues": [
+   "Boosting method"
+  ],
+  "spec": null,
+  "proseWords": 28,
+  "raw": "__CUES__\n1| Boosting method\n\nXGBoost is a boosting method. It builds trees sequentially, where each new tree specifically targets and corrects the residual errors of the previous ones using gradient descent optimization."
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "strict-ex",
+  "rep": 2,
+  "n": 2,
+  "total": 5,
+  "cues": [
+   "Boosting method",
+   "Sequential error correction"
+  ],
+  "spec": null,
+  "proseWords": 28,
+  "raw": "__CUES__\n1| Boosting method\n2| Sequential error correction\n\nXGBoost is a boosting method. It builds trees sequentially, where each new tree specifically targets and corrects the residual errors of the previous ones using gradient descent optimization."
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "strict-ex",
+  "rep": 3,
+  "n": 2,
+  "total": 5,
+  "cues": [
+   "Boosting method",
+   "Sequential error correction"
+  ],
+  "spec": null,
+  "proseWords": 32,
+  "raw": "__CUES__\n1| Boosting method\n2| Sequential error correction\n\nXGBoost is a boosting method, not bagging. Instead of training trees independently in parallel, it builds trees sequentially where each new tree focuses on correcting the residual errors of the previous ones."
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "strict-ex",
+  "rep": 4,
+  "n": 2,
+  "total": 5,
+  "cues": [
+   "Boosting method",
+   "Sequential error correction"
+  ],
+  "spec": null,
+  "proseWords": 71,
+  "raw": "__CUES__\n1| Boosting method\n2| Sequential error correction\n\nXGBoost is a boosting method, specifically an optimized implementation of gradient boosted decision trees. Unlike bagging algorithms that train trees independently in parallel to reduce variance, boosting builds trees sequentially where each new tree directly targets and corrects the residuals of the previous ones. That sequential reduction of bias is what gave our subscriber churn model such high predictive power.\n\n__MORE__\n1| Objective function regularization terms\n2| Second-order Taylor expansion approximation"
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "one-first",
+  "rep": 1,
+  "n": 1,
+  "total": 2,
+  "cues": [
+   "Boosting method"
+  ],
+  "spec": null,
+  "proseWords": 62,
+  "raw": "__CUES__\n1| Boosting method\nXGBoost is a boosting method, specifically a highly optimized implementation of gradient boosting. Rather than building trees independently in parallel like bagging, it trains them sequentially where each new tree targets the residual errors of the ensemble. It also incorporates second-order gradients and regularization to efficiently handle sparse data and prevent overfitting.\n__MORE__\n1| Second-order Taylor approximation\n2| L1 and L2 regularization"
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "one-first",
+  "rep": 2,
+  "n": 2,
+  "total": 5,
+  "cues": [
+   "Boosting method",
+   "Sequential tree building"
+  ],
+  "spec": null,
+  "proseWords": 34,
+  "raw": "__CUES__\n1| Boosting method\n2| Sequential tree building\n\nXGBoost is a boosting method. It builds trees sequentially, where each new tree specifically corrects the residual errors of the previous ones using gradient descent, rather than training trees independently in parallel like bagging."
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "one-first",
+  "rep": 3,
+  "n": 1,
+  "total": 2,
+  "cues": [
+   "Boosting method"
+  ],
+  "spec": null,
+  "proseWords": 27,
+  "raw": "__CUES__\n1| Boosting method\n\nXGBoost is a boosting method. It builds trees sequentially, where each new tree specifically targets and corrects the residual errors of the previous ones using gradient descent."
+ },
+ {
+  "id": "X1",
+  "kind": "simple",
+  "q": "Is XGBoost a bagging or a boosting method?",
+  "model": "3.5-lite HIGH",
+  "arm": "one-first",
+  "rep": 4,
+  "n": 1,
+  "total": 2,
+  "cues": [
+   "Boosting method"
+  ],
+  "spec": null,
+  "proseWords": 40,
+  "raw": "__CUES__\n1| Boosting method\n\nXGBoost is a boosting method, specifically an optimized implementation of gradient boosting. Unlike bagging algorithms that train independent trees in parallel, boosting builds trees sequentially where each new tree directly targets and corrects the residual errors of the previous ones."
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap3-min",
+  "rep": 1,
+  "n": 2,
+  "total": 8,
+  "cues": [
+   "Not strictly necessary",
+   "Trees are invariant to scaling"
+  ],
+  "spec": null,
+  "proseWords": 61,
+  "raw": "__CUES__\n1| Not strictly necessary\n2| Trees are invariant to scaling\n\nNo, normalization isn't necessary for a random forest because tree models split data based on feature thresholds rather than distance metrics. Scaling doesn't change the relative ranking or split points of the data, so the tree structure remains identical. I'd skip scaling unless I'm combining it with a distance-based model in an ensemble pipeline.\n\n__MORE__\n1| exceptions for distance-based ensemble components"
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap3-min",
+  "rep": 2,
+  "n": 2,
+  "total": 9,
+  "cues": [
+   "Trees are scale invariant",
+   "Splitting relies on relative ranks"
+  ],
+  "spec": null,
+  "proseWords": 54,
+  "raw": "__CUES__\n1| Trees are scale invariant\n2| Splitting relies on relative ranks\n\nNo, I wouldn't normalize features for a random forest because tree-based models are completely invariant to monotonic transformations. The algorithm splits data based on relative thresholds rather than absolute distances, so scaling doesn't change the split points or the resulting tree structure.\n__MORE__\n1| Distance-based imputation edge cases\n2| Feature importance stability under scaling"
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap3-min",
+  "rep": 3,
+  "n": 2,
+  "total": 8,
+  "cues": [
+   "No normalization needed",
+   "Tree models invariant to scaling"
+  ],
+  "spec": null,
+  "proseWords": 41,
+  "raw": "__CUES__\n1| No normalization needed\n2| Tree models invariant to scaling\n\nNo, you don't need to normalize features for a random forest because tree-based models are invariant to monotonic transformations. Scaling doesn't change the sorted order of feature values, so the optimal split points and overall tree structure remain exactly the same."
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "cap3-min",
+  "rep": 4,
+  "n": 2,
+  "total": 7,
+  "cues": [
+   "Scale-invariant tree models",
+   "Relative feature ordering matters"
+  ],
+  "spec": null,
+  "proseWords": 66,
+  "raw": "__CUES__\n1| Scale-invariant tree models\n2| Relative feature ordering matters\n\nNo, I wouldn't normalize features for a random forest because tree-based models are entirely scale-invariant. The splitting algorithm only cares about the relative ordering of values rather than their absolute magnitude, so scaling doesn't affect the tree structure. The only exception is if I'm combining the features in a hybrid pipeline with regularized linear models or distance-based components.\n\n__MORE__\n1| distance metrics in auxiliary embedding layers"
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "strict-ex",
+  "rep": 1,
+  "n": 2,
+  "total": 4,
+  "cues": [
+   "Not required",
+   "Split invariance"
+  ],
+  "spec": null,
+  "proseWords": 44,
+  "raw": "__CUES__\n1| Not required\n2| Split invariance\n\nNo, you don't need to normalize features for a random forest because tree-based models split data based on relative thresholds rather than absolute distances. Monotonic transformations like scaling don't change where the optimal splits occur, so tree structure and final performance remain completely identical."
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "strict-ex",
+  "rep": 2,
+  "n": 2,
+  "total": 4,
+  "cues": [
+   "Not necessary",
+   "Monotonic invariance"
+  ],
+  "spec": null,
+  "proseWords": 69,
+  "raw": "__CUES__\n1| Not necessary\n2| Monotonic invariance\n\nNo, I wouldn't bother normalizing features for a random forest because tree-based models split data based on relative thresholds rather than distance metrics. Since tree splits are entirely invariant to monotonic transformations, scaling won't change which features get selected or where the splits happen. The only time I'd scale them is if those exact features are also feeding into a linear model or distance-based component elsewhere in the pipeline."
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "strict-ex",
+  "rep": 3,
+  "n": 2,
+  "total": 4,
+  "cues": [
+   "Not necessary",
+   "Tree invariance"
+  ],
+  "spec": null,
+  "proseWords": 60,
+  "raw": "__CUES__\n1| Not necessary\n2| Tree invariance\n\nNo, I wouldn't need to normalize features for a Random Forest because tree-based models are completely invariant to monotonic feature transformations. Since splits are determined by sorting values rather than absolute magnitudes, scaling numeric features doesn't change where the splits occur or affect the model's predictive performance.\n\n__MORE__\n1| Regularization effects on scaled trees\n2| Distance-based metrics in hybrid ensembles"
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "strict-ex",
+  "rep": 4,
+  "n": 2,
+  "total": 7,
+  "cues": [
+   "Not required for trees",
+   "Invariant to scaling"
+  ],
+  "spec": null,
+  "proseWords": 53,
+  "raw": "__CUES__\n1| Not required for trees\n2| Invariant to scaling\n\nNo, I wouldn't normalize features for a random forest because tree-based models are invariant to monotonic scaling. Since splits are based on threshold values rather than absolute magnitudes, scaling doesn't affect the tree architecture. The only exception is if I'm using distance-based imputation beforehand, but for the forest itself, raw features work directly."
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "one-first",
+  "rep": 1,
+  "n": 1,
+  "total": 3,
+  "cues": [
+   "Not strictly necessary"
+  ],
+  "spec": null,
+  "proseWords": 55,
+  "raw": "__CUES__\n1| Not strictly necessary\n\nNo, random forests are invariant to monotonic transformations, so feature normalization isn't strictly necessary for tree splits. The algorithm evaluates the relative ordering of feature values rather than their absolute scale to determine optimal splits. I typically skip scaling for tree-only models unless they're part of a hybrid pipeline with distance-based algorithms or regularized layers."
+ },
+ {
+  "id": "X2",
+  "kind": "simple",
+  "q": "Would you normalize features for a random forest?",
+  "model": "3.5-lite HIGH",
+  "arm": "one-first",
+  "rep": 2,
+  "n": 2,
+  "total": 10,
+  "cues": [
+   "No, tree-based models are scale-invariant",
+   "Relative ordering drives split decisions"
+  ],
+  "spec": null,
+  "proseWords": 60,
+  "raw": "__CUES__\n1| No, tree-based models are scale-invariant\n2| Relative ordering drives split decisions\n\nNo, I wouldn't normalize features for a random forest because tree-based models are invariant to monotonic transformations. Since splits depend entirely on the relative ordering of values rather than their absolute scale, normalization has zero impact on how the trees are built. I typically skip feature scaling for tree models unless a downstream component in the pipeline specifically requires it."
+ }
+]

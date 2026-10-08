@@ -1,0 +1,1 @@
+Your training image is nine gigabytes and builds take forty minutes. How would you cut both without breaking reproducibility?

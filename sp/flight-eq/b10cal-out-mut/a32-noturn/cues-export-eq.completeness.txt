@@ -1,0 +1,13 @@
+LOG natively_debug.log 1841b1b3efe5ab4072473e6dafab287898bc627aa3d74e65ef3e3917453e5b1a
+ARMING sha256/12 d3c85a46dca4 head 56bda9e
+window 2026-10-05T23:00:00.000Z 2026-10-05T23:06:40.000Z
+in-app entries 3 ids 3
+in-app joined to pairs 3 unjoined 0
+cue lines in window 4 outside window 1
+full lines in window 3 outside window 1
+superseded 7
+full lines exempt (probe) 0
+empties 0
+cueBlocks present 4 = non-empty entries 3 + non-empty superseded 1 + non-empty probe lines 0: OK
+twins SKIPPED (--no-twins)
+EXPORT COMPLETE

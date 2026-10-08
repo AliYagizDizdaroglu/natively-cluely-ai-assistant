@@ -1,0 +1,311 @@
+{
+ "rate": 24000,
+ "plan": [
+  {
+   "play": 1,
+   "id": "M06",
+   "startS": 2,
+   "endS": 7.4645
+  },
+  {
+   "play": 1,
+   "id": "M10",
+   "startS": 11.464500000000001,
+   "endS": 16.389000000000003
+  },
+  {
+   "play": 1,
+   "id": "S2Q08F",
+   "startS": 20.389000000000003,
+   "endS": 27.243500000000004
+  },
+  {
+   "play": 1,
+   "id": "S1Q02F",
+   "startS": 31.243500000000004,
+   "endS": 41.80800000000001
+  },
+  {
+   "play": 1,
+   "id": "H11",
+   "startS": 45.80800000000001,
+   "endS": 53.29750000000001
+  },
+  {
+   "play": 1,
+   "id": "S1Q10",
+   "startS": 57.29750000000001,
+   "endS": 77.677
+  },
+  {
+   "play": 1,
+   "id": "M28",
+   "startS": 81.677,
+   "endS": 86.3515
+  },
+  {
+   "play": 1,
+   "id": "W09",
+   "startS": 90.3515,
+   "endS": 94.486
+  },
+  {
+   "play": 1,
+   "id": "S1Q03F",
+   "startS": 98.486,
+   "endS": 106.4905
+  },
+  {
+   "play": 1,
+   "id": "M02",
+   "startS": 110.4905,
+   "endS": 115.75999999999999
+  },
+  {
+   "play": 1,
+   "id": "H01",
+   "startS": 119.75999999999999,
+   "endS": 128.18949999999998
+  },
+  {
+   "play": 1,
+   "id": "M21",
+   "startS": 132.18949999999998,
+   "endS": 137.004
+  },
+  {
+   "play": 1,
+   "id": "S1Q05",
+   "startS": 141.004,
+   "endS": 166.1935
+  },
+  {
+   "play": 1,
+   "id": "S1Q09F",
+   "startS": 170.1935,
+   "endS": 178.888
+  },
+  {
+   "play": 1,
+   "id": "S1Q08F",
+   "startS": 182.888,
+   "endS": 188.6625
+  },
+  {
+   "play": 1,
+   "id": "S1Q01",
+   "startS": 192.6625,
+   "endS": 205.107
+  },
+  {
+   "play": 2,
+   "id": "M06",
+   "startS": 209.107,
+   "endS": 214.5715
+  },
+  {
+   "play": 2,
+   "id": "M10",
+   "startS": 218.57150000000001,
+   "endS": 223.496
+  },
+  {
+   "play": 2,
+   "id": "S2Q08F",
+   "startS": 227.496,
+   "endS": 234.3505
+  },
+  {
+   "play": 2,
+   "id": "S1Q02F",
+   "startS": 238.3505,
+   "endS": 248.91500000000002
+  },
+  {
+   "play": 2,
+   "id": "H11",
+   "startS": 252.91500000000002,
+   "endS": 260.40450000000004
+  },
+  {
+   "play": 2,
+   "id": "S1Q10",
+   "startS": 264.40450000000004,
+   "endS": 284.78400000000005
+  },
+  {
+   "play": 2,
+   "id": "M28",
+   "startS": 288.78400000000005,
+   "endS": 293.4585000000001
+  },
+  {
+   "play": 2,
+   "id": "W09",
+   "startS": 297.4585000000001,
+   "endS": 301.5930000000001
+  },
+  {
+   "play": 2,
+   "id": "S1Q03F",
+   "startS": 305.5930000000001,
+   "endS": 313.5975000000001
+  },
+  {
+   "play": 2,
+   "id": "M02",
+   "startS": 317.5975000000001,
+   "endS": 322.8670000000001
+  },
+  {
+   "play": 2,
+   "id": "H01",
+   "startS": 326.8670000000001,
+   "endS": 335.2965000000001
+  },
+  {
+   "play": 2,
+   "id": "M21",
+   "startS": 339.2965000000001,
+   "endS": 344.1110000000001
+  },
+  {
+   "play": 2,
+   "id": "S1Q05",
+   "startS": 348.1110000000001,
+   "endS": 373.3005000000001
+  },
+  {
+   "play": 2,
+   "id": "S1Q09F",
+   "startS": 377.3005000000001,
+   "endS": 385.9950000000001
+  },
+  {
+   "play": 2,
+   "id": "S1Q08F",
+   "startS": 389.9950000000001,
+   "endS": 395.7695000000001
+  },
+  {
+   "play": 2,
+   "id": "S1Q01",
+   "startS": 399.7695000000001,
+   "endS": 412.2140000000001
+  },
+  {
+   "play": 3,
+   "id": "M06",
+   "startS": 416.2140000000001,
+   "endS": 421.6785000000001
+  },
+  {
+   "play": 3,
+   "id": "M10",
+   "startS": 425.6785000000001,
+   "endS": 430.6030000000001
+  },
+  {
+   "play": 3,
+   "id": "S2Q08F",
+   "startS": 434.6030000000001,
+   "endS": 441.4575000000001
+  },
+  {
+   "play": 3,
+   "id": "S1Q02F",
+   "startS": 445.4575000000001,
+   "endS": 456.0220000000001
+  },
+  {
+   "play": 3,
+   "id": "H11",
+   "startS": 460.0220000000001,
+   "endS": 467.5115000000001
+  },
+  {
+   "play": 3,
+   "id": "S1Q10",
+   "startS": 471.5115000000001,
+   "endS": 491.89100000000013
+  },
+  {
+   "play": 3,
+   "id": "M28",
+   "startS": 495.89100000000013,
+   "endS": 500.56550000000016
+  },
+  {
+   "play": 3,
+   "id": "W09",
+   "startS": 504.56550000000016,
+   "endS": 508.70000000000016
+  },
+  {
+   "play": 3,
+   "id": "S1Q03F",
+   "startS": 512.7000000000002,
+   "endS": 520.7045000000002
+  },
+  {
+   "play": 3,
+   "id": "M02",
+   "startS": 524.7045000000002,
+   "endS": 529.9740000000002
+  },
+  {
+   "play": 3,
+   "id": "H01",
+   "startS": 533.9740000000002,
+   "endS": 542.4035000000001
+  },
+  {
+   "play": 3,
+   "id": "M21",
+   "startS": 546.4035000000001,
+   "endS": 551.2180000000001
+  },
+  {
+   "play": 3,
+   "id": "S1Q05",
+   "startS": 555.2180000000001,
+   "endS": 580.4075
+  },
+  {
+   "play": 3,
+   "id": "S1Q09F",
+   "startS": 584.4075,
+   "endS": 593.102
+  },
+  {
+   "play": 3,
+   "id": "S1Q08F",
+   "startS": 597.102,
+   "endS": 602.8765
+  },
+  {
+   "play": 3,
+   "id": "S1Q01",
+   "startS": 606.8765,
+   "endS": 619.3209999999999
+  }
+ ],
+ "script": {
+  "M06": "What does a good CI pipeline for a machine learning repository actually test?",
+  "M10": "Which metrics would you put on a dashboard for a production recommendation model?",
+  "S2Q08F": "How do you prove the replacement index is sufficiently complete and current before you send production traffic to it?",
+  "S1Q02F": "What can you conclude from a PR AUC of 0.38 and an ROC AUC of 0.88, and what else would you need before deciding the model is useful?",
+  "H11": "Your training job costs tripled after a code change with no accuracy gain. How do you find the cause?",
+  "S1Q10": "Secure the churn platform without embedded credentials: how would your inference service access the model artifacts and PostgreSQL using Azure identity and networking controls? Explain the authentication, the authorization, how you handle secrets where that is unavoidable, and how you separate environments.",
+  "M28": "How do you keep feature engineering consistent between training and serving?",
+  "W09": "What problem does infrastructure as code actually solve?",
+  "S1Q03F": "Why might targeting the highest-risk customers be less profitable than targeting the customers with the largest estimated treatment effect?",
+  "M02": "Walk me through how you would structure a SageMaker pipeline for a scheduled retraining.",
+  "H01": "Your model accuracy dropped fifteen percent overnight, but the input schema is unchanged. How do you debug that?",
+  "M21": "How would you structure stacks for development, staging, and production?",
+  "S1Q05": "Build a leakage-safe churn training pipeline: you are given customer snapshots containing a customer id, a snapshot date, numeric features, categorical features, and a label, churn in the next 30 days. Write a scikit-learn training and evaluation pipeline. Fit the preprocessing only on the training data, and account for the label observation window when you split chronologically.",
+  "S1Q09F": "Which workload would you put on Azure Machine Learning managed endpoints, which on Azure App Service, and which on AKS, and why?",
+  "S1Q08F": "How could repeatedly training on customers affected by previous campaigns introduce bias?",
+  "S1Q01": "Why did you choose XGBoost? Using your churn project, explain why XGBoost was suitable for the data and the production constraints, and what baseline you would compare it against."
+ }
+}

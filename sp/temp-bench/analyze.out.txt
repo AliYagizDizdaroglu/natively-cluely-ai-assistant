@@ -1,0 +1,47 @@
+LATENCY AND SHAPE (per answer; T04 and TDEF tonight, interleaved; P04 = s50m 0.4 twins, 2026-09-22)
+  3.5-lite HIGH
+    T04  n 27  first word p50 3829 ms  p90 4451 ms  | thinking p50 846  | words p50 65  | finish!=STOP 0  loop8>=3 0  empty 0  transient-or-not-run 0
+    TDEF n 27  first word p50 3597 ms  p90 4600 ms  | thinking p50 862  | words p50 60  | finish!=STOP 0  loop8>=3 0  empty 0  transient-or-not-run 0
+    P04  n 27  first word p50 3755 ms  p90 4524 ms  | thinking p50 882  | words p50 67
+    paired TDEF - T04 (n 27): first word median -186 ms, thinking median -32, words median -2
+  3.1-lite LOW
+    T04  n 27  first word p50 3851 ms  p90 5052 ms  | thinking p50 834  | words p50 74  | finish!=STOP 0  loop8>=3 0  empty 0  transient-or-not-run 0
+    TDEF n 27  first word p50 2359 ms  p90 4575 ms  | thinking p50 141  | words p50 100  | finish!=STOP 0  loop8>=3 0  empty 0  transient-or-not-run 0
+    P04  n 27  first word p50 4019 ms  p90 6231 ms  | thinking p50 662  | words p50 89
+    paired TDEF - T04 (n 27): first word median -374 ms, thinking median -235, words median 10
+
+QUALITY (blind, frozen grader prompt; 6 verdict files; keys 162, graded 162, keys with 2 graders 162)
+  3.5-lite HIGH
+    T04  answers 27  acceptable mean-of-graders 8.5  both graders 8  wrong (both) 0
+    TDEF answers 27  acceptable mean-of-graders 8.5  both graders 8  wrong (both) 0
+    P04  answers 27  acceptable mean-of-graders 7.5  both graders 7  wrong (both) 0
+    per item, acceptable (mean of graders, summed over 3 reps): item  T04 / TDEF / P04   [group]
+      S2Q02    0.0/3  0.0/3  0.0/3   [failed]
+      S2Q06F   0.0/3  0.0/3  0.0/3   [failed]
+      S2Q07F   0.0/3  0.0/3  0.0/3   [failed]
+      S1Q02    0.0/3  0.0/3  0.0/3   [failed]
+      S1Q04F   0.0/3  1.5/3  0.0/3   [failed]
+      S2Q02F   1.0/3  0.0/3  0.0/3   [failed]
+      S2Q10F   2.5/3  1.0/3  2.5/3   [failed]
+      S1Q01F   3.0/3  3.0/3  3.0/3   [control]
+      S1Q02F   2.0/3  3.0/3  2.0/3   [control]
+    consistency T04 : items all-3-acceptable 2, all-3-not 5, mixed 2
+    consistency TDEF: items all-3-acceptable 2, all-3-not 5, mixed 2
+    consistency P04 : items all-3-acceptable 2, all-3-not 6, mixed 1
+  3.1-lite LOW
+    T04  answers 27  acceptable mean-of-graders 10.0  both graders 10  wrong (both) 0
+    TDEF answers 27  acceptable mean-of-graders 7.5  both graders 7  wrong (both) 2
+    P04  answers 27  acceptable mean-of-graders 11.0  both graders 11  wrong (both) 2
+    per item, acceptable (mean of graders, summed over 3 reps): item  T04 / TDEF / P04   [group]
+      S2Q02    0.0/3  0.0/3  0.0/3   [failed]
+      S2Q06F   0.0/3  0.0/3  0.0/3   [failed]
+      S2Q07F   0.0/3  0.0/3  0.0/3   [failed]
+      S1Q02    0.0/3  0.0/3  0.0/3   [failed]
+      S1Q04F   3.0/3  2.0/3  3.0/3   [failed]
+      S2Q02F   0.0/3  0.0/3  0.0/3   [failed]
+      S2Q10F   1.0/3  0.0/3  2.0/3   [failed]
+      S1Q01F   3.0/3  3.0/3  3.0/3   [control]
+      S1Q02F   3.0/3  2.5/3  3.0/3   [control]
+    consistency T04 : items all-3-acceptable 3, all-3-not 5, mixed 1
+    consistency TDEF: items all-3-acceptable 2, all-3-not 6, mixed 1
+    consistency P04 : items all-3-acceptable 3, all-3-not 5, mixed 1

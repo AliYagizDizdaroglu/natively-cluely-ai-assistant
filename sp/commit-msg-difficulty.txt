@@ -1,0 +1,12 @@
+feat(detector): ask the detection model for a difficulty and log it
+
+The Groq detection schema (strict) gains difficulty: easy | medium |
+hard, defined in one prompt line (definition/recall; mechanism or
+trade-off; system design, several constraints, or multi-part). The
+validated response carries it when present; a value outside the enum is
+dropped with a warning; clients that do not ask for it (Ollama, Gemini)
+leave it undefined. QuestionDetector prints it in the "detect returned"
+line and copies it onto the chip. Nothing routes on it: after9 collects
+the per-question evidence first (spec 2026-09-07 §3, routing question).
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>

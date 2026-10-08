@@ -1,0 +1,39 @@
+﻿[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 C:/Users/sotka/OneDrive/Masaüstü/natively-cluely-ai-assistant/.claude/worktrees/eq-build
+
+ ❯ electron/llm/earlierQuestionGate.test.ts (7 tests | 1 failed) 24ms
+   × earlierQuestionGate — design 2 cue set, ported byte for byte > 19 must-fire sentences fire with their cue 19ms
+     → expected { Object (q, fires, ...) } to deeply equal { Object (q, fires, ...) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/llm/earlierQuestionGate.test.ts > earlierQuestionGate — design 2 cue set, ported byte for byte > 19 must-fire sentences fire with their cue
+AssertionError: expected { Object (q, fires, ...) } to deeply equal { Object (q, fires, ...) }
+
+- Expected
++ Received
+
+  Object {
+-   "cue": "short",
+-   "fires": true,
++   "cue": "none",
++   "fires": false,
+    "q": "Why?",
+  }
+
+ ❯ electron/llm/earlierQuestionGate.test.ts:29:87
+     27| describe('earlierQuestionGate — design 2 cue set, ported byte for byte…
+     28|     it('19 must-fire sentences fire with their cue', () => {
+     29|         for (const [cue, q] of SHOULD_FIRE) expect({ q: q.slice(0, 40)…
+       |                                                                                       ^
+     30|     });
+     31|     it('10 must-not sentences stay silent', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  16:20:49
+   Duration  2.39s (transform 86ms, setup 0ms, collect 94ms, tests 24ms, environment 1.34s, prepare 130ms)
+

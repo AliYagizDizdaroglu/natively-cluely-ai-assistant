@@ -1,0 +1,8 @@
+EXIT 0
+--stdout--
+pairs.blind-1.json  36 items  R02F,R08,R03,R16
+pairs.blind-2.json  32 items  R01,R11F,R12,R17F
+pairs.blind-3.json  32 items  R23,R26F,R27,R28
+pairs.blind-4.json  24 items  R30,R31F,R32
+4 files, 15 ids; 0 arm answers missing (scored as no answer); instrument 8564ba96369a
+--stderr--

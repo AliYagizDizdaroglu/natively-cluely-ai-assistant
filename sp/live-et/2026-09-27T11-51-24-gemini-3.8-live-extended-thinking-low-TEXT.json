@@ -1,0 +1,48 @@
+{
+ "model": "gemini-3.8-live-extended-thinking",
+ "level": "low",
+ "modality": "TEXT",
+ "gapS": 20,
+ "items": [
+  "S1Q01"
+ ],
+ "closed": {
+  "code": 1007,
+  "reason": "The requested combination of response modalities (AUDIO, TEXT) is not supported by the model. models/gemini_api_beyond_live"
+ },
+ "events": [
+  {
+   "t": 413,
+   "item": null,
+   "sinceClipEnd": null,
+   "kind": "open"
+  },
+  {
+   "t": 429,
+   "item": "S1Q01",
+   "sinceClipEnd": null,
+   "kind": "clipStart",
+   "seconds": 12.4
+  },
+  {
+   "t": 1018,
+   "item": "S1Q01",
+   "sinceClipEnd": null,
+   "kind": "setupComplete"
+  },
+  {
+   "t": 1603,
+   "item": "S1Q01",
+   "sinceClipEnd": null,
+   "kind": "close",
+   "code": 1007,
+   "reason": "The requested combination of response modalities (AUDIO, TEXT) is not supported by the model. models/gemini_api_beyond_live"
+  },
+  {
+   "t": 1634,
+   "item": "S1Q01",
+   "sinceClipEnd": 0,
+   "kind": "clipEnd"
+  }
+ ]
+}

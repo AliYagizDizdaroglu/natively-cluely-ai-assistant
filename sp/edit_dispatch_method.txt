@@ -1,0 +1,44 @@
+  /**
+   * One path for both detectors. The deduper decides identity; decideDispatch
+   * decides the action; Auto answers exactly once per question from whichever
+   * detector fired first (the STT detector could never answer before this).
+   */
+  private dispatchDetection(d: {
+    question: string;
+    intent: 'verbal' | 'coding' | 'behavioral';
+    source: 'live' | 'whisper';
+    anchor?: string;
+    verdict: 'match' | 'paraphrase' | 'replaced' | 'unverifiable';
+    chip?: any;
+  }): void {
+    const verdict = this.chipDeduper.admit({ question: d.question, source: d.source, anchor: d.anchor });
+    const action = this.liveMode === 'off' && d.source === 'whisper' ? (verdict.admitted ? 'chip' : 'drop') : decideDispatch(this.liveMode, verdict);
+    const anchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
+    if (action === 'drop') {
+      console.log(`[Main] dispatch: drop source=${d.source} anchor=${anchorLog} verdict=${d.verdict} duplicateOf=${verdict.duplicateOfSource ?? 'none'} answered=${verdict.alreadyAnswered === true}`);
+      return;
+    }
+    console.log(`[Main] dispatch: ${action} source=${d.source} anchor=${anchorLog} verdict=${d.verdict}`);
+    if (action === 'chip') {
+      let contextSnapshot = '';
+      try { contextSnapshot = this.intelligenceManager.getFormattedContext(60) ?? ''; } catch { /* chip still works */ }
+      const chip = d.chip ?? {
+        id: `live-${Date.now()}-${++this.liveChipSeq}`,
+        question: d.question,
+        intent: d.intent,
+        confidence: 1.0,
+        contextSnapshot,
+        detectedAt: Date.now(),
+        source: 'live' as const,
+      };
+      this.broadcast('detected-question', chip);
+      return;
+    }
+    // answer — mark first so a duplicate arriving during generation is dropped
+    this.chipDeduper.markAnswered(verdict.admitted ? d.question : (verdict.duplicateOfQuestion ?? d.question));
+    this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source });
+    void this.intelligenceManager
+      .runWhatShouldISay(d.question, 1.0, undefined, { intentOverride: d.intent, bypassCooldown: true })
+      .catch((err: any) => console.error('[Main] auto-answer failed:', err?.message ?? err));
+  }
+

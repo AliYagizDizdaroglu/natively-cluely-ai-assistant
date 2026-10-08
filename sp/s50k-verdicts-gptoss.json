@@ -1,0 +1,122 @@
+{
+  "S1Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Names data fit, fast training and a regularized logistic-regression baseline; only slip is pairing regularization with the latency SLA."
+  },
+  "S1Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Arithmetic right: 9,500 churners, 2,850 true positives, ~30 percent recall, and the 60 percent precision reconciles within rounding."
+  },
+  "S1Q03": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Randomized A/B plus difference-in-differences explicitly controlling seasonality, customer mix and concurrent campaigns; exactly the asked separation."
+  },
+  "S1Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Precision, recall, lift and all three edge cases correct, but spoken as notation, 'precision = TP/k', needing small edits."
+  },
+  "S1Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Chronological split with a 30-day gap for the label window and ColumnTransformer fit on train only; leakage-safe and concise."
+  },
+  "S1Q06": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Omits the event_type filter for support calls, counting all events; the window, ingested_at cut and COALESCE are right."
+  },
+  "S1Q07": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Covers every stage and the shared components, but serving an XGBoost model on TensorFlow-Serving misplaces the product; 139 words."
+  },
+  "S1Q08": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Logging, deterministic assignment and inverse-propensity retraining are right, but overriding treated users' labels to no-churn corrupts ground truth."
+  },
+  "S1Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Correct Azure mapping end to end with operational reasons for each choice; 142 words is far past a spoken answer."
+  },
+  "S1Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Managed identity with Entra auth to Blob and PostgreSQL, Key Vault fallback, per-environment isolation; 113 words is too long."
+  },
+  "S2Q01": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Walks every named stage and maps it to real document work; 114 words overruns the spoken budget."
+  },
+  "S2Q02": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Gives unit, denominator, dataset construction and uncertainty for all three metrics; 148 words and plus-minus symbols hurt delivery."
+  },
+  "S2Q03": {
+    "correctness": 1,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Compares all three approaches but never names the agent's costs the complexity must justify, and miscasts fixed retrieval as three searches."
+  },
+  "S2Q04": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Fusion formula and top-k selection correct, but the tie-break is left as an either/or and the score reads as notation."
+  },
+  "S2Q05": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Hits all four constraints, greedy by relevance, budget fit, id dedupe and two-per-document, in natural spoken length."
+  },
+  "S2Q06": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Semaphore of eight, wait_for timeout, results stored at the original index, failures caught per case; all four requirements met."
+  },
+  "S2Q07": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Sharding, metadata table, pre-scoring permission filter, citations and a leak test suite all covered, but 147 words."
+  },
+  "S2Q08": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 1,
+    "reason": "Dual-write versioning, backfill, change-log sync, A/B comparison, flag cutover and rollback all present; 136 words is too long."
+  },
+  "S2Q09": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Correct service-by-service placement including Event Grid for events versus Service Bus for work; managed-versus-custom reasoning is brief but present."
+  },
+  "S2Q10": {
+    "correctness": 2,
+    "on_topic": 2,
+    "delivery": 2,
+    "reason": "Peek-lock with an idempotent upsert keyed by message id and completing only after the write; the right at-least-once answer."
+  }
+}

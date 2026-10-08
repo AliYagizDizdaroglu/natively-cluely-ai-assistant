@@ -1,0 +1,36 @@
+sliced NEW 56 lines, OLD 39 lines
+46656 sequences
+exhausted any script: false
+
+=== default 4 vs literal pre-Task-4 loop: 324 distinct behaviours differ in CALLS or STORED RECORD (162 with the env unset, 162 with '4') ===
+  of the 162 (env unset): 162 are "three failures, then the FIRST cut on call 4" -> OLD stops at 4 calls, NEW makes a 5th; other shapes: 0
+  5th call CLEAN  : 27 sequences, stored record differs in 27; e.g. [T429,T429,T429,CUT,CLEAN]  old -> spoken "partial" cutRetried=true | new -> spoken "full answer" cutRetried=true
+  5th call CUT    : 27 sequences, stored record differs in 0; e.g. [T429,T429,T429,CUT,CUT]  old -> spoken "partial" cutRetried=true | new -> spoken "partial" cutRetried=true
+  5th call T429   : 27 sequences, stored record differs in 27; e.g. [T429,T429,T429,CUT,T429]  old -> spoken "partial" cutRetried=true | new -> transientError "HTTP 429"
+  5th call T503   : 27 sequences, stored record differs in 27; e.g. [T429,T429,T429,CUT,T503]  old -> spoken "partial" cutRetried=true | new -> transientError "HTTP 503"
+  5th call ERR    : 27 sequences, stored record differs in 0; e.g. [T429,T429,T429,CUT,ERR]  old -> spoken "partial" cutRetried=true | new -> spoken "partial" cutRetried=true
+  5th call TIMEOUT: 27 sequences, stored record differs in 0; e.g. [T429,T429,T429,CUT,TIMEOUT]  old -> spoken "partial" cutRetried=true | new -> spoken "partial" cutRetried=true
+
+=== default 4: 324 distinct behaviours differ ONLY in the sleeps requested (same calls, same record) — first 4: ===
+  env=unset  [CUT,T429,T429,T429]  old sleeps [5000,16000,24000,32000]  new sleeps [5000,16000,24000]
+  env=4  [CUT,T429,T429,T429]  old sleeps [5000,16000,24000,32000]  new sleeps [5000,16000,24000]
+  env=unset  [CUT,T429,T429,T503]  old sleeps [5000,16000,24000,32000]  new sleeps [5000,16000,24000]
+  env=4  [CUT,T429,T429,T503]  old sleeps [5000,16000,24000,32000]  new sleeps [5000,16000,24000]
+
+=== GEMMA_MAX_TRIES=1 (the sidecar's env): 11 distinct behaviours ===
+  [CLEAN] calls 1, sidecar charges 1, record spoken="full answer" finish=STOP cutRetried=false
+  [CUT,CLEAN] calls 2, sidecar charges 2, record spoken="full answer" finish=STOP cutRetried=true
+  [CUT,CUT] calls 2, sidecar charges 2, record spoken="partial" finish=null cutRetried=true
+  [CUT,T429] calls 2, sidecar charges 1, record transientError="HTTP 429"  <-- UNDER-COUNT
+  [CUT,T503] calls 2, sidecar charges 1, record transientError="HTTP 503"  <-- UNDER-COUNT
+  [CUT,ERR] calls 2, sidecar charges 2, record spoken="partial" finish=null cutRetried=true
+  [CUT,TIMEOUT] calls 2, sidecar charges 2, record spoken="partial" finish=null cutRetried=true
+  [T429] calls 1, sidecar charges 1, record transientError="HTTP 429"
+  [T503] calls 1, sidecar charges 1, record transientError="HTTP 503"
+  [ERR] calls 1, sidecar charges 1, record transientError="fetch failed"
+  [TIMEOUT] calls 1, sidecar charges 1, record transientError="no answer within 180 s: 0 thought parts and 0 answer chars in"
+  max calls under one try: 2; behaviours the sidecar under-counts: 2
+
+probe calibration: OLD vs OLD differs on 0 of 46656 sequences (must be 0); OLD vs NEW@1 differs on 27216 (must be > 0)
+
+=== GEMMA_MAX_TRIES='abc' (NaN): 60 x 503 then CLEAN -> NEW makes 61 calls (stops only on success); OLD makes 4 ===

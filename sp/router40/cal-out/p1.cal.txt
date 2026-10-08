@@ -1,0 +1,14 @@
+PASS  P1-1 | l38base-dispatch.txt vs the registration's Appendix B block | expected: byte-equal (18 lines) | actual: byte-equal (18 lines, sha12 e886bb96f0ba)
+PASS  P1-1b | the registration itself is the sealed text (every byte above its seal line) | expected: 2d38dd89a1bc0fd4e97943cbda07291939afd555db85c31472462bd51860c16f | actual: 2d38dd89a1bc0fd4e97943cbda07291939afd555db85c31472462bd51860c16f
+PASS  P1-2 | placeholders <TURNS>, <CAL>, <OUT> each appear exactly once; the task counts 47 and 22 | expected: 1,1,1; "47 interviewer turns", "22 more turns" | actual: 1,1,1; true, true
+PASS  P1-2b | the definition's clauses are l38base's (the 'When in doubt, HARD' sentence and the follow-up rule are present) | expected: both present | actual: true, true
+PASS  P1-3 | a perfect synthetic classifier output (12 simple -> EASY, 10 hard -> HARD, all 69 keys) | expected: valid, 22/22 | actual: valid, 22/22
+PASS  P1-4 | one simple turn called HARD | expected: 21/22, miss named | actual: 21/22, misses [C01]
+PASS  P1-4b | one hard turn called EASY | expected: 21/22, miss named | actual: 21/22, misses [C02]
+PASS  P1-5 | a missing turn key (T47) | expected: invalid | actual: invalid: T47: route missing or not EASY|HARD
+PASS  P1-5b | a route that is not EASY|HARD | expected: invalid | actual: invalid: T01: route missing or not EASY|HARD
+PASS  P1-5c | a reason longer than 12 words | expected: invalid | actual: invalid: T02: reason missing or longer than 12 words
+PASS  P1-5d | a key that was not asked for | expected: invalid | actual: invalid: 1 keys that were not asked for
+PASS  P1-6 | cross-check against l38base's own cal-read.mjs on its recorded calibration output | expected: old reader: 12+10 = 22/22; this reader the same | actual: this reader 22/22
+PASS  P1-7 | consensus map: classifiers disagreeing on T01 -> that item `split`, an agreement keeps its label | expected: RE01 split; RH01 HARD | actual: RE01 split; RH01 HARD
+p1: 13/13 cases PASS

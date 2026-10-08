@@ -1,0 +1,20 @@
+SCORE-RD run 2026-10-07T00-22-47-router-default-r1; scorer sha256 50e0bc95bfb0; reader sha256 script 2d17df40226e, output 7f55e63ece05; reader run with --down-limit-min 2 on run folder 2026-10-07T00-22-47-router-default-r1
+BAR Safety: PASS text_half=PASS live_hard_first=0 live_router_marker=0 pipeline_unknown_marker=0 pipeline_bare_routing_token=0 wrong_live_shown=0 of 21 graded (ungraded 0)
+BAR Fallback: PASS missing_appended=0 unflagged_live_failures=0 row4_with_live_capture=0 dispatched_nothing_shown=0 pipeline_no_token=0
+BAR Quality: FAIL acceptable(L)=19 acceptable(S)=21 over 21 eligible pairs (needs L >= S - 1); ungraded pairs 0
+QUALITY excluded (graded for Safety only): sEmpty=0 superseded=0 live_without_pipeline=0; ids_with_more_than_one_live_turn=0
+BAR Speed: PASS p50=1572 limit=2500 n=21
+BAR Routing: FAIL EASY caught 17/20 (>= 13); HARD misrouted 4/27 (<= 1)
+BAR No-regression: PASS wrong=0 checked=23 (in-app shown=pipeline 23, appended 0, superseded replacing 0) unreadable=0
+INTEGRITY 0 problems (the reader counts are all 0 / MATCH)
+INFO in-app pairs 47: ignored as shown=live 21 (they carry the Live text, I-2); join defects 0; superseded replacing texts without an in-app grade 0
+INFO in-app pairs whose judge item (text overlap) and play-window item disagree on HARD/EASY: 0 (a turn is gated if EITHER says HARD, I-3)
+INFO superseded turns in the hour: streaming 0, done 0. A streaming-phase supersede never put the Live text in history, so the first [Answer] full line after it is the replacing text and the judge's pair carries it: graded. A done-phase one is graded only when a main supersede dispatch made the judge claim the replacing text; otherwise it is UNREADABLE on a HARD item. Cross-turn text matches refused: 0
+INFO reported, not gated: EASY pipeline-shown wrong 0; EASY appended wrong 0; EASY replacing wrong 0
+REPORTED high: not graded
+REPORTED low: not graded
+REPORTED captured-high: not graded
+GRADER MODEL claude-opus-5-5 (pin claude-opus-5-5; read from the transcript of the last launch of each of 10 graded file slots; a slot on any other model is refused)
+GRADER ALIAS PROBE cwdprobe-3: `opus` resolved to claude-opus-5-5 (reported only)
+VERDICT INCONCLUSIVE (Quality FAIL; Routing FAIL)
+NOTE registration 6.1/6.3: INCONCLUSIVE has one re-fly (label router-default-r2, seed blind:router-default:r2); a second INCONCLUSIVE has no automatic outcome, the controller reports and the user rules

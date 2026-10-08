@@ -1,0 +1,8 @@
+shipped shape: cues=["Spaces"] shown="Spaces, because the formatter enforces it."
+offers BEFORE the cue block: cues=[] shown="__CUES__\n1| Spaces\nSpaces, because the formatter enforces it."
+one preamble line before the sentinel: cues=[] shown="Sure.\n__CUES__\n1| Spaces\nSpaces, because the formatter enforces it."
+bold sentinel: cues=[] shown="__CUES__\n1| Spaces\nSpaces, because the formatter enforces it."
+sentinel with a colon: cues=[] shown=":\n1| Spaces\nSpaces, because the formatter enforces it."
+bare bar line (M7 of the final review): cues=[] shown="1|\n2| Consistency\nSpaces, because the formatter enforces it."
+dot-numbered cues: cues=[] shown="Spaces\nSpaces, because the formatter enforces it."
+block only: cues=["Spaces"] shown=""
