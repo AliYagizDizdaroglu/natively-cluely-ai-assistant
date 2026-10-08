@@ -3729,6 +3729,7 @@ async function initializeApp() {
       }
       console.log('[Init] NATIVELY_AUTOSTART_MEETING=1 — starting a meeting automatically');
       appState.startMeeting({ title: 'autostart', source: 'env' })
+        .then(() => appState.getWindowHelper().setWindowMode('overlay', true))
         .catch((err: any) => console.error('[Init] autostart meeting failed:', err?.message ?? err));
     }, 1500);
   }

@@ -49,3 +49,19 @@ describe('main.ts wiring: silent-listener failover', () => {
         expect(count(/\[Router\] ear failover from=3\.1 to=2\.5 reason=/)).toBe(1);
     });
 });
+
+describe('main.ts wiring: harness autostart shows the overlay', () => {
+    it('setWindowMode(overlay, true) is called once, inside the unpackaged + env gate, after startMeeting resolves', () => {
+        const gate = src.indexOf("if (!app.isPackaged && process.env.NATIVELY_AUTOSTART_MEETING === '1') {");
+        expect(gate).toBeGreaterThan(-1);
+        const end = src.indexOf('\n  }\n', gate);
+        const block = src.slice(gate, end);
+        const start = block.indexOf('appState.startMeeting(');
+        const show = block.indexOf("appState.getWindowHelper().setWindowMode('overlay', true)");
+        expect(start).toBeGreaterThan(-1);
+        expect(show).toBeGreaterThan(start);
+        expect(block.slice(start, show)).toContain('.then(');
+        // nowhere else in main.ts
+        expect(src.split("getWindowHelper().setWindowMode('overlay', true)").length - 1).toBe(1);
+    });
+});
