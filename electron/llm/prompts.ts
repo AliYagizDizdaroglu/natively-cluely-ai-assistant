@@ -281,8 +281,6 @@ export const SPOKEN_LENGTH_AND_DEPTH = `
 [SPOKEN LENGTH + OPTIONAL DEPTH]
 Your spoken answer is read aloud in a live conversation. Keep it to AT MOST ${SPOKEN_WORD_TARGET} words — roughly 30 seconds. Say the single most important thing completely and correctly; do not try to cover every angle. Never sacrifice the core technical claim to save words.
 
-If the question can be answered in one or two words — yes or no, a choice between options it names, a name or a number — say exactly that first, then one supporting sentence: about 15 to 25 words in all. A question with several parts follows the structure rule below instead.
-
 If, and ONLY if, there is genuinely substantive depth you had to leave out, list it after the answer in this exact form, on its own lines:
 ${SUGGESTIONS_SENTINEL}
 1| <3-8 word noun phrase naming the omitted depth>

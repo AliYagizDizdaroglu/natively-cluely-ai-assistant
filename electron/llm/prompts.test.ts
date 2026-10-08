@@ -14,7 +14,7 @@ import {
     SPOKEN_WORD_TARGET,
     SPOKEN_WORD_CEILING,
     CUE_RULE, CUE_SHAPE_RULE, CUES_SENTINEL, CUE_MAX_LINES, CUE_MAX_WORDS, VERBAL_TYPED_PROMPT,
-    SPOKEN_LENGTH_AND_DEPTH, cueRuleApplies, verbalPromptFor,
+    cueRuleApplies, verbalPromptFor,
     resolveGemmaSystemPrompt,
     resolveStyleSuffix,
 } from './prompts';
@@ -240,21 +240,7 @@ describe('spoken word budget', () => {
     });
 });
 
-const SHORT_ANSWER_RULE = 'If the question can be answered in one or two words — yes or no, a choice between options it names, a name or a number — say exactly that first, then one supporting sentence: about 15 to 25 words in all. A question with several parts follows the structure rule below instead.';
-
-describe('short-answer rule (bundle-1 SPEC 2)', () => {
-    it('is in SPOKEN_LENGTH_AND_DEPTH exactly once, right after the "read aloud" line and before the structure rule', () => {
-        expect(SPOKEN_LENGTH_AND_DEPTH.split(SHORT_ANSWER_RULE).length - 1).toBe(1);
-        const at = SPOKEN_LENGTH_AND_DEPTH.indexOf(SHORT_ANSWER_RULE);
-        expect(at).toBeGreaterThan(SPOKEN_LENGTH_AND_DEPTH.indexOf('Your spoken answer is read aloud'));
-        expect(at).toBeLessThan(SPOKEN_LENGTH_AND_DEPTH.indexOf("[ANSWER THE QUESTION'S STRUCTURE"));
-        expect(at).toBeLessThan(SPOKEN_LENGTH_AND_DEPTH.indexOf('If, and ONLY if, there is genuinely substantive depth'));
-    });
-    it('reaches both verbal prompts (typed chat included, D5) and the knowledge-budget check still matches', () => {
-        expect(VERBAL_TYPED_PROMPT).toContain(SHORT_ANSWER_RULE);
-        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain(SHORT_ANSWER_RULE);
-        expect(VERBAL_TYPED_PROMPT.includes(SPOKEN_LENGTH_AND_DEPTH)).toBe(true);
-    });
+describe('prompt tails (bundle-1)', () => {
     it('the structure rule still overrides length, and the tail pins hold', () => {
         expect(VERBAL_TYPED_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.')).toBe(true);
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.' + CUE_RULE)).toBe(true);
@@ -285,6 +271,11 @@ describe('cueRuleApplies / verbalPromptFor — cues by question shape (bundle-1 
         expect(verbalPromptFor('What is a vector database?')).toBe(VERBAL_TYPED_PROMPT);
         expect(verbalPromptFor('Name the layers, the caches, the queues')).toBe(VERBAL_WHAT_TO_ANSWER_PROMPT);
         expect(verbalPromptFor('')).toBe(VERBAL_TYPED_PROMPT);
+    });
+    it('invariant: the prompt a gated question gets is the verbal prompt minus the cue rule, and the rule is the only difference', () => {
+        expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toBe(VERBAL_TYPED_PROMPT + CUE_RULE);
+        expect(verbalPromptFor('What is a vector database?')).toBe(VERBAL_WHAT_TO_ANSWER_PROMPT.slice(0, VERBAL_WHAT_TO_ANSWER_PROMPT.length - CUE_RULE.length));
+        expect(verbalPromptFor('What is a vector database?').includes(CUES_SENTINEL)).toBe(false);
     });
 });
 
