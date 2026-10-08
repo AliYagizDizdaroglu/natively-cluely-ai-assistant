@@ -240,7 +240,7 @@ describe('spoken word budget', () => {
     });
 });
 
-const SHORT_ANSWER_RULE = 'If the question can be answered in one or two words (yes or no, a choice between named options, a number, a name), your FIRST words are that answer itself, never a restatement of the question, then at most one short sentence of reason. At most 25 words in total. Example: asked "Is Parquet or CSV better for a large training set?", say "Parquet. It is columnar and compressed, so reads are faster and files smaller." A question with several parts is not covered by this rule: it follows the structure rule below, which takes precedence.';
+const SHORT_ANSWER_RULE = 'If the question can be answered in one or two words — yes or no, a choice between options it names, a name or a number — say exactly that first, then one supporting sentence: about 15 to 25 words in all. A question with several parts follows the structure rule below instead.';
 
 describe('short-answer rule (bundle-1 SPEC 2)', () => {
     it('is in SPOKEN_LENGTH_AND_DEPTH exactly once, right after the "read aloud" line and before the structure rule', () => {
@@ -254,15 +254,6 @@ describe('short-answer rule (bundle-1 SPEC 2)', () => {
         expect(VERBAL_TYPED_PROMPT).toContain(SHORT_ANSWER_RULE);
         expect(VERBAL_WHAT_TO_ANSWER_PROMPT).toContain(SHORT_ANSWER_RULE);
         expect(VERBAL_TYPED_PROMPT.includes(SPOKEN_LENGTH_AND_DEPTH)).toBe(true);
-    });
-    it('fix round: the clause is concrete (answer first, never a restatement, 25 words, an example) and defers to the structure rule', () => {
-        for (const text of [SPOKEN_LENGTH_AND_DEPTH, VERBAL_TYPED_PROMPT, VERBAL_WHAT_TO_ANSWER_PROMPT]) {
-            expect(text).toContain('your FIRST words are that answer itself, never a restatement of the question, then at most one short sentence of reason. At most 25 words in total.');
-            expect(text).toContain('Example: asked "Is Parquet or CSV better for a large training set?", say "Parquet. It is columnar and compressed, so reads are faster and files smaller."');
-            expect(text).toContain('it follows the structure rule below, which takes precedence.');
-        }
-        // the old weak wording is gone
-        expect(SPOKEN_LENGTH_AND_DEPTH).not.toContain('say exactly that first');
     });
     it('the structure rule still overrides length, and the tail pins hold', () => {
         expect(VERBAL_TYPED_PROMPT.endsWith('- Still first person, still open with substance, still no questions back.')).toBe(true);

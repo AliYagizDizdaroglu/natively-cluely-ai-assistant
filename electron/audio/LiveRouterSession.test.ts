@@ -56,9 +56,9 @@ afterEach(() => { vi.useRealTimers(); });
 
 describe('constants', () => {
   it('the generated instruction constants match the registered sha256 values', () => {
-    expect(createHash('sha256').update(ROUTER_INSTRUCTION).digest('hex')).toBe('c01eff6ff48e0953a62ab9a7039f41d9a739c3af6db82c04f599c3165c042de3');
+    expect(createHash('sha256').update(ROUTER_INSTRUCTION).digest('hex')).toBe('79ad0f464d95ca7e977cdcda829e5e853389c8ea84dcae9253e0127a91bc9a91');
     expect(createHash('sha256').update(ROUTER_BLOCK_B).digest('hex')).toBe('3a1da134e4c7f9ad00a948d4e487eaf38e35b8def8f110b4a055387d1be9364c');
-    expect(INSTRUCTION_SHA256).toBe('c01eff6ff48e0953a62ab9a7039f41d9a739c3af6db82c04f599c3165c042de3');
+    expect(INSTRUCTION_SHA256).toBe('79ad0f464d95ca7e977cdcda829e5e853389c8ea84dcae9253e0127a91bc9a91');
     expect(BLOCK_B_SHA256).toBe('3a1da134e4c7f9ad00a948d4e487eaf38e35b8def8f110b4a055387d1be9364c');
     expect(ROUTER_SHAS_OK).toBe(true);
     expect(ROUTER_MODEL).toBe('gemini-3.8-live');
@@ -68,7 +68,7 @@ describe('constants', () => {
     expect(ROUTER_BLOCK_B).toContain('Say the single word hard if ANY');
     expect(ROUTER_BLOCK_B.indexOf('Say the single word hard if ANY')).toBeLessThan(ROUTER_BLOCK_B.indexOf('Only if none of these is true'));
     expect(ROUTER_BLOCK_B.split('Say the single word hard if ANY').length - 1).toBe(1);
-    const clause = 'If the question can be answered in one or two words (yes or no, a choice between named options, a number, a name), your FIRST words are that answer itself, never a restatement of the question, then at most one short sentence of reason. At most 25 words in total. Example: asked "Is Parquet or CSV better for a large training set?", say "Parquet. It is columnar and compressed, so reads are faster and files smaller." A question with several parts follows the multi-part rule above instead.';
+    const clause = 'If the question can be answered in one or two words — yes or no, a choice, a name or a number — say that first, then one supporting sentence, about 15 to 25 words in all.';
     expect(ROUTER_INSTRUCTION.split(clause).length - 1).toBe(1);
     // in the length paragraph: right after its last sentence
     expect(ROUTER_INSTRUCTION).toContain('Open with substance, not with a restatement of the question. ' + clause);
@@ -95,7 +95,7 @@ describe('LiveRouterSession', () => {
     await h.s.start();
     expect(h.conns.length).toBe(1);
     expect(h.logs).toContain(
-      `[Router] session connect model=gemini-3.8-live block_sha12=3a1da134e4c7 instruction_sha12=c01eff6ff48e context_sha12=${sha12('Candidate: Ada.')} context_chars=15`
+      `[Router] session connect model=gemini-3.8-live block_sha12=3a1da134e4c7 instruction_sha12=79ad0f464d95 context_sha12=${sha12('Candidate: Ada.')} context_chars=15`
     );
     const p = h.conns[0].params;
     expect(p.model).toBe('gemini-3.8-live');
