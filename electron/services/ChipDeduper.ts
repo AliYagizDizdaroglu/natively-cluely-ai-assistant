@@ -208,7 +208,20 @@ export class ChipDeduper {
       // (after8 W08 at +49 s: "what is the difference between a pod and a
       // deployment" vs "…between data drift and concept drift", overlap 0.75 —
       // W08 was never answered).
-      if (anchor && entry.anchor && now - entry.at < this.windowMs && sameAnchor(anchor, entry.anchor)) return entry;
+      if (anchor && entry.anchor && now - entry.at < this.windowMs && sameAnchor(anchor, entry.anchor)) {
+        // sameAnchor's content-word OVERLAP half is a "one utterance heard by two
+        // ears" signature, so on a SHORT anchor (< TAIL_MIN_CONTENT_WORDS content
+        // words on the shorter side) it only counts within CROSS_DETECTOR_MS.
+        // A real follow-up reuses its parent's key noun: b1-final 2026-10-11,
+        // RH02 was dropped as a duplicate of its answered parent at +19.0 s on
+        // overlap 0.50 over 2 content words. Substring containment, and anchors
+        // with 4+ content words on both sides, keep matching across the window.
+        const a = anchor.toLowerCase().trim();
+        const b = entry.anchor.toLowerCase().trim();
+        const contained = a.length >= 3 && b.length >= 3 && (a.includes(b) || b.includes(a));
+        const shortAnchor = Math.min(contentWords(anchor).size, contentWords(entry.anchor).size) < TAIL_MIN_CONTENT_WORDS;
+        if (contained || !shortAnchor || now - entry.at <= CROSS_DETECTOR_MS) return entry;
+      }
       // Past windowMs only answered entries survive (answeredWindowMs); there a
       // short text on either side must not match by containment/Jaccard.
       if (now - entry.at >= this.windowMs && Math.min(newContentWords, contentWords(entry.text).size) < TAIL_MIN_CONTENT_WORDS) continue;
