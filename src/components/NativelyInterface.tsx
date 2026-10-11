@@ -27,7 +27,8 @@ import {
     Code,
     Copy,
     Check,
-    PointerOff
+    PointerOff,
+    ArrowDownToLine
 } from 'lucide-react';
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -3008,6 +3009,32 @@ Provide only the answer, nothing else.`;
                                                 style={appearance.iconStyle}
                                             >
                                                 <PointerOff className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
+
+                                        {/* Auto-scroll Toggle: same key + 'storage' event as Settings; the autoScroll effect jumps to the newest message when turned on */}
+                                        <div className="relative">
+                                            <button
+                                                aria-label="Auto-scroll"
+                                                aria-pressed={autoScroll}
+                                                title={autoScroll ? 'Auto-scroll on' : 'Auto-scroll off'}
+                                                onClick={() => {
+                                                    const newState = !autoScroll;
+                                                    setAutoScroll(newState);
+                                                    localStorage.setItem('natively_auto_scroll', String(newState));
+                                                    window.dispatchEvent(new Event('storage'));
+                                                }}
+                                                className={`
+                                                    w-7 h-7 flex items-center justify-center rounded-lg
+                                                    interaction-base interaction-press
+                                                    ${autoScroll
+                                                        ? 'overlay-icon-surface overlay-icon-surface-hover text-sky-400 opacity-100'
+                                                        : 'overlay-icon-surface overlay-icon-surface-hover overlay-text-interactive'}
+                                                `}
+
+                                                style={appearance.iconStyle}
+                                            >
+                                                <ArrowDownToLine className="w-3.5 h-3.5" />
                                             </button>
                                         </div>
 
