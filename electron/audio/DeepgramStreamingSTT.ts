@@ -128,6 +128,7 @@ export class DeepgramStreamingSTT extends EventEmitter {
         try {
             this.live.finalize();
             console.log('[DeepgramStreaming] Sent Finalize to flush server buffer');
+            console.log(`[DeepgramStreaming] finalize sent gen=${this.sockSeq}`);
         } catch (err: any) {
             console.error('[DeepgramStreaming] Finalize failed:', err?.message);
         }
@@ -251,6 +252,9 @@ export class DeepgramStreamingSTT extends EventEmitter {
                         const alt = data.channel?.alternatives?.[0];
                         const transcript = alt?.transcript;
                         const isFinal = data.is_final ?? false;
+                        // Own line, directly above the Transcript event line (whose exact shape offline scanners parse):
+                        // from_finalize says whether a prompt final answered our Finalize or came from ordinary endpointing.
+                        console.log(`[DeepgramStreaming] transcript flags is_final=${isFinal} speech_final=${data.speech_final === true} from_finalize=${data.from_finalize === true}`);
                         console.log(`[DeepgramStreaming] Transcript event — isFinal=${isFinal}, text="${transcript ?? '(empty)'}"`);
                         if (!transcript) {
                             // An empty FINAL is a pause (median 187 per run log): a cut remembered

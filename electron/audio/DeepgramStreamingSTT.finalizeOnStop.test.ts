@@ -111,6 +111,47 @@ describe('DeepgramStreamingSTT: Finalize on the app VAD voice stop', () => {
         expect(second.finalizes).toBe(1);
     });
 
+    // Fix round 1 (review F2b required 1): a flight must be able to tell whether a prompt final came from Finalize.
+    describe('observability', () => {
+        let log: string[];
+        beforeEach(() => {
+            log = [];
+            vi.spyOn(console, 'log').mockImplementation((...a: any[]) => { log.push(a.join(' ')); });
+        });
+
+        it('logs is_final, speech_final and from_finalize on every transcript event', () => {
+            const { live } = open();
+            const ev = (isFinal: boolean, extra: any) => live.fire('Results', { is_final: isFinal, ...extra, channel: { alternatives: [{ transcript: 'hello there', confidence: 0.9 }] } });
+            ev(false, {});
+            ev(true, { speech_final: true });
+            ev(true, { speech_final: false, from_finalize: true });
+            // A separate line directly BEFORE the unchanged `Transcript event` line: offline scanners (interview60.metrics,
+            // turns-finals, ...) parse that line's exact shape, and the boundary-repair line must stay adjacent after it.
+            const lines = log.filter((l) => l.includes('transcript flags'));
+            expect(lines).toEqual([
+                '[DeepgramStreaming] transcript flags is_final=false speech_final=false from_finalize=false',
+                '[DeepgramStreaming] transcript flags is_final=true speech_final=true from_finalize=false',
+                '[DeepgramStreaming] transcript flags is_final=true speech_final=false from_finalize=true',
+            ]);
+            const k = log.findIndex((l) => l.includes('transcript flags'));
+            expect(log[k + 1]).toContain('Transcript event');
+        });
+
+        it('logs one "finalize sent gen=N" line per Finalize, N = the socket number', () => {
+            const { stt, live } = open();
+            stt.notifyVoice(true);
+            stt.notifyVoice(false);
+            stt.notifyVoice(false);
+            expect(log.filter((l) => l.includes('finalize sent gen=1'))).toHaveLength(1);
+            expect(live.finalizes).toBe(1);
+            stt.setSampleRate(48000);
+            lives[1].fire('open');
+            stt.notifyVoice(true);
+            stt.notifyVoice(false);
+            expect(log.filter((l) => l.includes('finalize sent gen=2'))).toHaveLength(1);
+        });
+    });
+
     it('nothing is sent while the socket is not open, and a stopped instance sends nothing', () => {
         const stt = new DeepgramStreamingSTT('key');
         stt.start();                                   // connecting, not open
