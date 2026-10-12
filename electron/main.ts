@@ -2167,6 +2167,13 @@ export class AppState {
         console.log(`[Main] dispatch: drop source=whisper anchor=${JSON.stringify((d.anchor ?? d.question).slice(0, 80))} verdict=late-final question=${JSON.stringify(d.question)}`);
         return;
       }
+      // F3: the detector re-emits ("chip updated") a question that was already answered; a mark from it
+      // would make the next statement (small talk, a thank-you) dispatchable. Whisper only: Live's
+      // F2a follow-up keep is not touched.
+      if (d.source === 'whisper' && !d.followUp && this.chipDeduper.isAnsweredDuplicate({ question: d.question, source: d.source, anchor: d.anchor })) {
+        console.log(`[Main] dispatch: drop source=whisper anchor=${JSON.stringify((d.anchor ?? d.question).slice(0, 80))} verdict=${d.verdict} reason=stale-mark question=${JSON.stringify(d.question)}`);
+        return;
+      }
       if (d.source === 'live') this.turn.liveClaim(d.liveText ?? d.question, now);
       this.turn.detected(d.source, now);
       // R26: liveClaim/detected may have silently replaced a stale turn (reopenIfStale) —

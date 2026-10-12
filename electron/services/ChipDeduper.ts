@@ -176,6 +176,26 @@ export class ChipDeduper {
     return { admitted: true, id: entry.id };
   }
 
+  /**
+   * Read-only: is this detection a re-emission of a question that was already ANSWERED and is
+   * still inside answeredWindowMs? Caches nothing, admits nothing. main.ts asks it before an
+   * auto-mode detection marks the open turn (F3, st25-smoke 2026-10-12: the detector re-emitted
+   * "Why that one?" 20.3 s and "Do you have any questions for us?" 23.5 s after their answers,
+   * and each stale mark made the small-talk statement that followed dispatchable).
+   * Same rules as admit() (findSimilar, so D1's short-anchor rule applies), plus one: identical
+   * text matches past windowMs even when it is short, which findSimilar's tail floor
+   * (TAIL_MIN_CONTENT_WORDS) refuses for both evidence questions (1 and 2 content words).
+   */
+  isAnsweredDuplicate(candidate: DedupCandidate): boolean {
+    const text = (candidate.question ?? '').trim();
+    if (!text) return false;
+    const now = this.now();
+    const answered = this.cache.filter((e) => e.answered && now - e.at < this.answeredWindowMs);
+    if (this.findSimilar(text, candidate.anchor, candidate.source, now, answered)) return true;
+    const norm = normalizeForContainment(text);
+    return norm.length >= 3 && answered.some((e) => normalizeForContainment(e.text) === norm);
+  }
+
   reset(): void {
     this.cache = [];
   }
@@ -198,10 +218,10 @@ export class ChipDeduper {
     if (entry) entry.text = question.trim();
   }
 
-  private findSimilar(text: string, anchor: string | undefined, source: ChipSource, now: number): CacheEntry | null {
+  private findSimilar(text: string, anchor: string | undefined, source: ChipSource, now: number, entries: CacheEntry[] = this.cache): CacheEntry | null {
     const normNew = normalizeForContainment(text);
     const newContentWords = contentWords(text).size;
-    for (const entry of this.cache) {
+    for (const entry of entries) {
       // Anchors identify one utterance heard twice, so they only speak inside the
       // base window. Past it only answered entries survive, and two DIFFERENT
       // questions sharing a frame clear sameAnchor on the frame words alone
