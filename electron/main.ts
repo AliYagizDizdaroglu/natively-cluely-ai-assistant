@@ -260,6 +260,7 @@ import { decideDispatch } from './services/detectionDispatch'
 import { reconcileLiveQuestion, reconcileWindowMs } from './services/questionReconcile'
 import { createLiveHold } from './services/liveHold'
 import { isFragment, looksFragmentary } from './services/questionShape'
+import { isSmallTalk } from './services/smallTalk'
 import { resolveSttProvider } from './services/sttProviderOverride'
 import { createEnergyVad, EnergyVad } from './audio/energyVad'
 import { createInterviewerTurn, turnConstantsFromEnv, InterviewerTurn, TurnDecision } from './services/interviewerTurn'
@@ -2141,6 +2142,13 @@ export class AppState {
     if (d.source === 'live' && isFragment(d.question)) {
       const anchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
       console.log(`[Main] dispatch: drop source=live anchor=${anchorLog} verdict=fragment question=${JSON.stringify(d.question)}`);
+      return;
+    }
+    // Small talk ("Can you hear me okay?", "How are you doing today?") is never answered, whichever
+    // ear or stage it arrives at (mark, turn dispatch, hold resolution). Whole-text check: a real
+    // question in the same breath keeps the text alive (smallTalk.ts).
+    if (isSmallTalk(d.question)) {
+      console.log(`[Main] dispatch: drop source=${d.source} anchor=${JSON.stringify((d.anchor ?? d.question).slice(0, 80))} verdict=${d.verdict} reason=smalltalk question=${JSON.stringify(d.question)}`);
       return;
     }
     // Hands-free: the interviewer turn decides WHEN to answer (spec 2026-09-09 §3.3).
