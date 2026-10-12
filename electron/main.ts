@@ -2167,11 +2167,11 @@ export class AppState {
         console.log(`[Main] dispatch: drop source=whisper anchor=${JSON.stringify((d.anchor ?? d.question).slice(0, 80))} verdict=late-final question=${JSON.stringify(d.question)}`);
         return;
       }
-      // F3: the detector re-emits ("chip updated") a question that was already answered; a mark from it
-      // would make the next statement (small talk, a thank-you) dispatchable. Whisper only (by source): Live's
-      // F2a follow-up keep is not touched. Only the latest answered question counts as stale.
-      if (d.source === 'whisper' && this.chipDeduper.isAnsweredDuplicate({ question: d.question, source: d.source, anchor: d.anchor })) {
-        console.log(`[Main] dispatch: drop source=whisper anchor=${JSON.stringify((d.anchor ?? d.question).slice(0, 80))} verdict=${d.verdict} reason=stale-mark question=${JSON.stringify(d.question)}`);
+      // F3/F3b: a re-emission (the detector's "chip updated", or a Live re-announcement, any verdict) of the question that was
+      // just answered would make the next statement (small talk, a thank-you) dispatchable, or answer it twice. Both ears. Only the
+      // latest answered question counts as stale, so a short follow-up ("Why that one?") still marks.
+      if (this.chipDeduper.isAnsweredDuplicate({ question: d.question, source: d.source, anchor: d.anchor })) {
+        console.log(`[Main] dispatch: drop source=${d.source} anchor=${JSON.stringify((d.anchor ?? d.question).slice(0, 80))} verdict=${d.verdict} reason=stale-mark question=${JSON.stringify(d.question)}`);
         return;
       }
       if (d.source === 'live') this.turn.liveClaim(d.liveText ?? d.question, now);
