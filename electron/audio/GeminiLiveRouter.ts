@@ -136,13 +136,13 @@ export function hasQuestionSubstance(question: string): boolean {
 }
 
 /**
- * How long after an answer a contentless short follow-up is still a follow-up. st25-smoke 2026-10-12: the
- * ear reported the four dropped follow-ups 22.7, 24.1, 23.6 and 24.6 s after the last answer was committed
- * (the rosters space items 20 s apart, plus the ear's report lag); 30 s is the largest of those plus ~5 s of
- * margin. Roster-shaped: a real candidate speaks the answer first, so a real gap is longer; retune from a
- * real-meeting log before relying on this live.
+ * A contentless short follow-up is kept while the conversation is still on the answered question: no
+ * interviewer question has been dispatched since (noteInterviewerQuestion), so a real candidate's 30-120 s
+ * spoken answer does not close it. This cap is only a safety bound for when no such event ever arrives (the
+ * interviewer went quiet, or the topic moved through a dropped statement): 180 s = the 120 s upper end of a
+ * spoken answer plus 60 s. st25-smoke 2026-10-12 observed gaps were 22.7-24.6 s (roster spacing).
  */
-export const FOLLOWUP_AFTER_ANSWER_MS = 30_000;
+export const FOLLOWUP_CAP_MS = 180_000;
 
 /**
  * Short follow-up shapes that carry no subject matter of their own ("Why?", "Why that one?", "How so?").
@@ -514,7 +514,8 @@ export class GeminiLiveRouter extends EventEmitter {
         let followUp = false;
         if (!hasQuestionSubstance(question)) {
           followUp = this.lastAnsweredAt !== null
-            && Date.now() - this.lastAnsweredAt <= FOLLOWUP_AFTER_ANSWER_MS
+            && !this.topicMoved
+            && Date.now() - this.lastAnsweredAt <= FOLLOWUP_CAP_MS
             && isFollowUpQuestion(question);
           if (!followUp) {
             console.log(`[LiveRouter] ignored fragment (no subject matter): "${question}"`);
@@ -545,6 +546,14 @@ export class GeminiLiveRouter extends EventEmitter {
   /** main.ts calls this when an answer is committed to the screen: it opens the follow-up window. */
   noteAnswered(at: number = Date.now()): void {
     this.lastAnsweredAt = at;
+    this.topicMoved = false;
+  }
+
+  private topicMoved = false;
+
+  /** main.ts calls this when the turn dispatches an interviewer question: the answered one is no longer the topic. A later noteAnswered reopens it for the new question. */
+  noteInterviewerQuestion(): void {
+    this.topicMoved = true;
   }
 
   private isDuplicate(question: string): boolean {

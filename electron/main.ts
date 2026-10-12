@@ -1031,6 +1031,7 @@ export class AppState {
         const base = this.turnDetectionOr(d);
         const gate = this.lastVoiceOffAt === null ? d.gateMs : Date.now() - this.lastVoiceOffAt;
         console.log(`[Main] turn: gate=${gate} finals=${d.finals} live=${d.live.length} finished=${d.finished}`);
+        this.liveRouter?.noteInterviewerQuestion();   // the answered question is no longer the topic (an answer commit reopens the follow-up window)
         this.dispatchDetection(turnDispatchInput(base, d, this.turn.snapshot().id));
         return;
       }
@@ -2233,7 +2234,7 @@ export class AppState {
     this.chipDeduper.markAnswered(verdict.id);
     this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source, replace: false });
     if (d.turnId != null) this.turn.answered(d.turnId, Date.now());   // D2: the one place an answer is committed to the screen
-    this.liveRouter?.noteAnswered();   // opens the ear's short-follow-up window (GeminiLiveRouter FOLLOWUP_AFTER_ANSWER_MS)
+    this.liveRouter?.noteAnswered();   // opens the ear's short-follow-up window (open until the next interviewer question is dispatched, 180 s cap: GeminiLiveRouter FOLLOWUP_CAP_MS)
     this.routerWiring.answered(d.turnId);   // the arbiter's Q: before the pipeline request, so the engine's events find the turn dispatched
     void this.answerDetection(d)
       .catch((err: any) => console.error('[Main] auto-answer failed:', err?.message ?? err));

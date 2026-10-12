@@ -54,10 +54,40 @@ describe('short follow-ups after an answered turn', () => {
         expect(h.questions).toHaveLength(0);
     });
 
-    it('drops it once the answer is older than the 30 s window', async () => {
+    // Fix round 1: the window is "the conversation is still on that question", not a clock from the commit.
+    // A real candidate speaks the answer first, so the follow-up comes 30-120 s after the commit.
+    it.each([25_000, 60_000, 120_000])('keeps it %i ms after the commit when no interviewer question came in between', async (ms) => {
         const h = await started();
         h.router.noteAnswered();
-        vi.advanceTimersByTime(30_500);
+        vi.advanceTimersByTime(ms);
+        h.fire('Why that one?');
+        expect(h.questions.map((x) => x.question)).toEqual(['Why that one?']);
+    });
+
+    it('drops it after an interviewer question was dispatched since the answer', async () => {
+        const h = await started();
+        h.router.noteAnswered();
+        vi.advanceTimersByTime(10_000);
+        h.router.noteInterviewerQuestion();
+        vi.advanceTimersByTime(10_000);
+        h.fire('Why that one?');
+        expect(h.questions).toHaveLength(0);
+    });
+
+    it('a new answer after that question reopens it for the new question', async () => {
+        const h = await started();
+        h.router.noteAnswered();
+        h.router.noteInterviewerQuestion();
+        h.router.noteAnswered();
+        vi.advanceTimersByTime(40_000);
+        h.fire('Why that one?');
+        expect(h.questions).toHaveLength(1);
+    });
+
+    it('drops it past the 180 s safety cap even with no intervening question', async () => {
+        const h = await started();
+        h.router.noteAnswered();
+        vi.advanceTimersByTime(180_500);
         h.fire('Why that one?');
         expect(h.questions).toHaveLength(0);
     });
@@ -66,7 +96,7 @@ describe('short follow-ups after an answered turn', () => {
         'still drops junk %s right after an answer, and still acks it', async (q) => {
             const h = await started();
             h.router.noteAnswered();
-            vi.advanceTimersByTime(2_000);
+            vi.advanceTimersByTime(60_000);
             h.fire(q);
             expect(h.questions).toHaveLength(0);
             expect(h.toolResponses).toHaveLength(1);
