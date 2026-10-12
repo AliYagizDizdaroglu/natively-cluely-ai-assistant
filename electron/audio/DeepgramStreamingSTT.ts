@@ -34,6 +34,7 @@ export class DeepgramStreamingSTT extends EventEmitter {
     private keepAliveInterval: NodeJS.Timeout | null = null;
     private buffer: Buffer[] = [];
     private isConnecting = false;
+    private segmentOpen = false; // a voice start was seen and its Finalize has not been sent (notifyVoice)
 
     // Per-socket accounting for the close summary. The 2026-09-02 flight test
     // showed the server closing every socket ~10 s after open as idle even
@@ -130,6 +131,23 @@ export class DeepgramStreamingSTT extends EventEmitter {
         } catch (err: any) {
             console.error('[DeepgramStreaming] Finalize failed:', err?.message);
         }
+    }
+
+    /**
+     * The app's own energy VAD reports the interviewer's voice starting / stopping. A stop flushes
+     * Deepgram's buffer with one Finalize, once per speech segment, on the current socket only (this.live
+     * is always the current one; a replaced socket is never touched). Why: the system-audio stream is
+     * thinned in silence (one 20 ms frame per 100 ms), so Deepgram's audio clock crawls in silence and a
+     * short utterance's final waited 17 s for the next speech (st25-smoke SF02, b1-final RH02: 2 of ~110
+     * finals; the rest arrive 0.7 s after their last interim). Deepgram answers a Finalize with the
+     * pending finals, possibly marked from_finalize; with little audio buffered it may send none.
+     */
+    public notifyVoice(speaking: boolean): void {
+        if (speaking) { this.segmentOpen = true; return; }
+        if (!this.segmentOpen) return;
+        if (!this.isActive || !this.isOpen || !this.live) return;
+        this.segmentOpen = false;
+        this.finalize();
     }
 
     public write(chunk: Buffer): void {

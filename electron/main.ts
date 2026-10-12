@@ -184,6 +184,8 @@ type STTProvider = (GoogleSTT | RestSTT | DeepgramStreamingSTT | SonioxStreaming
   finalize?: () => void;
   setAudioChannelCount?: (count: number) => void;
   notifySpeechEnded?: () => void;
+  /** DeepgramStreamingSTT only: the app VAD's voice start/stop, which a stop turns into one Finalize. */
+  notifyVoice?: (speaking: boolean) => void;
 };
 
 type ScreenshotWindowMode = 'launcher' | 'overlay';
@@ -989,6 +991,7 @@ export class AppState {
     const u = this.interviewerVad.push(chunk, Date.now());
     if (u.changed) {
       if (!u.speaking) this.lastVoiceOffAt = u.at;
+      this.googleSTT?.notifyVoice?.(u.speaking);   // Deepgram: a stop flushes its buffer (Finalize, once per segment)
       this.turn.speech(u.speaking, u.at);
       this.turnTick();
     }
