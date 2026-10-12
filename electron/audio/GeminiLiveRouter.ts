@@ -51,6 +51,8 @@ export interface LiveQuestionEvent {
   question: string;
   category: LiveCategory;
   intent: ChipIntent;
+  /** Set when a contentless short follow-up ("Why that one?") was kept because an answer was recent. */
+  followUp?: true;
 }
 
 export interface LiveStatusEvent {
@@ -131,6 +133,38 @@ export function questionContentWords(question: string): string[] {
  */
 export function hasQuestionSubstance(question: string): boolean {
   return questionContentWords(question).length >= MIN_CONTENT_WORDS;
+}
+
+/**
+ * How long after an answer a contentless short follow-up is still a follow-up. st25-smoke 2026-10-12: the
+ * ear reported the four dropped follow-ups 22.7, 24.1, 23.6 and 24.6 s after the last answer was committed
+ * (the rosters space items 20 s apart, plus the ear's report lag); 30 s is the largest of those plus ~5 s of
+ * margin. Roster-shaped: a real candidate speaks the answer first, so a real gap is longer; retune from a
+ * real-meeting log before relying on this live.
+ */
+export const FOLLOWUP_AFTER_ANSWER_MS = 30_000;
+
+/**
+ * Short follow-up shapes that carry no subject matter of their own ("Why?", "Why that one?", "How so?").
+ * A pinned list on purpose: the 2026-07-28 junk fragment "What is?" is also wh-led and must stay dropped, and
+ * back-channels ("Okay.", "Hmm?", "Right?" - a tag asking for agreement, not for content) are never questions.
+ */
+const FOLLOWUP_SHAPES: RegExp[] = [
+  /^(?:and |but |so )?why(?: not| so| that one| this one| that| is that)?$/,
+  /^how (?:so|come)$/,
+  /^(?:and )?which (?:one|ones|of those|of them)$/,
+  /^(?:and )?what (?:else|next)$/,
+  /^(?:and )?(?:then )?what happened(?: next)?$/,
+  /^and then$/,
+  /^then what$/,
+  /^(?:and |but |so )?what would you do (?:differently|instead|next)$/,
+];
+
+export function isFollowUpQuestion(question: string): boolean {
+  const q = question.trim();
+  if (!/\?$/.test(q)) return false;
+  const body = q.toLowerCase().replace(/[^a-z' ]/g, ' ').replace(/\s+/g, ' ').trim();
+  return FOLLOWUP_SHAPES.some((re) => re.test(body));
 }
 
 /** Map the live model's routing category onto the existing chip intent union. */
@@ -477,15 +511,23 @@ export class GeminiLiveRouter extends EventEmitter {
           ? (rawCategory as LiveCategory)
           : 'verbal_technical';
         if (!question) continue;
+        let followUp = false;
         if (!hasQuestionSubstance(question)) {
-          console.log(`[LiveRouter] ignored fragment (no subject matter): "${question}"`);
-          continue;
+          followUp = this.lastAnsweredAt !== null
+            && Date.now() - this.lastAnsweredAt <= FOLLOWUP_AFTER_ANSWER_MS
+            && isFollowUpQuestion(question);
+          if (!followUp) {
+            console.log(`[LiveRouter] ignored fragment (no subject matter): "${question}"`);
+            continue;
+          }
+          console.log(`[LiveRouter] kept follow-up (${Date.now() - this.lastAnsweredAt!}ms after the last answer): "${question}"`);
         }
         if (this.isDuplicate(question)) continue;
         const event: LiveQuestionEvent = {
           question,
           category,
           intent: liveCategoryToIntent(category),
+          ...(followUp ? { followUp: true as const } : {}),
         };
         this.emit('question', event);
       }
@@ -496,6 +538,13 @@ export class GeminiLiveRouter extends EventEmitter {
     if (captionText) {
       this.emit('caption', { text: captionText });
     }
+  }
+
+  private lastAnsweredAt: number | null = null;
+
+  /** main.ts calls this when an answer is committed to the screen: it opens the follow-up window. */
+  noteAnswered(at: number = Date.now()): void {
+    this.lastAnsweredAt = at;
   }
 
   private isDuplicate(question: string): boolean {

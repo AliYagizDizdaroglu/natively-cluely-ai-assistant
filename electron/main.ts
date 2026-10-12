@@ -235,6 +235,8 @@ interface DetectionInput {
   turnDispatch?: true;
   /** Set on a turn dispatch/supersede: the machine turn's id at dispatch (spec 2026-10-03 §3.1) — runWhatShouldISay's ledger key; absent on every other path, which then gets no EARLIER QUESTION block. */
   turnId?: number;
+  /** A short follow-up the Live ear reported after a recent answer ("Why that one?"): exempt from the under-4-words fragment drop, and carried onto the turn's dispatch. */
+  followUp?: true;
 }
 
 // Knowledge modules (open-source build)
@@ -2139,7 +2141,7 @@ export class AppState {
     // A Live claim under 4 words is never worth admitting, holding, or
     // answering (R36 round 3). Text-shape only, checked before the reconcile
     // verdict is trusted, regardless of mode or resolving.
-    if (d.source === 'live' && isFragment(d.question)) {
+    if (d.source === 'live' && !d.followUp && isFragment(d.question)) {
       const anchorLog = JSON.stringify((d.anchor ?? d.question).slice(0, 80));
       console.log(`[Main] dispatch: drop source=live anchor=${anchorLog} verdict=fragment question=${JSON.stringify(d.question)}`);
       return;
@@ -2228,6 +2230,7 @@ export class AppState {
     this.chipDeduper.markAnswered(verdict.id);
     this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source, replace: false });
     if (d.turnId != null) this.turn.answered(d.turnId, Date.now());   // D2: the one place an answer is committed to the screen
+    this.liveRouter?.noteAnswered();   // opens the ear's short-follow-up window (GeminiLiveRouter FOLLOWUP_AFTER_ANSWER_MS)
     this.routerWiring.answered(d.turnId);   // the arbiter's Q: before the pipeline request, so the engine's events find the turn dispatched
     void this.answerDetection(d)
       .catch((err: any) => console.error('[Main] auto-answer failed:', err?.message ?? err));
@@ -2289,10 +2292,10 @@ export class AppState {
         this.failOverEar(router, s.reason);
       }
     });
-    router.on('question', (q: { question: string; intent: 'verbal' | 'coding' | 'behavioral' }) => {
+    router.on('question', (q: { question: string; intent: 'verbal' | 'coding' | 'behavioral'; followUp?: true }) => {
       if (!this.isMeetingActive || this.liveMode === 'off') return;
-      console.log(`[Main] Live question (${q.intent}, mode=${this.liveMode}): "${q.question.slice(0, 80)}"`);
-      this.reconcileAndDispatchLive(q.question, q.intent);
+      console.log(`[Main] Live question (${q.intent}, mode=${this.liveMode}${q.followUp ? ', follow-up' : ''}): "${q.question.slice(0, 80)}"`);
+      this.reconcileAndDispatchLive(q.question, q.intent, false, q.followUp === true);
     });
     // Shadow captions: Live's own transcription of the interviewer channel,
     // logged verbatim so the flight test can score it against the script and
@@ -2422,7 +2425,7 @@ export class AppState {
    * IS the hold's resolution, so a still-unverifiable verdict is dispatched
    * rather than re-held (see DetectionInput.resolving).
    */
-  private reconcileAndDispatchLive(question: string, intent: 'verbal' | 'coding' | 'behavioral', resolving = false): void {
+  private reconcileAndDispatchLive(question: string, intent: 'verbal' | 'coding' | 'behavioral', resolving = false, followUp = false): void {
     const r = reconcileLiveQuestion(question, this.intelligenceManager.getRecentInterviewerSpeech(reconcileWindowMs(question)));
     if (r.verdict === 'replaced') {
       console.log(`[Main] Live question replaced by transcript: live=${JSON.stringify(question.slice(0, 80))} said=${JSON.stringify(r.text.slice(0, 80))}`);
@@ -2435,6 +2438,7 @@ export class AppState {
       verdict: r.verdict,
       resolving,
       liveText: question,
+      ...(followUp ? { followUp: true as const } : {}),
     });
   }
 
