@@ -281,4 +281,9 @@ electron/test/golden/holdout40-tts-local/
 electron/test/golden/live40.wav
 electron/test/golden/live40-tts/
 electron/test/golden/live40-tts-local/
+
+# smalltalk25 roster — rendered once in natively-lab/sp/smalltalk, copied in (smalltalk25.clips.mjs); the wav is built from them
+electron/test/golden/smalltalk25.wav
+electron/test/golden/smalltalk25-tts/
+electron/test/golden/smalltalk25-tts-local/
 electron/test/golden/*.stale-*.json
