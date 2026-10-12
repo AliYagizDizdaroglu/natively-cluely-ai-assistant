@@ -47,6 +47,20 @@ describe('a kept Live follow-up and the late Deepgram final of the same words', 
         expect(drain(m, s(24), s(40)).filter((d) => d.kind === 'dispatch')).toHaveLength(0);
     });
 
+    it('SF03 order: Deepgram answered first, the kept Live claim of the same words 1.4 s later marks the open turn and dispatches nothing more', () => {
+        const m = createInterviewerTurn();
+        m.speech(true, s(0));
+        m.final('And what would you do differently?', s(1.9), { onsetAt: s(1.0), textSinceAt: s(1.0) });
+        m.speech(false, s(2.0));
+        m.detected('whisper', s(2.1));
+        const first = drain(m, s(2.1), s(6)).filter((d) => d.kind === 'dispatch');
+        expect(first).toHaveLength(1);
+        m.answered(m.snapshot().id!, s(3.3));
+        m.liveClaim('And what would you do differently?', s(4.7));   // the ear's report, 1.4 s after the answer
+        m.detected('live', s(4.7));
+        expect(drain(m, s(4.7), s(14)).filter((d) => d.kind === 'dispatch' || d.kind === 'supersede')).toHaveLength(0);
+    });
+
     it('calibration: with no provenance the same late final JOINS (so the absorption above is the guard, not an accident)', () => {
         const m = createInterviewerTurn();
         answeredLiveOnly(m);
