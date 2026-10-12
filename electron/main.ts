@@ -263,7 +263,7 @@ import { isFragment, looksFragmentary } from './services/questionShape'
 import { resolveSttProvider } from './services/sttProviderOverride'
 import { createEnergyVad, EnergyVad } from './audio/energyVad'
 import { createInterviewerTurn, turnConstantsFromEnv, InterviewerTurn, TurnDecision } from './services/interviewerTurn'
-import { pickTurnDetection, turnDispatchInput } from './services/turnDispatch'
+import { pickTurnDetection, turnDispatchInput, isLateFinalChip } from './services/turnDispatch'
 import { describeVerbalHedgeAtStartup } from './llm/verbalHedge'
 import { describeFollowUpParentAtStartup } from './llm/followUpParent'
 import { describeEarlierQuestionAtStartup } from './llm/earlierQuestion'
@@ -964,6 +964,8 @@ export class AppState {
   private turnTimer: NodeJS.Timeout | null = null;
   private turnDetection: DetectionInput | null = null;
   private turnDedupId: number | undefined;
+  /** D2: finals the turn machine absorbed as the tail of an answered turn; their own whisper chips are dropped for isLateFinalChip's window. */
+  private absorbedFinals: { text: string; at: number }[] = [];
   /** R26: the machine turn id this class last synced its per-turn state to. */
   private turnSeenId: number | null = null;
   private interviewerVad: EnergyVad | null = null;
@@ -1211,7 +1213,7 @@ export class AppState {
     stt.setRecognitionLanguage(sttLanguage);
 
     // Wire Transcript Events
-    stt.on('transcript', (segment: { text: string, isFinal: boolean, confidence: number, speechEndedAt?: number }) => {
+    stt.on('transcript', (segment: { text: string, isFinal: boolean, confidence: number, speechEndedAt?: number, onsetAt?: number, textSinceAt?: number }) => {
       if (!this.isMeetingActive) {
         return;
       }
@@ -1251,7 +1253,16 @@ export class AppState {
         // An interviewer final just arrived — resolve any held unverifiable
         // Live detection now instead of waiting out its timeout (R37).
         this.liveHold.onInterviewerFinal();
-        if (this.liveMode === 'auto') { this.turn.final(segment.text, Date.now()); this.turnTick(); }
+        if (this.liveMode === 'auto') {
+          const at = Date.now();
+          // D2: onset provenance (Deepgram only); missing fields -> the machine never absorbs.
+          const prov = segment.onsetAt !== undefined && segment.textSinceAt !== undefined ? { onsetAt: segment.onsetAt, textSinceAt: segment.textSinceAt } : undefined;
+          if (this.turn.final(segment.text, at, prov) === 'absorbed') {
+            this.absorbedFinals = [...this.absorbedFinals.filter((a) => at - a.at <= 60_000), { text: segment.text, at }];
+            console.log(`[Main] turn: late-final absorbed words=${segment.text.trim().split(/\s+/).length} onsetAgeMs=${at - (prov?.onsetAt ?? at)}`);
+          }
+          this.turnTick();
+        }
       }
       if (segment.isFinal && speaker === 'user' && this.liveMode === 'auto') { this.turn.candidateSpoke(Date.now()); this.turnTick(); }
     });
@@ -1268,6 +1279,7 @@ export class AppState {
       // the golden harness can see whether the two agree (main.ts turn: … lines).
       (stt as NodeJS.EventEmitter).on('speech-started', () => {
         console.log(`[Main] turn: deepgram speech-started vad=${this.interviewerVad?.speaking() ?? 'n/a'}`);
+        this.turn.voiceHeard(Date.now());   // D2: records only; opens nothing
         this.earSilence?.utteranceStart(Date.now());
       });
       (stt as NodeJS.EventEmitter).on('utterance-end', () => {
@@ -2136,6 +2148,11 @@ export class AppState {
     // joined transcript once the voice has stopped, through the tail of this method.
     if (this.liveMode === 'auto' && !d.turnDispatch) {
       const now = Date.now();
+      // D2: the whisper chip of a final the machine absorbed (the tail of an answered turn) must not mark the next turn.
+      if (d.source === 'whisper' && isLateFinalChip(d.question, this.absorbedFinals, now)) {
+        console.log(`[Main] dispatch: drop source=whisper anchor=${JSON.stringify((d.anchor ?? d.question).slice(0, 80))} verdict=late-final question=${JSON.stringify(d.question)}`);
+        return;
+      }
       if (d.source === 'live') this.turn.liveClaim(d.liveText ?? d.question, now);
       this.turn.detected(d.source, now);
       // R26: liveClaim/detected may have silently replaced a stale turn (reopenIfStale) —
@@ -2202,6 +2219,7 @@ export class AppState {
     this.turnDedupId = verdict.id;
     this.chipDeduper.markAnswered(verdict.id);
     this.broadcast('live-question', { question: d.question, intent: d.intent, source: d.source, replace: false });
+    if (d.turnId != null) this.turn.answered(d.turnId, Date.now());   // D2: the one place an answer is committed to the screen
     this.routerWiring.answered(d.turnId);   // the arbiter's Q: before the pipeline request, so the engine's events find the turn dispatched
     void this.answerDetection(d)
       .catch((err: any) => console.error('[Main] auto-answer failed:', err?.message ?? err));

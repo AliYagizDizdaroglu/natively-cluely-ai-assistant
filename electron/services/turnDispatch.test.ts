@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { pickTurnDetection, turnDispatchInput, type MarkedDetection } from './turnDispatch';
+import { pickTurnDetection, turnDispatchInput, isLateFinalChip, type MarkedDetection } from './turnDispatch';
 import type { TurnDecision } from './interviewerTurn';
 
 const detection = (over: Partial<MarkedDetection> = {}): MarkedDetection => ({
@@ -88,5 +88,25 @@ describe('turnDispatchInput — the machine turn id rides the DetectionInput (sp
     });
     it('carries no turnId key at all when the id is null', () => {
         expect('turnId' in turnDispatchInput(detection(), dispatch, null)).toBe(false);
+    });
+});
+
+describe('isLateFinalChip (D2): a whisper detection of an absorbed final marks nothing', () => {
+    const absorbed = [{ text: 'And, your reason?', at: 10_000 }];
+    it('the chip text contained in an absorbed final no older than 5 s -> drop (4.9 s)', () => {
+        expect(isLateFinalChip('and your reason', absorbed, 14_900)).toBe(true);
+    });
+    it('5.1 s old -> mark', () => {
+        expect(isLateFinalChip('and your reason', absorbed, 15_100)).toBe(false);
+    });
+    it('a different chip at 1 s -> mark', () => {
+        expect(isLateFinalChip('How would you shard that service?', absorbed, 11_000)).toBe(false);
+    });
+    it('no absorbed finals, or an empty question -> mark', () => {
+        expect(isLateFinalChip('and your reason', [], 11_000)).toBe(false);
+        expect(isLateFinalChip('  ', absorbed, 11_000)).toBe(false);
+    });
+    it('a partial-word overlap is not containment', () => {
+        expect(isLateFinalChip('your rea', absorbed, 11_000)).toBe(false);
     });
 });

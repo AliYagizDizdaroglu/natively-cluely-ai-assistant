@@ -63,9 +63,13 @@ export type TurnDecision =
     | { kind: 'supersede'; text: string; live: string[]; replaces: string; finals: number }
     | { kind: 'close'; reason: 'candidate' | 'continuation-expired' | 'not-a-question' | 'nothing-heard' };
 
+export interface FinalProvenance { onsetAt?: number; textSinceAt?: number }
+
 export interface InterviewerTurn {
     speech(active: boolean, at: number): void;
-    final(text: string, at: number): void;
+    final(text: string, at: number, prov?: FinalProvenance): 'absorbed' | 'joined';
+    answered(turnId: number, at: number): void;
+    voiceHeard(at: number): void;
     liveClaim(text: string, at: number): void;
     /**
      * `forTurn`, when given, is the id a `classify` decision carried (R20): a verdict
@@ -100,6 +104,19 @@ interface OpenTurn {
     candidateAt: number | null;
     dispatched: { at: number; text: string } | null;
     pendingAfterDispatch: boolean;
+    /** D2: when main committed an answer for this turn (dispatchDetection's answer branch); null: dropped, held, or not dispatched. */
+    answeredAt: number | null;
+    /** D2: every voice-on (VAD speech(true) or Deepgram speech-started) seen on this turn after its dispatch. */
+    voiceOnsAfterDispatch: number[];
+}
+
+/** What the machine remembers of the turn it closed last (D2): only what the late-final absorb rule reads. */
+interface ClosedTurn {
+    id: number;
+    closedAt: number;
+    answeredAt: number | null;
+    /** A voice-on in (dispatch, closedAt], snapshotted AT the close: a voice-on after the close never counts (N1). */
+    voiceAfterDispatch: boolean;
 }
 
 export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS, finished: (text: string) => boolean = readsFinished): InterviewerTurn {
@@ -108,6 +125,20 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
     // verdict that resolves after its turn closed (a candidate interjection, a stale
     // classification racing a fresh turn) can be told apart from the turn that replaced it.
     let nextTurnId = 1;
+    // D2: the last closed turn, replaced at every close, cleared by reset(). Without it a Deepgram
+    // final that was already showing as an interim before an answered turn closed joins the NEXT turn.
+    let lastClosed: ClosedTurn | null = null;
+
+    /** Closes the open turn `t` at `closedAt` and remembers it (D2). Every close goes through here, tick's and reopenIfStale's. */
+    const close = (t: OpenTurn, closedAt: number): void => {
+        lastClosed = {
+            id: t.id,
+            closedAt,
+            answeredAt: t.dispatched ? t.answeredAt : null,
+            voiceAfterDispatch: t.voiceOnsAfterDispatch.some((v) => v <= closedAt),
+        };
+        turn = null;
+    };
 
     /** Ensures a turn is open, opening a fresh one (no VAD seen yet) if none is. */
     const open = (at: number): OpenTurn => {
@@ -128,6 +159,8 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
                 candidateAt: null,
                 dispatched: null,
                 pendingAfterDispatch: false,
+                answeredAt: null,
+                voiceOnsAfterDispatch: [],
             };
         }
         return turn;
@@ -146,8 +179,10 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
 
     /** R15: text on a dispatched turn is stale — and starts a new turn silently — only once it arrives CONTINUATION_MS past the LATEST of the dispatch, the last final, and the last VAD off-transition that words followed (the same staleness rule the continuation close uses). */
     const reopenIfStale = (at: number): void => {
-        if (turn && turn.dispatched && at - Math.max(turn.dispatched.at, turn.lastFinalAt, effectiveStopAt(turn, at)) >= c.continuationMs) {
-            turn = null;
+        if (turn && turn.dispatched) {
+            const staleSince = Math.max(turn.dispatched.at, turn.lastFinalAt, effectiveStopAt(turn, at));
+            // D2: the turn closed when it BECAME stale, not when this call noticed.
+            if (at - staleSince >= c.continuationMs) close(turn, staleSince + c.continuationMs);
         }
     };
 
@@ -183,15 +218,35 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
             t.vadSeen = true;
             t.speaking = active;
             if (!active) t.lastSpeechAt = at; // lastSpeechAt is the moment the voice last STOPPED
+            else if (t.dispatched && at > t.dispatched.at) t.voiceOnsAfterDispatch.push(at);
         },
 
-        final(text: string, at: number): void {
+        final(text: string, at: number, prov?: FinalProvenance): 'absorbed' | 'joined' {
             reopenIfStale(at);
+            // D2: a final whose words were already showing as an interim before an ANSWERED turn closed,
+            // with no new voice since that turn's dispatch and no new words merged in after the close,
+            // is the tail of that turn's speech, not the start of the next. Absorbed: nothing is pushed,
+            // nothing is opened. No provenance (no interim, GoogleSTT) never absorbs.
+            const lc = lastClosed;
+            if (lc && prov && prov.onsetAt !== undefined && prov.textSinceAt !== undefined
+                && prov.onsetAt < lc.closedAt && lc.answeredAt !== null && !lc.voiceAfterDispatch && prov.textSinceAt < lc.closedAt) {
+                return 'absorbed';
+            }
             const t = open(at);
             t.finals.push({ text: text.trim(), at });
             t.lastFinalAt = at;
             if (!t.vadSeen) t.lastSpeechAt = at; // no VAD on this turn yet: the transcript is the best evidence of when speech ended
             if (t.dispatched) t.pendingAfterDispatch = true;
+            return 'joined';
+        },
+
+        answered(turnId: number, at: number): void {
+            if (turn && turn.id === turnId) turn.answeredAt = at;
+            else if (lastClosed && lastClosed.id === turnId) lastClosed.answeredAt = at; // a held answer can land after the close
+        },
+
+        voiceHeard(at: number): void {
+            if (turn && turn.dispatched && at > turn.dispatched.at) turn.voiceOnsAfterDispatch.push(at);
         },
 
         liveClaim(text: string, at: number): void {
@@ -223,11 +278,11 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
             const t = turn;
 
             if (t.candidateAt !== null) {
-                turn = null;
+                close(t, now);
                 return { kind: 'close', reason: 'candidate' };
             }
             if (t.notAQuestion) {
-                turn = null;
+                close(t, now);
                 return { kind: 'close', reason: 'not-a-question' };
             }
 
@@ -246,7 +301,7 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
                     return { kind: 'hold', reason: holdReason(t, now) };
                 }
                 if (!t.speaking && now - Math.max(effectiveStopAt(t, now), t.dispatched.at) >= c.continuationMs) {
-                    turn = null;
+                    close(t, now);
                     return { kind: 'close', reason: 'continuation-expired' };
                 }
                 return { kind: 'idle' };
@@ -256,7 +311,7 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
             if (!hasText) {
                 const fs = failSafeAt(t);
                 if (fs !== null && now >= fs) {
-                    turn = null;
+                    close(t, now);
                     return { kind: 'close', reason: 'nothing-heard' };
                 }
                 return { kind: 'hold', reason: t.speaking ? 'speaking' : 'undetected' };
@@ -311,6 +366,7 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
 
         reset(): void {
             turn = null;
+            lastClosed = null;
         },
 
         speechEnd() {

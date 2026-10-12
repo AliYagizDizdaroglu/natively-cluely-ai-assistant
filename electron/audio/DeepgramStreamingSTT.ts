@@ -203,6 +203,15 @@ export class DeepgramStreamingSTT extends EventEmitter {
             // Spanish and Turkish text in the 2026-09-29 spec review; any other language, and
             // 'multi', passes through untouched.
             const boundaryRepair = isEnglishLanguage(this.languageCode) ? createBoundaryRepair() : null;
+            // D2 provenance, per socket like the repair (a restart's socket starts empty; a replaced
+            // socket's closure never touches it): when the words of the next final first showed as an
+            // interim (onsetAt), and when that interim's text last changed (changedAt). A final carries
+            // both so the turn machine can tell a stalled interim's late final from a new utterance.
+            // Text is compared raw interim vs raw final (before boundaryRepair rewrites the final), by words.
+            let onsetAt: number | null = null;
+            let changedAt = 0;
+            let lastInterimWords = '';
+            const wordsOf = (t: string): string => (t.toLowerCase().match(/[a-z0-9']+/g) ?? []).join(' ');
 
             live.on(LiveTranscriptionEvents.Open, () => {
                 if (stale()) {
@@ -229,8 +238,18 @@ export class DeepgramStreamingSTT extends EventEmitter {
                             // An empty FINAL is a pause (median 187 per run log): a cut remembered
                             // before it must not be glued onto the next utterance. Empty interims are
                             // not (they are frequent and can precede a segment's words).
-                            if (isFinal) boundaryRepair?.clear();
+                            if (isFinal) { boundaryRepair?.clear(); onsetAt = null; lastInterimWords = ''; }
                             return;
+                        }
+                        const now = Date.now();
+                        const words = wordsOf(transcript);
+                        let provenance: { onsetAt: number; textSinceAt: number } | undefined;
+                        if (!isFinal) {
+                            if (onsetAt === null) onsetAt = now;
+                            if (words !== lastInterimWords) { changedAt = now; lastInterimWords = words; }
+                        } else {
+                            if (onsetAt !== null) provenance = { onsetAt, textSinceAt: words === lastInterimWords ? changedAt : now };
+                            onsetAt = null; lastInterimWords = '';
                         }
                         // Deepgram sometimes finalizes short of its own interim and resumes one word
                         // later; the word is in no final. Measured 2026-09-29: 25 repaired losses in
@@ -248,6 +267,7 @@ export class DeepgramStreamingSTT extends EventEmitter {
                             text: repaired?.text ?? transcript,
                             isFinal,
                             confidence: alt?.confidence ?? 1.0,
+                            ...provenance,
                         });
                     } catch (err) {
                         console.error('[DeepgramStreaming] Parse error:', err);
