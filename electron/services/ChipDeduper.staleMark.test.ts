@@ -48,6 +48,18 @@ describe('ChipDeduper.isAnsweredDuplicate (stale-mark guard)', () => {
     at(19_000);
     expect(d.isAnsweredDuplicate(cand('And the cache?'))).toBe(false);
   });
+  it('only the LATEST answered question is stale: a repeated follow-up after a different parent marks', () => {
+    let t = 0;
+    const d = new ChipDeduper({ now: () => t });
+    const answer = (q: string, at: number) => { t = at; d.markAnswered(d.admit({ question: q, source: 'whisper', anchor: q }).id); };
+    answer('How would you shard the orders table across regions?', 0);
+    answer('Why that one?', 10_000);
+    answer('What happens when a shard becomes hot under load?', 20_000);
+    t = 40_000;
+    expect(d.isAnsweredDuplicate(cand('Why that one?'))).toBe(false);
+    // ...and the latest answered one is still stale (the evidence shape)
+    expect(d.isAnsweredDuplicate(cand('What happens when a shard becomes hot under load?'))).toBe(true);
+  });
   it('is read-only: it caches nothing and a later admit is unaffected', () => {
     const { d, at } = setup('Why that one?');
     at(70_000);

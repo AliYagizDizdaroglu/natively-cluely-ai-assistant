@@ -50,6 +50,8 @@ interface CacheEntry {
   at: number;
   anchor?: string;
   answered: boolean;
+  /** Order in which entries were answered (markAnswered); 0 = not answered. */
+  answeredSeq: number;
 }
 
 /** Lower-cased words longer than 3 letters — same definition questionReconcile's overlap() uses. */
@@ -131,6 +133,7 @@ const TAIL_MIN_CONTENT_WORDS = 4;
 export class ChipDeduper {
   private cache: CacheEntry[] = [];
   private nextId = 1;
+  private answerSeq = 0;
   private readonly windowMs: number;
   private readonly answeredWindowMs: number;
   private readonly threshold: number;
@@ -170,7 +173,7 @@ export class ChipDeduper {
       };
     }
 
-    const entry: CacheEntry = { id: this.nextId++, text, source: candidate.source, at: now, anchor: candidate.anchor, answered: false };
+    const entry: CacheEntry = { id: this.nextId++, text, source: candidate.source, at: now, anchor: candidate.anchor, answered: false, answeredSeq: 0 };
     this.cache.push(entry);
     if (this.cache.length > this.cacheSize) this.cache.shift();
     return { admitted: true, id: entry.id };
@@ -190,7 +193,10 @@ export class ChipDeduper {
     const text = (candidate.question ?? '').trim();
     if (!text) return false;
     const now = this.now();
-    const answered = this.cache.filter((e) => e.answered && now - e.at < this.answeredWindowMs);
+    // Only the MOST RECENTLY answered question can be stale: both evidence cases re-emit the latest answer. A repeat of an
+    // earlier answered question (P1, "Why that one?", P2, "Why that one?") is a new follow-up and must mark.
+    const latest = this.cache.filter((e) => e.answered).sort((a, b) => b.answeredSeq - a.answeredSeq)[0];
+    const answered = latest && now - latest.at < this.answeredWindowMs ? [latest] : [];
     if (this.findSimilar(text, candidate.anchor, candidate.source, now, answered)) return true;
     const norm = normalizeForContainment(text);
     return norm.length >= 3 && answered.some((e) => normalizeForContainment(e.text) === norm);
@@ -204,7 +210,7 @@ export class ChipDeduper {
   markAnswered(id: number | undefined): void {
     if (id === undefined) return;
     const entry = this.cache.find((e) => e.id === id);
-    if (entry) entry.answered = true;
+    if (entry) { entry.answered = true; entry.answeredSeq = ++this.answerSeq; }
   }
 
   /**
