@@ -211,7 +211,7 @@ export class DeepgramStreamingSTT extends EventEmitter {
             let onsetAt: number | null = null;
             let changedAt = 0;
             let lastInterimWords = '';
-            const wordsOf = (t: string): string => (t.toLowerCase().match(/[a-z0-9']+/g) ?? []).join(' ');
+            const wordsOf = (t: string): string => (t.toLowerCase().match(/[\p{L}\p{N}']+/gu) ?? []).join(' ');
 
             live.on(LiveTranscriptionEvents.Open, () => {
                 if (stale()) {

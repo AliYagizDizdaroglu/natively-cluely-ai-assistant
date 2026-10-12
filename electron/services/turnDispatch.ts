@@ -18,7 +18,7 @@ export function turnDispatchInput<T extends MarkedDetection>(base: T, d: Extract
 /** D2: how long after an absorbed final its own whisper chip may still arrive: detect latency over 4826 calls p50 561 ms, p99 1926, p99.9 3274, max 8016; a 1.5 s debounce + 3.3 s fits, a detection slower than ~3.5 s still marks (M4: tag the chip with its final's id to remove the window). */
 export const LATE_FINAL_CHIP_MS = 5000;
 
-const wordsOf = (s: string): string => (s.toLowerCase().match(/[a-z0-9']+/g) ?? []).join(' ');
+const wordsOf = (s: string): string => (s.toLowerCase().match(/[\p{L}\p{N}']+/gu) ?? []).join(' ');
 
 /** D2: true iff `question` (normalized to words) lies inside an absorbed final no older than LATE_FINAL_CHIP_MS: that chip is the absorbed words' own detection and must not mark the next turn. */
 export function isLateFinalChip(question: string, absorbed: readonly { text: string; at: number }[], now: number): boolean {

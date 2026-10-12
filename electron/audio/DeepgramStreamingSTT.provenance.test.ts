@@ -94,6 +94,16 @@ describe('DeepgramStreamingSTT: onset provenance on finals (D2)', () => {
         expect(finals()[0]).toMatchObject({ onsetAt: T + 100, textSinceAt: T + 900 });
     });
 
+    it.each([
+        ['Cyrillic', 'а ваши причины', 'а ваши причины для этого выбора'],
+        ['Turkish', 'çalış şimdi', 'çalış şimdi ğı için neden'],
+    ])('non-Latin words count: %s interim -> a changed final reports its own arrival (G10 must be able to fire)', (_n, interim, final) => {
+        const [s] = lives;
+        at(100); s.fire('Results', results(interim, false));
+        at(900); s.fire('Results', results(final, true));
+        expect(finals()[0]).toMatchObject({ onsetAt: T + 100, textSinceAt: T + 900 });
+    });
+
     it('a final with no interim before it carries no provenance fields at all', () => {
         const [s] = lives;
         at(300); s.fire('Results', results('Straight to final.', true));

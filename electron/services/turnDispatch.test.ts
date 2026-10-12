@@ -106,6 +106,11 @@ describe('isLateFinalChip (D2): a whisper detection of an absorbed final marks n
         expect(isLateFinalChip('and your reason', [], 11_000)).toBe(false);
         expect(isLateFinalChip('  ', absorbed, 11_000)).toBe(false);
     });
+    it('non-Latin words are compared, not erased', () => {
+        const ru = [{ text: 'А ваши причины?', at: 10_000 }];
+        expect(isLateFinalChip('ваши причины', ru, 11_000)).toBe(true);
+        expect(isLateFinalChip('другой вопрос', ru, 11_000)).toBe(false);
+    });
     it('a partial-word overlap is not containment', () => {
         expect(isLateFinalChip('your rea', absorbed, 11_000)).toBe(false);
     });
