@@ -1,0 +1,11 @@
+PRECHECK start 2026-10-13T05:54:01+03 kind=flight at=2026-10-13 05:54 tz-offset=03:00:00
+PRECHECK main-task: OK state=Ready next=2026-10-13 06:00 expected=2026-10-13 06:00
+PRECHECK task-arg: OK the task action argument T reads 2026-10-13 06:00
+PRECHECK other-tasks: OK Running other than Natively-flight-b1 and Natively-flight-b1-precheck: 0
+PRECHECK electron: OK electron.exe processes: 0
+PRECHECK port: OK port 5180 held: False
+PRECHECK tail: OK tail.exe watchers: 0
+PRECHECK error-log: OK natively-b1-flight-launcher-error.log present: False
+PRECHECK dry-twin: OK result=0x0 in 19 s; new log bytes 4674 chars; GUARD OK line: True; NIGHT GATES OK line: True
+PRECHECK audio-state INFO: default playback device: volume=93% muted=False
+PRECHECK OK 2026-10-13T05:54:25+03

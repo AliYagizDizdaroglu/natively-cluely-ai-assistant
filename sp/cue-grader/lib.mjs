@@ -17,6 +17,8 @@ export const RUN_NAMES = {
     r1: '2026-10-07T00-22-47-router-default-r1',
     h40d: '2026-10-02T11-39-41-h40d',
     eq: '2026-10-06T01-12-56-eq',
+    b1: '2026-10-11T18-43-32-b1-final',
+    b1r2: '2026-10-13T03-23-31-b1-final-r2',
 };
 export const sha256 = (b) => createHash('sha256').update(b).digest('hex');
 export const sha12 = (b) => sha256(b).slice(0, 12);
@@ -41,7 +43,7 @@ export function parseTag(tag) {
     let m;
     if ((m = /^(cal)-([1-3])\.g([12])$/.exec(tag))) return { tag, base: `cal-${m[2]}`, kind: 'cal', run: 'eq', source: 'plant', grader: `g${m[3]}`, graders: 2 };
     if ((m = /^(rev)-([1-4])\.g([12])$/.exec(tag))) return { tag, base: `rev-${m[2]}`, kind: 'rev', run: 'eq', source: 'plant', grader: `g${m[3]}`, graders: 2 };
-    if ((m = /^(r1|h40d)-inapp\.g([12])$/.exec(tag))) return { tag, base: `${m[1]}-inapp`, kind: 'real', run: m[1], source: 'inapp', grader: `g${m[2]}`, graders: 2 };
+    if ((m = /^(r1|h40d|b1r2|b1)-inapp\.g([12])$/.exec(tag))) return { tag, base: `${m[1]}-inapp`, kind: 'real', run: m[1], source: 'inapp', grader: `g${m[2]}`, graders: 2 };
     if ((m = /^(r1|h40d)-(high|low)$/.exec(tag))) return { tag, base: `${m[1]}-${m[2]}`, kind: 'real', run: m[1], source: m[2], grader: 'g1', graders: 1 };
     return null;
 }
@@ -50,6 +52,8 @@ export const ALL_TAGS = [
     ...[1, 2, 3, 4].flatMap((n) => [`rev-${n}.g1`, `rev-${n}.g2`]),
     'r1-inapp.g1', 'r1-inapp.g2', 'r1-high', 'r1-low',
     'h40d-inapp.g1', 'h40d-inapp.g2', 'h40d-high', 'h40d-low',
+    'b1r2-inapp.g1', 'b1r2-inapp.g2',   // b1r2 (b1 final flight, run 2): same handling as b1
+    'b1-inapp.g1', 'b1-inapp.g2',   // b1 (bundle-1 final flight): in-app only, informational, never pooled into the SPEC 6 reading
 ];
 /** An opaque stem so a grader cannot tell calibration from real grading by a file or folder name (SPEC 3.3). Deterministic from the tag. */
 export const opaque = (s) => sha256(`cue-grader|${s}`).slice(0, 8);

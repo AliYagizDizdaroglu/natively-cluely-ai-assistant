@@ -1,0 +1,22 @@
+SMOKE-READ b1-smoke  run folder 2026-10-08T22-22-41-b1-smoke  read 2026-10-08T22:22:45.274Z  (ids, counts and log-line names only)
+
+ROW S-H   PASS  dispatches 49 (expected 49 = roster 47 + 2 probe), turn lines 49, unanswered 0, superseded 0, doubles 0 (bar <= 1), hard failures 0 (failed answers 0, session failed 0, drill refused 0), dist proofs passed before and after
+ROW S-SL  PASS  silent-listener failover lines outside the ear-mute window: 0 of 1 (window 22:13:48.558Z..22:16:55.864Z)
+ROW S-CUE PASS  check-smoke-cues v5 CUE SMOKE CLEAN; answers 49 (real 49, failed 0), superseded 0, cue lines 49 (expected 49), malformed 0, block-only 0, trimmed 1, cue rule skipped 25 (expected-empty cues 25); well-formed 100.0 percent (bar >= 90), blocks over 3x5: 0
+ROW D1    PASS  T 22:11:18.558Z; session close +206 ms (bar <= 1000); session up +1282 ms (bar <= 5000); dispatches while down 0 (none arrived in the gap: that bar is vacuous), not row-1 pipeline answered 0; first dispatch after up router=up; session failed after T 0
+ROW D2    PASS  T 22:13:48.558Z; silent-listener before T 0 (bar 0); failover at +119976 ms, judged after 5 interviewer utterance(s) past T (bar <= 5); ear model 2.5 line at 22:15:48.539Z; first caption on 2.5 +7325 ms after ear model 2.5 (bar: within 2 utterances); dispatches in the window 8, unanswered 0
+ROW OBS   PASS  samples 68, with electron 66, in a session other than the console 0 (console 1); visible electron window sizes seen: 600x216 780x211 780x503 780x600; overlay shown ([WindowHelper] Switching to OVERLAY) 3 time(s), launcher shown 0 time(s)
+ROW INFO  S-R1/S-R2 REPORTED ONLY (A1, no routing claim): turn lines outside the drill windows by route/shown: easy-answer/live 17, hard/pipeline 12, invalid/pipeline 8
+ROW INFO  hedge won by: gemini-3.5-flash-lite 48, gemini-3.1-flash-lite 1
+ROW INFO  check-smoke-cues printed 4 detail line(s) that quote cue or answer text: withheld from this file
+
+drill armed: [Drill] armed router-drop@600,ear-mute@750; refused lines 0
+EVIDENCE [Drill] router-drop: found 22:11:18.558Z
+EVIDENCE router reconnect ([Router] session up after the drop): found 22:11:19.840Z
+EVIDENCE pipeline answered the next question after the drop: found 22:11:31.229Z (turn 22, shown=pipeline, router=up)
+EVIDENCE [Drill] ear-mute: found 22:13:48.558Z
+EVIDENCE [Router] ear failover from=3.1 to=2.5 reason=silent-listener: found 22:15:48.534Z
+EVIDENCE [Router] ear model=gemini-2.5-flash-native-audio-latest: found 22:15:48.539Z
+EVIDENCE captions resumed on 2.5 ([LiveCaption] after the 2.5 ear): found 22:15:55.864Z
+
+SMOKE READ: 6 PASS, 0 FAIL

@@ -1,0 +1,7 @@
+onset < -> <=: RED -> G5
+drop answered clause: RED -> G3 | G3 | G9 | G9b
+drop voice clause: RED -> G8 | G8b
+drop textSince clause: RED -> G10
+rev-1 style (onset < close only, answered kept): RED -> G8 | G8b | G10
+rev-1 literal (onset < close, dispatched-only: answered/voice/textSince all dropped): RED -> G3 | G3 | G8 | G8b | G9 | G9b | G10
+restored: true

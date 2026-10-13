@@ -82,7 +82,7 @@ set NATIVELY_API_URL=
 set NATIVELY_BUILD_ALL_MAC_ARCHES=
 set NATIVELY_EARLIER_QUESTION=
 set NATIVELY_SCENARIOS=
-set NATIVELY_FLIGHT_COMMIT=9d5bd9ea411dd4069f5367e7b4447ea263ec9aa1
+set NATIVELY_FLIGHT_COMMIT=999b5152ead850363875e9e23956c9860706dc04
 rem The commit check: 40 lowercase hex characters, nothing else; the length is tested by substring because findstr cannot count to 40.
 set COMMIT_OK=1
 echo %NATIVELY_FLIGHT_COMMIT%| findstr /R /X "[0-9a-f][0-9a-f]*" >nul 2>&1

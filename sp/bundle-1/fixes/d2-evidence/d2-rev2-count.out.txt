@@ -1,0 +1,4 @@
+mode=logged logs=33 finals=3961 straddle=10 +answered=0 +noVoice=0 +textStable(absorbed)=0
+mode=d1 logs=33 finals=3961 straddle=10 +answered=2 +noVoice=1 +textStable(absorbed)=1
+{"run":"2026-10-02T11-39-41-h40d","at":"11:20:40.939","rejectedBy":"voice"}
+{"run":"2026-10-11T18-43-32-b1-final","at":"18:38:47.449","words":3,"closeReason":"continuation-expired","onsetBeforeCloseMs":6549}

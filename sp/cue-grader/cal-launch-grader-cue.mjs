@@ -294,7 +294,7 @@ const out = (r) => r.stdout + r.stderr;
     const S = scenario(); S.probes(); const before = S.snap(), n = S.invoked();
     const d = S.run(['cal-1.g1', ...PINARG, '--dry-run']), pl = S.run(['--plan']), pd = S.run(['cwdprobe-1', '--probe', '--dry-run']);
     ck('dry run and plan: exit 0, no stand-in invocation, nothing written (grading, verdicts, pairs, logs unchanged)', d.status === 0 && pl.status === 0 && pd.status === 0 && S.invoked() === n && S.snap() === before);
-    ck('plan: lists the 22 tags with their grader counts (2 for in-app and cal/rev files, 1 for the bare arms) and "no model was called"', (out(pl).match(/^PLAN \S+ +graders-of-this-file=/gm) ?? []).length === 22 && /graders-of-this-file=1 /.test(out(pl)) && /PLAN no model was called/.test(out(pl)));
+    ck('plan: lists the 26 tags with their grader counts (2 for in-app and cal/rev files, 1 for the bare arms) and "no model was called"', (out(pl).match(/^PLAN \S+ +graders-of-this-file=/gm) ?? []).length === 26 && /graders-of-this-file=1 /.test(out(pl)) && /PLAN no model was called/.test(out(pl)));
     ck('dry run: prints the argv with --setting-sources project,local, the pin, and the three permission rules (Read pairs, Read rubric, Edit verdicts)', /--setting-sources project,local/.test(out(d)) && /--model claude-opus-5-5/.test(out(d)) && /permission rules: Read\(.*\) \| Read\(.*rubric\.md\) \| Edit\(.*\)/.test(out(d)));
     ck('dry run: the prompt shown is a hash and a length, never the text; the cwd and the verdicts names are opaque (no tag in them)', /<prompt \d+ chars sha12 [0-9a-f]{12}>/.test(out(d)) && !/cal-1|cal_1/.test(out(d).replace(/^DRY RUN cal-1\.g1 attempt 1:/m, '')) );
 }

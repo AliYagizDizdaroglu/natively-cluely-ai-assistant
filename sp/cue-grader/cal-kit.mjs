@@ -142,10 +142,10 @@ await guard('lib.hashProblem', () => {
 
 // ================================================================= 5. tags, opaque names, the seeded shuffle
 await guard('lib.tags', () => {
-    ck('tags: the 22 tags parse (6 cal + 8 rev + 4 r1 + 4 h40d)', lib.ALL_TAGS.length === 22 && lib.ALL_TAGS.every((t) => lib.parseTag(t)));
+    ck('tags: the 26 tags parse (6 cal + 8 rev + 4 r1 + 4 h40d + 2 b1 + 2 b1r2)', lib.ALL_TAGS.length === 26 && lib.ALL_TAGS.every((t) => lib.parseTag(t)));
     ck('tags: "blind-1.g1", "cal-4.g1", "r1-high.g1", "r1-inapp" (no grader) are not tags', ['blind-1.g1', 'cal-4.g1', 'r1-high.g1', 'r1-inapp', 'h40d-mid'].every((t) => lib.parseTag(t) === null));
     ck('tags: both graders of a file share ONE pairs file name; verdict names differ; no name carries "cal", "rev", "r1" or "h40d"', lib.pairsName('cal-1.g1') === lib.pairsName('cal-1.g2') && lib.verdictsName('cal-1.g1') !== lib.verdictsName('cal-1.g2') && lib.ALL_TAGS.every((t) => !/cal|rev|r1|h40d/.test(lib.pairsName(t) + lib.verdictsName(t) + lib.cwdName(t, 1))));
-    ck('tags: opaque pairs names are distinct per file (13 files over 22 tags)', new Set(lib.ALL_TAGS.map((t) => lib.pairsName(t))).size === new Set(lib.ALL_TAGS.map((t) => lib.parseTag(t).base)).size);
+    ck('tags: opaque pairs names are distinct per file (15 files over 26 tags)', new Set(lib.ALL_TAGS.map((t) => lib.pairsName(t))).size === new Set(lib.ALL_TAGS.map((t) => lib.parseTag(t).base)).size);
     ck('shuffle: seeded = deterministic, a different seed differs, a permutation', JSON.stringify(lib.shuffled([1, 2, 3, 4, 5, 6, 7, 8], 'a')) === JSON.stringify(lib.shuffled([1, 2, 3, 4, 5, 6, 7, 8], 'a')) && JSON.stringify(lib.shuffled([1, 2, 3, 4, 5, 6, 7, 8], 'a')) !== JSON.stringify(lib.shuffled([1, 2, 3, 4, 5, 6, 7, 8], 'b')) && lib.shuffled([1, 2, 3, 4, 5, 6, 7, 8], 'a').slice().sort().join() === '1,2,3,4,5,6,7,8');
 });
 

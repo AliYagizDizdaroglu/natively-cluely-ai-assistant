@@ -6,6 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { LAB, dirsOf, readJson, readJsonl, derive, worse, verdictFileProblem, lineCountsOf, pairsProblem, pairsName, verdictsName, parseTag, sha12, hashProblem, VERDICT_RANK, loadThresholds, fileSha } from './lib.mjs';
+const INFO = ['b1', 'b1r2'];   // informational in-app-only runs: reported, never pooled into the SPEC 6 reading
 
 const GATED = ['Read', 'Write', 'Edit'];
 /** null when the LAST launch record of `tag` is clean and binds the files on disk. */
@@ -174,14 +175,16 @@ export function realReport(runs, grades, { thresholdsConfirmed = false, lab = LA
             L.push(`  per-axis means of the two graders: ${axisMeans([...r.inapp.g1.blocks, ...r.inapp.g2.blocks])}; D yes rate on choice questions ${dRate(r.inapp.g1.blocks)} (g1) ${dRate(r.inapp.g2.blocks)} (g2)`);
             const gr = (k) => grades[`${r.run}:${k}`];
             const adds = r.inapp.rows.filter((x) => x.final === 'wrong' && gr(x.pairKey) === 'acceptable').length, echo = r.inapp.rows.filter((x) => x.final === 'wrong' && gr(x.pairKey) === 'wrong').length, gw = r.inapp.rows.filter((x) => x.final === 'good' && gr(x.pairKey) === 'wrong').length;
-            L.push(`  joined to the flight's answer grades (SPEC 4.6): adds-error ${adds}; echo ${echo}; cue good while the answer is wrong ${gw}`);
+            if (grades[`${r.run}:__notyet`]) L.push("  joined to the flight's answer grades (SPEC 4.6): not yet (the answer-grade verdict files do not exist)"); else L.push(`  joined to the flight's answer grades (SPEC 4.6): adds-error ${adds}; echo ${echo}; cue good while the answer is wrong ${gw}`);
             const rep = r.inapp.report ?? {};
-            L.push(`  build facts: ${r.run === 'r1' ? `cue presence ${rep.cuesToPipelineTurns} of ${rep.routerTurns} Router turns pipeline-shown; the ${rep.cuesToLiveTurns} Live-shown carried none; ` : ''}joined ${rep.joined}, unjoined ${rep.unjoined}, empty-line drops ${rep.emptyLineDrops}`);
+            L.push(`  build facts: ${r.run === 'r1' || INFO.includes(r.run) ? `cue presence ${rep.cuesToPipelineTurns} of ${rep.routerTurns} Router turns pipeline-shown; the ${rep.cuesToLiveTurns} Live-shown carried none; ` : ''}joined ${rep.joined}, unjoined ${rep.unjoined}, empty-line drops ${rep.emptyLineDrops}`);
         } else L.push(`${r.run} in-app: not graded`);
-        for (const arm of ['high', 'low']) { const a = r.arms[arm]; L.push(a ? `${r.run} bare ${arm === 'high' ? '3.5-lite HIGH' : '3.1-lite LOW'} (1 grader, no agreement check): good ${a.counts.good} weak ${a.counts.weak} wrong ${a.counts.wrong} empty ${a.empties}; trim changed ${a.report?.trimChanged}, empty-line drops ${a.report?.emptyLineDrops}; D yes rate ${dRate(a.t.blocks)}` : `${r.run} bare ${arm}: not graded`); }
+        if (INFO.includes(r.run)) L.push(`  ${r.run} is INFORMATIONAL: in-app only, not pooled into the SPEC 6 reading below`);
+        else for (const arm of ['high', 'low']) { const a = r.arms[arm]; L.push(a ? `${r.run} bare ${arm === 'high' ? '3.5-lite HIGH' : '3.1-lite LOW'} (1 grader, no agreement check): good ${a.counts.good} weak ${a.counts.weak} wrong ${a.counts.wrong} empty ${a.empties}; trim changed ${a.report?.trimChanged}, empty-line drops ${a.report?.emptyLineDrops}; D yes rate ${dRate(a.t.blocks)}` : `${r.run} bare ${arm}: not graded`); }
     }
     // the reading
-    const withInapp = runs.filter((r) => r.inapp), h40d = runs.find((r) => r.run === 'h40d')?.inapp, r1 = runs.find((r) => r.run === 'r1')?.inapp;
+    const readRuns = runs.filter((r) => !INFO.includes(r.run));   // b1 is reported above but never enters the reading (SPEC 6 pools r1 + h40d only)
+    const withInapp = readRuns.filter((r) => r.inapp), h40d = readRuns.find((r) => r.run === 'h40d')?.inapp, r1 = readRuns.find((r) => r.run === 'r1')?.inapp;
     const pool = (which) => withInapp.flatMap((r) => r.inapp[which]);
     const empt = withInapp.reduce((s, r) => s + r.inapp.empties, 0);
     const unreliable = withInapp.filter((r) => r.inapp.agreement < AG).map((r) => r.run);
@@ -208,8 +211,8 @@ if (process.argv[1] && process.argv[1].replace(/\\/g, '/').endsWith('/score-cue.
         else if (argv.includes('--rev')) { const r = scoreCalibration(filesFromTags('rev', 4), 'rev'); console.log(r.lines.join('\n')); console.log(r.pass ? 'REVISION PASS' : 'REVISION FAIL: stop, report both runs; the user rules (SPEC 3.4)'); process.exit(r.pass ? 0 : 1); }
         else if (argv.includes('--real')) {
             const lab = LAB, d = dirsOf(lab), { answerGrades } = await import('./extract.mjs');
-            const runs = ['r1', 'h40d'].map((r) => loadRealRun(r, lab)).filter((r) => r.inapp || Object.keys(r.arms).length);
-            const grades = {}; for (const run of ['r1', 'h40d']) if (runs.some((x) => x.run === run)) { const g = answerGrades(run); for (const [k, v] of Object.entries(g)) grades[`${run}:${k}`] = v; }
+            const runs = ['r1', 'h40d', 'b1', 'b1r2'].map((r) => loadRealRun(r, lab)).filter((r) => r.inapp || Object.keys(r.arms).length);
+            const grades = {}; for (const run of ['r1', 'h40d', 'b1', 'b1r2']) if (runs.some((x) => x.run === run)) { let g; try { g = answerGrades(run); } catch (e) { if (e.code !== 'ENOENT') throw e; grades[`${run}:__notyet`] = true; continue; } for (const [k, v] of Object.entries(g)) grades[`${run}:${k}`] = v; }
             const text = realReport(runs, grades, { thresholdsConfirmed: fs.existsSync(path.join(lab, 'thresholds.confirmed')) });
             console.log(text);
             if (argv.includes('--write')) { fs.writeFileSync(path.join(d.lab, 'report.md'), `# cue grader report (ids and counts only)\n\n\`\`\`\n${text}\n\`\`\`\n`); console.log('report.md written'); }

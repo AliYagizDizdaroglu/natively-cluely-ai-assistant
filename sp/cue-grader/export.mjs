@@ -11,7 +11,7 @@ import { extractInApp, extractArm } from './extract.mjs';
 import { trimVersionCheck } from './trim.mjs';
 import { EXPECT } from './plants.mjs';
 
-export const EXPECTED_REAL = { r1: { inapp: 26, high: 31, low: 31 }, h40d: { inapp: 44, high: 33, low: 33 } };   // the measured joins SPEC 4.1 requires the builder to reproduce
+export const EXPECTED_REAL = { r1: { inapp: 26, high: 31, low: 31 }, h40d: { inapp: 44, high: 33, low: 33 }, b1: { inapp: 27 }, b1r2: { inapp: 28 } };   // b1: in-app only (27 pipeline-shown blocks = 16 with cues + 11 empty-array); no bare arms are exported or graded   // the measured joins SPEC 4.1 requires the builder to reproduce
 
 const keyFile = (d, base) => path.join(d.keyhold, `key.${base}.json`);
 /** Writes one blind file + key. `rows` = [{ question, cues, answer, meta }]; meta lands in the key only. Refuses to overwrite. */
@@ -73,7 +73,8 @@ export function exportRev({ lab = LAB } = {}) {
 export function exportReal(run, { lab = LAB } = {}) {
     const problem = hashProblem(`${run}-inapp.g1`, lab);
     if (problem) throw new Error(`REFUSED: ${problem}`);
-    const tv = trimVersionCheck();
+    // The version check guards only the TRIMMING of bare-arm blocks. b1 exports in-app blocks only (their cues are the logged, already displayed lines), and MAIN's dist trimCues now differs on purpose (bundle-1's cue-trim).
+    const tv = EXPECTED_REAL[run].high == null ? { identicalBehaviour: true } : trimVersionCheck();
     if (!tv.identicalBehaviour) throw new Error('REFUSED: the trimCues versions differ between the builds and the dist; trim each run\'s arm blocks with its own build first (SPEC 4.1)');
     const out = [], summary = {};
     const inapp = extractInApp(run);
@@ -83,6 +84,7 @@ export function exportReal(run, { lab = LAB } = {}) {
     out.push({ base: `${run}-inapp`, ...writeBlind({ base: `${run}-inapp`, rows: live.map((b) => ({ question: b.question, cues: b.cues, answer: b.answer, meta: { origin: 'real', id: b.id, pairKey: b.pairKey, turn: b.turn } })), run, source: 'inapp', lab, extra: { empties: inapp.blocks.filter((b) => b.empty).map((b) => ({ id: b.id, pairKey: b.pairKey })), report: inapp.report, unjoined: inapp.unjoined } }) });
     summary.inapp = { blocks: inapp.blocks.length, graded: live.length, empty: inapp.blocks.length - live.length };
     for (const arm of ['high', 'low']) {
+        if (exp[arm] == null) continue;   // b1 has no expected arm count: its arms are not exported
         const x = extractArm(run, arm);
         if (x.blocks.length !== exp[arm]) throw new Error(`REFUSED: the ${run} ${arm} arm gives ${x.blocks.length} blocks, the measured count is ${exp[arm]}`);
         const arml = x.blocks.filter((b) => !b.empty);
@@ -97,7 +99,7 @@ if (process.argv[1] && process.argv[1].replace(/\\/g, '/').endsWith('/export.mjs
     try {
         if (mode === 'cal') for (const o of exportCal({ replace: process.argv.includes('--replace') })) console.log(`${o.base}: ${o.items} blocks, pairs sha12 ${o.pairsSha12}, file ${path.basename(o.pairsPath)}`);
         else if (mode === 'rev') for (const o of exportRev()) console.log(`${o.base}: ${o.items} blocks, pairs sha12 ${o.pairsSha12}, file ${path.basename(o.pairsPath)}`);
-        else if (mode === 'real' && ['r1', 'h40d'].includes(run)) { const r = exportReal(run); for (const o of r.out) console.log(`${o.base}: ${o.items} blocks, pairs sha12 ${o.pairsSha12}, file ${path.basename(o.pairsPath)}`); console.log(`counts ${JSON.stringify(r.summary)}`); }
-        else { console.error('usage: node export.mjs cal | rev | real r1|h40d'); process.exit(2); }
+        else if (mode === 'real' && ['r1', 'h40d', 'b1', 'b1r2'].includes(run)) { const r = exportReal(run); for (const o of r.out) console.log(`${o.base}: ${o.items} blocks, pairs sha12 ${o.pairsSha12}, file ${path.basename(o.pairsPath)}`); console.log(`counts ${JSON.stringify(r.summary)}`); }
+        else { console.error('usage: node export.mjs cal | rev | real r1|h40d|b1|b1r2'); process.exit(2); }
     } catch (e) { console.error(`export: ${e.message}`); process.exit(2); }
 }

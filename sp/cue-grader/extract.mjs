@@ -64,7 +64,7 @@ export function extractInApp(run, opts = {}) {
     for (let k = 0; k < ev.length; k++) if (ev[k].t === 'cues') { const p = ev[k - 1]; if (p && p.t === 'trimmed' && ev[k].n - p.n <= 3) ev[k].trim = p.v; }
     const cand = []; // { cuesEv, fullEv|null, turn, shown }
     const report = { run, cueLines: ev.filter((e) => e.t === 'cues').length, fullLines: ev.filter((e) => e.t === 'full').length, judgePairs: pairs.length };
-    if (run === 'r1') {
+    if (run === 'r1' || run === 'b1' || run === 'b1r2') {   // b1 logs [Router] turn lines like r1 (48 cues, 48 fulls, 48 routers)
         let cur = { cues: [], fulls: [] }, routers = 0, pipeline = 0, live = 0, anomalies = 0, assigned = 0;
         for (const e of ev) {
             if (e.t === 'cues') cur.cues.push(e); else if (e.t === 'full') cur.fulls.push(e);
@@ -127,7 +127,7 @@ const gradeOf = (v) => (v && v.correctness === 0 ? 'wrong' : v && v.correctness 
 /** { [pairKey]: 'acceptable'|'weak'|'wrong' } by the per-run rule. r1 in-app: two graders (BOTH acceptable; EITHER correctness 0 = wrong). */
 export function answerGrades(run) {
     const d = runDir(run);
-    const files = run === 'r1' ? [`${SP}/router-default/grade/verdicts/verdicts.inapp.g1.json`, `${SP}/router-default/grade/verdicts/verdicts.inapp.g2.json`] : [`${d}/interview60.judge.verdicts.json`];
+    const files = run === 'b1r2' ? [`${SP}/bundle-1/flight/grade-r2/verdicts/verdicts.inapp.g1.json`, `${SP}/bundle-1/flight/grade-r2/verdicts/verdicts.inapp.g2.json`] : run === 'b1' ? [`${SP}/bundle-1/flight/grade/verdicts/verdicts.inapp.g1.json`, `${SP}/bundle-1/flight/grade/verdicts/verdicts.inapp.g2.json`] : run === 'r1' ? [`${SP}/router-default/grade/verdicts/verdicts.inapp.g1.json`, `${SP}/router-default/grade/verdicts/verdicts.inapp.g2.json`] : [`${d}/interview60.judge.verdicts.json`];
     const vs = files.map(readJson), out = {};
     for (const k of Object.keys(vs[0])) {
         const gs = vs.map((v) => gradeOf(v[k]));
