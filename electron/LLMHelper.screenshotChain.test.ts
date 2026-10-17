@@ -207,4 +207,11 @@ describe('gemini-chat-stream pins the chain only for screenshots', () => {
         expect(src).toContain('modelOverride, undefined, myAbort.signal);');
         expect(src).toContain('_chatAbort?.abort();');
     });
+    it('leaves no window listener behind: the destroyed listener is named, and removed when the handler ends', () => {
+        // ipcHandlers.ts has no unit harness (see ipcHandlers.typedPrompt.test.ts), so this pins the source:
+        // one add per question, one remove in the handler's finally, same function.
+        expect(src.match(/sender\.once\?\.\('destroyed', onDestroyed\)/g)).toHaveLength(1);
+        expect(src.match(/sender\.removeListener\?\.\('destroyed', onDestroyed\)/g)).toHaveLength(1);
+        expect(src).toMatch(/finally \{\s*event\.sender\.removeListener\?\.\('destroyed', onDestroyed\);\s*\}/);
+    });
 });

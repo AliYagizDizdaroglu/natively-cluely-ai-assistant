@@ -454,6 +454,7 @@ export function initializeIpcHandlers(appState: AppState): void {
   let _chatAbort: AbortController | null = null;
 
   safeHandle("gemini-chat-stream", async (event, message: string, imagePaths?: string[], context?: string, options?: { skipSystemPrompt?: boolean, ignoreKnowledgeMode?: boolean }) => {
+    let onDestroyed: () => void = () => { /* set below */ };
     try {
       console.log("[IPC] gemini-chat-stream started using LLMHelper.streamChat");
       const llmHelper = appState.processingHelper.getLLMHelper();
@@ -463,7 +464,8 @@ export function initializeIpcHandlers(appState: AppState): void {
       // A newer question or a closed window aborts this stream's in-flight screenshot request.
       _chatAbort?.abort();
       const myAbort = _chatAbort = new AbortController();
-      event.sender.once?.('destroyed', () => myAbort.abort());
+      onDestroyed = () => myAbort.abort();
+      event.sender.once?.('destroyed', onDestroyed);
 
       // Update IntelligenceManager with USER message immediately
       const intelligenceManager = appState.getIntelligenceManager();
@@ -644,6 +646,8 @@ export function initializeIpcHandlers(appState: AppState): void {
     } catch (error: any) {
       console.error("[IPC] Error in gemini-chat-stream setup:", error);
       throw error;
+    } finally {
+      event.sender.removeListener?.('destroyed', onDestroyed);
     }
   });
 
