@@ -33,8 +33,8 @@ import { computeRun, computeRunFromFiles, evaluateGate } from './interview60.met
 import { parseProbeOffset, waitProbeSettled } from './probeWait.mjs';
 import { buildCaptureFiles, routerPreflight } from './routerCapture.mjs';
 
-// NATIVELY_LIVE_ROUTER=1: the router session, its gates and its capture files (live-router plan Task 13).
-const ROUTER_ON = process.env.NATIVELY_LIVE_ROUTER === '1';
+// The router session, its gates and its capture files (live-router plan Task 13). Matches the app: on unless NATIVELY_LIVE_ROUTER=0.
+const ROUTER_ON = process.env.NATIVELY_LIVE_ROUTER !== '0';
 // Byte offset of natively_debug.log right before the LAST preflight's probe wav played (I8: probe() can retry and replay it).
 // preflight() sets it when it runs in this process; probe() sets it from the `PROBE_LOG_OFFSET` line of the preflight child it ran.
 let lastProbeOffset = null;

@@ -928,8 +928,9 @@ export class AppState {
   private liveRouter: GeminiLiveRouter | null = null;
   private liveMode: 'off' | 'suggest' | 'auto' = 'off';
   // The 3.8 Live router (router-default): a second Live session beside the ear, an arbiter that decides which
-  // answer is shown, and the wiring module that holds the glue. All of it is inert unless NATIVELY_LIVE_ROUTER=1.
-  private readonly routerEnabled = process.env.NATIVELY_LIVE_ROUTER === '1';
+  // answer is shown, and the wiring module that holds the glue. On by default (user ruling 2026-10-18);
+  // NATIVELY_LIVE_ROUTER=0 turns all of it off.
+  private readonly routerEnabled = process.env.NATIVELY_LIVE_ROUTER !== '0';
   private routerSession: LiveRouterSession | null = null;
   private earFailedOver = false;          // Task 11: the ear moved 3.1 -> 2.5 once this meeting; reset in endMeeting, no fail-back
   private earOverrideLogged = false;      // the NATIVELY_LIVE_MODEL "failover disabled" line is written once per process

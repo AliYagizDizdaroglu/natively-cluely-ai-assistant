@@ -50,6 +50,13 @@ describe('main.ts wiring: silent-listener failover', () => {
     });
 });
 
+describe('main.ts wiring: the Live router defaults ON (user ruling 2026-10-18)', () => {
+    it('the flag is on unless NATIVELY_LIVE_ROUTER is exactly "0"', () => {
+        expect(src).toContain("private readonly routerEnabled = process.env.NATIVELY_LIVE_ROUTER !== '0';");
+        expect(src).not.toContain("process.env.NATIVELY_LIVE_ROUTER === '1'");
+    });
+});
+
 describe('main.ts wiring: harness autostart shows the overlay', () => {
     it('setWindowMode(overlay, true) is called once, inside the unpackaged + env gate, after startMeeting resolves', () => {
         const gate = src.indexOf("if (!app.isPackaged && process.env.NATIVELY_AUTOSTART_MEETING === '1') {");

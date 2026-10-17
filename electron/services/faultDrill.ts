@@ -6,7 +6,7 @@
  *   packaged      the build is packaged
  *   not-harness   NATIVELY_AUTOSTART_MEETING is not '1' (the harness-only start). Dev builds load .env, so a drill
  *                 variable left there cannot fire in a meeting the user started by hand.
- *   router-off    NATIVELY_LIVE_ROUTER is not '1'
+ *   router-off    the router is off (NATIVELY_LIVE_ROUTER=0)
  * A malformed spec or unknown token is refused with reason=parse and the token only; nothing is armed.
  */
 export type DrillKind = 'router-drop' | 'ear-mute';
