@@ -3568,8 +3568,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     type First = { kind: 'token'; value: string } | { kind: 'empty' } | { kind: 'error'; err: unknown };
     const start = (model: string) => {
       const stop = new AbortController();
-      const gen = this.streamWithGeminiModel(userMessage, model, imagePaths, systemInstruction, stop.signal);
-      const leg = { model, gen, stop, settled: null as First | null, first: null as unknown as Promise<First> };
+      // Explicit levels, as the hedge's name says: front HIGH, back LOW, whatever NATIVELY_GEMINI_THINKING_LEVEL says.
+      const gen = this.streamWithGeminiModel(userMessage, model, imagePaths, systemInstruction, stop.signal, model === FRONT ? 'HIGH' : 'LOW');
+      const leg ={ model, gen, stop, settled: null as First | null, first: null as unknown as Promise<First> };
       leg.first = gen.next().then(
         (r): First => (r.done || !r.value ? { kind: 'empty' } : { kind: 'token', value: r.value }),
         (err): First => ({ kind: 'error', err }),

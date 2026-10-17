@@ -150,6 +150,24 @@ describe('the verbal hedge races gemini-3.5-flash-lite against gemini-3.1-flash-
         }
     });
 
+    it('both legs carry their own level whatever the environment says: front HIGH, back LOW, under NATIVELY_GEMINI_THINKING_LEVEL=MINIMAL', async () => {
+        process.env.NATIVELY_GEMINI_THINKING_LEVEL = 'MINIMAL';
+        plan.push('silent', ['The back answered.']);
+        const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+        try {
+            const helper = new LLMHelper('fake-gemini-key');
+            const out = drain(technical(helper));
+            await vi.advanceTimersByTimeAsync(5000);
+            await out;
+            const calls = generateContentStream.mock.calls.map((c) => c[0]);
+            expect(calls.map((c) => c.model)).toEqual(['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite']);
+            expect(calls[0].config?.thinkingConfig).toEqual({ thinkingLevel: 'HIGH' });
+            expect(calls[1].config?.thinkingConfig).toEqual({ thinkingLevel: 'LOW' });
+        } finally {
+            log.mockRestore();
+        }
+    });
+
     it('front silent past the trigger: the back starts beside it and wins', async () => {
         plan.push('silent', ['The back answered.']);
         const log = vi.spyOn(console, 'log').mockImplementation(() => {});
