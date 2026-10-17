@@ -451,6 +451,7 @@ export function initializeIpcHandlers(appState: AppState): void {
   // Each new invocation increments the ID; any in-flight iteration bails as soon as it detects
   // that a newer stream has taken over.
   let _chatStreamId = 0;
+  let _chatAbort: AbortController | null = null;
 
   safeHandle("gemini-chat-stream", async (event, message: string, imagePaths?: string[], context?: string, options?: { skipSystemPrompt?: boolean, ignoreKnowledgeMode?: boolean }) => {
     try {
@@ -459,6 +460,10 @@ export function initializeIpcHandlers(appState: AppState): void {
 
       // Claim a new stream ID — any prior stream will detect this and stop emitting.
       const myStreamId = ++_chatStreamId;
+      // A newer question or a closed window aborts this stream's in-flight screenshot request.
+      _chatAbort?.abort();
+      const myAbort = _chatAbort = new AbortController();
+      event.sender.once?.('destroyed', () => myAbort.abort());
 
       // Update IntelligenceManager with USER message immediately
       const intelligenceManager = appState.getIntelligenceManager();
@@ -593,7 +598,7 @@ export function initializeIpcHandlers(appState: AppState): void {
           // Default path: streamChat handles full routing. It routes on the user's
           // selected model (NOT "Gemma for coding" — that was never true); the only
           // model pin is the screenshot modelOverride set just above.
-          stream = llmHelper.streamChat(message, imagePaths, context, options?.skipSystemPrompt ? "" : undefined, options?.ignoreKnowledgeMode, modelOverride);
+          stream = llmHelper.streamChat(message, imagePaths, context, options?.skipSystemPrompt ? "" : undefined, options?.ignoreKnowledgeMode, modelOverride, undefined, myAbort.signal);
         }
 
         for await (const token of stream!) {

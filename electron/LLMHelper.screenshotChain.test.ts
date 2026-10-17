@@ -127,10 +127,84 @@ describe('screenshot answer chain: 3.5-lite HIGH, then 3.1-lite LOW, then Gemma 
     });
 });
 
+describe('screenshot chain, fix round 1', () => {
+    let img: string;
+    beforeEach(() => {
+        generateContentStream.mockReset();
+        img = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'shot-')), 's.png');
+        fs.writeFileSync(img, Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64'));
+        delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+    });
+    afterEach(() => {
+        fs.rmSync(path.dirname(img), { recursive: true, force: true });
+        delete process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+    });
+    const tick = () => new Promise((r) => setImmediate(r));
+    const until = async (cond: () => boolean) => { for (let i = 0; i < 2000 && !cond(); i++) await tick(); };
+
+    it('(1) a close aborts the stalled leg and never starts the next', async () => {
+        const signals: AbortSignal[] = [];
+        generateContentStream.mockImplementation(async (params: any) => {
+            signals.push(params.config.abortSignal);
+            async function* hang() { await new Promise<void>(() => { /* never */ }); yield { text: () => 'x' }; }
+            return hang();
+        });
+        const ctl = new AbortController();
+        const p = drain(new LLMHelper('fake-gemini-key').streamChat('q', [img], undefined, undefined, false, SCREENSHOT_CHAIN_MODEL, undefined, ctl.signal));
+        await until(() => asked().length === 1);
+        ctl.abort();
+        await p;   // ends at once, not after the 10 s clock
+        await tick();
+        expect(asked().map((c) => c.model)).toEqual([FRONT]);
+        expect(signals[0].aborted).toBe(true);
+    });
+
+    it('(1b) a signal already aborted starts no leg', async () => {
+        script({});
+        const ctl = new AbortController(); ctl.abort();
+        const out = await drain(new LLMHelper('fake-gemini-key').streamChat('q', [img], undefined, undefined, false, SCREENSHOT_CHAIN_MODEL, undefined, ctl.signal));
+        expect(asked()).toHaveLength(0);
+        expect(out).toEqual([]);
+    });
+
+    it('(2) all three fail: exactly three calls and one error, no fourth call to 3.1-lite', async () => {
+        script({ [FRONT]: 'error', [MID]: 'error', [LAST]: 'error' });
+        const run = new LLMHelper('fake-gemini-key').streamChat('q', [img], undefined, undefined, false, SCREENSHOT_CHAIN_MODEL);
+        await expect(drain(run)).rejects.toThrow(/screenshot chain/);
+        expect(asked().map((c) => c.model)).toEqual([FRONT, MID, LAST]);
+    });
+
+    it('(3) the levels are explicit: HIGH on 3.5-lite and LOW on 3.1-lite even with the environment at MINIMAL', async () => {
+        process.env.NATIVELY_GEMINI_THINKING_LEVEL = 'MINIMAL';
+        script({ [FRONT]: 'error' });
+        await drain(new LLMHelper('fake-gemini-key').streamChat('q', [img], undefined, undefined, false, SCREENSHOT_CHAIN_MODEL));
+        expect(asked().map((c) => [c.model, c.config.thinkingConfig])).toEqual([
+            [FRONT, { thinkingLevel: 'HIGH' }],
+            [MID, { thinkingLevel: 'LOW' }],
+        ]);
+    });
+
+    it('(5) every streamChat caller that carries images uses the chain with no override; none without images does', async () => {
+        const { CODE_HINT_PROMPT, BRAINSTORM_MODE_PROMPT, UNIVERSAL_WHAT_TO_ANSWER_PROMPT } = await import('./llm/prompts');
+        for (const prompt of [CODE_HINT_PROMPT, BRAINSTORM_MODE_PROMPT, UNIVERSAL_WHAT_TO_ANSWER_PROMPT]) {
+            generateContentStream.mockReset(); script({ [FRONT]: 'error' });
+            const helper = new LLMHelper('fake-gemini-key');
+            await drain(helper.streamChat('q', [img], undefined, prompt));
+            expect(asked().map((c) => c.model)).toEqual([FRONT, MID]);
+            generateContentStream.mockReset(); script({});
+            await drain(helper.streamChat('q', undefined, undefined, prompt));
+            expect(asked().map((c) => c.model)).toEqual([helper.getCurrentModelId()]);
+        }
+    });
+});
+
 describe('gemini-chat-stream pins the chain only for screenshots', () => {
     const src = fs.readFileSync(path.join(__dirname, 'ipcHandlers.ts'), 'utf8');
     it('passes the chain for images, nothing otherwise, and no longer pre-announces Gemma', () => {
         expect(src).toContain('const modelOverride = hasImages ? SCREENSHOT_CHAIN_MODEL : undefined;');
         expect(src).not.toContain("send('gemini-stream-source', 'Gemma 4 31B')");
+        // a newer question or a destroyed window aborts the chain's in-flight request
+        expect(src).toContain('modelOverride, undefined, myAbort.signal);');
+        expect(src).toContain('_chatAbort?.abort();');
     });
 });

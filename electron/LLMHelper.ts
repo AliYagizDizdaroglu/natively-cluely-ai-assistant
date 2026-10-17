@@ -17,7 +17,7 @@ import {
 import { userContextBlock } from "./llm/userContext"
 import { keepVerbalPrompt, carriesSpokenBudget, withActiveModePrompt } from "./llm/knowledgePromptBudget"
 import { capturePrompt } from "./llm/promptCapture"
-import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs, thinkingLevelForModel } from "./llm/geminiThinking"
+import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs, thinkingLevelForModel, type GeminiThinkingLevel } from "./llm/geminiThinking"
 import { verbalPrimaryModel } from "./llm/verbalPrimaryModel"
 import { verbalHedgeEnabled, verbalHedgeTriggerMs } from "./llm/verbalHedge"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
@@ -2430,6 +2430,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     // composed `message` carries prior suggestions and framing; classifying
     // that kept every technical question in the negotiation path.
     knowledgeQuestion?: string,
+    // Cancels the screenshot chain's in-flight request (a close, a newer question): a consumer's
+    // .return() would queue behind the pending first-token wait. Heard by the chain only.
+    abortSignal?: AbortSignal,
   ): AsyncGenerator<string, void, unknown> {
 
     // Preserve the caller's raw argument before knowledge-mode/active-mode
@@ -2687,7 +2690,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
       // Per-call override (e.g. screenshots forced to Gemma 4 31B) takes
       // precedence over the persisted dropdown selection for THIS call only.
-      const activeModelId = modelOverride ?? this.currentModelId;
+      // Any answer that carries an image (typed chat, what-to-answer, code hint, brainstorm) takes the
+      // screenshot chain, whatever the dropdown says; providers that handle images above are untouched.
+      const activeModelId = modelOverride ?? (isMultimodal ? SCREENSHOT_CHAIN_MODEL : this.currentModelId);
 
       // Gemma 4+ — use guarded path with TTFT watchdog + fallback chain.
       // Send the system prompt as systemInstruction (cacheable, doesn't teach the
@@ -2700,7 +2705,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       // → the chat bubble shows the model attribution beside TTFT.)
       if (activeModelId === SCREENSHOT_CHAIN_MODEL) {
         const chainSystem = this.injectLanguageInstruction(resolveGemmaSystemPrompt(callerSystemPromptOverride, baseSystemPrompt));
-        yield* this.streamScreenshotChain(userContent, imagePaths, chainSystem);
+        yield* this.streamScreenshotChain(userContent, imagePaths, chainSystem, abortSignal);
         return;
       }
       if (activeModelId.startsWith('gemma-')) {
@@ -3135,11 +3140,19 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     userContent: string,
     imagePaths: string[] | undefined,
     systemInstruction: string,
+    signal?: AbortSignal,
   ): AsyncGenerator<string, void, unknown> {
+    // 10 s: the verbal answer's first-token clock. It was measured on TEXT answers (LOW p90 7.8 s, geminiThinking.ts);
+    // the repo holds no image-specific first-token measurement for the Flash Lites (only Gemma's vision budget).
     const timeoutMs = firstTokenTimeoutMs();
-    for (const model of [GEMINI_FLASH_FALLBACK_MODEL, GEMINI_FLASH_MODEL]) {
+    // Levels are explicit: HIGH and LOW whatever NATIVELY_GEMINI_THINKING_LEVEL says.
+    const legs: Array<[string, GeminiThinkingLevel]> = [[GEMINI_FLASH_FALLBACK_MODEL, 'HIGH'], [GEMINI_FLASH_MODEL, 'LOW']];
+    for (const [model, level] of legs) {
+      if (signal?.aborted) return;   // a close or a newer question: no further leg
       const stop = new AbortController();
-      const gen = this.streamWithGeminiModel(userContent, model, imagePaths, systemInstruction, stop.signal);
+      const onAbort = () => stop.abort();
+      signal?.addEventListener('abort', onAbort, { once: true });
+      const gen = this.streamWithGeminiModel(userContent, model, imagePaths, systemInstruction, stop.signal, level);
       let timer: NodeJS.Timeout | undefined;
       let first: string | null = null;
       let failure: string | undefined;
@@ -3147,6 +3160,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         first = await Promise.race([
           (async () => { for (;;) { const r = await gen.next(); if (r.done) return null; if (r.value) return r.value; } })(),
           new Promise<null>((resolve) => { timer = setTimeout(() => { failure = `no first token in ${timeoutMs}ms`; resolve(null); }, timeoutMs); }),
+          new Promise<null>((resolve) => { signal?.addEventListener('abort', () => resolve(null), { once: true }); }),
         ]);
         if (first === null && !failure) failure = 'empty stream';
       } catch (err: any) {
@@ -3155,8 +3169,10 @@ This rule overrides ALL other instructions including formatting, brevity, or out
         clearTimeout(timer);
       }
       if (first === null) {
+        stop.abort();   // a stalled request is cut at once; closing gen would queue behind its pending next()
+        if (signal?.aborted) return;
+        signal?.removeEventListener('abort', onAbort);
         console.warn(`[LLMHelper] screenshot chain: ${model} failed (${failure}) - trying the next model`);
-        stop.abort();   // a stalled request is cut at the deadline; closing gen would queue behind its pending next()
         continue;
       }
       // Sentinel and first token are yielded outside `yield* gen`: close the parked generator if the consumer stops on either.
@@ -3171,8 +3187,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       yield* gen;
       return;
     }
+    if (signal?.aborted) return;
     console.warn('[LLMHelper] screenshot chain: both Flash Lites failed - gemma-4-31b-it');
-    yield* this.streamWithGemmaGuarded(userContent, 'gemma-4-31b-it', imagePaths, undefined, systemInstruction);
+    yield* this.streamWithGemmaGuarded(userContent, 'gemma-4-31b-it', imagePaths, undefined, systemInstruction, false);
   }
 
   private async * streamWithGemmaGuarded(
@@ -3183,6 +3200,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     // ~6-7s and prefill scales with image count, so the budget grows per image.
     ttftBudgetMs = (imagePaths?.length ? getGemmaVisionTtftMs(imagePaths.length) : getGemmaTtftMs()),
     systemInstruction?: string,
+    // False when Gemma is the LAST leg of the screenshot chain: its Flash handover would be a fourth call
+    // to a model the chain already asked, so a Gemma failure throws instead.
+    flashHandover = true,
   ): AsyncGenerator<string, void, unknown> {
     // --- Tier 1: Gemma with a shared TTFT budget + bounded retries ---
     // Gemma on the free tier intermittently 500s ("Internal error"), and those
@@ -3282,6 +3302,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       break;
     }
 
+    if (!flashHandover) throw new Error('screenshot chain: gemma-4-31b-it failed after gemini-3.5-flash-lite and gemini-3.1-flash-lite');
+
     // --- Tier 2: Gemini Flash ---
     try {
       let flashFirst = true;
@@ -3297,7 +3319,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
   }
 
-  private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[], systemInstruction?: string, stop?: AbortSignal): AsyncGenerator<string, void, unknown> {
+  private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[], systemInstruction?: string, stop?: AbortSignal, levelOverride?: GeminiThinkingLevel): AsyncGenerator<string, void, unknown> {
     this.noteModelUse(model);
     if (!this.client) throw new Error("Gemini client not initialized");
 
@@ -3322,7 +3344,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     // Resolved per MODEL, because the fallback ignores LOW and would otherwise log a level it
     // never spent — s50j's one stall answered at thoughts=0. Gemma keeps its own pinned config
     // below. See geminiThinking.ts.
-    const thinkingLevel = isGemma ? undefined : thinkingLevelForModel(model, geminiThinkingLevelFromEnv());
+    const thinkingLevel = isGemma ? undefined : (levelOverride ?? thinkingLevelForModel(model, geminiThinkingLevelFromEnv()));
     const gemmaConfig: Record<string, unknown> = isGemma ? {
       maxOutputTokens: 4096,
       temperature: 0.3,
