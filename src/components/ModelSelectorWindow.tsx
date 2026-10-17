@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { Check, Loader2, Wifi, WifiOff } from 'lucide-react';
 import { useResolvedTheme } from '../hooks/useResolvedTheme';
+import { CURATED_GEMINI_MODELS } from '../utils/curatedModels';
 
 // Define Model Types
 interface ModelOption {
@@ -77,12 +78,7 @@ const ModelSelectorWindow = () => {
                 // configurable in Settings → AI Providers.)
                 const models: ModelOption[] = [];
                 if (creds?.hasGeminiKey) {
-                    models.push(
-                        { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite', type: 'cloud', provider: 'gemini' },
-                        { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', type: 'cloud', provider: 'gemini' },
-                        { id: 'gemma-4-31b-it', name: 'Gemma 4 31B', type: 'cloud', provider: 'gemini' },
-                        { id: 'gemma-4-26b-a4b-it', name: 'Gemma 4 26B', type: 'cloud', provider: 'gemini' },
-                    );
+                    models.push(...CURATED_GEMINI_MODELS.map((m): ModelOption => ({ ...m, type: 'cloud', provider: 'gemini' })));
                 }
 
                 localStorage.setItem('cached-models', JSON.stringify(models));

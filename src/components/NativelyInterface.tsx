@@ -52,6 +52,7 @@ import { useStreamMetrics, type StreamMetrics } from '../hooks/useStreamMetrics'
 import { MessageMetricsBar } from './MessageMetricsBar';
 import { CueBlock } from './CueBlock';
 import { DetectedQuestionsPanel } from './DetectedQuestionsPanel';
+import { CURATED_GEMINI_MODELS, curatedModelLabel } from '../utils/curatedModels';
 
 interface Message {
     id: string;
@@ -2922,11 +2923,8 @@ Provide only the answer, nothing else.`;
                                                 {(() => {
                                                     const m = currentModel;
                                                     if (m.startsWith('ollama-')) return m.replace('ollama-', '');
-                                                    // The 4 curated chat-pane models
-                                                    if (m === 'gemini-3.1-flash-lite' || m === 'gemini-3.1-flash-lite-preview') return 'Gemini 3.1 Flash Lite';
-                                                    if (m === 'gemini-2.5-flash') return 'Gemini 2.5 Flash';
-                                                    if (m === 'gemma-4-31b-it') return 'Gemma 4 31B';
-                                                    if (m === 'gemma-4-26b-a4b-it') return 'Gemma 4 26B';
+                                                    // The curated chat-pane models
+                                                    if (m === 'gemini-3.1-flash-lite-preview' || CURATED_GEMINI_MODELS.some(c => c.id === m)) return curatedModelLabel(m);
                                                     // Legacy / other providers (still possible via Settings)
                                                     if (m === 'gemini-3.1-pro-preview') return 'Gemini 3.1 Pro';
                                                     if (m === 'llama-3.3-70b-versatile') return 'Groq Llama 3.3';

@@ -14,6 +14,7 @@ import { PhoneMirrorService } from "./services/PhoneMirrorService";
 import { RECOGNITION_LANGUAGES, AI_RESPONSE_LANGUAGES } from "./config/languages"
 import { classifyIntent } from "./llm/IntentClassifier"
 import { VERBAL_TYPED_PROMPT } from "./llm/prompts"
+import { selectedModelLabel } from "./llm/modelLabels"
 import { SCREENSHOT_CHAIN_MODEL } from "./LLMHelper"
 
 export function initializeIpcHandlers(appState: AppState): void {
@@ -532,13 +533,6 @@ export function initializeIpcHandlers(appState: AppState): void {
         // (gemini-* / gemma-*) can take the verbal fast path (it streams via the
         // Gemini client); any other selection falls through to streamChat.
         const selectedModel = llmHelper.getCurrentModelId();
-        const selectedModelLabel = (id: string): string => {
-          if (id === 'gemini-3.1-flash-lite' || id === 'gemini-3.1-flash-lite-preview') return 'Gemini 3.1 Flash Lite';
-          if (id === 'gemini-2.5-flash') return 'Gemini 2.5 Flash';
-          if (id === 'gemma-4-31b-it') return 'Gemma 4 31B';
-          if (id === 'gemma-4-26b-a4b-it') return 'Gemma 4 26B';
-          return id;
-        };
         let stream: AsyncGenerator<string, void, unknown>;
         let routedToFlashVerbal = false;
         if (!imagePaths?.length && !options?.skipSystemPrompt && llmHelper.isGeminiFamilyModel(selectedModel)) {

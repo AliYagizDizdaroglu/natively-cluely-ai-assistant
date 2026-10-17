@@ -19,7 +19,7 @@ const NEXT: Record<LiveMode, LiveMode> = { off: 'suggest', suggest: 'auto', auto
  * Subscribes to live-mode-status broadcasts; 'failed' stays VISIBLE (hard-fail).
  */
 export function useLiveMode() {
-    const [mode, setMode] = useState<LiveMode>('off');
+    const [mode, setMode] = useState<LiveMode>('auto'); // main starts every launch in auto (user ruling 2026-10-18); getLiveMode below confirms
     const [status, setStatus] = useState<LiveModeStatus>({ state: 'idle' });
 
     useEffect(() => {

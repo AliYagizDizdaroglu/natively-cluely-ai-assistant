@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs, thinkingLevelForModel, GEMINI_THINKING_LEVELS, DEFAULT_GEMINI_THINKING_LEVEL } from './geminiThinking';
+import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs, screenshotFirstTokenTimeoutMs, dropdownThinking, thinkingLevelForModel, GEMINI_THINKING_LEVELS, DEFAULT_GEMINI_THINKING_LEVEL } from './geminiThinking';
 
 /**
  * The stall race gives the primary this long to produce a first token before the answer is
@@ -101,5 +101,31 @@ describe('thinkingLevelForModel', () => {
 
     it('leaves a model we have not probed untouched rather than guessing for it', () => {
         expect(thinkingLevelForModel('gemini-9.9-flash', 'LOW')).toBe('LOW');
+    });
+});
+
+describe('screenshotFirstTokenTimeoutMs', () => {
+    it('15000 ms by default, whatever the thinking level (the first live screenshot answer took 8.7 s on 3.5-lite HIGH)', () => {
+        expect(screenshotFirstTokenTimeoutMs({})).toBe(15000);
+        expect(screenshotFirstTokenTimeoutMs({ NATIVELY_GEMINI_THINKING_LEVEL: 'MINIMAL' })).toBe(15000);
+    });
+    it('NATIVELY_FIRST_TOKEN_TIMEOUT_MS still overrides it (a smoke forces the stall)', () => {
+        expect(screenshotFirstTokenTimeoutMs({ NATIVELY_FIRST_TOKEN_TIMEOUT_MS: '300' })).toBe(300);
+    });
+    it('the verbal race keeps 10000 ms', () => {
+        expect(firstTokenTimeoutMs({})).toBe(10000);
+    });
+});
+
+describe('dropdownThinking: what a model chosen in the dropdown is asked to think at', () => {
+    it('3.5 Flash Lite is asked for HIGH explicitly', () => {
+        expect(dropdownThinking('gemini-3.5-flash-lite')).toBe('HIGH');
+    });
+    it('3.8 Flash is sent no level (the model default)', () => {
+        expect(dropdownThinking('gemini-3.8-flash')).toBe('DEFAULT');
+    });
+    it('other models are unpinned', () => {
+        expect(dropdownThinking('gemini-3.1-flash-lite')).toBeUndefined();
+        expect(dropdownThinking('gemini-2.5-flash')).toBeUndefined();
     });
 });

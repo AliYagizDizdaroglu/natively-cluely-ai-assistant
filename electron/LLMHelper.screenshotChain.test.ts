@@ -94,8 +94,14 @@ describe('screenshot answer chain: 3.5-lite HIGH, then 3.1-lite LOW, then Gemma 
             // streamChat does async setup and real image I/O before its first request: let it reach 3.5-lite
             for (let i = 0; i < 2000 && asked().length === 0; i++) await new Promise((r) => setImmediate(r));
             expect(asked().map((c) => c.model)).toEqual([FRONT]);   // 3.1-lite not started beside it
-            await vi.advanceTimersByTimeAsync(10_000);   // the stall clock
+            const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+            await vi.advanceTimersByTimeAsync(14_999);   // 15 s clock (user ruling 2026-10-18): not stalled at 10 s, nor 1 ms before 15 s
+            const failed = () => warn.mock.calls.map((c) => c.join(" ")).filter((l) => l.includes("screenshot chain"));
+            expect(failed()).toEqual([]);
+            await vi.advanceTimersByTimeAsync(1);   // the stall clock
             expect((await p).join('')).toContain(`${MID}-answer`);
+            expect(failed()[0]).toContain("no first token in 15000ms");
+            warn.mockRestore();
             expect(asked().map((c) => c.model)).toEqual([FRONT, MID]);
         } finally { vi.useRealTimers(); }
     });
@@ -153,7 +159,7 @@ describe('screenshot chain, fix round 1', () => {
         const p = drain(new LLMHelper('fake-gemini-key').streamChat('q', [img], undefined, undefined, false, SCREENSHOT_CHAIN_MODEL, undefined, ctl.signal));
         await until(() => asked().length === 1);
         ctl.abort();
-        await p;   // ends at once, not after the 10 s clock
+        await p;   // ends at once, not after the 15 s clock
         await tick();
         expect(asked().map((c) => c.model)).toEqual([FRONT]);
         expect(signals[0].aborted).toBe(true);

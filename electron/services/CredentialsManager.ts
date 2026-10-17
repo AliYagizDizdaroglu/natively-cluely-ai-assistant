@@ -213,7 +213,8 @@ export class CredentialsManager {
         return this.credentials.aiResponseLanguage || 'auto';
     }
     public getDefaultModel(): string {
-        return this.credentials.defaultModel || 'gemini-3.1-flash-lite';
+        // Gemini 3.5 Flash Lite is the dropdown default when nothing is saved (user ruling 2026-10-18).
+        return this.credentials.defaultModel || 'gemini-3.5-flash-lite';
     }
 
     public getLiveMode(): 'off' | 'suggest' | 'auto' {

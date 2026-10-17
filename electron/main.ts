@@ -926,7 +926,7 @@ export class AppState {
   //   'suggest' — detected question surfaces a chip (user clicks to answer)
   //   'auto'    — detected question is answered immediately (hands-free)
   private liveRouter: GeminiLiveRouter | null = null;
-  private liveMode: 'off' | 'suggest' | 'auto' = 'off';
+  private liveMode: 'off' | 'suggest' | 'auto' = 'auto';   // 'auto' at every launch, whatever was saved last (user ruling 2026-10-18)
   // The 3.8 Live router (router-default): a second Live session beside the ear, an arbiter that decides which
   // answer is shown, and the wiring module that holds the glue. On by default (user ruling 2026-10-18);
   // NATIVELY_LIVE_ROUTER=0 turns all of it off.
@@ -2006,21 +2006,8 @@ export class AppState {
     this.fragmentHold.cancel();
     this.resetTurn();
 
-    // Live mode used to live only in memory, so every restart forgot it and an
-    // unattended relaunch came up deaf. Restore the stored mode when the
-    // meeting starts — just the mode, not the router: the deferred audio-init
-    // callback below already starts the router once when liveMode !== 'off',
-    // the same path an IPC live-mode:set before a meeting takes. Starting it
-    // here too would tear it down and rebuild it a tick later (startLiveRouter()
-    // begins with stopLiveRouter()).
-    {
-      const { CredentialsManager } = require('./services/CredentialsManager');
-      const stored = CredentialsManager.getInstance().getLiveMode();
-      if (stored !== 'off' && this.liveMode === 'off') {
-        this.liveMode = stored;
-        console.log(`[Main] Live Mode restored → ${stored}`);
-      }
-    }
+    // Live mode is not restored from the stored value here: it starts as 'auto' at every launch
+    // (field initialiser, user ruling 2026-10-18) and then follows the user's choice in the session.
     this.broadcastMeetingState()
 
     // Keep the coding model (Gemma) + verbal fallback (Flash) hot for the whole

@@ -17,7 +17,7 @@ import {
 import { userContextBlock } from "./llm/userContext"
 import { keepVerbalPrompt, carriesSpokenBudget, withActiveModePrompt } from "./llm/knowledgePromptBudget"
 import { capturePrompt } from "./llm/promptCapture"
-import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs, thinkingLevelForModel, type GeminiThinkingLevel } from "./llm/geminiThinking"
+import { geminiThinkingLevelFromEnv, firstTokenTimeoutMs, screenshotFirstTokenTimeoutMs, dropdownThinking, thinkingLevelForModel, type GeminiThinkingLevel } from "./llm/geminiThinking"
 import { verbalPrimaryModel } from "./llm/verbalPrimaryModel"
 import { verbalHedgeEnabled, verbalHedgeTriggerMs } from "./llm/verbalHedge"
 import { deepVariableReplacer, getByPath, injectImageIntoMessages } from './utils/curlUtils';
@@ -2746,7 +2746,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
           return;
         }
         const geminiMsg = styleSuffix ? `${finalSystemPrompt}${styleSuffix}\n\n${userContent}` : fullMsg;
-        yield* this.streamWithGeminiModel(geminiMsg, activeModelId, imagePaths);
+        yield* this.streamWithGeminiModel(geminiMsg, activeModelId, imagePaths, undefined, undefined, dropdownThinking(activeModelId));
         return;
       }
 
@@ -3129,8 +3129,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
    * FAILS gemini-3.1-flash-lite (LOW), and only if that fails gemma-4-31b-it (the path screenshots took
    * before, with its own retries and Flash handover). Sequential, never a race: each next model starts after
    * the one before it has failed, so a screenshot costs one request unless something went wrong. A failure
-   * is an error, an empty stream (RECITATION / safety block) or no first content within firstTokenTimeoutMs()
-   * (the verbal stall race's clock); a stalled request is aborted before the next model starts. An error after
+   * is an error, an empty stream (RECITATION / safety block) or no first content within screenshotFirstTokenTimeoutMs()
+   * (15 s); a stalled request is aborted before the next model starts. An error after
    * the first token is not a fallback case: the words already spoken stand, as in the stall race. Levels come
    * from streamWithGeminiModel's own plumbing (LOW, which thinkingLevelForModel maps to HIGH for 3.5-lite).
    * The images go to every model through the same call. The winner is announced as
@@ -3142,9 +3142,9 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     systemInstruction: string,
     signal?: AbortSignal,
   ): AsyncGenerator<string, void, unknown> {
-    // 10 s: the verbal answer's first-token clock. It was measured on TEXT answers (LOW p90 7.8 s, geminiThinking.ts);
-    // the repo holds no image-specific first-token measurement for the Flash Lites (only Gemma's vision budget).
-    const timeoutMs = firstTokenTimeoutMs();
+    // 15 s (was the verbal race's 10 s): the first live screenshot answer, 2026-10-18, took 8.7 s to its first token on
+    // 3.5-lite HIGH (2235 thinking tokens); 15 s leaves headroom. See screenshotFirstTokenTimeoutMs in geminiThinking.ts.
+    const timeoutMs = screenshotFirstTokenTimeoutMs();
     // Levels are explicit: HIGH and LOW whatever NATIVELY_GEMINI_THINKING_LEVEL says.
     const legs: Array<[string, GeminiThinkingLevel]> = [[GEMINI_FLASH_FALLBACK_MODEL, 'HIGH'], [GEMINI_FLASH_MODEL, 'LOW']];
     for (const [model, level] of legs) {
@@ -3319,7 +3319,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
 
   }
 
-  private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[], systemInstruction?: string, stop?: AbortSignal, levelOverride?: GeminiThinkingLevel): AsyncGenerator<string, void, unknown> {
+  private async * streamWithGeminiModel(fullMessage: string, model: string, imagePaths?: string[], systemInstruction?: string, stop?: AbortSignal, levelOverride?: GeminiThinkingLevel | 'DEFAULT'): AsyncGenerator<string, void, unknown> {
     this.noteModelUse(model);
     if (!this.client) throw new Error("Gemini client not initialized");
 
@@ -3344,7 +3344,8 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     // Resolved per MODEL, because the fallback ignores LOW and would otherwise log a level it
     // never spent — s50j's one stall answered at thoughts=0. Gemma keeps its own pinned config
     // below. See geminiThinking.ts.
-    const thinkingLevel = isGemma ? undefined : (levelOverride ?? thinkingLevelForModel(model, geminiThinkingLevelFromEnv()));
+    // levelOverride 'DEFAULT' sends no thinkingConfig at all (the model's own default: 3.8 Flash from the dropdown).
+    const thinkingLevel = isGemma || levelOverride === 'DEFAULT' ? undefined : (levelOverride ?? thinkingLevelForModel(model, geminiThinkingLevelFromEnv()));
     const gemmaConfig: Record<string, unknown> = isGemma ? {
       maxOutputTokens: 4096,
       temperature: 0.3,
@@ -3492,7 +3493,7 @@ This rule overrides ALL other instructions including formatting, brevity, or out
     console.log(`[LLMHelper] verbal stall race: trying ${primaryModel} (fallback=${FALLBACK_MODEL} after ${timeoutMs}ms)`);
 
     const stall = new AbortController();
-    const primaryStream = this.streamWithGeminiModel(userMessage, primaryModel, imagePaths, systemInstruction, stall.signal);
+    const primaryStream = this.streamWithGeminiModel(userMessage, primaryModel, imagePaths, systemInstruction, stall.signal, dropdownThinking(primaryModel));
 
     // Race first token against timeout — if primary stalls, fall back to the other Flash Lite
     let timeoutHandle!: NodeJS.Timeout;

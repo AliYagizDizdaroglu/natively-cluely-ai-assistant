@@ -107,3 +107,48 @@ describe('verbal Gemini call carries the thinking level, LOW by default, from NA
         }
     });
 });
+
+/**
+ * User ruling 2026-10-18: a model chosen in the dropdown is asked at its own level. 3.5 Flash Lite
+ * at HIGH explicitly (the env's MINIMAL opt-out does not reach it), 3.8 Flash at the model default
+ * (no thinkingConfig at all). The hedge is off here, as above, so the chosen model is the one asked.
+ */
+describe('a model chosen in the dropdown carries its own thinking level', () => {
+    const savedLevel = process.env.NATIVELY_GEMINI_THINKING_LEVEL;
+    const savedHedge = process.env.NATIVELY_VERBAL_HEDGE;
+    beforeEach(() => { generateContentStream.mockClear(); process.env.NATIVELY_VERBAL_HEDGE = '0'; delete process.env.NATIVELY_GEMINI_THINKING_LEVEL; });
+    afterEach(() => {
+        if (savedLevel === undefined) delete process.env.NATIVELY_GEMINI_THINKING_LEVEL; else process.env.NATIVELY_GEMINI_THINKING_LEVEL = savedLevel;
+        if (savedHedge === undefined) delete process.env.NATIVELY_VERBAL_HEDGE; else process.env.NATIVELY_VERBAL_HEDGE = savedHedge;
+    });
+
+    it('3.5 Flash Lite sends thinkingLevel HIGH on the verbal path, also under NATIVELY_GEMINI_THINKING_LEVEL=MINIMAL', async () => {
+        process.env.NATIVELY_GEMINI_THINKING_LEVEL = 'MINIMAL';
+        const helper = new LLMHelper('fake-gemini-key');
+        await drain(helper.streamVerbalWithGeminiFlash('q', VERBAL_WHAT_TO_ANSWER_PROMPT, undefined, 'gemini-3.5-flash-lite'));
+        const { model, config } = generateContentStream.mock.calls[0][0];
+        expect(model).toBe('gemini-3.5-flash-lite');
+        expect(config?.thinkingConfig).toEqual({ thinkingLevel: 'HIGH' });
+    });
+
+    it('3.8 Flash sends no thinkingConfig on the verbal path', async () => {
+        const helper = new LLMHelper('fake-gemini-key');
+        await drain(helper.streamVerbalWithGeminiFlash('q', VERBAL_WHAT_TO_ANSWER_PROMPT, undefined, 'gemini-3.8-flash'));
+        const { model, config } = generateContentStream.mock.calls[0][0];
+        expect(model).toBe('gemini-3.8-flash');
+        expect(config).not.toHaveProperty('thinkingConfig');
+    });
+
+    it('streamChat on a selected 3.8 Flash and 3.5 Flash Lite carries the same levels (the typed non-verbal route)', async () => {
+        const helper = new LLMHelper('fake-gemini-key');
+        helper.setModel('gemini-3.8-flash');
+        await drain(helper.streamChat('explain what a mutex is'));
+        const first = generateContentStream.mock.calls.find((c) => c[0].model === 'gemini-3.8-flash')!;
+        expect(first[0].config).not.toHaveProperty('thinkingConfig');
+        generateContentStream.mockClear();
+        helper.setModel('gemini-3.5-flash-lite');
+        await drain(helper.streamChat('explain what a mutex is'));
+        const call = generateContentStream.mock.calls.find((c) => c[0].model === 'gemini-3.5-flash-lite')!;
+        expect(call[0].config?.thinkingConfig).toEqual({ thinkingLevel: 'HIGH' });
+    });
+});

@@ -89,3 +89,28 @@ const LEVELS_NOT_HONOURED: Readonly<Record<string, Readonly<Partial<Record<Gemin
 export function thinkingLevelForModel(model: string, level: GeminiThinkingLevel): GeminiThinkingLevel {
     return LEVELS_NOT_HONOURED[model]?.[level] ?? level;
 }
+
+/**
+ * How long the screenshot answer chain gives a leg to produce its first token before the next
+ * leg starts: 15000 ms (user ruling 2026-10-18). The first live screenshot answer, 2026-10-18,
+ * took 8.7 s to its first token on 3.5-lite at HIGH (2235 thinking tokens); the verbal race's
+ * 10 s sat only 1.3 s above that, so 15 s leaves headroom. The verbal race keeps its own clock
+ * (firstTokenTimeoutMs). NATIVELY_FIRST_TOKEN_TIMEOUT_MS overrides both, so a smoke can still
+ * force the stall.
+ */
+export function screenshotFirstTokenTimeoutMs(env: NodeJS.ProcessEnv = process.env): number {
+    return env.NATIVELY_FIRST_TOKEN_TIMEOUT_MS?.trim() ? firstTokenTimeoutMs(env) : 15000;
+}
+
+/**
+ * What a model picked in the model dropdown is asked to think at (user ruling 2026-10-18):
+ * 3.5 Flash Lite at HIGH, stated outright so NATIVELY_GEMINI_THINKING_LEVEL's MINIMAL opt-out
+ * (a flight's lever for the verbal path) does not reach it; 3.8 Flash at its own default, i.e.
+ * no thinkingConfig on the request ('DEFAULT'). Every other model is unpinned (undefined) and
+ * keeps the environment-resolved level.
+ */
+export function dropdownThinking(model: string): GeminiThinkingLevel | 'DEFAULT' | undefined {
+    if (model === 'gemini-3.5-flash-lite') return 'HIGH';
+    if (model === 'gemini-3.8-flash') return 'DEFAULT';
+    return undefined;
+}
