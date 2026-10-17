@@ -14,6 +14,7 @@ import { PhoneMirrorService } from "./services/PhoneMirrorService";
 import { RECOGNITION_LANGUAGES, AI_RESPONSE_LANGUAGES } from "./config/languages"
 import { classifyIntent } from "./llm/IntentClassifier"
 import { VERBAL_TYPED_PROMPT } from "./llm/prompts"
+import { SCREENSHOT_CHAIN_MODEL } from "./LLMHelper"
 
 export function initializeIpcHandlers(appState: AppState): void {
   const safeHandle = (channel: string, listener: (event: any, ...args: any[]) => Promise<any> | any) => {
@@ -583,15 +584,12 @@ export function initializeIpcHandlers(appState: AppState): void {
           }
         }
         if (!routedToFlashVerbal) {
-          // Screenshot / vision questions ALWAYS use Gemma 4 31B (best at
-          // reading code/diagrams off-screen), regardless of the dropdown pick.
-          // Text questions honor the selected model. The Gemma path also emits
-          // the model-source sentinel, so the answer bubble shows attribution.
+          // Screenshot / vision questions ALWAYS use the screenshot chain (3.5 Flash Lite HIGH,
+          // then 3.1 Flash Lite LOW, then Gemma 4 31B, each only after the one before failed),
+          // regardless of the dropdown pick. Text questions honor the selected model. The chain
+          // emits the model-source sentinel of the model that answered, so the bubble names it.
           const hasImages = !!imagePaths?.length;
-          const modelOverride = hasImages ? 'gemma-4-31b-it' : undefined;
-          if (hasImages) {
-            event.sender.send('gemini-stream-source', 'Gemma 4 31B');
-          }
+          const modelOverride = hasImages ? SCREENSHOT_CHAIN_MODEL : undefined;
           // Default path: streamChat handles full routing. It routes on the user's
           // selected model (NOT "Gemma for coding" — that was never true); the only
           // model pin is the screenshot modelOverride set just above.

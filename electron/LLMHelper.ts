@@ -45,6 +45,9 @@ const GEMINI_PRO_MODEL = "gemini-3.1-pro-preview"
 // reached when things are already going wrong, so it is warmed at startup too;
 // without that it would be slowest exactly when it is needed.
 export const GEMINI_FLASH_FALLBACK_MODEL = "gemini-3.5-flash-lite"
+// modelOverride sentinel (not a model id): the screenshot answer chain, gemini-3.5-flash-lite (HIGH), then
+// gemini-3.1-flash-lite (LOW), then gemma-4-31b-it, each tried only after the one before it failed. See streamScreenshotChain.
+export const SCREENSHOT_CHAIN_MODEL = "screenshot-chain"
 // The only models NATIVELY_VERBAL_PRIMARY_MODEL may name. Both are already warmed at
 // startup and both have a graded band behind them, so a flight can swap the verbal
 // primary between them without introducing an unmeasured model — see verbalPrimaryModel.ts.
@@ -2695,6 +2698,11 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       // (e.g. CODE_HINT_PROMPT, BRAINSTORM_MODE_PROMPT) — see resolveGemmaSystemPrompt.
       // (streamWithGemmaGuarded also emits the __model_source:Gemma 4__ sentinel
       // → the chat bubble shows the model attribution beside TTFT.)
+      if (activeModelId === SCREENSHOT_CHAIN_MODEL) {
+        const chainSystem = this.injectLanguageInstruction(resolveGemmaSystemPrompt(callerSystemPromptOverride, baseSystemPrompt));
+        yield* this.streamScreenshotChain(userContent, imagePaths, chainSystem);
+        return;
+      }
       if (activeModelId.startsWith('gemma-')) {
         const gemmaSystemPrompt = resolveGemmaSystemPrompt(callerSystemPromptOverride, baseSystemPrompt);
         const interviewSystem = this.injectLanguageInstruction(gemmaSystemPrompt);
@@ -3109,6 +3117,62 @@ This rule overrides ALL other instructions including formatting, brevity, or out
       const final = carry.replace(/<think(?:ing)?>[\s\S]*?<\/think(?:ing)?>/gi, '');
       if (final) yield final;
     }
+  }
+
+  /**
+   * The screenshot answer chain (user request 2026-10-18): gemini-3.5-flash-lite (HIGH), and only if it
+   * FAILS gemini-3.1-flash-lite (LOW), and only if that fails gemma-4-31b-it (the path screenshots took
+   * before, with its own retries and Flash handover). Sequential, never a race: each next model starts after
+   * the one before it has failed, so a screenshot costs one request unless something went wrong. A failure
+   * is an error, an empty stream (RECITATION / safety block) or no first content within firstTokenTimeoutMs()
+   * (the verbal stall race's clock); a stalled request is aborted before the next model starts. An error after
+   * the first token is not a fallback case: the words already spoken stand, as in the stall race. Levels come
+   * from streamWithGeminiModel's own plumbing (LOW, which thinkingLevelForModel maps to HIGH for 3.5-lite).
+   * The images go to every model through the same call. The winner is announced as
+   * `__model_source:<model>__` (no "_" in the label), Gemma by streamWithGemmaGuarded's own sentinel.
+   */
+  private async * streamScreenshotChain(
+    userContent: string,
+    imagePaths: string[] | undefined,
+    systemInstruction: string,
+  ): AsyncGenerator<string, void, unknown> {
+    const timeoutMs = firstTokenTimeoutMs();
+    for (const model of [GEMINI_FLASH_FALLBACK_MODEL, GEMINI_FLASH_MODEL]) {
+      const stop = new AbortController();
+      const gen = this.streamWithGeminiModel(userContent, model, imagePaths, systemInstruction, stop.signal);
+      let timer: NodeJS.Timeout | undefined;
+      let first: string | null = null;
+      let failure: string | undefined;
+      try {
+        first = await Promise.race([
+          (async () => { for (;;) { const r = await gen.next(); if (r.done) return null; if (r.value) return r.value; } })(),
+          new Promise<null>((resolve) => { timer = setTimeout(() => { failure = `no first token in ${timeoutMs}ms`; resolve(null); }, timeoutMs); }),
+        ]);
+        if (first === null && !failure) failure = 'empty stream';
+      } catch (err: any) {
+        failure = err?.message ?? String(err);
+      } finally {
+        clearTimeout(timer);
+      }
+      if (first === null) {
+        console.warn(`[LLMHelper] screenshot chain: ${model} failed (${failure}) - trying the next model`);
+        stop.abort();   // a stalled request is cut at the deadline; closing gen would queue behind its pending next()
+        continue;
+      }
+      // Sentinel and first token are yielded outside `yield* gen`: close the parked generator if the consumer stops on either.
+      let delivered = false;
+      try {
+        yield `__model_source:${model}__`;
+        yield first;
+        delivered = true;
+      } finally {
+        if (!delivered) gen.return(undefined);
+      }
+      yield* gen;
+      return;
+    }
+    console.warn('[LLMHelper] screenshot chain: both Flash Lites failed - gemma-4-31b-it');
+    yield* this.streamWithGemmaGuarded(userContent, 'gemma-4-31b-it', imagePaths, undefined, systemInstruction);
   }
 
   private async * streamWithGemmaGuarded(
