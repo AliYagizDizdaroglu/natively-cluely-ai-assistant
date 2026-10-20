@@ -120,8 +120,18 @@ export function pairAnswers(debugLog, timeline) {
         // latest item already playing when it was dispatched. Anchors WITH content words
         // that still overlap nothing stay unclaimed: those are answers to nobody.
         const byTime = items.filter((it) => it.playedAt <= d.at && d.at <= it.spokeEnd + 60_000).sort((a, b) => b.playedAt - a.playedAt)[0] ?? null;
-        const item = best && bestOv >= 0.25 ? best : contentWords(d.anchor).length === 0 ? byTime : null;
+        // Play-window fallback (r2 turn:30: STT heard "detect it" as "detective", overlap 0, the
+        // answer never reached the export): when words find nothing, the item whose PLAY window
+        // contains the dispatch claims it — only if exactly one does, and never for an unchecked
+        // Live question (verdict=unverifiable, where a fabrication lives). Window = the clip's own
+        // play span (timeline stamps run ~1.15 s early) plus a 3 s dispatch grace (VAD hold).
+        const inWindow = d.verdict === 'unverifiable' ? [] : items.filter((it) => d.at >= it.playedAt - 1150 && d.at <= it.spokeEnd + 3000);
+        let item = null, attribution = null;
+        if (best && bestOv >= 0.25) { item = best; attribution = 'words'; }
+        else if (contentWords(d.anchor).length === 0) { item = byTime; attribution = byTime ? 'time' : null; }
+        else if (inWindow.length === 1) { item = inWindow[0]; attribution = 'window'; }
         return {
+            attribution,
             id: item?.id ?? '?', kind: item?.kind ?? 'unknown', level: item?.level ?? null, topic: item?.topic ?? null,
             question: item ? questionForGrader(item, items) : null, heard: d.anchor, source: d.source, verdict: d.verdict,
             dispatchedAt: new Date(d.at).toISOString(), answer: full?.text ?? null,

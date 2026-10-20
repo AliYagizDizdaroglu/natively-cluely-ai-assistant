@@ -110,8 +110,8 @@ describe('pairAnswers', () => {
         ].join('\n');
         const pairs = pairAnswers(split, timeline);
         expect(pairs.map((p) => p.id)).toEqual(['W02']); // W02 played at 40 s; W01 ended long before
-        // An anchor WITH content words that matches nothing still stays unclaimed.
-        const noise = '2026-09-04T08:00:44.000Z [LOG] [Main] dispatch: answer source=whisper anchor="Configure the printer driver settings" verdict=match';
+        // An anchor WITH content words that matches nothing stays unclaimed OUTSIDE any play window (inside one, the window fallback claims it: see below).
+        const noise = '2026-09-04T08:00:30.000Z [LOG] [Main] dispatch: answer source=whisper anchor="Configure the printer driver settings" verdict=match';
         expect(pairAnswers(noise, timeline).map((p) => p.id)).toEqual(['?']);
     });
 
@@ -152,6 +152,28 @@ describe('pairAnswers', () => {
             '2026-09-07T07:36:28.000Z [LOG] [Answer] full: "You would use namespaces and resource quotas per team."',
         ].join('\n');
         expect(pairAnswers(log, tl).map((p) => p.id)).toEqual(['?']);
+    });
+
+    describe('play-window fallback (r2 turn:30: "detect it" heard as "detective" left EF05 unclaimed)', () => {
+        const line = (iso: string, anchor: string, verdict = 'match') => `${iso} [LOG] [Main] dispatch: answer source=whisper anchor="${anchor}" verdict=${verdict}\n`;
+        it('claims a misheard dispatch inside exactly one play window and records method=window', () => {
+            const pairs = pairAnswers(line('2026-09-04T08:00:15.000Z', 'How would you detective?'), timeline);
+            expect(pairs.map((p) => [p.id, p.attribution])).toEqual([['W01', 'window']]);
+        });
+        it('a dispatch matched by words keeps its id and records method=words', () => {
+            expect(pairAnswers(dbg, timeline).map((p) => p.attribution)).toEqual(['words', 'words', 'words']);
+        });
+        it('a dispatch in no play window stays unclaimed', () => {
+            const pairs = pairAnswers(line('2026-09-04T08:00:30.000Z', 'How would you detective?'), timeline);
+            expect(pairs.map((p) => [p.id, p.attribution])).toEqual([['?', null]]);
+        });
+        it('a dispatch inside two overlapping play windows stays unclaimed', () => {
+            const tl = { ...timeline, items: [...timeline.items, { id: 'W03', kind: 'spoken', level: 'easy', topic: 'x', q: 'Unrelated zebra question?', playedAt: t('12.000'), clipSecs: 4 }] };
+            expect(pairAnswers(line('2026-09-04T08:00:15.000Z', 'How would you detective?'), tl).map((p) => p.id)).toEqual(['?']);
+        });
+        it('an unverifiable (unchecked Live) dispatch is never claimed by window', () => {
+            expect(pairAnswers(line('2026-09-04T08:00:15.000Z', 'How would you detective?', 'unverifiable'), timeline).map((p) => p.id)).toEqual(['?']);
+        });
     });
 });
 
