@@ -58,7 +58,7 @@ export function readsFinished(text: string): boolean {
 export type TurnDecision =
     | { kind: 'idle' }
     | { kind: 'hold'; reason: 'speaking' | 'gate' | 'settle' | 'unfinished' | 'undetected' }
-    | { kind: 'classify'; text: string; finals: number; turn: number }
+    | { kind: 'classify'; text: string; finals: number; live: number; turn: number }
     | { kind: 'dispatch'; text: string; live: string[]; finished: boolean; gateMs: number; finals: number; fromLive: boolean }
     | { kind: 'supersede'; text: string; live: string[]; replaces: string; finals: number }
     | { kind: 'close'; reason: 'candidate' | 'continuation-expired' | 'not-a-question' | 'nothing-heard' };
@@ -78,7 +78,7 @@ export interface InterviewerTurn {
      * neither marks nor (re)opens a turn. Omit it for a live/whisper detector's own
      * fresh detection, which always applies to whatever turn is open.
      */
-    detected(source: 'live' | 'whisper', at: number, verdict?: 'question' | 'not-a-question', forTurn?: number, forFinals?: number): void;
+    detected(source: 'live' | 'whisper', at: number, verdict?: 'question' | 'not-a-question', forTurn?: number, forFinals?: number, forLive?: number): void;
     candidateSpoke(at: number): void;
     tick(now: number): TurnDecision;
     nextTimerAt(now: number): number | null;
@@ -256,7 +256,7 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
             if (!t.vadSeen) t.lastSpeechAt = at;
         },
 
-        detected(_source: 'live' | 'whisper', at: number, verdict?: 'question' | 'not-a-question', forTurn?: number, forFinals?: number): void {
+        detected(_source: 'live' | 'whisper', at: number, verdict?: 'question' | 'not-a-question', forTurn?: number, forFinals?: number, forLive?: number): void {
             // R20: a verdict scoped to a specific turn (forTurn given) that isn't the
             // currently open one is stale — ignore it before reopenIfStale/open, so it
             // can neither mark the turn that replaced it nor silently open a new one.
@@ -264,7 +264,9 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
             // A "no" judged `forFinals` finals; if the turn has grown since (the question's own
             // final joined while the verdict was in flight) it no longer describes the turn:
             // drop it and let the grown text be re-classified. A "question" still applies.
-            if (verdict === 'not-a-question' && forTurn !== undefined && forFinals !== undefined && turn && turn.finals.length > forFinals) {
+            // The same holds if a Live mark already called the turn a question (live text or detected grew).
+            if (verdict === 'not-a-question' && forTurn !== undefined && turn
+                && ((forFinals !== undefined && turn.finals.length > forFinals) || (forLive !== undefined && turn.live.length > forLive) || turn.detected)) {
                 turn.classifyAsked = false;
                 return;
             }
@@ -328,7 +330,7 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
                 if (quiet(t, now) && !t.classifyAsked) {
                     t.classifyAsked = true;
                     const { text } = textOf(t);
-                    return { kind: 'classify', text, finals: t.finals.length, turn: t.id };
+                    return { kind: 'classify', text, finals: t.finals.length, live: t.live.length, turn: t.id };
                 }
                 return { kind: 'hold', reason: 'undetected' };
             }

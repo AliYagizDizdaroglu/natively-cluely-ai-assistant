@@ -130,7 +130,7 @@ describe('interviewerTurn — unfinished text, classification, fail-safe', () =>
         turn.final('How would you shard a Postgres table by tenant?', T + 1000);
         turn.speech(false, T + 1500);
         expect(turn.tick(T + 2000)).toEqual({ kind: 'hold', reason: 'undetected' });
-        expect(turn.tick(T + 2700)).toEqual({ kind: 'classify', text: 'How would you shard a Postgres table by tenant?', finals: 1, turn: expect.any(Number) });
+        expect(turn.tick(T + 2700)).toEqual({ kind: 'classify', text: 'How would you shard a Postgres table by tenant?', finals: 1, live: 0, turn: expect.any(Number) });
         expect(turn.tick(T + 2700)).toEqual({ kind: 'hold', reason: 'undetected' });
         turn.detected('whisper', T + 3200, 'question');
         expect(turn.tick(T + 3200).kind).toBe('dispatch');
@@ -207,6 +207,18 @@ describe('interviewerTurn — unfinished text, classification, fail-safe', () =>
         turn.detected('whisper', T + 1700, 'not-a-question', (decision as any).turn, 1);
         expect(turn.snapshot().detected).toBe(false);
         expect(turn.tick(T + 1500 + 1200)).toMatchObject({ kind: 'classify', finals: 2 });
+    });
+
+    it('T-NQ4: a Live mark that landed before a stale "no" (finals unchanged) keeps the turn open and dispatches', () => {
+        const turn = createInterviewerTurn();
+        turn.final('So how would you design a rate limiter?', T);
+        const decision = turn.tick(T + 1200);
+        expect(decision).toMatchObject({ kind: 'classify', finals: 1, live: 0 });
+        turn.liveClaim('So how would you design a rate limiter?', T + 1400);
+        turn.detected('live', T + 1400);
+        turn.detected('whisper', T + 1700, 'not-a-question', (decision as any).turn, (decision as any).finals, (decision as any).live);
+        expect(turn.tick(T + 1700).kind).not.toBe('close');
+        expect(turn.snapshot()).toMatchObject({ open: true, detected: true });
     });
 
     it('T-C3: a verdict for an earlier turn does not close the turn that replaced it', () => {
