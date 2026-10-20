@@ -78,7 +78,7 @@ export interface InterviewerTurn {
      * neither marks nor (re)opens a turn. Omit it for a live/whisper detector's own
      * fresh detection, which always applies to whatever turn is open.
      */
-    detected(source: 'live' | 'whisper', at: number, verdict?: 'question' | 'not-a-question', forTurn?: number): void;
+    detected(source: 'live' | 'whisper', at: number, verdict?: 'question' | 'not-a-question', forTurn?: number, forFinals?: number): void;
     candidateSpoke(at: number): void;
     tick(now: number): TurnDecision;
     nextTimerAt(now: number): number | null;
@@ -256,11 +256,18 @@ export function createInterviewerTurn(c: TurnConstants = DEFAULT_TURN_CONSTANTS,
             if (!t.vadSeen) t.lastSpeechAt = at;
         },
 
-        detected(_source: 'live' | 'whisper', at: number, verdict?: 'question' | 'not-a-question', forTurn?: number): void {
+        detected(_source: 'live' | 'whisper', at: number, verdict?: 'question' | 'not-a-question', forTurn?: number, forFinals?: number): void {
             // R20: a verdict scoped to a specific turn (forTurn given) that isn't the
             // currently open one is stale — ignore it before reopenIfStale/open, so it
             // can neither mark the turn that replaced it nor silently open a new one.
             if (forTurn !== undefined && (!turn || turn.id !== forTurn)) return;
+            // A "no" judged `forFinals` finals; if the turn has grown since (the question's own
+            // final joined while the verdict was in flight) it no longer describes the turn:
+            // drop it and let the grown text be re-classified. A "question" still applies.
+            if (verdict === 'not-a-question' && forTurn !== undefined && forFinals !== undefined && turn && turn.finals.length > forFinals) {
+                turn.classifyAsked = false;
+                return;
+            }
             reopenIfStale(at);
             const t = open(at);
             t.detected = true;

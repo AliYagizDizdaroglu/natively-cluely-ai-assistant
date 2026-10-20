@@ -1039,7 +1039,7 @@ export class AppState {
             // R20: `d.turn` scopes the verdict to the turn that asked for it — the
             // machine itself ignores it if that turn already closed or was replaced.
             if (!this.isMeetingActive) return;
-            this.turn.detected('whisper', Date.now(), v, d.turn);
+            this.turn.detected('whisper', Date.now(), v, d.turn, d.finals);
             this.turnTick();
           });
         return;

@@ -173,6 +173,42 @@ describe('interviewerTurn — unfinished text, classification, fail-safe', () =>
         expect(turn.snapshot().open).toBe(false);
     });
 
+    it('T-NQ1: a "no" that judged 3 lead-in finals does not close the turn once a 4th (the question) has joined', () => {
+        const turn = createInterviewerTurn();
+        turn.final('Okay,', T);
+        turn.final('great.', T + 664);
+        turn.final('So,', T + 1881);
+        turn.speech(false, T + 3485);
+        const decision = turn.tick(T + 4686);
+        expect(decision).toMatchObject({ kind: 'classify', finals: 3 });
+        const id = (decision as any).turn;
+        turn.final('how would you design a rate limiter?', T + 5011);
+        turn.detected('whisper', T + 5236, 'not-a-question', id, 3);
+        expect(turn.tick(T + 5236).kind).not.toBe('close');
+        turn.detected('whisper', T + 5788);
+        const d = turn.tick(T + 5788);
+        expect(d).toMatchObject({ kind: 'dispatch', finals: 4 });
+        expect((d as any).text).toContain('rate limiter');
+    });
+
+    it('T-NQ2: a "no" whose judged count equals the turn\'s finals still closes', () => {
+        const turn = createInterviewerTurn();
+        turn.final('Great, thanks for walking me through that.', T);
+        const decision = turn.tick(T + 1200);
+        turn.detected('whisper', T + 1700, 'not-a-question', (decision as any).turn, 1);
+        expect(turn.tick(T + 1700)).toEqual({ kind: 'close', reason: 'not-a-question' });
+    });
+
+    it('T-NQ3: a grown turn whose "no" was dropped is re-classified at the next quiet', () => {
+        const turn = createInterviewerTurn();
+        turn.final('Okay, great.', T);
+        const decision = turn.tick(T + 1200);
+        turn.final('So how would you design a rate limiter?', T + 1500);
+        turn.detected('whisper', T + 1700, 'not-a-question', (decision as any).turn, 1);
+        expect(turn.snapshot().detected).toBe(false);
+        expect(turn.tick(T + 1500 + 1200)).toMatchObject({ kind: 'classify', finals: 2 });
+    });
+
     it('T-C3: a verdict for an earlier turn does not close the turn that replaced it', () => {
         const turn = createInterviewerTurn();
         turn.speech(true, T);
