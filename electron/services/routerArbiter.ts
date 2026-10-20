@@ -91,6 +91,11 @@ export class RouterArbiter {
     this.maybeWriteLine(t);
   }
 
+  /** True once the turn's decision showed the Live answer (main.ts keeps a question answered when the pipeline answer fails behind it). */
+  liveShown(id: number): boolean {
+    return this.turns.find((x) => x.id === id)?.decision?.shown === 'live';
+  }
+
   turnDispatched(id: number, at: number, q: number, qSrc: QSrc): void {
     if (!this.deps.enabled || this.dispatched.has(id)) return;     // item 19: idempotent per id
     this.dispatched.add(id);

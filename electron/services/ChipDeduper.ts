@@ -214,6 +214,16 @@ export class ChipDeduper {
   }
 
   /**
+   * The inverse of markAnswered, for an answer that FAILED (S2): the entry goes back to unanswered, so it ages out at
+   * windowMs and a repeat of the question inside it is answered instead of dropped as already answered.
+   */
+  unmarkAnswered(id: number | undefined): void {
+    if (id === undefined) return;
+    const entry = this.cache.find((e) => e.id === id);
+    if (entry) { entry.answered = false; entry.answeredSeq = 0; }
+  }
+
+  /**
    * The answered entry now stands for the fuller sentence it was extended to
    * (main.ts extend dispatch): a later re-fire of that sentence is a plain
    * duplicate with nothing added, not a second extension.

@@ -273,3 +273,38 @@ describe('history sink instead of session (Review Focus 2 / I3)', () => {
         expect(add).toHaveBeenCalledTimes(1);
     });
 });
+
+describe('suggested_answer_end classifies the two placeholder failures as failed (S2)', () => {
+    afterEach(() => { vi.restoreAllMocks(); classifyControl.throwNext = false; });
+
+    it('an empty stream ends failed; the placeholder is still shown as before', async () => {
+        captureLogs();
+        stubStream([]);
+        const engine = new IntelligenceEngine(stubHelper(), new SessionTracker());
+        const ev = record(engine);
+        await engine.runWhatShouldISay(QUESTION, 1.0, undefined, { ...BASE, turnId: 7 });
+        expect(ev.end.map((e) => [e[0], e[1]])).toEqual([[7, 'failed']]);
+        expect(ev.fin).toHaveLength(1);
+        expect(ev.fin[0][0]).toMatch(/^Could you repeat that\?/);
+    });
+
+    it('a stream that is only the [No answer — sentinel (all legs failed) ends failed; the text is unchanged', async () => {
+        captureLogs();
+        const sentinel = '[No answer — the answer model failed: socket hang up]';
+        stubStream([sentinel]);
+        const engine = new IntelligenceEngine(stubHelper(), new SessionTracker());
+        const ev = record(engine);
+        await engine.runWhatShouldISay(QUESTION, 1.0, undefined, { ...BASE, turnId: 7 });
+        expect(ev.end.map((e) => [e[0], e[1]])).toEqual([[7, 'failed']]);
+        expect(ev.fin[0][0]).toBe(sentinel);
+    });
+
+    it('control: a real answer that mentions "no answer" mid-text still ends completed', async () => {
+        captureLogs();
+        stubStream(['There is no answer in the transcript, so I would ask a clarifying question.']);
+        const engine = new IntelligenceEngine(stubHelper(), new SessionTracker());
+        const ev = record(engine);
+        await engine.runWhatShouldISay(QUESTION, 1.0, undefined, { ...BASE, turnId: 7 });
+        expect(ev.end.map((e) => e[1])).toEqual(['completed']);
+    });
+});

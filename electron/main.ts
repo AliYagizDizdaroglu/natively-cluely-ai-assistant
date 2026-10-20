@@ -169,6 +169,7 @@ import { shouldFailOver, shouldRestartEar, EAR_FAILOVER_MODEL } from "./services
 import { createEarSilenceWatch, EAR_SILENCE_GRACE_MS, type EarSilenceWatch } from "./services/earSilence"
 import { parseDrill, muteChunk } from "./services/faultDrill"
 import { ChipDeduper } from "./services/ChipDeduper"
+import { AnswerOutcomeTracker } from "./services/answerOutcome"
 import { SttChannel } from "./audio/SttChannel"
 import { DeepgramStreamingSTT } from "./audio/DeepgramStreamingSTT"
 import { SonioxStreamingSTT } from "./audio/SonioxStreamingSTT"
@@ -956,6 +957,7 @@ export class AppState {
   private routerWiring!: ReturnType<typeof createRouterWiring>;
   /** Shared across whisper→Groq and Live so one question yields one chip. */
   private readonly chipDeduper = new ChipDeduper();
+  private readonly answerOutcome = new AnswerOutcomeTracker();   // S2: hands a FAILED answer's question back to the deduper
   /**
    * Holds a Live detection whose verdict is 'unverifiable' (no interviewer STT
    * to cross-check it against yet) instead of dispatching it blind — R37.
@@ -1072,6 +1074,7 @@ export class AppState {
         console.log(`[Main] turn: gate=${gate} finals=${d.finals} live=${d.live.length} finished=true`);
         console.log(`[Main] dispatch: supersede source=${input.source} anchor=${anchorLog} verdict=${input.verdict} replaces=${JSON.stringify(d.replaces)} question=${JSON.stringify(d.text)}`);
         this.chipDeduper.extend(this.turnDedupId, d.text);
+        if (input.turnId != null) this.answerOutcome.dispatched(input.turnId, this.turnDedupId);
         this.broadcast('live-question', { question: d.text, intent: input.intent, source: input.source, replace: true });
         void this.answerDetection(input, { replace: true })
           .catch((err: any) => console.error('[Main] supersede-answer failed:', err?.message ?? err));
@@ -2246,6 +2249,7 @@ export class AppState {
     if (d.turnId != null) this.turn.answered(d.turnId, Date.now());   // D2: the one place an answer is committed to the screen
     this.liveRouter?.noteAnswered();   // opens the ear's short-follow-up window (open until the next interviewer question is dispatched, 180 s cap: GeminiLiveRouter FOLLOWUP_CAP_MS)
     this.routerWiring.answered(d.turnId);   // the arbiter's Q: before the pipeline request, so the engine's events find the turn dispatched
+    if (d.turnId != null) this.answerOutcome.dispatched(d.turnId, verdict.id);
     void this.answerDetection(d)
       .catch((err: any) => console.error('[Main] auto-answer failed:', err?.message ?? err));
   }
@@ -2666,8 +2670,14 @@ export class AppState {
       this.routerWiring.onSource(label, turnId)
     })
 
-    this.intelligenceManager.on('suggested_answer_end', (turnId: number | null, kind: 'completed' | 'aborted' | 'failed') => {
-      this.routerWiring.onEnd(turnId, kind)   // the third argument (generationId) is not used here
+    this.intelligenceManager.on('suggested_answer_end', (turnId: number | null, kind: 'completed' | 'aborted' | 'failed', generationId?: number | null) => {
+      this.routerWiring.onEnd(turnId, kind)
+      // S2: a FAILED answer (error, empty, all legs failed, no stream) must not leave its question marked answered.
+      const unmarkId = this.answerOutcome.ended(turnId, kind, generationId, turnId != null && this.routerArbiter.liveShown(turnId));
+      if (unmarkId !== undefined) {
+        this.chipDeduper.unmarkAnswered(unmarkId);
+        console.log(`[Main] answer failed turn=${turnId} kind=${kind}: question un-marked answered (a re-ask is answered)`);
+      }
     })
 
     this.intelligenceManager.on('refined_answer_token', (token: string, intent: string) => {

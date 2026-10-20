@@ -35,6 +35,9 @@ const GEMMA_HANDOVER = /^__model_source:(Gemini Flash)__$/;
 /** The hedge's winner, as LLMHelper.streamGeminiWithHedge announces it: one whole chunk. */
 const HEDGE_WINNER = /^__model_source:(\S+) \(hedge\)__$/;
 
+/** The text an all-legs-failed stream yields instead of an answer; IntelligenceEngine reads it to end the turn as failed. */
+export const NO_ANSWER_SENTINEL = '[No answer — ';
+
 export class WhatToAnswerLLM {
     private llmHelper: LLMHelper;
 
@@ -472,8 +475,8 @@ ANSWER SHAPE: ${intentResult.answerShape}
             console.error("[WhatToAnswerLLM] Stream failed:", error);
             diagLog(`generateStream FAILED (fallback exhausted or unavailable): ${msg}`);
             yield fallbackModel
-                ? `[No answer — both the primary model and the ${fallbackModel} fallback failed: ${msg.slice(0, 160)}]`
-                : `[No answer — the answer model failed: ${msg.slice(0, 160)}]`;
+                ? `${NO_ANSWER_SENTINEL}both the primary model and the ${fallbackModel} fallback failed: ${msg.slice(0, 160)}]`
+                : `${NO_ANSWER_SENTINEL}the answer model failed: ${msg.slice(0, 160)}]`;
         }
     }
 }

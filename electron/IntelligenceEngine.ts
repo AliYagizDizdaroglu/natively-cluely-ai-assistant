@@ -12,6 +12,7 @@ import {
     AssistantResponse as LLMAssistantResponse, classifyIntent
 } from './llm';
 import { getAnswerShapeGuidance, IntentResult } from './llm/IntentClassifier';
+import { NO_ANSWER_SENTINEL } from './llm/WhatToAnswerLLM';
 import { pinSettledQuestion } from './llm/lastInterviewerTurn';
 import { withParentExchange } from './llm/followUpParent';
 import { earlierQuestionEnabled, buildEarlierQuestion, interviewerLinesBefore } from './llm/earlierQuestion';
@@ -521,8 +522,14 @@ export class IntelligenceEngine extends EventEmitter {
                 return null;
             }
 
+            // S2: the two placeholder failures (empty answer, all legs failed) still show their text but end the turn
+            // as failed, so main.ts hands the question back to the deduper and a re-ask is answered.
+            let placeholderFailure = false;
             if (!fullAnswer || fullAnswer.trim().length < 5) {
                 fullAnswer = "Could you repeat that? I want to make sure I address your question properly.";
+                placeholderFailure = true;
+            } else if (fullAnswer.trimStart().startsWith(NO_ANSWER_SENTINEL)) {
+                placeholderFailure = true;
             }
 
             // A turn's answer goes to the router's history sink, which adds it only once the turn's route is
@@ -541,7 +548,7 @@ export class IntelligenceEngine extends EventEmitter {
             // The renderer already has all tokens — this is for metadata only (e.g. copying, history).
             this.emit('suggested_answer', fullAnswer, question || 'What to Answer', confidence, options.replaceAnswer === true, options.turnId ?? undefined);
 
-            endKind = 'completed';
+            endKind = placeholderFailure ? 'failed' : 'completed';
             this.setMode('idle');
             return fullAnswer;
 
