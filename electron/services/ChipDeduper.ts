@@ -130,11 +130,22 @@ export interface ChipDeduperOptions {
  */
 const TAIL_MIN_CONTENT_WORDS = 4;
 
-/** Jaccard over content-word sets: frame words ("how would you") are stop-ish and must not carry a match. */
+interface RingEntry extends CacheEntry {
+  /** now() when markAnswered ran; the age of a late echo is counted from here. */
+  answeredAt: number;
+}
+
+/** Question-frame words longer than 3 letters: contentWords keeps them, but they say nothing about the topic. */
+const FRAME_WORDS = new Set(['would', 'could', 'should', 'what', 'when', 'where', 'which', 'why', 'whose', 'your', 'this', 'that', 'have', 'does', 'about', 'design', 'describe', 'explain', 'walk', 'through', 'tell', 'give', 'between', 'difference', 'like']);
+
+/** Jaccard over topic words (content words minus FRAME_WORDS); 0 when nothing is shared. */
 function contentJaccard(a: Set<string>, b: Set<string>): number {
+  const ta = [...a].filter((w) => !FRAME_WORDS.has(w));
+  const tb = new Set([...b].filter((w) => !FRAME_WORDS.has(w)));
   let shared = 0;
-  for (const w of a) if (b.has(w)) shared++;
-  return shared / (a.size + b.size - shared);
+  for (const w of ta) if (tb.has(w)) shared++;
+  if (shared === 0) return 0;
+  return shared / (ta.length + tb.size - shared);
 }
 
 /** Answered ring: how many answered questions a Live echo is checked against, with no age limit (S3). */
@@ -143,7 +154,7 @@ const ANSWERED_RING_SIZE = 3;
 export class ChipDeduper {
   private cache: CacheEntry[] = [];
   /** The last ANSWERED_RING_SIZE answered entries, outliving answeredWindowMs and cacheSize; copies, so extend() updates them by id. */
-  private ring: CacheEntry[] = [];
+  private ring: RingEntry[] = [];
   private nextId = 1;
   private answerSeq = 0;
   private readonly windowMs: number;
@@ -202,29 +213,39 @@ export class ChipDeduper {
    * (TAIL_MIN_CONTENT_WORDS) refuses for both evidence questions (1 and 2 content words).
    */
   isAnsweredDuplicate(candidate: DedupCandidate): boolean {
+    return this.answeredDuplicate(candidate) !== null;
+  }
+
+  /**
+   * isAnsweredDuplicate with the reason: 'stale-mark' (inside answeredWindowMs, the latest answer) or 'late-echo'
+   * (S3: a Live claim matching one of the answered ring, with the age since that answer).
+   * Only the Live claim is dropped for a late echo; the same text from STT still dispatches.
+   */
+  answeredDuplicate(candidate: DedupCandidate): { reason: 'stale-mark' } | { reason: 'late-echo'; ageMs: number } | null {
     const text = (candidate.question ?? '').trim();
-    if (!text) return false;
+    if (!text) return null;
     const now = this.now();
     // Only the MOST RECENTLY answered question can be stale: both evidence cases re-emit the latest answer. A repeat of an
     // earlier answered question (P1, "Why that one?", P2, "Why that one?") is a new follow-up and must mark.
     const latest = this.cache.filter((e) => e.answered).sort((a, b) => b.answeredSeq - a.answeredSeq)[0];
     const answered = latest && now - latest.at < this.answeredWindowMs ? [latest] : [];
-    if (this.findSimilar(text, candidate.anchor, candidate.source, now, answered)) return true;
+    if (this.findSimilar(text, candidate.anchor, candidate.source, now, answered)) return { reason: 'stale-mark' };
     const norm = normalizeForContainment(text);
-    if (norm.length >= 3 && answered.some((e) => normalizeForContainment(e.text) === norm)) return true;
-    return candidate.source === 'live' && this.isLateEcho(text);
+    if (norm.length >= 3 && answered.some((e) => normalizeForContainment(e.text) === norm)) return { reason: 'stale-mark' };
+    const echo = candidate.source === 'live' ? this.lateEcho(text) : undefined;
+    return echo ? { reason: 'late-echo', ageMs: now - echo.answeredAt } : null;
   }
 
   /**
    * S3: the Live ear re-announces an answered question 62-76 s later (past answeredWindowMs), or one that is not the latest
-   * answer. Live claims only; 4+ content words on both sides; near-exact (Jaccard over content words >= threshold, so a shared frame ("how would you design ...") does not count; or equal text), no age limit,
+   * answer. Live claims only; 4+ content words on both sides; near-exact (equal text, or Jaccard over topic words >= threshold: FRAME_WORDS do not count, so a shared frame does not match), no age limit,
    * checked against the last ANSWERED_RING_SIZE answers. A re-ask after a FAILED answer is not in the ring (unmarkAnswered).
    */
-  private isLateEcho(text: string): boolean {
+  private lateEcho(text: string): RingEntry | undefined {
     const words = contentWords(text);
-    if (words.size < TAIL_MIN_CONTENT_WORDS) return false;
+    if (words.size < TAIL_MIN_CONTENT_WORDS) return undefined;
     const norm = normalizeForContainment(text);
-    return this.ring.some((e) => contentWords(e.text).size >= TAIL_MIN_CONTENT_WORDS
+    return this.ring.find((e) => contentWords(e.text).size >= TAIL_MIN_CONTENT_WORDS
       && (normalizeForContainment(e.text) === norm || contentJaccard(words, contentWords(e.text)) >= this.threshold));
   }
 
@@ -240,7 +261,7 @@ export class ChipDeduper {
     if (entry) {
       entry.answered = true; entry.answeredSeq = ++this.answerSeq;
       this.ring = this.ring.filter((e) => e.id !== entry.id);
-      this.ring.push({ ...entry });
+      this.ring.push({ ...entry, answeredAt: this.now() });
       if (this.ring.length > ANSWERED_RING_SIZE) this.ring.shift();
     }
   }

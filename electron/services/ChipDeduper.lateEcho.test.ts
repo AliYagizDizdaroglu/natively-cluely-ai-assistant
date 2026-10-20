@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { ChipDeduper } from './ChipDeduper';
 
 // S3 (overnight-1020): the Live ear re-announced an answered question 62-76 s later. The 60 s answered window and the
@@ -71,6 +73,40 @@ describe('late Live echo of an answered question', () => {
     expect(d.isAnsweredDuplicate(cand(Q1_ECHO, 'whisper'))).toBe(false);
     at(90_000);
     expect(d.isAnsweredDuplicate(cand(Q2, 'whisper'))).toBe(false);
+  });
+  it('names its own reason and age; a recent re-emission stays stale-mark', () => {
+    const { d, answer, at } = run();
+    answer(Q1, 0);
+    at(5_000);
+    expect(d.answeredDuplicate(cand(Q1_ECHO, 'live'))).toEqual({ reason: 'stale-mark' });
+    answer(Q2, 25_000);
+    at(90_000);
+    expect(d.answeredDuplicate(cand(Q1_ECHO, 'live'))).toEqual({ reason: 'late-echo', ageMs: 90_000 });
+    expect(d.answeredDuplicate(cand(Q3, 'live'))).toBeNull();
+  });
+  it('main.ts logs the reason the deduper returns, not a fixed stale-mark', () => {
+    const src = readFileSync(join(__dirname, '..', 'main.ts'), 'utf8');
+    const i = src.indexOf('this.chipDeduper.answeredDuplicate(');
+    expect(i).toBeGreaterThan(0);
+    const block = src.slice(i, src.indexOf('return;', i));
+    expect(block).toContain('reason=${dup.reason}');
+    expect(block).toContain('age=');
+  });
+  // Pinned: question-frame words (how, would, design, ...) do not count toward the match, only topic words do.
+  // Only the LIVE claim is dropped; the same text from STT still dispatches.
+  it('frame words do not carry the match: a different topic under the same frame is dispatched', () => {
+    const { d, answer, at } = run();
+    answer(Q1, 0);
+    at(90_000);
+    expect(d.isAnsweredDuplicate(cand('How would you design a message queue for a public API?', 'live'))).toBe(false);
+  });
+  it('one extra topic word still matches (3 of 4 topic words, 0.75); STT is unaffected', () => {
+    const { d, answer, at } = run();
+    answer(Q1, 0);
+    at(90_000);
+    const longer = 'How would you design a rate limiter for a public API for scale?';
+    expect(d.isAnsweredDuplicate(cand(longer, 'live'))).toBe(true);
+    expect(d.isAnsweredDuplicate(cand(longer, 'whisper'))).toBe(false);
   });
   it('reset clears the ring', () => {
     const { d, answer, at } = run();

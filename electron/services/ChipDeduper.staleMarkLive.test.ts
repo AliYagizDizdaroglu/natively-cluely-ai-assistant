@@ -19,11 +19,11 @@ function answered(q: string) {
 describe('stale-mark guard applies to Live marks too', () => {
   it('main.ts guard has no source condition (the F3 defect: a whisper-only check) and logs the real source', () => {
     const src = readFileSync(join(__dirname, '..', 'main.ts'), 'utf8');
-    const i = src.indexOf('this.chipDeduper.isAnsweredDuplicate(');
+    const i = src.indexOf('this.chipDeduper.answeredDuplicate(');
     expect(i).toBeGreaterThan(0);
     const guardLine = src.slice(src.lastIndexOf('\n', i) + 1, src.indexOf('\n', i));
     expect(guardLine).not.toMatch(/source === 'whisper'/);
-    const logLine = src.slice(i, src.indexOf('reason=stale-mark', i));
+    const logLine = src.slice(i, src.indexOf('reason=${dup.reason}', i));
     expect(logLine).toContain('dispatch: drop source=${d.source}');
   });
   it('ST09: the Live re-announcement of SQ01 at +4.5 s is stale', () => {

@@ -2176,8 +2176,9 @@ export class AppState {
       // F3/F3b: a re-emission (the detector's "chip updated", or a Live re-announcement, any verdict) of the question that was
       // just answered would make the next statement (small talk, a thank-you) dispatchable, or answer it twice. Both ears. Only the
       // latest answered question counts as stale, so a short follow-up ("Why that one?") still marks.
-      if (this.chipDeduper.isAnsweredDuplicate({ question: d.question, source: d.source, anchor: d.anchor })) {
-        console.log(`[Main] dispatch: drop source=${d.source} anchor=${JSON.stringify((d.anchor ?? d.question).slice(0, 80))} verdict=${d.verdict} reason=stale-mark question=${JSON.stringify(d.question)}`);
+      const dup = this.chipDeduper.answeredDuplicate({ question: d.question, source: d.source, anchor: d.anchor });
+      if (dup) {
+        console.log(`[Main] dispatch: drop source=${d.source} anchor=${JSON.stringify((d.anchor ?? d.question).slice(0, 80))} verdict=${d.verdict} reason=${dup.reason}${'ageMs' in dup ? ` age=${dup.ageMs}` : ''} question=${JSON.stringify(d.question)}`);
         return;
       }
       if (d.source === 'live') this.turn.liveClaim(d.liveText ?? d.question, now);
