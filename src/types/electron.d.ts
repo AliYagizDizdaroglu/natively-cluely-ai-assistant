@@ -53,6 +53,8 @@ export interface ElectronAPI {
   onEnsureExpanded: (callback: () => void) => () => void
   openExternal: (url: string) => Promise<void>
   setUndetectable: (state: boolean) => Promise<{ success: boolean; error?: string }>
+  getBackgroundMode: () => Promise<boolean>
+  onBackgroundModeChanged: (callback: (state: boolean) => void) => () => void
   getUndetectable: () => Promise<boolean>
   setOverlayMousePassthrough: (enabled: boolean) => Promise<{ success: boolean }>
   toggleOverlayMousePassthrough: () => Promise<{ success: boolean; enabled: boolean }>

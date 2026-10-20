@@ -22,6 +22,7 @@ export interface ShortcutConfig {
     moveWindowLeft: string[];
     moveWindowRight: string[];
     // General
+    toggleBackground: string[];
     toggleVisibility: string[];
     toggleMousePassthrough: string[];
     processScreenshots: string[];
@@ -51,6 +52,7 @@ function buildDefaultShortcuts(): ShortcutConfig {
         moveWindowDown: [mod, shift, '↓'],
         moveWindowLeft: [mod, shift, '←'],
         moveWindowRight: [mod, shift, '→'],
+        toggleBackground: ['Ctrl', 'Alt', 'B'],
         toggleVisibility: [mod, 'B'],
         toggleMousePassthrough: [mod, shift, 'B'],
         processScreenshots: [mod, 'Enter'],
@@ -78,6 +80,7 @@ export const DEFAULT_SHORTCUTS: ShortcutConfig = {
     moveWindowDown: ['⌘', '⇧', '↓'],
     moveWindowLeft: ['⌘', '⇧', '←'],
     moveWindowRight: ['⌘', '⇧', '→'],
+    toggleBackground: ['Ctrl', 'Alt', 'B'],
     toggleVisibility: ['⌘', 'B'],
     toggleMousePassthrough: ['⌘', '⇧', 'B'],
     processScreenshots: ['⌘', 'Enter'],
@@ -120,6 +123,7 @@ export const useShortcuts = () => {
                 else if (kb.id === 'window:move-left') newShortcuts.moveWindowLeft = keys;
                 else if (kb.id === 'window:move-right') newShortcuts.moveWindowRight = keys;
                 // General
+                else if (kb.id === 'general:toggle-background') newShortcuts.toggleBackground = keys;
                 else if (kb.id === 'general:toggle-visibility') newShortcuts.toggleVisibility = keys;
                 else if (kb.id === 'general:toggle-mouse-passthrough') newShortcuts.toggleMousePassthrough = keys;
                 else if (kb.id === 'general:process-screenshots') newShortcuts.processScreenshots = keys;
@@ -182,6 +186,7 @@ export const useShortcuts = () => {
             case 'moveWindowLeft': backendId = 'window:move-left'; break;
             case 'moveWindowRight': backendId = 'window:move-right'; break;
             // General
+            case 'toggleBackground': backendId = 'general:toggle-background'; break;
             case 'toggleVisibility': backendId = 'general:toggle-visibility'; break;
             case 'toggleMousePassthrough': backendId = 'general:toggle-mouse-passthrough'; break;
             case 'processScreenshots': backendId = 'general:process-screenshots'; break;

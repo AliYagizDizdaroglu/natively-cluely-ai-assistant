@@ -757,6 +757,8 @@ export function initializeIpcHandlers(appState: AppState): void {
     return { success: true }
   })
 
+  safeHandle("background-mode:get", async () => appState.getBackgroundMode());
+
   safeHandle("get-undetectable", async () => {
     return appState.getUndetectable()
   })

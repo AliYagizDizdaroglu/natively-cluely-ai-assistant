@@ -1,3 +1,4 @@
+import { BackgroundVisibility } from './services/BackgroundVisibility';
 import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, shell, systemPreferences, screen, desktopCapturer } from "electron"
 import path from "path"
 import fs from "fs"
@@ -287,6 +288,10 @@ export class AppState {
   private themeManager: ThemeManager
   private ragManager: RAGManager | null = null
   private knowledgeOrchestrator: any = null
+  private readonly backgroundVisibility = process.platform === 'win32'
+    ? new BackgroundVisibility(() => this.hideTray(), () => {
+        this.showTray();
+      }, hidden => this._broadcastToAllWindows('background-mode-changed', hidden)) : null;
   private tray: Tray | null = null
   private updateAvailable: boolean = false
   private disguiseMode: 'terminal' | 'settings' | 'activity' | 'none' = 'none'
@@ -363,7 +368,7 @@ export class AppState {
   constructor() {
     // 1. Load boot-critical settings first (used by WindowHelpers)
     const settingsManager = SettingsManager.getInstance();
-    this.isUndetectable = settingsManager.get('isUndetectable') ?? false;
+    this.isUndetectable = process.platform === 'win32' ? true : (settingsManager.get('isUndetectable') ?? false);
     this.disguiseMode = settingsManager.get('disguiseMode') ?? 'none';
     this._verboseLogging = settingsManager.get('verboseLogging') ?? false;
     setVerboseLoggingFlag(this._verboseLogging);
@@ -394,11 +399,21 @@ export class AppState {
     keybindManager.setupIpcHandlers();
     keybindManager.onUpdate(() => {
       this.updateTrayMenu();
+
     });
 
     keybindManager.onShortcutTriggered(async (actionId) => {
       console.log(`[Main] Global shortcut triggered: ${actionId}`);
       try {
+        if (actionId === 'general:toggle-background' && this.backgroundVisibility) {
+          if (this.backgroundVisibility.active) {
+            this.backgroundVisibility.show();
+          } else {
+            this.backgroundVisibility.hide();
+          }
+          return;
+        }
+
         if (actionId === 'general:toggle-visibility') {
           this.toggleMainWindow();
         } else if (actionId === 'general:toggle-mouse-passthrough') {
@@ -3124,6 +3139,7 @@ export class AppState {
   }
 
   public centerAndShowWindow(): void {
+    // Relaunch restores window access without changing shell icon visibility.
     this.windowHelper.centerAndShowWindow()
   }
 
@@ -3132,6 +3148,7 @@ export class AppState {
   }
 
   public showTray(): void {
+    if (this.backgroundVisibility?.active) return;
     if (this.tray) return;
 
     // Try to find a template image first for macOS
@@ -3277,6 +3294,9 @@ export class AppState {
 
     console.log(`[Stealth] setUndetectable(${state}) called`);
 
+    if (this.backgroundVisibility) {
+      if (state) this.backgroundVisibility.hide(); else this.backgroundVisibility.show();
+    }
     this.isUndetectable = state
     this.windowHelper.setContentProtection(state)
     this.settingsWindowHelper.setContentProtection(state)
@@ -3370,6 +3390,10 @@ export class AppState {
         }
       }, 150);
     }
+  }
+
+  public getBackgroundMode(): boolean {
+    return this.backgroundVisibility?.active ?? false;
   }
 
   public getUndetectable(): boolean {

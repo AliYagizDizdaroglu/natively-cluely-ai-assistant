@@ -12,6 +12,7 @@ export interface KeybindConfig {
 
 export const DEFAULT_KEYBINDS: KeybindConfig[] = [
     // General
+    ...(process.platform === 'win32' ? [{ id: 'general:toggle-background', label: 'Hide / Show Tray and Taskbar Icons', accelerator: 'CommandOrControl+Alt+B', isGlobal: true, defaultAccelerator: 'CommandOrControl+Alt+B' }] : []),
     { id: 'general:toggle-visibility', label: 'Toggle Visibility', accelerator: 'CommandOrControl+B', isGlobal: true, defaultAccelerator: 'CommandOrControl+B' },
     { id: 'general:toggle-mouse-passthrough', label: 'Toggle Mouse Passthrough', accelerator: 'CommandOrControl+Shift+B', isGlobal: true, defaultAccelerator: 'CommandOrControl+Shift+B' },
     { id: 'general:process-screenshots', label: 'Process Screenshots', accelerator: 'CommandOrControl+Enter', isGlobal: true, defaultAccelerator: 'CommandOrControl+Enter' },
@@ -67,6 +68,7 @@ export class KeybindManager {
         if (this.activeMode === 'overlay') return true;
 
         // In launcher mode, register visibility + movement shortcuts
+        if (actionId === 'general:toggle-background') return true;
         if (actionId === 'general:toggle-visibility') return true;
         if (actionId === 'general:toggle-mouse-passthrough') return true;
         if (actionId.startsWith('window:move-')) return true;

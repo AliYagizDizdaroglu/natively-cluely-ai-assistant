@@ -1,3 +1,4 @@
+import { BackgroundModeNotice } from './BackgroundModeNotice';
 import React, { useState, useEffect } from 'react';
 import { ToggleLeft, ToggleRight, Search, Zap, Calendar, ArrowRight, ArrowLeft, MoreHorizontal, Globe, Clock, ChevronRight, Settings, LayoutGrid, RefreshCw, Eye, EyeOff, Ghost, Plus, Mail, Link as LinkIcon, ChevronDown, Trash2, Bell, Check, Download, DownloadCloud, CheckCircle, AlertCircle, User, UserSearch } from 'lucide-react';
 import { generateMeetingPDF } from '../utils/pdfGenerator';
@@ -649,6 +650,8 @@ const Launcher: React.FC<LauncherProps> = ({ onStartMeeting, onOpenSettings, onO
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <BackgroundModeNotice />
 
                                         {/* Center: Ollama Pull Status Pill (flex-1 to center evenly) */}
                                         <div className="flex-1 flex justify-center mx-4">

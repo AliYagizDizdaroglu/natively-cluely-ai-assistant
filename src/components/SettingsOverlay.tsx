@@ -1,3 +1,4 @@
+import { isWindows } from '../utils/platformUtils';
 import React, { useState, useEffect, useMemo } from 'react';
 import packageJson from '../../package.json';
 import {
@@ -1888,6 +1889,13 @@ const SettingsOverlay: React.FC<SettingsOverlayProps> = ({ isOpen, onClose, init
                                         {/* General Category */}
                                         <div>
                                             <h4 className="text-sm font-bold text-text-primary mb-3">General</h4>
+                                            {isWindows && <div className="mb-3">
+                                                <div className="flex items-center justify-between py-1.5">
+                                                    <span className="text-sm text-text-secondary">Hide / Show Tray and Taskbar Icons</span>
+                                                    <KeyRecorder currentKeys={shortcuts.toggleBackground} onSave={(keys) => updateShortcut('toggleBackground', keys)} />
+                                                </div>
+                                                <p className="text-xs text-text-secondary">Toggles tray and taskbar icons while keeping the UI visible. Starts with icons hidden and Undetectable On. The process remains visible in Task Manager.</p>
+                                            </div>}
                                             <div className="space-y-1">
                                                 <div className="flex items-center justify-between py-1.5 group">
                                                     <div className="flex items-center gap-3">

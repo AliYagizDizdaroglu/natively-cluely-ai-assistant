@@ -212,6 +212,8 @@ interface ElectronAPI {
   onGeminiStreamSource: (callback: (model: string) => void) => () => void
 
 
+  getBackgroundMode: () => Promise<boolean>
+  onBackgroundModeChanged: (callback: (state: boolean) => void) => () => void
   onUndetectableChanged: (callback: (state: boolean) => void) => () => void
   onGroqFastTextChanged: (callback: (enabled: boolean) => void) => () => void
   onModelChanged: (callback: (modelId: string) => void) => () => void
@@ -519,6 +521,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
   },
   openExternal: (url: string) => ipcRenderer.invoke("open-external", url),
   setUndetectable: (state: boolean) => ipcRenderer.invoke("set-undetectable", state),
+  getBackgroundMode: () => ipcRenderer.invoke('background-mode:get'),
+  onBackgroundModeChanged: (callback: (state: boolean) => void) => {
+    const listener = (_event: unknown, hidden: boolean) => callback(hidden);
+    ipcRenderer.on('background-mode-changed', listener);
+    return () => ipcRenderer.removeListener('background-mode-changed', listener);
+  },
   getUndetectable: () => ipcRenderer.invoke("get-undetectable"),
   setOverlayMousePassthrough: (enabled: boolean) => ipcRenderer.invoke("set-overlay-mouse-passthrough", enabled),
   toggleOverlayMousePassthrough: () => ipcRenderer.invoke("toggle-overlay-mouse-passthrough"),

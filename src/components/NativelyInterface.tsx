@@ -1,3 +1,4 @@
+import { BackgroundModeNotice } from './BackgroundModeNotice';
 import React, { useState, useEffect, useRef, useLayoutEffect, useMemo, useCallback } from 'react';
 import {
     Sparkles,
@@ -2517,6 +2518,7 @@ Provide only the answer, nothing else.`;
     return (
         <div ref={contentRef} className="flex flex-col items-center w-fit mx-auto h-fit min-h-0 bg-transparent p-0 rounded-[24px] font-sans gap-2 overlay-text-primary">
 
+            <BackgroundModeNotice />
             <AnimatePresence>
                 {isExpanded && (
                     <motion.div
