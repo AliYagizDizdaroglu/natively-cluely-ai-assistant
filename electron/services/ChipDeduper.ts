@@ -130,8 +130,20 @@ export interface ChipDeduperOptions {
  */
 const TAIL_MIN_CONTENT_WORDS = 4;
 
+/** Jaccard over content-word sets: frame words ("how would you") are stop-ish and must not carry a match. */
+function contentJaccard(a: Set<string>, b: Set<string>): number {
+  let shared = 0;
+  for (const w of a) if (b.has(w)) shared++;
+  return shared / (a.size + b.size - shared);
+}
+
+/** Answered ring: how many answered questions a Live echo is checked against, with no age limit (S3). */
+const ANSWERED_RING_SIZE = 3;
+
 export class ChipDeduper {
   private cache: CacheEntry[] = [];
+  /** The last ANSWERED_RING_SIZE answered entries, outliving answeredWindowMs and cacheSize; copies, so extend() updates them by id. */
+  private ring: CacheEntry[] = [];
   private nextId = 1;
   private answerSeq = 0;
   private readonly windowMs: number;
@@ -199,18 +211,38 @@ export class ChipDeduper {
     const answered = latest && now - latest.at < this.answeredWindowMs ? [latest] : [];
     if (this.findSimilar(text, candidate.anchor, candidate.source, now, answered)) return true;
     const norm = normalizeForContainment(text);
-    return norm.length >= 3 && answered.some((e) => normalizeForContainment(e.text) === norm);
+    if (norm.length >= 3 && answered.some((e) => normalizeForContainment(e.text) === norm)) return true;
+    return candidate.source === 'live' && this.isLateEcho(text);
+  }
+
+  /**
+   * S3: the Live ear re-announces an answered question 62-76 s later (past answeredWindowMs), or one that is not the latest
+   * answer. Live claims only; 4+ content words on both sides; near-exact (Jaccard over content words >= threshold, so a shared frame ("how would you design ...") does not count; or equal text), no age limit,
+   * checked against the last ANSWERED_RING_SIZE answers. A re-ask after a FAILED answer is not in the ring (unmarkAnswered).
+   */
+  private isLateEcho(text: string): boolean {
+    const words = contentWords(text);
+    if (words.size < TAIL_MIN_CONTENT_WORDS) return false;
+    const norm = normalizeForContainment(text);
+    return this.ring.some((e) => contentWords(e.text).size >= TAIL_MIN_CONTENT_WORDS
+      && (normalizeForContainment(e.text) === norm || contentJaccard(words, contentWords(e.text)) >= this.threshold));
   }
 
   reset(): void {
     this.cache = [];
+    this.ring = [];
   }
 
   /** Record that the cache entry identified by admit()'s returned id has been answered. */
   markAnswered(id: number | undefined): void {
     if (id === undefined) return;
     const entry = this.cache.find((e) => e.id === id);
-    if (entry) { entry.answered = true; entry.answeredSeq = ++this.answerSeq; }
+    if (entry) {
+      entry.answered = true; entry.answeredSeq = ++this.answerSeq;
+      this.ring = this.ring.filter((e) => e.id !== entry.id);
+      this.ring.push({ ...entry });
+      if (this.ring.length > ANSWERED_RING_SIZE) this.ring.shift();
+    }
   }
 
   /**
@@ -221,6 +253,7 @@ export class ChipDeduper {
     if (id === undefined) return;
     const entry = this.cache.find((e) => e.id === id);
     if (entry) { entry.answered = false; entry.answeredSeq = 0; }
+    this.ring = this.ring.filter((e) => e.id !== id);
   }
 
   /**
@@ -232,6 +265,8 @@ export class ChipDeduper {
     if (id === undefined) return;
     const entry = this.cache.find((e) => e.id === id);
     if (entry) entry.text = question.trim();
+    const ringed = this.ring.find((e) => e.id === id);
+    if (ringed) ringed.text = question.trim();
   }
 
   private findSimilar(text: string, anchor: string | undefined, source: ChipSource, now: number, entries: CacheEntry[] = this.cache): CacheEntry | null {
