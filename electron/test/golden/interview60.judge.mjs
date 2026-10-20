@@ -76,6 +76,12 @@ const overlap = (a, b) => {
     return Math.max(n / A.size, n / B.size);
 };
 
+/** Drops pairs no scripted item claimed (answers to nobody), logging each one rather than dropping silently. */
+export function keepClaimed(pairs, log = console.error) {
+    for (const p of pairs) if (p.id === '?') log(`JUDGE dropped unclaimed dispatch ${p.dispatchedAt}`);
+    return pairs.filter((p) => p.id !== '?');
+}
+
 /**
  * Pair every answer dispatch in the debug log with the full answer text that
  * follows it (before the next dispatch, within 60 s) and claim it to the
@@ -97,6 +103,11 @@ export function pairAnswers(debugLog, timeline) {
     // that no answer claimed, and its text is appended to the head's answer —
     // the candidate says both, so the judge sees both.
     const taken = new Set();
+    const windowPending = [];
+    const claim = (pair, item, attribution) => {
+        if (!item) return;
+        Object.assign(pair, { attribution, id: item.id, kind: item.kind ?? 'unknown', level: item.level ?? null, topic: item.topic ?? null, question: questionForGrader(item, items) });
+    };
     const pairs = dispatches.map((d, i) => {
         const end = Math.min(dispatches[i + 1]?.at ?? Infinity, d.at + 60_000);
         const full = fulls.find((f) => f.at >= d.at && f.at < end) ?? null;
@@ -127,17 +138,26 @@ export function pairAnswers(debugLog, timeline) {
         // play span (timeline stamps run ~1.15 s early) plus a 3 s dispatch grace (VAD hold).
         const inWindow = d.verdict === 'unverifiable' ? [] : items.filter((it) => d.at >= it.playedAt - 1150 && d.at <= it.spokeEnd + 3000);
         let item = null, attribution = null;
-        if (best && bestOv >= 0.25) { item = best; attribution = 'words'; }
-        else if (contentWords(d.anchor).length === 0) { item = byTime; attribution = byTime ? 'time' : null; }
-        else if (inWindow.length === 1) { item = inWindow[0]; attribution = 'window'; }
-        return {
-            attribution,
-            id: item?.id ?? '?', kind: item?.kind ?? 'unknown', level: item?.level ?? null, topic: item?.topic ?? null,
-            question: item ? questionForGrader(item, items) : null, heard: d.anchor, source: d.source, verdict: d.verdict,
+        const pair = {
+            attribution: null,
+            id: '?', kind: 'unknown', level: null, topic: null,
+            question: null, heard: d.anchor, source: d.source, verdict: d.verdict,
             dispatchedAt: new Date(d.at).toISOString(), answer: full?.text ?? null,
             extended: false, heardExtended: null, superseded: false, heardSuperseded: null,
         };
+        if (best && bestOv >= 0.25) { item = best; attribution = 'words'; }
+        else if (contentWords(d.anchor).length === 0) { item = byTime; attribution = byTime ? 'time' : null; }
+        else if (inWindow.length === 1) windowPending.push([pair, inWindow[0]]); // resolved below, once words/time claims are known
+        claim(pair, item, attribution);
+        return pair;
     });
+    // The window fallback never takes an item a words/time claim (or an earlier window claim) already holds: no doubles.
+    const claimedIds = new Set(pairs.filter((p) => p.id !== '?').map((p) => p.id));
+    for (const [pair, item] of windowPending) {
+        if (claimedIds.has(item.id)) continue;
+        claim(pair, item, 'window');
+        claimedIds.add(item.id);
+    }
     for (const e of extendsList) {
         const full = fulls.find((f) => !taken.has(f) && f.at >= e.at && f.at < e.at + 60_000) ?? null;
         if (!full) continue;
@@ -334,7 +354,7 @@ async function main() {
     } else {
         const timeline = JSON.parse(fs.readFileSync(path.join(dir, 'interview60.timeline.json'), 'utf8'));
         const dbg = fs.readFileSync(path.join(dir, 'natively_debug.log'), 'utf8');
-        pairs = pairAnswers(dbg, timeline).filter((p) => p.id !== '?');
+        pairs = keepClaimed(pairAnswers(dbg, timeline));
     }
     const out = path.join(dir, `interview60.judge${tag}.json`);
     if (exportOnly) {

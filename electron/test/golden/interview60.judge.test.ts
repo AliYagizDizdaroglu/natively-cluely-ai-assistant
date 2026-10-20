@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { RUBRIC, graderPromptVersion, mergeVerdicts, pairAnswers, pairsFromAnswers, questionForGrader, summarizeVerdicts, verdictOf } from './interview60.judge.mjs';
+import { RUBRIC, graderPromptVersion, keepClaimed, mergeVerdicts, pairAnswers, pairsFromAnswers, questionForGrader, summarizeVerdicts, verdictOf } from './interview60.judge.mjs';
 import { summarizeJudge } from './interview60.metrics.mjs';
 
 const t = (s: string) => Date.parse(`2026-09-04T08:00:${s}Z`);
@@ -110,9 +110,10 @@ describe('pairAnswers', () => {
         ].join('\n');
         const pairs = pairAnswers(split, timeline);
         expect(pairs.map((p) => p.id)).toEqual(['W02']); // W02 played at 40 s; W01 ended long before
-        // An anchor WITH content words that matches nothing stays unclaimed OUTSIDE any play window (inside one, the window fallback claims it: see below).
-        const noise = '2026-09-04T08:00:30.000Z [LOG] [Main] dispatch: answer source=whisper anchor="Configure the printer driver settings" verdict=match';
-        expect(pairAnswers(noise, timeline).map((p) => p.id)).toEqual(['?']);
+        // An anchor WITH content words that matches nothing: inside a play window the window fallback claims it (ACCEPTED RISK of the fallback: noise there is indistinguishable from a mishearing); outside any window it stays unclaimed.
+        const noise = '2026-09-04T08:00:44.000Z [LOG] [Main] dispatch: answer source=whisper anchor="Configure the printer driver settings" verdict=match';
+        expect(pairAnswers(noise, timeline).map((p) => [p.id, p.attribution])).toEqual([["W02", "window"]]);
+        expect(pairAnswers(noise.replace("08:00:44", "08:00:30"), timeline).map((p) => p.id)).toEqual(["?"]);
     });
 
     it('claims an answer anchored on a Live paraphrase by the question= it dispatched (h40b R07F: the anchor is the paraphrase\'s first 80 chars and shares no content word with the played text)', () => {
@@ -170,6 +171,16 @@ describe('pairAnswers', () => {
         it('a dispatch inside two overlapping play windows stays unclaimed', () => {
             const tl = { ...timeline, items: [...timeline.items, { id: 'W03', kind: 'spoken', level: 'easy', topic: 'x', q: 'Unrelated zebra question?', playedAt: t('12.000'), clipSecs: 4 }] };
             expect(pairAnswers(line('2026-09-04T08:00:15.000Z', 'How would you detective?'), tl).map((p) => p.id)).toEqual(['?']);
+        });
+        it('skips an item already claimed by words in the same run (no doubles)', () => {
+            const log = line('2026-09-04T08:00:41.000Z', 'Why do docker layers matter for build times?') + line('2026-09-04T08:00:44.000Z', 'How would you detective?');
+            expect(pairAnswers(log, timeline).map((p) => [p.id, p.attribution])).toEqual([['W02', 'words'], ['?', null]]);
+        });
+        it('keepClaimed logs every dropped unclaimed dispatch instead of dropping silently', () => {
+            const pairs = pairAnswers(line('2026-09-04T08:00:30.000Z', 'How would you detective?'), timeline);
+            const lines: string[] = [];
+            expect(keepClaimed(pairs, (s: string) => lines.push(s))).toEqual([]);
+            expect(lines).toEqual(['JUDGE dropped unclaimed dispatch 2026-09-04T08:00:30.000Z']);
         });
         it('an unverifiable (unchecked Live) dispatch is never claimed by window', () => {
             expect(pairAnswers(line('2026-09-04T08:00:15.000Z', 'How would you detective?', 'unverifiable'), timeline).map((p) => p.id)).toEqual(['?']);
