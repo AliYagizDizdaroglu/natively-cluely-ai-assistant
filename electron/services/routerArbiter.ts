@@ -91,9 +91,14 @@ export class RouterArbiter {
     this.maybeWriteLine(t);
   }
 
-  /** True once the turn's decision showed the Live answer (main.ts keeps a question answered when the pipeline answer fails behind it). */
-  liveShown(id: number): boolean {
-    return this.turns.find((x) => x.id === id)?.decision?.shown === 'live';
+  /**
+   * True when no Live answer can be on screen for the turn: the arbiter has no record of it (flag off, evicted) or
+   * decided the pipeline. A pending decision (up to DECIDE_MS after the question) may still go to Live, so it is false.
+   * main.ts un-marks a failed answer's question only then.
+   */
+  pipelineDecided(id: number): boolean {
+    const t = this.turns.find((x) => x.id === id);
+    return !t || t.decision?.shown === 'pipeline';
   }
 
   turnDispatched(id: number, at: number, q: number, qSrc: QSrc): void {

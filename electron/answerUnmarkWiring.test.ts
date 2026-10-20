@@ -13,7 +13,8 @@ describe('main.ts wires the answer outcome to the deduper', () => {
     expect(i).toBeGreaterThan(0);
     const body = src.slice(i, src.indexOf('\n    })', i));
     expect(body).toContain('this.answerOutcome.ended(');
-    expect(body).toContain('this.routerArbiter.liveShown(');
+    expect(body).toContain('this.routerArbiter.pipelineDecided(');
+    expect(body).not.toContain('liveShown(');
     expect(body).toContain('this.chipDeduper.unmarkAnswered(');
   });
 });

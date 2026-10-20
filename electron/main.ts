@@ -2673,7 +2673,7 @@ export class AppState {
     this.intelligenceManager.on('suggested_answer_end', (turnId: number | null, kind: 'completed' | 'aborted' | 'failed', generationId?: number | null) => {
       this.routerWiring.onEnd(turnId, kind)
       // S2: a FAILED answer (error, empty, all legs failed, no stream) must not leave its question marked answered.
-      const unmarkId = this.answerOutcome.ended(turnId, kind, generationId, turnId != null && this.routerArbiter.liveShown(turnId));
+      const unmarkId = this.answerOutcome.ended(turnId, kind, generationId, turnId != null && !this.routerArbiter.pipelineDecided(turnId));   // keep the mark while Live may still be shown
       if (unmarkId !== undefined) {
         this.chipDeduper.unmarkAnswered(unmarkId);
         console.log(`[Main] answer failed turn=${turnId} kind=${kind}: question un-marked answered (a re-ask is answered)`);

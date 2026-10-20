@@ -16,7 +16,7 @@ export function isAnswerFailure(kind: AnswerEndKind, generation: number | null |
  *  - no Live answer was shown for the turn (the candidate saw one);
  *  - once per dedup entry (retry-storm cap: an outage re-dispatches on every re-emission and would fail each time;
  *    the entry ages out at the base window, so a real re-ask after it gets a fresh entry and a fresh un-mark).
- * Turn state is dropped once the turn has no outstanding answer left, so it does not grow; turn ids only grow.
+ * Turn state is dropped once the turn has no outstanding answer left and nothing was delivered; delivered turns stay (one small record per answered turn).
  */
 export class AnswerOutcomeTracker {
   private turns = new Map<number, { dedupId: number | undefined; pending: number; delivered: boolean }>();
@@ -36,7 +36,7 @@ export class AnswerOutcomeTracker {
     t.pending = Math.max(0, t.pending - 1);
     if (kind === 'completed') t.delivered = true;
     if (t.pending > 0) return undefined;
-    this.turns.delete(turnId);
+    if (!t.delivered) this.turns.delete(turnId);   // a delivered turn stays: a later supersede of it must not un-mark what the candidate saw
     if (t.delivered || liveShown || !isAnswerFailure(kind, generation) || t.dedupId === undefined) return undefined;
     if (this.unmarked.has(t.dedupId)) return undefined;
     this.unmarked.add(t.dedupId);

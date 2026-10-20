@@ -71,6 +71,14 @@ describe('AnswerOutcomeTracker', () => {
     expect(t.ended(9, 'failed', 3, false)).toBe(42);
   });
 
+  it('a delivered answer is remembered across idle: dispatch, complete, a later supersede that fails does not un-mark', () => {
+    const t = mk();
+    t.dispatched(7, 41);
+    expect(t.ended(7, 'completed', 1, false)).toBeUndefined();
+    t.dispatched(7, 41);                                  // a later supersede of the same turn
+    expect(t.ended(7, 'failed', 2, false)).toBeUndefined();
+  });
+
   it('an end for a turn that was never dispatched through here is ignored', () => {
     const t = mk();
     expect(t.ended(5, 'failed', 1, false)).toBeUndefined();

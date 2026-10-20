@@ -33,7 +33,7 @@ vi.mock('@google/genai', () => ({
 }));
 
 import { LLMHelper } from '../LLMHelper';
-import { WhatToAnswerLLM } from './WhatToAnswerLLM';
+import { WhatToAnswerLLM, NO_ANSWER_SENTINEL } from './WhatToAnswerLLM';
 import { VERBAL_PRIMARY_MODEL_ENV } from './verbalPrimaryModel';
 
 const TECHNICAL = { intent: 'general', confidence: 0.9, answerShape: '' } as any;
@@ -150,6 +150,14 @@ describe('hedge x cue mode', () => {
         expect(spoken(chunks)).toContain('Ten million');
         expect(spoken(chunks)).toContain('[No answer — the answer model failed: socket hang up]');
         expect(spoken(chunks)).not.toContain('thirty gigabytes');       // nothing of the redirect that did not run
+    });
+
+    it('D3 (S2). every leg failing before a token: through the real filter chain the sentinel arrives whole and first, as IntelligenceEngine reads it', async () => {
+        plan.push('error', 'error', 'error', 'error', 'error', 'error');   // front, back, fallback: whatever order they run in
+        const chunks = await run(vi.fn());
+        const text = spoken(chunks);
+        expect(text.startsWith(NO_ANSWER_SENTINEL)).toBe(true);
+        expect(text).toMatch(/^\[No answer — .*\]$/);
     });
 
     // The state between D and D2 (review M1): the early close reports on "Te", the fence filter's 3-character carry
